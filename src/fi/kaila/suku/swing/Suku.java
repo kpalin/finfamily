@@ -167,7 +167,7 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 	/**
 	 * Application version
 	 */
-	public static final String sukuVersion="11.-3.0013";
+	public static final String sukuVersion="11.-3.0023";
 	/**
 	 * Server version
 	 */

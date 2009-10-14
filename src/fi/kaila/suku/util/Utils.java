@@ -170,7 +170,7 @@ public class Utils {
 			if (df.equals("SE")){
 				return strl(parts[0],4) + strl(parts[1],2);
 			} else {
-				return strl(parts[1],2) + strl(parts[0],4);
+				return strl(parts[1],4) + strl(parts[0],2);
 			}
 		}
 		if (parts.length == 3){
