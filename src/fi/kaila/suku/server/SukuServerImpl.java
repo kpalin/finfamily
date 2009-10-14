@@ -1583,7 +1583,7 @@ public class SukuServerImpl implements SukuServer{
 			
 			//PersonShortData dao;
 
-
+			Statement stm = this.con.createStatement();
 			ResultSet rs = stm.executeQuery(sql.toString());
 			persMap = new HashMap<Integer,PersonShortData> ();
 			int currentPid = 0;
@@ -1715,7 +1715,7 @@ public class SukuServerImpl implements SukuServer{
 		    }
 	        if (needsRelativeInfo) { 
 	        	
-				Statement stm = this.con.createStatement();
+				
 	        	
 	        	StringBuffer relSQL = new StringBuffer();
 	        	relSQL.append("select tag,pid,count(*) from relation where pid in " +
