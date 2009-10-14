@@ -1,0 +1,217 @@
+<project name="sukukk" default="dist" basedir=".">
+  <condition property="doOverride">
+    <available file="conf/override.properties"/>
+  </condition>
+
+
+  <property name="app.name" value="suku"/>
+  <property name="app.version" value="0.proto"/>
+  
+  <property name="build.home" value="${basedir}/build"/>
+
+  <property name="resources.home" value="${basedir}/resources"/>
+  <property name="dist.home" value="${basedir}/dist"/>
+  <property name="docs.home" value="${basedir}/docs"/>
+  <property name="src.home"  value="${basedir}/src"/>
+  <property name="conf.home" value="${basedir}/conf"/>
+  <property name="devc.home" value="${basedir}/devc"/>
+  <property name="junit.home" value="${basedir}/junit" />
+  <property name="lib.home"  value="${basedir}/lib"/>
+  <property name="test.home" value="${basedir}/test"/>
+  <property name="swing.home" value="${basedir}/swing"/>
+  <target name="overrideProps" if="doOverride">
+    <property file="conf/override.properties"/>
+  </target>
+
+  <property name="compile.debug" value="true"/>
+  <property name="compile.deprecation" value="false"/>
+  <property name="compile.optimize" value="true"/>
+ 
+  <!-- ==================== Compilation Classpath =========================== -->
+  <!--
+
+  Rather than relying on the CLASSPATH environment variable, Ant includes
+  features that makes it easy to dynamically construct the classpath you
+  need for each compilation.  The example below constructs the compile
+  classpath to include the servlet.jar file, as well as the other components
+  that Tomcat makes available to web applications automatically, plus anything
+  that you explicitly added.
+
+-->
+  <path id="compile.classpath">
+   <fileset dir="${lib.home}">
+   <include name="*.jar"/>
+   </fileset>
+  </path>
+  
+  
+  <target name="all" depends="clean,compile" description="Clean build and dist directories, then compile"/>
+  
+ 
+  
+  
+  <!-- ==================== Jar Target ====================================== -->
+  <!--
+
+  The "jar" target is a shortcut for running the "clean" target followed
+  by the "compile" target and packaging the result in  a jar-file
+
+-->
+  <target name="jar" depends="clean,compile,junit" description="Clean build and dist directories, then compile">
+    <mkdir dir="${dist.home}"/>
+    <jar destfile="${dist.home}/suku.jar" basedir="${build.home}/classes">
+
+	<fileset dir="${resources.home}" excludes="**/kkgen*.properties" />
+
+	
+	<manifest >
+    <attribute name="Built-By" value="${user.name}"/>
+	<attribute name="Main-Class" value="fi.kaila.suku.swing.Suku"/>
+	<attribute name="Class-Path" value="lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar resources/"/>
+    <section name="common">
+      <attribute name="Specification-Title" value="Example"/>
+      <attribute name="Specification-Version" value="${app.version}"/>
+      <attribute name="Specification-Vendor" value="KK Software"/>
+      <attribute name="Implementation-Title" value="common"/>
+      <attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
+      <attribute name="Implementation-Vendor" value="KK Software"/>
+    </section>
+   
+  </manifest>
+
+	
+   </jar>
+   
+  <copy file="${dist.home}/suku.jar" tofile="C:/Tomcat6.0/webapps/suku/Suku.jar"/>
+  
+  <copy file="${dist.home}/suku.jar" todir="C:/Tomcat6.0/webapps/suku/WEB-INF/lib"/>
+  </target>
+  
+  
+   <target name="dist" depends="jar" description="Create distribution folder">
+   <mkdir dir="${dist.home}/lib"/>
+   <mkdir dir="${dist.home}/properties"/>
+   <mkdir dir="${dist.home}/resources"/>
+   <mkdir dir="${dist.home}/resources/excel"/>
+   <mkdir dir="${dist.home}/resources/images"/>
+   <mkdir dir="${dist.home}/resources/string"/>
+   
+   <mkdir dir="${swing.home}"/>
+   
+   <copy file="${resources.home}/properties/logging.properties" todir="${dist.home}/properties"/>
+   <copy file="${resources.home}/excel/PaikatExcel.xls" todir="${dist.home}/resources/excel"/>
+   <copy file="${resources.home}/excel/TypesExcel.xls" todir="${dist.home}/resources/excel"/>
+   <copy file="${resources.home}/images/suomikartta.jpg" todir="${dist.home}/resources/images"/>  
+   <copy todir="${dist.home}/resources/string">
+     <fileset dir="${resources.home}/string" includes="*.properties"/>
+   </copy>
+   <copy file="${devc.home}/Suku.exe" todir="${dist.home}"/>
+   <copy file="${devc.home}/suku.sh" todir="${dist.home}"/>
+   
+   
+
+	
+	 <copy todir="${dist.home}/lib">
+	 <fileset dir="${lib.home}">	
+	</fileset>
+	</copy>
+	
+	<zip destfile="${swing.home}/finfamily.zip" basedir="${dist.home}"
+	  includes="suku.jar Suku.exe suku.sh lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar properties/* resources/excel/PaikatExcel.xls resources/excel/TypesExcel.xls resources/images/suomikartta.jpg resources/string/*">
+	
+	</zip>
+	
+   </target>
+  
+  
+
+  <!-- ==================== Clean Target ==================================== -->
+  <!--
+
+  The "clean" target deletes any previous "build" and "dist" directory,
+  so that you can be ensured the application can be built from scratch.
+
+-->
+  <target name="clean" description="Delete old build and dist directories">
+    <delete dir="${build.home}"/>
+   <delete dir="${dist.home}"/>
+  </target>
+  <!-- ==================== Compile Target ================================== -->
+  <!--
+
+  The "compile" target transforms source files (from your "src" directory)
+  into object files in the appropriate location in the build directory.
+  This example assumes that you will be including your classes in an
+  unpacked directory hierarchy under "/WEB-INF/classes".
+
+-->
+  <target name="compile" depends="overrideProps" description="Compile Java sources">
+    
+    <!-- Compile Java classes as necessary -->
+    <mkdir dir="${build.home}/classes"/>
+
+    <javac   source="1.6" destdir="${build.home}/classes" 
+		debug="yes" >
+		 <src path="${src.home}" />
+		  <src path="${junit.home}" />
+        <classpath>
+		 <fileset dir="${lib.home}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+    <!-- Copy application resources -->
+	
+<!--	
+    <copy todir="${build.home}/WEB-INF/classes">
+		<fileset dir="${src.home}" includes="**/*.java"/> 
+      <fileset dir="${src.home}" includes="**/*.xsl"/>
+    </copy>
+-->	
+  </target>
+
+
+  	<target name="junit" depends="compile" description="Runs JUnit tests" > 
+	 
+	 <mkdir dir="${test.home}/test"/>
+	 
+<!--
+	<copy todir="${tests.dir}"> 
+		<fileset dir="../src/${resource.dir}" includes="swpparchiving.*"/>
+	</copy>
+-->
+<!--	
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	    <classpath>
+			<pathelement path="${java.class.path}" />
+			<pathelement path="${build.home}/classes"/> 
+			<pathelement path="${lib.home}/junit-4.4.jar" />	
+			<pathelement path="${basedir}/resources"/>		
+			<pathelement path="${lib.home}/pg73jdbc3.jar" />	
+			
+	   </classpath>
+		<formatter type="plain"/>
+		<batchtest  todir="${test.home}/test">
+			<fileset dir="${junit.home}">
+		      <include name="**/*Test.java"/>
+			
+			</fileset>
+		</batchtest>
+		
+
+	</junit> 
+-->
+	</target>
+
+
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="lib/servlet.jar;lib/postgresql-8.3-604.jdbc4.jar;lib/jxl.jar;resources;lib/junit-4.4.jar;lib/jnlp.jar" 
+		destdir="guide/javadoc" doctitle="FinFamily 11" nodeprecated="false" 
+		nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" 
+		stylesheetfile="guide/xml/stylesheet.css"
+		overview="src\overview.html" source="1.6"  sourcepath="src;junit" excludepackagenames="components"
+		splitindex="true" use="true" version="true"/>
+    </target>
+
+
+ </project>
