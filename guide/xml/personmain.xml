@@ -1,0 +1,33 @@
+﻿<?xml version="1.0"?> 
+<opas title="Person managemen´t">
+
+<p>Use the person views to manage the person. It consist of:</p>
+
+<ul>
+<li>Person main page</li>
+<li>Relatives page</li>
+<li>Notices</li>
+</ul>
+<p><image src="personmain.jpg" border="0" title="Henkilön päänäyttö" /></p> 
+
+<p>Open the personview from the person in the database windows using theg right mouse button and select command Personview.</p>
+
+<p>On the main page you can type in the basedata for the person. The program creates a notice for each differnt type of information. The notices will be visible if you have the <image src="toolnotices.jpg" border="0" type="inline" title="" /> depressed. If the notice contains something else such as source information than the text visible on the main page you cannot edit it on the main page.</p>
+
+<p>The surname and occupation fields on the main page can contain several notices. The different names or occupations are separated by semicolon on the name page.</p>
+
+<p>If other notice type exists more than once it cannot be edited on the main page that shows only the text from the first notice.</p>
+
+<hdr>Storing to the database</hdr>
+
+<ul>
+<li>Close personview by pressing Close.</li>
+<li>Update personview by pressing Update.</li>
+<li>Open another persons personview.</li>
+<li>If you close the application then modifications to the personview is not saved.</li>
+</ul>
+
+<p>Remove person(s) from the database by selecting the persons in the database view and press 
+<image src="toolpersonrem.jpg" border="0" type="inline" title="" />.</p>
+
+</opas>

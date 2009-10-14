@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?> 
+<opas title="Create new person">
+
+<p>Create a new person by pressing the button (Image of woman)
+
+<image src="toolpersonnew.jpg" border="0" type="inline" title="" />.
+
+Manage the data as in <link lref="personmain">Update person data</link></p>
+
+
+
+
+</opas>

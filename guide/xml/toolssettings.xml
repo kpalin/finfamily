@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?> 
+<opas title="Settings">
+
+
+
+<p>The settings are accessed from Tools - Settings.</p>
+
+<p><image src="toolssettings.jpg" border="0" alt=""/></p> 
+
+<p>Currently it contains
+<ul>
+<li>Selection of application language</li>
+<li>Selection of report language</li>
+<li>Selecting of date format</li>
+</ul>
+</p>
+
+
+</opas>

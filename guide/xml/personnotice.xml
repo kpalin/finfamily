@@ -1,0 +1,34 @@
+﻿<?xml version="1.0"?> 
+<opas title="Person notices">
+
+<p>The data for the persons is contained in notices. In very simple cases you can edit your data on the PersonWindow but for more details you need to open the Notice for the data. Press down the 
+<image src="toolnotices.jpg" border="0" type="inline" title="" /> to see the notices.</p>
+
+<p><image src="personnotice.jpg" border="0" title="Tietojakso" /></p> 
+
+<p>The type of the notice defines what fields are (by default) displayed:</p>
+
+<ul>
+<li>Name notice shows name related fields. Name fields are not shown on any other notices.</li>
+<li>Note notice  displays only a larger note field.</li>
+<li>Address notice has address fields open automatically.</li>
+<li>A non empty field is always shown.</li>
+
+</ul>
+
+<p><image src="toolshownotice.jpg" border="0" type="inline" /></p> 
+
+<p>The notice field tools define if you want to keep open the corresponding field:</p>
+
+<ul>
+<li>Note field</li>
+<li>Address fields</li>
+<li>Village, farm and croft field</li>
+<li>Private source field</li>
+</ul>
+
+<p>Notice order can be defined using the Tool - Aux tool command</p>
+
+
+
+</opas>
