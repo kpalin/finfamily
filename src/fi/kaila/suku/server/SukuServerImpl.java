@@ -1374,18 +1374,20 @@ public class SukuServerImpl implements SukuServer{
 		
 		
 		try {
-			StringBuffer sql = new StringBuffer();
-		 
-		    sql.append("select u.pid,u.sex,u.userrefn,u.groupid,u.tag,n.tag,n.givenname,");
-		    sql.append("n.patronym,n.prefix,n.surname,n.postfix,");
-		    sql.append("n.fromdate,n.Place,n.Description,n.pnid,n.mediafilename,n.mediatitle ");
-		    sql.append("from unit as u left join unitnotice as n on u.pid = n.pid ");
-		    sql.append("and n.tag in ('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU'");
+			StringBuffer seleSQL = new StringBuffer();
+			
+			seleSQL.append("select u.pid,u.sex,u.userrefn,u.groupid,u.tag,n.tag,n.givenname,");
+			seleSQL.append("n.patronym,n.prefix,n.surname,n.postfix,");
+			seleSQL.append("n.fromdate,n.Place,n.Description,n.pnid,n.mediafilename,n.mediatitle ");
+			seleSQL.append("from unit as u left join unitnotice as n on u.pid = n.pid ");
+			seleSQL.append("and n.tag in ('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU'");
 		    if (this.toDoTagName != null) 
 		    {
-		        sql.append(",'TODO'");
+		    	seleSQL.append(",'TODO'");
 		    }    
-		    sql.append(") and n.surety >= 80 ");
+		    seleSQL.append(") and n.surety >= 80 ");
+		    
+		    StringBuffer fromSQL = new StringBuffer();
 		    StringBuffer sbn = new StringBuffer();
 		    
 		    if (params.length >1){
@@ -1411,9 +1413,9 @@ public class SukuServerImpl implements SukuServer{
 					}
 				}
 				if (sbn.length()>0) {
-					sql.append("where u.pid in (select pid from unitnotice where ");
-					sql.append(sbn.toString());
-					sql.append("and tag='NAME') ");
+					fromSQL.append("where u.pid in (select pid from unitnotice where ");
+					fromSQL.append(sbn.toString());
+					fromSQL.append("and tag='NAME') ");
 					isFirstCriteria = false;
 				}
 				
@@ -1430,12 +1432,12 @@ public class SukuServerImpl implements SukuServer{
 				}
 				if (group != null) {
 					if (isFirstCriteria){
-						sql.append("where ");
+						fromSQL.append("where ");
 					} else {
-						sql.append("and ");
+						fromSQL.append("and ");
 					}
 					isFirstCriteria=false;
-					sql.append("u.groupid = '" + group + "' ");
+					fromSQL.append("u.groupid = '" + group + "' ");
 				}
 				
 				for (idx = 1; idx < params.length; idx++){
@@ -1453,25 +1455,25 @@ public class SukuServerImpl implements SukuServer{
 				
 				if (begdate!= null || todate != null || place != null) {
 					if (isFirstCriteria){
-						sql.append("where ");
+						fromSQL.append("where ");
 					} else {
-						sql.append("and ");
+						fromSQL.append("and ");
 					}
 					isFirstCriteria=false;
-					sql.append("u.pid in (select pid from unitnotice where ");
+					fromSQL.append("u.pid in (select pid from unitnotice where ");
 					if (begdate != null && todate == null){
-						sql.append("fromdate >= '" + begdate + "' ");
+						fromSQL.append("fromdate >= '" + begdate + "' ");
 					} else if (begdate == null && todate != null){
-						sql.append("fromdate <= '" + todate + "9999' ");
+						fromSQL.append("fromdate <= '" + todate + "9999' ");
 					} else if (begdate != null && todate != null){
-						sql.append("fromdate between '" + begdate + "' and '" + todate + "9999' ");
+						fromSQL.append("fromdate between '" + begdate + "' and '" + todate + "9999' ");
 					}
 					if (begdate == null && todate == null && place != null){
-						sql.append("place ilike '" + place +"%' ");
+						fromSQL.append("place ilike '" + place +"%' ");
 					} else if (place != null){
-						sql.append("and place ilike '" + place +"%' ");
+						fromSQL.append("and place ilike '" + place +"%' ");
 					}
-					sql.append("and tag='BIRT') ");
+					fromSQL.append("and tag='BIRT') ");
 				}
 				
 				begdate=null;
@@ -1492,25 +1494,25 @@ public class SukuServerImpl implements SukuServer{
 				
 				if (begdate!= null || todate != null || place != null) {
 					if (isFirstCriteria){
-						sql.append("where ");
+						fromSQL.append("where ");
 					} else {
-						sql.append("and ");
+						fromSQL.append("and ");
 					}
 					isFirstCriteria=false;
-					sql.append("u.pid in (select pid from unitnotice where ");
+					fromSQL.append("u.pid in (select pid from unitnotice where ");
 					if (begdate != null && todate == null){
-						sql.append("fromdate >= '" + begdate + "' ");
+						fromSQL.append("fromdate >= '" + begdate + "' ");
 					} else if (begdate == null && todate != null){
-						sql.append("fromdate <= '" + todate + "9999' ");
+						fromSQL.append("fromdate <= '" + todate + "9999' ");
 					} else if (begdate != null && todate != null){
-						sql.append("fromdate between '" + begdate + "' and '" + todate + "9999' ");
+						fromSQL.append("fromdate between '" + begdate + "' and '" + todate + "9999' ");
 					}
 					if (begdate == null && todate == null && place != null){
-						sql.append("place ilike '" + place +"%' ");
+						fromSQL.append("place ilike '" + place +"%' ");
 					} else if (place != null){
-						sql.append("and place ilike '" + place +"%' ");
+						fromSQL.append("and place ilike '" + place +"%' ");
 					}
-					sql.append("and tag='DEAT') ");
+					fromSQL.append("and tag='DEAT') ");
 				}
 				begdate=null;
 				todate=null;
@@ -1526,19 +1528,19 @@ public class SukuServerImpl implements SukuServer{
 				}
 				if (begdate != null || todate != null) {
 					if (isFirstCriteria){
-						sql.append("where ");
+						fromSQL.append("where ");
 					} else {
-						sql.append("and ");
+						fromSQL.append("and ");
 					}
 					isFirstCriteria=false;
 					if (todate == null) {
-						sql.append("u.pid in (select pid from unitnotice where createdate >= '" + begdate + "' )");
+						fromSQL.append("u.pid in (select pid from unitnotice where createdate >= '" + begdate + "' )");
 					} else if (begdate == null) {
-						sql.append("u.pid in (select pid from unitnotice where createdate >= '" + todate+ "' )");
+						fromSQL.append("u.pid in (select pid from unitnotice where createdate >= '" + todate+ "' )");
 	                }
 	                else
 	                {
-                    sql.append("u.pid in (select pid from unitnotice where createdate between '"
+	                	fromSQL.append("u.pid in (select pid from unitnotice where createdate between '"
                         + begdate + "' and '"
                         + todate + "' ) ");
 	                }	
@@ -1554,36 +1556,36 @@ public class SukuServerImpl implements SukuServer{
 				}
 				if (viewIdTxt != null) {
 					if (isFirstCriteria){
-						sql.append("where ");
+						fromSQL.append("where ");
 					} else {
-						sql.append("and ");
+						fromSQL.append("and ");
 					}
 					isFirstCriteria=false;
 					
-		            sql.append("u.pid in (select pid from viewunits where vid = " + viewIdTxt + ") ");
+					fromSQL.append("u.pid in (select pid from viewunits where vid = " + viewIdTxt + ") ");
 		                       
 				}					
 			}	
 		
+		    StringBuffer sql = new StringBuffer();
 			
-			
+		    sql.append(seleSQL);
+		    sql.append(fromSQL);
+		    
 			sql.append("order by u.pid,n.noticerow ");
+			
+			
 			
 			logger.fine(sql.toString());
 			
-//			System.out.println(sql.toString());
-			
-			String rsql = "select tag,count(*) from relation where pid = ? group by tag ";
 
 			PersonShortData perso = null;
 			
 			//PersonShortData dao;
-			Statement stm = this.con.createStatement();
-			PreparedStatement pstm = this.con.prepareStatement(rsql);
-			ResultSet prs;
+
 
 			ResultSet rs = stm.executeQuery(sql.toString());
-
+			persMap = new HashMap<Integer,PersonShortData> ();
 			int currentPid = 0;
 	        int pid;
 //		    String dbutag; //5
@@ -1606,9 +1608,7 @@ public class SukuServerImpl implements SukuServer{
 		    int parents;
 		
 		    while (rs.next())
-		    {
-		
-		
+		    {	
 		    	pid = rs.getInt(1);
 //		    	dbutag = rs.getString(5);
 		    	dbntag = rs.getString(6);
@@ -1627,7 +1627,7 @@ public class SukuServerImpl implements SukuServer{
 		        if (pid != currentPid && currentPid != 0)
 		        {
 		            personList.add(perso);
-		            
+		            persMap.put(perso.getPid(),perso);
 		            perso = null;
 		        }
 		        currentPid = pid;
@@ -1635,36 +1635,11 @@ public class SukuServerImpl implements SukuServer{
 		        {
 		            perso = new PersonShortData();
 		            perso.setPid(pid);
+		            persMap.put(perso.getPid(),perso);
 		            perso.setSex(rs.getString(2));
 		            perso.setRefn(rs.getString(3));
 		            perso.setGroup(rs.getString(4));
-		            if (needsRelativeInfo) { 
-		           
-		            	pstm.setInt(1,pid);
-						prs = pstm.executeQuery();
-						while (prs.next()){
-							rtag = prs.getString(1);
-							if (rtag.equals("HUSB") ||rtag.equals("WIFE")){
-								marriages=prs.getInt(2);
-								marriages += perso.getMarrCount();
-								perso.setMarrCount(marriages);
-							} else if (rtag.equals("CHIL")){
-								children=prs.getInt(2);
-								perso.setChildCount(children);
-							} else if (rtag.equals("MOTH") || rtag.equals("FATH")){
-								parents = prs.getInt(2);
-								parents += perso.getPareCount();
-								perso.setPareCount(parents);
-							}
-						}
-						prs.close();
-		
-		            }
-		
-		
-		
-		
-		
+		     
 		        }
 		        if (dbntag != null) {
 			        if ( dbntag.equals("NAME") && perso.getNameTag() == null)
@@ -1728,23 +1703,51 @@ public class SukuServerImpl implements SukuServer{
 				            perso.setDeatDate(dbfromdate);
 				            perso.setDeatPlace(dbplace);
 			        	}
-			        }
-			
+			        }		
 		        }
-		
-		
-		        // TODO Add reading of Photo here
-		
-		
-		
 		    }
 		    if (perso != null)
 		    {
 		        //personDict.Add(perso.Pid, perso);
 		        personList.add(perso);
+		        persMap.put(perso.getPid(),perso);
 		        perso = null;
 		    }
-			
+	        if (needsRelativeInfo) { 
+	        	
+				Statement stm = this.con.createStatement();
+	        	
+	        	StringBuffer relSQL = new StringBuffer();
+	        	relSQL.append("select tag,pid,count(*) from relation where pid in " +
+	        			"(select pid  from unit u ");
+	        	relSQL.append(fromSQL);
+	        	relSQL.append(") group by pid,tag order by pid");
+	        	logger.fine("Relative sql: " + relSQL.toString());
+	        	PreparedStatement pstm = this.con.prepareStatement(relSQL.toString());
+	        	ResultSet prs = pstm.executeQuery();
+				while (prs.next()){
+					rtag = prs.getString(1);
+					int rpid=prs.getInt(2);
+					PersonShortData rp = persMap.get(rpid);
+					if (rp != null) {
+						
+						if (rtag.equals("HUSB") ||rtag.equals("WIFE")){
+							marriages=prs.getInt(3);
+							marriages += rp.getMarrCount();
+							rp.setMarrCount(marriages);
+						} else if (rtag.equals("CHIL")){
+							children=prs.getInt(3);
+							rp.setChildCount(children);
+						} else if (rtag.equals("MOTH") || rtag.equals("FATH")){
+							parents = prs.getInt(3);
+							parents += rp.getPareCount();
+							rp.setPareCount(parents);
+						}
+					}
+				}
+				prs.close();
+
+            }	
 			
 		} catch (Exception e) {
 			
@@ -1758,6 +1761,8 @@ public class SukuServerImpl implements SukuServer{
 		return qlist;
 	}
 
+	HashMap<Integer,PersonShortData> persMap=null;
+	
 	@Override
 	public SukuData getSukuData( String... params)
 			throws SukuException {
