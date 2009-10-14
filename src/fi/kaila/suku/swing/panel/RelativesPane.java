@@ -313,16 +313,21 @@ ComponentListener,MouseListener{
         });
 		
 
+		
+		
+		
 		spouses = new MyRelationModel();
 	
 		spouTab = setupTable(spouses);
-
 		spouTab.addMouseListener(this);
 		spouTab.addMouseListener(popupListener);
 		spouScroll = new JScrollPane(spouTab);
+		spouTab.setDragEnabled(true);
+		spouTab.setDropMode(DropMode.INSERT);
+		
 		add(spouScroll);
 		
-		spouTab.setDropMode(DropMode.INSERT);
+
 		
 		spouTab.setTransferHandler(new TransferHandler() {
 
@@ -363,7 +368,27 @@ ComponentListener,MouseListener{
                 if (dd.getDragSource() == Utils.PersonSource.CHILD) {
                 	JOptionPane.showMessageDialog(null, "on lapselta");
                 	return false;
+                } else if (dd.getDragSource()==Utils.PersonSource.SPOUSE){
+                	
+                	for (int i=0; i < spouses.list.size(); i++) {
+                		Relation rl = spouses.list.get(i);
+                		if (rl.getRelative() == dd.getPid()){
+                			spouses.list.remove(i);
+                			int modI = (i < index)?-1:0;
+                			spouses.list.add(index+modI,rl);
+                			spouTab.updateUI();
+                			chilTab.updateUI();
+                			return true;
+                			
+                		}
+                		
+                	}
+                	
+
+                	return false;
                 }
+                
+                
                 if (dl.isInsertRow()) {
                 	         	
                 	insertIntoSpouseTable(dd, index);
@@ -373,6 +398,22 @@ ComponentListener,MouseListener{
 	
         		return false;
             }
+            
+          	protected Transferable createTransferable(JComponent c) {
+    			if (c instanceof JTable) {
+    				JTable t = (JTable)c;
+    				int ii = t.getSelectedRow();
+    				if (ii >= 0){
+    					Relation r = spouses.list.get(ii);
+    					PersonShortData ps = r.getShortPerson();
+    					ps.setDragSource(Utils.PersonSource.SPOUSE);
+    					return ps;
+    				
+    				}
+    			}
+    			return null;
+
+    		}
             
             public int getSourceActions(JComponent c) {
                 return COPY;
@@ -399,9 +440,7 @@ ComponentListener,MouseListener{
 
 			public boolean canImport(TransferHandler.TransferSupport info) {
                 // we only import PersonShortData
-//                if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-//                    return false;
-//                }
+
             	if (!info.isDataFlavorSupported(PersonShortData.getPersonShortDataFlavour())){
             		return false;
             	}
@@ -417,40 +456,18 @@ ComponentListener,MouseListener{
                 if (!info.isDrop()) {
                     return false;
                 }
-//                System.out.println("DROP INFO: " + info.toString());
-                // Check for String flavor
-//                if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-//                    displayDropLocation("List doesn't accept a drop of this type.");
-//                    return false;
-//                }
+
 
                 JTable.DropLocation dl = (JTable.DropLocation)info.getDropLocation();
 //                DefaultListModel listModel = (DefaultListModel)chilTab.getModel();
                 int index = dl.getRow();
                 boolean insert = dl.isInsertRow();
                 // Get the current string under the drop.
-//                String value = (String)children.getValueAt(index, 2);
-//                getElementAt(index);
+
 
                 // Get the string that is being dropped.
                 Transferable t = info.getTransferable();
-//                JTable test=null;
-//                try {
-//                	test = (JTable)info.getComponent();
-//                	
-//                } catch (ClassCastException cce){  }
-//                
-//               System.out.println("xxx: " + test);
-//                
-//               if (personView.getSuku().isThisDatabasewindow(test)){
-//            	   System.out.println("comes from dbwindow");
-//               } else {
-//            	   if (test == chilTab){
-//            		   System.out.println("is childwindow");
-//            	   } else {
-//            	   System.out.println("comes from somewhere else");
-//            	   }
-//               }
+
                 
                 PersonShortData dd;
                 
@@ -462,48 +479,29 @@ ComponentListener,MouseListener{
                 System.out.println("ddsource:" + dd.getDragSource());
                 
                 if (dd.getDragSource()==Utils.PersonSource.CHILD){
-                	JOptionPane.showMessageDialog(null, "itseltä siirto riville " + index);
+                	
+                	for (int i=0; i < children.list.size(); i++) {
+                		Relation rl = children.list.get(i);
+                		if (rl.getRelative() == dd.getPid()){
+                			children.list.remove(i);
+                			int modI = (i < index)?-1:0;
+                			children.list.add(index+modI,rl);
+                			chilTab.updateUI();
+                			return true;
+                			
+                		}
+                		
+                	}
                 	return false;
-                }
-//                String data;
-//                try {
-//                    data = (String)t.getTransferData(DataFlavor.stringFlavor);
-//                } 
-//                catch (Exception e) { return false; }
-                
+                } 
                 // Display a dialog with the drop information.
-//                String dropValue = "\"" + data + "\" dropped ";
                 if (dl.isInsertRow()) {
                 	
-//                	System.out.println("DROPPING IOT:" + dd);
                 	
                 	insertIntoChildTable(dd, index);
                 	return true;
-//                    if (dl.getIndex() == 0) {
-//                        displayDropLocation(dropValue + "at beginning of list");
-//                    } else if (dl.getIndex() >= list.getModel().getSize()) {
-//                        displayDropLocation(dropValue + "at end of list");
-//                    } else {
-//                        String value1 = (String)list.getModel().getElementAt(dl.getIndex() - 1);
-//                        String value2 = (String)list.getModel().getElementAt(dl.getIndex());
-//                        displayDropLocation(dropValue + "between \"" + value1 + "\" and \"" + value2 + "\"");
-//                    }
-//                } else {
-//                    displayDropLocation(dropValue + "on top of " + "\"" + value + "\"");
                 }
                 
-		/**  This is commented out for the basicdemo.html tutorial page.
-                 **  If you add this code snippet back and delete the
-                 **  "return false;" line, the list will accept drops
-                 **  of type string.
-                // Perform the actual import.  
-                if (insert) {
-                    listModel.add(index, data);
-                } else {
-                    listModel.set(index, data);
-                }
-                return true;
-		*/
         		return false;
             }
             
@@ -518,8 +516,6 @@ ComponentListener,MouseListener{
     				if (ii >= 0){
     					Relation r = children.list.get(ii);
     					PersonShortData ps = r.getShortPerson();
-//    				if (sukuObject != null && sukuObject instanceof PersonShortData){
-//    					PersonShortData ps = (PersonShortData)sukuObject;
     					ps.setDragSource(Utils.PersonSource.CHILD);
     					return ps;
     				
@@ -530,21 +526,6 @@ ComponentListener,MouseListener{
     		    
     		}
             
-//            protected Transferable createTransferable(JComponent c) {
-//                JList list = (JList)c;
-//                Object[] values = list.getSelectedValues();
-//        
-//                StringBuffer buff = new StringBuffer();
-//
-//                for (int i = 0; i < values.length; i++) {
-//                    Object val = values[i];
-//                    buff.append(val == null ? "" : val.toString());
-//                    if (i != values.length - 1) {
-//                        buff.append("\n");
-//                    }
-//                }
-//                return new StringSelection(buff.toString());
-//            }
         });
 		
 		add(chilScroll);
@@ -599,17 +580,11 @@ ComponentListener,MouseListener{
 		modified.setEditable(false);
 		relaPane.add(modified);
 
-
-
-
 		notices = new MyNoticeModel();
 		noticeTab = setupNoticeTable(notices);
 		noticeTab.addMouseListener(this);
 		noticeScroll = new JScrollPane(noticeTab);
 		relaPane.add(noticeScroll);
-
-
-
 
 	}
 

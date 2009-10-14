@@ -503,15 +503,8 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 			
 			this.toolbar.add(tQueryButton);
 			
+			
 			this.toolbar.addSeparator(new Dimension(20,30));
-	    	tPersonButton = makeNavigationButton(Resurses.TOOLBAR_PERSON_IMAGE, 
-					Resurses.TOOLBAR_PERSON_ACTION,
-					Resurses.getString("TOOLBAR.PERSON.TOOLTIP"),
-					Resurses.getString("TOOLBAR.PERSON.ALTTEXT"));
-			
-			this.toolbar.add(tPersonButton);
-			
-			
 			tSubjectCButton = makeNavigationButton(Resurses.TOOLBAR_SUBJECTC_IMAGE, 
 					Resurses.TOOLBAR_SUBJECTC_ACTION,
 					Resurses.getString("TOOLBAR.SUBJECTC.TOOLTIP"),
@@ -531,6 +524,15 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 					Resurses.getString("TOOLBAR.SUBJECTP.ALTTEXT"));
 			this.toolbar.add(tSubjectPButton);
 			
+			
+			this.toolbar.addSeparator(new Dimension(20,30));
+	    	tPersonButton = makeNavigationButton(Resurses.TOOLBAR_PERSON_IMAGE, 
+					Resurses.TOOLBAR_PERSON_ACTION,
+					Resurses.getString("TOOLBAR.PERSON.TOOLTIP"),
+					Resurses.getString("TOOLBAR.PERSON.ALTTEXT"));
+			
+			this.toolbar.add(tPersonButton);
+	
 	    	tMapButton = makeNavigationButton(Resurses.TOOLBAR_MAP_IMAGE, 
 					Resurses.TOOLBAR_MAP_ACTION,
 					Resurses.getString("TOOLBAR.MAP.TOOLTIP"),
@@ -900,50 +902,7 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 		super.setTitle(sb.toString());
 		
 	}
-	
-//	protected JButton makeNavigationButton(String imageUp,String imageDown,
-//	        String actionCommand,
-//	        String toolTipText,
-//	        String altText)throws IOException  {
-//		String imgLocation = "/images/" + imageUp + ".gif";
-//		String downLocation = "/images/" + imageDown + ".gif";
-//		ImageIcon icon=null;
-//		ImageIcon selectedIcon=null;
-////		System.out.println("NAV1: " + imageName );
-//		byte imbytes[] = new byte[8192];
-//		InputStream in = this.getClass().getResourceAsStream(imgLocation);
-////		System.out.println("NAV2: " + imageName + ":"+in);
-//		int imsize = in.read(imbytes);
-//		if (imsize < imbytes.length){
-//			icon = new ImageIcon(imbytes,altText);
-//		} 
-//		
-//		in = this.getClass().getResourceAsStream(downLocation);
-////		System.out.println("NAV2: " + imageName + ":"+in);
-//		imsize = in.read(imbytes);
-//		if (imsize < imbytes.length){
-//			selectedIcon = new ImageIcon(imbytes,altText);
-//		} 
-//
-//		//Create and initialize the button.
-//		JButton button = new JButton();
-//		button.setActionCommand(actionCommand);
-//		button.setToolTipText(toolTipText);
-//		button.addActionListener(this);
-//	
-//		
-//		if (icon != null) {                      //image found
-//			button.setIcon(icon); //new ImageIcon(imbytes, altText));
-//			if (selectedIcon != null) {
-//				button.setSelectedIcon(selectedIcon);
-//			}
-//		} else {                                     //no image found
-//			button.setText(altText);
-//			System.err.println("Resource not found: " + imgLocation);
-//		}
-//	
-//	return button;
-//	}
+
 	
 	protected JButton makeNavigationButton(String imageName,
         String actionCommand,

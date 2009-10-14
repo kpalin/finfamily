@@ -561,7 +561,7 @@ public class PersonUtil {
 							rorder.setInt(1, j);
 							rorder.setInt(2,rnid);
 							int orderit = rorder.executeUpdate();
-							if (true) System.out.println("RN order lkm = " + orderit);
+							if (false) System.out.println("RN order lkm = " + orderit);
 							if (rn.getLanguages() != null){
 
 								for (int k = 0; k < rn.getLanguages().length; k++){
