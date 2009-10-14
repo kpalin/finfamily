@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for ComboBoxDemo -->
+<jnlp
+  spec="1.0+"
+  codebase="http://localhost/suku"
+  href="Suku.jnlp">
+  <information>
+    <title>Sukuohjelmisto</title>
+    <vendor> KK-Software</vendor>
+    <homepage href="http://localhost/suku/index.html"/>
+    <description>Sukuohjelmisto</description>
+    <description kind="short">Demonstrates how to use suku</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+"/>
+    <jar href="Suku.jar"/>
+  </resources>
+  <application-desc main-class="fi.kaila.suku.webstart.Suku"/>
+</jnlp> 
