@@ -104,6 +104,7 @@ public class PersonShortData implements Serializable,Transferable {
 	
 	public int getGraphRowCount(){
 		int count=1;
+		
 		if (occu != null || dDate != null || dPlace != null){
 			count++;
 		}

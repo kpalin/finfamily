@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Vector;
 
 import fi.kaila.suku.swing.util.ISukuGraphicalItem;
+import fi.kaila.suku.util.Utils;
 
 
 /**
@@ -143,7 +144,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem{
 		}
 		
 		if (person.getBirtDate()!= null ) {
-			g.drawString(person.getBirtDate(), p.x + xmargin + xdate, y);
+			g.drawString(Utils.textDate(person.getBirtDate(),false), p.x + xmargin + xdate, y);
 		}
 		if (person.getBirtDate() != null || person.getBirtPlace() != null){
 			y += rowHeight;
@@ -153,7 +154,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem{
 		}
 	
 		if (person.getDeatDate()!= null ) {
-			g.drawString(person.getDeatDate(), p.x + xmargin + xdate, y);	
+			g.drawString(Utils.textDate(person.getDeatDate(),false), p.x + xmargin + xdate, y);	
 		}
 
 		if (person.getDeatDate() != null || person.getDeatPlace() != null){
@@ -234,12 +235,16 @@ public class TableShortData implements Serializable, ISukuGraphicalItem{
 		g.drawString(person.getTextName(), p.x, y);
 		
 		if (person.getBirtDate()!= null) {
-			g.drawString(person.getBirtDate(), p.x + xdate + xmargin, y);
-					
+			g.drawString(Utils.textDate(person.getBirtDate(),false), p.x + xdate + xmargin, y);		
 		}
-		
+		if (person.getDeatDate()!= null) {
+			
+			g.drawString(Utils.textDate(person.getDeatDate(),false), p.x + xdate + xmargin, y+rowHeight);		
+		}
+
 		if (person.getOccupation() != null){
-			g.drawString(person.getOccupation(), p.x, y + rowHeight);
+			
+			g.drawString(person.getOccupation(), p.x, y + rowHeight );
 		}
 		y += person.getGraphRowCount()*rowHeight;
 		
@@ -254,10 +259,11 @@ public class TableShortData implements Serializable, ISukuGraphicalItem{
 
 			
 			if (person.getBirtDate()!= null) {
-				g.drawString(person.getBirtDate(), p.x + xdate + xmargin, y);
-						
+				g.drawString(Utils.textDate(person.getBirtDate(),false), p.x + xdate + xmargin, y);
 			}
-
+			if (person.getDeatDate()!= null) {
+				g.drawString(Utils.textDate(person.getDeatDate(),false), p.x + xdate + xmargin, y+rowHeight);		
+			}
 			
 			if (person.getOccupation() != null){
 				g.drawString(person.getOccupation(), p.x+xmargin, y+rowHeight);
@@ -327,8 +333,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem{
 			pr.rectangle = new Rectangle(0,y-p.y-rowHeight,d.width,person.getGraphRowCount()*rowHeight);
 			personAreas.add(pr);
 			if (person.getBirtDate()!= null) {
-				g.drawString(person.getBirtDate(), p.x + xdate + xmargin, y);
-						
+				g.drawString(Utils.textDate(person.getBirtDate(),false), p.x + xdate + xmargin, y);	
+			}
+			if (person.getDeatDate()!= null) {
+				g.drawString(Utils.textDate(person.getDeatDate(),false), p.x + xdate + xmargin, y+rowHeight);	
 			}
 
 			if (person.getOccupation() != null){
@@ -699,10 +707,15 @@ public class TableShortData implements Serializable, ISukuGraphicalItem{
 	public String toString(){
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < famMember.size(); i++){
-			sb.append("Fam:["+i+"]: " + famMember.get(i).getTextName()+"\n");
+			sb.append("Tab:["+i+"]: " + famMember.get(i).getTextName()+"\n");
 			
 		}
-			
+		Rectangle r =getArea();
+		if (r == null) r = new Rectangle();
+		Point p = getLocation();
+		if ( p == null ) p = new Point();
+		sb.append("x="+p.x+",y="+p.y+",w="+r.width+",h="+r.height+"\n");	
+		
 		return sb.toString();
 		
 	}

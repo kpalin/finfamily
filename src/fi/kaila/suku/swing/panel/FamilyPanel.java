@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 
 import javax.swing.JPanel;
@@ -29,7 +30,7 @@ public class FamilyPanel extends JPanel implements MouseListener{
 	private Vector<TableShortData> tabs = new Vector<TableShortData>();
 	
 	private Vector<FamilyParentRelationIndex> pareRels = new Vector<FamilyParentRelationIndex>();
-
+	private Logger logger=Logger.getLogger(this.getClass().getName());
 	
 	private PersonView parent;
 	
@@ -40,6 +41,11 @@ public class FamilyPanel extends JPanel implements MouseListener{
 	
 	
 	public void paint(Graphics g) {
+		
+//		for (int i = 0; i < tabs.size(); i++) {
+//			logger.fine("BEG[" + i + "]=" + tabs.get(i));
+//		}
+		
 		
 		Rectangle d = this.getBounds();
 		g.setColor(Color.white);
@@ -83,6 +89,21 @@ public class FamilyPanel extends JPanel implements MouseListener{
 			g.drawString(""+x, x, 10);
 			
 		}
+		Dimension prefd = new Dimension();
+		for (int i = 0; i < tabs.size(); i++) {
+			TableShortData t = tabs.get(i);
+			int x = t.getLocation().x + t.getSize(g).width;
+			int y = t.getLocation().y + t.getSize(g).height;
+			if (prefd.width < x) prefd.width =x;
+			if (prefd.height < y) prefd.height = y;
+			
+			logger.finer("END[" + i + "]=" + tabs.get(i));
+		}
+		prefd.width += 20;
+		prefd.height += 20;
+		logger.finer("PREFD[" + prefd.width+","+prefd.height + "]");
+		setPreferredSize(prefd);
+		
 	}
 
 	public void resetTable(){
