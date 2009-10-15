@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -18,6 +19,7 @@ import fi.kaila.suku.server.utils.GroupUtil;
 import fi.kaila.suku.server.utils.PersonUtil;
 import fi.kaila.suku.server.utils.ReportUtil;
 import fi.kaila.suku.server.utils.Upload;
+import fi.kaila.suku.server.utils.ViewUtil;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 
@@ -504,8 +506,75 @@ public class SukuServerImpl implements SukuServer{
 				fam.resu="action="+action + " not supported";
 			}
 			
+		} else if (cmd.equals("view")){
 			
-		} else {
+			ViewUtil vv = new ViewUtil(con);
+			String action = map.get("action");
+			
+			String viewno = map.get("viewid");
+			String viewname = map.get("viewname");
+			String pidg = map.get("pid");	
+			String key=map.get("key");
+			String empty=map.get("empty");
+			if ("removeview".equals(action)) {
+				if (viewno != null) {
+				
+					try {
+						int viewId = Integer.parseInt(viewno);
+						fam = vv.removeView(viewId);
+					} catch (NumberFormatException ne){
+						fam.resu = ne.getMessage();
+						logger.log(Level.WARNING,"Bad view number",ne);
+					}
+				}
+			} else if ("remove".equals(action) && viewno != null) {
+				int viewId = Integer.parseInt(viewno);
+				if (key != null){
+					if (key.equals("all")){
+						fam = vv.emptyView(viewId);
+					} else if (key.equals("pidarray")){
+						fam = vv.removeViewUnits(viewId,request.pidArray);
+					}
+				}
+			} else if ("addview".equals(action)) {
+				if( viewname != null) {
+			
+					try {
+						
+						fam = vv.addView(viewname);
+					} catch (NumberFormatException ne){
+						fam.resu = ne.getMessage();
+						logger.log(Level.WARNING,"Bad view number",ne);
+					}
+				}
+			} else if ("add".equals(action)){
+				 if (viewno != null && key != null){
+					int viewId = Integer.parseInt(viewno);
+					if (key.equals("pidarray")){
+						// add pids to view
+						fam = vv.addViewUnits(viewId,request.pidArray,(empty.equalsIgnoreCase("true")));
+						
+					} else if (key.toLowerCase().startsWith("desc")){
+						fam = vv.addViewDesc(viewId,Integer.parseInt(pidg),
+								(key.toUpperCase().equals("DESC_SPOUSES")),(empty.equalsIgnoreCase("true")));
+					}
+				}
+				
+			} else if ("get".equals(action) && pidg != null) {
+					try {
+						
+						fam = vv.getViews(Integer.parseInt(pidg));
+					} catch (NumberFormatException ne){
+						fam.resu = ne.getMessage();
+						logger.log(Level.WARNING,"Bad view number",ne);
+					}
+				}
+			
+			
+		}
+		
+		
+		else {
 			logger.warning("unknown server request, cmd = " + cmd);
 		}
 			

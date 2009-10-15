@@ -61,8 +61,10 @@ public class SukuData implements Serializable{
 	
 	public PersonLongData [] persons = null;
 	public Relation [] relations=null; 
-	
-	
+	/**
+	 * Count can be used to return count to caller
+	 */
+	public int resuCount=0;
 	
 	/**
 	 * @return true if person only

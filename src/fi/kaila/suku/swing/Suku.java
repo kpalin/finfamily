@@ -93,6 +93,7 @@ import fi.kaila.suku.swing.dialog.GroupMgrWindow;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SettingsDialog;
 import fi.kaila.suku.swing.dialog.ToolsDialog;
+import fi.kaila.suku.swing.dialog.ViewMgrWindow;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.panel.PersonView;
 import fi.kaila.suku.swing.panel.SukuTabPane;
@@ -196,6 +197,7 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 	private JMenu mTools;
 	private JMenuItem mSettings;
 	private JMenuItem mGroupMgr;
+	private JMenuItem mViewMgr;
 	private JMenuItem mLoadCoordinates;
 	private JMenuItem mLoadTypes;
 	private JMenuItem mDbWork;
@@ -242,6 +244,7 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 	private JTextField statusPanel = null;
 	private SuomiMap suomi = null;
 	private GroupMgrWindow groupWin=null;
+	private ViewMgrWindow viewWin=null;
 //	private HiskiImporter hiski=null;
 	private LocalAdminUtilities adminUtilities=null;
 	public static SukuKontroller kontroller=null;
@@ -444,6 +447,11 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 		this.mTools.add(this.mGroupMgr);
 		this.mGroupMgr.setActionCommand("MENU_TOOLS_GROUP_MGR");
 		this.mGroupMgr.addActionListener(this);
+		
+		this.mViewMgr = new JMenuItem(Resurses.getString("MENU_TOOLS_VIEW_MGR"));
+		this.mTools.add(this.mViewMgr);
+		this.mViewMgr.setActionCommand("MENU_TOOLS_VIEW_MGR");
+		this.mViewMgr.addActionListener(this);
 		
 		this.mLoadCoordinates = new JMenuItem(Resurses.getString("MENU_TOOLS_LOAD_COORDINATES"));
 		this.mTools.add(this.mLoadCoordinates);
@@ -1126,8 +1134,10 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 			
 			} else if (cmd.equals("MENU_TOOLS_GROUP_MGR")){
 				openGroupWin();
+			}else if (cmd.equals("MENU_TOOLS_VIEW_MGR")){
+				openViewWin();
 			}
-			
+
 			else if (cmd.equals(Resurses.ADMIN)){
 				adminDb();
 			}
@@ -1308,6 +1318,27 @@ public class Suku extends JFrame implements ActionListener,ComponentListener,
 	}
 
 
+	private void openViewWin() {
+
+		if (viewWin == null){
+			try {
+				viewWin = new ViewMgrWindow(this);
+				
+			} catch (Exception e) {
+			
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, Resurses.getString("SUKU")+ 
+						":" + e.getMessage());
+				return;
+			
+			}
+			viewWin.setVisible(true);
+		} else {
+			viewWin.setVisible(true);
+		}
+		
+	}
+	
 	private void executeDbWork() {
 		ToolsDialog dlg = new ToolsDialog(this);
 		dlg.setVisible(true);
