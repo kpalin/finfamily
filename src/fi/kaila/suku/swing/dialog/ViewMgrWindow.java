@@ -59,16 +59,13 @@ import fi.kaila.suku.util.pojo.SukuData;
  * 
  * <p>Removes the selected view from the database.</p>
  * 
- * <h2>Add to Group</h2>
+ * <h2>Add to View</h2>
  * 
- * <p>This group of commands adds the GroupId to persons selected in database view or
- * persons found from selected view. If only one person is selected in database view
+ * <p>This group of commands adds the persons selected in database view to the view.
+ * If only one person is selected in database view
  * then it is possible to add also all descendants of that person to the group with or without 
- * the spouses of the descendant. It is also possible to add all ancestors of the 
+ * the spouses of the descendant. It will also be possible to add all ancestors of the 
  * single selected person to the group.</p>
- * 
- * <p>Only persons without a groupid are added to the group. Finding descendants
- * or ancestors to the group stops at a person that already has a group.</p>
  * 
  * <p>The selected person or # of selected persons in the database view is 
  * refreshed once a second.</p>
@@ -161,9 +158,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 	
 		yy += 22;
 		
-//		lbl = new JLabel();
-//		add(lbl);
-//		lbl.setBounds(10,53,200,20);
+
 		JRadioButton formd;
 		
 		addViewGroup = new JPanel();
@@ -208,7 +203,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		emptyView.setBounds(10,150,260,20);
 		
 		
-		add = new JButton(Resurses.getString("DIALOG_GROUP_ADD"));
+		add = new JButton(Resurses.getString("DIALOG_VIEW_ADD"));
 		addViewGroup.add(add);
 		add.setBounds(10,170,120,20);
 		add.addActionListener(this);
@@ -254,12 +249,9 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		
 		updateSelectStatus();
 		
-//		lbl = new JLabel(Resurses.getString("DIALOG_GROUP_UPDATE_INFO"));
-//		add(lbl);
-//		lbl.setBounds(10,400,300,20);
+
 		
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-//		setBounds(d.width/2-200,d.height/2-200,600,300);
 		
 		
 		
