@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?> 
+<opas title="Release notes">
+
+<p>At least for now releases follow the Subversion revision numbers</p>
+
+<hdr>Release 30 on 16 Oct 2009</hdr>
+
+<ul>
+<li>Added to Group and View managers alternative add subject with ancestors.</li>
+<li>The language texts have been moved to Properties.xls that contain macro to generate the resource budle files finfamily.property. The property files are replaced in SVN with the Excel-file but distribution has property files only. </li>
+</ul>
+
+
+<hdr>Release 26 on 15 Oct 2009</hdr>
+
+<p>Added View manager to FinFamily. Views can be used to group persons for certain uses e.g. for making copies of a 
+part of teh database only that part can be identified as being the persons in the view. Views are managed 
+using the database tables views and viewunits.</p>
+
+<p>Groups is another way of grouping persons. Every person can have only one group and can be a member of several views.</p>
+</opas>
