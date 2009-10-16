@@ -3,11 +3,12 @@
 
 <p>At least for now releases follow the Subversion revision numbers</p>
 
-<hdr>Release 30 on 16 Oct 2009</hdr>
+<hdr>Release 31 on 16 Oct 2009</hdr>
 
 <ul>
 <li>Added to Group and View managers alternative add subject with ancestors.</li>
-<li>The language texts have been moved to Properties.xls that contain macro to generate the resource budle files finfamily.property. The property files are replaced in SVN with the Excel-file but distribution has property files only. </li>
+<li>The language texts have been moved to Properties.xls that contain macro to generate the resource budle files finfamily.property. The property files are replaced in SVN with the Excel-file but distribution has property files only. 
+(This should make no difference in the application)</li>
 </ul>
 
 
