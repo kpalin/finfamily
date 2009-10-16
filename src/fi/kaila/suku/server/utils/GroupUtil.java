@@ -243,9 +243,15 @@ public class GroupUtil {
 		}
 	}
 
-	public SukuData addWithDescendantsGroups(int pid, String group, boolean includeSpouses) throws SukuException {
+	public SukuData addDescendantsToGroup(int pid, String group, String gent,boolean includeSpouses) throws SukuException {
 		SukuData resp = new SukuData();
+		resp.resuCount=0;
 		Vector<Integer>pidv = new Vector<Integer>();
+		int gen=0;
+		if (gent!=null && !gent.equals("")){
+			gen = Integer.parseInt(gent);
+		}
+		
 		try {
 			int from=0;
 			int to=0;
@@ -264,7 +270,7 @@ public class GroupUtil {
 				resp.resu="GROUP DESCENDANT NO SUCH PERSON " + pid;
 			}
 			rs.close();
-			
+			int currGen=0;
 			do {
 				int firstChild=pidv.size();
 				for (int i = from; i < to; i++) {
@@ -299,7 +305,8 @@ public class GroupUtil {
 				}
 				from = firstChild;
 				to = lastChild;
-			} while (to > from);
+				currGen++;
+			} while (to > from && (gen== 0 || currGen < gen ));
 			if (!includeSubject) {
 				pidv.remove(0);
 			}
@@ -312,6 +319,7 @@ public class GroupUtil {
 				stm.setInt(2,pidc);
 				stm.executeUpdate();
 				resp.pidArray[i] = pidc;
+				resp.resuCount++;
 			}
 			stm.close();
 			
@@ -325,4 +333,80 @@ public class GroupUtil {
 		}
 	}
 	
+	
+	public SukuData addAncestorsToGroup(int pid, String group, String gent) throws SukuException {
+		SukuData resp = new SukuData();
+		resp.resuCount=0;
+		Vector<Integer>pidv = new Vector<Integer>();
+		int gen=0;
+		if (gent!=null && !gent.equals("")){
+			gen = Integer.parseInt(gent);
+		}
+		
+		try {
+			int from=0;
+			int to=0;
+			String sql = "select pid,groupid from unit where pid=?";
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, pid);
+			boolean includeSubject=false;
+			ResultSet rs = stm.executeQuery();
+			if (rs.next()){
+				
+				pidv.add(pid);
+				to=pidv.size();
+				includeSubject = rs.getString(2)==null;
+				
+			} else {
+				resp.resu="GROUP ANCESTOR NO SUCH PERSON " + pid;
+			}
+			rs.close();
+			int currGen=0;
+			do {
+				int firstChild=pidv.size();
+				for (int i = from; i < to; i++) {
+					sql = "select bid " +
+							"from parent as c inner join unit as u on bid=pid " +
+							"where aid=? and groupid is null ";
+					stm = con.prepareStatement(sql);
+					stm.setInt(1, pidv.get(i));
+					rs = stm.executeQuery();
+					
+					while (rs.next()){
+						pidv.add(rs.getInt(1));
+					}
+					rs.close();
+					
+				}
+				int lastChild=pidv.size();
+				
+				from = firstChild;
+				to = lastChild;
+				currGen++;
+			} while (to > from && (gen== 0 || currGen < gen ));
+			if (!includeSubject) {
+				pidv.remove(0);
+			}
+			resp.pidArray = new int[pidv.size()];
+			for (int i = 0; i < pidv.size(); i++) {
+				sql = "update unit set groupid = ? where pid = ?";
+				stm = con.prepareStatement(sql);
+				stm.setString(1, group);
+				int pidc = pidv.get(i);
+				stm.setInt(2,pidc);
+				stm.executeUpdate();
+				resp.pidArray[i] = pidc;
+				resp.resuCount++;
+			}
+			stm.close();
+			
+			
+			return resp;
+			
+		} catch (SQLException e) {
+			logger.log(Level.WARNING,"SQL error in view with descendants ",e);
+			e.printStackTrace();
+			throw new SukuException("ADD GROUP",e);
+		}
+	}
 }

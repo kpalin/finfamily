@@ -476,7 +476,7 @@ ComponentListener,MouseListener{
                 }
                 catch (Exception e) { return false; }
                 
-                System.out.println("ddsource:" + dd.getDragSource());
+//                System.out.println("ddsource:" + dd.getDragSource());
                 
                 if (dd.getDragSource()==Utils.PersonSource.CHILD){
                 	
@@ -522,8 +522,6 @@ ComponentListener,MouseListener{
     				}
     			}
     			return null;
-
-    		    
     		}
             
         });
@@ -543,8 +541,7 @@ ComponentListener,MouseListener{
 		add(this.update);
 		update.setActionCommand(Resurses.UPDATE);
 		update.addActionListener(this);
-		
-		
+			
 		relaPane = new JPanel();
 		add(relaPane);
 		relaPane.setVisible(false);

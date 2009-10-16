@@ -87,10 +87,13 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 	ButtonGroup addes=null;
 	private JPanel addGroup=null;
 	private JButton add=null;
+	private JLabel addedCount=null;
 	private JRadioButton addDescendant=null;
 	private JRadioButton addDescAndSpouses=null;
+	private JRadioButton addAncestors=null;
 	private JLabel selectedName=null;
 	private JLabel selectedGroup=null;
+	private JTextField generations=null;
 	private JTextField groupId=null; 
 	
 	private int[] viewids=null;
@@ -164,7 +167,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		
 		addGroup = new JPanel();
 		add(addGroup);
-		addGroup.setBounds(10,yy,260,200);
+		addGroup.setBounds(10,yy,260,300);
 		addGroup.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
 				Resurses.getString("DIALOG_GROUP_ADD_CAPTION")));
@@ -190,21 +193,38 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		addes.add(addDescendant);
 		addDescendant.setBounds(10,66,240,20);
 		
-		
 		addDescAndSpouses=new JRadioButton(Resurses.getString("DIALOG_GROUP_ADD_DESC_SPOUSES"));
 		addDescAndSpouses.setActionCommand("DESC_SPOUSES");
 		addGroup.add(addDescAndSpouses);
 		addes.add(addDescAndSpouses);
 		addDescAndSpouses.setBounds(10,88,240,20);
+		
+		addAncestors=new JRadioButton(Resurses.getString("DIALOG_GROUP_ADD_ANC"));
+		addAncestors.setActionCommand("ANC");
+		addGroup.add(addAncestors);
+		addes.add(addAncestors);
+		addAncestors.setBounds(10,110,240,20);
+		
+		generations = new JTextField();
+		addGroup.add(generations);
+		generations.setBounds(10,226,60,20);
+		
+		lbl = new JLabel(Resurses.getString("DIALOG_VIEW_ADD_GENERATIONS"));
+		addGroup.add(lbl);
+		lbl.setBounds(75,226,180,20);
+		
 		add = new JButton(Resurses.getString("DIALOG_GROUP_ADD"));
 		addGroup.add(add);
-		add.setBounds(10,170,120,20);
+		add.setBounds(10,270,120,20);
 		add.addActionListener(this);
 		
+		addedCount=new JLabel();
+		addGroup.add(addedCount);
+		addedCount.setBounds(140,270,110,20);
 		
 		removeGroup = new JPanel();
 		add(removeGroup);
-		removeGroup.setBounds(300,yy,260,200);
+		removeGroup.setBounds(300,yy,260,300);
 		removeGroup.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
 				Resurses.getString("DIALOG_GROUP_REMOVE_CAPTION")));
@@ -299,6 +319,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 			PersonShortData pp = parent.getSelectedPerson();
 			addDescendant.setEnabled(pp != null);
 			addDescAndSpouses.setEnabled(pp != null);
+			addAncestors.setEnabled(pp != null);
 			if (pp == null) {
 				int pids[] = parent.getSelectedPids();
 				if (pids==null) return;
@@ -404,6 +425,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 						
 						response = Suku.kontroller.getSukuData(request, "cmd=group",
 							"action=add","key=pidarray","group="+grp);	
+						addedCount.setText(""+response.resuCount);
 					} else if (addcmd.equals("VIEW")){
 						int isele = viewlist.getSelectedIndex();
 						if (isele < 1) {
@@ -412,11 +434,19 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 						}
 						response = Suku.kontroller.getSukuData("cmd=group",
 								"action=add","view="+viewids[isele],"group="+grp);
-					} else if (addcmd.startsWith("DESC")){
+						addedCount.setText(""+response.resuCount);
+					} else if (addcmd.startsWith("DESC") || addcmd.equals("ANC")){
 						int [] ii = parent.getSelectedPids();
 						if (ii.length==1){
+							String gene = generations.getText();
+							try {
+								Integer.parseInt(gene);
+							} catch (NumberFormatException ne) {
+								gene="";
+							}
 							response = Suku.kontroller.getSukuData( "cmd=group",
-								"action=add","pid="+ii[0],"key="+addcmd,"group="+grp);
+								"action=add","pid="+ii[0],"key="+addcmd,"group="+grp,"gen="+gene);
+							addedCount.setText(""+response.resuCount);
 						}
 					}
 					if (response == null || response.pidArray == null) {

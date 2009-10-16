@@ -707,8 +707,9 @@ public class PersonShortData implements Serializable,Transferable {
 	
 	
 	
-	public static final DataFlavor [] df = {new DataFlavor(PersonShortData.class,"PersonShortData"),
-			DataFlavor.stringFlavor};
+	public static final DataFlavor [] df = 
+	{new DataFlavor(PersonShortData.class,"PersonShortData")};
+	//			DataFlavor.stringFlavor};
 	
 	public static DataFlavor getPersonShortDataFlavour(){
 		return df[0];
@@ -732,7 +733,7 @@ public class PersonShortData implements Serializable,Transferable {
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		
-		if (flavor.equals(df[0]) || flavor.equals(df[1])){
+		if (flavor.equals(df[0])){
 			return true;
 		}
 		return false;

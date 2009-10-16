@@ -92,12 +92,14 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 	private JPanel addViewGroup=null;
 	private JButton addView=null;
 	private JButton add=null;
+	private JLabel addedCount=null;
 	private JRadioButton addDescendant=null;
 	private JRadioButton addDescAndSpouses=null;
+	private JRadioButton addAncestors=null;
 	private JLabel selectedName=null;
 	private JLabel selectedViews=null;
 	private JCheckBox emptyView=null; 
-	
+	private JTextField generations=null;
 	private int[] viewids=null;
 	private String [] viewnames=null;
 	
@@ -149,11 +151,11 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		yy += 22;
 		selectedName = new JLabel();
 		add(selectedName);
-		selectedName.setBounds(10,yy,360,20);
+		selectedName.setBounds(10,yy,460,20);
 		yy += 20;
 		selectedViews = new JLabel();
 		add(selectedViews);
-		selectedViews.setBounds(10,yy,360,20);
+		selectedViews.setBounds(10,yy,460,20);
 		
 	
 		yy += 22;
@@ -163,7 +165,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		
 		addViewGroup = new JPanel();
 		add(addViewGroup);
-		addViewGroup.setBounds(10,yy,260,200);
+		addViewGroup.setBounds(10,yy,280,300);
 		
 		
 		addViewGroup.setBorder(BorderFactory.createTitledBorder(
@@ -189,31 +191,48 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		addDescendant.setActionCommand("DESC");
 		addViewGroup.add(addDescendant);
 		addes.add(addDescendant);
-		addDescendant.setBounds(10,44,240,20);
+		addDescendant.setBounds(10,44,260,20);
 		
 		
 		addDescAndSpouses=new JRadioButton(Resurses.getString("DIALOG_VIEW_ADD_DESC_SPOUSES"));
 		addDescAndSpouses.setActionCommand("DESC_SPOUSES");
 		addViewGroup.add(addDescAndSpouses);
 		addes.add(addDescAndSpouses);
-		addDescAndSpouses.setBounds(10,66,240,20);
+		addDescAndSpouses.setBounds(10,66,260,20);
+		
+		addAncestors=new JRadioButton(Resurses.getString("DIALOG_VIEW_ADD_ANC"));
+		addAncestors.setActionCommand("ANC");
+		addViewGroup.add(addAncestors);
+		addes.add(addAncestors);
+		addAncestors.setBounds(10,88,260,20);
+		
+		generations = new JTextField();
+		addViewGroup.add(generations);
+		generations.setBounds(10,226,60,20);
+		
+		lbl = new JLabel(Resurses.getString("DIALOG_VIEW_ADD_GENERATIONS"));
+		addViewGroup.add(lbl);
+		lbl.setBounds(75,226,180,20);
 		
 		emptyView = new JCheckBox(Resurses.getString("DIALOG_VIEW_ADD_EMPTY_VIEW"));
 		addViewGroup.add(emptyView);
-		emptyView.setBounds(10,150,260,20);
+		emptyView.setBounds(10,250,260,20);
 		
 		
 		add = new JButton(Resurses.getString("DIALOG_VIEW_ADD"));
 		addViewGroup.add(add);
-		add.setBounds(10,170,120,20);
+		add.setBounds(10,270,120,20);
 		add.addActionListener(this);
 		
+		addedCount=new JLabel();
+		addViewGroup.add(addedCount);
+		addedCount.setBounds(140,270,110,20);
 		
 	
 		
 		removeViewGroup = new JPanel();
 		add(removeViewGroup);
-		removeViewGroup.setBounds(300,yy,260,200);
+		removeViewGroup.setBounds(300,yy,280,300);
 		removeViewGroup.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
 				Resurses.getString("DIALOG_VIEW_REMOVE_CAPTION")));
@@ -227,7 +246,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		formd.setSelected(true);
 		removeViewGroup.add(formd);
 		removes.add(formd);
-		formd.setBounds(10,rivi,240,20);
+		formd.setBounds(10,rivi,260,20);
 		rivi += 22;
 		
 	
@@ -236,27 +255,21 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		formd.setSelected(true);
 		removeViewGroup.add(formd);
 		removes.add(formd);
-		formd.setBounds(10,rivi,240,20);
+		formd.setBounds(10,rivi,260,20);
 		rivi += 22;
 		
 
 
 		remove = new JButton(Resurses.getString("DIALOG_VIEW_REMOVE"));
 		removeViewGroup.add(remove);
-		remove.setBounds(10,170,120,20);
+		remove.setBounds(10,270,120,20);
 		remove.addActionListener(this);
 		
-		
-		updateSelectStatus();
-		
 
-		
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		
-		
-		
-		setLocation(d.width/2-200, d.height/2-250);
-		Dimension sz = new Dimension(600,500);
+				
+		setLocation(d.width/2-305, d.height/2-250);
+		Dimension sz = new Dimension(610,500);
 		setSize(sz);
 		
 		close = new JButton(Resurses.getString("CLOSE"));
@@ -311,8 +324,9 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 	private void updateSelectStatus(){
 		try {
 			PersonShortData pp = parent.getSelectedPerson();
-//			addDescendant.setEnabled(pp != null);
-//			addDescAndSpouses.setEnabled(pp != null);
+			addDescendant.setEnabled(pp != null);
+			addDescAndSpouses.setEnabled(pp != null);
+			addAncestors.setEnabled(pp != null);
 			if (pp == null) {
 				int pids[] = parent.getSelectedPids();
 				if (pids==null) return;
@@ -436,6 +450,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 			}		
 			
 		} else if (e.getSource()==add) {
+			addedCount.setText("");
 			try {
 				SukuData request = new SukuData();
 				ButtonModel model = addes.getSelection();
@@ -455,27 +470,39 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 							response = Suku.kontroller.getSukuData(request, "cmd=view",
 								"action=add","key=pidarray","viewid="+seleview,"empty="+emptyIt);	
 							emptyView.setSelected(false);
+							addedCount.setText(""+response.resuCount);
 						} else {
 							JOptionPane.showMessageDialog(parent, Resurses.getString("DIALOG_VIEW_NOTSELECTED")	);
 							return;
 						}
-					} else if (addcmd.startsWith("DESC")){
+					} else if (addcmd.startsWith("DESC") || addcmd.equals("ANC")){
 						boolean emptyIt = emptyView.isSelected();
 						int idx = viewlist.getSelectedIndex();
 						if (idx > 0) {
 							int seleview= viewids[idx];
 							int [] ii = parent.getSelectedPids();
 							if (ii.length==1){
+								String gene = generations.getText();
+								try {
+									Integer.parseInt(gene);
+								} catch (NumberFormatException ne) {
+									gene="";
+								}
 								response = Suku.kontroller.getSukuData( "cmd=view",
 									"action=add","pid="+ii[0],"key="+addcmd,
-									"viewid="+seleview,"empty="+emptyIt);
+									"viewid="+seleview,"empty="+emptyIt,"gen="+gene);
 								
 								emptyView.setSelected(false);
+								addedCount.setText(""+response.resuCount);
 							}
+						} else {
+							JOptionPane.showMessageDialog(parent, Resurses.getString("DIALOG_VIEW_NOTSELECTED")	);
+							return;
 						}
+					
 					}
 					if (response == null ) {
-						String messu = "View add Response missing";
+						String messu = Resurses.getString("DIALOG_VIEW_ADD_ERROR");
 						logger.warning(messu);
 						JOptionPane.showMessageDialog(parent, messu	);
 					} 

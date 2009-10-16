@@ -467,6 +467,7 @@ public class SukuServerImpl implements SukuServer{
 			String view = map.get("view");
 			String group = map.get("group");
 			String pidg = map.get("pid");
+			String gen = map.get("gen");
 			if (action==null) return fam;
 			GroupUtil grp = new GroupUtil(con);
 			fam= new SukuData();
@@ -494,7 +495,10 @@ public class SukuServerImpl implements SukuServer{
 						fam = grp.addSelectedGroups(request.pidArray,group);
 					} else if (key.startsWith("DESC") && pidg != null){
 						int pidb = Integer.parseInt(pidg);
-						fam = grp.addWithDescendantsGroups(pidb,group,(!key.equals("DESC")));
+						fam = grp.addDescendantsToGroup(pidb,group,gen,(!key.equals("DESC")));
+					} else if (key.equals("ANC") && pidg != null){
+						int pidb = Integer.parseInt(pidg);
+						fam = grp.addAncestorsToGroup(pidb,group,gen);
 					} else {
 						fam.resu = "key=" + key + " not supported";
 					}
@@ -515,6 +519,7 @@ public class SukuServerImpl implements SukuServer{
 			String viewname = map.get("viewname");
 			String pidg = map.get("pid");	
 			String key=map.get("key");
+			String gen=map.get("gen");
 			String empty=map.get("empty");
 			if ("removeview".equals(action)) {
 				if (viewno != null) {
@@ -555,9 +560,12 @@ public class SukuServerImpl implements SukuServer{
 						fam = vv.addViewUnits(viewId,request.pidArray,(empty.equalsIgnoreCase("true")));
 						
 					} else if (key.toLowerCase().startsWith("desc")){
-						fam = vv.addViewDesc(viewId,Integer.parseInt(pidg),
+						fam = vv.addViewDesc(viewId,Integer.parseInt(pidg),gen,
 								(key.toUpperCase().equals("DESC_SPOUSES")),(empty.equalsIgnoreCase("true")));
+					} else if (key.toLowerCase().equals("anc")){
+						fam = vv.addViewAnc(viewId,Integer.parseInt(pidg),gen,(empty.equalsIgnoreCase("true")));
 					}
+						
 				}
 				
 			} else if ("get".equals(action) && pidg != null) {
