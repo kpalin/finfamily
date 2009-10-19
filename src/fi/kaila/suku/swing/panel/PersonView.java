@@ -10,6 +10,8 @@ import java.awt.Point;
 import java.awt.print.PrinterException;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 import javax.swing.JLabel;
@@ -53,7 +55,7 @@ public class PersonView extends JPanel implements ChangeListener{
 	
 	private JTabbedPane tabbedPane=null;
 
-
+	private static Logger logger= Logger.getLogger(PersonView.class.getName());
 	private Suku suku=null;
 	
 	static HashMap <String,String> typesTexts = new HashMap<String,String>();
@@ -293,7 +295,8 @@ public class PersonView extends JPanel implements ChangeListener{
 		SukuTabPane pan = paneTabs.get(midx);
 		PersonMainPane main  = (PersonMainPane)pan.pnl;
 		int personPid = main.getPersonPid();
-//		System.out.println("Talletetaan henkilö: " +personPid);
+//		System.out.println("Talletetaan henkilÃ¶: " +personPid);
+		
 		main.closeNotices();
 		
 		tabbedPane.remove(pan);
@@ -470,7 +473,13 @@ public class PersonView extends JPanel implements ChangeListener{
 	 * remove all objects
 	 */
 	public void reset(){
-
+		try {
+			
+			closeMainPane(false);
+		} catch (SukuException e) {
+			logger.log(Level.WARNING,"closing main pane",e);
+			
+		}
 		repaint();
 		
 	}
@@ -650,7 +659,7 @@ public class PersonView extends JPanel implements ChangeListener{
 						return;
 					} 
 					skipNextState=true;
-					//TODO tarkista vieläkö tämä on tarpeen. Näyttäisi olevan 14.9.09
+					//TODO tarkista vielï¿½kï¿½ tï¿½mï¿½ on tarpeen. Nï¿½yttï¿½isi olevan 14.9.09
 					tabbedPane.setSelectedIndex(previousNoticeIndex);
 					JOptionPane.showMessageDialog(this, resu, Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 					// TODO Auto-generated catch block
