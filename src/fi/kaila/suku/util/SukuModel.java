@@ -122,7 +122,8 @@ public class SukuModel implements TableModel{
 	 * @throws SukuException 
 	 */
 	public void resetModel(){
-		this.tab = new Vector<SukuRow>();
+		this.tab.removeAllElements();
+//		= new Vector<SukuRow>();
 //		initModel();
 	}
 
@@ -208,7 +209,8 @@ public class SukuModel implements TableModel{
 	 */
 	public void addRow(SukuRow row) {
 		this.row = row; 
-		this.tab.add(this.row);
+		int nxtRow = this.tab.size();
+		this.tab.add(nxtRow,this.row);
 	
 	}
 
