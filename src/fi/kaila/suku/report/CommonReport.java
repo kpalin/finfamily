@@ -238,7 +238,7 @@ public class CommonReport {
 								for (int j = 0; j < rnn.length; j++) {
 
 									RelationNotice rn = rnn[j];
-
+									// TODO
 									spouType = printRelationNotice(rn,
 											spouType, spouNum);
 
@@ -252,7 +252,7 @@ public class CommonReport {
 					}
 				}
 
-				bt.addText("ä ");
+				bt.addText("— ");
 				bt.addText(spouType);
 				bt.addText(" ");
 
@@ -473,7 +473,7 @@ public class CommonReport {
 							if (child.relations != null) {
 
 								for (int i = 0; i < child.relations.length; i++) {
-									if (child.relations[i].getRelative() == tab
+									if (child.relations[i].getRelative() == childMember
 											.getPid()) {
 										if (child.relations[i].getNotices() != null) {
 											rnn = child.relations[i]
@@ -489,7 +489,7 @@ public class CommonReport {
 								}
 							}
 
-							bt.addText("ä ");
+							bt.addText("— ");
 							bt.addText(spouType);
 							bt.addText(" ");
 
@@ -508,6 +508,11 @@ public class CommonReport {
 							if (rnn != null && rnn.length > 1) {
 								for (int i = 1; i < rnn.length; i++) {
 									RelationNotice rn = rnn[i];
+
+									// spouType = printRelationNotice(rn,
+									// spouType, spouNum);
+									//									
+
 									spouType = printRelationNotice(rn, null, 0);
 									if (spouType.length() > 0) {
 										bt.addText(" ");
