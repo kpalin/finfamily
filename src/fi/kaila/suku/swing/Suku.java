@@ -1743,9 +1743,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			}
 
-			// RowSorter rs = table.getRowSorter();
-			// table.setRowSorter(null);
-
 			Vector<String> v = new Vector<String>();
 			v.add("cmd=plist");
 			for (i = 0; i < crit.getFieldCount(); i++) {
@@ -1801,6 +1798,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				// this.tableMap.put(key, this.databaseWindowPersons[i]);
 			}
 
+			table.getRowSorter().allRowsChanged();
 			this.statusPanel.setText("" + this.databaseWindowPersons.length);
 			this.table.setRowHeight(20);
 			this.table.setShowVerticalLines(false);
