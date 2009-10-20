@@ -2412,11 +2412,5 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.model = model;
 		}
 
-		@Override
-		public int getRowCount() {
-			if (model == null)
-				return 0;
-			return model.getRowCount();
-		}
 	}
 }
