@@ -3,6 +3,15 @@
 
 <p>At least for now releases follow the Subversion revision numbers</p>
 
+<hdr>Release 44 on 20 Oct 2009</hdr>
+
+<ul>
+<li>Fixed problems with database window</li>
+<li>Sorting of databaasewindow to use report language</li>
+<li>Added Swedish texts</li>
+<li>Close personview when database logs off</li>
+</ul>
+
 <hdr>Release 34 on 16 Oct 2009</hdr>
 
 <ul>
