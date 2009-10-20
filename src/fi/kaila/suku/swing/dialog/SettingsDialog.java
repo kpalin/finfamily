@@ -76,8 +76,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		y += 20;
 
 		String[] langnames = new String[Suku.getRepoLanguageCount()];
+		String[] langcodes = new String[Suku.getRepoLanguageCount()];
 		for (int i = 0; i < langnames.length; i++) {
 			langnames[i] = Suku.getRepoLanguage(i, false);
+			langcodes[i] = Suku.getRepoLanguage(i, true);
 		}
 
 		repolang = new JComboBox(langnames);
@@ -87,13 +89,13 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		prevloca = Suku.kontroller.getPref(owner, Resurses.REPOLANG, "fi");
 
 		locaIndex = 0;
-		for (int i = 0; i < locas.length; i++) {
-			if (prevloca.equals(locas[i])) {
+		for (int i = 0; i < langcodes.length; i++) {
+			if (prevloca.equals(langcodes[i])) {
 				locaIndex = i;
 			}
 		}
 
-		if (locaIndex < repolang.getComponentCount()) {
+		if (locaIndex < repolang.getItemCount()) {
 			repolang.setSelectedIndex(locaIndex);
 		}
 

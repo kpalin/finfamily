@@ -740,6 +740,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.tableModel = new SukuModel(this);
 		this.tableMap = new HashMap<Integer, PersonShortData>();
 
+		// TableModel myModel = createMyTableModel();
+		// JTable table = new JTable(myModel);
+		// table.setRowSorter(new TableRowSorter(myModel));
+
 		this.table = new DbTable(this.tableModel) {
 			private static final long serialVersionUID = 1L;
 
@@ -785,6 +789,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				return row.getTodo();
 			}
 		};
+		this.table.setRowSorter(new TableRowSorter<SukuModel>(this.tableModel));
 
 		this.table.setDragEnabled(true);
 		TransferHandler newHandler = new SukuTransferHandler();
@@ -837,8 +842,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	@SuppressWarnings("unchecked")
 	private void initSorter(SearchCriteria crit) {
-		TableRowSorter<SukuModel> sorter = new TableRowSorter<SukuModel>(
-				this.tableModel);
+		TableRowSorter<SukuModel> sorter = (TableRowSorter<SukuModel>) this.table
+				.getRowSorter();
 
 		int i;
 		int curre = 0;
@@ -848,7 +853,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			ColTable col = crit.getColTable(i);
 			if (col.getCurrentState()) {
 				if (col.getColName().equals(Resurses.COLUMN_T_NAME)) {
-					sukucompa = new SukuNameComparator("fi");
+					sukucompa = new SukuNameComparator(Resurses.getLanguage());
 					sorter.setComparator(curre, sukucompa);
 					this.table.setRowSorter(sorter);
 				} else if (col.getColName().equals(Resurses.COLUMN_T_PID)) {
@@ -1732,14 +1737,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						}
 						tc.addColumn(c);
 						tc.moveColumn(colidx, curidx - 1);
-						initSorter(crit);
+						// initSorter(crit);
 					}
 				}
 
 			}
 
 			// RowSorter rs = table.getRowSorter();
-			table.setRowSorter(null);
+			// table.setRowSorter(null);
 
 			Vector<String> v = new Vector<String>();
 			v.add("cmd=plist");
@@ -1755,9 +1760,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			String[] auxes = v.toArray(new String[0]);
 			SukuData fam = kontroller.getSukuData(auxes);
 
-			System.out.println("ROWS: " + table.getRowCount());
-			System.out.println("MAP: " + tableMap.size());
-			System.out.println("MODEL: " + tableModel.getRowCount());
+			// System.out.println("ROWS: " + table.getRowCount());
+			// System.out.println("MAP: " + tableMap.size());
+			// System.out.println("MODEL: " + tableModel.getRowCount());
+
+			// initSorter(crit);
 			this.databaseWindowPersons = fam.pers;
 			this.tableModel.resetModel(); // clear contents of table first
 			// this.table.removeAll();
@@ -1765,10 +1772,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			// this.personView.reset();
 			this.tableMap.clear();
 
-			iki++;
-			if (iki > 3) {
-				table.setRowSorter(null);
-			}
 			for (i = 0; i < this.databaseWindowPersons.length; i++) {
 
 				String bdate = null, ddate = null;
@@ -1798,8 +1801,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				// this.tableMap.put(key, this.databaseWindowPersons[i]);
 			}
 
-			initSorter(crit);
-
 			this.statusPanel.setText("" + this.databaseWindowPersons.length);
 			this.table.setRowHeight(20);
 			this.table.setShowVerticalLines(false);
@@ -1820,8 +1821,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					+ ":" + ue.getMessage());
 		}
 	}
-
-	int iki = 0;
 
 	/**
 	 * <h1>Database window access.</h1>
