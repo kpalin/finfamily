@@ -1,13 +1,11 @@
 package fi.kaila.suku.swing.panel;
 
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Toolkit;
-
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -15,40 +13,32 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-import javax.swing.JCheckBox;
-
-import javax.swing.JLabel;
-
 import javax.swing.JButton;
-
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
-import javax.swing.JTextField;
-
-
 import fi.kaila.suku.swing.Suku;
-import fi.kaila.suku.swing.dialog.LanguageDialog;
 import fi.kaila.suku.swing.dialog.AddNotice;
+import fi.kaila.suku.swing.dialog.LanguageDialog;
 import fi.kaila.suku.swing.util.SukuDateField;
 import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
-
-
 import fi.kaila.suku.util.pojo.UnitNotice;
 
-public class NoticePane  extends JPanel implements ActionListener,ComponentListener{
+public class NoticePane extends JPanel implements ActionListener,
+		ComponentListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,20 +50,20 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 	JButton toAdd;
 	JButton close;
 	JButton update;
-	//	JLabel toBeDeleted;
+	// JLabel toBeDeleted;
 	SukuSuretyField surety;
 	JCheckBox privacy;
-	
+
 	JLabel suretyLbl;
 	JLabel pricavyLbl;
 	JLabel createdLbl;
 	JLabel modifiedLbl;
 	JTextField created;
 	JTextField modified;
-	
+
 	JLabel typeLbl;
 	JLabel descLbl;
-	
+
 	JTextField noticetype;
 	JTextField description;
 
@@ -95,7 +85,7 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 	JLabel postOfficeLbl;
 	JLabel countryLbl;
 	JLabel emailLbl;
-	
+
 	JTextArea address;
 	JTextField postalCode;
 	JTextField postOffice;
@@ -103,12 +93,11 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 	JTextField email;
 	JScrollPane scrollAddress;
 	JScrollPane scrollNote;
-	
-	
+
 	JLabel noteLbl;
 	JLabel mediaFilenameLbl;
 	JLabel mediaTitleLbl;
-	
+
 	JTextArea noteText;
 	JTextField mediaFilename;
 	JTextField mediaTitle;
@@ -133,20 +122,19 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 	JTextArea source;
 	JTextArea privateText;
 
-	JButton noteTextLang=null;
+	JButton noteTextLang = null;
 
 	Rectangle noteLoc = null;
 
-
-	PersonView personView=null;
+	PersonView personView = null;
 
 	int pid;
-	UnitNotice notice=null;
+	UnitNotice notice = null;
 
-	public NoticePane (PersonView peronView, int pid,UnitNotice notice)  {
+	public NoticePane(PersonView peronView, int pid, UnitNotice notice) {
 		this.personView = peronView;
-		this.pid=pid;
-		this.notice = notice;	
+		this.pid = pid;
+		this.notice = notice;
 		logger = Logger.getLogger(this.getClass().getName());
 
 		initMe();
@@ -154,114 +142,97 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 		updateMe();
 	}
 
-	
-	
-	
-	private void initMe(){
-
-	
+	private void initMe() {
 
 		setLayout(null);
 
+		// JLabel lbl;
+		// JTextField t;
 
-
-//		JLabel lbl;
-//		JTextField t;
-
-//		int rrivi=10;
+		// int rrivi=10;
 		addComponentListener(this);
 
 		moveToLeft = new JButton("<==");
 		moveToLeft.addActionListener(this);
 		moveToLeft.setActionCommand("<");
 		add(moveToLeft);
-	
-
 
 		moveToRight = new JButton("==>");
 		moveToRight.addActionListener(this);
 		moveToRight.setActionCommand(">");
 		add(moveToRight);
-		
 
-	
 		toAdd = new JButton(Resurses.getString("DATA_ADD"));
 		toAdd.addActionListener(this);
 		toAdd.setActionCommand("ADD");
 		add(toAdd);
-		
+
 		toDelete = new JButton(Resurses.getString("DATA_DELETE"));
 		toDelete.addActionListener(this);
 		toDelete.setActionCommand("DELETE");
 		add(toDelete);
-		
+
 		close = new JButton(Resurses.getString(Resurses.CLOSE));
 		add(this.close);
 		close.setActionCommand(Resurses.CLOSE);
 		close.addActionListener(this);
-		
 
 		update = new JButton(Resurses.getString(Resurses.UPDATE));
 
 		add(this.update);
 		update.setActionCommand(Resurses.UPDATE);
 		update.addActionListener(this);
-		
+
 		suretyLbl = new JLabel(Resurses.getString("DATA_SURETY"));
-		
+
 		add(suretyLbl);
-		
+
 		surety = new SukuSuretyField();
 
-	
 		add(surety);
-		
 
 		createdLbl = new JLabel(Resurses.getString("DATA_CREATED"));
-	
+
 		add(createdLbl);
-	
-		if (notice.getCreated() == null){
+
+		if (notice.getCreated() == null) {
 			created = new JTextField();
 		} else {
 			created = new JTextField(notice.getCreated().toString());
 		}
-		
+
 		created.setEditable(false);
 		add(created);
-		
+
 		modifiedLbl = new JLabel(Resurses.getString("DATA_MODIFIED"));
-		
+
 		add(modifiedLbl);
-		
+
 		modified = new JTextField();
-		
+
 		modified.setEditable(false);
 		add(modified);
-
 
 		if (notice.getModified() != null) {
 			modified.setText(notice.getModified().toString());
 		}
 
-	
 		privacy = new JCheckBox(Resurses.getString("DATA_PRIVACY"));
-	
+
 		add(privacy);
 
 		if (notice.getPrivacy() != null) {
 			privacy.setSelected(true);
 		}
-	
+
 		image = new MyImage();
-	
+
 		add(image);
 
 		//
 		// left column creates first all fields
 		// then positions them according to tag
 		//
-
 
 		date = new SukuDateField();
 		add(date);
@@ -271,26 +242,25 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 		village = new JTextField();
 		add(village);
 
-//		lbl = new JLabel(Resurses.getString("DATA_FARM"));
-//		add(lbl);
-//
+		// lbl = new JLabel(Resurses.getString("DATA_FARM"));
+		// add(lbl);
+		//
 		farm = new JTextField();
 		add(farm);
-//		lbl = new JLabel(Resurses.getString("DATA_CROFT"));
-//		add(lbl);
+		// lbl = new JLabel(Resurses.getString("DATA_CROFT"));
+		// add(lbl);
 
 		croft = new JTextField();
 		add(croft);
 
-
-//		lbl = new JLabel(Resurses.getString("DATA_ADDRESS"));
-//		add(lbl);
+		// lbl = new JLabel(Resurses.getString("DATA_ADDRESS"));
+		// add(lbl);
 
 		address = new JTextArea();
 		address.setLineWrap(true);
-		 scrollAddress = new JScrollPane(address,
+		scrollAddress = new JScrollPane(address,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);	
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(scrollAddress);
 
 		postalCode = new JTextField();
@@ -301,24 +271,22 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 		country = new JTextField();
 		add(country);
 
-
 		email = new JTextField();
 		add(email);
 
 		noteText = new JTextArea();
 		noteText.setLineWrap(true);
-		 scrollNote = new JScrollPane(noteText,
+		scrollNote = new JScrollPane(noteText,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		add(scrollNote);
 
-		//		noteTextLang = makeLangButton("NOTE");
+		// noteTextLang = makeLangButton("NOTE");
 		noteTextLang = new JButton(Resurses.getString("DATA_LANGUAGE"));
 		add(noteTextLang);
 		noteTextLang.addActionListener(this);
 		noteTextLang.setActionCommand("NOTE_LANG");
-
 
 		mediaFilename = new JTextField();
 		mediaFilename.setEditable(false);
@@ -349,7 +317,7 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 
 		source = new JTextArea();
 		source.setLineWrap(true);
-		 scrollSource = new JScrollPane(source,
+		scrollSource = new JScrollPane(source,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -357,20 +325,17 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 
 		privateText = new JTextArea();
 		privateText.setLineWrap(true);
-		 scrollPrivate = new JScrollPane(privateText,
+		scrollPrivate = new JScrollPane(privateText,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		add(scrollPrivate);
 
-
-		
-
 		typeLbl = new JLabel(Resurses.getString("DATA_TYPE"));
-		
+
 		add(typeLbl);
-	
-		//		newTextLang.setBounds(500,lrivi,140,20);
+
+		// newTextLang.setBounds(500,lrivi,140,20);
 		noticetype = new JTextField();
 		add(noticetype);
 
@@ -379,251 +344,275 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 
 		description = new JTextField();
 		add(description);
-		
+
 		dateLbl = new JLabel(Resurses.getString("DATA_DATE"));
 		add(dateLbl);
 
-		placeLbl = new JLabel(Resurses.getString("DATA_PLACE"));		
+		placeLbl = new JLabel(Resurses.getString("DATA_PLACE"));
 		add(placeLbl);
 
-		villageLbl = new JLabel(Resurses.getString("DATA_VILLAGE"));	
+		villageLbl = new JLabel(Resurses.getString("DATA_VILLAGE"));
 		add(villageLbl);
-				
+
 		farmLbl = new JLabel(Resurses.getString("DATA_FARM"));
 		add(farmLbl);
 
 		croftLbl = new JLabel(Resurses.getString("DATA_CROFT"));
 		add(croftLbl);
 
-		addressLbl = new JLabel(Resurses.getString("DATA_ADDRESS"));		
+		addressLbl = new JLabel(Resurses.getString("DATA_ADDRESS"));
 		add(addressLbl);
 
 		postalCodeLbl = new JLabel(Resurses.getString("DATA_POSTCODE"));
-		
+
 		add(postalCodeLbl);
-		
+
 		postOfficeLbl = new JLabel(Resurses.getString("DATA_POSTOFF"));
 		add(postOfficeLbl);
-		
+
 		countryLbl = new JLabel(Resurses.getString("DATA_COUNTRY"));
 		add(countryLbl);
-		
+
 		emailLbl = new JLabel(Resurses.getString("DATA_EMAIL"));
 		add(emailLbl);
-	
-		noteLbl = new JLabel(Resurses.getString("DATA_NOTE"));	
+
+		noteLbl = new JLabel(Resurses.getString("DATA_NOTE"));
 		add(noteLbl);
-	
-			
-			mediaFilenameLbl = new JLabel(Resurses.getString("DATA_MEDIA_FILENAME"));		
-			add(mediaFilenameLbl);
 
-			mediaTitleLbl = new JLabel(Resurses.getString("DATA_MEDIA_TITLE"));
-			add(mediaTitleLbl);
+		mediaFilenameLbl = new JLabel(Resurses.getString("DATA_MEDIA_FILENAME"));
+		add(mediaFilenameLbl);
 
+		mediaTitleLbl = new JLabel(Resurses.getString("DATA_MEDIA_TITLE"));
+		add(mediaTitleLbl);
 
+		givLbl = new JLabel(Resurses.getString("DATA_GIVENNAME"));
+		add(givLbl);
 
-	
+		patLbl = new JLabel(Resurses.getString("DATA_PATRONYM"));
+		add(patLbl);
 
+		preLbl = new JLabel(Resurses.getString("DATA_PREFIX"));
+		add(preLbl);
 
-			givLbl = new JLabel(Resurses.getString("DATA_GIVENNAME"));
-			add(givLbl);
-		
+		surLbl = new JLabel(Resurses.getString("DATA_SURNAME"));
+		add(surLbl);
 
+		postLbl = new JLabel(Resurses.getString("DATA_POSTFIX"));
+		add(postLbl);
 
-			patLbl = new JLabel(Resurses.getString("DATA_PATRONYM"));
-			add(patLbl);
-			
-
-		
-			preLbl = new JLabel(Resurses.getString("DATA_PREFIX"));
-			add(preLbl);
-		
-			surLbl = new JLabel(Resurses.getString("DATA_SURNAME"));
-			add(surLbl);
-			
-
-			postLbl = new JLabel(Resurses.getString("DATA_POSTFIX"));
-			add(postLbl);
-		
 		sourceLbl = new JLabel(Resurses.getString("DATA_SOURCE"));
-		
+
 		add(sourceLbl);
-			privateLbl = new JLabel(Resurses.getString("DATA_PRIVATETEXT"));
-			
-			add(privateLbl);
-			
-	
-//		setPreferredSize(new Dimension(rcol+rwidth*2, lrivi));
+		privateLbl = new JLabel(Resurses.getString("DATA_PRIVATETEXT"));
+
+		add(privateLbl);
+
+		// setPreferredSize(new Dimension(rcol+rwidth*2, lrivi));
 
 	}
 
-
-	private void updateMe(){
+	private void updateMe() {
 
 		surety.setSurety(notice.getSurety());
 
 		String tmp = notice.getNoticeType();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		noticetype.setText(tmp);
 
 		tmp = notice.getDescription();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		description.setText(tmp);
 
-		//		setDate();
-		date.setDate(notice.getDatePrefix(), notice.getFromDate(), notice.getToDate());
+		// setDate();
+		date.setDate(notice.getDatePrefix(), notice.getFromDate(), notice
+				.getToDate());
 		tmp = notice.getPlace();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		place.setText(tmp);
 
 		tmp = notice.getVillage();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		village.setText(tmp);
 
 		tmp = notice.getFarm();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		farm.setText(tmp);
 
 		tmp = notice.getCroft();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		croft.setText(tmp);
 
 		tmp = notice.getAddress();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		address.setText(tmp);
 
 		tmp = notice.getPostalCode();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		postalCode.setText(tmp);
 		tmp = notice.getPostOffice();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		postOffice.setText(tmp);
 		tmp = notice.getCountry();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		country.setText(tmp);
 		tmp = notice.getEmail();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		email.setText(tmp);
 
 		tmp = notice.getNoteText();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		noteText.setText(tmp);
 
-
-		if (notice.getLanguages() == null){
+		if (notice.getLanguages() == null) {
 
 			noteTextLang.setText(Resurses.getString("DATA_ADD_LANGUAGE"));
 		}
 
-
 		tmp = notice.getMediaFilename();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		mediaFilename.setText(tmp);
 
 		tmp = notice.getMediaTitle();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		mediaTitle.setText(tmp);
 
 		getImage();
 
 		tmp = notice.getGivenname();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		givenname.setText(tmp);
 
 		tmp = notice.getPatronym();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		patronym.setText(tmp);
 
 		tmp = notice.getPrefix();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		prefix.setText(tmp);
 		tmp = notice.getSurname();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		surname.setText(tmp);
 		tmp = notice.getPostfix();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		postfix.setText(tmp);
 
 		tmp = notice.getSource();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		source.setText(tmp);
 		tmp = notice.getPrivateText();
-		if (tmp == null) tmp = "";
+		if (tmp == null)
+			tmp = "";
 		privateText.setText(tmp);
 
 	}
+
 	/**
-	 * This checks if the fields that are not visible on the MainPerson are empty
+	 * This checks if the fields that are not visible on the MainPerson are
+	 * empty
 	 * 
 	 * @return true if all non visible fields are empty
 	 */
-	boolean isPlain(){
+	boolean isPlain() {
 
-		if (surety.getSurety() != 100) return false;
-		if (privacy.isSelected()) return false;
-		if (!"".equals(noticetype.getText())) return false;
+		if (surety.getSurety() != 100)
+			return false;
+		if (privacy.isSelected())
+			return false;
+		if (!"".equals(noticetype.getText()))
+			return false;
 		if (!"".equals(description.getText())) {
-			if (!notice.getTag().equals("OCCU")) return false;
+			if (!notice.getTag().equals("OCCU"))
+				return false;
 		}
-		if (!date.isPlain()) return false;
-		//		if (datePref.getSelectedIndex() != 0) return false;
+		if (!date.isPlain())
+			return false;
+		// if (datePref.getSelectedIndex() != 0) return false;
 
-		//		if (!"".equals(dateTo.getText())) return false;
+		// if (!"".equals(dateTo.getText())) return false;
 		if (notice.getTag().equals("OCCU") || notice.getTag().equals("NOTE")) {
 			try {
 				String tmp = date.getFromDate();
-				if (!"".equals( nv(tmp))) return false;
+				if (!"".equals(nv(tmp)))
+					return false;
 			} catch (SukuDateException e) {
 				return false;
 			}
 		}
 
-
-
-
-		if (!"".equals(village.getText())) return false;
-		if (!"".equals(farm.getText())) return false;
-		if (!"".equals(croft.getText())) return false;
-		if (!"".equals(address.getText())) return false;
-		if (!"".equals(postalCode.getText())) return false;
-		if (!"".equals(postOffice.getText())) return false;
-		if (!"".equals(country.getText())) return false;
-		if (!"".equals(email.getText())) return false;
+		if (!"".equals(village.getText()))
+			return false;
+		if (!"".equals(farm.getText()))
+			return false;
+		if (!"".equals(croft.getText()))
+			return false;
+		if (!"".equals(address.getText()))
+			return false;
+		if (!"".equals(postalCode.getText()))
+			return false;
+		if (!"".equals(postOffice.getText()))
+			return false;
+		if (!"".equals(country.getText()))
+			return false;
+		if (!"".equals(email.getText()))
+			return false;
 		if (!notice.getTag().equals("NOTE")) {
-			if (!"".equals(noteText.getText())) return false;
+			if (!"".equals(noteText.getText()))
+				return false;
 		}
-		if (!"".equals(mediaFilename.getText())) return false;
-		if (!"".equals(mediaTitle.getText())) return false;
-		if (!"".equals(source.getText())) return false;
-		if (!"".equals(privateText.getText())) return false;
-		if (image.img != null) return false;
-
+		if (!"".equals(mediaFilename.getText()))
+			return false;
+		if (!"".equals(mediaTitle.getText()))
+			return false;
+		if (!"".equals(source.getText()))
+			return false;
+		if (!"".equals(privateText.getText()))
+			return false;
+		if (image.img != null)
+			return false;
 
 		return true;
 	}
 
 	private Dimension imageSize = null;
-	private void getImage(){
+
+	private void getImage() {
 
 		BufferedImage img = notice.getMediaImage();
 		if (img != null) {
-			double imh= img.getHeight();
+			double imh = img.getHeight();
 			double imw = img.getWidth();
-			imageSize = new Dimension((int)imw,(int)imh);
+			imageSize = new Dimension((int) imw, (int) imh);
 			double neww = 150;
-			double newh = imh/imw*neww;
+			double newh = imh / imw * neww;
 
-			Image imgs = img.getScaledInstance((int)neww, (int)newh, Image.SCALE_DEFAULT);
+			Image imgs = img.getScaledInstance((int) neww, (int) newh,
+					Image.SCALE_DEFAULT);
 
-			image.img=imgs;
+			image.img = imgs;
 		} else {
-			image.img=null;
+			image.img = null;
 		}
 	}
-
-
-
 
 	void setToBeDeleted(boolean value) {
 
@@ -638,29 +627,27 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 		notice.setToBeDeleted(value);
 	}
 
+	enum TagType {
+		STANDARD, NAME, NOTE, RESI, PHOT
+	}
 
-
-	enum TagType { STANDARD, NAME, NOTE, RESI,PHOT }
-
-
-
-	//	String getDatePrefTag(){
+	// String getDatePrefTag(){
 	//
-	//		int idx = datePref.getSelectedIndex();
-	//		switch (idx) {
-	//		case 1: return "ABT";
-	//		case 2: return "CAL";
-	//		case 3: return "EST";
-	//		case 4: return "BET";
-	//		case 5: return "FROM";
-	//		case 6: return "BEF";
-	//		case 7: return "AFT";
-	//		default: return null;
-	//		}
-	//	}
+	// int idx = datePref.getSelectedIndex();
+	// switch (idx) {
+	// case 1: return "ABT";
+	// case 2: return "CAL";
+	// case 3: return "EST";
+	// case 4: return "BET";
+	// case 5: return "FROM";
+	// case 6: return "BEF";
+	// case 7: return "AFT";
+	// default: return null;
+	// }
+	// }
 
-	String getUnitNoticeError(){
-		String theDate=null;
+	String getUnitNoticeError() {
+		String theDate = null;
 		try {
 			theDate = date.getFromDate();
 			theDate = date.getToDate();
@@ -669,34 +656,31 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 			e.printStackTrace();
 			return e.getMessage() + " " + theDate;
 
-
 		}
-
-
 
 	}
 
-	void verifyUnitNotice() throws SukuDateException{
+	void verifyUnitNotice() throws SukuDateException {
 
 		date.getFromDate();
 		date.getToDate();
 	}
 
-	void copyToUnitNotice() throws SukuDateException{
-		int sureIdx = surety.getSurety();	
+	void copyToUnitNotice() throws SukuDateException {
+		int sureIdx = surety.getSurety();
 
 		String fromDate = date.getFromDate();
 		String toDate = date.getToDate();
 
 		notice.setSurety(sureIdx);
-		notice.setPrivacy(privacy.isSelected()?"P":null);
+		notice.setPrivacy(privacy.isSelected() ? "P" : null);
 
 		notice.setNoticeType(noticetype.getText());
 
 		notice.setDescription(description.getText());
 
 		String datePre = date.getDatePrefTag();
-		//		if (datePre != null || notice.getDatePrefix() != null) {
+		// if (datePre != null || notice.getDatePrefix() != null) {
 
 		notice.setDatePrefix(datePre);
 		notice.setFromDate(fromDate);
@@ -721,24 +705,21 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 		notice.setSource(source.getText());
 		notice.setPrivateText(privateText.getText());
 
-
 	}
-
-
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
-		if (cmd == null) return;
+		if (cmd == null)
+			return;
 		System.out.println("Notice closataan " + cmd);
-		if (cmd.equals("NOTE_LANG")){
-
+		if (cmd.equals("NOTE_LANG")) {
 
 			LanguageDialog lan = new LanguageDialog(personView.getSuku());
 
 			Rectangle r = personView.getSuku().getDbWindow();
 
-			lan.setBounds(r);			
+			lan.setBounds(r);
 
 			lan.setLanguages(notice.getLanguages());
 
@@ -747,21 +728,23 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 
 			notice.setLanguages(lan.getLanguages());
 
-		} else if (cmd.equals("IMAGE_OPEN")){
+		} else if (cmd.equals("IMAGE_OPEN")) {
 			boolean openedImage = Suku.kontroller.openLocalFile("jpg;png;gif");
 			long filesize = Suku.kontroller.getFileLength();
-			if (filesize>0){
-				BufferedInputStream bstr = new BufferedInputStream(Suku.kontroller.getInputStream());
+			if (filesize > 0) {
+				BufferedInputStream bstr = new BufferedInputStream(
+						Suku.kontroller.getInputStream());
 				System.out.println("OPEN: " + openedImage);
 
-				byte buffer[] = new byte[(int)filesize];
+				byte buffer[] = new byte[(int) filesize];
 
 				try {
 					int luettu = bstr.read(buffer);
 					if (luettu == filesize) {
 						notice.setMediaData(buffer);
 					} else {
-						logger.warning("Filesize expected " + filesize + " read " + luettu);
+						logger.warning("Filesize expected " + filesize
+								+ " read " + luettu);
 					}
 					bstr.close();
 					notice.setMediaFilename(Suku.kontroller.getFileName());
@@ -770,86 +753,90 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 
 					mediaFilename.setText(notice.getMediaFilename());
 
-
 					updateUI();
 				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, e1.getMessage(),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
 
 					e1.printStackTrace();
 				}
 
 			}
-		} else if (cmd.equals("DELETE")){
+		} else if (cmd.equals("DELETE")) {
 			setToBeDeleted(true);
-		} else if (cmd.equals("ADD")){
+		} else if (cmd.equals("ADD")) {
 			AddNotice an;
 			try {
 				an = new AddNotice(personView.getSuku());
 				Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-				an.setBounds(d.width/2-300,d.height/2-200,300,400);
+				an.setBounds(d.width / 2 - 300, d.height / 2 - 200, 300, 400);
 
-				Rectangle r =  toAdd.getBounds();
-				Point pt = new Point(r.x,r.y);
+				Rectangle r = toAdd.getBounds();
+				Point pt = new Point(r.x, r.y);
 				SwingUtilities.convertPointToScreen(pt, this);
-				r.x = pt.x-40;
-				r.y=pt.y+r.height;
-				r.height=400;
-				r.width=120;
+				r.x = pt.x - 40;
+				r.y = pt.y + r.height;
+				r.height = 400;
+				r.width = 120;
 				an.setBounds(r);
 				an.setVisible(true);
 
-				if (an.getSelectedTag()!= null){
-					//				System.out.println("Valittiin " + an.getSelectedTag());
+				if (an.getSelectedTag() != null) {
+					// System.out.println("Valittiin " + an.getSelectedTag());
 					personView.addNotice(-1, an.getSelectedTag());
 				}
 
 			} catch (SukuException e1) {
-				logger.log(Level.WARNING,"Add new dialog error",e1);
-				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				logger.log(Level.WARNING, "Add new dialog error", e1);
+				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 
 			}
 
-
-		} else if (cmd.equals("<")){
+		} else if (cmd.equals("<")) {
 			personView.moveSelectedPane(-1);
-		} else if (cmd.equals(">")){
+		} else if (cmd.equals(">")) {
 			personView.moveSelectedPane(+1);
-		}	if (cmd.equals(Resurses.CLOSE) || cmd.equals(Resurses.UPDATE)){
-			
+		}
+		if (cmd.equals(Resurses.CLOSE) || cmd.equals(Resurses.UPDATE)) {
+
 			int midx = personView.getMainPaneIndex();
-			if (midx <0) return;
+			if (midx < 0)
+				return;
 			SukuTabPane pan = personView.getPane(midx);
-			PersonMainPane main  = (PersonMainPane)pan.pnl;
+			PersonMainPane main = (PersonMainPane) pan.pnl;
 			int personPid = main.getPersonPid();
-			
-			
-			boolean reOpen=true;
-			if (cmd.equals(Resurses.CLOSE) ){
-				reOpen=false;
+
+			boolean reOpen = true;
+			if (cmd.equals(Resurses.CLOSE)) {
+				reOpen = false;
 			}
 			try {
 				personView.displayPersonPane(personPid);
 				personView.closeMainPane(reOpen);
-				
+
 			} catch (SukuException e1) {
-				JOptionPane.showMessageDialog(this, e1.toString(), Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-				logger.log(Level.WARNING,"Closing notice",e1);
+				JOptionPane.showMessageDialog(this, e1.toString(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				logger.log(Level.WARNING, "Closing notice", e1);
 
 				e1.printStackTrace();
 			}
-			
 
-//			} catch (SukuDateException e1) {
-//				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-//
-//				e1.printStackTrace();
-//			} catch (Exception e1) {
-//				JOptionPane.showMessageDialog(this, e1.toString(), Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-//				logger.log(Level.WARNING,"Closing person",e1);
-//				e1.printStackTrace();
-//				personView.closeMainPane(0);
-//			}
+			// } catch (SukuDateException e1) {
+			// JOptionPane.showMessageDialog(this, e1.getMessage(),
+			// Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			//
+			// e1.printStackTrace();
+			// } catch (Exception e1) {
+			// JOptionPane.showMessageDialog(this, e1.toString(),
+			// Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			// logger.log(Level.WARNING,"Closing person",e1);
+			// e1.printStackTrace();
+			// personView.closeMainPane(0);
+			// }
 		}
 	}
 
@@ -858,10 +845,10 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		Image img=null;
+		Image img = null;
 
 		@Override
-		public void paintComponent(Graphics g){
+		public void paintComponent(Graphics g) {
 			if (img != null) {
 				g.drawImage(img, 0, 0, null);
 			}
@@ -869,52 +856,51 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 	}
 
 	String nv(String text) {
-		if (text==null) return "";
-		else return text;
+		if (text == null)
+			return "";
+		else
+			return text;
 	}
-
 
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void componentMoved(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
-		
-	}
-	
-	private int lcol=75;
-	private int lwidth=300;
-	private int rwidth=70;
-	private int rcol = lwidth+lcol+10;
-	private int lbuttoncol=240;
 
+	}
+
+	private int lcol = 75;
+	private int lwidth = 300;
+	private int rwidth = 70;
+	private int rcol = lwidth + lcol + 10;
+	private int lbuttoncol = 240;
 
 	@Override
 	public void componentResized(ComponentEvent arg0) {
 		resizeNoticePane();
 	}
-	
-	public void resizeNoticePane(){
+
+	public void resizeNoticePane() {
 		Dimension currSize = getSize();
-//		System.out.println("LEVEYS: "+currSize.width);
-		if (currSize.width > 525){
-			lwidth = currSize.width - lcol-10-rwidth*2;
-			rcol = lwidth+lcol+5;
-//			setPreferredSize(new Dimension(rcol+rwidth*2, lrivi));
+		// System.out.println("LEVEYS: "+currSize.width);
+		if (currSize.width > 525) {
+			lwidth = currSize.width - lcol - 10 - rwidth * 2;
+			rcol = lwidth + lcol + 5;
+			// setPreferredSize(new Dimension(rcol+rwidth*2, lrivi));
 		}
-		
+
 		TagType showType;
 
-		if (notice.getTag().equals("NOTE")){
+		if (notice.getTag().equals("NOTE")) {
 			showType = TagType.NOTE;
-		} else if (notice.getTag().equals("RESI")){
+		} else if (notice.getTag().equals("RESI")) {
 			showType = TagType.RESI;
-		} else if (notice.getTag().equals("NAME")){
+		} else if (notice.getTag().equals("NAME")) {
 			showType = TagType.NAME;
 		} else if (notice.getTag().startsWith("PHOT")) {
 			showType = TagType.PHOT;
@@ -923,136 +909,137 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 		}
 
 		boolean mustNote = personView.getSuku().isShowNote();
-		if (notice.getNoteText()!= null) {
-			mustNote=true;
+		if (notice.getNoteText() != null) {
+			mustNote = true;
 		}
 
 		boolean mustAddress = personView.getSuku().isShowAddress();
 
 		boolean mustFarm = personView.getSuku().isShowFarm();
-		if (notice.getVillage() != null || notice.getFarm() != null || notice.getCroft() != null){
-			mustFarm=true;
+		if (notice.getVillage() != null || notice.getFarm() != null
+				|| notice.getCroft() != null) {
+			mustFarm = true;
 		}
 
 		boolean mustPrivate = personView.getSuku().isShowPrivate();
-		if (notice.getPrivateText()!= null){
-			mustPrivate=true;
+		if (notice.getPrivateText() != null) {
+			mustPrivate = true;
 		}
 
 		boolean mustImage = personView.getSuku().isShowImage();
-		if (notice.getMediaFilename() != null || notice.getMediaImage() != null || notice.getMediaTitle() != null){
-			mustImage=true;
+		if (notice.getMediaFilename() != null || notice.getMediaImage() != null
+				|| notice.getMediaTitle() != null) {
+			mustImage = true;
 		}
-		
-		int rrivi=10;
-		moveToLeft.setBounds(rcol,rrivi,rwidth,20);
-		moveToRight.setBounds(rcol+rwidth,rrivi,rwidth,20);
+
+		int rrivi = 10;
+		moveToLeft.setBounds(rcol, rrivi, rwidth, 20);
+		moveToRight.setBounds(rcol + rwidth, rrivi, rwidth, 20);
 		rrivi += 24;
-		toAdd.setBounds(rcol,rrivi,rwidth,20);
-		toDelete.setBounds(rcol+rwidth,rrivi,rwidth,20);
+		toAdd.setBounds(rcol, rrivi, rwidth, 20);
+		toDelete.setBounds(rcol + rwidth, rrivi, rwidth, 20);
 		rrivi += 24;
 		close.setBounds(rcol, rrivi, rwidth, 24);
-		update.setBounds(rcol+rwidth, rrivi, rwidth, 24);
-			
-		
+		update.setBounds(rcol + rwidth, rrivi, rwidth, 24);
+
 		rrivi += 24;
-		suretyLbl.setBounds(rcol,rrivi,100,20);
-		rrivi +=20;
-		surety.setBounds(rcol,rrivi,100,20);
-		
-		rrivi +=24;			
-		createdLbl.setBounds(rcol,rrivi,100,20);
-		rrivi +=20;
-		created.setBounds(rcol,rrivi,rwidth*2,20);
-		rrivi +=24;
-		modifiedLbl.setBounds(rcol,rrivi,100,20);
-		rrivi +=20;
-		modified.setBounds(rcol,rrivi,rwidth*2,20);
-		rrivi +=24;
-		privacy.setBounds(rcol,rrivi,100,20);
-		rrivi +=24;
-		image.setBounds(rcol,rrivi,150,300);
-		
-		int lrivi=10;
-		typeLbl.setBounds(10,lrivi,70,20);
-		
-		noticetype.setBounds(lcol,lrivi,150,20);
-		noteTextLang.setBounds(lbuttoncol,lrivi,200,20);
-		lrivi +=24;
-		descLbl.setBounds(10,lrivi,70,20);
-		description.setBounds(lcol,lrivi,lwidth,20);
-		
-		lrivi +=24;
-			
-		switch (showType){
+		suretyLbl.setBounds(rcol, rrivi, 100, 20);
+		rrivi += 20;
+		surety.setBounds(rcol, rrivi, 100, 20);
+
+		rrivi += 24;
+		createdLbl.setBounds(rcol, rrivi, 100, 20);
+		rrivi += 20;
+		created.setBounds(rcol, rrivi, rwidth * 2, 20);
+		rrivi += 24;
+		modifiedLbl.setBounds(rcol, rrivi, 100, 20);
+		rrivi += 20;
+		modified.setBounds(rcol, rrivi, rwidth * 2, 20);
+		rrivi += 24;
+		privacy.setBounds(rcol, rrivi, 100, 20);
+		rrivi += 24;
+		image.setBounds(rcol, rrivi, 150, 300);
+
+		int lrivi = 10;
+		typeLbl.setBounds(10, lrivi, 70, 20);
+
+		noticetype.setBounds(lcol, lrivi, 150, 20);
+		noteTextLang.setBounds(lbuttoncol, lrivi, 200, 20);
+		lrivi += 24;
+		descLbl.setBounds(10, lrivi, 70, 20);
+		description.setBounds(lcol, lrivi, lwidth, 20);
+
+		lrivi += 24;
+
+		switch (showType) {
 		case NOTE:
 		case NAME:
 		case RESI:
-//			place.setVisible(false);
+			// place.setVisible(false);
 			village.setVisible(false);
 			farm.setVisible(false);
 			croft.setVisible(false);
-//			placeLbl.setVisible(false);
+			// placeLbl.setVisible(false);
 			villageLbl.setVisible(false);
 			farmLbl.setVisible(false);
 			croftLbl.setVisible(false);
 			break;
 		default:
 
-			dateLbl.setBounds(10,lrivi,70,20);
-			date.setBounds(lcol,lrivi,283,20);
-			lrivi +=24;
-			placeLbl.setBounds(10,lrivi,70,20);
-			place.setBounds(lcol,lrivi,lwidth,20);
-			lrivi +=24;
+			dateLbl.setBounds(10, lrivi, 70, 20);
+			date.setBounds(lcol, lrivi, 283, 20);
+			lrivi += 24;
+			placeLbl.setBounds(10, lrivi, 70, 20);
+			place.setBounds(lcol, lrivi, lwidth, 20);
+			lrivi += 24;
 			boolean farmShow = mustFarm;
 			if (mustFarm) {
-				
-				villageLbl.setBounds(10,lrivi,70,20);
-				village.setBounds(lcol,lrivi,lwidth,20);
-	
-				lrivi +=24;
-			
-				farmLbl.setBounds(10,lrivi,70,20);
-				farm.setBounds(lcol,lrivi,lwidth,20);
-				lrivi +=24;
-				
-				croftLbl.setBounds(10,lrivi,70,20);
-				croft.setBounds(lcol,lrivi,lwidth,20);
-				lrivi +=24;
-			} 
+
+				villageLbl.setBounds(10, lrivi, 70, 20);
+				village.setBounds(lcol, lrivi, lwidth, 20);
+
+				lrivi += 24;
+
+				farmLbl.setBounds(10, lrivi, 70, 20);
+				farm.setBounds(lcol, lrivi, lwidth, 20);
+				lrivi += 24;
+
+				croftLbl.setBounds(10, lrivi, 70, 20);
+				croft.setBounds(lcol, lrivi, lwidth, 20);
+				lrivi += 24;
+			}
 			village.setVisible(farmShow);
 			farm.setVisible(farmShow);
 			croft.setVisible(farmShow);
-			
+
 		}
 
-		boolean addressShow=false;
-		if ((showType == TagType.RESI || mustAddress ) &&
-				(showType != TagType.NAME && showType != TagType.NOTE)){
-			addressShow=true;			
-			
-			addressLbl.setBounds(10,lrivi,70,20);
-			scrollAddress.setBounds(lcol,lrivi,lwidth,60);
+		boolean addressShow = false;
+		if ((showType == TagType.RESI || mustAddress)
+				&& (showType != TagType.NAME && showType != TagType.NOTE)) {
+			addressShow = true;
 
-			lrivi +=64;
-		
-			postalCodeLbl.setBounds(10,lrivi-20,70,20);
-			postOfficeLbl.setBounds(10,lrivi,70,20);		
-			postalCode.setBounds(lcol,lrivi,80,20);
-			postOffice.setBounds(lcol+83,lrivi,lwidth -83,20);
-			lrivi +=24;
-			
-			countryLbl.setBounds(10,lrivi,70,20);
-			country.setBounds(lcol,lrivi,lwidth,20);
+			addressLbl.setBounds(10, lrivi, 70, 20);
+			scrollAddress.setBounds(lcol, lrivi, lwidth, 60);
 
-			lrivi +=24;
+			lrivi += 64;
 
-			emailLbl.setBounds(10,lrivi,70,20);
-			email.setBounds(lcol,lrivi,lwidth,20);
+			postalCodeLbl.setBounds(10, lrivi - 20, 70, 20);
+			postOfficeLbl.setBounds(10, lrivi, 70, 20);
+			postalCode.setBounds(lcol, lrivi, 80, 20);
+			postOffice.setBounds(lcol + 83, lrivi, lwidth - 83, 20);
+			lrivi += 24;
 
-			lrivi +=24;
-		} 
+			countryLbl.setBounds(10, lrivi, 70, 20);
+			country.setBounds(lcol, lrivi, lwidth, 20);
+
+			lrivi += 24;
+
+			emailLbl.setBounds(10, lrivi, 70, 20);
+			email.setBounds(lcol, lrivi, lwidth, 20);
+
+			lrivi += 24;
+		}
 		scrollAddress.setVisible(addressShow);
 		postalCode.setVisible(addressShow);
 		postOffice.setVisible(addressShow);
@@ -1063,75 +1050,71 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 		postOfficeLbl.setVisible(addressShow);
 		countryLbl.setVisible(addressShow);
 		emailLbl.setVisible(addressShow);
-	
-		
+
 		switch (showType) {
 		case NOTE:
-			
-			noteLbl.setBounds(10,lrivi,70,20);
-			
-			noteLoc = new Rectangle(lcol,lrivi,lwidth,400);
+
+			noteLbl.setBounds(10, lrivi, 70, 20);
+
+			noteLoc = new Rectangle(lcol, lrivi, lwidth, 400);
 			scrollNote.setBounds(noteLoc);
-			
-			lrivi +=404;
+
+			lrivi += 404;
 			break;
 		case NAME:
 			scrollNote.setVisible(false);
 			noteLbl.setVisible(false);
 			break;
 		default:
-			boolean noteShow=false;
+			boolean noteShow = false;
 			if (mustNote) {
-				noteShow=true;
-			
-				noteLbl.setBounds(10,lrivi,70,20);		
-				noteLoc = new Rectangle(lcol,lrivi,lwidth,80);
+				noteShow = true;
+
+				noteLbl.setBounds(10, lrivi, 70, 20);
+				noteLoc = new Rectangle(lcol, lrivi, lwidth, 80);
 				scrollNote.setBounds(noteLoc);
 
-				lrivi +=84;
-			} 
-				scrollNote.setVisible(noteShow);
-				noteLbl.setVisible(noteShow);
-			
+				lrivi += 84;
+			}
+			scrollNote.setVisible(noteShow);
+			noteLbl.setVisible(noteShow);
+
 		}
-		
-		boolean mediaShow=false;
-		if ((showType == TagType.PHOT || mustImage ) &&
-				(showType != TagType.NAME && showType != TagType.NOTE)){
-		
-//		if (!(notice.getTag().equals("NOTE") && notice.getTag().equals("NAME")) &&
-//				notice.getTag().startsWith("PHOT") || mustImage){
-			mediaShow=true;
-			mediaFilenameLbl.setBounds(10,lrivi,70,20);
-		
 
-			mediaFilename.setBounds(lcol,lrivi,160,20);
-			mediaOpenFile.setBounds(lbuttoncol,lrivi,100,20);
+		boolean mediaShow = false;
+		if ((showType == TagType.PHOT || mustImage)
+				&& (showType != TagType.NAME && showType != TagType.NOTE)) {
 
-			lrivi +=24;
+			// if (!(notice.getTag().equals("NOTE") &&
+			// notice.getTag().equals("NAME")) &&
+			// notice.getTag().startsWith("PHOT") || mustImage){
+			mediaShow = true;
+			mediaFilenameLbl.setBounds(10, lrivi, 70, 20);
 
-			mediaTitleLbl.setBounds(10,lrivi,70,20);
+			mediaFilename.setBounds(lcol, lrivi, 160, 20);
+			mediaOpenFile.setBounds(lbuttoncol, lrivi, 100, 20);
 
-			mediaTitle.setBounds(lcol,lrivi,lwidth,20);
+			lrivi += 24;
 
-			lrivi +=24;
-		} 
+			mediaTitleLbl.setBounds(10, lrivi, 70, 20);
+
+			mediaTitle.setBounds(lcol, lrivi, lwidth, 20);
+
+			lrivi += 24;
+		}
 		mediaFilenameLbl.setVisible(mediaShow);
 		mediaTitleLbl.setVisible(mediaShow);
 		mediaFilename.setVisible(mediaShow);
 		mediaTitle.setVisible(mediaShow);
-		
-
 
 		switch (showType) {
 		case NAME:
-
 
 			givLbl.setBounds(10, lrivi, 70, 20);
 
 			givenname.setBounds(lcol, lrivi, lwidth, 20);
 			lrivi += 24;
-			
+
 			patLbl.setBounds(10, lrivi, 70, 20);
 			patronym.setBounds(lcol, lrivi, lwidth, 20);
 
@@ -1163,31 +1146,28 @@ public class NoticePane  extends JPanel implements ActionListener,ComponentListe
 			postLbl.setVisible(false);
 		}
 
-	
-		sourceLbl.setBounds(10,lrivi,70,20);
-		scrollSource.setBounds(lcol,lrivi,lwidth,60);
-		boolean privateShow=mustPrivate;
+		sourceLbl.setBounds(10, lrivi, 70, 20);
+		scrollSource.setBounds(lcol, lrivi, lwidth, 60);
+		boolean privateShow = mustPrivate;
 		if (mustPrivate) {
-			lrivi +=64;
-			privateLbl.setBounds(10,lrivi,70,20);
+			lrivi += 64;
+			privateLbl.setBounds(10, lrivi, 70, 20);
 
-			scrollPrivate.setBounds(lcol,lrivi,lwidth,60);
-		} 
+			scrollPrivate.setBounds(lcol, lrivi, lwidth, 60);
+		}
 		privateLbl.setVisible(privateShow);
 		scrollPrivate.setVisible(privateShow);
-		
-		lrivi +=64;
 
-		setPreferredSize(new Dimension(rcol+rwidth*2, lrivi));
-		
-		
+		lrivi += 64;
+
+		setPreferredSize(new Dimension(rcol + rwidth * 2, lrivi));
+
 	}
-
 
 	@Override
 	public void componentShown(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

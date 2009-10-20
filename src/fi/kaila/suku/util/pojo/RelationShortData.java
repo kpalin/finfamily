@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 /**
  * @author FIKAAKAIL
- *
- *Short Family POJO
+ * 
+ *         Short Family POJO
  */
-public class RelationShortData implements Serializable{
+public class RelationShortData implements Serializable {
 
 	/**
 	 * 
@@ -17,93 +17,95 @@ public class RelationShortData implements Serializable{
 	int pid = 0;
 	int relationPid = 0;
 	String tag = null;
-	String marrDate=null;
-	String divDate=null;
+	String marrDate = null;
+	String divDate = null;
 	int parentArray[] = null;
-	int order=0;
-	int auxIndex=0;
+	int order = 0;
+	int auxIndex = 0;
+
 	/**
 	 * @param pid
 	 * @param relationPid
-	 * @param order 
-	 * @param tag 
+	 * @param order
+	 * @param tag
 	 */
-	public RelationShortData (int pid,int relationPid,int order,String tag){
-		this.pid=pid;
+	public RelationShortData(int pid, int relationPid, int order, String tag) {
+		this.pid = pid;
 		this.relationPid = relationPid;
 		this.tag = tag;
 		this.order = order;
-		
+
 	}
-	
-	public void setAux(int auxIndex){
+
+	public void setAux(int auxIndex) {
 		this.auxIndex = auxIndex;
 	}
-	
+
 	public int getAux() {
 		return auxIndex;
 	}
-	
+
 	/**
 	 * @param rDate
 	 */
-	public void setMarrDate(String rDate){
+	public void setMarrDate(String rDate) {
 		this.marrDate = rDate;
 	}
-	
+
 	/**
-	 * @param divDate 
+	 * @param divDate
 	 */
-	public void setDivDate(String divDate){
+	public void setDivDate(String divDate) {
 		this.divDate = divDate;
 	}
-	
+
 	/**
 	 * @return pid of "owner"
 	 */
-	public int getPid(){
+	public int getPid() {
 		return this.pid;
 	}
-	
+
 	/**
 	 * @return pid of relative
 	 */
-	public int getRelationPid(){
+	public int getRelationPid() {
 		return this.relationPid;
 	}
-	
+
 	/**
 	 * @return tag
 	 */
-	public String getTag(){
+	public String getTag() {
 		return this.tag;
 	}
-	
+
 	/**
 	 * @return order # in family
 	 */
-	public int getOrder(){
+	public int getOrder() {
 		return this.order;
 	}
-	
+
 	/**
-	 * @return main date of relation 
+	 * @return main date of relation
 	 */
-	public String getDate(){
+	public String getDate() {
 		return this.marrDate;
 	}
-	
-	public void setParentArray(int [] parentids){
+
+	public void setParentArray(int[] parentids) {
 		parentArray = parentids;
 	}
-	
-	public int[] getParentArray(){
+
+	public int[] getParentArray() {
 		return parentArray;
 	}
+
 	/**
-	 * @return divorce date of relation 
+	 * @return divorce date of relation
 	 */
-	public String getDivDate(){
+	public String getDivDate() {
 		return this.divDate;
 	}
 }

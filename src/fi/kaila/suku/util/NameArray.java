@@ -11,24 +11,26 @@ import java.util.Vector;
  * Auxiliary used by import from Suku 2004
  * 
  * @author Kalle
- *
+ * 
  */
-public class NameArray implements Array{
+public class NameArray implements Array {
 
 	@Override
 	public void free() throws SQLException {
 		v.removeAllElements();
-		
+
 	}
-	private Vector<String> v = null; 
-	public NameArray(){
+
+	private Vector<String> v = null;
+
+	public NameArray() {
 		v = new Vector<String>();
 	}
-	
-	
-	public void append(String member){
+
+	public void append(String member) {
 		v.add(member);
 	}
+
 	@Override
 	public Object getArray() throws SQLException {
 		// TODO Auto-generated method stub
@@ -89,29 +91,30 @@ public class NameArray implements Array{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
-	public String toString(){
-		
+	public String toString() {
+
 		StringBuffer sb = new StringBuffer();
 		sb.append("{");
 		for (int i = 0; i < v.size(); i++) {
-			if (i > 0) sb.append(",");
+			if (i > 0)
+				sb.append(",");
 			sb.append("\"");
 			sb.append(toSqlString(v.get(i)));
-			sb.append("\"");	
+			sb.append("\"");
 		}
 		sb.append("}");
 		return sb.toString();
 	}
-	
-	
+
 	private String toSqlString(String text) {
-		if (text == null) return null;
+		if (text == null)
+			return null;
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			switch (c){
+			switch (c) {
 			case '\\':
 			case '"':
 			case '\'':

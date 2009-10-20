@@ -1,6 +1,5 @@
 package fi.kaila.suku.kontroller;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,33 +14,29 @@ import javax.swing.JFileChooser;
 
 import fi.kaila.suku.server.SukuServer;
 import fi.kaila.suku.server.SukuServerImpl;
-
 import fi.kaila.suku.util.SukuException;
-
 import fi.kaila.suku.util.pojo.SukuData;
-
 
 /**
  * @author FIKAAKAIL
- *
- *Controller class to implement local application 
- *
+ * 
+ *         Controller class to implement local application
+ * 
  */
-public class SukuKontrollerLocalImpl  implements SukuKontroller{
+public class SukuKontrollerLocalImpl implements SukuKontroller {
 
-	private static Preferences  sr = null;//Preferences.userRoot();
-	
+	private static Preferences sr = null;// Preferences.userRoot();
+
 	private SukuServer server = null;
-	private static Logger logger= null;
-	
-	private File file=null;
-	private File outFile=null;
-	
-	
+	private static Logger logger = null;
+
+	private File file = null;
+	private File outFile = null;
+
 	/**
-	 *
 	 * 
-	 *
+	 * 
+	 * 
 	 * @throws SukuException
 	 */
 	public SukuKontrollerLocalImpl() throws SukuException {
@@ -49,53 +44,48 @@ public class SukuKontrollerLocalImpl  implements SukuKontroller{
 		sr = Preferences.userRoot();
 		logger = Logger.getLogger(this.getClass().getName());
 	}
-	
-	@Override
-	public void getConnection(String host,String dbname, String userid, String passwd) throws SukuException {
-		
-		
-		this.server.getConnection(host, dbname, userid, passwd);
-		
 
-		
+	@Override
+	public void getConnection(String host, String dbname, String userid,
+			String passwd) throws SukuException {
+
+		this.server.getConnection(host, dbname, userid, passwd);
+
 	}
 
 	/**
 	 * local method for Junit
 	 */
-	public void resetConnection(){
+	public void resetConnection() {
 		this.server.resetConnection();
 	}
-	
 
-	
-
-	
 	/**
 	 * get stored parameter from user preferences
 	 * 
-	 * @param o (owner name)
+	 * @param o
+	 *            (owner name)
 	 * @param key
 	 * @param def
 	 * @return value
 	 */
 	@Override
-	public String getPref(Object o,String key,String def){
-	
-		return sr.get(o.getClass().getName()+"."+key, def);
+	public String getPref(Object o, String key, String def) {
+
+		return sr.get(o.getClass().getName() + "." + key, def);
 	}
-	
+
 	/**
 	 * store value in user preferences
 	 * 
-	 * @param o 
+	 * @param o
 	 * @param key
 	 * @param value
 	 */
 	@Override
-	public  void putPref(Object o,String key,String value){
-		
-		sr.put(o.getClass().getName()+"."+key, value);
+	public void putPref(Object o, String key, String value) {
+
+		sr.put(o.getClass().getName() + "." + key, value);
 	}
 
 	@Override
@@ -103,7 +93,6 @@ public class SukuKontrollerLocalImpl  implements SukuKontroller{
 		return this.server.getSukuData(params);
 	}
 
-	
 	/**
 	 * local method for Junit use only
 	 * 
@@ -117,31 +106,29 @@ public class SukuKontrollerLocalImpl  implements SukuKontroller{
 	public boolean openLocalFile(String filter) {
 		// TODO Auto-generated method stub
 		Preferences sr = Preferences.userRoot();
-		
-		String [] filters = filter.split(";");
-		
+
+		String[] filters = filter.split(";");
+
 		String koe = sr.get(filters[0], ".");
 		logger.fine("Hakemisto on: " + koe);
-//		Import2004Dialog d = new Import2004Dialog(null);
-//		d.setVisible(true);
-	
-//		if (!d.isOK()) return false;
+		// Import2004Dialog d = new Import2004Dialog(null);
+		// d.setVisible(true);
 
-//			String langCode = d.getSelectedLang();
-//		String oldCode = "FI"; //d.getSelected2004Lang();
-		
-		
-		
+		// if (!d.isOK()) return false;
+
+		// String langCode = d.getSelectedLang();
+		// String oldCode = "FI"; //d.getSelected2004Lang();
+
 		JFileChooser chooser = new JFileChooser();
-		
+
 		chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter(filter));
-		chooser.setDialogTitle("Open " +filter+ " file");
-		chooser.setSelectedFile(new File(koe+"/."));
-	
+		chooser.setDialogTitle("Open " + filter + " file");
+		chooser.setSelectedFile(new File(koe + "/."));
+
 		if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
 			return false;
 		}
-	
+
 		File f = chooser.getSelectedFile();
 		if (f == null) {
 			return false;
@@ -149,50 +136,47 @@ public class SukuKontrollerLocalImpl  implements SukuKontroller{
 		String filename = f.getAbsolutePath();
 		file = new File(filename);
 		this.server.setOpenFile(filename);
-		
+
 		logger.info("Valittiin: " + filename);
-		
+
 		String tmp = f.getAbsolutePath().replace("\\", "/");
 		int i = tmp.lastIndexOf("/");
-		
-		sr.put(filters[0], tmp.substring(0,i));
+
+		sr.put(filters[0], tmp.substring(0, i));
 
 		return true;
 	}
 
-
 	@Override
 	public SukuData getSukuData(SukuData request, String... params)
 			throws SukuException {
-		return this.server.getSukuData(request,params);
+		return this.server.getSukuData(request, params);
 	}
-
 
 	@Override
 	public long getFileLength() {
-		
+
 		if (file != null) {
 			return file.length();
 		}
-		
+
 		return 0;
 	}
 
-
 	@Override
 	public InputStream getInputStream() {
-		if (file != null){
+		if (file != null) {
 			try {
 				return new FileInputStream(file);
 			} catch (FileNotFoundException e) {
-				logger.log(Level.WARNING,"Failed to get input stream for file",e);
-				
+				logger.log(Level.WARNING,
+						"Failed to get input stream for file", e);
+
 			}
-			
+
 		}
 		return null;
 	}
-
 
 	@Override
 	public String getFileName() {
@@ -204,67 +188,63 @@ public class SukuKontrollerLocalImpl  implements SukuKontroller{
 
 	@Override
 	public boolean createLocalFile(String filter) {
-	Preferences sr = Preferences.userRoot();
-		
-		String [] filters = filter.split(";");
-		
+		Preferences sr = Preferences.userRoot();
+
+		String[] filters = filter.split(";");
+
 		String koe = sr.get(filters[0], ".");
 		logger.fine("Hakemisto on: " + koe);
-	
+
 		JFileChooser chooser = new JFileChooser();
-		
+
 		chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter(filter));
-		chooser.setDialogTitle("Create " +filter+ " file");
-		chooser.setSelectedFile(new File(koe+"/."));
-	
+		chooser.setDialogTitle("Create " + filter + " file");
+		chooser.setSelectedFile(new File(koe + "/."));
+
 		if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
 			return false;
 		}
-	
+
 		File f = chooser.getSelectedFile();
 		if (f == null) {
 			return false;
 		}
-		
-		
+
 		String filename = f.getAbsolutePath();
-		if (filename==null) return false;
-		if (filters.length==1) {
-			if (!filename.toLowerCase().endsWith(filters[0].toLowerCase()) ){
-				filename += "."+filters[0];
+		if (filename == null)
+			return false;
+		if (filters.length == 1) {
+			if (!filename.toLowerCase().endsWith(filters[0].toLowerCase())) {
+				filename += "." + filters[0];
 			}
 		}
-		
-		
+
 		outFile = new File(filename);
 		this.server.setOpenFile(filename);
-		
+
 		logger.info("Valittiin: " + filename);
-		
+
 		String tmp = f.getAbsolutePath().replace("\\", "/");
 		int i = tmp.lastIndexOf("/");
-		
-		sr.put(filters[0], tmp.substring(0,i));
+
+		sr.put(filters[0], tmp.substring(0, i));
 
 		return true;
 	}
 
 	@Override
 	public OutputStream getOutputStream() {
-		if (outFile != null){
+		if (outFile != null) {
 			try {
 				return new FileOutputStream(outFile);
 			} catch (FileNotFoundException e) {
-				logger.log(Level.WARNING,"Failed to get output stream for file",e);
-				
+				logger.log(Level.WARNING,
+						"Failed to get output stream for file", e);
+
 			}
-			
+
 		}
 		return null;
 	}
-
-
-	
-
 
 }

@@ -4,10 +4,9 @@ package fi.kaila.suku.util;
  * Exception container
  * 
  * @author FIKAAKAIL 25.7.2007
- *
+ * 
  */
 public class SukuException extends Exception {
-
 
 	/**
 	 * 
@@ -19,7 +18,7 @@ public class SukuException extends Exception {
 	 */
 	public SukuException(String text) {
 		super(text);
-		
+
 	}
 
 	/**
@@ -28,7 +27,7 @@ public class SukuException extends Exception {
 	 */
 	public SukuException(String text, Throwable t) {
 		super(text, t);
-		
+
 	}
 
 	/**
@@ -36,6 +35,6 @@ public class SukuException extends Exception {
 	 */
 	public SukuException(Throwable t) {
 		super(t);
-		
+
 	}
 }

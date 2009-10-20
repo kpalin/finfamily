@@ -1547,7 +1547,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	// private void copyPerson(int pid) {
-	// String koe = "Leikep�yd�'lle [" + pid + "] kamaa";
+	// String koe = "Leikepöydälle [" + pid + "] kamaa";
 	private void copyToClip(String koe) {
 		StringSelection stringSelection = new StringSelection(koe);
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -1921,7 +1921,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			Import2004Dialog dlg = new Import2004Dialog(this, kontroller);
 			dlg.setVisible(true);
-			// TODO allaolevat eiv�t taida olla worker threadiss� en��
+			// TODO allaolevat eivät taida olla worker threadissä enää
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
 			kontroller.getSukuData("cmd=excel",
 					"path=resources/excel/PaikatExcel.xls", "page=coordinates");

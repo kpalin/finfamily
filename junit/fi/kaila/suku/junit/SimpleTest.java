@@ -1,17 +1,15 @@
 package fi.kaila.suku.junit;
 
-import org.junit.Test;
-
 import junit.framework.TestCase;
+
+import org.junit.Test;
 
 public class SimpleTest extends TestCase {
 
-	
-	@Test public void testSimpleTest() {
-		boolean result=true;
-	    assertTrue(result);
+	@Test
+	public void testSimpleTest() {
+		boolean result = true;
+		assertTrue(result);
 	}
 
-	
-	
 }

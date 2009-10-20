@@ -10,23 +10,24 @@ import java.util.logging.Logger;
  * Executor of operating system commands
  * 
  * @author Kalle
- *
+ * 
  */
 public class CommandExecuter {
 
-
-	private static Logger logger= Logger.getLogger(CommandExecuter.class.getName());
+	private static Logger logger = Logger.getLogger(CommandExecuter.class
+			.getName());
 
 	/**
 	 * execute the command
 	 * 
-	 * @param cmd each command part is in seperate string
+	 * @param cmd
+	 *            each command part is in seperate string
 	 * @throws InterruptedException
 	 * @throws SukuException
 	 * @throws IOException
 	 */
-	public static void executeTheCommnad(String[] cmd)  throws  InterruptedException, SukuException, IOException{
-
+	public static void executeTheCommnad(String[] cmd)
+			throws InterruptedException, SukuException, IOException {
 
 		Process process = null;
 		long execStarted = System.currentTimeMillis();
@@ -45,9 +46,12 @@ public class CommandExecuter {
 		// Get the exit value
 		int exitValue = process.exitValue();
 
-		//   logger.debug("ArchiveFileStorageService :: Execution exit value=" + exitValue);
-		//   logger.debug("ArchiveFileStorageService :: Execution result=" + stdoutBuffer.toString());
-		//   logger.debug("ArchiveFileStorageService :: Execution error=" + stderrBuffer.toString());
+		// logger.debug("ArchiveFileStorageService :: Execution exit value=" +
+		// exitValue);
+		// logger.debug("ArchiveFileStorageService :: Execution result=" +
+		// stdoutBuffer.toString());
+		// logger.debug("ArchiveFileStorageService :: Execution error=" +
+		// stderrBuffer.toString());
 
 		// Check the exit value. It needs to be 0
 		if (exitValue != 0) {
@@ -65,16 +69,19 @@ public class CommandExecuter {
 		}
 
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < cmd.length; i++){
-			if (i > 0) sb.append(" ");
+		for (int i = 0; i < cmd.length; i++) {
+			if (i > 0)
+				sb.append(" ");
 			sb.append(cmd[i]);
 		}
 
-		logger.info("Command '"+sb.toString()+"'  executed in " + (execEnded - execStarted) + " ms.");
+		logger.info("Command '" + sb.toString() + "'  executed in "
+				+ (execEnded - execStarted) + " ms.");
 
 	}
 
-	private static void streamToBuffer(final InputStream input, final StringBuffer buffer) {
+	private static void streamToBuffer(final InputStream input,
+			final StringBuffer buffer) {
 		new Thread(new Runnable() {
 
 			public void run() {

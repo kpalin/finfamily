@@ -12,7 +12,7 @@ public class Tester {
 
 	/**
 	 * @param args
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
 
@@ -20,10 +20,10 @@ public class Tester {
 		t.doMe(args);
 	}
 
-	private void doMe(String [] args) throws IOException {
-		
+	private void doMe(String[] args) throws IOException {
+
 		ZipFile z = new ZipFile(args[0] + "/" + args[1]);
-		
+
 		System.out.println("z:" + z);
 		File f;
 		FileOutputStream os;
@@ -31,37 +31,37 @@ public class Tester {
 		ZipEntry ze;
 		InputStream is;
 		int lit;
-		byte bbb[] = new byte[32*1024];
-		while (e.hasMoreElements()){
-			ze = (ZipEntry)e.nextElement();
+		byte bbb[] = new byte[32 * 1024];
+		while (e.hasMoreElements()) {
+			ze = (ZipEntry) e.nextElement();
 			System.out.println("zen:" + ze.getName());
-			if (ze.isDirectory()){
-				f = new File(args[0] +"/"+ze.getName());
-				if (!f.isDirectory()){
+			if (ze.isDirectory()) {
+				f = new File(args[0] + "/" + ze.getName());
+				if (!f.isDirectory()) {
 					f.mkdirs();
 				}
-				
+
 			} else {
-				
+
 				is = z.getInputStream(ze);
-				os = new FileOutputStream(args[0] +"/"+ ze.getName());
-				
+				os = new FileOutputStream(args[0] + "/" + ze.getName());
+
 				while (true) {
 					lit = is.read(bbb);
-					if (lit > 0){
+					if (lit > 0) {
 						os.write(bbb, 0, lit);
 					} else {
 						break;
 					}
 				}
 				os.close();
-				
+
 			}
-			
-			System.out.println("ze:" + ze.getName() + "DIR:" + ze.isDirectory());
+
+			System.out
+					.println("ze:" + ze.getName() + "DIR:" + ze.isDirectory());
 		}
-		
+
 	}
-	
-	
+
 }
