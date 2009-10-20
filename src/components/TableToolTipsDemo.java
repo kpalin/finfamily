@@ -27,14 +27,18 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 package components;
 
 /* 
  * TableToolTipsDemo.java requires no other files.
  */
- 
+
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,209 +47,194 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
 
-/** 
- * TableToolTipsDemo is just like TableDemo except that it
- * sets up tool tips for both cells and column headers.
+/**
+ * TableToolTipsDemo is just like TableDemo except that it sets up tool tips for
+ * both cells and column headers.
  */
 public class TableToolTipsDemo extends JPanel {
-    private boolean DEBUG = false;
-    protected String[] columnToolTips = {null,
-                                         null,
-                                         "The person's favorite sport to participate in",
-                                         "The number of years the person has played the sport",
-                                         "If checked, the person eats no meat"};
+	private boolean DEBUG = false;
+	protected String[] columnToolTips = { null, null,
+			"The person's favorite sport to participate in",
+			"The number of years the person has played the sport",
+			"If checked, the person eats no meat" };
 
-    public TableToolTipsDemo() {
-        super(new GridLayout(1,0));
+	public TableToolTipsDemo() {
+		super(new GridLayout(1, 0));
 
-        JTable table = new JTable(new MyTableModel()) {
-            
-            //Implement table cell tool tips.
-            public String getToolTipText(MouseEvent e) {
-                String tip = null;
-                java.awt.Point p = e.getPoint();
-                int rowIndex = rowAtPoint(p);
-                int colIndex = columnAtPoint(p);
-                int realColumnIndex = convertColumnIndexToModel(colIndex);
+		JTable table = new JTable(new MyTableModel()) {
 
-                if (realColumnIndex == 2) { //Sport column
-                    tip = "This person's favorite sport to "
-                           + "participate in is: "
-                           + getValueAt(rowIndex, colIndex);
-                } else if (realColumnIndex == 4) { //Veggie column
-                    TableModel model = getModel();
-                    String firstName = (String)model.getValueAt(rowIndex,0);
-                    String lastName = (String)model.getValueAt(rowIndex,1);
-                    Boolean veggie = (Boolean)model.getValueAt(rowIndex,4);
-                    if (Boolean.TRUE.equals(veggie)) {
-                        tip = firstName + " " + lastName
-                              + " is a vegetarian";
-                    } else {
-                        tip = firstName + " " + lastName
-                              + " is not a vegetarian";
-                    }
-                } else { 
-                    //You can omit this part if you know you don't 
-                    //have any renderers that supply their own tool 
-                    //tips.
-                    tip = super.getToolTipText(e);
-                }
-                return tip;
-            }
+			// Implement table cell tool tips.
+			public String getToolTipText(MouseEvent e) {
+				String tip = null;
+				java.awt.Point p = e.getPoint();
+				int rowIndex = rowAtPoint(p);
+				int colIndex = columnAtPoint(p);
+				int realColumnIndex = convertColumnIndexToModel(colIndex);
 
-            //Implement table header tool tips. 
-            protected JTableHeader createDefaultTableHeader() {
-                return new JTableHeader(columnModel) {
-                    public String getToolTipText(MouseEvent e) {
-                        String tip = null;
-                        java.awt.Point p = e.getPoint();
-                        int index = columnModel.getColumnIndexAtX(p.x);
-                        int realIndex = columnModel.getColumn(index).getModelIndex();
-                        return columnToolTips[realIndex];
-                    }
-                };
-            }
-        };
-     
-        
-        
-        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-        table.setFillsViewportHeight(true);
-                
-        //Create the scroll pane and add the table to it.
-        JScrollPane scrollPane = new JScrollPane(table);
+				if (realColumnIndex == 2) { // Sport column
+					tip = "This person's favorite sport to "
+							+ "participate in is: "
+							+ getValueAt(rowIndex, colIndex);
+				} else if (realColumnIndex == 4) { // Veggie column
+					TableModel model = getModel();
+					String firstName = (String) model.getValueAt(rowIndex, 0);
+					String lastName = (String) model.getValueAt(rowIndex, 1);
+					Boolean veggie = (Boolean) model.getValueAt(rowIndex, 4);
+					if (Boolean.TRUE.equals(veggie)) {
+						tip = firstName + " " + lastName + " is a vegetarian";
+					} else {
+						tip = firstName + " " + lastName
+								+ " is not a vegetarian";
+					}
+				} else {
+					// You can omit this part if you know you don't
+					// have any renderers that supply their own tool
+					// tips.
+					tip = super.getToolTipText(e);
+				}
+				return tip;
+			}
 
-        //Add the scroll pane to this panel.
-        add(scrollPane);
-    }
+			// Implement table header tool tips.
+			protected JTableHeader createDefaultTableHeader() {
+				return new JTableHeader(columnModel) {
+					public String getToolTipText(MouseEvent e) {
+						String tip = null;
+						java.awt.Point p = e.getPoint();
+						int index = columnModel.getColumnIndexAtX(p.x);
+						int realIndex = columnModel.getColumn(index)
+								.getModelIndex();
+						return columnToolTips[realIndex];
+					}
+				};
+			}
+		};
 
-    class MyTableModel extends AbstractTableModel {
-        private String[] columnNames = {"First Name",
-                                        "Last Name",
-                                        "Sport",
-                                        "# of Years",
-                                        "Vegetarian"};
-        private Object[][] data = {
-            {"Mary", "Campione",
-             "Snowboarding", new Integer(5), new Boolean(false)},
-            {"Alison", "Huml",
-             "Rowing", new Integer(3), new Boolean(true)},
-            {"Kathy", "Walrath",
-             "Knitting", new Integer(2), new Boolean(false)},
-            {"Sharon", "Zakhour",
-             "Speed reading", new Integer(20), new Boolean(true)},
-            {"Philip", "Milne",
-             "Pool", new Integer(10), new Boolean(false)}
-        };
+		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+		table.setFillsViewportHeight(true);
 
-        public int getColumnCount() {
-            return columnNames.length;
-        }
+		// Create the scroll pane and add the table to it.
+		JScrollPane scrollPane = new JScrollPane(table);
 
-        public int getRowCount() {
-            return data.length;
-        }
+		// Add the scroll pane to this panel.
+		add(scrollPane);
+	}
 
-        public String getColumnName(int col) {
-            return columnNames[col];
-        }
+	class MyTableModel extends AbstractTableModel {
+		private String[] columnNames = { "First Name", "Last Name", "Sport",
+				"# of Years", "Vegetarian" };
+		private Object[][] data = {
+				{ "Mary", "Campione", "Snowboarding", Integer.valueOf(5),
+						Boolean.valueOf(false) },
+				{ "Alison", "Huml", "Rowing", Integer.valueOf(3),
+						Boolean.valueOf(true) },
+				{ "Kathy", "Walrath", "Knitting", Integer.valueOf(2),
+						Boolean.valueOf(false) },
+				{ "Sharon", "Zakhour", "Speed reading", Integer.valueOf(20),
+						Boolean.valueOf(true) },
+				{ "Philip", "Milne", "Pool", Integer.valueOf(10),
+						Boolean.valueOf(false) } };
 
-        public Object getValueAt(int row, int col) {
-            return data[row][col];
-        }
+		public int getColumnCount() {
+			return columnNames.length;
+		}
 
-        /*
-         * JTable uses this method to determine the default renderer/
-         * editor for each cell.  If we didn't implement this method,
-         * then the last column would contain text ("true"/"false"),
-         * rather than a check box.
-         */
-        public Class getColumnClass(int c) {
-            return getValueAt(0, c).getClass();
-        }
+		public int getRowCount() {
+			return data.length;
+		}
 
-        /*
-         * Don't need to implement this method unless your table's
-         * editable.
-         */
-        public boolean isCellEditable(int row, int col) {
-            //Note that the data/cell address is constant,
-            //no matter where the cell appears onscreen.
-            if (col < 2) {
-                return false;
-            } else {
-                return true;
-            }
-        }
+		public String getColumnName(int col) {
+			return columnNames[col];
+		}
 
-        /*
-         * Don't need to implement this method unless your table's
-         * data can change.
-         */
-        public void setValueAt(Object value, int row, int col) {
-            if (DEBUG) {
-                System.out.println("Setting value at " + row + "," + col
-                                   + " to " + value
-                                   + " (an instance of "
-                                   + value.getClass() + ")");
-            }
+		public Object getValueAt(int row, int col) {
+			return data[row][col];
+		}
 
-            data[row][col] = value;
-            fireTableCellUpdated(row, col);
+		/*
+		 * JTable uses this method to determine the default renderer/ editor for
+		 * each cell. If we didn't implement this method, then the last column
+		 * would contain text ("true"/"false"), rather than a check box.
+		 */
+		public Class getColumnClass(int c) {
+			return getValueAt(0, c).getClass();
+		}
 
-            if (DEBUG) {
-                System.out.println("New value of data:");
-                printDebugData();
-            }
-        }
+		/*
+		 * Don't need to implement this method unless your table's editable.
+		 */
+		public boolean isCellEditable(int row, int col) {
+			// Note that the data/cell address is constant,
+			// no matter where the cell appears onscreen.
+			if (col < 2) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 
-        private void printDebugData() {
-            int numRows = getRowCount();
-            int numCols = getColumnCount();
+		/*
+		 * Don't need to implement this method unless your table's data can
+		 * change.
+		 */
+		public void setValueAt(Object value, int row, int col) {
+			if (DEBUG) {
+				System.out.println("Setting value at " + row + "," + col
+						+ " to " + value + " (an instance of "
+						+ value.getClass() + ")");
+			}
 
-            for (int i=0; i < numRows; i++) {
-                System.out.print("    row " + i + ":");
-                for (int j=0; j < numCols; j++) {
-                    System.out.print("  " + data[i][j]);
-                }
-                System.out.println();
-            }
-            System.out.println("--------------------------");
-        }
-    }
+			data[row][col] = value;
+			fireTableCellUpdated(row, col);
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("TableToolTipsDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			if (DEBUG) {
+				System.out.println("New value of data:");
+				printDebugData();
+			}
+		}
 
-        //Create and set up the content pane.
-        JComponent newContentPane = new TableToolTipsDemo();
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
+		private void printDebugData() {
+			int numRows = getRowCount();
+			int numCols = getColumnCount();
 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
+			for (int i = 0; i < numRows; i++) {
+				System.out.print("    row " + i + ":");
+				for (int j = 0; j < numCols; j++) {
+					System.out.print("  " + data[i][j]);
+				}
+				System.out.println();
+			}
+			System.out.println("--------------------------");
+		}
+	}
 
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
+	/**
+	 * Create the GUI and show it. For thread safety, this method should be
+	 * invoked from the event-dispatching thread.
+	 */
+	private static void createAndShowGUI() {
+		// Create and set up the window.
+		JFrame frame = new JFrame("TableToolTipsDemo");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Create and set up the content pane.
+		JComponent newContentPane = new TableToolTipsDemo();
+		newContentPane.setOpaque(true); // content panes must be opaque
+		frame.setContentPane(newContentPane);
+
+		// Display the window.
+		frame.pack();
+		frame.setVisible(true);
+	}
+
+	public static void main(String[] args) {
+		// Schedule a job for the event-dispatching thread:
+		// creating and showing this application's GUI.
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				createAndShowGUI();
+			}
+		});
+	}
 }
-

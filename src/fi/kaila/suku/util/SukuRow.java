@@ -242,7 +242,7 @@ public class SukuRow {
 			return person.getRefn();
 		} else if (idx == crit.getColIndex(Resurses.COLUMN_T_PID)) {
 
-			return new Integer(person.getPid());
+			return Integer.valueOf(person.getPid());
 		} else {
 
 			// case 1:

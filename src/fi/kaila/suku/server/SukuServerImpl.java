@@ -97,11 +97,12 @@ public class SukuServerImpl implements SukuServer {
 		}
 
 		logger.fine("Connection: " + this.dbConne + ";schema: " + this.schema);
+
 		try {
 			this.con = DriverManager.getConnection(this.dbConne);
 			Statement stm = this.con.createStatement();
 			stm.executeUpdate("set search_path to " + this.schema);
-
+			stm.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 
@@ -155,6 +156,7 @@ public class SukuServerImpl implements SukuServer {
 				v.add("" + vid + ";" + aux);
 			}
 			rs.close();
+			pstm.close();
 			String[] vl = new String[0];
 			vlist.generalArray = v.toArray(vl);
 			return vlist;
@@ -211,6 +213,7 @@ public class SukuServerImpl implements SukuServer {
 				v.add(rel);
 
 			}
+			pstm.close();
 
 			int begChil = v.size();
 
@@ -247,7 +250,7 @@ public class SukuServerImpl implements SukuServer {
 
 					rs = pstm.executeQuery();
 					while (rs.next()) {
-						parents.add(new Integer(rs.getInt(1)));
+						parents.add(Integer.valueOf(rs.getInt(1)));
 					}
 					rs.close();
 					pstm.close();
@@ -298,6 +301,8 @@ public class SukuServerImpl implements SukuServer {
 			}
 			PersonShortData[] dp = new PersonShortData[0];
 			fam.pers = pv.toArray(dp);
+
+			pstm.close();
 
 			return fam;
 
@@ -681,6 +686,7 @@ public class SukuServerImpl implements SukuServer {
 				sb.append("]; ");
 			}
 			rs.close();
+			stm.close();
 
 			response.resu = sb.toString();
 		} catch (SQLException e) {
@@ -712,6 +718,7 @@ public class SukuServerImpl implements SukuServer {
 		try {
 			PreparedStatement pst = con.prepareStatement(sql);
 			int lukuri = pst.executeUpdate();
+			pst.close();
 
 			logger.fine("deleted [" + lukuri + "] settings where type =" + type
 					+ " and name = " + name);
@@ -762,6 +769,7 @@ public class SukuServerImpl implements SukuServer {
 
 			}
 			rs.close();
+			stm.close();
 
 			res.pidArray = new int[vxv.size()];
 			for (int i = 0; i < vxv.size(); i++) {
@@ -843,6 +851,7 @@ public class SukuServerImpl implements SukuServer {
 					res.vvTypes.add(vx);
 				}
 				rs.close();
+				stm.close();
 
 			} else {
 
@@ -861,6 +870,7 @@ public class SukuServerImpl implements SukuServer {
 
 				}
 				rs.close();
+				stm.close();
 				res.generalArray = setv.toArray(new String[0]);
 			}
 		} catch (SQLException e) {
@@ -901,6 +911,7 @@ public class SukuServerImpl implements SukuServer {
 				vx[3] = "Notices";
 				res.vvTypes.add(vx);
 			}
+			stm.close();
 
 		} catch (SQLException e) {
 			res.resu = e.getMessage();
@@ -928,6 +939,7 @@ public class SukuServerImpl implements SukuServer {
 				vx[2] = rs.getString(3);
 				res.vvTexts.add(vx);
 			}
+			stm.close();
 
 		} catch (SQLException e) {
 			res.resu = e.getMessage();
@@ -969,6 +981,7 @@ public class SukuServerImpl implements SukuServer {
 				luku = rs.getInt(1);
 			}
 			rs.close();
+			pstm.close();
 		} catch (SQLException se) {
 			luku = -1;
 		}
@@ -988,6 +1001,7 @@ public class SukuServerImpl implements SukuServer {
 			pstm = con.prepareStatement(sql);
 			pstm.setInt(1, index);
 			pstm.executeUpdate();
+			pstm.close();
 
 			// }
 
@@ -1246,6 +1260,7 @@ public class SukuServerImpl implements SukuServer {
 								rl.add(rrl);
 							}
 							rs.close();
+							pstm.close();
 
 							if (rl.size() > 0) {
 								rn.setLanguages(rl

@@ -645,11 +645,13 @@ public class PersonView extends JPanel implements ChangeListener {
 					&& previousNoticeIndex < getTabCount()) { // greater than
 				// sukulaiset
 				NoticePane pane = null;
+				String resu = null;
 				Component pan = paneTabs.get(previousNoticeIndex).pnl;
 				if (pan instanceof NoticePane) {
 					pane = (NoticePane) paneTabs.get(previousNoticeIndex).pnl;
+					resu = pane.getUnitNoticeError();
 				}
-				String resu = pane.getUnitNoticeError();
+
 				if (resu != null) {
 					if (skipNextState) {
 						skipNextState = false;

@@ -716,31 +716,37 @@ public class PersonUtil {
 			int lukuri = pst.executeUpdate();
 			logger.fine("Deleted [" + pid + "] relationlanguage count:"
 					+ lukuri);
+			pst.close();
 
 			pst = con.prepareStatement(sqlrnoti);
 			pst.setInt(1, pid);
 			lukuri = pst.executeUpdate();
 			logger.fine("Deleted [" + pid + "] relationnotice count:" + lukuri);
+			pst.close();
 
 			pst = con.prepareStatement(sqlr);
 			pst.setInt(1, pid);
 			lukuri = pst.executeUpdate();
 			logger.fine("Deleted [" + pid + "] relation count:" + lukuri);
+			pst.close();
 
 			pst = con.prepareStatement(sqlul);
 			pst.setInt(1, pid);
 			lukuri = pst.executeUpdate();
 			logger.fine("Deleted [" + pid + "] unitlanguage count:" + lukuri);
+			pst.close();
 
 			pst = con.prepareStatement(sqlun);
 			pst.setInt(1, pid);
 			lukuri = pst.executeUpdate();
 			logger.fine("Deleted [" + pid + "] unitnotice count:" + lukuri);
+			pst.close();
 
 			pst = con.prepareStatement(sqlu);
 			pst.setInt(1, pid);
 			lukuri = pst.executeUpdate();
 			logger.fine("Deleted [" + pid + "] unit count:" + lukuri);
+			pst.close();
 
 		} catch (SQLException e) {
 			res.resu = e.getMessage();

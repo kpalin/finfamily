@@ -261,7 +261,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 						this.userCombo.addItem(userlista[i]);
 
 					}
-
+					stm.close();
 					con.close();
 
 				} catch (Exception e1) {
@@ -290,6 +290,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 					Connection con = getConnection();
 					Statement stm = con.createStatement();
 					stm.executeUpdate(sql);
+					stm.close();
 					con.close();
 
 				} catch (SQLException e1) {
@@ -316,7 +317,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 					String[] datalista = LocalDatabaseUtility
 							.getListOfDatabases(con);
 					this.dblista.setListData(datalista);
-
+					stm.close();
 					con.close();
 
 				} catch (Exception e1) {
@@ -346,7 +347,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 					String[] datalista = LocalDatabaseUtility
 							.getListOfDatabases(con);
 					this.dblista.setListData(datalista);
-
+					stm.close();
 					con.close();
 
 				} catch (Exception e1) {

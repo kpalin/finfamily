@@ -209,21 +209,25 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 		byte imbytes[] = new byte[8192];
 		int imsize;
+		InputStream in = null;
 		try {
 			if (womanIcon == null) {
-				InputStream in = this.getClass().getResourceAsStream(
+				in = this.getClass().getResourceAsStream(
 						"/images/womanicon.png");
 
 				imsize = in.read(imbytes);
 				if (imsize < imbytes.length) {
 					womanIcon = new ImageIcon(imbytes);
 				}
+				in.close();
 
 				in = this.getClass().getResourceAsStream("/images/manicon.png");
 				imsize = in.read(imbytes);
 				if (imsize < imbytes.length) {
 					manIcon = new ImageIcon(imbytes);
 				}
+				in.close();
+
 				in = this.getClass().getResourceAsStream(
 						"/images/unknownicon.png");
 				imsize = in.read(imbytes);
@@ -233,6 +237,13 @@ public class RelativesPane extends JPanel implements ActionListener,
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {
+				}
+			}
 		}
 		popupListener = new RelativePopupListener(this);
 		pop = RelativePopupMenu.getInstance(popupListener);

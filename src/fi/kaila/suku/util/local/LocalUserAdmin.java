@@ -80,10 +80,10 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 		getContentPane().add(verifyPassword);
 		verifyPassword.setBounds(120, y, 200, 20);
 
-		y += 30;
+		y += 40;
 		ok = new JButton(Resurses.getString(OK));
 		getContentPane().add(ok);
-		ok.setBounds(60, y, 100, 30);
+		ok.setBounds(110, y, 100, 20);
 		ok.setActionCommand(OK);
 		ok.addActionListener(this);
 		ok.setDefaultCapable(true);
@@ -92,11 +92,11 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 
 		cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(cancel);
-		cancel.setBounds(200, y, 100, 30);
+		cancel.setBounds(230, y, 100, 20);
 		cancel.setActionCommand(CANCEL);
 		cancel.addActionListener(this);
 
-		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, y + 100);
+		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, y + 70);
 	}
 
 	//

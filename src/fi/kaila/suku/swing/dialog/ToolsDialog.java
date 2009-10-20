@@ -175,10 +175,10 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		this.progressBar.setBounds(30, y, 340, 20);
 		getContentPane().add(this.progressBar);
 
-		y += 30;
+		y += 40;
 		this.ok = new JButton(Resurses.getString(OK));
 		getContentPane().add(this.ok);
-		this.ok.setBounds(60, y, 100, 30);
+		this.ok.setBounds(360, y, 100, 20);
 		this.ok.setActionCommand(OK);
 		this.ok.addActionListener(this);
 		this.ok.setDefaultCapable(true);
@@ -186,7 +186,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 		this.cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(this.cancel);
-		this.cancel.setBounds(200, y, 100, 30);
+		this.cancel.setBounds(480, y, 100, 20);
 		this.cancel.setActionCommand(CANCEL);
 		this.cancel.addActionListener(this);
 

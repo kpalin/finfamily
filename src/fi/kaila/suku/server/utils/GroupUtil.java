@@ -61,6 +61,7 @@ public class GroupUtil {
 				resp.resu = "GROUPS REMOVED[" + resp.pidArray.length
 						+ "]; RESULT[" + lukuri + "]";
 			}
+			stm.close();
 			return resp;
 
 		} catch (SQLException e) {
@@ -92,6 +93,7 @@ public class GroupUtil {
 			for (int i = 0; i < pidv.size(); i++) {
 				resp.pidArray[i] = pidv.get(i);
 			}
+			stm.close();
 			return resp;
 
 		} catch (SQLException e) {
@@ -123,6 +125,7 @@ public class GroupUtil {
 			for (int i = 0; i < pidv.size(); i++) {
 				resp.pidArray[i] = pidv.get(i);
 			}
+			stm.close();
 			stm = con.prepareStatement("update unit set groupid = null "
 					+ "where pid in (select pid from viewunits where vid = ?) "
 					+ "and groupid is not null ");
@@ -133,6 +136,7 @@ public class GroupUtil {
 						+ "]; RESULT[" + lukuri + "]";
 			}
 
+			stm.close();
 			return resp;
 
 		} catch (SQLException e) {
@@ -162,6 +166,7 @@ public class GroupUtil {
 			for (int i = 0; i < pidv.size(); i++) {
 				resp.pidArray[i] = pidv.get(i);
 			}
+			stm.close();
 			stm = con
 					.prepareStatement("update unit set groupid = null where groupid = ? ");
 			stm.setString(1, group);
@@ -170,6 +175,7 @@ public class GroupUtil {
 				resp.resu = "GROUPS REMOVED[" + resp.pidArray.length
 						+ "]; RESULT[" + lukuri + "]";
 			}
+			stm.close();
 
 			return resp;
 
@@ -203,6 +209,7 @@ public class GroupUtil {
 			for (int i = 0; i < pidv.size(); i++) {
 				resp.pidArray[i] = pidv.get(i);
 			}
+			stm.close();
 			return resp;
 
 		} catch (SQLException e) {
@@ -233,6 +240,7 @@ public class GroupUtil {
 			for (int i = 0; i < pidv.size(); i++) {
 				resp.pidArray[i] = pidv.get(i);
 			}
+			stm.close();
 			stm = con.prepareStatement("update unit set groupid = ? "
 					+ "where pid in (select pid from viewunits where vid = ?) "
 					+ "and groupid is null ");
@@ -243,6 +251,7 @@ public class GroupUtil {
 				resp.resu = "GROUPS ADDED[" + resp.pidArray.length
 						+ "]; RESULT[" + lukuri + "]";
 			}
+			stm.close();
 
 			return resp;
 

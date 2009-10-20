@@ -271,7 +271,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		rivi += 22;
 		remove = new JButton(Resurses.getString("DIALOG_GROUP_REMOVE"));
 		removeGroup.add(remove);
-		remove.setBounds(10, 170, 120, 20);
+		remove.setBounds(10, 270, 120, 20);
 		remove.addActionListener(this);
 
 		updateSelectStatus();

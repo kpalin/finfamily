@@ -674,7 +674,7 @@ public class HiskiImporter extends JFrame implements ActionListener {
 	private String toTextDate(String hiskiDate) {
 		if (hiskiDate == null || hiskiDate.equals(""))
 			return null;
-		String[] parts = hiskiDate.split(".");
+		String[] parts = hiskiDate.split("\\.");
 		StringBuffer sb = new StringBuffer();
 
 		for (int i = parts.length - 1; i >= 0; i--) {

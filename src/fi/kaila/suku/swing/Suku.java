@@ -918,11 +918,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		// ImageIcon selectedIcon=null;
 		// System.out.println("NAV1: " + imageName );
 		byte imbytes[] = new byte[8192];
-		InputStream in = this.getClass().getResourceAsStream(imgLocation);
-		// System.out.println("NAV2: " + imageName + ":"+in);
-		int imsize = in.read(imbytes);
-		if (imsize < imbytes.length) {
-			icon = new ImageIcon(imbytes, altText);
+
+		InputStream in = null;
+		try {
+			in = this.getClass().getResourceAsStream(imgLocation);
+			// System.out.println("NAV2: " + imageName + ":"+in);
+			int imsize = in.read(imbytes);
+			if (imsize < imbytes.length) {
+				icon = new ImageIcon(imbytes, altText);
+			}
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {
+				}
+			}
+
 		}
 
 		// Create and initialize the button.

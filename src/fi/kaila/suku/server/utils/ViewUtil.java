@@ -40,12 +40,14 @@ public class ViewUtil {
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setInt(1, viewId);
 			resu.resuCount = pst.executeUpdate();
+			pst.close();
 
 			sql = "delete from views where vid = ?";
 
 			pst = con.prepareStatement(sql);
 			pst.setInt(1, viewId);
 			pst.executeUpdate();
+			pst.close();
 
 		} catch (SQLException e) {
 			resu.resu = e.getMessage();
@@ -60,7 +62,6 @@ public class ViewUtil {
 		SukuData resu = new SukuData();
 		try {
 			Statement stm = con.createStatement();
-			stm = con.createStatement();
 			int vid = 0;
 			ResultSet rs = stm.executeQuery("select nextval('viewseq')");
 
@@ -70,6 +71,7 @@ public class ViewUtil {
 				throw new SQLException("Sequence viewseq error");
 			}
 			rs.close();
+			stm.close();
 
 			String sql = "insert into views (vid,name) values (?,?)";
 
@@ -77,6 +79,7 @@ public class ViewUtil {
 			pst.setInt(1, vid);
 			pst.setString(2, viewname);
 			pst.executeUpdate();
+			pst.close();
 
 		} catch (SQLException e) {
 			resu.resu = e.getMessage();
@@ -103,6 +106,7 @@ public class ViewUtil {
 				vv.add(rs.getString("name"));
 			}
 			rs.close();
+			stm.close();
 			resu.generalArray = vv.toArray(new String[0]);
 
 		} catch (SQLException e) {
@@ -125,6 +129,7 @@ public class ViewUtil {
 				stm = con.prepareStatement(sql);
 				stm.setInt(1, vid);
 				stm.executeUpdate();
+				stm.close();
 
 			}
 
@@ -166,6 +171,7 @@ public class ViewUtil {
 				stm = con.prepareStatement(sql);
 				stm.setInt(1, viewId);
 				stm.executeUpdate();
+				stm.close();
 
 			}
 
@@ -183,6 +189,7 @@ public class ViewUtil {
 				resp.resu = "VIEW DESCENDANT NO SUCH PERSON " + pid;
 			}
 			rs.close();
+			stm.close();
 			int currgen = 0;
 			do {
 				int firstChild = pidv.size();
@@ -198,6 +205,7 @@ public class ViewUtil {
 						pidv.add(rs.getInt(1));
 					}
 					rs.close();
+					stm.close();
 
 				}
 				int lastChild = pidv.size();
@@ -214,6 +222,7 @@ public class ViewUtil {
 							pidv.add(rs.getInt(1));
 						}
 						rs.close();
+						stm.close();
 					}
 				}
 				from = firstChild;
@@ -254,6 +263,7 @@ public class ViewUtil {
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, vid);
 			stm.executeUpdate();
+			stm.close();
 
 		} catch (SQLException e) {
 			resu.resu = e.getMessage();
@@ -308,6 +318,7 @@ public class ViewUtil {
 				stm = con.prepareStatement(sql);
 				stm.setInt(1, viewId);
 				stm.executeUpdate();
+				stm.close();
 
 			}
 
@@ -325,6 +336,7 @@ public class ViewUtil {
 				resp.resu = "VIEW ANCESTORS NO SUCH PERSON " + pid;
 			}
 			rs.close();
+			stm.close();
 
 			int currgen = 0;
 			do {
@@ -341,6 +353,7 @@ public class ViewUtil {
 						pidv.add(rs.getInt(1));
 					}
 					rs.close();
+					stm.close();
 
 				}
 				int lastPare = pidv.size();

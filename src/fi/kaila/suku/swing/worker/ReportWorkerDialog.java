@@ -1448,16 +1448,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					String tag = reposet.vvTypes.get(i)[0];
 					typesTags[i] = tag;
 					typesData[i][0] = reposet.vvTypes.get(i)[1];
-					typesData[i][1] = new Boolean(false);
+					typesData[i][1] = Boolean.valueOf(false);
 					if ("|BIRT|DEAT|CHR|BURI|".indexOf(tag) > 0) {
-						typesData[i][1] = new Boolean(true);
+						typesData[i][1] = Boolean.valueOf(true);
 					}
-					typesData[i][2] = new Boolean(true);
-					typesData[i][3] = new Boolean(false);
-					typesData[i][4] = new Boolean(false);
+					typesData[i][2] = Boolean.valueOf(true);
+					typesData[i][3] = Boolean.valueOf(false);
+					typesData[i][4] = Boolean.valueOf(false);
 					if ("|BIRT|DEAT|OCCU|".indexOf(tag) > 0) {
-						typesData[i][3] = new Boolean(true);
-						typesData[i][4] = new Boolean(true);
+						typesData[i][3] = Boolean.valueOf(true);
+						typesData[i][4] = Boolean.valueOf(true);
 					}
 					typesData[i][5] = reposet.vvTypes.get(i)[2];
 

@@ -72,7 +72,7 @@ public class SukuUtility {
 	 */
 	public void createSukuDb(Connection con) throws SukuException {
 
-		InputStreamReader in;
+		InputStreamReader in = null;
 		try {
 			in = new InputStreamReader(this.getClass().getResourceAsStream(
 					"/sql/finfamily.sql"), "UTF-8");
@@ -137,6 +137,14 @@ public class SukuUtility {
 			}
 		} catch (Exception e) {
 			throw new SukuException(e);
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {
+				}
+			}
+
 		}
 	}
 

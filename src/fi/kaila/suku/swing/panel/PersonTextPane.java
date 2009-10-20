@@ -319,7 +319,7 @@ public class PersonTextPane extends JTextPane {
 				HashMap<Integer, PersonShortData> map = new HashMap<Integer, PersonShortData>();
 
 				for (int i = 0; i < namlist.length; i++) {
-					map.put(new Integer(namlist[i].getPid()), namlist[i]);
+					map.put(Integer.valueOf(namlist[i].getPid()), namlist[i]);
 				}
 				append("\n", bodyText);
 
@@ -340,7 +340,7 @@ public class PersonTextPane extends JTextPane {
 							append("\n", bodyText);
 							activate = false;
 						}
-						relative = map.get(new Integer(rel.getRelative()));
+						relative = map.get(Integer.valueOf(rel.getRelative()));
 						append("[" + rel.getTag() + "]", greenTag);
 						bl = " ";
 						relNotices = rel.getNotices();
@@ -372,7 +372,7 @@ public class PersonTextPane extends JTextPane {
 
 						}
 						wifenum++;
-						relative = map.get(new Integer(rel.getRelative()));
+						relative = map.get(Integer.valueOf(rel.getRelative()));
 						append("[" + rel.getTag() + "]", greenTag);
 						bl = " ";
 						// append(" ("+wifenum +")",bodyText);
@@ -468,7 +468,7 @@ public class PersonTextPane extends JTextPane {
 							append("\n", bodyText);
 							activate = false;
 						}
-						relative = map.get(new Integer(rel.getRelative()));
+						relative = map.get(Integer.valueOf(rel.getRelative()));
 						append("[" + rel.getTag() + "]", greenTag);
 						bl = " ";
 						relNotices = rel.getNotices();

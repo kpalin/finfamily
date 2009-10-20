@@ -374,21 +374,21 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		preferredView = Suku.kontroller.getPref(this, "viewId", "0");
 
-		y = 500;
+		y = 380;
 
 		this.ok = new JButton(Resurses.OK);
 		// this.ok.setDefaultCapable(true);
 		getContentPane().add(this.ok);
 		this.ok.setActionCommand(Resurses.OK);
 		this.ok.addActionListener(this);
-		this.ok.setBounds(250, y, 140, 20);
+		this.ok.setBounds(560, y, 140, 20);
 
 		this.reset = new JButton(Resurses.getString(Resurses.RESET));
 		// this.ok.setDefaultCapable(true);
 		getContentPane().add(this.reset);
 		this.reset.setActionCommand(Resurses.RESET);
 		this.reset.addActionListener(this);
-		this.reset.setBounds(410, y, 140, 20);
+		this.reset.setBounds(710, y, 140, 20);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 450, d.height / 2 - 300, 900, y + 100);

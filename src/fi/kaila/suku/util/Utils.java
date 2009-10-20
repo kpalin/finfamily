@@ -234,12 +234,12 @@ public class Utils {
 					ref = new PersonInTables(member.getPid());
 
 					if (tab.getChild().size() > 0) {
-						ref.asChildren.add(new Long(tab.getTableNo()));
+						ref.asChildren.add(Long.valueOf(tab.getTableNo()));
 					}
-					personReferences.put(new Integer(member.getPid()), ref);
+					personReferences.put(Integer.valueOf(member.getPid()), ref);
 				} else {
 					if (tab.getChild().size() > 0) {
-						ref.asChildren.add(new Long(tab.getTableNo()));
+						ref.asChildren.add(Long.valueOf(tab.getTableNo()));
 					}
 				}
 
@@ -250,9 +250,9 @@ public class Utils {
 						ref = personReferences.get(subMember.getPid());
 						if (ref == null) {
 							ref = new PersonInTables(subMember.getPid());
-							ref.references.add(new Long(tab.getTableNo()));
-							personReferences.put(
-									new Integer(subMember.getPid()), ref);
+							ref.references.add(Long.valueOf(tab.getTableNo()));
+							personReferences.put(Integer.valueOf(subMember
+									.getPid()), ref);
 						} else {
 							ref.references.add(tab.getTableNo());
 						}
@@ -267,12 +267,12 @@ public class Utils {
 					ref = new PersonInTables(member.getPid());
 
 					if (tab.getChild().size() > 0) {
-						ref.asParents.add(new Long(tab.getTableNo()));
+						ref.asParents.add(Long.valueOf(tab.getTableNo()));
 					}
-					personReferences.put(new Integer(member.getPid()), ref);
+					personReferences.put(Integer.valueOf(member.getPid()), ref);
 				} else {
 					if (tab.getChild().size() > 0) {
-						ref.asParents.add(new Long(tab.getTableNo()));
+						ref.asParents.add(Long.valueOf(tab.getTableNo()));
 					}
 				}
 			}

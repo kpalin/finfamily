@@ -242,6 +242,7 @@ public class ReportUtil {
 			}
 		}
 		rs.close();
+		stm.close();
 		PersonInTables ref;
 		if (gen < 2) {
 
@@ -459,6 +460,8 @@ public class ReportUtil {
 			sex = rs.getString("sex");
 		}
 		rs.close();
+		stm.close();
+
 		ReportUnit unit = new ReportUnit();
 		unit.setPid(pid);
 
@@ -493,6 +496,7 @@ public class ReportUtil {
 
 		}
 		rs.close();
+		stm.close();
 
 		int childno = 0;
 
@@ -524,6 +528,7 @@ public class ReportUtil {
 			childno++;
 		}
 		rs.close();
+		stm.close();
 
 		return unit;
 
@@ -661,6 +666,7 @@ public class ReportUtil {
 			rr.add(rel);
 		}
 		rs.close();
+		stm.close();
 
 		sql = "select bid,relationrow,tag from child where aid=? order by relationrow";
 		stm = con.prepareStatement(sql);
@@ -671,6 +677,7 @@ public class ReportUtil {
 					.getInt(2), rs.getString(3));
 			rr.add(rel);
 		}
+		stm.close();
 
 		for (int i = 0; i < rr.size(); i++) {
 			RelationShortData rel = rr.get(i);

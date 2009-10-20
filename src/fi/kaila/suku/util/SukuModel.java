@@ -50,21 +50,25 @@ public class SukuModel implements TableModel {
 		this.crit = SearchCriteria.getCriteria(null);
 		byte imbytes[] = new byte[8192];
 		int imsize;
+		InputStream in = null;
 		try {
 			if (womanIcon == null) {
-				InputStream in = this.getClass().getResourceAsStream(
+				in = this.getClass().getResourceAsStream(
 						"/images/womanicon.png");
 
 				imsize = in.read(imbytes);
 				if (imsize < imbytes.length) {
 					womanIcon = new ImageIcon(imbytes);
 				}
+				in.close();
 
 				in = this.getClass().getResourceAsStream("/images/manicon.png");
 				imsize = in.read(imbytes);
 				if (imsize < imbytes.length) {
 					manIcon = new ImageIcon(imbytes);
 				}
+				in.close();
+
 				in = this.getClass().getResourceAsStream(
 						"/images/unknownicon.png");
 				imsize = in.read(imbytes);
@@ -77,6 +81,14 @@ public class SukuModel implements TableModel {
 
 		} catch (IOException e) {
 			throw new SukuException(e);
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {
+				}
+			}
+
 		}
 	}
 
