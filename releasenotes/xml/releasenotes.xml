@@ -3,6 +3,12 @@
 
 <p>At least for now releases follow the Subversion revision numbers</p>
 
+<hdr>Release 47 on 20 Oct 2009</hdr>
+
+<ul>
+<li>Another fix to problem with database window sorting</li>
+</ul>
+
 <hdr>Release 45 on 20 Oct 2009</hdr>
 
 <ul>
