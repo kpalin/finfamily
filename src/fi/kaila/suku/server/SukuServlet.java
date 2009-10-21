@@ -318,7 +318,9 @@ public class SukuServlet extends HttpServlet {
 		String userid;
 		String passwd;
 		String pid;
-		String file, lang, filename;
+		String file;
+		String lang;
+		String filename;
 
 		String uno;
 		int userno = 0;
