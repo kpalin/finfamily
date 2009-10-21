@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
 
@@ -668,14 +669,45 @@ public class PersonShortData implements Serializable, Transferable {
 		// this.surname + "/bd=" + this.bDate;
 		// }
 		StringBuffer sb = new StringBuffer();
-		sb.append(getPid() + "\t" + getSex() + "\t" + nv(getPrefix()) + "\t"
-				+ nv(getSurname()) + "\t" + nv(getMorenames()) + "\t"
-				+ nv(getGivenname()) + "\t" + nv(getPatronym()) + "\t"
-				+ nv(getPostfix()) + "\t" + nv(getBirtDate()) + "\t"
-				+ nv(getBirtPlace()) + "\t" + nv(getDeatDate()) + "\t"
+		sb.append(getPid() + "\t" + Resurses.getString("SEX_" + getSex())
+				+ "\t" + nv(getPrefix()) + "\t" + nv(getSurname()) + "\t"
+				+ nv(getMorenames()) + "\t" + nv(getGivenname()) + "\t"
+				+ nv(getPatronym()) + "\t" + nv(getPostfix()) + "\t"
+				+ nv(Utils.textDate(getBirtDate(), false)) + "\t"
+				+ nv(getBirtPlace()) + "\t"
+				+ nv(Utils.textDate(getDeatDate(), false)) + "\t"
 				+ nv(getDeatPlace()) + nv(getOccupation()));
-		sb.append("\t" + getChildCount() + "\t" + getMarrCount() + "\t"
-				+ getPareCount());
+		int ii = getMarrCount();
+		String ttxt = (ii == 0) ? "" : "" + ii;
+		sb.append("\t" + ttxt);
+		ii = getChildCount();
+		ttxt = (ii == 0) ? "" : "" + ii;
+		sb.append("\t" + ttxt);
+		ii = getPareCount();
+		ttxt = (ii == 0) ? "" : "" + ii;
+		sb.append("\t" + ttxt);
+
+		return sb.toString();
+	}
+
+	public String getHeader() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(Resurses.getString("T_PID") + "\t"
+				+ Resurses.getString("T_SEX") + "\t"
+				+ Resurses.getString("T_PREFIX") + "\t"
+				+ Resurses.getString("T_SURNAME") + "\t"
+				+ Resurses.getString("T_MORENAMES") + "\t"
+				+ Resurses.getString("T_GIVENNAME") + "\t"
+				+ Resurses.getString("T_PATRONYME") + "\t"
+				+ Resurses.getString("T_POSTFIX") + "\t"
+				+ Resurses.getString("T_BIRT") + "\t"
+				+ Resurses.getString("T_BIRTPLACE") + "\t"
+				+ Resurses.getString("T_DEAT") + "\t"
+				+ Resurses.getString("T_DEATPLACE")
+				+ Resurses.getString("T_OCCUPATION"));
+		sb.append("\t" + Resurses.getString("T_ISMARR") + "\t"
+				+ Resurses.getString("T_ISCHILD") + "\t"
+				+ Resurses.getString("T_ISPARE"));
 		return sb.toString();
 	}
 
@@ -710,7 +742,14 @@ public class PersonShortData implements Serializable, Transferable {
 	public String getAlfaName(boolean withPatronyme) {
 
 		StringBuilder sb = new StringBuilder();
+
+		if (this.prefix != null) {
+			sb.append(this.prefix);
+		}
+
 		if (this.surname != null) {
+			if (sb.length() > 0)
+				sb.append(" ");
 			sb.append(this.surname);
 		}
 		if (this.givenname != null) {
@@ -726,11 +765,6 @@ public class PersonShortData implements Serializable, Transferable {
 			}
 		}
 
-		if (this.prefix != null) {
-			if (sb.length() > 0)
-				sb.append(" ");
-			sb.append(this.prefix);
-		}
 		if (this.postfix != null) {
 			if (sb.length() > 0)
 				sb.append(" ");

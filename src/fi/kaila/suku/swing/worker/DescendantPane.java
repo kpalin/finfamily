@@ -23,8 +23,8 @@ public class DescendantPane extends JPanel {
 	private JTextField spouseAncestors = null;
 	private JTextField childAncestors = null;
 
-	private ButtonGroup listFormatGroup = null;
 	private ButtonGroup tableOrder = null;
+	private ButtonGroup spouseData = null;
 
 	public DescendantPane() {
 
@@ -72,7 +72,7 @@ public class DescendantPane extends JPanel {
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.DESC.LISTA")));
 		pane.setLayout(new GridLayout(0, 1));
-		pane.setBounds(rtypx, rtypy, 250, 130);
+		pane.setBounds(rtypx, rtypy, 250, 70);
 
 		pp = new JPanel();
 		pp.setLayout(null);
@@ -101,31 +101,16 @@ public class DescendantPane extends JPanel {
 		pp.add(lb);
 		lb.setBounds(50, 0, 180, 20);
 
-		listFormatGroup = new ButtonGroup();
-		JRadioButton formd = new JRadioButton(Resurses
-				.getString("REPORT.DESC.LISTAPAFT"));
-		formd.setActionCommand(ReportWorkerDialog.SET_PAFT);
-		listFormatGroup.add(formd);
-		pane.add(formd);
-		formd = new JRadioButton(Resurses.getString("REPORT.DESC.LISTATAFT"));
-		formd.setActionCommand(ReportWorkerDialog.SET_TAFT);
-		listFormatGroup.add(formd);
-		pane.add(formd);
-		formd = new JRadioButton(Resurses.getString("REPORT.DESC.LISTARAFT"));
-		formd.setActionCommand(ReportWorkerDialog.SET_RAFT);
-		listFormatGroup.add(formd);
-		pane.add(formd);
-
 		add(pane);
 
-		rtypy += 130;
+		rtypy += 70;
 
 		pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.DESC.ORDER")));
 		pane.setLayout(new GridLayout(0, 1));
 
-		pane.setBounds(rtypx, rtypy, 250, 124);
+		pane.setBounds(rtypx, rtypy, 250, 110);
 
 		tableOrder = new ButtonGroup();
 		JRadioButton radio = new JRadioButton(Resurses
@@ -154,6 +139,39 @@ public class DescendantPane extends JPanel {
 		pane.add(radio);
 
 		add(pane);
+
+		rtypy += 110;
+		pane = new JPanel();
+		pane.setBorder(BorderFactory.createTitledBorder(Resurses
+				.getString("REPORT.DESC.SPOUSE")));
+		pane.setLayout(new GridLayout(0, 1));
+
+		pane.setBounds(rtypx, rtypy, 250, 95);
+
+		spouseData = new ButtonGroup();
+
+		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.NONE"));
+		spouseData.add(radio);
+		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_NONE);
+		pane.add(radio);
+
+		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.YEAR"));
+		radio.setSelected(true);
+		spouseData.add(radio);
+		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_YEAR);
+		pane.add(radio);
+
+		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.DATE"));
+		spouseData.add(radio);
+		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_DATE);
+		pane.add(radio);
+
+		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.FULL"));
+		spouseData.add(radio);
+		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_FULL);
+		pane.add(radio);
+		add(pane);
+
 	}
 
 	public int getGenerations() {
@@ -190,10 +208,6 @@ public class DescendantPane extends JPanel {
 			childAncestors.setText("0");
 		}
 		return gen;
-	}
-
-	public ButtonGroup getListFormatGroup() {
-		return listFormatGroup;
 	}
 
 	public ButtonGroup getTableOrder() {

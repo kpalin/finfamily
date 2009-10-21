@@ -96,6 +96,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	public static final String SET_ORDER_NEWMALE = "NEWMALE";
 	public static final String SET_ORDER_REG = "REG";
 
+	public static final String SET_SPOUSE_NONE = "NONE";
+	public static final String SET_SPOUSE_YEAR = "YEAR";
+	public static final String SET_SPOUSE_DATE = "DATE";
+	public static final String SET_SPOUSE_FULL = "FULL";
+
 	private static final String ACTION_INDEX = "ACTION_INDEX";
 
 	/**
@@ -158,7 +163,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private AncestorPane ancestorPanel;
 	private JPanel listaPanel;
 	// private ReportFrame repo;
-	private int reportPid = 0;
+	private PersonShortData pers = null;
 	private static ReportWorkerDialog runner = null;
 
 	private static final int x1 = 10;
@@ -166,25 +171,26 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private static final int x3 = 440;
 	private static final int x4 = 620;
 	private static final int xtype = 320;
-	private static final int y1 = 10;
+	private static final int y1 = 20;
 	// private static final int y2 = 250;
-	private static final int y3 = 360;
+	private static final int y3 = 390;
 	// private static final int y4 = 420;
 
-	private static final int tabh = 340;
+	private static final int tabh = 360;
 	private static final int tabw = 280;
 	private Suku parent;
 
 	/**
 	 * @param owner
 	 */
-	public ReportWorkerDialog(Suku owner, SukuKontroller kontroller, int pid) {
+	public ReportWorkerDialog(Suku owner, SukuKontroller kontroller,
+			PersonShortData pers) {
 		super(owner, Resurses.getString("REPORT_CREATING"), true);
 		this.parent = owner;
 		runner = this;
 		this.kontroller = kontroller;
 
-		this.reportPid = pid;
+		this.pers = pers;
 		self = this;
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -203,7 +209,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	public int getPid() {
-		return this.reportPid;
+		return this.pers.getPid();
 	}
 
 	/**
@@ -339,7 +345,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension sz = new Dimension(d.width - 200, d.height - 150);
 		sz = new Dimension(800, 600);
-		int footery = sz.height - 145;
+		int footery = sz.height - 125;
 		setBounds((d.width - sz.width) / 2, (d.height - sz.height) / 2,
 				sz.width, sz.height);
 		setLayout(null);
@@ -352,6 +358,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		} catch (NumberFormatException ne) {
 			settingsIndex = 0;
 		}
+
+		lb = new JLabel(this.pers.getAlfaName(true));
+		add(lb);
+		lb.setBounds(x1, y1 - 20, 300, 20);
 
 		typesTable = new JTable(new MyTypesModel());
 		typesTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -691,8 +701,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				} else if (vx[0].equals("descchanc")) {
 
 					descendantPanel.setChildAncestors(vx[1]);
-				} else if (vx[0].equals("descOthers")) {
-					setRadioButton(descendantPanel.getListFormatGroup(), vx[1]);
 
 				} else if (vx[0].equals("descTableOrder")) {
 					setRadioButton(descendantPanel.getTableOrder(), vx[1]);
@@ -898,10 +906,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 		v.add("descspanc=" + descendantPanel.getSpouseAncestors());
 		v.add("descchanc=" + descendantPanel.getChildAncestors());
-		model = descendantPanel.getListFormatGroup().getSelection();
-		if (model != null) {
-			v.add("descOthers=" + model.getActionCommand());
-		}
+
 		model = descendantPanel.getTableOrder().getSelection();
 		if (model != null) {
 			v.add("descTableOrder=" + model.getActionCommand());

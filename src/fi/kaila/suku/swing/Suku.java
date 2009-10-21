@@ -1442,7 +1442,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return tPrivateButton.isSelected();
 	}
 
-	private void createTestReport(int pid) {
+	private void createTestReport(PersonShortData pers) {
 		// if (this.reportFrame == null){
 		// this.reportFrame = new ReportFrame(this);
 		// }
@@ -1453,7 +1453,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		//
 		// this.reportFrame.resetReport();
 
-		ReportWorkerDialog dlg = new ReportWorkerDialog(this, kontroller, pid);
+		ReportWorkerDialog dlg = new ReportWorkerDialog(this, kontroller, pers);
 		dlg.setVisible(true);
 
 	}
@@ -2311,7 +2311,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					personView.setHiskiPid(hiskino, pop.getPerson().getPid(),
 							pop.getPerson().getAlfaName());
 				} else if (cmd.equals(Resurses.CREATE_REPORT)) {
-					createTestReport(pop.getPerson().getPid());
+					createTestReport(pop.getPerson());
 				} else if (cmd.equals(Resurses.PERSON_PANE)) {
 					activePersonPid = pop.getPerson().getPid();
 					showPerson(activePersonPid);
@@ -2336,7 +2336,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					if (ii.length == 0)
 						return;
 					StringBuffer sb = new StringBuffer();
-
+					sb.append(perso.getHeader() + "\n");
 					for (int i = 0; i < ii.length; i++) {
 						SukuRow rivi = (SukuRow) table.getValueAt(ii[i],
 								SukuModel.SUKU_ROW);

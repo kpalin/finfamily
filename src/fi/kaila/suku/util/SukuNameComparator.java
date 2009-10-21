@@ -23,10 +23,11 @@ public class SukuNameComparator implements Comparator {
 
 		Locale ll = new Locale(langu);
 		this.colli = Collator.getInstance(ll);
+
+		adels = Resurses.getString("NAME_VON").split(";");
 	}
 
-	private static final String adels[] = { "von ", "af ", "van ", "zu ",
-			"van der ", "von der " };
+	private String adels[] = null;
 
 	private String noAdel(String nime) {
 		int ll;
