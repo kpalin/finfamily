@@ -2345,6 +2345,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						sb.append(pers.toString() + "\n");
 
 					}
+					sb.append(Resurses.getString("TEXT_COPIED"));
+					sb.append(" ");
+					sb.append(Resurses.getString("SUKUOHJELMISTO"));
+					sb.append(" ");
+					java.util.Date now = new java.util.Date();
+					sb.append(now.toString());
+
 					copyToClip(sb.toString());
 
 				}
