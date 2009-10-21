@@ -207,8 +207,8 @@ public class Resurses {
 	public static final String TOOLBAR_PRIVATE_IMAGE = "showPrivate";
 	public static final String TOOLBAR_PRIVATE_ACTION = "SHOW_PRIVATE";
 
-	public static final String TOOLBAR_SUBJECTC_IMAGE = "SubjectCopy";
-	public static final String TOOLBAR_SUBJECTP_IMAGE = "SubjectPaste";
+	public static final String TOOLBAR_SUBJECTC_IMAGE = "NeulaAlas";
+	public static final String TOOLBAR_SUBJECTP_IMAGE = "NeulaYlos";
 	public static final String TOOLBAR_SUBJECTC_ACTION = "SUBJECTC";
 	public static final String TOOLBAR_SUBJECTP_ACTION = "SUBJECTP";
 
