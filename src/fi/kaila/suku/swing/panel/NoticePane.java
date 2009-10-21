@@ -649,7 +649,9 @@ public class NoticePane extends JPanel implements ActionListener,
 	String getUnitNoticeError() {
 		String theDate = null;
 		try {
-			// FIXME: Something is missing?
+			// This checks both dates for error. in case of error
+			// an SukuDateException is thrown
+			// if ok returns null
 			theDate = date.getFromDate();
 			theDate = date.getToDate();
 			return null;
@@ -865,13 +867,11 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1167,7 +1167,6 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	@Override
 	public void componentShown(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 

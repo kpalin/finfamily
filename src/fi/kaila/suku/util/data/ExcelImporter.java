@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
@@ -33,10 +34,12 @@ public class ExcelImporter {
 	 */
 	public SukuData importTypes(Connection con, String path)
 			throws SukuException {
-
+		WorkbookSettings ws = new WorkbookSettings();
+		ws.setEncoding("ISO-8859-1");
+		ws.setCharacterSet(0);
 		SukuData suk = new SukuData();
 		try {
-			Workbook workbook = Workbook.getWorkbook(new File(path));
+			Workbook workbook = Workbook.getWorkbook(new File(path), ws);
 
 			Sheet sheet = workbook.getSheet("Types");
 
@@ -137,8 +140,6 @@ public class ExcelImporter {
 				}
 			}
 
-			// workbook = Workbook.getWorkbook(new File(path));
-
 			sheet = workbook.getSheet("Texts");
 
 			colCount = sheet.getColumns();
@@ -237,7 +238,12 @@ public class ExcelImporter {
 
 		Workbook workbook;
 		try {
-			workbook = Workbook.getWorkbook(new File(path));
+			WorkbookSettings ws = new WorkbookSettings();
+			ws.setEncoding("ISO-8859-1");
+			ws.setCharacterSet(0);
+
+			workbook = Workbook.getWorkbook(new File(path), ws);
+
 			Sheet sheet = workbook.getSheet("Coordinates");
 
 			int rivi;
@@ -277,9 +283,11 @@ public class ExcelImporter {
 				Cell ac1 = sheet.getCell(0, rivi);
 				Cell bc1 = sheet.getCell(1, rivi);
 				Cell cc1 = sheet.getCell(2, rivi);
-
+				// LabelCell ll = (LabelCell) ac1;
 				placeName = ac1.getContents();
-
+				// String llname = ll.getString();
+				// String utname = toUtf(placeName);
+				// placeName = utname;
 				String b1 = bc1.getContents();
 				String c1 = cc1.getContents();
 
