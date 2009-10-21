@@ -882,7 +882,7 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData getTypes(String langu) {
 		SukuData res = new SukuData();
-		String vx[] = new String[4];
+		String vx[];
 		res.vvTypes = new Vector<String[]>();
 		try {
 			String sql = "select tag,name,reportname,tagtype from types where langCode = '"
@@ -924,7 +924,7 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData getTexts(String langu) {
 		SukuData res = new SukuData();
-		String vx[] = new String[3];
+		String vx[];
 		res.vvTexts = new Vector<String[]>();
 		try {
 			String sql = "select tag,name,tagtype from texts where langCode = '"

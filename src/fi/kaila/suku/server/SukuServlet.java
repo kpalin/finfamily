@@ -133,7 +133,7 @@ public class SukuServlet extends HttpServlet {
 		int pos = 0;
 		int endi = 0;
 		int idx;
-		int i, j;
+		int j;
 		int koko = 0;
 		String rivi = "XXX";
 		StringBuffer sb;

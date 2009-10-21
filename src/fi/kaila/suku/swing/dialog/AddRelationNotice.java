@@ -38,8 +38,6 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 		// setBounds(d.width/2-300,d.height/2-200,300,400);
 		setLayout(null);
 		// setUndecorated(true);
-		int x = 20;
-		int y = 20;
 
 		// RELA_TAG_MARR=Avioliitto
 		// RELA_TAG_DIV=Eronnut
@@ -60,7 +58,6 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 			kokoTags[0] = "ADOP";
 		}
 
-		y += 20;
 		koko = new JList(kokoLista);
 		koko.addMouseListener(this);
 		kokoScroll = new JScrollPane(koko);

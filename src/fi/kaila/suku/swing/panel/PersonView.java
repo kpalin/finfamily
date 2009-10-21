@@ -338,7 +338,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		SukuData family = Suku.kontroller.getSukuData("cmd=family", "pid="
 				+ subject.getPid(), "parents=both");
 
-		Dimension reqDim = new Dimension();
+		Dimension reqDim;
 		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
 		if (family.pers == null || family.pers.length == 0) {
 

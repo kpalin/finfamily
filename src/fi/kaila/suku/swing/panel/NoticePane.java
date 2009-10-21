@@ -649,6 +649,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	String getUnitNoticeError() {
 		String theDate = null;
 		try {
+			// FIXME: Something is missing?
 			theDate = date.getFromDate();
 			theDate = date.getToDate();
 			return null;

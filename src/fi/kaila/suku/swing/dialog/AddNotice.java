@@ -39,8 +39,6 @@ public class AddNotice extends JDialog implements ActionListener, MouseListener 
 		// setBounds(d.width/2-300,d.height/2-200,300,400);
 		setLayout(null);
 		// setUndecorated(true);
-		int x = 20;
-		int y = 20;
 		SukuData reposet = Suku.kontroller.getSukuData("cmd=gettypes", "lang="
 				+ Resurses.getLanguage());
 
@@ -61,7 +59,6 @@ public class AddNotice extends JDialog implements ActionListener, MouseListener 
 
 		}
 
-		y += 20;
 		koko = new JList(kokoLista);
 		koko.addMouseListener(this);
 		kokoScroll = new JScrollPane(koko);
