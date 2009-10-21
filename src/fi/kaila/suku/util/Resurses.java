@@ -223,6 +223,7 @@ public class Resurses {
 
 	private Resurses() {
 		if (resources == null) {
+			Locale.setDefault(currentLocale);
 			resources = ResourceBundle.getBundle("string/finfamily",
 					currentLocale);
 		}
@@ -235,6 +236,7 @@ public class Resurses {
 	 */
 	public static synchronized void setLocale(String newLocale) {
 		currentLocale = new Locale(newLocale);
+		Locale.setDefault(currentLocale);
 		repoLangu = newLocale;
 		myself = null;
 		resources = ResourceBundle.getBundle("string/finfamily", currentLocale);
