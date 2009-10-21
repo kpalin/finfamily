@@ -178,7 +178,7 @@ public class Resurses {
 	public static final String SETTING_IDX = "SETTING_INDEX";
 	public static final String NOTICES_BUTTON = "NOTICES_BUTTON";
 
-	public static final String PERSON_PANE = "PERSON_PANE";
+	// public static final String PERSON_PANE = "PERSON_PANE";
 
 	/**
 	 * commands for getSukuData. All commands and their types should be

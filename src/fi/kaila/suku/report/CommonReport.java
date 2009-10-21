@@ -252,7 +252,7 @@ public class CommonReport {
 					}
 				}
 
-				bt.addText("— ");
+				bt.addText("- ");
 				bt.addText(spouType);
 				bt.addText(" ");
 
@@ -489,7 +489,7 @@ public class CommonReport {
 								}
 							}
 
-							bt.addText("— ");
+							bt.addText("- ");
 							bt.addText(spouType);
 							bt.addText(" ");
 

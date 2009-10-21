@@ -50,7 +50,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 		if (cmd == null)
 			return;
 
-		if (cmd.equals(Resurses.PERSON_PANE)) {
+		if (cmd.equals(Resurses.TAB_PERSON)) {
 			try {
 				if (this.relativesPane.pop.getMousePerson() != null) {
 					this.relativesPane.personView

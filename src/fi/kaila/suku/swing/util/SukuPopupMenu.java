@@ -67,18 +67,18 @@ public class SukuPopupMenu {
 
 		pMainPerson = new JMenuItem("A popup menu item");
 		// pShowPerson.addActionListener(popupListener);
-		pMainPerson.setActionCommand(Resurses.PERSON_PANE);
+		pMainPerson.setActionCommand(Resurses.TAB_PERSON);
 		pMenu.add(pMainPerson);
 		pMenu.addSeparator();
-		pPersonView = new JMenuItem(Resurses.getString(Resurses.PERSON_PANE));
+		pPersonView = new JMenuItem(Resurses.getString(Resurses.TAB_PERSON));
 		// pShowPerson.addActionListener(popupListener);
-		pPersonView.setActionCommand(Resurses.PERSON_PANE);
+		pPersonView.setActionCommand(Resurses.TAB_PERSON);
 		pMenu.add(pPersonView);
 
 		pShowPerson = new JMenuItem(Resurses
 				.getString(Resurses.TAB_PERSON_TEXT));
 		// pShowPerson.addActionListener(popupListener);
-		pShowPerson.setActionCommand(Resurses.TAB_PERSON);
+		pShowPerson.setActionCommand(Resurses.TAB_PERSON_TEXT);
 		pMenu.add(pShowPerson);
 
 		pShowFamily = new JMenuItem(Resurses.getString(Resurses.TAB_FAMILY));

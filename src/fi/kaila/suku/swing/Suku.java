@@ -1486,7 +1486,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			personView.displayPersonPane(pid);
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, Resurses
-					.getString(Resurses.PERSON_PANE)
+					.getString(Resurses.TAB_PERSON)
 					+ ":" + e.getMessage());
 			logger
 					.log(Level.SEVERE, "Failed to create person [" + pid + "]",
@@ -2281,7 +2281,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				return;
 			SukuPopupMenu pop = SukuPopupMenu.getInstance();
 			if (pop.getPerson() != null) {
-				if (cmd.equals(Resurses.TAB_PERSON)) {
+				if (cmd.equals(Resurses.TAB_PERSON_TEXT)) {
 
 					try {
 						personView.setTextForPerson(pop.getPerson());
@@ -2312,7 +2312,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							pop.getPerson().getAlfaName());
 				} else if (cmd.equals(Resurses.CREATE_REPORT)) {
 					createTestReport(pop.getPerson());
-				} else if (cmd.equals(Resurses.PERSON_PANE)) {
+				} else if (cmd.equals(Resurses.TAB_PERSON)) {
 					activePersonPid = pop.getPerson().getPid();
 					showPerson(activePersonPid);
 					// setTitle(pop.getPerson().getAlfaName() + " "

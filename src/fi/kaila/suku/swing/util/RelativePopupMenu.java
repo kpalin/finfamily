@@ -66,9 +66,9 @@ public class RelativePopupMenu {
 
 		pMenu = new JPopupMenu();
 
-		pPerson = new JMenuItem(Resurses.getString(Resurses.PERSON_PANE));
+		pPerson = new JMenuItem(Resurses.getString(Resurses.TAB_PERSON));
 		// pShowFamily.addActionListener(popupListener);
-		pPerson.setActionCommand(Resurses.PERSON_PANE);
+		pPerson.setActionCommand(Resurses.TAB_PERSON);
 		pMenu.add(pPerson);
 		// pPerson.setEnabled(false);
 
@@ -145,7 +145,7 @@ public class RelativePopupMenu {
 		if (mousePerson != null) {
 			name = mousePerson.getAlfaName();
 		}
-		pPerson.setText(Resurses.getString(Resurses.PERSON_PANE) + " " + name);
+		pPerson.setText(Resurses.getString(Resurses.TAB_PERSON) + " " + name);
 
 		if (currentPerson == null) {
 			pPaste.setVisible(false);
