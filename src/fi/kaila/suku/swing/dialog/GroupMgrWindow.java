@@ -220,7 +220,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 
 		add = new JButton(Resurses.getString("DIALOG_GROUP_ADD"));
 		addGroup.add(add);
-		add.setBounds(10, 270, 120, 20);
+		add.setBounds(10, 270, 120, 24);
 		add.addActionListener(this);
 
 		addedCount = new JLabel();
@@ -271,7 +271,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		rivi += 22;
 		remove = new JButton(Resurses.getString("DIALOG_GROUP_REMOVE"));
 		removeGroup.add(remove);
-		remove.setBounds(10, 270, 120, 20);
+		remove.setBounds(10, 270, 120, 24);
 		remove.addActionListener(this);
 
 		updateSelectStatus();
@@ -289,7 +289,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 
 		close = new JButton(Resurses.getString("CLOSE"));
 		add(close);
-		close.setBounds(sz.width - 160, sz.height - 70, 120, 20);
+		close.setBounds(sz.width - 160, sz.height - 70, 120, 24);
 		close.addActionListener(this);
 
 		setVisible(true);

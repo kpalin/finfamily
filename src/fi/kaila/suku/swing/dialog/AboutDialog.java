@@ -101,7 +101,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 
 		JButton ok = new JButton(OK);
 		getContentPane().add(ok);
-		ok.setBounds(250, 230, 100, 20);
+		ok.setBounds(250, 230, 100, 24);
 		ok.addActionListener(this);
 		ok.setDefaultCapable(true);
 

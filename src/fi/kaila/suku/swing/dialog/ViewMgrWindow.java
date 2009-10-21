@@ -138,7 +138,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		removeView = new JButton(Resurses.getString("DIALOG_VIEW_REMOVE_VIEW"));
 		add(removeView);
 		removeView.addActionListener(this);
-		removeView.setBounds(10, yy, 200, 20);
+		removeView.setBounds(10, yy, 200, 24);
 
 		lbl = new JLabel(Resurses.getString("DIALOG_VIEW_NEW"));
 		add(lbl);
@@ -151,7 +151,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		addView = new JButton(Resurses.getString("DIALOG_VIEW_ADD_VIEW"));
 		add(addView);
 		addView.addActionListener(this);
-		addView.setBounds(300, 54, 200, 20);
+		addView.setBounds(300, 54, 200, 24);
 
 		yy += 22;
 		selectedName = new JLabel();
@@ -227,7 +227,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 		add = new JButton(Resurses.getString("DIALOG_VIEW_ADD"));
 		addViewGroup.add(add);
-		add.setBounds(10, 270, 120, 20);
+		add.setBounds(10, 270, 120, 24);
 		add.addActionListener(this);
 
 		addedCount = new JLabel();
@@ -263,7 +263,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 		remove = new JButton(Resurses.getString("DIALOG_VIEW_REMOVE"));
 		removeViewGroup.add(remove);
-		remove.setBounds(10, 270, 120, 20);
+		remove.setBounds(10, 270, 120, 24);
 		remove.addActionListener(this);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -274,7 +274,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 		close = new JButton(Resurses.getString("CLOSE"));
 		add(close);
-		close.setBounds(sz.width - 160, sz.height - 70, 120, 20);
+		close.setBounds(sz.width - 160, sz.height - 70, 120, 24);
 		close.addActionListener(this);
 
 		setVisible(true);

@@ -107,7 +107,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		y += 40;
 		ok = new JButton(Resurses.getString(OK));
 		getContentPane().add(ok);
-		ok.setBounds(100, y, 100, 20);
+		ok.setBounds(100, y, 100, 24);
 		ok.setActionCommand(OK);
 		ok.addActionListener(this);
 		ok.setDefaultCapable(true);
@@ -115,7 +115,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 
 		cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(cancel);
-		cancel.setBounds(220, y, 100, 20);
+		cancel.setBounds(220, y, 100, 24);
 		cancel.setActionCommand(CANCEL);
 		cancel.addActionListener(this);
 		this.okPressed = false;

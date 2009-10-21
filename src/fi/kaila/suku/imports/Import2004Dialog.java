@@ -135,7 +135,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		y += 40;
 		this.ok = new JButton(Resurses.getString(OK));
 		getContentPane().add(this.ok);
-		this.ok.setBounds(110, y, 100, 20);
+		this.ok.setBounds(110, y, 100, 24);
 		this.ok.setActionCommand(OK);
 		this.ok.addActionListener(this);
 		this.ok.setDefaultCapable(true);
@@ -143,7 +143,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 		this.cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(this.cancel);
-		this.cancel.setBounds(230, y, 100, 20);
+		this.cancel.setBounds(230, y, 100, 24);
 		this.cancel.setActionCommand(CANCEL);
 		this.cancel.addActionListener(this);
 

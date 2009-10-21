@@ -381,14 +381,14 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		getContentPane().add(this.ok);
 		this.ok.setActionCommand(Resurses.OK);
 		this.ok.addActionListener(this);
-		this.ok.setBounds(560, y, 140, 20);
+		this.ok.setBounds(560, y, 140, 24);
 
 		this.reset = new JButton(Resurses.getString(Resurses.RESET));
 		// this.ok.setDefaultCapable(true);
 		getContentPane().add(this.reset);
 		this.reset.setActionCommand(Resurses.RESET);
 		this.reset.addActionListener(this);
-		this.reset.setBounds(710, y, 140, 20);
+		this.reset.setBounds(710, y, 140, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 450, d.height / 2 - 300, 900, y + 100);

@@ -590,13 +590,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		this.start = new JButton(Resurses.getString(START));
 		getContentPane().add(this.start);
-		this.start.setBounds(50, footery + 50, 100, 24);
+		this.start.setBounds(530, footery + 60, 100, 24);
 		this.start.setActionCommand(START);
 		this.start.addActionListener(this);
 
 		this.cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(this.cancel);
-		this.cancel.setBounds(200, footery + 50, 100, 24);
+		this.cancel.setBounds(650, footery + 60, 100, 24);
 		this.cancel.setActionCommand(CANCEL);
 		this.cancel.addActionListener(this);
 
