@@ -1495,6 +1495,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 	}
 
+	public void setActivePerson(int pid) {
+		this.activePersonPid = pid;
+
+	}
+
 	/**
 	 * 
 	 * gets from db view the selected persons name if one person is selected

@@ -249,6 +249,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			getSuku().setTitle(
 					ps.getAlfaName() + " " + nv4(ps.getBirtDate()) + "-"
 							+ nv4(ps.getDeatDate()));
+			getSuku().setActivePerson(ps.getPid());
 
 		}
 	}
