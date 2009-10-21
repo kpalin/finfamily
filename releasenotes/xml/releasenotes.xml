@@ -3,6 +3,15 @@
 
 <p>At least for now releases follow the Subversion revision numbers</p>
 
+<hdr>Release 52 on 21 Oct 2009</hdr>
+
+<ul>
+<li>Changed default language to english</li>
+<li>Dash before spouse in report fixed </li>
+<li>Fix of Bug with "C" button (make the subject) </li>
+<li>Added headers to copy-to-clipboard</li>
+</ul>
+
 <hdr>Release 47 on 20 Oct 2009</hdr>
 
 <ul>
