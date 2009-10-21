@@ -1124,7 +1124,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					rivi = writePersonToSheet(rivi, thepers, sheet);
 
-					PersonLongData myrela = null;
 					rivi++;
 					rivi++;
 					Relation[] rr = relas[i];

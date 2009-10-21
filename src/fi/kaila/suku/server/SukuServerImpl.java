@@ -327,7 +327,8 @@ public class SukuServerImpl implements SukuServer {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 		int pid;
-		String tmp, aux;
+		String tmp;
+		String aux;
 		for (int i = 0; i < params.length; i++) {
 			auxes = params[i].split("=");
 			if (auxes.length == 2) {
@@ -335,7 +336,8 @@ public class SukuServerImpl implements SukuServer {
 			}
 		}
 		String cmd = map.get("cmd");
-		String file, lang, full;
+		String file;
+		String lang;
 		if (cmd == null)
 			return null;
 		SukuData fam = null;

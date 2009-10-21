@@ -100,7 +100,6 @@ public class TableToolTipsDemo extends JPanel {
 			protected JTableHeader createDefaultTableHeader() {
 				return new JTableHeader(columnModel) {
 					public String getToolTipText(MouseEvent e) {
-						String tip = null;
 						java.awt.Point p = e.getPoint();
 						int index = columnModel.getColumnIndexAtX(p.x);
 						int realIndex = columnModel.getColumn(index)
@@ -157,6 +156,7 @@ public class TableToolTipsDemo extends JPanel {
 		 * each cell. If we didn't implement this method, then the last column
 		 * would contain text ("true"/"false"), rather than a check box.
 		 */
+		@SuppressWarnings("unchecked")
 		public Class getColumnClass(int c) {
 			return getValueAt(0, c).getClass();
 		}

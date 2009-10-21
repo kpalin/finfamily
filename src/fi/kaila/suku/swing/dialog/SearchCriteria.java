@@ -423,7 +423,6 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			} catch (NumberFormatException ne) {
 			}
 		}
-		String aux;
 
 		viewList.addItem("");
 		for (int i = 0; i < viewArray.length; i++) {
