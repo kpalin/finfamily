@@ -205,7 +205,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private JButton tQueryButton;
 	private JButton tPersonButton;
-	private JButton tSubjectCButton;
+	private JButton tSubjectButton;
 	private JButton tSubjectPButton;
 	private JButton tSubjectName;
 	private JButton tMapButton;
@@ -496,13 +496,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.toolbar.add(tQueryButton);
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
-			tSubjectCButton = makeNavigationButton(
+			tSubjectButton = makeNavigationButton(
 					Resurses.TOOLBAR_SUBJECT_DOWN_IMAGE,
 					Resurses.TOOLBAR_SUBJECT_ON_IMAGE,
 					Resurses.TOOLBAR_SUBJECT_DOWN_ACTION, Resurses
-							.getString("TOOLBAR.SUBJECTC.TOOLTIP"), Resurses
-							.getString("TOOLBAR.SUBJECTC.ALTTEXT"));
-			this.toolbar.add(tSubjectCButton);
+							.getString("TOOLBAR.SUBJECT.TOOLTIP"), Resurses
+							.getString("TOOLBAR.SUBJECT.ALTTEXT"));
+			this.toolbar.add(tSubjectButton);
 
 			this.toolbar.addSeparator();
 			tSubjectName = new JButton("");
@@ -1337,8 +1337,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						+ theButt);
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_DOWN_ACTION)) {
 				if (activePersonPid > 0) {
-					boolean theButt = !tSubjectCButton.isSelected();
-					tSubjectCButton.setSelected(theButt);
+					boolean theButt = !tSubjectButton.isSelected();
+					tSubjectButton.setSelected(theButt);
 					if (theButt) {
 						subjectPid = activePersonPid;
 						PersonShortData pp = tableMap.get(subjectPid);
@@ -2146,7 +2146,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.tMapButton.setEnabled(this.isConnected);
 		this.tRemovePerson.setEnabled(this.isConnected);
 		this.mGroupMgr.setEnabled(this.isConnected);
-		this.tSubjectCButton.setEnabled(this.isConnected);
+		this.tSubjectButton.setEnabled(this.isConnected);
 
 		// this.mReport.setEnabled(this.isConnected);
 	}
