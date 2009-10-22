@@ -127,7 +127,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		me.parents.list.removeAllElements();
 		me.spouses.list.removeAllElements();
 		me.children.list.removeAllElements();
-
+		me.relaPane.setVisible(false);
 		for (int i = 0; i < me.pers.length; i++) {
 			me.persMap.put(pers[i].getPid(), pers[i]);
 		}
@@ -803,7 +803,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 				an.setVisible(true);
 
 				if (an.getSelectedTag() != null) {
-					System.out.println("Valittiin " + an.getSelectedTag());
+					// System.out.println("Valittiin " + an.getSelectedTag());
 					RelationNotice rn = new RelationNotice(an.getSelectedTag());
 					notices.list.add(rn);
 					noticeTab.updateUI();
@@ -827,7 +827,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 		} else if (cmd.equals("DEL") || cmd.equals(Resurses.CLOSE)
 				|| cmd.equals(Resurses.UPDATE)) {
-			// System.out.println("suletaan");
+			relaPane.setVisible(false);
 
 			if (cmd.equals("DEL")) {
 				activeRelation.setToBeDeleted(true);
