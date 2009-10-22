@@ -17,6 +17,8 @@ public class RelativePopupMenu {
 	private JPopupMenu pMenu = null;
 
 	private JMenuItem pPerson;
+	private JMenuItem pShowPerson;
+	private JMenuItem pShowFamily;
 	private JMenuItem pPaste;
 	private JMenuItem pPasteBefore;
 	private JMenuItem pPasteAfter;
@@ -26,6 +28,8 @@ public class RelativePopupMenu {
 	private void addActionListener(ActionListener l) {
 
 		pPerson.addActionListener(l);
+		pShowFamily.addActionListener(l);
+		pShowPerson.addActionListener(l);
 		pPaste.addActionListener(l);
 		pPasteBefore.addActionListener(l);
 		pPasteAfter.addActionListener(l);
@@ -71,6 +75,17 @@ public class RelativePopupMenu {
 		pPerson.setActionCommand(Resurses.TAB_PERSON);
 		pMenu.add(pPerson);
 		// pPerson.setEnabled(false);
+
+		pShowPerson = new JMenuItem(Resurses
+				.getString(Resurses.TAB_PERSON_TEXT));
+		// pShowPerson.addActionListener(popupListener);
+		pShowPerson.setActionCommand(Resurses.TAB_PERSON_TEXT);
+		pMenu.add(pShowPerson);
+
+		pShowFamily = new JMenuItem(Resurses.getString(Resurses.TAB_FAMILY));
+		// pShowFamily.addActionListener(popupListener);
+		pShowFamily.setActionCommand(Resurses.TAB_FAMILY);
+		pMenu.add(pShowFamily);
 
 		pPasteBefore = new JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
 		pPasteBefore.setActionCommand(Resurses.MENU_PASTE_BEFORE);

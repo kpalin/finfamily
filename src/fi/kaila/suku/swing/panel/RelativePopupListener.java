@@ -54,15 +54,36 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 			try {
 				if (this.relativesPane.pop.getMousePerson() != null) {
 					this.relativesPane.personView
-							.displayPersonPane(this.relativesPane.pop
+							.displayPersonPane(relativesPane.pop
 									.getMousePerson().getPid());
 				}
 			} catch (SukuException e) {
-				logger.log(Level.WARNING,
-						"Opening person "
-								+ this.relativesPane.pop.getMousePerson()
-										.getAlfaName(), e);
+				logger.log(Level.WARNING, "Opening person "
+						+ relativesPane.pop.getMousePerson().getAlfaName(), e);
 				e.printStackTrace();
+			}
+		}
+		if (cmd.equals(Resurses.TAB_PERSON_TEXT)) {
+			try {
+				relativesPane.personView.setTextForPerson(relativesPane.pop
+						.getMousePerson());
+			} catch (SukuException e1) {
+				JOptionPane.showMessageDialog(null, "SHOW PERSON: "
+						+ relativesPane.pop.getPerson().getAlfaName()
+						+ " error " + e1.getMessage());
+				e1.printStackTrace();
+			}
+		}
+		if (cmd.equals(Resurses.TAB_FAMILY)) {
+			try {
+				relativesPane.personView.setSubjectForFamily(relativesPane.pop
+						.getMousePerson());
+			} catch (SukuException e1) {
+				JOptionPane.showMessageDialog(null, "SHOW FAMILY: "
+						+ relativesPane.pop.getPerson().getAlfaName()
+						+ " error " + e1.getMessage());
+
+				e1.printStackTrace();
 			}
 		}
 		if (showTable == null)
