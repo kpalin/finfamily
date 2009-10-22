@@ -620,8 +620,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		return descendantPanel;
 	}
 
-	private void loadReportSettings() {
+	boolean isLoadingTheSettings = false;
 
+	private void loadReportSettings() {
+		isLoadingTheSettings = true;
 		try {
 			SukuData sets = Suku.kontroller.getSukuData("cmd=getsettings",
 					"type=report", "index=" + settingsIndex);
@@ -704,7 +706,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 				} else if (vx[0].equals("descTableOrder")) {
 					setRadioButton(descendantPanel.getTableOrder(), vx[1]);
-
+				} else if (vx[0].equals("descSpouseData")) {
+					setRadioButton(descendantPanel.getSpouseData(), vx[1]);
+				} else if (vx[0].equals("listaGroup")) {
+					setRadioButton(listaGroup, vx[1]);
 				} else if (vx[0].equals("ancFamily")) {
 					ancestorFamily = true;
 				} else if (vx[0].equals("ancNumbering")) {
@@ -719,7 +724,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						String tag = typesTags[row];
 
 						if (vx[0].substring(2).equals(tag)
-								&& vx[1].length() == 3) {
+								&& vx[1].length() > 3) {
 							boolean b = false;
 							if (vx[1].substring(0, 1).equals("X")) {
 								b = true;
@@ -735,8 +740,17 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 								b = true;
 							}
 							typesTable.setValueAt(b, row, 3);
-							;
 
+							b = false;
+							if (vx[1].substring(3).equals("X")) {
+								b = true;
+							}
+							typesTable.setValueAt(b, row, 4);
+							String newText = "";
+							if (vx[1].length() > 4) {
+								newText = vx[1].substring(4);
+							}
+							typesTable.setValueAt(newText, row, 5);
 							break;
 						}
 						// StringBuffer sb = new StringBuffer();
@@ -776,7 +790,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 			e.printStackTrace();
 		}
-
+		isLoadingTheSettings = false;
 	}
 
 	@Override
@@ -798,7 +812,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 
 		if (cmd.equals(ACTION_INDEX)) {
-			if (settingsName.getSelectedIndex() >= 0) {
+			if (!isLoadingTheSettings && settingsName.getSelectedIndex() >= 0) {
 				settingsIndex = settingsName.getSelectedIndex();
 				loadReportSettings();
 
@@ -912,6 +926,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			v.add("descTableOrder=" + model.getActionCommand());
 		}
 
+		model = descendantPanel.getSpouseData().getSelection();
+		if (model != null) {
+			v.add("descSpouseData=" + model.getActionCommand());
+		}
+
 		model = ancestorPanel.getNumberingFormat().getSelection();
 		if (model != null) {
 			v.add("ancNumbering=" + model.getActionCommand());
@@ -922,6 +941,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		String tmp = ancestorPanel.getShowDescGen();
 		if (tmp != null && !"".equals(tmp)) {
 			v.add("ancDesc=" + tmp);
+		}
+		model = listaGroup.getSelection();
+		if (model != null) {
+			v.add("listaGroup=" + model.getActionCommand());
 		}
 
 		int typeCount = typesTable.getRowCount();
@@ -934,6 +957,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			sb.append(((Boolean) typesTable.getValueAt(row, 1)) ? "X" : "O");
 			sb.append(((Boolean) typesTable.getValueAt(row, 2)) ? "X" : "O");
 			sb.append(((Boolean) typesTable.getValueAt(row, 3)) ? "X" : "O");
+			sb.append(((Boolean) typesTable.getValueAt(row, 4)) ? "X" : "O");
+			sb.append(typesTable.getValueAt(row, 5));
 			v.add(sb.toString());
 
 		}

@@ -214,6 +214,10 @@ public class DescendantPane extends JPanel {
 		return tableOrder;
 	}
 
+	public ButtonGroup getSpouseData() {
+		return spouseData;
+	}
+
 	public void setGenerations(String string) {
 		generations.setText(string);
 
