@@ -26,7 +26,8 @@ import fi.kaila.suku.util.Utils;
  *         POJO for person data for display on lists etc read only
  * 
  */
-public class PersonShortData implements Serializable, Transferable {
+public class PersonShortData implements Serializable, Transferable,
+		Comparable<PersonShortData> {
 
 	/**
 	 * 
@@ -819,6 +820,18 @@ public class PersonShortData implements Serializable, Transferable {
 		if (text == null)
 			return "";
 		return text;
+	}
+
+	@Override
+	public int compareTo(PersonShortData o) {
+		int cc = (nv(getSurname()).compareTo(nv(o.getSurname())));
+		if (cc != 0)
+			return cc;
+		cc = (nv(getGivenname()).compareTo(nv(o.getGivenname())));
+		if (cc != 0)
+			return cc;
+		return (nv(getBirtDate()).compareTo(nv(o.getBirtDate())));
+
 	}
 
 }

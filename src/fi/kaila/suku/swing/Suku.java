@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1846,6 +1847,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			// initSorter(crit);
 			this.databaseWindowPersons = fam.pers;
+			Arrays.sort(databaseWindowPersons);
+
 			this.tableModel.resetModel(); // clear contents of table first
 			// this.table.removeAll();
 			this.table.clearSelection();

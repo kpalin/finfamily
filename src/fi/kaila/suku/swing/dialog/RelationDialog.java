@@ -384,6 +384,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 			rela.setToBeDeleted(true);
 			delete.setText(Resurses.getString("DATA_DELETED"));
 			delete.setEnabled(false);
+			setVisible(false);
 		}
 		if (cmd.equals(Resurses.CLOSE)) {
 			System.out.println("Close akkuna");

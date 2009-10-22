@@ -917,7 +917,11 @@ public class NoticePane extends JPanel implements ActionListener,
 		}
 
 		boolean mustAddress = personView.getSuku().isShowAddress();
-
+		if (notice.getAddress() != null || notice.getPostalCode() != null
+				|| notice.getPostOffice() != null
+				|| notice.getCountry() != null || notice.getEmail() != null) {
+			mustAddress = true;
+		}
 		boolean mustFarm = personView.getSuku().isShowFarm();
 		if (notice.getVillage() != null || notice.getFarm() != null
 				|| notice.getCroft() != null) {
