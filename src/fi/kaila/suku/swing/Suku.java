@@ -515,6 +515,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					Resurses.TOOLBAR_SUBJECT_UP_ACTION, Resurses
 							.getString("TOOLBAR.SUBJECTP.TOOLTIP"), Resurses
 							.getString("TOOLBAR.SUBJECTP.ALTTEXT"));
+			tSubjectPButton.setEnabled(false);
 			this.toolbar.add(tSubjectPButton);
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
@@ -1343,12 +1344,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						PersonShortData pp = tableMap.get(subjectPid);
 						if (pp != null) {
 							tSubjectName.setText(pp.getAlfaName());
+							tSubjectPButton.setEnabled(true);
 						} else {
 							tSubjectName.setText("");
+							tSubjectPButton.setEnabled(false);
 						}
 					} else {
 						subjectPid = 0;
 						tSubjectName.setText("");
+						tSubjectPButton.setEnabled(false);
 					}
 				}
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_UP_ACTION)) {
@@ -2142,6 +2146,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.tMapButton.setEnabled(this.isConnected);
 		this.tRemovePerson.setEnabled(this.isConnected);
 		this.mGroupMgr.setEnabled(this.isConnected);
+		this.tSubjectCButton.setEnabled(this.isConnected);
 
 		// this.mReport.setEnabled(this.isConnected);
 	}
