@@ -990,28 +990,8 @@ public class CommonReport {
 						}
 						if (!prevGivenname.equals(nv(nn.getGivenname()))) {
 							prevGivenname = nv(nn.getGivenname());
-							String[] nameParts = prevGivenname.split(" ");
-							for (int k = 0; k < nameParts.length; k++) {
 
-								int astidx = nameParts[k].indexOf("*");
-								if (astidx > 0) {
-									if (astidx == nameParts[k].length() - 1) {
-										bt.addText(nameParts[k].substring(0,
-												astidx),
-												caller.showBoldNames(), caller
-														.showUnderlineNames());
-
-									} else {
-										bt.addText(nameParts[k], caller
-												.showBoldNames(), caller
-												.showUnderlineNames());
-									}
-								} else {
-									bt.addText(nameParts[k], caller
-											.showBoldNames(), false);
-								}
-								bt.addText(" ", caller.showBoldNames(), false);
-							}
+							printGivenname(bt, prevGivenname);
 
 						}
 						boolean wasName = false;
@@ -1055,6 +1035,77 @@ public class CommonReport {
 		}
 
 		bt.addText(". ");
+	}
+
+	private void printGivenname(BodyText bt, String prevGivenname) {
+		String[] nameParts = prevGivenname.split(" ");
+		for (int k = 0; k < nameParts.length; k++) {
+			String namePart = nameParts[k];
+			String startChar = "";
+			String endChar = "";
+			if (namePart.length() > 2
+					&& ((namePart.charAt(0) == '(' && namePart.charAt(namePart
+							.length() - 1) == ')') || (namePart.charAt(0) == '\"' && namePart
+							.charAt(namePart.length() - 1) == '\"'))) {
+				char[] c = new char[1];
+				c[0] = namePart.charAt(0);
+				startChar = new String(c);
+				c[0] = namePart.charAt(namePart.length() - 1);
+				endChar = new String(c);
+				namePart = namePart.substring(1, namePart.length() - 1);
+
+			}
+			if (!startChar.equals("")) {
+				bt.addText(startChar, caller.showBoldNames(), false);
+			}
+			String[] subParts = namePart.split("-");
+
+			int astidx = namePart.indexOf("*");
+			int bstidx = namePart.indexOf("**");
+			if (bstidx > 0 || subParts.length == 1) {
+				if (astidx > 0) {
+
+					if (astidx == namePart.length() - 1) {
+						bt.addText(namePart.substring(0, astidx), caller
+								.showBoldNames(), caller.showUnderlineNames());
+					} else {
+
+						if (bstidx > 0) {
+							if (bstidx == namePart.length() - 2) {
+
+								bt.addText(namePart.substring(0, bstidx),
+										caller.showBoldNames(), caller
+												.showUnderlineNames());
+							}
+						}
+					}
+				} else {
+					bt.addText(namePart, caller.showBoldNames(), false);
+				}
+			} else {
+
+				for (int kk = 0; kk < subParts.length; kk++) {
+					String subPart = subParts[kk];
+					int cstidx = subPart.indexOf("*");
+					if (kk > 0) {
+						bt.addText("-", caller.showBoldNames(), false);
+					}
+					if (cstidx == subPart.length() - 1) {
+
+						bt.addText(subPart.substring(0, cstidx), caller
+								.showBoldNames(), caller.showUnderlineNames());
+
+					} else {
+						bt.addText(subPart, caller.showBoldNames(), false);
+					}
+				}
+			}
+
+			if (!endChar.equals("")) {
+				bt.addText(endChar, caller.showBoldNames(), false);
+			}
+			bt.addText(" ", caller.showBoldNames(), false);
+		}
 	}
 
 	protected String nv(String text) {
