@@ -1,9 +1,12 @@
 package fi.kaila.suku.util;
 
+import java.text.Collator;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import fi.kaila.suku.util.pojo.PersonShortData;
 
 /**
  *Commonly used constants and access to resourceBudle
@@ -241,6 +244,7 @@ public class Resurses {
 		repoLangu = newLocale;
 		myself = null;
 		resources = ResourceBundle.getBundle("string/finfamily", currentLocale);
+
 	}
 
 	/**
@@ -250,6 +254,8 @@ public class Resurses {
 	 */
 	public static synchronized void setLanguage(String langu) {
 		repoLangu = langu;
+		Locale lloca = new Locale(repoLangu);
+		PersonShortData.fiCollator = Collator.getInstance(lloca);
 	}
 
 	/**

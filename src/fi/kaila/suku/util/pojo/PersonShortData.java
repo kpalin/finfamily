@@ -12,7 +12,9 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.Collator;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
@@ -822,14 +824,20 @@ public class PersonShortData implements Serializable, Transferable,
 		return text;
 	}
 
+	public static Collator fiCollator = Collator.getInstance(new Locale(
+			Resurses.getLanguage()));
+
 	@Override
 	public int compareTo(PersonShortData o) {
-		int cc = (nv(getSurname()).compareTo(nv(o.getSurname())));
-		if (cc != 0)
-			return cc;
-		cc = (nv(getGivenname()).compareTo(nv(o.getGivenname())));
-		if (cc != 0)
-			return cc;
+
+		int cl = fiCollator.compare(nv(getSurname()), nv(o.getSurname()));
+		if (cl != 0) {
+			return cl;
+		}
+		cl = fiCollator.compare(nv(getGivenname()), nv(o.getGivenname()));
+		if (cl != 0) {
+			return cl;
+		}
 		return (nv(getBirtDate()).compareTo(nv(o.getBirtDate())));
 
 	}
