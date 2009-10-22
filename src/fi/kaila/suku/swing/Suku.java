@@ -497,8 +497,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
 			tSubjectCButton = makeNavigationButton(
-					Resurses.TOOLBAR_SUBJECTC_IMAGE,
-					Resurses.TOOLBAR_SUBJECTC_ACTION, Resurses
+					Resurses.TOOLBAR_SUBJECT_DOWN_IMAGE,
+					Resurses.TOOLBAR_SUBJECT_ON_IMAGE,
+					Resurses.TOOLBAR_SUBJECT_DOWN_ACTION, Resurses
 							.getString("TOOLBAR.SUBJECTC.TOOLTIP"), Resurses
 							.getString("TOOLBAR.SUBJECTC.ALTTEXT"));
 			this.toolbar.add(tSubjectCButton);
@@ -510,8 +511,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.toolbar.add(tSubjectName);
 
 			tSubjectPButton = makeNavigationButton(
-					Resurses.TOOLBAR_SUBJECTP_IMAGE,
-					Resurses.TOOLBAR_SUBJECTP_ACTION, Resurses
+					Resurses.TOOLBAR_SUBJECT_UP_IMAGE,
+					Resurses.TOOLBAR_SUBJECT_UP_ACTION, Resurses
 							.getString("TOOLBAR.SUBJECTP.TOOLTIP"), Resurses
 							.getString("TOOLBAR.SUBJECTP.ALTTEXT"));
 			this.toolbar.add(tSubjectPButton);
@@ -697,7 +698,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * @return the tag or the name of the requested text
 	 */
 	public static String getRepoLanguage(int idx, boolean theCode) {
-		if (repoLangList == null)
+		if (repoLangList == null && idx >= 0)
 			return null;
 		String[] tmp = repoLangList[idx].split(";");
 		if (theCode)
@@ -909,6 +910,60 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	protected JButton makeNavigationButton(String imageName,
+			String selectedName, String actionCommand, String toolTipText,
+			String altText) throws IOException {
+		// Look for the image.
+		String imgLocation = "/images/" + imageName + ".gif";
+		String selectedLocation = "/images/" + selectedName + ".gif";
+		ImageIcon icon = null;
+		ImageIcon selectedIcon = null;
+		// System.out.println("NAV1: " + imageName );
+		byte imbytes[] = new byte[8192];
+
+		InputStream in = null;
+		try {
+			in = this.getClass().getResourceAsStream(imgLocation);
+			// System.out.println("NAV2: " + imageName + ":"+in);
+			int imsize = in.read(imbytes);
+			if (imsize < imbytes.length) {
+				icon = new ImageIcon(imbytes, altText);
+			}
+			in = this.getClass().getResourceAsStream(selectedLocation);
+			// System.out.println("NAV2: " + imageName + ":"+in);
+			imsize = in.read(imbytes);
+			if (imsize < imbytes.length) {
+				selectedIcon = new ImageIcon(imbytes, altText);
+			}
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {
+				}
+			}
+
+		}
+
+		// Create and initialize the button.
+		JButton button = new JButton();
+		button.setActionCommand(actionCommand);
+		button.setToolTipText(toolTipText);
+		button.addActionListener(this);
+		if (selectedIcon != null) {
+			button.setSelectedIcon(selectedIcon);
+		}
+
+		if (icon != null) { // image found
+			button.setIcon(icon); // new ImageIcon(imbytes, altText));
+		} else { // no image found
+			button.setText(altText);
+			logger.info("Resource not found: " + imgLocation);
+		}
+
+		return button;
+	}
+
+	protected JButton makeNavigationButton(String imageName,
 			String actionCommand, String toolTipText, String altText)
 			throws IOException {
 		// Look for the image.
@@ -950,7 +1005,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			button.setIcon(icon); // new ImageIcon(imbytes, altText));
 		} else { // no image found
 			button.setText(altText);
-			System.err.println("Resource not found: " + imgLocation);
+			logger.info("Resource not found: " + imgLocation);
 		}
 
 		return button;
@@ -1279,17 +1334,24 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				personView.resizeNoticePanes();
 				kontroller.putPref(this, Resurses.TOOLBAR_PRIVATE_ACTION, ""
 						+ theButt);
-			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECTC_ACTION)) {
+			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_DOWN_ACTION)) {
 				if (activePersonPid > 0) {
-					subjectPid = activePersonPid;
-					PersonShortData pp = tableMap.get(subjectPid);
-					if (pp != null) {
-						tSubjectName.setText(pp.getAlfaName());
+					boolean theButt = !tSubjectCButton.isSelected();
+					tSubjectCButton.setSelected(theButt);
+					if (theButt) {
+						subjectPid = activePersonPid;
+						PersonShortData pp = tableMap.get(subjectPid);
+						if (pp != null) {
+							tSubjectName.setText(pp.getAlfaName());
+						} else {
+							tSubjectName.setText("");
+						}
 					} else {
+						subjectPid = 0;
 						tSubjectName.setText("");
 					}
 				}
-			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECTP_ACTION)) {
+			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_UP_ACTION)) {
 				if (subjectPid > 0) {
 					showPerson(subjectPid);
 				}

@@ -854,6 +854,8 @@ public class NoticePane extends JPanel implements ActionListener,
 		public void paintComponent(Graphics g) {
 			if (img != null) {
 				g.drawImage(img, 0, 0, null);
+			} else {
+				super.paintComponent(g);
 			}
 		}
 	}

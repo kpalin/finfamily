@@ -207,10 +207,11 @@ public class Resurses {
 	public static final String TOOLBAR_PRIVATE_IMAGE = "showPrivate";
 	public static final String TOOLBAR_PRIVATE_ACTION = "SHOW_PRIVATE";
 
-	public static final String TOOLBAR_SUBJECTC_IMAGE = "NeulaAlas";
-	public static final String TOOLBAR_SUBJECTP_IMAGE = "NeulaYlos";
-	public static final String TOOLBAR_SUBJECTC_ACTION = "SUBJECTC";
-	public static final String TOOLBAR_SUBJECTP_ACTION = "SUBJECTP";
+	public static final String TOOLBAR_SUBJECT_DOWN_IMAGE = "NeulaAlas";
+	public static final String TOOLBAR_SUBJECT_UP_IMAGE = "NeulaYlos";
+	public static final String TOOLBAR_SUBJECT_ON_IMAGE = "NeulaOn";
+	public static final String TOOLBAR_SUBJECT_DOWN_ACTION = "SUBJECTC";
+	public static final String TOOLBAR_SUBJECT_UP_ACTION = "SUBJECTP";
 
 	private static Resurses myself = null;
 	private static ResourceBundle resources = null;
