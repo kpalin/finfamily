@@ -3,6 +3,23 @@
 
 <p>At least for now releases follow the Subversion revision numbers</p>
 
+
+<hdr>Release 72 on 22 Oct 2009</hdr>
+
+<ul>
+<li>Changed personwindow name to be same in menu and tab</li>
+<li>Added headers to clipboard copy</li>
+<li>New Swedish descriptions</li>
+<li>Fixed excel reader to managa ÅÄÖ</li>
+<li>Replaced buttons C and P witg graphic</li>
+<li>Modified make subject button to have on-off position.</li>
+<li>Hide relative notices when no longer active</li>
+<li>Database window sorted using report language collating sequence in surname/givenname/birtdate order after query.</li>
+<li>Fixed name underlining bug</li>
+<li>Added opening of database draft and treeview from relatives pane</li>
+<li>Added newer settings to load and store report settings</li>
+</ul>
+
 <hdr>Release 52 on 21 Oct 2009</hdr>
 
 <ul>
