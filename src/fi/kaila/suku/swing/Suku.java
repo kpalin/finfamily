@@ -2164,6 +2164,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mImportHiski.setEnabled(this.isConnected);
 		this.mNewPerson.setEnabled(this.isConnected);
 		this.mDbWork.setEnabled(this.isConnected);
+		this.mDbUpdate.setEnabled(this.isConnected);
 		this.tPersonButton.setEnabled(this.isConnected);
 		this.tQueryButton.setEnabled(this.isConnected);
 		this.tMapButton.setEnabled(this.isConnected);
