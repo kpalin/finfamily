@@ -3,10 +3,14 @@
 
 <p>At least for now releases follow the Subversion revision numbers</p>
 
-<hdr>Release xx on xx Oct 2009</hdr>
+<hdr>Release 77 on 23 Oct 2009</hdr>
 
 <ul>
 <li>Active language variant names are in red for both notice language and relation notice language variant</li>
+<li>UTF-8 texts corrected</li>
+<li>Added state field. Set state and country visible when place is visible.</li>
+<li>Names of activated languages with red</li>
+<li>Load TypesExecl and PaikatExcel from user chosen location</li>
 </ul>
 
 <hdr>Release 72 on 22 Oct 2009</hdr>
