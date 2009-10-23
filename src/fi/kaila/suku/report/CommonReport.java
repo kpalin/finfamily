@@ -39,8 +39,6 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  * </ul>
  * 
  * 
- * 
- * 
  * Common routines used by report generators
  * 
  * @author Kalle
@@ -201,8 +199,8 @@ public class CommonReport {
 
 		}
 		//
-		// // spouse list
-		// //
+		// spouse list
+		// 
 
 		SukuData sdata;
 		ReportTableMember spouseMember;
@@ -230,21 +228,13 @@ public class CommonReport {
 
 					for (int i = 0; i < sdata.relations.length; i++) {
 						if (sdata.relations[i].getRelative() == tab.getPid()) {
-							// System.out.println("REL:" + spouseMember.getPid()
-							// + "/" + sdata.relations[i]);
 							if (sdata.relations[i].getNotices() != null) {
-								// TODO hoidettava myös useammat tapahtumat
 								rnn = sdata.relations[i].getNotices();
-								for (int j = 0; j < rnn.length; j++) {
 
-									RelationNotice rn = rnn[j];
-									// TODO
-									spouType = printRelationNotice(rn,
-											spouType, spouNum);
+								RelationNotice rn = rnn[0];
+								spouType = printRelationNotice(rn, spouType,
+										spouNum);
 
-									// System.out.println("RELN:" +
-									// sdata.relations[i].getNotices()[j]);
-								}
 							}
 
 						}
@@ -600,6 +590,12 @@ public class CommonReport {
 	private String printRelationNotice(RelationNotice rn, String defType,
 			int spouseNum) {
 
+		String showType = caller.getDescendantPanel().getSpouseData()
+				.getSelection().getActionCommand();
+		if (showType == null) {
+			showType = ReportWorkerDialog.SET_SPOUSE_NONE;
+		}
+
 		StringBuffer sb = new StringBuffer();
 		boolean addSpace = false;
 
@@ -617,6 +613,39 @@ public class CommonReport {
 				sb.append(" " + spouseNum + ":o");
 			}
 			addSpace = true;
+		}
+
+		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_NONE)) {
+			return sb.toString();
+		}
+		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_YEAR)) {
+
+			String yr = rn.getFromDate();
+			if (yr != null && yr.length() >= 4) {
+				if (addSpace) {
+					sb.append(" ");
+				}
+				sb.append(yr.substring(0, 4));
+			}
+
+			return sb.toString();
+		}
+
+		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_DATE)) {
+			String yr = rn.getFromDate();
+			if (yr != null && yr.length() >= 4) {
+
+				String date = printDate(rn.getDatePrefix(), rn.getFromDate(),
+						rn.getToDate());
+				if (date.length() > 0) {
+					if (addSpace) {
+						sb.append(" ");
+					}
+					sb.append(date);
+				}
+			}
+
+			return sb.toString();
 		}
 
 		String date = printDate(rn.getDatePrefix(), rn.getFromDate(), rn
@@ -870,7 +899,7 @@ public class CommonReport {
 				}
 			}
 		}
-		if (i == 0) {
+		if (i <= 0) {
 			bt.addText(text);
 		}
 		return text.length();
@@ -883,8 +912,8 @@ public class CommonReport {
 	}
 
 	private String printDate(String datePrefix, String dateFrom, String dateTo) {
-		String mellan = null;
-		String framme = null;
+		String mellan = "";
+		String framme = "";
 		if (dateFrom == null)
 			return "";
 		StringBuffer sb = new StringBuffer();
@@ -898,12 +927,12 @@ public class CommonReport {
 				mellan = caller.getTextValue("AND");
 			}
 		}
-		if (framme != null) {
+		if (!framme.equals("")) {
 			sb.append(framme);
 			sb.append(" ");
 		}
 		sb.append(toRepoDate(dateFrom));
-		if (mellan != null && dateTo != null) {
+		if (!mellan.equals("") && dateTo != null) {
 			sb.append(" ");
 			sb.append(mellan);
 			sb.append(" ");

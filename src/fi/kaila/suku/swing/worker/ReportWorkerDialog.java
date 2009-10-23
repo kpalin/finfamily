@@ -1498,7 +1498,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 				for (int i = 0; i < reposet.vvTexts.size(); i++) {
 					String tag = reposet.vvTexts.get(i)[0];
-					textTexts.put(tag, reposet.vvTexts.get(i)[1]);
+					String value = reposet.vvTexts.get(i)[1];
+					if (value == null)
+						value = "";
+					textTexts.put(tag, value);
 				}
 
 			} catch (SukuException e) {
