@@ -1,5 +1,6 @@
 package fi.kaila.suku.swing.dialog;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -248,6 +249,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 				for (int j = 0; j < rr.length; j++) {
 					if (lan.equals(rr[j].getLangCode())) {
 						fixed[i] = rr[j];
+						langxx[i].setForeground(Color.RED);
 						break;
 					}
 				}

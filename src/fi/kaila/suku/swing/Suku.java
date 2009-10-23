@@ -103,7 +103,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  * 
  * 
  * 
- * <h1>Sukuohjelmisto 11 main program</h1>
+ * <h1>FinFamily main program</h1>
  * 
  * <p>
  * Swing-based java-application for managing genealogical data.
@@ -117,8 +117,8 @@ import fi.kaila.suku.util.pojo.SukuData;
  * <h2>Starting the application</h2>
  * 
  * <p>
- * The Suku11 application is distributed as a zip file. unzip that file and you
- * are ready to go assuming you have installed the PostgreSQL database as
+ * The FinFamily application is distributed as a zip file. unzip that file and
+ * you are ready to go assuming you have installed the PostgreSQL database as
  * described in the guide.
  * </p>
  * 
@@ -132,7 +132,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  * </p>
  * 
  * <p>
- * suku.sh contains something like teh command below to start suku. If you are
+ * suku.sh contains something like the command below to start suku. If you are
  * familiar with java then this tells you how. Else you need not care for it.
  * </p>
  * 

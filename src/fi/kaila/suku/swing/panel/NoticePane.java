@@ -715,7 +715,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		String cmd = e.getActionCommand();
 		if (cmd == null)
 			return;
-		System.out.println("Notice closataan " + cmd);
+		// System.out.println("Notice closataan " + cmd);
 		if (cmd.equals("NOTE_LANG")) {
 
 			LanguageDialog lan = new LanguageDialog(personView.getSuku());

@@ -1,5 +1,6 @@
 package fi.kaila.suku.swing.dialog;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -159,6 +160,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 				int idx = Suku.getRepoLanguageIndex(languages[i].getLangCode());
 				if (idx >= 0) {
 					this.languages[idx] = languages[i];
+					langxx[idx].setForeground(Color.RED);
 				} else {
 					logger.warning("language code not known ["
 							+ languages[i].getLangCode() + "]");
