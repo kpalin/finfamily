@@ -734,6 +734,22 @@ public class CommonReport {
 							addSpace = true;
 							addDot = true;
 						}
+						if (nn.getState() != null) {
+							if (addSpace) {
+								bt.addText(",");
+								addSpace = true;
+								addDot = true;
+							}
+							bt.addText(nn.getState());
+						}
+						if (nn.getCountry() != null) {
+							if (addSpace) {
+								bt.addText(",");
+								addSpace = true;
+								addDot = true;
+							}
+							bt.addText(nn.getCountry());
+						}
 						if (nn.getNoteText() != null) {
 
 							if (addSpace) {
@@ -782,12 +798,7 @@ public class CommonReport {
 									}
 
 								}
-								if (nn.getCountry() != null) {
-									if (tlen++ > 0) {
-										bt.addText(",");
-									}
-									bt.addText(nn.getCountry());
-								}
+
 								if (nn.getEmail() != null) {
 									if (tlen++ > 0) {
 										bt.addText(",");

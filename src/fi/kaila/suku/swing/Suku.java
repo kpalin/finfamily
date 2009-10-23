@@ -162,7 +162,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	/**
 	 * Application version
 	 */
-	public static final String sukuVersion = "11.-3.0077";
+	public static final String sukuVersion = "11.-3.0078";
 	/**
 	 * Server version
 	 */
@@ -195,6 +195,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mLoadCoordinates;
 	private JMenuItem mLoadTypes;
 	private JMenuItem mDbWork;
+	private JMenuItem mDbUpdate;
 	private JMenuItem mStopPgsql;
 	private JMenuItem mStartPgsql;
 	private JMenu mHiski;
@@ -434,6 +435,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mTools.add(this.mDbWork);
 		this.mDbWork.setActionCommand("MENU_TOOLS_DBWORK");
 		this.mDbWork.addActionListener(this);
+
+		this.mDbUpdate = new JMenuItem(Resurses.getString(Resurses.UPDATEDB));
+		this.mTools.add(this.mDbUpdate);
+		this.mDbUpdate.setActionCommand(Resurses.UPDATEDB);
+		this.mDbUpdate.addActionListener(this);
 
 		this.mGroupMgr = new JMenuItem(Resurses
 				.getString("MENU_TOOLS_GROUP_MGR"));
@@ -1091,7 +1097,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				about.setVisible(true);
 
 			}
-			if (cmd.equals(Resurses.NEWDB)) {
+			if (cmd.equals(Resurses.UPDATEDB)) {
+				kontroller.getSukuData("cmd=initdb", "path=/sql/dbupdates.sql");
+				JOptionPane.showMessageDialog(this, "OK", Resurses
+						.getString(Resurses.SUKU),
+						JOptionPane.INFORMATION_MESSAGE);
+			} else if (cmd.equals(Resurses.NEWDB)) {
 				int resu = JOptionPane.showConfirmDialog(this, Resurses
 						.getString("CONFIRM_NEWDB"), Resurses
 						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,

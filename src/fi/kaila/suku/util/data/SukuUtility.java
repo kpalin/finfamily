@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
@@ -22,15 +23,7 @@ import fi.kaila.suku.util.SukuException;
  */
 public class SukuUtility {
 
-	// private String dbDriver="org.postgresql.Driver";
-	// private String
-	// dbConne="jdbc:postgresql://localhost/sukuproto?user=kalle&password=kalle";
-	//
-	// Connection con=null;
-
-	// public static BufferedImage womanxIcon=null;
-	// public static BufferedImage manIcon;
-	// public static BufferedImage unknownIcon;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private static SukuUtility sData = null;
 
@@ -70,12 +63,13 @@ public class SukuUtility {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public void createSukuDb(Connection con) throws SukuException {
+	public void createSukuDb(Connection con, String sqlpath)
+			throws SukuException {
 
 		InputStreamReader in = null;
 		try {
 			in = new InputStreamReader(this.getClass().getResourceAsStream(
-					"/sql/finfamily.sql"), "UTF-8");
+					sqlpath), "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 
 			e1.printStackTrace();
@@ -130,8 +124,11 @@ public class SukuUtility {
 
 				String sql = sb.toString();
 
-				// System.out.println("sql:"+sql);
-				stm.executeUpdate(sql);
+				try {
+					stm.executeUpdate(sql);
+				} catch (SQLException se) {
+					logger.info(se.getMessage());
+				}
 				sb = new StringBuffer();
 
 			}

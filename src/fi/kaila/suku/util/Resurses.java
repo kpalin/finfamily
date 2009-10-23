@@ -225,6 +225,8 @@ public class Resurses {
 
 	private static String dateFormat = "FI";
 
+	public static String UPDATEDB = "MENU_UPDATEDB";
+
 	private Resurses() {
 		if (resources == null) {
 			Locale.setDefault(currentLocale);

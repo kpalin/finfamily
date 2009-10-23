@@ -102,17 +102,17 @@ public class SukuServerImpl implements SukuServer {
 			this.con = DriverManager.getConnection(this.dbConne);
 			Statement stm = this.con.createStatement();
 			stm.executeUpdate("set search_path to " + this.schema);
-			boolean needsState = false;
-			try {
-				ResultSet rs = stm
-						.executeQuery("select state from unitnotice limit 1");
-			} catch (SQLException e) {
-				needsState = true;
-			}
-			if (needsState) {
-				stm
-						.executeUpdate("ALTER TABLE unitnotice ADD COLUMN state varchar");
-			}
+			// boolean needsState = false;
+			// try {
+			// ResultSet rs = stm
+			// .executeQuery("select state from unitnotice limit 1");
+			// } catch (SQLException e) {
+			// needsState = true;
+			// }
+			// if (needsState) {
+			// stm
+			// .executeUpdate("ALTER TABLE unitnotice ADD COLUMN state varchar");
+			// }
 
 			stm.close();
 
@@ -127,7 +127,7 @@ public class SukuServerImpl implements SukuServer {
 	private void import2004Data(String path, String oldCode)
 			throws SukuException {
 		SukuUtility data = SukuUtility.instance();
-		data.createSukuDb(this.con);
+		data.createSukuDb(this.con, "/sql/finfamily.sql");
 
 		logger.fine("database created for " + path);
 
@@ -416,8 +416,12 @@ public class SukuServerImpl implements SukuServer {
 			con = null;
 			fam = new SukuData();
 		} else if (cmd.equals("initdb")) {
+			String path = map.get("path");
+			if (path == null) {
+				path = "/sql/finfamily.sql";
+			}
 			SukuUtility data = SukuUtility.instance();
-			data.createSukuDb(this.con);
+			data.createSukuDb(this.con, path);
 
 		} else if (cmd.equals("viewlist")) {
 			fam = getViewList();

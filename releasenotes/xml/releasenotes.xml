@@ -3,13 +3,12 @@
 
 <p>At least for now releases follow the Subversion revision numbers</p>
 
-<hdr>Release 77 on 23 Oct 2009</hdr>
-
+<hdr>Release 78 on 23 Oct 2009</hdr>
 <ul>
+<li>Added database update command to tools menu. This version requires it to be run if using databse created with older FinFamily</li>
 <li>Active language variant names are in red for both notice language and relation notice language variant</li>
 <li>UTF-8 texts corrected</li>
 <li>Added state field. Set state and country visible when place is visible.</li>
-<li>Names of activated languages with red</li>
 <li>Load TypesExecl and PaikatExcel from user chosen location</li>
 </ul>
 
