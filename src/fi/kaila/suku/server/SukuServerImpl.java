@@ -102,7 +102,20 @@ public class SukuServerImpl implements SukuServer {
 			this.con = DriverManager.getConnection(this.dbConne);
 			Statement stm = this.con.createStatement();
 			stm.executeUpdate("set search_path to " + this.schema);
+			boolean needsState = false;
+			try {
+				ResultSet rs = stm
+						.executeQuery("select state from unitnotice limit 1");
+			} catch (SQLException e) {
+				needsState = true;
+			}
+			if (needsState) {
+				stm
+						.executeUpdate("ALTER TABLE unitnotice ADD COLUMN state varchar");
+			}
+
 			stm.close();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 

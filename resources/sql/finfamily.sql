@@ -181,6 +181,7 @@ Croft varchar,                   -- Torppa  NEW
 Address varchar,                 -- Address line 1 / Village/Kylä
 PostOffice varchar,              -- Place of the event, Postoffice, City  
 PostalCode varchar,              -- Postal Code  
+State varchar,
 Country varchar,                 -- Country  
 --Location point,                  -- Geographical location of place
 Email varchar,                   -- Email-address or web-page of person  

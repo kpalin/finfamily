@@ -163,8 +163,8 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 		y = 260;
 
-		textContent = new JLabel(
-				"Tämä käy läpi kaikki tietokantaikkunan henkilöt");
+		textContent = new JLabel(Resurses.getString("DIALOG_SORTINFO"));
+
 		getContentPane().add(textContent);
 		this.textContent.setBounds(30, y, 340, 40);
 		y += 30;
@@ -261,7 +261,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 			// Initialize progress property.
 			setProgress(0);
-			setRunnerValue("0;Läpikäydään tietokantaikkunan henkilöt");
+			setRunnerValue("0;" + Resurses.getString(""));
 
 			int dbcount = owner.getDatabaseRowCount();
 			int updateCount = 0;

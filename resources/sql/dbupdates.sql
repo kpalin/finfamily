@@ -5,6 +5,8 @@
 
 ALTER TABLE relationlanguage ADD COLUMN rid integer;
 
+ALTER TABLE unitnotice ADD COLUMN state varchar;
+
 insert into sukusettings (settingtype,settingindex,settingname,settingvalue) values ('order',1,'notice','BIRT');
 insert into sukusettings (settingtype,settingindex,settingname,settingvalue) values ('order',2,'notice','CHR');
 insert into sukusettings (settingtype,settingindex,settingname,settingvalue) values ('order',3,'notice','OCCU');

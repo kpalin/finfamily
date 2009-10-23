@@ -52,7 +52,7 @@ public class PersonUtil {
 				+ "surety=?,Privacy=?,NoticeType=?,Description=?,"
 				+ "DatePrefix=?,FromDate=?,ToDate=?,Place=?,"
 				+ "Village=?,Farm=?,Croft=?,Address=?,"
-				+ "PostalCode=?,PostOffice=?,Country=?,Email=?,"
+				+ "PostalCode=?,PostOffice=?,State=?,Country=?,Email=?,"
 				+ "NoteText=?,MediaFilename=?,MediaTitle=?,Prefix=?,"
 				+ "Surname=?,Givenname=?,Patronym=?,PostFix=?,"
 				+ "SourceText=?,PrivateText=?,Modified=now() "
@@ -62,12 +62,12 @@ public class PersonUtil {
 				+ "surety,Privacy,NoticeType,Description,"
 				+ "DatePrefix,FromDate,ToDate,Place,"
 				+ "Village,Farm,Croft,Address,"
-				+ "PostalCode,PostOffice,Country,Email,"
+				+ "PostalCode,PostOffice,State,Country,Email,"
 				+ "NoteText,MediaFilename,MediaTitle,Prefix,"
 				+ "Surname,Givenname,Patronym,PostFix,"
 				+ "SourceText,PrivateText,pnid,pid,tag) values ("
 				+ "?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?,"
-				+ "?,?,?,?,?) ";
+				+ "?,?,?,?,?,?) ";
 
 		String updLangSql = "update unitlanguage set "
 				+ "NoticeType=?,Description=?," + "Place=?,"
@@ -196,30 +196,31 @@ public class PersonUtil {
 						pst.setString(12, n.getAddress());
 						pst.setString(13, n.getPostalCode());
 						pst.setString(14, n.getPostOffice());
-						pst.setString(15, n.getCountry());
-						pst.setString(16, n.getEmail());
-						pst.setString(17, n.getNoteText());
-						pst.setString(18, n.getMediaFilename());
-						pst.setString(19, n.getMediaTitle());
-						pst.setString(20, n.getPrefix());
-						pst.setString(21, n.getSurname());
-						pst.setString(22, n.getGivenname());
-						pst.setString(23, n.getPatronym());
-						pst.setString(24, n.getPostfix());
-						pst.setString(25, n.getSource());
-						pst.setString(26, n.getPrivateText());
+						pst.setString(15, n.getState());
+						pst.setString(16, n.getCountry());
+						pst.setString(17, n.getEmail());
+						pst.setString(18, n.getNoteText());
+						pst.setString(19, n.getMediaFilename());
+						pst.setString(20, n.getMediaTitle());
+						pst.setString(21, n.getPrefix());
+						pst.setString(22, n.getSurname());
+						pst.setString(23, n.getGivenname());
+						pst.setString(24, n.getPatronym());
+						pst.setString(25, n.getPostfix());
+						pst.setString(26, n.getSource());
+						pst.setString(27, n.getPrivateText());
 					}
 					if (n.getPnid() > 0) {
-						pst.setInt(27, n.getPnid());
+						pst.setInt(28, n.getPnid());
 						int luku = pst.executeUpdate();
 						// System.out.println("Päivitettiin " + luku +
 						// " tietuetta");
 						logger.fine("Päivitettiin " + luku
 								+ " tietuetta pnid=[" + n.getPnid() + "]");
 					} else {
-						pst.setInt(27, pnid);
-						pst.setInt(28, pid);
-						pst.setString(29, n.getTag());
+						pst.setInt(28, pnid);
+						pst.setInt(29, pid);
+						pst.setString(30, n.getTag());
 						int luku = pst.executeUpdate();
 						// System.out.println("Luotiin " + luku +
 						// " uusi tietue");

@@ -46,6 +46,7 @@ public class UnitNotice implements Serializable {
 	String postOffice = null; // varchar, -- Place of the event, Postoffice,
 	// City
 	String postalCode = null; // varchar, -- Postal Code
+	String state = null; // varchar, -- State
 	String country = null; // varchar, -- Country
 	String email = null; // varchar, -- Email-address or web-page of person
 	String noteText = null; // varchar, -- Note textfield (L)
@@ -132,6 +133,7 @@ public class UnitNotice implements Serializable {
 		address = rs.getString("address");
 		postOffice = rs.getString("postoffice");
 		postalCode = rs.getString("postalcode");
+		state = rs.getString("state");
 		country = rs.getString("country");
 		email = rs.getString("email");
 		noteText = rs.getString("notetext");
@@ -390,8 +392,20 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	public String getState() {
+		return trim(state);
+	}
+
 	public String getCountry() {
 		return trim(country);
+	}
+
+	public void setState(String text) {
+		if (!nv(this.state).equals(nv(text))) {
+			toBeUpdated = true;
+			this.state = vn(text);
+		}
+
 	}
 
 	public void setCountry(String text) {

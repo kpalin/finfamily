@@ -83,12 +83,14 @@ public class NoticePane extends JPanel implements ActionListener,
 	JLabel addressLbl;
 	JLabel postalCodeLbl;
 	JLabel postOfficeLbl;
+	JLabel stateLbl;
 	JLabel countryLbl;
 	JLabel emailLbl;
 
 	JTextArea address;
 	JTextField postalCode;
 	JTextField postOffice;
+	JTextField state;
 	JTextField country;
 	JTextField email;
 	JScrollPane scrollAddress;
@@ -270,6 +272,8 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		country = new JTextField();
 		add(country);
+		state = new JTextField();
+		add(state);
 
 		email = new JTextField();
 		add(email);
@@ -370,6 +374,8 @@ public class NoticePane extends JPanel implements ActionListener,
 		postOfficeLbl = new JLabel(Resurses.getString("DATA_POSTOFF"));
 		add(postOfficeLbl);
 
+		stateLbl = new JLabel(Resurses.getString("DATA_STATE"));
+		add(stateLbl);
 		countryLbl = new JLabel(Resurses.getString("DATA_COUNTRY"));
 		add(countryLbl);
 
@@ -461,6 +467,10 @@ public class NoticePane extends JPanel implements ActionListener,
 		if (tmp == null)
 			tmp = "";
 		postOffice.setText(tmp);
+		tmp = notice.getState();
+		if (tmp == null)
+			tmp = "";
+		state.setText(tmp);
 		tmp = notice.getCountry();
 		if (tmp == null)
 			tmp = "";
@@ -570,6 +580,8 @@ public class NoticePane extends JPanel implements ActionListener,
 		if (!"".equals(postalCode.getText()))
 			return false;
 		if (!"".equals(postOffice.getText()))
+			return false;
+		if (!"".equals(state.getText()))
 			return false;
 		if (!"".equals(country.getText()))
 			return false;
@@ -695,6 +707,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		notice.setAddress(address.getText());
 		notice.setPostalCode(postalCode.getText());
 		notice.setPostOffice(postOffice.getText());
+		notice.setState(state.getText());
 		notice.setCountry(country.getText());
 		notice.setEmail(email.getText());
 		notice.setNoteText(noteText.getText());
@@ -999,6 +1012,12 @@ public class NoticePane extends JPanel implements ActionListener,
 			placeLbl.setBounds(10, lrivi, 70, 20);
 			place.setBounds(lcol, lrivi, lwidth, 20);
 			lrivi += 24;
+			stateLbl.setBounds(10, lrivi, 70, 20);
+			countryLbl.setBounds(lcol + lwidth / 3 + 10, lrivi, 70, 20);
+			state.setBounds(lcol, lrivi, lwidth / 3, 20);
+			country.setBounds(lcol + lwidth / 3 + 80, lrivi,
+					lwidth * 2 / 3 - 80, 20);
+			lrivi += 24;
 			boolean farmShow = mustFarm;
 			if (mustFarm) {
 
@@ -1035,10 +1054,6 @@ public class NoticePane extends JPanel implements ActionListener,
 			postOfficeLbl.setBounds(10, lrivi, 70, 20);
 			postalCode.setBounds(lcol, lrivi, 80, 20);
 			postOffice.setBounds(lcol + 83, lrivi, lwidth - 83, 20);
-			lrivi += 24;
-
-			countryLbl.setBounds(10, lrivi, 70, 20);
-			country.setBounds(lcol, lrivi, lwidth, 20);
 
 			lrivi += 24;
 
@@ -1047,15 +1062,20 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			lrivi += 24;
 		}
+
 		scrollAddress.setVisible(addressShow);
 		postalCode.setVisible(addressShow);
 		postOffice.setVisible(addressShow);
-		country.setVisible(addressShow);
+		postalCodeLbl.setVisible(addressShow);
+		postOfficeLbl.setVisible(addressShow);
+
+		emailLbl.setVisible(addressShow);
+		// country.setVisible(addressShow);
 		email.setVisible(addressShow);
 		addressLbl.setVisible(addressShow);
 		postalCodeLbl.setVisible(addressShow);
 		postOfficeLbl.setVisible(addressShow);
-		countryLbl.setVisible(addressShow);
+		// countryLbl.setVisible(addressShow);
 		emailLbl.setVisible(addressShow);
 
 		switch (showType) {
