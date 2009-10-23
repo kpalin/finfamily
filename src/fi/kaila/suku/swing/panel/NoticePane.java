@@ -737,7 +737,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			if (filesize > 0) {
 				BufferedInputStream bstr = new BufferedInputStream(
 						Suku.kontroller.getInputStream());
-				System.out.println("OPEN: " + openedImage);
+				// System.out.println("OPEN: " + openedImage);
 
 				byte buffer[] = new byte[(int) filesize];
 

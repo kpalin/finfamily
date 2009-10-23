@@ -355,6 +355,20 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mFile.add(this.mNewDatabase);
 		this.mNewDatabase.setActionCommand(Resurses.NEWDB);
 		this.mNewDatabase.addActionListener(this);
+		this.mFile.addSeparator();
+		this.mLoadCoordinates = new JMenuItem(Resurses
+				.getString("MENU_TOOLS_LOAD_COORDINATES"));
+		this.mFile.add(this.mLoadCoordinates);
+		this.mLoadCoordinates.setActionCommand("MENU_TOOLS_LOAD_COORDINATES");
+		this.mLoadCoordinates.addActionListener(this);
+
+		this.mLoadTypes = new JMenuItem(Resurses
+				.getString("MENU_TOOLS_LOAD_TYPES"));
+		this.mFile.add(this.mLoadTypes);
+		this.mLoadTypes.setActionCommand("MENU_TOOLS_LOAD_TYPES");
+		this.mLoadTypes.addActionListener(this);
+
+		this.mFile.addSeparator();
 
 		this.mQuery = new JMenuItem(Resurses.getString(Resurses.QUERY));
 		this.mFile.add(this.mQuery);
@@ -431,18 +445,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mTools.add(this.mViewMgr);
 		this.mViewMgr.setActionCommand("MENU_TOOLS_VIEW_MGR");
 		this.mViewMgr.addActionListener(this);
-
-		this.mLoadCoordinates = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_LOAD_COORDINATES"));
-		this.mTools.add(this.mLoadCoordinates);
-		this.mLoadCoordinates.setActionCommand("MENU_TOOLS_LOAD_COORDINATES");
-		this.mLoadCoordinates.addActionListener(this);
-
-		this.mLoadTypes = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_LOAD_TYPES"));
-		this.mTools.add(this.mLoadTypes);
-		this.mLoadTypes.setActionCommand("MENU_TOOLS_LOAD_TYPES");
-		this.mLoadTypes.addActionListener(this);
 
 		if (System.getProperty("file.separator").charAt(0) == '\\') { // windows
 			// only
@@ -1379,12 +1381,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void importDefaultTypes() {
 		try {
-			kontroller.getSukuData("cmd=excel",
-					"path=resources/excel/TypesExcel.xls", "page=types");
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString("IMPORTED_TYPES"), Resurses
-					.getString(Resurses.SUKU), JOptionPane.INFORMATION_MESSAGE);
-
+			boolean openedFile = Suku.kontroller.openLocalFile("xls");
+			if (openedFile) {
+				kontroller.getSukuData("cmd=excel", "page=types");
+				// "path=resources/excel/TypesExcel.xls",);
+				JOptionPane.showMessageDialog(this, Resurses
+						.getString("IMPORTED_TYPES"), Resurses
+						.getString(Resurses.SUKU),
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
 					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
@@ -1395,12 +1400,16 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void importDefaultCoordinates() {
 		try {
-			kontroller.getSukuData("cmd=excel",
-					"path=resources/excel/PaikatExcel.xls", "page=coordinates");
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString("IMPORTED_COORDINATES"), Resurses
-					.getString(Resurses.SUKU), JOptionPane.INFORMATION_MESSAGE);
-
+			boolean openedFile = Suku.kontroller.openLocalFile("xls");
+			if (openedFile) {
+				kontroller.getSukuData("cmd=excel", "page=coordinates");
+				// kontroller.getSukuData("cmd=excel",
+				// "path=resources/excel/PaikatExcel.xls", "page=coordinates");
+				JOptionPane.showMessageDialog(this, Resurses
+						.getString("IMPORTED_COORDINATES"), Resurses
+						.getString(Resurses.SUKU),
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
 					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);

@@ -447,6 +447,13 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");
 			String path = map.get("path");
+			if (path == null) {
+				path = this.openFile;
+				if (path == null) {
+					fam.resu = "Coordinates file missing";
+					return fam;
+				}
+			}
 			importExcelData(path, page);
 
 		} else if (cmd.equals("saverepo")) {
