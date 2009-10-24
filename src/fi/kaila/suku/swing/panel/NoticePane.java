@@ -1034,6 +1034,9 @@ public class NoticePane extends JPanel implements ActionListener,
 				croft.setBounds(lcol, lrivi, lwidth, 20);
 				lrivi += 24;
 			}
+			villageLbl.setVisible(farmShow);
+			farmLbl.setVisible(farmShow);
+			croftLbl.setVisible(farmShow);
 			village.setVisible(farmShow);
 			farm.setVisible(farmShow);
 			croft.setVisible(farmShow);
@@ -1069,9 +1072,9 @@ public class NoticePane extends JPanel implements ActionListener,
 		postalCodeLbl.setVisible(addressShow);
 		postOfficeLbl.setVisible(addressShow);
 
-		emailLbl.setVisible(addressShow);
-		// country.setVisible(addressShow);
 		email.setVisible(addressShow);
+
+		emailLbl.setVisible(addressShow);
 		addressLbl.setVisible(addressShow);
 		postalCodeLbl.setVisible(addressShow);
 		postOfficeLbl.setVisible(addressShow);
@@ -1129,6 +1132,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			lrivi += 24;
 		}
+		mediaOpenFile.setVisible(mediaShow);
 		mediaFilenameLbl.setVisible(mediaShow);
 		mediaTitleLbl.setVisible(mediaShow);
 		mediaFilename.setVisible(mediaShow);
