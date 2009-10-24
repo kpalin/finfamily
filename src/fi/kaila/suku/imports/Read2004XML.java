@@ -432,8 +432,8 @@ public class Read2004XML extends DefaultHandler {
 
 			stm.executeUpdate(UPDATE_GROUPS);
 
+			// initialize pid sequence
 			String sql = "select max(pid) from unit";
-
 			ResultSet rs = stm.executeQuery(sql);
 			int maxpid = 0;
 			if (rs.next()) {
@@ -441,9 +441,19 @@ public class Read2004XML extends DefaultHandler {
 			}
 			rs.close();
 			sql = "SELECT setval('unitseq'," + maxpid + ")";
-
 			rs = stm.executeQuery(sql);
+			rs.close();
 
+			// initializize also vid sequence
+			sql = "select max(vid) from views";
+			rs = stm.executeQuery(sql);
+			int maxvid = 0;
+			if (rs.next()) {
+				maxvid = rs.getInt(1);
+			}
+			rs.close();
+			sql = "SELECT setval('viewseq'," + maxvid + ")";
+			rs = stm.executeQuery(sql);
 			rs.close();
 
 			stm.executeUpdate(VACUUM);
