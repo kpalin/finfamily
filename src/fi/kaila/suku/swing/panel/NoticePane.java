@@ -664,6 +664,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			// This checks both dates for error. in case of error
 			// an SukuDateException is thrown
 			// if ok returns null
+			// FIXME: Dead store to theDate. Is there better way to code this?
 			theDate = date.getFromDate();
 			theDate = date.getToDate();
 			return null;

@@ -115,6 +115,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 				g.drawImage(img, imgx, y, (int) xw, (int) yh, Color.red, null);
 
+				// FIXME: Not used anywhere. Can be removed?
 				imgx += imageSize.width + separatorWidth;
 			}
 

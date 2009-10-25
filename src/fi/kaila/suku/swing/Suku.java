@@ -1396,6 +1396,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				personView.showNotices(tNoticesButton.isSelected());
 			}
 		} catch (Exception ex) {
+			// FIXME: Spaghetti code. This method uses a try-catch block that
+			// catches Exception objects, but Exception is not thrown within the
+			// try block, and RuntimeException is not explicitly caught. This
+			// construct also accidentally catches RuntimeException as well,
+			// masking potential bugs.
 			logger.log(Level.WARNING, "Suku action", ex);
 			JOptionPane.showMessageDialog(personView.getSuku(), "Suku action"
 					+ ":" + ex.getMessage());
@@ -2440,6 +2445,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					if (ii.length == 0)
 						return;
 					StringBuffer sb = new StringBuffer();
+					// FIXME: Potential NPE
 					sb.append(perso.getHeader() + "\n");
 					for (int i = 0; i < ii.length; i++) {
 						SukuRow rivi = (SukuRow) table.getValueAt(ii[i],

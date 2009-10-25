@@ -113,6 +113,7 @@ public class SukuDateField extends JPanel {
 		datePost.setText("");
 		if ("FROM".equals(pre) || "BET".equals(pre)) {
 			dateTo.setVisible(true);
+			// FIXME: Potential NPE
 			if (pre.equals("FROM")) {
 				datePost.setText(Resurses.getString("DATE_TO"));
 			} else {

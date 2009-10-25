@@ -207,6 +207,11 @@ public class ExcelImporter {
 			workbook.close();
 
 		} catch (Exception e) {
+			// FIXME: Spaghetti code. This method uses a try-catch block that
+			// catches Exception objects, but Exception is not thrown within the
+			// try block, and RuntimeException is not explicitly caught. This
+			// construct also accidentally catches RuntimeException as well,
+			// masking potential bugs.
 			suk.resu = e.getMessage();
 			e.printStackTrace();
 		}
@@ -374,6 +379,11 @@ public class ExcelImporter {
 			logger.info("inserted " + laskuri + " othernames for places");
 
 		} catch (Exception e1) {
+			// FIXME: Spaghetti code. This method uses a try-catch block that
+			// catches Exception objects, but Exception is not thrown within the
+			// try block, and RuntimeException is not explicitly caught. This
+			// construct also accidentally catches RuntimeException as well,
+			// masking potential bugs.
 			suk.resu = e1.getMessage();
 			e1.printStackTrace();
 		}

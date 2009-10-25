@@ -1185,8 +1185,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				WritableWorkbook workbook = Workbook.createWorkbook(bstr);
 
 				// Create a cell format for Times 16, bold and italic
+				// FIXME: Not used. Can be removed?
 				WritableFont arial10italic = new WritableFont(
 						WritableFont.ARIAL, 10, WritableFont.NO_BOLD, true);
+				// FIXME: Not used. Can be removed?
 				WritableCellFormat arial10format = new WritableCellFormat(
 						arial10italic);
 
@@ -1323,6 +1325,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				bstr.close();
 
 			} catch (Exception e) {
+				// FIXME: Spaghetti code. This method uses a try-catch block
+				// that
+				// catches Exception objects, but Exception is not thrown within
+				// the
+				// try block, and RuntimeException is not explicitly caught.
+				// This
+				// construct also accidentally catches RuntimeException as well,
+				// masking potential bugs.
 				logger.log(Level.WARNING, "Exception in background thread", e);
 			}
 

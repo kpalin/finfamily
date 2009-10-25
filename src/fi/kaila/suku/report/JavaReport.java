@@ -129,6 +129,8 @@ public class JavaReport extends JFrame implements ActionListener,
 		} else {
 			System.err
 					.println("Text pane's document isn't an AbstractDocument!");
+			// FIXME: Invoking System.exit shuts down the entire Java virtual
+			// machine.
 			System.exit(-1);
 		}
 

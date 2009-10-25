@@ -102,6 +102,11 @@ public class SukuData implements Serializable {
 	@Override
 	public String toString() {
 		if (this.pers == null)
+			// FIXME: This toString method seems to return null in some
+			// circumstances. A liberal reading of the spec could be interpreted
+			// as allowing this, but it is probably a bad idea and could cause
+			// other code to break. Return the empty string or some other
+			// appropriate string rather than null.
 			return null;
 		return "Family of " + this.pers[0].toString();
 	}

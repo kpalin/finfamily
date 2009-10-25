@@ -38,6 +38,9 @@ public class Tester {
 			if (ze.isDirectory()) {
 				f = new File(args[0] + "/" + ze.getName());
 				if (!f.isDirectory()) {
+					// FIXME: This method returns a value that is not checked.
+					// The return value should be checked since it can indicate
+					// an unusual or unexpected function execution.
 					f.mkdirs();
 				}
 

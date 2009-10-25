@@ -99,6 +99,7 @@ public class CommonReport {
 			logger.log(Level.WARNING, "background reporting", e1);
 		}
 
+		// FIXME: Potential NPE
 		UnitNotice[] xnotices = pdata.persLong.getNotices();
 
 		int tableCount = 0;

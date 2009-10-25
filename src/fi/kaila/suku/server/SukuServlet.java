@@ -45,9 +45,13 @@ public class SukuServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	// FIXME:This Serializable class defines a non-primitive instance field
+	// which is neither transient, Serializable, or java.lang.Object, and does
+	// not appear to implement the Externalizable interface or the readObject()
+	// and writeObject() methods. Objects of this class will not be deserialized
+	// correctly if a non-Serializable object is stored in this field.
 	private Context ctx = null;
-	// 
+
 	private HashMap<String, UserInfo> usermap = null;
 	private static volatile int usercount = 0;
 
@@ -122,6 +126,9 @@ public class SukuServlet extends HttpServlet {
 
 		File dir = new File(outputPath);
 		if (!dir.isDirectory()) {
+			// FIXME: This method returns a value that is not checked. The
+			// return value should be checked since it can indicate an unusual
+			// or unexpected function execution.
 			dir.mkdir();
 		}
 
@@ -211,6 +218,7 @@ public class SukuServlet extends HttpServlet {
 						brivi[bi++] = (byte) (((x1 << 4) & 0xf0) | (x2 & 0xf));
 
 					}
+					// FIXME: Potential NPE
 					fos.write(brivi, 0, bi);
 					koko += bi;
 
@@ -222,6 +230,7 @@ public class SukuServlet extends HttpServlet {
 			if (endi <= 0)
 				break;
 		}
+		// FIXME: Potential NPE
 		fos.close();
 		is.close();
 
@@ -246,6 +255,10 @@ public class SukuServlet extends HttpServlet {
 				if (ze.isDirectory()) {
 					f = new File(outputPath + "/" + ze.getName());
 					if (!f.isDirectory()) {
+						// FIXME: This method returns a value that is not
+						// checked. The return value should be checked since it
+						// can indicate an unusual or unexpected function
+						// execution.
 						f.mkdirs();
 					}
 
@@ -419,6 +432,8 @@ public class SukuServlet extends HttpServlet {
 
 		while (it.hasNext()) {
 			key = it.next();
+			// FIXME: inefficient use of keySet iterator instead of entrySet
+			// iterator
 			v.add(key + "=" + vpara.get(key));
 		}
 

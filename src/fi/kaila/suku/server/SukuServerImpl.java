@@ -467,6 +467,7 @@ public class SukuServerImpl implements SukuServer {
 			if (path == null) {
 				path = this.openFile;
 				if (path == null) {
+					// FIXME: NPE
 					fam.resu = "Coordinates file missing";
 					return fam;
 				}
@@ -479,6 +480,7 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("update")) {
 			String type = map.get("type");
 			if (type == null) {
+				// FIXME: NPE
 				fam.resu = "Type missing in update command";
 				return fam;
 			}
@@ -491,6 +493,7 @@ public class SukuServerImpl implements SukuServer {
 					fam.pers[0] = psp;
 				}
 			} else {
+				// FIXME: NPE
 				fam.resu = "Wrong type [" + type + "] in update command";
 				return fam;
 			}
@@ -564,6 +567,7 @@ public class SukuServerImpl implements SukuServer {
 						int viewId = Integer.parseInt(viewno);
 						fam = vv.removeView(viewId);
 					} catch (NumberFormatException ne) {
+						// FIXME: Potential NPE
 						fam.resu = ne.getMessage();
 						logger.log(Level.WARNING, "Bad view number", ne);
 					}
@@ -584,6 +588,7 @@ public class SukuServerImpl implements SukuServer {
 
 						fam = vv.addView(viewname);
 					} catch (NumberFormatException ne) {
+						// FIXME: Potential NPE
 						fam.resu = ne.getMessage();
 						logger.log(Level.WARNING, "Bad view number", ne);
 					}
@@ -613,6 +618,7 @@ public class SukuServerImpl implements SukuServer {
 
 					fam = vv.getViews(Integer.parseInt(pidg));
 				} catch (NumberFormatException ne) {
+					// FIXME: Potential NPE
 					fam.resu = ne.getMessage();
 					logger.log(Level.WARNING, "Bad view number", ne);
 				}
@@ -1040,6 +1046,8 @@ public class SukuServerImpl implements SukuServer {
 			while (ee.hasNext()) {
 				String key = ee.next();
 				if (!key.equals("index") && !key.equals("cmd")) {
+					// FIXME: inefficient use of keySet iterator instead of
+					// entrySet iterator
 					String value = map.get(key);
 
 					pstm.setString(1, key);
@@ -1249,6 +1257,7 @@ public class SukuServerImpl implements SukuServer {
 								.getString(15), rs.getString(16), rs
 								.getString(17), rs.getString(18), rs
 								.getTimestamp(19), rs.getTimestamp(20));
+						// FIXME: Potential NPE
 						relNotices.add(rnote);
 					}
 
@@ -1737,6 +1746,7 @@ public class SukuServerImpl implements SukuServer {
 
 				if (pid != currentPid && currentPid != 0) {
 					personList.add(perso);
+					// FIXME: Potential NPE
 					persMap.put(perso.getPid(), perso);
 					perso = null;
 				}

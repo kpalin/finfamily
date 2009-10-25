@@ -488,6 +488,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			int nextByte;
 
 			StringBuffer rivi = new StringBuffer();
+			// FIXME: Potential NPE
 			while ((nextByte = iis.read()) >= 0) {
 				if (rivi.length() > 64) {
 					dos.writeBytes(rivi.toString() + lineEnd);
@@ -529,6 +530,11 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			this.filename = fileName;
 			logger.finest("resu: " + resu + "/" + inle);
 		} catch (Exception e) {
+			// FIXME: Spaghetti code. This method uses a try-catch block that
+			// catches Exception objects, but Exception is not thrown within the
+			// try block, and RuntimeException is not explicitly caught. This
+			// construct also accidentally catches RuntimeException as well,
+			// masking potential bugs.
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

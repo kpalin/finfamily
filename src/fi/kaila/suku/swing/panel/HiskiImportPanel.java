@@ -1000,6 +1000,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();
 		}
+		// FIXME: Potential NPE
 		Element docEle = doc.getDocumentElement();
 		Element ele;
 		NodeList nl = docEle.getElementsByTagName("tapahtuma");

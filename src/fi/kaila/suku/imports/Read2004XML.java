@@ -470,6 +470,9 @@ public class Read2004XML extends DefaultHandler {
 				gz.close();
 			}
 		} catch (Exception e) {
+			// FIXME: Spaghetti code. This method uses a try-catch block that
+			// catches Exception objects, but Exception is not thrown within the
+			// try block, and RuntimeException is not explicitly caught.
 			throw new SukuException(e);
 
 		}

@@ -304,6 +304,11 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 				}
 			}
 		} catch (Exception e) {
+			// FIXME: Spaghetti code. This method uses a try-catch block that
+			// catches Exception objects, but Exception is not thrown within the
+			// try block, and RuntimeException is not explicitly caught. This
+			// construct also accidentally catches RuntimeException as well,
+			// masking potential bugs.
 			RelativesPane.logger.log(Level.WARNING, "Relatives action", e);
 			JOptionPane.showMessageDialog(this.relativesPane.personView
 					.getSuku(), "Relatives action" + ":" + e.getMessage());

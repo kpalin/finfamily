@@ -93,6 +93,7 @@ public class ReportUtil {
 			int round = females.size();
 			if (round > 0) {
 				unitMap = new HashMap<Integer, ReportUnit>();
+				// FIXME: lasttab not used. Can be removed?
 				lasttab = createDescendantTables(0, 0, chi, 1, generations,
 						ReportWorkerDialog.SET_ORDER_NEWMALE, adopted, round);
 			}
