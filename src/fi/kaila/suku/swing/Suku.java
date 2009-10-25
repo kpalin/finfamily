@@ -931,13 +931,26 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		byte imbytes[] = new byte[8192];
 
 		InputStream in = null;
+		int imsize;
 		try {
 			in = this.getClass().getResourceAsStream(imgLocation);
 			// System.out.println("NAV2: " + imageName + ":"+in);
-			int imsize = in.read(imbytes);
+			imsize = in.read(imbytes);
 			if (imsize < imbytes.length) {
 				icon = new ImageIcon(imbytes, altText);
 			}
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {
+				}
+			}
+
+		}
+
+		in = null;
+		try {
 			in = this.getClass().getResourceAsStream(selectedLocation);
 			// System.out.println("NAV2: " + imageName + ":"+in);
 			imsize = in.read(imbytes);
