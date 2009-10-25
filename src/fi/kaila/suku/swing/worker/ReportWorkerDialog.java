@@ -55,6 +55,8 @@ import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
 import fi.kaila.suku.report.JavaReport;
+import fi.kaila.suku.report.ReportInterface;
+import fi.kaila.suku.report.XmlReport;
 import fi.kaila.suku.swing.ISuku;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
@@ -153,6 +155,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private HashMap<String, String> textTexts = new HashMap<String, String>();
 
 	private ButtonGroup listaGroup = null;
+	private ButtonGroup spouseData = null;
 
 	private JComboBox settingsName = null;
 	private int settingsIndex = 0;
@@ -418,6 +421,39 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				.getString("REPORT.WITHADDERSS"), true);
 		commonWithAddress.setBounds(x4, y1 + 110, 160, 20);
 		add(commonWithAddress);
+
+		spouseData = new ButtonGroup();
+
+		int rtypy = y1 + 130;
+		pane = new JPanel();
+		pane.setBorder(BorderFactory.createTitledBorder(Resurses
+				.getString("REPORT.DESC.SPOUSE")));
+		pane.setLayout(new GridLayout(0, 1));
+
+		pane.setBounds(x4 - 5, rtypy, 160, 120);
+
+		JRadioButton radio = new JRadioButton(Resurses
+				.getString("REPORT.DESC.SPOUSE.NONE"));
+		spouseData.add(radio);
+		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_NONE);
+		pane.add(radio);
+
+		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.YEAR"));
+		radio.setSelected(true);
+		spouseData.add(radio);
+		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_YEAR);
+		pane.add(radio);
+
+		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.DATE"));
+		spouseData.add(radio);
+		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_DATE);
+		pane.add(radio);
+
+		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.FULL"));
+		spouseData.add(radio);
+		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_FULL);
+		pane.add(radio);
+		add(pane);
 
 		pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
@@ -707,7 +743,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				} else if (vx[0].equals("descTableOrder")) {
 					setRadioButton(descendantPanel.getTableOrder(), vx[1]);
 				} else if (vx[0].equals("descSpouseData")) {
-					setRadioButton(descendantPanel.getSpouseData(), vx[1]);
+					setRadioButton(getSpouseData(), vx[1]);
 				} else if (vx[0].equals("listaGroup")) {
 					setRadioButton(listaGroup, vx[1]);
 				} else if (vx[0].equals("ancFamily")) {
@@ -926,7 +962,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			v.add("descTableOrder=" + model.getActionCommand());
 		}
 
-		model = descendantPanel.getSpouseData().getSelection();
+		model = getSpouseData().getSelection();
 		if (model != null) {
 			v.add("descSpouseData=" + model.getActionCommand());
 		}
@@ -979,6 +1015,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	}
 
+	public ButtonGroup getSpouseData() {
+		return spouseData;
+	}
+
 	class Task extends SwingWorker<Void, Void> {
 
 		DescendantReport dr = null;
@@ -991,13 +1031,23 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 			try {
 
+				ReportInterface repo = null;
+
+				int formatIdx = commonReportFormatList.getSelectedIndex();
+				if (formatIdx == 0) {
+					repo = new JavaReport();
+				} else {
+					repo = new XmlReport(formatIdx);
+				}
 				setProgress(0);
 
-				dr = new DescendantReport(self, new JavaReport());
+				dr = new DescendantReport(self, repo);
 
 				dr.executeReport();
 
 			} catch (Exception e) {
+				JOptionPane.showMessageDialog(runner, e.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 				logger.log(Level.WARNING, "Exception in background thread", e);
 			}
 
@@ -1012,7 +1062,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			Toolkit.getDefaultToolkit().beep();
 			setVisible(false);
 			if (dr != null) {
-				dr.getWriter().closeReport();
+				try {
+					dr.getWriter().closeReport();
+				} catch (SukuException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage(),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+				}
 				// dr.getFrame().setVisible(true);
 			}
 		}

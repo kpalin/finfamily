@@ -38,8 +38,10 @@ public class DescendantReport extends CommonReport {
 
 	/**
 	 * execute the report.
+	 * 
+	 * @throws SukuException
 	 */
-	public void executeReport() {
+	public void executeReport() throws SukuException {
 		SukuData vlist = null;
 
 		if (caller.getDescendantPanel().getTableOrder().getSelection() == null) {

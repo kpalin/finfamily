@@ -1,6 +1,7 @@
 package fi.kaila.suku.report;
 
 import fi.kaila.suku.report.style.BodyText;
+import fi.kaila.suku.util.SukuException;
 
 /**
  * 
@@ -24,8 +25,10 @@ public interface ReportInterface {
 
 	/**
 	 * close the report
+	 * 
+	 * @throws SukuException
 	 */
-	public void closeReport();
+	public void closeReport() throws SukuException;
 
 	/**
 	 * create the report

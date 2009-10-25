@@ -590,8 +590,8 @@ public class CommonReport {
 	private String printRelationNotice(RelationNotice rn, String defType,
 			int spouseNum) {
 
-		String showType = caller.getDescendantPanel().getSpouseData()
-				.getSelection().getActionCommand();
+		String showType = caller.getSpouseData().getSelection()
+				.getActionCommand();
 		if (showType == null) {
 			showType = ReportWorkerDialog.SET_SPOUSE_NONE;
 		}

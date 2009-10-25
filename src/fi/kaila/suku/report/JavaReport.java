@@ -54,6 +54,8 @@ public class JavaReport extends JFrame implements ActionListener,
 
 	private Logger logger = Logger.getLogger(this.getName());
 
+	private boolean reportClosed = true;
+
 	public JavaReport() {
 		initMe();
 	}
@@ -116,7 +118,7 @@ public class JavaReport extends JFrame implements ActionListener,
 	 */
 	@Override
 	public void createReport() {
-
+		reportClosed = false;
 		doc = new SukuDocument();
 		text.setDocument(doc);
 		StyledDocument styledDoc = text.getStyledDocument();
@@ -215,6 +217,9 @@ public class JavaReport extends JFrame implements ActionListener,
 
 	@Override
 	public void closeReport() {
+		if (reportClosed)
+			return;
+		reportClosed = true;
 		setVisible(true);
 	}
 

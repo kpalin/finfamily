@@ -24,7 +24,6 @@ public class DescendantPane extends JPanel {
 	private JTextField childAncestors = null;
 
 	private ButtonGroup tableOrder = null;
-	private ButtonGroup spouseData = null;
 
 	public DescendantPane() {
 
@@ -110,7 +109,7 @@ public class DescendantPane extends JPanel {
 				.getString("REPORT.DESC.ORDER")));
 		pane.setLayout(new GridLayout(0, 1));
 
-		pane.setBounds(rtypx, rtypy, 250, 110);
+		pane.setBounds(rtypx, rtypy, 250, 130);
 
 		tableOrder = new ButtonGroup();
 		JRadioButton radio = new JRadioButton(Resurses
@@ -138,38 +137,6 @@ public class DescendantPane extends JPanel {
 		radio.setActionCommand(ReportWorkerDialog.SET_ORDER_REG);
 		pane.add(radio);
 
-		add(pane);
-
-		rtypy += 110;
-		pane = new JPanel();
-		pane.setBorder(BorderFactory.createTitledBorder(Resurses
-				.getString("REPORT.DESC.SPOUSE")));
-		pane.setLayout(new GridLayout(0, 1));
-
-		pane.setBounds(rtypx, rtypy, 250, 95);
-
-		spouseData = new ButtonGroup();
-
-		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.NONE"));
-		spouseData.add(radio);
-		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_NONE);
-		pane.add(radio);
-
-		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.YEAR"));
-		radio.setSelected(true);
-		spouseData.add(radio);
-		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_YEAR);
-		pane.add(radio);
-
-		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.DATE"));
-		spouseData.add(radio);
-		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_DATE);
-		pane.add(radio);
-
-		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.FULL"));
-		spouseData.add(radio);
-		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_FULL);
-		pane.add(radio);
 		add(pane);
 
 	}
@@ -212,10 +179,6 @@ public class DescendantPane extends JPanel {
 
 	public ButtonGroup getTableOrder() {
 		return tableOrder;
-	}
-
-	public ButtonGroup getSpouseData() {
-		return spouseData;
 	}
 
 	public void setGenerations(String string) {
