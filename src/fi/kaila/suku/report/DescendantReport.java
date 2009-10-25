@@ -3,6 +3,7 @@ package fi.kaila.suku.report;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import fi.kaila.suku.swing.worker.ReportWorkerDialog;
@@ -100,6 +101,14 @@ public class DescendantReport extends CommonReport {
 			createTable(i, tab);
 
 		}
+	}
+
+	public void setVisible(boolean b) {
+		if (repoWriter instanceof JFrame) {
+			JFrame ff = (JFrame) repoWriter;
+			ff.setVisible(b);
+		}
+
 	}
 
 }

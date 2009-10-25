@@ -52,6 +52,7 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import fi.kaila.suku.kontroller.SukuKontroller;
+import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
 import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
 import fi.kaila.suku.report.JavaReport;
@@ -512,9 +513,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		Vector<String> v = new Vector<String>();
 
 		v.add(Resurses.getString("REPORT.FORMAT.JAVA"));
-		v.add(Resurses.getString("REPORT.FORMAT.WORD2003"));
-		v.add(Resurses.getString("REPORT.FORMAT.HTML"));
-		v.add(Resurses.getString("REPORT.FORMAT.TEXT"));
+		if (kontroller instanceof SukuKontrollerLocalImpl) {
+			v.add(Resurses.getString("REPORT.FORMAT.WORD2003"));
+			v.add(Resurses.getString("REPORT.FORMAT.HTML"));
+			v.add(Resurses.getString("REPORT.FORMAT.XML"));
+		}
 
 		lb = new JLabel(Resurses.getString("REPORT.FORMAT"));
 		lb.setBounds(x3, footery, 200, 20);
@@ -752,6 +755,18 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					setRadioButton(ancestorPanel.getNumberingFormat(), vx[1]);
 				} else if (vx[0].equals("ancDesc")) {
 					ancestorPanel.setDescGen(vx[1]);
+				} else if (vx[0].equals("format")) {
+					int formIdx;
+					try {
+						formIdx = Integer.parseInt(vx[1]);
+						if (formIdx >= commonReportFormatList.getItemCount()) {
+							formIdx = 0;
+						}
+					} catch (NumberFormatException ne) {
+						formIdx = 0;
+					}
+
+					commonReportFormatList.setSelectedIndex(formIdx);
 				} else if (vx[0].startsWith("t:")) {
 
 					int typeCount = typesTable.getRowCount();
@@ -916,6 +931,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		if (commonWithImages.getSelectedObjects() != null) {
 			v.add("images=true");
 		}
+		v.add("format=" + "" + commonReportFormatList.getSelectedIndex());
+
 		if (commonBendNames.getSelectedObjects() != null) {
 			v.add("bend=true");
 		}
@@ -1037,7 +1054,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				if (formatIdx == 0) {
 					repo = new JavaReport();
 				} else {
-					repo = new XmlReport(formatIdx);
+					try {
+						repo = new XmlReport(formatIdx);
+					} catch (SukuException se) {
+						return null;
+					}
 				}
 				setProgress(0);
 
@@ -1069,7 +1090,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 				}
-				// dr.getFrame().setVisible(true);
+				dr.setVisible(true);
 			}
 		}
 	}

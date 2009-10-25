@@ -95,7 +95,7 @@
    <mkdir dir="${dist.home}/resources/excel"/>
    <mkdir dir="${dist.home}/resources/images"/>
    <mkdir dir="${dist.home}/resources/string"/>
-   
+   <mkdir dir="${dist.home}/resources/xml"/>
    <mkdir dir="${swing.home}"/>
    
    <copy file="${resources.home}/properties/logging.properties" todir="${dist.home}/properties"/>
@@ -105,6 +105,10 @@
    <copy todir="${dist.home}/resources/string">
      <fileset dir="${resources.home}/string" includes="*.properties"/>
    </copy>
+    <copy todir="${dist.home}/resources/xml">
+     <fileset dir="${resources.home}/xml" includes="*.xsl"/>
+   </copy>
+   
    <copy file="${devc.home}/Suku.exe" todir="${dist.home}"/>
    <copy file="${devc.home}/suku.sh" todir="${dist.home}"/>
    
@@ -117,7 +121,9 @@
 	</copy>
 	
 	<zip destfile="${swing.home}/finfamily.zip" basedir="${dist.home}"
-	  includes="suku.jar Suku.exe suku.sh lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar properties/* resources/excel/PaikatExcel.xls resources/excel/TypesExcel.xls resources/images/suomikartta.jpg resources/string/*">
+	  includes="suku.jar Suku.exe suku.sh lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar properties/* 
+	  resources/excel/PaikatExcel.xls resources/excel/TypesExcel.xls resources/images/suomikartta.jpg resources/string/*
+	  resources/xml/*">
 	
 	</zip>
 	

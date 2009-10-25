@@ -1,10 +1,13 @@
 package fi.kaila.suku.report;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
+import javax.swing.JFileChooser;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,23 +32,68 @@ public class XmlReport implements ReportInterface {
 
 	private boolean reportClosed = false;
 
-	public XmlReport(int translatorIdx) {
+	public XmlReport(int translatorIdx) throws SukuException {
 
 		switch (translatorIdx) {
 		case 1:
 			translator = "resources/xml/docx.xsl";
-			report = "report.xml";
+			report = createFile("xml");
 			break;
 		case 2:
 			translator = "resources/xml/html.xsl";
-			report = "report.html";
+			report = createFile("html");
 			break;
 		default:
 			translator = null;
-			report = "report.xml";
+			report = createFile("xml");
 			break;
 
 		}
+		if (report == null) {
+			throw new SukuException("Report not selected");
+		}
+	}
+
+	public String createFile(String filter) {
+		Preferences sr = Preferences.userRoot();
+
+		String[] filters = filter.split(";");
+
+		String koe = sr.get("repo" + filters[0], ".");
+		logger.fine("report to: " + koe);
+
+		JFileChooser chooser = new JFileChooser();
+
+		chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter(filter));
+		chooser.setDialogTitle("Create " + filter + " file");
+		chooser.setSelectedFile(new File(koe + "/."));
+
+		if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
+			return null;
+		}
+
+		File f = chooser.getSelectedFile();
+		if (f == null) {
+			return null;
+		}
+
+		String filename = f.getAbsolutePath();
+		if (filename == null)
+			return null;
+		if (filters.length == 1) {
+			if (!filename.toLowerCase().endsWith(filters[0].toLowerCase())) {
+				filename += "." + filters[0];
+			}
+		}
+
+		logger.info("selected: " + filename);
+
+		String tmp = f.getAbsolutePath().replace("\\", "/");
+		int i = tmp.lastIndexOf("/");
+
+		sr.put("repo" + filters[0], tmp.substring(0, i));
+
+		return filename;
 	}
 
 	@Override
@@ -134,16 +182,16 @@ public class XmlReport implements ReportInterface {
 				DOMSource docw = new DOMSource(doc);
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				TransformerFactory tfactory = TransformerFactory.newInstance();
-
 				// Create a transformer for the stylesheet.
 				Transformer transformer = tfactory
 						.newTransformer(new StreamSource(translator));
 
 				// transformer.transform(docw, new StreamResult(System.out));
-
 				transformer.transform(docw, new StreamResult(bout));
 				FileOutputStream fos = new FileOutputStream(report);
 				fos.write(bout.toByteArray());
+				fos.close();
+
 			} else {
 				// // Transform the source XML to System.out.
 				// transformer.transform(new StreamSource(sourceID),
@@ -152,17 +200,14 @@ public class XmlReport implements ReportInterface {
 
 				DOMSource docw = new DOMSource(doc);
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
-
 				TransformerFactory tfactory = TransformerFactory.newInstance();
 				// Templates templates = tfactory.newTemplates(new
 				// StreamSource(xslt));
 				Transformer transformer = tfactory.newTransformer();//
-
 				transformer.transform(docw, new StreamResult(bout));
-
 				FileOutputStream fos = new FileOutputStream(report);
-
 				fos.write(bout.toByteArray());
+				fos.close();
 			}
 		} catch (Throwable e) {
 

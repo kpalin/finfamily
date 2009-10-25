@@ -1529,7 +1529,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return tPrivateButton.isSelected();
 	}
 
-	private void createTestReport(PersonShortData pers) {
+	private void createReport(PersonShortData pers) {
 		// if (this.reportFrame == null){
 		// this.reportFrame = new ReportFrame(this);
 		// }
@@ -2402,7 +2402,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					personView.setHiskiPid(hiskino, pop.getPerson().getPid(),
 							pop.getPerson().getAlfaName());
 				} else if (cmd.equals(Resurses.CREATE_REPORT)) {
-					createTestReport(pop.getPerson());
+					createReport(pop.getPerson());
 				} else if (cmd.equals(Resurses.TAB_PERSON)) {
 					activePersonPid = pop.getPerson().getPid();
 					showPerson(activePersonPid);
