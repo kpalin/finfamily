@@ -88,7 +88,7 @@
   </target>
   
   
-   <target name="dist" depends="jar" description="Create distribution folder">
+   <target name="dist" depends="jar,javadoc" description="Create distribution folder">
    <mkdir dir="${dist.home}/lib"/>
    <mkdir dir="${dist.home}/properties"/>
    <mkdir dir="${dist.home}/resources"/>
