@@ -20,8 +20,11 @@
   <xsl:template match="header">
   <head>
   <title>Kallen koetta tässä</title>
+   <xsl:variable name="stylg" select="concat(/finfamily/header/@folder,'/finfamily.css')"/>
+  <link href="{$stylg}" rel="stylesheet" type="text/css"/>
+
   <STYLE type="text/css">
-P#mypar {font-style: italic; color: blue}
+
 #ul {text-decoration:underline}
 </STYLE>
 
@@ -35,15 +38,19 @@ P#mypar {font-style: italic; color: blue}
   </xsl:template>
   
     <xsl:template match="chapter">
-	<xsl:if test="@image">
-	 <xsl:variable name="imgg" select="concat(/finfamily/header/@folder,'/',@image)"/>
-	 
-	<img src="{$imgg}"/>
 	
+	
+	 <xsl:variable name="style" select="@style"/>
+  <div class="{$style}">
+  <xsl:if test="@image">
+	 <xsl:variable name="imgg" select="concat(/finfamily/header/@folder,'/',@image)"/>
+	 <xsl:variable name="imgw" select="@width"/>
+	 <xsl:variable name="imgh" select="@height"/>
+	<img src="{$imgg}" width="{$imgw}" />
+	<br/><xsl:value-of select="@title"/>
 	</xsl:if>
-  <p>
   <xsl:apply-templates/>
-  </p>
+  </div>
   </xsl:template>
   
   <xsl:template match="bu">

@@ -841,14 +841,16 @@ public class CommonReport {
 								Image imgs = img.getScaledInstance((int) neww,
 										(int) newh, Image.SCALE_DEFAULT);
 
-								imagetx.setImage(imgs, nn.getMediaData(), img
-										.getWidth(), img.getHeight(), nn
-										.getMediaFilename());
-								imagetx.addText(nn.getMediaFilename());
+								imagetx
+										.setImage(imgs, nn.getMediaData(), img
+												.getWidth(), img.getHeight(),
+												nn.getMediaFilename(), nn
+														.getMediaTitle());
+								imagetx.addText("");
 							}
-							if (nn.getMediaTitle() != null) {
-								imagetx.addText(nn.getMediaTitle());
-							}
+							// if (nn.getMediaTitle() != null) {
+							// imagetx.addText(nn.getMediaTitle());
+							// }
 							if (imagetx.getCount() > 0) {
 								repoWriter.addText(bt);
 								repoWriter.addText(imagetx);

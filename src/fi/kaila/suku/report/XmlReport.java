@@ -1,10 +1,12 @@
 package fi.kaila.suku.report;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -25,7 +27,7 @@ import org.w3c.dom.Element;
 
 import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ImageText;
-import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 
@@ -34,15 +36,18 @@ public class XmlReport implements ReportInterface {
 	private String translator = null;
 	private String report = null;
 	private String folder = null;
+	private int maxImageWidth = 0;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	int imageCounter = 0;
 	private boolean reportClosed = false;
 
-	private Suku parent;
+	private ReportWorkerDialog parent;
 
-	public XmlReport(Suku parent, int translatorIdx) throws SukuException {
+	public XmlReport(ReportWorkerDialog parent, int translatorIdx)
+			throws SukuException {
 		this.parent = parent;
+		maxImageWidth = parent.getImageMaxWidth();
 		switch (translatorIdx) {
 		case 1:
 			translator = "resources/xml/docx.xsl";
@@ -105,6 +110,40 @@ public class XmlReport implements ReportInterface {
 					}
 				}
 				d.mkdirs();
+
+				if (translatorIdx == 2) {
+
+					InputStream in = this.getClass().getResourceAsStream(
+							"/xml/finfamily.css");
+
+					BufferedInputStream bis = new BufferedInputStream(in);
+
+					File ff = new File(folder + "/finfamily.css");
+					byte[] buffi = new byte[1024];
+					FileOutputStream fos;
+
+					try {
+						fos = new FileOutputStream(ff);
+
+						while (true) {
+
+							int retu = in.read(buffi);
+							if (retu == -1) {
+								break;
+							}
+							fos.write(buffi, 0, retu);
+
+						}
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+
 				return;
 			}
 		}
@@ -118,7 +157,7 @@ public class XmlReport implements ReportInterface {
 		String[] filters = filter.split(";");
 
 		String koe = sr.get("report", ".");
-		logger.fine("report to: " + koe);
+		// logger.fine("report to: " + koe);
 
 		JFileChooser chooser = new JFileChooser();
 
@@ -160,8 +199,16 @@ public class XmlReport implements ReportInterface {
 		Element tele;
 
 		String imgName = null;
+		String imgTitle = null;
+		int imgWidth = 0;
+		int imgHeight = 0;
+
 		if (bt instanceof ImageText) {
 			ImageText it = (ImageText) bt;
+			imgWidth = it.getWidth();
+			imgHeight = it.getHeight();
+			imgTitle = it.getImageTitle();
+
 			imageCounter++;
 			imgName = "" + imageCounter + "_" + it.getImageName();
 			File ff = new File(folder + "/" + imgName);
@@ -191,6 +238,12 @@ public class XmlReport implements ReportInterface {
 		// ele.setTextContent(sb.toString());
 		if (imgName != null) {
 			ele.setAttribute("image", imgName);
+			ele.setAttribute("title", imgTitle);
+			if (imgWidth > maxImageWidth) {
+				imgWidth = maxImageWidth;
+			}
+			ele.setAttribute("width", "" + imgWidth);
+
 		}
 		String prevStyle = "";
 		StringBuffer sb = new StringBuffer();

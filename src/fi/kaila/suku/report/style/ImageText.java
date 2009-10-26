@@ -19,6 +19,7 @@ public class ImageText extends BodyText {
 	private int width = 0;
 	private int height = 0;
 	private String imageName = null;
+	private String imageTitle = null;
 
 	/**
 	 * Set the image for reports
@@ -30,13 +31,13 @@ public class ImageText extends BodyText {
 	 * @param name
 	 */
 	public void setImage(Image img, byte[] data, int width, int height,
-			String name) {
+			String name, String title) {
 		image = img;
 		this.data = data;
 		this.width = width;
 		this.height = height;
 		this.imageName = name;
-
+		this.imageTitle = title;
 	}
 
 	/**
@@ -65,6 +66,13 @@ public class ImageText extends BodyText {
 	 */
 	public String getImageName() {
 		return imageName;
+	}
+
+	/**
+	 * @return the imageTitle
+	 */
+	public String getImageTitle() {
+		return imageTitle;
 	}
 
 }

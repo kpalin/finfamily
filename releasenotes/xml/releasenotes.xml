@@ -4,7 +4,14 @@
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version.</p>
 
 
-<hdr>Release 84 on 25 Oct 2009</hdr>
+<hdr>Release 91 on 26 Oct 2009</hdr>
+<ul>
+<li>Images added to html report</li>
+<li>Added max images width to report settings</li>
+<li>Moved spouse print to common settings</li>
+</ul>
+
+<hdr>Release 84 on 25 Oct 2009 (6)</hdr>
 <ul>
 <li>XSLT 1.0 stylesheets added and code modified to call that. XSLT 2.0 was considered but the library is much larger than rest of finfamily and might make installing finfamily still more difficult. At least we start with XSLT 1.0 that comes with java.</li>
 <li>Simple Html and Word xml 2003 doc implemented. Also raw xml supported at least now in the beginning. It can be used to test the stulesheets locally.</li>
