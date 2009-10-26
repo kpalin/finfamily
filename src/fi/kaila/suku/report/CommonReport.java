@@ -841,7 +841,9 @@ public class CommonReport {
 								Image imgs = img.getScaledInstance((int) neww,
 										(int) newh, Image.SCALE_DEFAULT);
 
-								imagetx.setImage(imgs);
+								imagetx.setImage(imgs, nn.getMediaData(), img
+										.getWidth(), img.getHeight(), nn
+										.getMediaFilename());
 								imagetx.addText(nn.getMediaFilename());
 							}
 							if (nn.getMediaTitle() != null) {

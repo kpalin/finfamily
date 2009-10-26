@@ -15,8 +15,56 @@ public class ImageText extends BodyText {
 		paraAlignment = ALIGN_CENTER;
 	}
 
-	public void setImage(Image img) {
+	private byte[] data = null;
+	private int width = 0;
+	private int height = 0;
+	private String imageName = null;
+
+	/**
+	 * Set the image for reports
+	 * 
+	 * @param img
+	 * @param data
+	 * @param width
+	 * @param height
+	 * @param name
+	 */
+	public void setImage(Image img, byte[] data, int width, int height,
+			String name) {
 		image = img;
+		this.data = data;
+		this.width = width;
+		this.height = height;
+		this.imageName = name;
+
+	}
+
+	/**
+	 * @return the width
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * @return the data
+	 */
+	public byte[] getData() {
+		return data;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * @return the imageName
+	 */
+	public String getImageName() {
+		return imageName;
 	}
 
 }

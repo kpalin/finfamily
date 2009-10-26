@@ -5,10 +5,15 @@ import java.util.HashMap;
 import java.util.Vector;
 
 /**
+ * 
+ * Class used as container to transport pojo objects between client and server
+ * using the kontroller. Fields are used directly and are very specific to the
+ * call used.
+ * 
+ * 
+ * 
  * @author FIKAAKAIL
  * 
- *         This is a structure for family with both short persons and short
- *         relations
  */
 public class SukuData implements Serializable {
 
@@ -18,12 +23,14 @@ public class SukuData implements Serializable {
 	private static final long serialVersionUID = 8438517229487947671L;
 
 	/**
-	 * cmd parameter value
+	 * The main cmd parameter value
 	 */
 	public String cmd = null;
 
 	/**
-	 * result string
+	 * result string. This should be null if request was successfull. In case of
+	 * error it should contain the error message
+	 * 
 	 */
 	public String resu = null;
 	/**
@@ -50,7 +57,9 @@ public class SukuData implements Serializable {
 	 * Array of relations
 	 */
 	public RelationShortData[] rels = null;
-
+	/**
+	 * Array of place locations (used by map)
+	 */
 	public PlaceLocationData[] places = null;
 
 	/**
@@ -65,51 +74,6 @@ public class SukuData implements Serializable {
 	 * Count can be used to return count to caller
 	 */
 	public int resuCount = 0;
-
-	/**
-	 * @return true if person only
-	 */
-	public boolean isPersonOnly() {
-		if (this.rels == null && this.pers.length == 1)
-			return true;
-		return false;
-	}
-
-	/**
-	 * Constructor for single person carrier
-	 * 
-	 * @param pojo
-	 */
-	public SukuData(PersonShortData pojo) {
-		this.pers = new PersonShortData[1];
-		this.pers[0] = pojo;
-	}
-
-	/**
-	 * default constructor
-	 */
-	public SukuData() {
-		//
-	}
-
-	/**
-	 * @return the subject i.e. owner of this family or only person
-	 */
-	public PersonShortData getSubject() {
-		return this.pers[0];
-	}
-
-	@Override
-	public String toString() {
-		if (this.pers == null)
-			// FIXME: This toString method seems to return null in some
-			// circumstances. A liberal reading of the spec could be interpreted
-			// as allowing this, but it is probably a bad idea and could cause
-			// other code to break. Return the empty string or some other
-			// appropriate string rather than null.
-			return null;
-		return "Family of " + this.pers[0].toString();
-	}
 
 	public HashMap<Integer, ReportUnit> reportUnits = null;
 

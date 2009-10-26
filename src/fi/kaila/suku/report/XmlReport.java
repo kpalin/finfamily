@@ -2,12 +2,15 @@ package fi.kaila.suku.report;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,19 +24,25 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import fi.kaila.suku.report.style.BodyText;
+import fi.kaila.suku.report.style.ImageText;
+import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 
 public class XmlReport implements ReportInterface {
 
 	private String translator = null;
 	private String report = null;
-
+	private String folder = null;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
+	int imageCounter = 0;
 	private boolean reportClosed = false;
 
-	public XmlReport(int translatorIdx) throws SukuException {
+	private Suku parent;
 
+	public XmlReport(Suku parent, int translatorIdx) throws SukuException {
+		this.parent = parent;
 		switch (translatorIdx) {
 		case 1:
 			translator = "resources/xml/docx.xsl";
@@ -49,9 +58,58 @@ public class XmlReport implements ReportInterface {
 			break;
 
 		}
-		if (report == null) {
-			throw new SukuException("Report not selected");
+		if (report != null) {
+
+			File f = new File(report);
+			boolean fileExists = false;
+			if (f.isFile()) {
+				fileExists = true;
+				int resu = JOptionPane.showConfirmDialog(parent, Resurses
+						.getString("CONFIRM_REPLACE_REPORT"), Resurses
+						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (resu != JOptionPane.YES_OPTION) {
+					throw new SukuException("");
+				}
+				f.delete();
+
+			}
+			int lastIdx = report.replace('\\', '/').lastIndexOf('.');
+			if (lastIdx > 0) {
+				folder = report.substring(0, lastIdx) + "_files";
+				File d = new File(folder);
+				if (d.exists()) {
+					if (!fileExists && d.isDirectory()) {
+						int resu = JOptionPane
+								.showConfirmDialog(
+										parent,
+										Resurses
+												.getString("CONFIRM_REPLACE_REPORTDIR"),
+										Resurses.getString(Resurses.SUKU),
+										JOptionPane.YES_NO_OPTION,
+										JOptionPane.QUESTION_MESSAGE);
+						if (resu != JOptionPane.YES_OPTION) {
+							throw new SukuException("");
+						}
+						fileExists = true;
+					}
+					if (fileExists && d.isDirectory()) {
+
+						String[] files = d.list();
+
+						for (int i = 0; i < files.length; i++) {
+							File df = new File(folder + "/" + files[i]);
+							df.delete();
+						}
+
+					}
+				}
+				d.mkdirs();
+				return;
+			}
 		}
+		throw new SukuException(Resurses.getString("WARN_REPORT_NOT_SELECTED"));
+
 	}
 
 	public String createFile(String filter) {
@@ -59,7 +117,7 @@ public class XmlReport implements ReportInterface {
 
 		String[] filters = filter.split(";");
 
-		String koe = sr.get("repo" + filters[0], ".");
+		String koe = sr.get("report", ".");
 		logger.fine("report to: " + koe);
 
 		JFileChooser chooser = new JFileChooser();
@@ -91,7 +149,7 @@ public class XmlReport implements ReportInterface {
 		String tmp = f.getAbsolutePath().replace("\\", "/");
 		int i = tmp.lastIndexOf("/");
 
-		sr.put("repo" + filters[0], tmp.substring(0, i));
+		sr.put("report", tmp.substring(0, i));
 
 		return filename;
 	}
@@ -100,6 +158,26 @@ public class XmlReport implements ReportInterface {
 	public void addText(BodyText bt) {
 		Element ele;
 		Element tele;
+
+		String imgName = null;
+		if (bt instanceof ImageText) {
+			ImageText it = (ImageText) bt;
+			imageCounter++;
+			imgName = "" + imageCounter + "_" + it.getImageName();
+			File ff = new File(folder + "/" + imgName);
+
+			FileOutputStream fos;
+			try {
+				fos = new FileOutputStream(ff);
+				fos.write(it.getData());
+				fos.close();
+			} catch (FileNotFoundException e) {
+				logger.log(Level.WARNING, "Image", e);
+			} catch (IOException e) {
+				logger.log(Level.WARNING, "Image", e);
+			}
+
+		}
 
 		ele = doc.createElement("chapter");
 		String style = bt.getClass().getName();
@@ -111,6 +189,9 @@ public class XmlReport implements ReportInterface {
 		// sb.append(tmp);
 		// }
 		// ele.setTextContent(sb.toString());
+		if (imgName != null) {
+			ele.setAttribute("image", imgName);
+		}
 		String prevStyle = "";
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < bt.getCount(); i++) {
@@ -140,24 +221,6 @@ public class XmlReport implements ReportInterface {
 
 				sb.append(bt.getText(i));
 
-				// if (text.isBold(i) && text.isUnderline(i)) {
-				// tele = doc.createElement("bu");
-				// tele.setTextContent(text.getText(i));
-				// ele.appendChild(tele);
-				//
-				// } else if (text.isBold(i)) {
-				// tele = doc.createElement("b");
-				// tele.setTextContent(text.getText(i));
-				// ele.appendChild(tele);
-				// } else if (text.isUnderline(i)) {
-				// tele = doc.createElement("ul");
-				// tele.setTextContent(text.getText(i));
-				// ele.appendChild(tele);
-				// } else {
-				// t = doc.createTextNode(text.getText(i));
-				// ele.appendChild(t);
-				// }
-				// }
 			}
 		}
 		if (sb.length() > 0) {
@@ -222,7 +285,7 @@ public class XmlReport implements ReportInterface {
 	private Element body = null;
 
 	@Override
-	public void createReport() {
+	public void createReport() throws SukuException {
 
 		Element mini;
 		Element header;
@@ -239,16 +302,24 @@ public class XmlReport implements ReportInterface {
 			// doc.setRootElement(mini);
 			header = doc.createElement("header");
 			mini.appendChild(header);
-			header.setAttribute("CMD", "ABC");
-			header.setAttribute("LANG", "XYZ");
+
+			if (folder != null) {
+				int fidx = folder.replace('\\', '/').lastIndexOf('/');
+				if (fidx > 0) {
+					header.setAttribute("folder", folder.substring(fidx + 1));
+				}
+
+			}
+			// header.setAttribute("LANG", "XYZ");
 			ele = doc.createElement("copyright");
 			header.appendChild(ele);
 			body = doc.createElement("body");
 
 			mini.appendChild(body);
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, e.getMessage(), e);
+			String messu = e.getMessage();
+			throw new SukuException(messu);
 		}
 	}
 

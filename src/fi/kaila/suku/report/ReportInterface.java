@@ -32,7 +32,9 @@ public interface ReportInterface {
 
 	/**
 	 * create the report
+	 * 
+	 * @throws SukuException
 	 */
-	public void createReport();
+	public void createReport() throws SukuException;
 
 }

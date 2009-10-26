@@ -35,6 +35,12 @@ P#mypar {font-style: italic; color: blue}
   </xsl:template>
   
     <xsl:template match="chapter">
+	<xsl:if test="@image">
+	 <xsl:variable name="imgg" select="concat(/finfamily/header/@folder,'/',@image)"/>
+	 
+	<img src="{$imgg}"/>
+	
+	</xsl:if>
   <p>
   <xsl:apply-templates/>
   </p>

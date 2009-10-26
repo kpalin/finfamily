@@ -30,6 +30,8 @@ public class BodyText {
 	protected float paraSpacingAfter = 6; // spacing after in pt
 
 	protected Image image = null;
+	protected byte[] imagedata = null;
+	protected String imageName = null;
 
 	private Vector<Text> txt = new Vector<Text>();
 

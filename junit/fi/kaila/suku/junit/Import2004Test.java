@@ -64,9 +64,9 @@ public class Import2004Test extends TestCase {
 		SukuData data = kontroller.getSukuData("cmd=family", "pid=3");
 		assertNotNull("Family must not be null");
 
-		PersonShortData owner = data.getSubject();
+		PersonShortData owner = data.pers[0];
 
-		assertNotNull("Owner of fsmily must not be null");
+		assertNotNull("Owner of family must not be null");
 
 		assertTrue("Wrong ownere", owner.getGivenname().startsWith("Kaarle"));
 		kontroller.resetConnection();

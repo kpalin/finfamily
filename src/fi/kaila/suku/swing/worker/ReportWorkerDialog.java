@@ -1055,7 +1055,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					repo = new JavaReport();
 				} else {
 					try {
-						repo = new XmlReport(formatIdx);
+						repo = new XmlReport(parent, formatIdx);
 					} catch (SukuException se) {
 						return null;
 					}
