@@ -289,8 +289,6 @@ public class RelativesPane extends JPanel implements ActionListener,
 				JTable.DropLocation dl = (JTable.DropLocation) info
 						.getDropLocation();
 				int index = dl.getRow();
-				// FIXME: insert not used. Can be removed?
-				boolean insert = dl.isInsertRow();
 
 				Transferable t = info.getTransferable();
 
@@ -356,8 +354,6 @@ public class RelativesPane extends JPanel implements ActionListener,
 				JTable.DropLocation dl = (JTable.DropLocation) info
 						.getDropLocation();
 				int index = dl.getRow();
-				// FIXME: insert not used. Can be removed?
-				boolean insert = dl.isInsertRow();
 
 				Transferable t = info.getTransferable();
 
@@ -459,12 +455,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 				JTable.DropLocation dl = (JTable.DropLocation) info
 						.getDropLocation();
-				// DefaultListModel listModel =
-				// (DefaultListModel)chilTab.getModel();
+
 				int index = dl.getRow();
-				// FIXME: insert not used. Can be removed?
-				boolean insert = dl.isInsertRow();
-				// Get the current string under the drop.
 
 				// Get the string that is being dropped.
 				Transferable t = info.getTransferable();
@@ -477,8 +469,6 @@ public class RelativesPane extends JPanel implements ActionListener,
 				} catch (Exception e) {
 					return false;
 				}
-
-				// System.out.println("ddsource:" + dd.getDragSource());
 
 				if (dd.getDragSource() == Utils.PersonSource.CHILD) {
 

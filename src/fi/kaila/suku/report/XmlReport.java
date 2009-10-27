@@ -31,6 +31,28 @@ import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 
+/**
+ * 
+ * <h1>XmlReport class</h1>
+ * 
+ * <p>
+ * Many of the reports are first cerated as an XML tree and are after that
+ * usually transformed int it's requested form using an XSLT stylesheet in
+ * resources/xml
+ * </p>
+ * 
+ * <p>
+ * It seems that this process cannot fully be performed from a WebStart
+ * application and thus these are only available for the application with the
+ * local kontroller. The problem lies in the feature that webstart does not
+ * support writing multiple files on disk with one request. Some repports
+ * require this such as image files, multiple data files etc.
+ * </p>
+ * 
+ * 
+ * @author Kalle
+ * 
+ */
 public class XmlReport implements ReportInterface {
 
 	private String translator = null;
@@ -43,10 +65,12 @@ public class XmlReport implements ReportInterface {
 	private boolean reportClosed = false;
 
 	private ReportWorkerDialog parent;
+	String title;
 
-	public XmlReport(ReportWorkerDialog parent, int translatorIdx)
+	public XmlReport(ReportWorkerDialog parent, int translatorIdx, String title)
 			throws SukuException {
 		this.parent = parent;
+		this.title = title;
 		maxImageWidth = parent.getImageMaxWidth();
 		switch (translatorIdx) {
 		case 1:
@@ -69,7 +93,7 @@ public class XmlReport implements ReportInterface {
 			boolean fileExists = false;
 			if (f.isFile()) {
 				fileExists = true;
-				int resu = JOptionPane.showConfirmDialog(parent, Resurses
+				int resu = JOptionPane.showConfirmDialog(this.parent, Resurses
 						.getString("CONFIRM_REPLACE_REPORT"), Resurses
 						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
@@ -110,8 +134,11 @@ public class XmlReport implements ReportInterface {
 					}
 				}
 				d.mkdirs();
-
-				if (translatorIdx == 2) {
+				//
+				// css-file is currently embedded in html-file
+				// and separate css-file is not needed
+				//
+				if (translatorIdx == 2 && false) {
 
 					InputStream in = this.getClass().getResourceAsStream(
 							"/xml/finfamily.css");
@@ -135,11 +162,9 @@ public class XmlReport implements ReportInterface {
 
 						}
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.log(Level.WARNING, "css-file", e);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.log(Level.WARNING, "css-file", e);
 					}
 
 				}
@@ -151,7 +176,7 @@ public class XmlReport implements ReportInterface {
 
 	}
 
-	public String createFile(String filter) {
+	private String createFile(String filter) {
 		Preferences sr = Preferences.userRoot();
 
 		String[] filters = filter.split(";");
@@ -193,6 +218,10 @@ public class XmlReport implements ReportInterface {
 		return filename;
 	}
 
+	/**
+	 * Add the text to the body element. For images copy the images to output
+	 * folder
+	 */
 	@Override
 	public void addText(BodyText bt) {
 		Element ele;
@@ -201,12 +230,11 @@ public class XmlReport implements ReportInterface {
 		String imgName = null;
 		String imgTitle = null;
 		int imgWidth = 0;
-		int imgHeight = 0;
 
 		if (bt instanceof ImageText) {
 			ImageText it = (ImageText) bt;
 			imgWidth = it.getWidth();
-			imgHeight = it.getHeight();
+
 			imgTitle = it.getImageTitle();
 
 			imageCounter++;
@@ -285,12 +313,28 @@ public class XmlReport implements ReportInterface {
 		bt.reset();
 	}
 
+	/**
+	 * Closing actions are made here In case of XML report it consists of
+	 * <ul>
+	 * <li>delete empty folder</li>
+	 * <li>Translate to final format or store as raw xml as requested</li>
+	 * <li>Start applictaion to open the report if supported</li>
+	 * </ul>
+	 */
 	@Override
 	public void closeReport() throws SukuException {
 		try {
-			if (reportClosed)
+			if (reportClosed) {
 				return;
+			}
 			reportClosed = true;
+			//
+			// delete folder if empty
+			// note that delete does not delete it if it's not empty
+			//
+			File dd = new File(folder);
+			dd.delete();
+
 			if (translator != null) {
 				// System.setProperty("javax.xml.transform.TransformerFactory",
 				// "net.sf.saxon.TransformerFactoryImpl");
@@ -307,6 +351,24 @@ public class XmlReport implements ReportInterface {
 				FileOutputStream fos = new FileOutputStream(report);
 				fos.write(bout.toByteArray());
 				fos.close();
+
+				try {
+					String[] cmds = { "rundll32",
+							"url.dll,FileProtocolHandler", "" };
+					cmds[2] = report;
+					Process p = Runtime.getRuntime().exec(cmds);
+					p.waitFor();
+
+					//
+					// this should work on mac
+					//
+					// String [] macs = {"open","");
+					// macs[1] = report;
+					// Process p = Runtime.getRuntime().exec(macs);
+
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
 
 			} else {
 				// // Transform the source XML to System.out.
@@ -332,15 +394,27 @@ public class XmlReport implements ReportInterface {
 
 			throw new SukuException(messu);
 		}
+
 	}
 
 	private Document doc = null;
 	private Element body = null;
 
+	/**
+	 * Create report prepares the report for input In case of Xml report this
+	 * consists of
+	 * <ul>
+	 * <li>create the DOM tree</li>
+	 * <li>create the document with finfamily main element</li>
+	 * <li>create header element</li>
+	 * <li>create body element for processing</li>
+	 * </ul>
+	 */
 	@Override
 	public void createReport() throws SukuException {
 
 		Element mini;
+		Element title;
 		Element header;
 		Element ele;
 		reportClosed = false;
@@ -366,6 +440,13 @@ public class XmlReport implements ReportInterface {
 			// header.setAttribute("LANG", "XYZ");
 			ele = doc.createElement("copyright");
 			header.appendChild(ele);
+			title = doc.createElement("title");
+			if (this.title != null) {
+				title.setTextContent(this.title);
+			} else {
+				title.setTextContent(Resurses.getString("SUKUOHJELMISTO"));
+			}
+			header.appendChild(title);
 			body = doc.createElement("body");
 
 			mini.appendChild(body);

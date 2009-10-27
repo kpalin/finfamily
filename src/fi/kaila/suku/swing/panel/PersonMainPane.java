@@ -833,10 +833,11 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
 						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
+				logger.log(Level.WARNING, "get settings", e);
+				return null;
+
 			}
 
-			// FIXME: Potential NPE
 			String[] wn = new String[notorder.length + 1];
 			wn[0] = "NAME";
 			for (int i = 0; i < notorder.length; i++) {
@@ -1133,12 +1134,6 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		}
 		return hasSorted;
 
-	}
-
-	private String nv(String text) {
-		if (text == null)
-			return "";
-		return text;
 	}
 
 }

@@ -1081,7 +1081,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					repo = new JavaReport();
 				} else {
 					try {
-						repo = new XmlReport(runner, formatIdx);
+						repo = new XmlReport(runner, formatIdx, self.pers
+								.getAlfaName(true));
 					} catch (SukuException se) {
 						return null;
 					}
@@ -1210,14 +1211,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						Suku.kontroller.getOutputStream());
 				WritableWorkbook workbook = Workbook.createWorkbook(bstr);
 
-				// Create a cell format for Times 16, bold and italic
-				// FIXME: Not used. Can be removed?
-				WritableFont arial10italic = new WritableFont(
-						WritableFont.ARIAL, 10, WritableFont.NO_BOLD, true);
-				// FIXME: Not used. Can be removed?
-				WritableCellFormat arial10format = new WritableCellFormat(
-						arial10italic);
-
 				WritableFont arial10bold = new WritableFont(WritableFont.ARIAL,
 						10, WritableFont.BOLD, true);
 				WritableCellFormat arial0bold = new WritableCellFormat(
@@ -1283,9 +1276,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							rivi++;
 							rivi = writePersonToSheet(rivi, ssdata.persLong,
 									sheet);
-
 						}
-						//						
 					}
 
 					for (int k = 0; k < rr.length; k++) {
@@ -1314,7 +1305,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							rivi = writePersonToSheet(rivi, ssdata.persLong,
 									sheet);
 						}
-						//						
 					}
 
 					for (int k = 0; k < rr.length; k++) {
@@ -1341,24 +1331,17 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							rivi = writePersonToSheet(rivi, ssdata.persLong,
 									sheet);
 						}
-						//						
 					}
-
 				}
 
 				workbook.write();
 				workbook.close();
 				bstr.close();
 
-			} catch (Exception e) {
-				// FIXME: Spaghetti code. This method uses a try-catch block
-				// that
-				// catches Exception objects, but Exception is not thrown within
-				// the
-				// try block, and RuntimeException is not explicitly caught.
-				// This
-				// construct also accidentally catches RuntimeException as well,
-				// masking potential bugs.
+			} catch (Throwable e) {
+				// FIX-ME: Spaghetti code. Could be.
+				// Changed to Throwable. I assume that should catch anything
+				// Withaout a catch here We wouöld not get anything into the log
 				logger.log(Level.WARNING, "Exception in background thread", e);
 			}
 

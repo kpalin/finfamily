@@ -7,8 +7,18 @@ import javax.swing.JScrollPane;
 
 import fi.kaila.suku.util.Resurses;
 
+/**
+ * A container for the contents of each tab on the right hand side
+ * 
+ * @author Kalle
+ * 
+ */
 public class SukuTabPane extends JScrollPane {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String title;
 	Icon icon = null;
 	Component pnl;

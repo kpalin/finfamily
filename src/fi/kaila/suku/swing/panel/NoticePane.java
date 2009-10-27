@@ -664,9 +664,12 @@ public class NoticePane extends JPanel implements ActionListener,
 			// This checks both dates for error. in case of error
 			// an SukuDateException is thrown
 			// if ok returns null
-			// FIXME: Dead store to theDate. Is there better way to code this?
+			// FIX-ME: Dead store to theDate.
+			// Is there better way to code this?
+			// removed the second store as that is obviously never used
+			// first one is return from catch block if second date has an error
 			theDate = date.getFromDate();
-			theDate = date.getToDate();
+			date.getToDate();
 			return null;
 		} catch (SukuDateException e) {
 			e.printStackTrace();
@@ -747,38 +750,39 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		} else if (cmd.equals("IMAGE_OPEN")) {
 			boolean openedImage = Suku.kontroller.openLocalFile("jpg;png;gif");
-			long filesize = Suku.kontroller.getFileLength();
-			if (filesize > 0) {
-				BufferedInputStream bstr = new BufferedInputStream(
-						Suku.kontroller.getInputStream());
-				// System.out.println("OPEN: " + openedImage);
+			if (openedImage) {
+				long filesize = Suku.kontroller.getFileLength();
+				if (filesize > 0) {
+					BufferedInputStream bstr = new BufferedInputStream(
+							Suku.kontroller.getInputStream());
+					// System.out.println("OPEN: " + openedImage);
 
-				byte buffer[] = new byte[(int) filesize];
+					byte buffer[] = new byte[(int) filesize];
 
-				try {
-					int luettu = bstr.read(buffer);
-					if (luettu == filesize) {
-						notice.setMediaData(buffer);
-					} else {
-						logger.warning("Filesize expected " + filesize
-								+ " read " + luettu);
+					try {
+						int luettu = bstr.read(buffer);
+						if (luettu == filesize) {
+							notice.setMediaData(buffer);
+						} else {
+							logger.warning("Filesize expected " + filesize
+									+ " read " + luettu);
+						}
+						bstr.close();
+						notice.setMediaFilename(Suku.kontroller.getFileName());
+						getImage();
+						notice.setMediaSize(imageSize);
+
+						mediaFilename.setText(notice.getMediaFilename());
+
+						updateUI();
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(this, e1.getMessage(),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.ERROR_MESSAGE);
+
+						e1.printStackTrace();
 					}
-					bstr.close();
-					notice.setMediaFilename(Suku.kontroller.getFileName());
-					getImage();
-					notice.setMediaSize(imageSize);
-
-					mediaFilename.setText(notice.getMediaFilename());
-
-					updateUI();
-				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(this, e1.getMessage(),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.ERROR_MESSAGE);
-
-					e1.printStackTrace();
 				}
-
 			}
 		} else if (cmd.equals("DELETE")) {
 			setToBeDeleted(true);

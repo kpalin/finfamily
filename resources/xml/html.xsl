@@ -3,7 +3,7 @@
       
       >
       
- 
+ <xsl:include href="finfamily.css.xsl" />
       
   <xsl:param name="a-param">default param value</xsl:param>
 
@@ -19,13 +19,13 @@
   
   <xsl:template match="header">
   <head>
-  <title>Kallen koetta tässä</title>
+  <title><xsl:value-of select="title"/></title>
+  <!--
    <xsl:variable name="stylg" select="concat(/finfamily/header/@folder,'/finfamily.css')"/>
-  <link href="{$stylg}" rel="stylesheet" type="text/css"/>
-
+   <link href="{$stylg}" rel="stylesheet" type="text/css"/>
+-->
   <STYLE type="text/css">
-
-#ul {text-decoration:underline}
+<xsl:value-of select="$CSS_CONTENT"/>
 </STYLE>
 
   </head>
@@ -54,7 +54,7 @@
   </xsl:template>
   
   <xsl:template match="bu">
-  <strong id="ul">
+  <strong class="ul">
   <xsl:apply-templates/>
   </strong>
   </xsl:template> 

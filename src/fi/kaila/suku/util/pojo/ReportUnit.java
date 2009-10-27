@@ -20,6 +20,9 @@ public class ReportUnit implements Serializable {
 	private long tableNo = 0;
 
 	private int gen = 0;
+	// is stored from reportUtil but not used.
+	// possibly isn't needed or then it might need to be used??
+	// FIXME
 	private long parentTable = 0;
 
 	private Vector<ReportTableMember> asParent = new Vector<ReportTableMember>();

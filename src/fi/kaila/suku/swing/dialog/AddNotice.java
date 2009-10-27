@@ -1,7 +1,5 @@
 package fi.kaila.suku.swing.dialog;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
@@ -16,7 +14,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
-public class AddNotice extends JDialog implements ActionListener, MouseListener {
+public class AddNotice extends JDialog implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
 	HashMap<String, String> kokoMap = new HashMap<String, String>();
@@ -26,13 +24,10 @@ public class AddNotice extends JDialog implements ActionListener, MouseListener 
 	Vector<String> kokoTags = new Vector<String>();
 	Vector<String> kokoLista = new Vector<String>();
 
-	private Suku owner = null;
-
 	private String selectedTag = null;
 
 	public AddNotice(Suku owner) throws SukuException {
 		super(owner, Resurses.getString("DIALOG_ADD_NOTICE"), true);
-		this.owner = owner;
 
 		// Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		//		
@@ -72,12 +67,6 @@ public class AddNotice extends JDialog implements ActionListener, MouseListener 
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		int idx = koko.getSelectedIndex();
 		selectedTag = kokoTags.get(idx);
@@ -87,25 +76,21 @@ public class AddNotice extends JDialog implements ActionListener, MouseListener 
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 

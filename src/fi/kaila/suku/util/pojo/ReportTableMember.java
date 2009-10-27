@@ -33,10 +33,7 @@ public class ReportTableMember implements Serializable {
 	 * ordering of tablemembers 0 = subject 1-n = spouse 1-n n+1-n+m child m
 	 */
 	private int rowNo = 0;
-	/**
-	 * Link to Tid of parents
-	 */
-	private int parentTid = 0;
+
 	/**
 	 * Pid of person
 	 */
