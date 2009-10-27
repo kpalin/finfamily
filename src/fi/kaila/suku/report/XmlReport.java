@@ -270,8 +270,9 @@ public class XmlReport implements ReportInterface {
 			if (imgWidth > maxImageWidth) {
 				imgWidth = maxImageWidth;
 			}
-			ele.setAttribute("width", "" + imgWidth);
-
+			if (imgWidth > 10) {
+				ele.setAttribute("width", "" + imgWidth);
+			}
 		}
 		String prevStyle = "";
 		StringBuffer sb = new StringBuffer();
