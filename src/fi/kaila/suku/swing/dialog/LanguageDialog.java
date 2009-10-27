@@ -329,9 +329,4 @@ public class LanguageDialog extends JDialog implements ActionListener,
 
 	}
 
-	private String nv(String text) {
-		if (text == null)
-			return "";
-		return text;
-	}
 }

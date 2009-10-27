@@ -49,8 +49,6 @@ public class SukuServerImpl implements SukuServer {
 	private String openFile = null;
 	private String toDoTagName = null;
 
-	private SukuData request = null;
-
 	/**
 	 * Constructor
 	 * 
@@ -328,7 +326,7 @@ public class SukuServerImpl implements SukuServer {
 	public SukuData getSukuData(SukuData request, String... params)
 			throws SukuException {
 		String auxes[];
-		this.request = request;
+
 		int j;
 		StringBuffer sb = new StringBuffer();
 		for (j = 0; j < params.length; j++) {
@@ -353,7 +351,8 @@ public class SukuServerImpl implements SukuServer {
 		String lang;
 		if (cmd == null)
 			return null;
-		SukuData fam = null;
+		SukuData fam = new SukuData();
+		;
 		if (cmd.equals("plist")) {
 			fam = queryDatabase(params);
 			// fam = getShortPersonList(params);
@@ -363,6 +362,8 @@ public class SukuServerImpl implements SukuServer {
 			if (tmp != null) {
 				pid = Integer.parseInt(tmp);
 				fam = getShortFamily(pid, aux == null ? false : true);
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
 			}
 		} else if (cmd.equals("person")) {
 			tmp = map.get("pid");
@@ -370,6 +371,8 @@ public class SukuServerImpl implements SukuServer {
 				pid = Integer.parseInt(tmp);
 				lang = map.get("lang");
 				fam = getFullPerson(pid, lang);
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
 			}
 		} else if (cmd.equals("delete")) {
 			tmp = map.get("pid");
@@ -377,6 +380,8 @@ public class SukuServerImpl implements SukuServer {
 				pid = Integer.parseInt(tmp);
 
 				fam = deletePerson(pid);
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
 			}
 		} else if (cmd.equals("relatives")) {
 			tmp = map.get("pid");
@@ -385,6 +390,8 @@ public class SukuServerImpl implements SukuServer {
 				String tag = map.get("tag");
 				// throw new SukuException("parents has not been implemented");
 				fam = getRelatives(pid, tag);
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
 			}
 		} else if (cmd.equals("upload")) {
 			fam = uploadFamily(request);
@@ -402,10 +409,14 @@ public class SukuServerImpl implements SukuServer {
 						map.get("generations"), map.get("spougen"), map
 								.get("chilgen"), map.get("adopted"), map
 								.get("pid"));
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
 			}
 		} else if (cmd.equals("crlista")) {
 			if ("desc".equals(map.get("type"))) {
 				fam = createDescendantLista(map.get("pid"));
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
 			}
 		} else if (cmd.equals("logout")) {
 			try {
@@ -414,11 +425,14 @@ public class SukuServerImpl implements SukuServer {
 				con = null;
 			}
 			con = null;
-			fam = new SukuData();
+
 		} else if (cmd.equals("initdb")) {
 			String path = map.get("path");
 			if (path == null) {
 				path = "/sql/finfamily.sql";
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_SQL_FILE");
+				return fam;
 			}
 			SukuUtility data = SukuUtility.instance();
 			data.createSukuDb(this.con, path);
@@ -438,20 +452,22 @@ public class SukuServerImpl implements SukuServer {
 			fam = updateSettings(request, map.get("index"), map.get("type"),
 					map.get("name"));
 		} else if (cmd.equals("places")) {
-			fam = new SukuData();
 
 			if (request != null) {
 				fam.places = SuomiPlacesResolver.resolveSuomiPlaces(this.con,
 						request.places);
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_PLACES");
 			}
 		} else if (cmd.equals("dblista") && "public".equals(this.schema)) {
-			fam = new SukuData();
 			fam.generalArray = LocalDatabaseUtility.getListOfDatabases(con);
 		} else if (cmd.equals("import2004")) {
 			// this.createSukuDb();
 			file = this.openFile;
 			if (file == null) {
 				file = map.get("filename");
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
 			}
 			lang = map.get("lang");
 			logger.info("Suku 2004 FILE: " + file);
@@ -467,8 +483,7 @@ public class SukuServerImpl implements SukuServer {
 			if (path == null) {
 				path = this.openFile;
 				if (path == null) {
-					// FIXME: NPE
-					fam.resu = "Coordinates file missing";
+					fam.resu = Resurses.getString("GETSUKU_BAD_COORDINATES");
 					return fam;
 				}
 			}
@@ -480,8 +495,7 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("update")) {
 			String type = map.get("type");
 			if (type == null) {
-				// FIXME: NPE
-				fam.resu = "Type missing in update command";
+				fam.resu = Resurses.getString("GETSUKU_BAD_UPDATE_TYPE");
 				return fam;
 			}
 			if (type.equals("person")) {
@@ -493,7 +507,7 @@ public class SukuServerImpl implements SukuServer {
 					fam.pers[0] = psp;
 				}
 			} else {
-				// FIXME: NPE
+
 				fam.resu = "Wrong type [" + type + "] in update command";
 				return fam;
 			}
@@ -525,6 +539,9 @@ public class SukuServerImpl implements SukuServer {
 					}
 				} else if (group != null) {
 					fam = grp.removeGroup(group);
+				} else {
+					fam.resu = Resurses.getString("GETSUKU_BAD_GROUP_COMMAND");
+
 				}
 
 			} else if (action.equals("add")) {
@@ -544,6 +561,8 @@ public class SukuServerImpl implements SukuServer {
 				} else if (view != null) {
 					int vid = Integer.parseInt(view);
 					fam = grp.addViewGroups(vid, group);
+				} else {
+					fam.resu = Resurses.getString("GETSUKU_BAD_GROUP_COMMAND");
 				}
 			} else {
 				fam.resu = "action=" + action + " not supported";
@@ -567,7 +586,7 @@ public class SukuServerImpl implements SukuServer {
 						int viewId = Integer.parseInt(viewno);
 						fam = vv.removeView(viewId);
 					} catch (NumberFormatException ne) {
-						// FIXME: Potential NPE
+
 						fam.resu = ne.getMessage();
 						logger.log(Level.WARNING, "Bad view number", ne);
 					}
@@ -579,16 +598,19 @@ public class SukuServerImpl implements SukuServer {
 						fam = vv.emptyView(viewId);
 					} else if (key.equals("pidarray")) {
 						fam = vv.removeViewUnits(viewId, request.pidArray);
+					} else {
+						fam.resu = Resurses
+								.getString("GETSUKU_BAD_VIEW_COMMAND");
 					}
+				} else {
+					fam.resu = Resurses.getString("GETSUKU_BAD_VIEW_COMMAND");
 				}
 			} else if ("addview".equals(action)) {
 				if (viewname != null) {
 
 					try {
-
 						fam = vv.addView(viewname);
 					} catch (NumberFormatException ne) {
-						// FIXME: Potential NPE
 						fam.resu = ne.getMessage();
 						logger.log(Level.WARNING, "Bad view number", ne);
 					}
@@ -609,8 +631,13 @@ public class SukuServerImpl implements SukuServer {
 					} else if (key.toLowerCase().equals("anc")) {
 						fam = vv.addViewAnc(viewId, Integer.parseInt(pidg),
 								gen, (empty.equalsIgnoreCase("true")));
+					} else {
+						fam.resu = Resurses
+								.getString("GETSUKU_BAD_VIEW_COMMAND");
 					}
 
+				} else {
+					fam.resu = Resurses.getString("GETSUKU_BAD_VIEW_COMMAND");
 				}
 
 			} else if ("get".equals(action) && pidg != null) {
@@ -618,7 +645,6 @@ public class SukuServerImpl implements SukuServer {
 
 					fam = vv.getViews(Integer.parseInt(pidg));
 				} catch (NumberFormatException ne) {
-					// FIXME: Potential NPE
 					fam.resu = ne.getMessage();
 					logger.log(Level.WARNING, "Bad view number", ne);
 				}
@@ -769,8 +795,7 @@ public class SukuServerImpl implements SukuServer {
 			return resp;
 		}
 
-		// TODO
-		return null;
+		return resp;
 	}
 
 	private SukuData getRelatives(int pid, String tag) {
@@ -1000,7 +1025,7 @@ public class SukuServerImpl implements SukuServer {
 		if (index > 11 || index < 0)
 			index = 0;
 
-		int luku;
+		int luku = -1;
 		PreparedStatement pstm;
 		ResultSet rs;
 		sql = "select count(*) from SukuSettings where settingIndex = ? ";
@@ -1008,14 +1033,16 @@ public class SukuServerImpl implements SukuServer {
 			pstm = con.prepareStatement(sql);
 			pstm.setInt(1, index);
 			rs = pstm.executeQuery();
-			luku = -1;
+
 			if (rs.next()) {
 				luku = rs.getInt(1);
 			}
 			rs.close();
 			pstm.close();
 		} catch (SQLException se) {
-			luku = -1;
+			logger.log(Level.WARNING, "Saving report settings [" + luku + "]",
+					se);
+
 		}
 		try {
 			// if (luku < 0) {
@@ -1046,8 +1073,8 @@ public class SukuServerImpl implements SukuServer {
 			while (ee.hasNext()) {
 				String key = ee.next();
 				if (!key.equals("index") && !key.equals("cmd")) {
-					// FIXME: inefficient use of keySet iterator instead of
-					// entrySet iterator
+					// FIX-ME: inefficient use of keySet iterator instead of
+					// entrySet iterator ???
 					String value = map.get(key);
 
 					pstm.setString(1, key);
@@ -1061,24 +1088,12 @@ public class SukuServerImpl implements SukuServer {
 			res.resu = Resurses.OK;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "report settings", e);
+
 			res.resu = e.getMessage();
 		}
 		return res;
 	}
-
-	// private SukuData createReport(String type, String spid) throws
-	// SukuException {
-	// SukuData dat;
-	// try {
-	// ReportUtil x = new ReportUtil(con);
-	// dat = x.createTableStructure( Integer.parseInt(spid), 99);
-	// } catch (Exception e) {
-	// throw new SukuException(e);
-	// }
-	// return dat;
-	// }
 
 	private SukuData getDbVersion() {
 		SukuData resdat = new SukuData();
@@ -1113,9 +1128,8 @@ public class SukuServerImpl implements SukuServer {
 			resu = Upload.uploadFamilies(con, family);
 		} catch (SQLException e) {
 			resu = e.getMessage();
+			logger.log(Level.WARNING, "uplaoding family", e);
 
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		resdat.resu = resu;
@@ -1257,7 +1271,10 @@ public class SukuServerImpl implements SukuServer {
 								.getString(15), rs.getString(16), rs
 								.getString(17), rs.getString(18), rs
 								.getTimestamp(19), rs.getTimestamp(20));
-						// FIXME: Potential NPE
+
+						if (relNotices == null) {
+							relNotices = new Vector<RelationNotice>();
+						}
 						relNotices.add(rnote);
 					}
 
@@ -1477,7 +1494,7 @@ public class SukuServerImpl implements SukuServer {
 		String[] pari;
 		String decod;
 		Vector<PersonShortData> personList = new Vector<PersonShortData>();
-		// TODO check if needs to be ordered HashMap or something
+		persMap = new HashMap<Integer, PersonShortData>();
 		int idx;
 
 		boolean needsRelativeInfo = false;
@@ -1706,7 +1723,7 @@ public class SukuServerImpl implements SukuServer {
 
 			Statement stm = this.con.createStatement();
 			ResultSet rs = stm.executeQuery(sql.toString());
-			persMap = new HashMap<Integer, PersonShortData>();
+			// persMap = new HashMap<Integer, PersonShortData>();
 			int currentPid = 0;
 			int pid;
 			// String dbutag; //5
@@ -1746,7 +1763,7 @@ public class SukuServerImpl implements SukuServer {
 
 				if (pid != currentPid && currentPid != 0) {
 					personList.add(perso);
-					// FIXME: Potential NPE
+
 					persMap.put(perso.getPid(), perso);
 					perso = null;
 				}
@@ -1798,12 +1815,7 @@ public class SukuServerImpl implements SukuServer {
 					}
 
 					if (dbntag.equals("BIRT") || dbntag.equals("CHR")) // &&
-					// perso.getBirtTag()
-					// !=
-					// "BIRT")
-					// ||
-					// TODO (perso.BirthTag == null && dlg.ShowCondChristened &&
-					// dbntag == "CHR"))
+
 					{
 
 						if (perso.getBirtTag() == null || dbntag.equals("BIRT")) {
@@ -1814,12 +1826,7 @@ public class SukuServerImpl implements SukuServer {
 					}
 
 					if (dbntag.equals("DEAT") || dbntag.equals("BURI")) // &&
-					// perso.getBirtTag()
-					// !=
-					// "BIRT")
-					// ||
-					// TODO (perso.BirthTag == null && dlg.ShowCondChristened &&
-					// dbntag == "CHR"))
+
 					{
 
 						if (perso.getDeatTag() == null || dbntag.equals("DEAT")) {

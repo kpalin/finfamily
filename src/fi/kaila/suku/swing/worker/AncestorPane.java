@@ -12,6 +12,13 @@ import javax.swing.JTextField;
 
 import fi.kaila.suku.util.Resurses;
 
+/**
+ * 
+ * <h1>Ancestor report settings pane</h1>
+ * 
+ * @author Kalle
+ * 
+ */
 public class AncestorPane extends JPanel {
 
 	/**
@@ -24,6 +31,9 @@ public class AncestorPane extends JPanel {
 	private JCheckBox ancestorShowFamily = null;
 	private JTextField ancestorShowDescGen = null;
 
+	/**
+	 * Constructor sets up ths fields
+	 */
 	public AncestorPane() {
 
 		int rtypx = 10;
@@ -79,23 +89,47 @@ public class AncestorPane extends JPanel {
 
 	}
 
+	/**
+	 * 
+	 * Value in the buttomngroup is the getActionCommand()
+	 * 
+	 * @return the ButtonGroup for numbering of ancestors
+	 */
 	public ButtonGroup getNumberingFormat() {
 		return ancestorNumberingFormatGroup;
 	}
 
+	/**
+	 * @return true if ancestor family is to be shown also
+	 */
 	public boolean getShowfamily() {
 		return ancestorShowFamily.isSelected();
 	}
 
+	/**
+	 * @param value
+	 *            set true to show also ancestro family
+	 */
 	public void setShowFamily(boolean value) {
 		ancestorShowFamily.setSelected(value);
 
 	}
 
+	/**
+	 * TODO decide if this is needed
+	 * 
+	 * @return no of descendant geneartions to print
+	 */
 	public String getShowDescGen() {
 		return ancestorShowDescGen.getText();
 	}
 
+	/**
+	 * TODO decide if this is needed
+	 * 
+	 * @param string
+	 *            no of descendants generations for the ancestor
+	 */
 	public void setDescGen(String string) {
 		ancestorShowDescGen.setText(string);
 

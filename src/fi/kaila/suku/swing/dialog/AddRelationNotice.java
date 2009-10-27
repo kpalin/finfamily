@@ -24,14 +24,12 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 	private JList koko;
 	String[] kokoLista = null;
 	String[] kokoTags = null;
-	private Suku owner = null;
 
 	private String selectedTag = null;
 
 	public AddRelationNotice(Suku owner, boolean isMarriage)
 			throws SukuException {
 		super(owner, Resurses.getString("DIALOG_ADD_NOTICE"), true);
-		this.owner = owner;
 
 		// Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		//		
@@ -72,7 +70,6 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -86,25 +83,21 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 

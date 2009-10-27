@@ -125,10 +125,8 @@ public class SukuServlet extends HttpServlet {
 		InputStream is = req.getInputStream();
 
 		File dir = new File(outputPath);
-		if (!dir.isDirectory()) {
-			// FIXME: This method returns a value that is not checked. The
-			// return value should be checked since it can indicate an unusual
-			// or unexpected function execution.
+		if (!dir.exists()) {
+
 			dir.mkdir();
 		}
 
@@ -147,7 +145,7 @@ public class SukuServlet extends HttpServlet {
 		String filename = null;
 		FileOutputStream fos = null;
 		byte bbb[] = new byte[32 * 1024];
-		// System.out.println("TULI TÄHÄNKIN");
+
 		byte brivi[] = new byte[32 * 1024];
 		while (true) {
 

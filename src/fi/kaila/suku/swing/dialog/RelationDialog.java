@@ -30,6 +30,7 @@ import fi.kaila.suku.swing.util.SukuDateField;
 import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.RelationLanguage;
 import fi.kaila.suku.util.pojo.RelationNotice;
 
@@ -317,9 +318,9 @@ public class RelationDialog extends JDialog implements ActionListener,
 		String ttmp = date.getToDate();
 		String pre = date.getDatePrefTag();
 
-		if (!nv(pre).equals(nv(rela.getDatePrefix()))
-				|| nv(tmp).equals(nv(rela.getFromDate()))
-				|| nv(ttmp).equals(nv(rela.getToDate()))) {
+		if (!Utils.nv(pre).equals(Utils.nv(rela.getDatePrefix()))
+				|| Utils.nv(tmp).equals(Utils.nv(rela.getFromDate()))
+				|| Utils.nv(ttmp).equals(Utils.nv(rela.getToDate()))) {
 			rela.setDatePrefix(pre);
 			rela.setFromDate(tmp);
 			rela.setToDate(ttmp);
@@ -525,18 +526,6 @@ public class RelationDialog extends JDialog implements ActionListener,
 		System.out.println("MENU");
 		setVisible(false);
 
-	}
-
-	private String nv(String text) {
-		if (text == null)
-			return "";
-		return text;
-	}
-
-	private String vn(String text) {
-		if (text == null || text.equals(""))
-			return null;
-		return text;
 	}
 
 	// public RelationNotice getRela() {

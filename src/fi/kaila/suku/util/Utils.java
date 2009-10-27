@@ -280,4 +280,26 @@ public class Utils {
 		return personReferences;
 	}
 
+	/**
+	 * 
+	 * @param text
+	 * @return empty string if null or text
+	 */
+	public static String nv(String text) {
+		if (text == null)
+			return "";
+		return text;
+	}
+
+	/**
+	 * 
+	 * @param text
+	 * @return null if empty string or text
+	 */
+	public static String vn(String text) {
+		if (text == null || text.equals(""))
+			return null;
+		return text;
+	}
+
 }
