@@ -9,7 +9,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -1068,17 +1071,16 @@ public class SukuServerImpl implements SukuServer {
 					+ "values ('report'," + index + ",?,?)";
 
 			pstm = con.prepareStatement(sql);
-			Iterator<String> ee = map.keySet().iterator();
+			Set<Map.Entry<String, String>> entries = map.entrySet();
+			Iterator<Entry<String, String>> ee = entries.iterator();
 
 			while (ee.hasNext()) {
-				String key = ee.next();
-				if (!key.equals("index") && !key.equals("cmd")) {
-					// FIX-ME: inefficient use of keySet iterator instead of
-					// entrySet iterator ???
-					String value = map.get(key);
-
-					pstm.setString(1, key);
-					pstm.setString(2, value);
+				Map.Entry<String, String> entry = (Map.Entry<String, String>) ee
+						.next();
+				if (!entry.getKey().equals("index")
+						&& !entry.getKey().equals("cmd")) {
+					pstm.setString(1, entry.getKey().toString());
+					pstm.setString(2, entry.getValue().toString());
 					pstm.executeUpdate();
 				}
 
