@@ -135,20 +135,20 @@
 			<w:pStyle w:val = "Caption"/>
 			<w:jc w:val = "center"/>
 		</w:pPr>
-		<!--
-		<w:r>
-			<w:t><xsl:value-of select="@imageName"/><xsl:text> </xsl:text></w:t>
-		</w:r>
-		
-		<w:fldSimple w:instr = " SEQ Kuva \* ARABIC ">
+		<xsl:if test="@imageNo">
 			<w:r>
-				<w:rPr>
-					<w:noProof/>
-				</w:rPr>
-				<w:t><xsl:value-of select="@imageNo"/></w:t>
+				<w:t><xsl:value-of select="@imageName"/><xsl:text> </xsl:text></w:t>
 			</w:r>
-		</w:fldSimple>
-		-->
+			
+			<w:fldSimple w:instr = " SEQ Kuva \* ARABIC ">
+				<w:r>
+					<w:rPr>
+						<w:noProof/>
+					</w:rPr>
+					<w:t><xsl:value-of select="@imageNo"/></w:t>
+				</w:r>
+			</w:fldSimple>
+		</xsl:if>
 		<w:r>
 			<w:t><xsl:text> </xsl:text><xsl:value-of select="@title"/></w:t>
 		</w:r>

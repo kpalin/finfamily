@@ -292,7 +292,9 @@ public class XmlReport implements ReportInterface {
 		if (imgName != null) {
 			ele.setAttribute("image", imgName);
 			ele.setAttribute("title", imgTitle);
-			ele.setAttribute("imageNo", "" + imageCounter);
+			if (parent.isNumberingImages()) {
+				ele.setAttribute("imageNo", "" + imageCounter);
+			}
 			ele.setAttribute("imageName", Resurses.getString("REPORT.IMAGE"));
 			if (imgWidth > maxImageWidth) {
 				float mw = maxImageWidth;
