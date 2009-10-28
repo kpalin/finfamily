@@ -71,6 +71,13 @@ import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
+/**
+ * 
+ * All reports are requested using this dialog and settings in it
+ * 
+ * @author Kalle
+ * 
+ */
 public class ReportWorkerDialog extends JDialog implements ActionListener,
 		PropertyChangeListener {
 
@@ -85,24 +92,61 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private static final String SET_TX2 = "TX2";
 	private static final String SET_AFT = "AFT";
 
-	public static final String SET_PAFT = "PAFT";
-	public static final String SET_TAFT = "TAFT";
-	public static final String SET_RAFT = "RAFT";
-
+	/**
+	 * Stradoniz ancestor numbering command
+	 */
 	public static final String SET_ANC_STRADONIZ = "STRADONIZ";
+	/**
+	 * Hager ancestor numbering command
+	 */
 	public static final String SET_ANC_HAGER = "HAGER";
+	/**
+	 * Espolin ancestor numbering command
+	 */
 	public static final String SET_ANC_ESPOLIN = "ESPOLIN";
 
+	/**
+	 * Table descendant table numbering
+	 */
 	public static final String SET_ORDER_TAB = "TAB";
+	/**
+	 * Table descendant table numbering with male descendants only
+	 */
 	public static final String SET_ORDER_MALE = "MALE";
+	/**
+	 * Table descendant table numbering with female descendants only
+	 */
 	public static final String SET_ORDER_FEMALE = "FEMALE";
+	/**
+	 * Table descendant table numbering with male descendants first if both
+	 * spouses are in report as relatives
+	 */
 	public static final String SET_ORDER_FIRSTMALE = "FIRSTMALE";
+	/**
+	 * When male first table order the numbering must be calculated twice. This
+	 * is for the second round
+	 */
 	public static final String SET_ORDER_NEWMALE = "NEWMALE";
+	/**
+	 * Reguistry tabel ordering. Popular in the anglosaxon world
+	 */
 	public static final String SET_ORDER_REG = "REG";
 
+	/**
+	 * No marriages dates are shown
+	 */
 	public static final String SET_SPOUSE_NONE = "NONE";
+	/**
+	 * Only marriage yer ius printed
+	 */
 	public static final String SET_SPOUSE_YEAR = "YEAR";
+	/**
+	 * Full marriage date is printed
+	 */
 	public static final String SET_SPOUSE_DATE = "DATE";
+	/**
+	 * All marriage data is printed
+	 */
 	public static final String SET_SPOUSE_FULL = "FULL";
 
 	private static final String ACTION_INDEX = "ACTION_INDEX";
@@ -132,6 +176,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	JTabbedPane reportTypePane = null;
 
+	/**
+	 * @return this class instance. Used to show the progressbar in local
+	 *         kontrolelr only
+	 */
 	public static ReportWorkerDialog getRunner() {
 		return runner;
 	}
@@ -187,7 +235,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private Suku parent;
 
 	/**
+	 * Constructor
+	 * 
 	 * @param owner
+	 * @param kontroller
+	 * @param pers
 	 */
 	public ReportWorkerDialog(Suku owner, SukuKontroller kontroller,
 			PersonShortData pers) {
@@ -210,10 +262,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * @return Suku main program
+	 */
 	public ISuku getSukuParent() {
 		return parent;
 	}
 
+	/**
+	 * @return max width of image (in pixels)
+	 */
 	public int getImageMaxWidth() {
 		try {
 			return Integer.parseInt(commonImageWidth.getText());
@@ -222,6 +280,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/**
+	 * @return subject pid
+	 */
 	public int getPid() {
 		return this.pers.getPid();
 	}
@@ -237,6 +298,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	/**
 	 * Gets the tag at the indicated index position
+	 * 
+	 * @param idx
 	 * 
 	 * @return the indexed tag
 	 */
@@ -264,6 +327,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		return null;
 	}
 
+	/**
+	 * @param tag
+	 * @return name of tag e.g. BIRT tag returns Birth in English
+	 */
 	public String getTagName(String tag) {
 		Integer iidx = typeTexts.get(tag);
 		if (iidx == null)
@@ -315,26 +382,44 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * @return true if bold names box is set
+	 */
 	public boolean showBoldNames() {
 		return (commonNamesBold.getSelectedObjects() != null);
 	}
 
+	/**
+	 * @return true is underline usename is set
+	 */
 	public boolean showUnderlineNames() {
 		return (commonNamesUnderline.getSelectedObjects() != null);
 	}
 
+	/**
+	 * @return true if selected to print notices on separate line
+	 */
 	public boolean showOnSeparateLines() {
 		return (commonSeparateNotices.getSelectedObjects() != null);
 	}
 
+	/**
+	 * @return true is selected to print images
+	 */
 	public boolean showImages() {
 		return (commonWithImages.getSelectedObjects() != null);
 	}
 
+	/**
+	 * @return true to print address fields
+	 */
 	public boolean showAddress() {
 		return (commonWithAddress.getSelectedObjects() != null);
 	}
 
+	/**
+	 * @return dateformat selected
+	 */
 	public String getDateFormat() {
 		ButtonModel model = commonDateFormatGroup.getSelection();
 		if (model != null) {
@@ -343,10 +428,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		return "FI";
 	}
 
+	/**
+	 * @return selected kontroller
+	 */
 	public SukuKontroller getKontroller() {
 		return this.kontroller;
 	}
 
+	/**
+	 * @return progressbar object
+	 */
 	public JProgressBar getProgressBar() {
 		return this.progressBar;
 	}
@@ -673,6 +764,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * @return descendat panel
+	 */
 	public DescendantPane getDescendantPanel() {
 		return descendantPanel;
 	}
@@ -920,6 +1014,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					taskLista = new TaskLista();
 					taskLista.addPropertyChangeListener(this);
 					taskLista.execute();
+
 				} else if (listSele.equals("REPORT.LISTA.PERSONCARDS")) {
 					taskCards = new TaskCards();
 					taskCards.addPropertyChangeListener(this);
@@ -1058,6 +1153,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * @return spouse data button group
+	 */
 	public ButtonGroup getSpouseData() {
 		return spouseData;
 	}
@@ -1084,6 +1182,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						repo = new XmlReport(runner, formatIdx, self.pers
 								.getAlfaName(true));
 					} catch (SukuException se) {
+						JOptionPane.showMessageDialog(runner, se.getMessage(),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.ERROR_MESSAGE);
+						logger.log(Level.WARNING,
+								"Exception in background thread", se);
 						return null;
 					}
 				}
@@ -1505,6 +1608,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/**
+	 * Split the value for the progressbar and text in two parts using ; if no ;
+	 * then value is text shown and progressbar shows only movement if ; in text
+	 * then first part must be a number between 0 and 100. Second part is text
+	 * to show
+	 * 
+	 * @param juttu
+	 */
 	public void setRunnerValue(String juttu) {
 		String[] kaksi = juttu.split(";");
 		if (kaksi.length >= 2) {

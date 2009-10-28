@@ -60,7 +60,7 @@ public class SettingFilter extends FileFilter {
 	@Override
 	public String getDescription() {
 
-		return "SukuJ files";
+		return "FinFamily files";
 
 	}
 

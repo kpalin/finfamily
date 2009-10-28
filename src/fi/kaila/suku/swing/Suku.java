@@ -241,13 +241,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private ViewMgrWindow viewWin = null;
 	// private HiskiImporter hiski=null;
 	private LocalAdminUtilities adminUtilities = null;
+	/**
+	 * A static variable thst contains the Suku kontroller in use
+	 */
 	public static SukuKontroller kontroller = null;
-	// private ReportFrame reportFrame=null;
+
+	/**
+	 * During connect to dabatase the database version is stored here
+	 */
 	public static String postServerVersion = null;
 
 	private static String[] repoLangList = null;
 
-	// public static Clipboard sukuClipboard;
+	/**
+	 * A "clipboard" location where a person can be copied to
+	 */
 	public static Object sukuObject = null;
 	private int subjectPid = 0;
 	private int activePersonPid = 0;
@@ -1395,12 +1403,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						.putPref(this, Resurses.NOTICES_BUTTON, "" + notiButt);
 				personView.showNotices(tNoticesButton.isSelected());
 			}
-		} catch (Exception ex) {
-			// FIXME: Spaghetti code. This method uses a try-catch block that
-			// catches Exception objects, but Exception is not thrown within the
-			// try block, and RuntimeException is not explicitly caught. This
-			// construct also accidentally catches RuntimeException as well,
-			// masking potential bugs.
+		} catch (Throwable ex) {
+
 			logger.log(Level.WARNING, "Suku action", ex);
 			JOptionPane.showMessageDialog(personView.getSuku(), "Suku action"
 					+ ":" + ex.getMessage());
@@ -1600,6 +1604,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 	}
 
+	/**
+	 * Whenever a personview is opened this stores the activePerson pid for use
+	 * by Subject button
+	 * 
+	 * @param pid
+	 */
 	public void setActivePerson(int pid) {
 		this.activePersonPid = pid;
 
@@ -1632,6 +1642,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
+	/**
+	 * updates group id for person on database window
+	 * 
+	 * @param pid
+	 * @param groupId
+	 */
 	public void updateDbGroup(int pid, String groupId) {
 		PersonShortData p = tableMap.get(pid);
 		if (p != null) {
@@ -2042,7 +2058,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			Import2004Dialog dlg = new Import2004Dialog(this, kontroller);
 			dlg.setVisible(true);
-			// TODO allaolevat eivät taida olla worker threadissä enää
+
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
 			kontroller.getSukuData("cmd=excel",
 					"path=resources/excel/PaikatExcel.xls", "page=coordinates");
@@ -2439,13 +2455,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						Suku.sukuObject = perso;
 						logger.fine("Copied to clipboard [" + perso.getPid()
 								+ "]: " + perso.getAlfaName());
+					} else {
+						return;
 					}
 
 					int[] ii = table.getSelectedRows();
 					if (ii.length == 0)
 						return;
 					StringBuffer sb = new StringBuffer();
-					// FIXME: Potential NPE
+
 					sb.append(perso.getHeader() + "\n");
 					for (int i = 0; i < ii.length; i++) {
 						SukuRow rivi = (SukuRow) table.getValueAt(ii[i],
