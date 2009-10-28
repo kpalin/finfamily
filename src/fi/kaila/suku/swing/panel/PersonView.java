@@ -381,7 +381,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 				TableShortData ftab = new TableShortData();
 
-				ftab.setSubject(familySubject);
+				ftab.setSubject(pers);
 				for (int j = 0; j < family.rels.length; j++) {
 					RelationShortData rel = family.rels[j];
 					if (rel.getTag().equals("FATH")
@@ -414,9 +414,10 @@ public class PersonView extends JPanel implements ChangeListener {
 				family = Suku.kontroller.getSukuData("cmd=family", "pid="
 						+ rel.getRelationPid());
 
+				// PersonShortData pgran = family.pers[j];
 				TableShortData ftab = new TableShortData();
 
-				ftab.setSubject(familySubject);
+				ftab.setSubject(family.pers[0]);
 				// ftab.initRelatives(family.pers, family.rels);
 				ftab.setLocation(new Point(x, y));
 				famPanel.addTable(ftab);
@@ -429,11 +430,12 @@ public class PersonView extends JPanel implements ChangeListener {
 				if (gheight < dd.height)
 					gheight = dd.height;
 
+				// }
 			}
 
 			if (reqDim.width < x)
 				reqDim.width = x;
-			reqDim.height += maxheight + 50;
+			reqDim.height += maxheight + 250;
 			int xw = table.getSize(gg).width;
 			int rw = reqDim.width;
 			int pareAdd = (rw - pareWidth) / 2;
@@ -449,6 +451,7 @@ public class PersonView extends JPanel implements ChangeListener {
 					+ y + 50));
 
 			famPanel.setPreferredSize(reqDim);
+
 			famPanel.updateUI();
 
 			gg.dispose();

@@ -2423,6 +2423,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				} else if (cmd.equals(Resurses.TAB_FAMILY)) {
 					try {
 						personView.setSubjectForFamily(pop.getPerson());
+
 					} catch (SukuException e1) {
 						JOptionPane.showMessageDialog(null, "SHOW FAMILY: "
 								+ pop.getPerson().getAlfaName() + " error "
