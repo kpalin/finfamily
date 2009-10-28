@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -1071,8 +1070,9 @@ public class SukuServerImpl implements SukuServer {
 					+ "values ('report'," + index + ",?,?)";
 
 			pstm = con.prepareStatement(sql);
+
 			Set<Map.Entry<String, String>> entries = map.entrySet();
-			Iterator<Entry<String, String>> ee = entries.iterator();
+			Iterator<Map.Entry<String, String>> ee = entries.iterator();
 
 			while (ee.hasNext()) {
 				Map.Entry<String, String> entry = (Map.Entry<String, String>) ee

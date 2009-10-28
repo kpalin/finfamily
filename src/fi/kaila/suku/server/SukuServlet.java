@@ -12,6 +12,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
@@ -428,13 +430,15 @@ public class SukuServlet extends HttpServlet {
 		if (filename != null)
 			v.add("filename=" + filename);
 
-		Iterator<String> it = vpara.keySet().iterator();
+		Set<Map.Entry<String, String>> entries = vpara.entrySet();
+		Iterator<Map.Entry<String, String>> it = entries.iterator();
 
 		while (it.hasNext()) {
-			key = it.next();
-			// FIXME: inefficient use of keySet iterator instead of entrySet
-			// iterator
-			v.add(key + "=" + vpara.get(key));
+			Map.Entry<String, String> entry = (Map.Entry<String, String>) it
+					.next();
+			v
+					.add(entry.getKey().toString() + "="
+							+ entry.getValue().toString());
 		}
 
 		String[] ss = new String[0];
