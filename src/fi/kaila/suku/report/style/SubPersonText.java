@@ -7,6 +7,9 @@ package fi.kaila.suku.report.style;
  * 
  */
 public class SubPersonText extends BodyText {
+	/**
+	 * Subperson is spouses or childrens parents
+	 */
 	public SubPersonText() {
 		fontName = FONT_SERIF;
 		fontSize = 8;

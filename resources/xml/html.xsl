@@ -46,7 +46,7 @@
 	 <xsl:variable name="imgg" select="concat(/finfamily/header/@folder,'/',@image)"/>
 	 <xsl:variable name="imgw" select="@width"/>
 	 <xsl:variable name="imgh" select="@height"/>
-	<img src="{$imgg}" width="{$imgw}" />
+	<img src="{$imgg}" width="{$imgw}" height="{$imgh}" />
 	<br/><xsl:value-of select="@title"/>
 	</xsl:if>
   <xsl:apply-templates/>

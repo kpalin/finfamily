@@ -191,6 +191,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private ButtonGroup commonDateFormatGroup = null;
 	private ButtonGroup commonSourcesFormatGroup = null;
 	private JComboBox commonReportFormatList = null;
+	private JCheckBox commonDebugCheck = null;
 	private JCheckBox commonNamesBold = null;
 	private JCheckBox commonNamesUnderline = null;
 	private JCheckBox commonWithAddress = null;
@@ -625,7 +626,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		if (kontroller instanceof SukuKontrollerLocalImpl) {
 			v.add(Resurses.getString("REPORT.FORMAT.WORD2003"));
 			v.add(Resurses.getString("REPORT.FORMAT.HTML"));
-			v.add(Resurses.getString("REPORT.FORMAT.XML"));
+			// v.add(Resurses.getString("REPORT.FORMAT.XML"));
 		}
 
 		lb = new JLabel(Resurses.getString("REPORT.FORMAT"));
@@ -635,6 +636,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		commonReportFormatList = new JComboBox(v);
 		commonReportFormatList.setBounds(x3, footery + 25, 200, 20);
 		add(commonReportFormatList);
+
+		commonDebugCheck = new JCheckBox(Resurses.getString("REPORT.DEBUG"));
+		commonDebugCheck.setBounds(x3, footery + 50, 200, 20);
+		add(commonDebugCheck);
 
 		pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
@@ -769,6 +774,19 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	public DescendantPane getDescendantPanel() {
 		return descendantPanel;
+	}
+
+	/**
+	 * Debug state is used to get some extra output for debugging such as raw
+	 * xml-file
+	 * 
+	 * @return true if debug state is checked
+	 */
+	public boolean getDebugState() {
+		if (commonDebugCheck.isSelected()) {
+			return true;
+		}
+		return false;
 	}
 
 	boolean isLoadingTheSettings = false;

@@ -7,6 +7,9 @@ package fi.kaila.suku.report.style;
  * 
  */
 public class ChildHeaderText extends BodyText {
+	/**
+	 * Style used for Child section header
+	 */
 	public ChildHeaderText() {
 		fontName = FONT_SERIF;
 		// fontSize=16;

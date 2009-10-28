@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,7 +66,7 @@ public class XmlReport implements ReportInterface {
 
 	int imageCounter = 0;
 	private boolean reportClosed = false;
-
+	private boolean debugState = false;
 	private ReportWorkerDialog parent;
 	String title;
 
@@ -84,6 +85,7 @@ public class XmlReport implements ReportInterface {
 		this.title = title;
 		this.translatorIdx = translatorIdx;
 		maxImageWidth = parent.getImageMaxWidth();
+		debugState = parent.getDebugState();
 		switch (translatorIdx) {
 		case 1:
 			translator = "resources/xml/docx.xsl";
@@ -363,6 +365,8 @@ public class XmlReport implements ReportInterface {
 	 */
 	@Override
 	public void closeReport() throws SukuException {
+		PrintStream origErr = System.err;
+		ByteArrayOutputStream barray = new ByteArrayOutputStream();
 		try {
 			if (reportClosed) {
 				return;
@@ -376,16 +380,32 @@ public class XmlReport implements ReportInterface {
 				File dd = new File(folder);
 				dd.delete();
 			}
-			if (translator != null) {
+			if (debugState) {
+				DOMSource docw = new DOMSource(doc);
+				ByteArrayOutputStream bout = new ByteArrayOutputStream();
+				TransformerFactory tfactory = TransformerFactory.newInstance();
 
+				Transformer transformer = tfactory.newTransformer();//
+				transformer.transform(docw, new StreamResult(bout));
+				FileOutputStream fos = new FileOutputStream(report + ".debug");
+				fos.write(bout.toByteArray());
+				fos.close();
+			}
+
+			if (translator != null) {
+				// redirect stderr to get transformation error data to the
+				// logger
+				PrintStream stderr = new PrintStream(barray);
+
+				System.setErr(stderr);
 				DOMSource docw = new DOMSource(doc);
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				TransformerFactory tfactory = TransformerFactory.newInstance();
 				// Create a transformer for the stylesheet.
+
 				Transformer transformer = tfactory
 						.newTransformer(new StreamSource(translator));
 
-				// transformer.transform(docw, new StreamResult(System.out));
 				transformer.transform(docw, new StreamResult(bout));
 				FileOutputStream fos = new FileOutputStream(report);
 				fos.write(bout.toByteArray());
@@ -406,29 +426,36 @@ public class XmlReport implements ReportInterface {
 					// Process p = Runtime.getRuntime().exec(macs);
 
 				} catch (Throwable t) {
-					t.printStackTrace();
+					logger.log(Level.INFO, "rundll32", t);
+
 				}
 
-			} else {
-
-				DOMSource docw = new DOMSource(doc);
-				ByteArrayOutputStream bout = new ByteArrayOutputStream();
-				TransformerFactory tfactory = TransformerFactory.newInstance();
-
-				Transformer transformer = tfactory.newTransformer();//
-				transformer.transform(docw, new StreamResult(bout));
-				FileOutputStream fos = new FileOutputStream(report);
-				fos.write(bout.toByteArray());
-				fos.close();
 			}
+			// else {
+			//
+			// DOMSource docw = new DOMSource(doc);
+			// ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			// TransformerFactory tfactory = TransformerFactory.newInstance();
+			//
+			// Transformer transformer = tfactory.newTransformer();//
+			// transformer.transform(docw, new StreamResult(bout));
+			// FileOutputStream fos = new FileOutputStream(report);
+			// fos.write(bout.toByteArray());
+			// fos.close();
+			// }
+			// } catch (TransformerConfigurationException tce) {
+			// String tt1 = tce.getLocationAsString();
+			// String tt2 = tce.getMessageAndLocation();
+			// System.out.println(tt1);
+			// System.out.println(tt2);
 		} catch (Throwable e) {
-
+			logger.log(Level.WARNING, barray.toString());
 			logger.log(Level.WARNING, e.getMessage(), e);
 			String messu = e.getMessage();
-
+			System.setErr(origErr);
 			throw new SukuException(messu);
 		}
-
+		System.setErr(origErr);
 	}
 
 	private Document doc = null;

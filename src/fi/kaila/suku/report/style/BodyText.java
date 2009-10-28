@@ -13,10 +13,22 @@ import java.util.Vector;
  */
 public class BodyText {
 
+	/**
+	 * Align left value for paraAlignment
+	 */
 	public static final int ALIGN_LEFT = 0;
+	/**
+	 * Align center value for paraAlignment
+	 */
 	public static final int ALIGN_CENTER = 1;
 
+	/**
+	 * Serif Font value for fontName
+	 */
 	public static final String FONT_SERIF = "Times new Roman";
+	/**
+	 * SansSerif Font value for fontName
+	 */
 	public static final String FONT_SANS_SERIF = "Arial";
 
 	protected String fontName = FONT_SANS_SERIF;
@@ -35,12 +47,17 @@ public class BodyText {
 
 	private Vector<Text> txt = new Vector<Text>();
 
+	/**
+	 * @return fontname for this style
+	 */
 	public String getFontName() {
 		return fontName;
 	}
 
 	/**
 	 * font size in pt (1/72) inch return fontSize
+	 * 
+	 * @return fontsize for this style
 	 */
 	public int getFontSize() {
 		return fontSize;
@@ -63,17 +80,13 @@ public class BodyText {
 		return image;
 	}
 
+	/**
+	 * reset container
+	 */
 	public void reset() {
 		txt = new Vector<Text>();
 	}
 
-	// public int getFontStyle() {
-	// return fontStyle;
-	// }
-
-	// public boolean isFontUnderline() {
-	// return fontUnderline;
-	// }
 	/**
 	 * alignment of paragraph ALIGN_LEFT=0 ALIGN_CENTER=1
 	 * 

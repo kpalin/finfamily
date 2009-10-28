@@ -7,6 +7,10 @@ package fi.kaila.suku.report.style;
  * 
  */
 public class TableSubHeaderText extends BodyText {
+	/**
+	 * Table subheader is usually the place with reference from where the parent
+	 * table is
+	 */
 	public TableSubHeaderText() {
 		fontName = FONT_SERIF;
 		fontSize = 12;

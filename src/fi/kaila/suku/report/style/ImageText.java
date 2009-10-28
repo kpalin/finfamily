@@ -10,6 +10,9 @@ import java.awt.Image;
  */
 public class ImageText extends BodyText {
 
+	/**
+	 * Style contains only an image with optional title
+	 */
 	public ImageText() {
 		fontName = FONT_SERIF;
 		paraAlignment = ALIGN_CENTER;
@@ -29,6 +32,7 @@ public class ImageText extends BodyText {
 	 * @param width
 	 * @param height
 	 * @param name
+	 * @param title
 	 */
 	public void setImage(Image img, byte[] data, int width, int height,
 			String name, String title) {

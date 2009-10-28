@@ -9,6 +9,9 @@ import java.awt.Font;
  * 
  */
 public class TableHeaderText extends BodyText {
+	/**
+	 * The table header style
+	 */
 	public TableHeaderText() {
 		fontName = FONT_SERIF;
 		fontSize = 14;

@@ -34,7 +34,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * 
- * A servlet for tomcat that is used in the webstart version
+ * A servlet for tomcat that is used in the webstart version The webstart
+ * version implementation is not in a very active state at the moment Thus fixme
+ * and warnings may not be
  * 
  * @author FIKAAKAIL
  * 

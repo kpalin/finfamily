@@ -7,6 +7,9 @@ package fi.kaila.suku.report.style;
  * 
  */
 public class ChildListText extends BodyText {
+	/**
+	 * Style is used for the child list
+	 */
 	public ChildListText() {
 		fontName = FONT_SERIF;
 		// fontSize=16;

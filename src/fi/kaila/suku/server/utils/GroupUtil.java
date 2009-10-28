@@ -27,6 +27,11 @@ public class GroupUtil {
 
 	private Connection con = null;
 
+	/**
+	 * Constructor for this server class
+	 * 
+	 * @param con
+	 */
 	public GroupUtil(Connection con) {
 		this.con = con;
 
@@ -72,6 +77,14 @@ public class GroupUtil {
 
 	}
 
+	/**
+	 * 
+	 * Removes group from persons in array
+	 * 
+	 * @param pids
+	 * @return response as a SukuData object
+	 * @throws SukuException
+	 */
 	public SukuData removeSelectedGroups(int[] pids) throws SukuException {
 		SukuData resp = new SukuData();
 
@@ -104,6 +117,13 @@ public class GroupUtil {
 
 	}
 
+	/**
+	 * remove group from persons in view
+	 * 
+	 * @param viewid
+	 * @return response as SukuData object
+	 * @throws SukuException
+	 */
 	public SukuData removeViewGroups(int viewid) throws SukuException {
 		SukuData resp = new SukuData();
 
@@ -147,6 +167,11 @@ public class GroupUtil {
 
 	}
 
+	/**
+	 * @param group
+	 * @return response as SukuData object
+	 * @throws SukuException
+	 */
 	public SukuData removeGroup(String group) throws SukuException {
 		SukuData resp = new SukuData();
 

@@ -7,6 +7,9 @@ package fi.kaila.suku.report.style;
  * 
  */
 public class MainPersonText extends BodyText {
+	/**
+	 * This is the style used for the table owner and spouses
+	 */
 	public MainPersonText() {
 		fontName = FONT_SERIF;
 		// fontSize=16;
