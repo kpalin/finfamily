@@ -69,6 +69,15 @@ public class XmlReport implements ReportInterface {
 	private ReportWorkerDialog parent;
 	String title;
 
+	/**
+	 * 
+	 * Constructor
+	 * 
+	 * @param parent
+	 * @param translatorIdx
+	 * @param title
+	 * @throws SukuException
+	 */
 	public XmlReport(ReportWorkerDialog parent, int translatorIdx, String title)
 			throws SukuException {
 		this.parent = parent;
@@ -494,12 +503,9 @@ public class XmlReport implements ReportInterface {
 	 */
 	private String convertTo64(ImageText it) {
 
-		FileOutputStream fos;
 		Formatter ff = new Formatter();
-		float fw = it.getWidth();
-		float fh = it.getHeight();
+
 		StringBuilder sbb = new StringBuilder();
-		// ff.format("<image width=\"%1.2f\" height=\"%1.2f\">\r\n", fw, fh);
 
 		byte[] ibuf = new byte[3];
 		byte[] obuf = new byte[4];
@@ -508,8 +514,6 @@ public class XmlReport implements ReportInterface {
 		int colPos = 0;
 		int insize = it.getData().length;
 		int indata = 0;
-
-		// char *indata = (char *)buffer;
 
 		while (insize > 0) {
 			for (int i = inputparts = 0; i < 3; i++) {
@@ -561,7 +565,6 @@ public class XmlReport implements ReportInterface {
 
 		}
 
-		// ff.format("</image>\r\n");
 		sbb.append(ff.out());
 
 		return sbb.toString();

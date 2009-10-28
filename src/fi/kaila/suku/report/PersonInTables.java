@@ -16,8 +16,17 @@ import java.util.Vector;
 public class PersonInTables {
 
 	int pid = 0;
+	/**
+	 * references as child
+	 */
 	public Vector<Long> asChildren = new Vector<Long>();
+	/**
+	 * references as parents
+	 */
 	public Vector<Long> asParents = new Vector<Long>();
+	/**
+	 * other references like spouses parents etc
+	 */
 	public Vector<Long> references = new Vector<Long>();
 
 	/**

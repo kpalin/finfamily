@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PrinterException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
@@ -15,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.AbstractDocument;
@@ -56,6 +58,9 @@ public class JavaReport extends JFrame implements ActionListener,
 
 	private boolean reportClosed = true;
 
+	/**
+	 * default constructor to initlaize frame
+	 */
 	public JavaReport() {
 		initMe();
 	}
@@ -127,32 +132,11 @@ public class JavaReport extends JFrame implements ActionListener,
 			doc = (AbstractDocument) styledDoc;
 			doc.setDocumentFilter(new DocumentSukuFilter());
 		} else {
-			System.err
-					.println("Text pane's document isn't an AbstractDocument!");
-			// FIXME: Invoking System.exit shuts down the entire Java virtual
-			// machine.
-			System.exit(-1);
+			JOptionPane.showMessageDialog(this,
+					"Text pane's document isn't an AbstractDocument!");
+			// of course this is programming error and shouldn't ever come here
+			return;
 		}
-
-		// SimpleAttributeSet bodyText = new SimpleAttributeSet();
-		// StyleConstants.setFontFamily(bodyText, "Times New Roman");
-		// StyleConstants.setFontSize(bodyText, 12);
-		//    
-		// styles.put("bodyText", bodyText);
-		//	
-		// bodyText = new SimpleAttributeSet();
-		// StyleConstants.setFontFamily(bodyText, "Arial");
-		// StyleConstants.setFontSize(bodyText, 20);
-		// StyleConstants.setBold(bodyText, true);
-		//    
-		// styles.put("tableHeader", bodyText);
-		//	
-		// bodyText = new SimpleAttributeSet();
-		// StyleConstants.setFontFamily(bodyText, "Arial");
-		// StyleConstants.setFontSize(bodyText, 16);
-		// StyleConstants.setBold(bodyText, true);
-		//    
-		// styles.put("header", bodyText);
 
 		setVisible(true);
 	}
@@ -244,8 +228,8 @@ public class JavaReport extends JFrame implements ActionListener,
 			try {
 				this.text.print();
 			} catch (PrinterException ep) {
-				// TODO Auto-generated catch block
-				ep.printStackTrace();
+				JOptionPane.showMessageDialog(this, ep.getMessage());
+				logger.log(Level.INFO, "Print error", ep);
 			}
 
 		}

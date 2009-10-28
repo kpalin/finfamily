@@ -57,10 +57,8 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private JButton ok;
 	private JButton cancel;
 
-	private String langOk[];
 	private String langS[];
 
-	private String selectedLang = null;
 	private String selectedOldLang = null;
 
 	private SukuKontroller kontroller = null;
@@ -68,6 +66,9 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private JProgressBar progressBar;
 	private Task task;
 
+	/**
+	 * @return the dialog handle used for the progresBar
+	 */
 	public static Import2004Dialog getRunner() {
 		return runner;
 	}
@@ -104,12 +105,12 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		String lanlist = Resurses.getString("IMPORT_LANGS");
 
 		String apu[] = lanlist.split(";");
-		this.langOk = new String[apu.length / 3];
+
 		this.langS = new String[apu.length / 3];
 		String langNames[] = new String[apu.length / 3];
 		int j = 0;
 		for (int i = 0; i < apu.length / 3; i++) {
-			this.langOk[i] = apu[j++];
+
 			this.langS[i] = apu[j++];
 			langNames[i] = apu[j++];
 		}
@@ -157,7 +158,6 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		if (cmd.equals(OK)) {
 			int indx = this.lista.getSelectedIndex();
 
-			this.selectedLang = this.langOk[indx];
 			this.selectedOldLang = this.langS[indx];
 
 			this.ok.setEnabled(false);
@@ -172,7 +172,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		}
 		if (cmd.equals(CANCEL)) {
 			if (this.task == null) {
-				this.selectedLang = null;
+
 				setVisible(false);
 			} else {
 				this.task.cancel(true);

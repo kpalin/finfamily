@@ -50,6 +50,11 @@ public interface SukuKontroller {
 	 * <li>return SukuData object containing result</li>
 	 * <li>throws SukuException</li>
 	 * </ul>
+	 * 
+	 * @param request
+	 * @param params
+	 * @return the response as a SukuData "container"
+	 * @throws SukuException
 	 */
 	public SukuData getSukuData(SukuData request, String... params)
 			throws SukuException;

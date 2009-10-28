@@ -103,6 +103,11 @@ public class DescendantReport extends CommonReport {
 		}
 	}
 
+	/**
+	 * Used to close / hide the report writer
+	 * 
+	 * @param b
+	 */
 	public void setVisible(boolean b) {
 		if (repoWriter instanceof JFrame) {
 			JFrame ff = (JFrame) repoWriter;

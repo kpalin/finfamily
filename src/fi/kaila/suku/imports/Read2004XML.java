@@ -382,9 +382,10 @@ public class Read2004XML extends DefaultHandler {
 	/**
 	 * Method that does the import of file at urli
 	 * 
+	 * @throws SukuException
+	 * 
 	 */
 	public void importFile() throws SukuException {
-		// this.con=con;
 
 		SAXParser parser = null;
 
@@ -469,10 +470,8 @@ public class Read2004XML extends DefaultHandler {
 			if (gz != null) {
 				gz.close();
 			}
-		} catch (Exception e) {
-			// FIXME: Spaghetti code. This method uses a try-catch block that
-			// catches Exception objects, but Exception is not thrown within the
-			// try block, and RuntimeException is not explicitly caught.
+		} catch (Throwable e) {
+
 			throw new SukuException(e);
 
 		}
@@ -1458,8 +1457,6 @@ public class Read2004XML extends DefaultHandler {
 				throw new SAXException(e);
 			}
 
-			// TODO add relations
-
 			this.relationDescription = null;
 			this.relationBegType = null;
 			this.relationBegDateFrom = null;
@@ -2196,7 +2193,7 @@ public class Read2004XML extends DefaultHandler {
 		try {
 			dd = cdf.parse(date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+
 			dd = new java.util.Date();
 		}
 
