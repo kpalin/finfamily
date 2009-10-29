@@ -27,6 +27,12 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.UnitLanguage;
 
+/**
+ * Language dialog to add secondary languages to person notices
+ * 
+ * @author Kalle
+ * 
+ */
 public class LanguageDialog extends JDialog implements ActionListener,
 		ComponentListener {
 
@@ -60,6 +66,9 @@ public class LanguageDialog extends JDialog implements ActionListener,
 
 	JRadioButton[] langxx;
 
+	/**
+	 * @param owner
+	 */
 	public LanguageDialog(JFrame owner) {
 		super(owner, Resurses.getString("DATA_LANG_PAGE"), true);
 		setLayout(null);
@@ -140,6 +149,9 @@ public class LanguageDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * @return list of UnitLanguage notices
+	 */
 	public UnitLanguage[] getLanguages() {
 
 		for (int i = 0; i < languages.length; i++) {
@@ -153,6 +165,10 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		return languages;
 	}
 
+	/**
+	 * @param languages
+	 *            to be initialized
+	 */
 	public void setLanguages(UnitLanguage[] languages) {
 
 		if (languages != null) {
@@ -201,6 +217,12 @@ public class LanguageDialog extends JDialog implements ActionListener,
 
 	private String previousLang = null;
 
+	/**
+	 * Copy data from dialog to the pojo
+	 * 
+	 * @param cmd
+	 *            = langcode
+	 */
 	public void langTextToPojo(String cmd) {
 
 		if (previousLang != null) {

@@ -37,10 +37,16 @@ public class RelationShortData implements Serializable {
 
 	}
 
+	/**
+	 * @param auxIndex
+	 */
 	public void setAux(int auxIndex) {
 		this.auxIndex = auxIndex;
 	}
 
+	/**
+	 * @return the auxnumber
+	 */
 	public int getAux() {
 		return auxIndex;
 	}
@@ -94,10 +100,16 @@ public class RelationShortData implements Serializable {
 		return this.marrDate;
 	}
 
+	/**
+	 * @param parentids
+	 */
 	public void setParentArray(int[] parentids) {
 		parentArray = parentids;
 	}
 
+	/**
+	 * @return array of parent ids
+	 */
 	public int[] getParentArray() {
 		return parentArray;
 	}

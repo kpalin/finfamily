@@ -2,6 +2,12 @@ package fi.kaila.suku.swing.worker;
 
 import java.util.Vector;
 
+/**
+ * Used to collect references of persons in different tables
+ * 
+ * @author Kalle
+ * 
+ */
 public class PersonInTables {
 
 	int pid = 0;
@@ -9,6 +15,9 @@ public class PersonInTables {
 	Vector<Long> asParents = new Vector<Long>();
 	Vector<Long> references = new Vector<Long>();
 
+	/**
+	 * @param pid
+	 */
 	public PersonInTables(int pid) {
 		this.pid = pid;
 	}

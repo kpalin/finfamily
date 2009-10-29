@@ -114,6 +114,10 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 	private javax.swing.Timer t = null;
 
+	/**
+	 * @param parent
+	 * @throws SukuException
+	 */
 	public ViewMgrWindow(Suku parent) throws SukuException {
 		super(parent, Resurses.getString("DIALOG_VIEW_MGR"), false);
 		this.parent = parent;
@@ -354,6 +358,9 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "updateSelectStatus()", e);
+			JOptionPane.showMessageDialog(parent, Resurses
+					.getString("DIALOG_VIEW_ERROR")
+					+ " " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -384,8 +391,11 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 					viewlist.updateUI();
 				}
 			} catch (SukuException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				logger.log(Level.WARNING, "updateSelectStatus()", e1);
+				JOptionPane.showMessageDialog(parent, Resurses
+						.getString("DIALOG_VIEW_ERROR")
+						+ " " + e1.getMessage());
+				return;
 			}
 		} else if (e.getSource() == addView) {
 			try {
@@ -415,8 +425,11 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 				viewlist.updateUI();
 
 			} catch (SukuException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				logger.log(Level.WARNING, "updateSelectStatus()", e1);
+				JOptionPane.showMessageDialog(parent, Resurses
+						.getString("DIALOG_VIEW_ERROR")
+						+ " " + e1.getMessage());
+				return;
 			}
 		} else if (e.getSource() == remove) {
 			int idx = viewlist.getSelectedIndex();

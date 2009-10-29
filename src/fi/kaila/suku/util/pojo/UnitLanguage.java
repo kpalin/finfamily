@@ -36,6 +36,10 @@ public class UnitLanguage implements Serializable {
 
 	// timestamp created
 
+	/**
+	 * @param rs
+	 * @throws SQLException
+	 */
 	public UnitLanguage(ResultSet rs) throws SQLException {
 		pnid = rs.getInt("pnid");
 		pid = rs.getInt("pid");
@@ -54,49 +58,80 @@ public class UnitLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @param langCode
+	 */
 	public UnitLanguage(String langCode) {
 		this.langCode = langCode;
 	}
 
+	/**
+	 * @param value
+	 *            true if this is to be deleted
+	 */
 	public void setToBeDeleted(boolean value) {
 		toBeDeleted = value;
 	}
 
+	/**
+	 * reet modifeid status
+	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
+	/**
+	 * @return true if this is to be deleted
+	 */
 	public boolean isToBeDeleted() {
 		return toBeDeleted;
 	}
 
-	// public void setToBeUpdated(){
-	// toBeUpdated=true;
-	// }
+	/**
+	 * @return true if this is to be updated
+	 */
 	public boolean isToBeUpdated() {
 		return toBeUpdated;
 	}
 
+	/**
+	 * @return person notice id
+	 */
 	public int getPnid() {
 		return pnid;
 	}
 
+	/**
+	 * @return pid (person id)
+	 */
 	public int getPid() {
 		return pid;
 	}
 
+	/**
+	 * @return langcode
+	 */
 	public String getLangCode() {
 		return langCode;
 	}
 
+	/**
+	 * @return tag
+	 */
 	public String getTag() {
 		return tag;
 	}
 
+	/**
+	 * @return notice type
+	 */
 	public String getNoticeType() {
 		return trim(noticeType);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setNoticeType(String text) {
 		if (!nv(this.noticeType).equals(nv(text))) {
 			toBeUpdated = true;
@@ -105,10 +140,16 @@ public class UnitLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @return description
+	 */
 	public String getDescription() {
 		return trim(description);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setDescription(String text) {
 		if (!nv(this.description).equals(nv(text))) {
 			toBeUpdated = true;
@@ -117,10 +158,16 @@ public class UnitLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @return place
+	 */
 	public String getPlace() {
 		return trim(place);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setPlace(String text) {
 		if (!nv(this.place).equals(nv(text))) {
 			toBeUpdated = true;
@@ -129,10 +176,16 @@ public class UnitLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @return notetext
+	 */
 	public String getNoteText() {
 		return trim(noteText);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setNoteText(String text) {
 		if (!nv(this.noteText).equals(nv(text))) {
 			toBeUpdated = true;
@@ -141,10 +194,16 @@ public class UnitLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @return media title
+	 */
 	public String getMediaTitle() {
 		return trim(mediaTitle);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setMediaTitle(String text) {
 		if (!nv(this.mediaTitle).equals(nv(text))) {
 			toBeUpdated = true;
@@ -153,10 +212,16 @@ public class UnitLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @return time when modified
+	 */
 	public Timestamp getModified() {
 		return modified;
 	}
 
+	/**
+	 * @return time when created
+	 */
 	public Timestamp getCreated() {
 		return createDate;
 	}

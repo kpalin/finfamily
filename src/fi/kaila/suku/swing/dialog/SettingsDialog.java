@@ -15,6 +15,12 @@ import javax.swing.JLabel;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 
+/**
+ * variosu settings will be done here
+ * 
+ * @author Kalle
+ * 
+ */
 public class SettingsDialog extends JDialog implements ActionListener {
 
 	/**
@@ -41,6 +47,9 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private int locaIndex = 0;
 	private JFrame owner = null;
 
+	/**
+	 * @param owner
+	 */
 	public SettingsDialog(JFrame owner) {
 		this.owner = owner;
 		setLayout(null);

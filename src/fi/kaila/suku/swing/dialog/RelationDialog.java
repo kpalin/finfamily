@@ -34,6 +34,12 @@ import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.RelationLanguage;
 import fi.kaila.suku.util.pojo.RelationNotice;
 
+/**
+ * relation dialog shows and updates details of a relaition
+ * 
+ * @author Kalle
+ * 
+ */
 public class RelationDialog extends JDialog implements ActionListener,
 		ComponentListener, MenuListener {
 
@@ -89,6 +95,9 @@ public class RelationDialog extends JDialog implements ActionListener,
 	JTextField modified;
 	JLabel modifiedLbl;
 
+	/**
+	 * @param owner
+	 */
 	public RelationDialog(JFrame owner) {
 		super(owner, Resurses.getString("RELA_UPDATE_PAGE"), true);
 		setLayout(null);
@@ -237,6 +246,12 @@ public class RelationDialog extends JDialog implements ActionListener,
 		return rootPane;
 	}
 
+	/**
+	 * Set pojo to display
+	 * 
+	 * @param rela
+	 *            relation notice to dislpay
+	 */
 	public void setRelation(RelationNotice rela) {
 		this.rela = rela;
 
@@ -259,6 +274,9 @@ public class RelationDialog extends JDialog implements ActionListener,
 		rela.setLanguages(fixed);
 	}
 
+	/**
+	 * display the relationDialog
+	 */
 	public void showMe() {
 		if (rela == null)
 			return;
@@ -415,6 +433,9 @@ public class RelationDialog extends JDialog implements ActionListener,
 		oldLanguage = langcode;
 	}
 
+	/**
+	 * update language to pojo
+	 */
 	public void updateLanguage() {
 		if (oldLanguage == null)
 			return;
@@ -511,13 +532,11 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 	@Override
 	public void menuCanceled(MenuEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void menuDeselected(MenuEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -527,9 +546,5 @@ public class RelationDialog extends JDialog implements ActionListener,
 		setVisible(false);
 
 	}
-
-	// public RelationNotice getRela() {
-	// return rela;
-	// }
 
 }

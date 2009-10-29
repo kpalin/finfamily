@@ -32,8 +32,10 @@ public class RelationLanguage implements Serializable {
 	Timestamp modified = null; // timestamp, -- timestamp modified
 	Timestamp createDate = null; // timestamp not null default now() --
 
-	// timestamp created
-
+	/**
+	 * @param rs
+	 * @throws SQLException
+	 */
 	public RelationLanguage(ResultSet rs) throws SQLException {
 		rnid = rs.getInt("rnid");
 		rid = rs.getInt("rid");
@@ -47,45 +49,74 @@ public class RelationLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @param langCode
+	 */
 	public RelationLanguage(String langCode) {
 		this.langCode = langCode;
 	}
 
+	/**
+	 * @param value
+	 *            true if to be deleted
+	 */
 	public void setToBeDeleted(boolean value) {
 		toBeDeleted = value;
 	}
 
+	/**
+	 * reset modified status
+	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
+	/**
+	 * @return true if this is to be deleted
+	 */
 	public boolean isToBeDeleted() {
 		return toBeDeleted;
 	}
 
-	// public void setToBeUpdated(){
-	// toBeUpdated=true;
-	// }
+	/**
+	 * @return true if this is to be updated
+	 */
 	public boolean isToBeUpdated() {
 		return toBeUpdated;
 	}
 
+	/**
+	 * @return rnid = relation notice id
+	 */
 	public int getRnid() {
 		return rnid;
 	}
 
+	/**
+	 * @return rid = relation id
+	 */
 	public int getRid() {
 		return rid;
 	}
 
+	/**
+	 * @return langcode of this language
+	 */
 	public String getLangCode() {
 		return langCode;
 	}
 
+	/**
+	 * @return type field
+	 */
 	public String getRelationType() {
 		return trim(relationType);
 	}
 
+	/**
+	 * @param text
+	 *            = relation type
+	 */
 	public void setRelationType(String text) {
 		if (!nv(this.relationType).equals(nv(text))) {
 			toBeUpdated = true;
@@ -94,10 +125,16 @@ public class RelationLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @return dwscription
+	 */
 	public String getDescription() {
 		return trim(description);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setDescription(String text) {
 		if (!nv(this.description).equals(nv(text))) {
 			toBeUpdated = true;
@@ -106,10 +143,17 @@ public class RelationLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @return place
+	 */
 	public String getPlace() {
 		return trim(place);
 	}
 
+	/**
+	 * @param text
+	 *            = place
+	 */
 	public void setPlace(String text) {
 		if (!nv(this.place).equals(nv(text))) {
 			toBeUpdated = true;
@@ -117,10 +161,16 @@ public class RelationLanguage implements Serializable {
 		}
 	}
 
+	/**
+	 * @return notetext
+	 */
 	public String getNoteText() {
 		return trim(noteText);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setNoteText(String text) {
 		if (!nv(this.noteText).equals(nv(text))) {
 			toBeUpdated = true;
@@ -129,10 +179,16 @@ public class RelationLanguage implements Serializable {
 
 	}
 
+	/**
+	 * @return when modified
+	 */
 	public Timestamp getModified() {
 		return modified;
 	}
 
+	/**
+	 * @return when created
+	 */
 	public Timestamp getCreated() {
 		return createDate;
 	}

@@ -68,16 +68,31 @@ public class SukuData implements Serializable {
 
 	public PersonLongData persLong = null;
 
+	/**
+	 * array of long persons
+	 */
 	public PersonLongData[] persons = null;
+	/**
+	 * array of relations
+	 */
 	public Relation[] relations = null;
 	/**
 	 * Count can be used to return count to caller
 	 */
 	public int resuCount = 0;
 
+	/**
+	 * map of reportUnits
+	 */
 	public HashMap<Integer, ReportUnit> reportUnits = null;
 
+	/**
+	 * vector of reportunits
+	 */
 	public Vector<ReportUnit> tables = null;
 
+	/**
+	 * answer as a pid
+	 */
 	public int resultPid = 0;
 }

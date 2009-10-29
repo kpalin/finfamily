@@ -19,6 +19,9 @@ public class DocumentSukuFilter extends DocumentFilter implements Serializable {
 	private static final long serialVersionUID = 1L;
 	boolean DEBUG = false;
 
+	/**
+	 * 
+	 */
 	public DocumentSukuFilter() {
 
 	}

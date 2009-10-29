@@ -123,6 +123,9 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 
 	boolean isOldUser = false;
 
+	/**
+	 * @param userid
+	 */
 	public void setUserid(String userid) {
 		isOldUser = true;
 
@@ -131,6 +134,9 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 
 	}
 
+	/**
+	 * @return userid
+	 */
 	public String getUserid() {
 		if (isOldUser)
 			return null;

@@ -41,6 +41,15 @@ public class Relation implements Serializable {
 	//
 	private PersonShortData pers = null;
 
+	/**
+	 * @param rid
+	 * @param aid
+	 * @param bid
+	 * @param tag
+	 * @param surety
+	 * @param modified
+	 * @param created
+	 */
 	public Relation(int rid, int aid, int bid, String tag, int surety,
 			Timestamp modified, Timestamp created) {
 		this.rid = rid;
@@ -55,56 +64,91 @@ public class Relation implements Serializable {
 		}
 	}
 
+	/**
+	 * @param rid
+	 */
 	public void setRid(int rid) {
 		if (this.rid == 0) {
 			this.rid = rid;
 		}
 	}
 
+	/**
+	 * reset modified status
+	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
+	/**
+	 * @param notices
+	 *            an array of relationNotice objects for the relation
+	 */
 	public void setNotices(RelationNotice[] notices) {
 		this.notices = notices;
 	}
 
+	/**
+	 * @return the array of relationnotices
+	 */
 	public RelationNotice[] getNotices() {
 		return notices;
 	}
 
+	/**
+	 * @param value
+	 *            true if this is to be deleted
+	 */
 	public void setToBeDeleted(boolean value) {
 		toBeDeleted = value;
 		toBeUpdated = true;
 	}
 
+	/**
+	 * @return true if it is to be deleted
+	 */
 	public boolean isToBeDeleted() {
 		return toBeDeleted;
 	}
 
-	// public void setToBeUpdated(){
-	// toBeUpdated=true;
-	// }
+	/**
+	 * @return true if is to be updated
+	 */
 	public boolean isToBeUpdated() {
 		return toBeUpdated;
 	}
 
+	/**
+	 * @return tag
+	 */
 	public String getTag() {
 		return rtag;
 	}
 
+	/**
+	 * @return rid
+	 */
 	public int getRid() {
 		return rid;
 	}
 
+	/**
+	 * @return relative pid
+	 */
 	public int getRelative() {
 		return bid;
 	}
 
+	/**
+	 * @return pid
+	 */
 	public int getPid() {
 		return aid;
 	}
 
+	/**
+	 * @param pid
+	 */
 	public void setPid(int pid) {
 		if (this.aid != pid) {
 			toBeUpdated = true;
@@ -112,6 +156,10 @@ public class Relation implements Serializable {
 		this.aid = pid;
 	}
 
+	/**
+	 * @param pid
+	 *            for relative
+	 */
 	public void setRelative(int pid) {
 		if (this.bid != pid) {
 			toBeUpdated = true;
@@ -119,23 +167,39 @@ public class Relation implements Serializable {
 		this.bid = pid;
 	}
 
+	/**
+	 * @return (0,20,40,60,80,100)
+	 */
 	public int getSurety() {
 		return surety;
 	}
 
+	/**
+	 * @return created time
+	 */
 	public Timestamp getCreated() {
 		return created;
 	}
 
+	/**
+	 * @return modifieud time
+	 */
 	public Timestamp getModified() {
 		return modified;
 	}
 
+	/**
+	 * @param pers
+	 *            teh short person for the relation
+	 */
 	public void setShortPerson(PersonShortData pers) {
 
 		this.pers = pers;
 	}
 
+	/**
+	 * @return get the short person of this relation
+	 */
 	public PersonShortData getShortPerson() {
 		return pers;
 	}

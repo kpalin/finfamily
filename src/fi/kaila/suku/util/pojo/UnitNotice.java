@@ -111,6 +111,8 @@ public class UnitNotice implements Serializable {
 	 * 
 	 * The sr has format select * from unitNotice
 	 * 
+	 * @param rs
+	 * 
 	 * @throws SQLException
 	 */
 
@@ -160,22 +162,31 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @param value
+	 *            true if this is to be deleted
+	 */
 	public void setToBeDeleted(boolean value) {
 		toBeDeleted = value;
 	}
 
+	/**
+	 * reset modifeid flag
+	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
+	/**
+	 * @return true if this is to be deleted
+	 */
 	public boolean isToBeDeleted() {
 		return toBeDeleted;
 	}
 
-	// public void setToBeUpdated(){
-	//		
-	// toBeUpdated=true;
-	// }
+	/**
+	 * @return true if this is to be updated
+	 */
 	public boolean isToBeUpdated() {
 		if (toBeUpdated)
 			return true;
@@ -189,39 +200,69 @@ public class UnitNotice implements Serializable {
 		return false;
 	}
 
+	/**
+	 * @param tag
+	 */
 	public UnitNotice(String tag) {
 		this.tag = tag;
 	}
 
+	/**
+	 * @param tag
+	 * @param pid
+	 */
 	public UnitNotice(String tag, int pid) {
 		this.tag = tag;
 		this.pid = pid;
 	}
 
+	/**
+	 * @param languages
+	 *            = array of language variants
+	 */
 	public void setLanguages(UnitLanguage[] languages) {
 		this.unitlanguages = languages;
 	}
 
+	/**
+	 * @return the array of existing language varianls
+	 */
 	public UnitLanguage[] getLanguages() {
 		return this.unitlanguages;
 	}
 
+	/**
+	 * @return perrson notice id
+	 */
 	public int getPnid() {
 		return pnid;
 	}
 
+	/**
+	 * @return pid
+	 */
 	public int getPid() {
 		return pid;
 	}
 
+	/**
+	 * @return tag
+	 */
 	public String getTag() {
 		return tag;
 	}
 
+	/**
+	 * @return surety
+	 */
 	public int getSurety() {
 		return surety;
 	}
 
+	/**
+	 * @param surety
+	 *            (0,20,40,60,80,100)
+	 */
 	public void setSurety(int surety) {
 		if (this.surety != surety) {
 			this.toBeUpdated = true;
@@ -229,10 +270,17 @@ public class UnitNotice implements Serializable {
 		}
 	}
 
+	/**
+	 * @return privact
+	 */
 	public String getPrivacy() {
 		return privacy;
 	}
 
+	/**
+	 * @param text
+	 *            = null or "P"
+	 */
 	public void setPrivacy(String text) {
 		if (!nv(this.privacy).equals(nv(text))) {
 			toBeUpdated = true;
@@ -241,10 +289,17 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return notice type
+	 */
 	public String getNoticeType() {
 		return trim(noticeType);
 	}
 
+	/**
+	 * @param text
+	 *            = notice type
+	 */
 	public void setNoticeType(String text) {
 		if (!nv(this.noticeType).equals(nv(text))) {
 			toBeUpdated = true;
@@ -253,10 +308,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return description
+	 */
 	public String getDescription() {
 		return trim(description);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setDescription(String text) {
 		if (!nv(this.description).equals(nv(text))) {
 			toBeUpdated = true;
@@ -265,10 +326,17 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return dateprefix
+	 */
 	public String getDatePrefix() {
 		return datePrefix;
 	}
 
+	/**
+	 * @param text
+	 *            dateprefic (see GEDCOM)
+	 */
 	public void setDatePrefix(String text) {
 		if (!nv(this.datePrefix).equals(nv(text))) {
 			toBeUpdated = true;
@@ -277,10 +345,17 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return main / first part of date
+	 */
 	public String getFromDate() {
 		return fromDate;
 	}
 
+	/**
+	 * @param text
+	 *            main date
+	 */
 	public void setFromDate(String text) {
 		if (!nv(this.fromDate).equals(nv(text))) {
 			toBeUpdated = true;
@@ -289,14 +364,17 @@ public class UnitNotice implements Serializable {
 
 	}
 
-	// public void setFromDate(String text){
-	// this.fromDate=nv(text);
-	// }
-
+	/**
+	 * @return second date of date interval
+	 */
 	public String getToDate() {
 		return toDate;
 	}
 
+	/**
+	 * @param text
+	 *            second part of date interval
+	 */
 	public void setToDate(String text) {
 		if (!nv(this.toDate).equals(nv(text))) {
 			toBeUpdated = true;
@@ -305,10 +383,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return place
+	 */
 	public String getPlace() {
 		return trim(place);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setPlace(String text) {
 		if (!nv(this.place).equals(nv(text))) {
 			toBeUpdated = true;
@@ -317,13 +401,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
-	// public void setPlace(String text) {
-	// this.place = nv(text);
-	// }
+	/**
+	 * @return village
+	 */
 	public String getVillage() {
 		return trim(village);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setVillage(String text) {
 		if (!nv(this.village).equals(nv(text))) {
 			toBeUpdated = true;
@@ -332,10 +419,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return farm
+	 */
 	public String getFarm() {
 		return trim(farm);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setFarm(String text) {
 		if (!nv(this.farm).equals(nv(text))) {
 			toBeUpdated = true;
@@ -344,10 +437,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return croft (torppa)
+	 */
 	public String getCroft() {
 		return trim(croft);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setCroft(String text) {
 		if (!nv(this.croft).equals(nv(text))) {
 			toBeUpdated = true;
@@ -356,10 +455,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return adderss
+	 */
 	public String getAddress() {
 		return trim(address);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setAddress(String text) {
 		if (!nv(this.address).equals(nv(text))) {
 			toBeUpdated = true;
@@ -368,10 +473,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return postoiffixe
+	 */
 	public String getPostOffice() {
 		return trim(postOffice);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setPostOffice(String text) {
 		if (!nv(this.postOffice).equals(nv(text))) {
 			toBeUpdated = true;
@@ -380,10 +491,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return postalcode/zip
+	 */
 	public String getPostalCode() {
 		return trim(postalCode);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setPostalCode(String text) {
 		if (!nv(this.postalCode).equals(nv(text))) {
 			toBeUpdated = true;
@@ -392,14 +509,23 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return state
+	 */
 	public String getState() {
 		return trim(state);
 	}
 
+	/**
+	 * @return country
+	 */
 	public String getCountry() {
 		return trim(country);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setState(String text) {
 		if (!nv(this.state).equals(nv(text))) {
 			toBeUpdated = true;
@@ -408,6 +534,9 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setCountry(String text) {
 		if (!nv(this.country).equals(nv(text))) {
 			toBeUpdated = true;
@@ -416,10 +545,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return emailaddress
+	 */
 	public String getEmail() {
 		return trim(email);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setEmail(String text) {
 		if (!nv(this.email).equals(nv(text))) {
 			toBeUpdated = true;
@@ -428,10 +563,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return notetext
+	 */
 	public String getNoteText() {
 		return trim(noteText);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setNoteText(String text) {
 		if (!nv(this.noteText).equals(nv(text))) {
 			toBeUpdated = true;
@@ -440,10 +581,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return mediafilename
+	 */
 	public String getMediaFilename() {
 		return trim(mediaFilename);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setMediaFilename(String text) {
 		if (!nv(this.mediaFilename).equals(nv(text))) {
 			toBeUpdated = true;
@@ -452,10 +599,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return media title
+	 */
 	public String getMediaTitle() {
 		return trim(mediaTitle);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setMediaTitle(String text) {
 		if (!nv(this.mediaTitle).equals(nv(text))) {
 			toBeUpdated = true;
@@ -464,10 +617,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return media size
+	 */
 	public Dimension getMediaSize() {
 		return new Dimension(mediaWidth, mediaHeight);
 	}
 
+	/**
+	 * @param sz
+	 */
 	public void setMediaSize(Dimension sz) {
 		mediaWidth = sz.width;
 		mediaHeight = sz.height;
@@ -497,21 +656,33 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @param data
+	 */
 	public void setMediaData(byte[] data) {
 		mediaData = data;
 		image = null;
 		toBeUpdated = true;
 	}
 
+	/**
+	 * @return media data
+	 */
 	public byte[] getMediaData() {
 		return mediaData;
 	}
 
+	/**
+	 * @return givenname
+	 */
 	public String getGivenname() {
 
 		return trim(givenname);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setGivenname(String text) {
 		if (!nv(this.givenname).equals(nv(text))) {
 			toBeUpdated = true;
@@ -520,10 +691,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return patronym
+	 */
 	public String getPatronym() {
 		return trim(patronym);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setPatronym(String text) {
 		if (!nv(this.patronym).equals(nv(text))) {
 			toBeUpdated = true;
@@ -531,10 +708,16 @@ public class UnitNotice implements Serializable {
 		}
 	}
 
+	/**
+	 * @return name prefix
+	 */
 	public String getPrefix() {
 		return trim(prefix);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setPrefix(String text) {
 		if (!nv(this.prefix).equals(nv(text))) {
 			toBeUpdated = true;
@@ -543,10 +726,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return surname
+	 */
 	public String getSurname() {
 		return trim(surname);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setSurname(String text) {
 		if (!nv(this.surname).equals(nv(text))) {
 			toBeUpdated = true;
@@ -555,10 +744,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return name postfix
+	 */
 	public String getPostfix() {
 		return trim(postFix);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setPostfix(String text) {
 		if (!nv(this.postFix).equals(nv(text))) {
 			toBeUpdated = true;
@@ -567,10 +762,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return source
+	 */
 	public String getSource() {
 		return trim(sourceText);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setSource(String text) {
 		if (!nv(this.sourceText).equals(nv(text))) {
 			toBeUpdated = true;
@@ -579,10 +780,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return private text
+	 */
 	public String getPrivateText() {
 		return trim(privateText);
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setPrivateText(String text) {
 		if (!nv(this.privateText).equals(nv(text))) {
 			toBeUpdated = true;
@@ -591,18 +798,16 @@ public class UnitNotice implements Serializable {
 
 	}
 
-	// public void setPlace(String text) {
-	// this.place = nv(text);
-	// }
-
-	// public void setPNid(int pnid) {
-	// this.pnid = pnid;
-	// }
-
+	/**
+	 * @return when modified
+	 */
 	public Timestamp getModified() {
 		return modified;
 	}
 
+	/**
+	 * @return when created
+	 */
 	public Timestamp getCreated() {
 		return createDate;
 	}

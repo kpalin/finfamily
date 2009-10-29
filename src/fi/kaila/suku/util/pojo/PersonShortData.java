@@ -64,11 +64,13 @@ public class PersonShortData implements Serializable, Transferable,
 	private int pareCount = 0;
 	private boolean hasTodo = false;
 	private byte[] imageData = null;
-	// FIXME: This Serializable class defines a non-primitive instance field
+	// FIX-ME: This Serializable class defines a non-primitive instance field
 	// which is neither transient, Serializable, or java.lang.Object, and does
 	// not appear to implement the Externalizable interface or the readObject()
 	// and writeObject() methods. Objects of this class will not be deserialized
 	// correctly if a non-Serializable object is stored in this field.
+
+	// This is not sewrialized but built from data
 	private BufferedImage image = null;
 	private String imageName = null;
 	private Utils.PersonSource dragSource = null;
@@ -100,6 +102,9 @@ public class PersonShortData implements Serializable, Transferable,
 		return parentPid;
 	}
 
+	/**
+	 * @return row count for graph is 2 if occu, death exists, else its 1
+	 */
 	public int getGraphRowCount() {
 		int count = 1;
 
@@ -109,102 +114,181 @@ public class PersonShortData implements Serializable, Transferable,
 		return count;
 	}
 
+	/**
+	 * @param pid
+	 */
 	public void setPid(int pid) {
 		this.pid = pid;
 	}
 
+	/**
+	 * @param refn
+	 */
 	public void setRefn(String refn) {
 		this.refn = refn;
 	}
 
+	/**
+	 * @param sex
+	 */
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
 
+	/**
+	 * @param group
+	 */
 	public void setGroup(String group) {
 		this.group = group;
 	}
 
+	/**
+	 * @param nameTag
+	 */
 	public void setNameTag(String nameTag) {
 		this.nameTag = nameTag;
 	}
 
+	/**
+	 * @param givenname
+	 */
 	public void setGivenname(String givenname) {
 		this.givenname = givenname;
 	}
 
+	/**
+	 * @param patronym
+	 */
 	public void setPatronym(String patronym) {
 		this.patronym = patronym;
 	}
 
+	/**
+	 * @param prefix
+	 *            for name
+	 */
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
 
+	/**
+	 * @param surname
+	 */
 	public void setSurname(String surname) {
 		this.surname = surname;
 	}
 
+	/**
+	 * @param postfix
+	 */
 	public void setPostfix(String postfix) {
 		this.postfix = postfix;
 	}
 
+	/**
+	 * @param morenames
+	 *            is names later than first
+	 */
 	public void setMorenames(String morenames) {
 		this.morenames = morenames;
 	}
 
+	/**
+	 * @param birtDate
+	 */
 	public void setBirtDate(String birtDate) {
 		this.bDate = birtDate;
 	}
 
+	/**
+	 * @param birtPlace
+	 */
 	public void setBirtPlace(String birtPlace) {
 		this.bPlace = birtPlace;
 	}
 
+	/**
+	 * @param birtTag
+	 *            (can be CHR, BIRT or null)
+	 */
 	public void setBirtTag(String birtTag) {
 		this.birtTag = birtTag;
 	}
 
+	/**
+	 * @param deatDate
+	 */
 	public void setDeatDate(String deatDate) {
 		this.dDate = deatDate;
 	}
 
+	/**
+	 * @param deatPlace
+	 */
 	public void setDeatPlace(String deatPlace) {
 		this.dPlace = deatPlace;
 	}
 
+	/**
+	 * @param deatTag
+	 */
 	public void setDeatTag(String deatTag) {
 		this.deatTag = deatTag;
 	}
 
+	/**
+	 * @param occu
+	 */
 	public void setOccupation(String occu) {
 		this.occu = occu;
 	}
 
+	/**
+	 * @param hasTodo
+	 *            i.e. a notice with tag TODO
+	 */
 	public void setTodo(boolean hasTodo) {
 		this.hasTodo = hasTodo;
 	}
 
+	/**
+	 * @param marrCount
+	 */
 	public void setMarrCount(int marrCount) {
 		this.marrCount = marrCount;
 	}
 
+	/**
+	 * @param childCount
+	 */
 	public void setChildCount(int childCount) {
 		this.childCount = childCount;
 	}
 
+	/**
+	 * @param pareCount
+	 */
 	public void setPareCount(int pareCount) {
 		this.pareCount = pareCount;
 	}
 
+	/**
+	 * @param mediaTitle
+	 */
 	public void setMediaTitle(String mediaTitle) {
 		this.mediaTitle = mediaTitle;
 	}
 
+	/**
+	 * @param mediaFilename
+	 */
 	public void setMediaFilename(String mediaFilename) {
 		this.mediaFilename = mediaFilename;
 	}
 
+	/**
+	 * @param mediaDataNotice
+	 */
 	public void setMediaDataNotice(int mediaDataNotice) {
 		this.mediaDataNotice = mediaDataNotice;
 	}
@@ -225,6 +309,9 @@ public class PersonShortData implements Serializable, Transferable,
 		return true;
 	}
 
+	/**
+	 * 
+	 */
 	public PersonShortData() {
 
 	}
@@ -302,6 +389,7 @@ public class PersonShortData implements Serializable, Transferable,
 	 * 
 	 * @param con
 	 * @param pid
+	 * @param withAllTags
 	 * @throws SukuException
 	 */
 	public PersonShortData(Connection con, int pid, boolean withAllTags)
@@ -471,6 +559,9 @@ public class PersonShortData implements Serializable, Transferable,
 		return this.group;
 	}
 
+	/**
+	 * @return name tag
+	 */
 	public String getNameTag() {
 		return this.nameTag;
 	}
@@ -534,10 +625,16 @@ public class PersonShortData implements Serializable, Transferable,
 		return Integer.parseInt(bDate.substring(0, 4));
 	}
 
+	/**
+	 * @return birth tag
+	 */
 	public String getBirtTag() {
 		return this.birtTag;
 	}
 
+	/**
+	 * @return birt place
+	 */
 	public String getBirtPlace() {
 		return this.bPlace;
 	}
@@ -549,10 +646,16 @@ public class PersonShortData implements Serializable, Transferable,
 		return this.dDate;
 	}
 
+	/**
+	 * @return deat tag (DEAT, BURI, null)
+	 */
 	public String getDeatTag() {
 		return this.deatTag;
 	}
 
+	/**
+	 * @return death place
+	 */
 	public String getDeatPlace() {
 		return this.dPlace;
 	}
@@ -606,14 +709,23 @@ public class PersonShortData implements Serializable, Transferable,
 		return this.hasTodo;
 	}
 
+	/**
+	 * @return media title
+	 */
 	public String getMediaTitle() {
 		return this.mediaTitle;
 	}
 
+	/**
+	 * @return media filename
+	 */
 	public String getMediaFilename() {
 		return this.mediaFilename;
 	}
 
+	/**
+	 * @return media notice id
+	 */
 	public int getMediaDataNotice() {
 		return this.mediaDataNotice;
 	}
@@ -698,6 +810,9 @@ public class PersonShortData implements Serializable, Transferable,
 		return sb.toString();
 	}
 
+	/**
+	 * @return used for copy to clipbpard
+	 */
 	public String getHeader() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(Resurses.getString("T_PID") + "\t"
@@ -719,6 +834,9 @@ public class PersonShortData implements Serializable, Transferable,
 		return sb.toString();
 	}
 
+	/**
+	 * @return name as written
+	 */
 	public String getTextName() {
 
 		StringBuilder sb = new StringBuilder();
@@ -743,10 +861,17 @@ public class PersonShortData implements Serializable, Transferable,
 		return sb.toString();
 	}
 
+	/**
+	 * @return for sorting order w/o patronyme
+	 */
 	public String getAlfaName() {
 		return getAlfaName(true);
 	}
 
+	/**
+	 * @param withPatronyme
+	 * @return name for sorting order with optional patronyme
+	 */
 	public String getAlfaName(boolean withPatronyme) {
 
 		StringBuilder sb = new StringBuilder();
@@ -781,11 +906,15 @@ public class PersonShortData implements Serializable, Transferable,
 		return sb.toString();
 	}
 
+	/**
+	 * dataflavour for drag-and-drop
+	 */
 	public static final DataFlavor[] df = { new DataFlavor(
 			PersonShortData.class, "PersonShortData") };
 
-	// DataFlavor.stringFlavor};
-
+	/**
+	 * @return dataflavour for drag-and-drop
+	 */
 	public static DataFlavor getPersonShortDataFlavour() {
 		return df[0];
 	}
@@ -815,10 +944,16 @@ public class PersonShortData implements Serializable, Transferable,
 		return false;
 	}
 
+	/**
+	 * @param dragSource
+	 */
 	public void setDragSource(Utils.PersonSource dragSource) {
 		this.dragSource = dragSource;
 	}
 
+	/**
+	 * @return PersonSource enumerator
+	 */
 	public Utils.PersonSource getDragSource() {
 		return dragSource;
 	}
@@ -829,6 +964,9 @@ public class PersonShortData implements Serializable, Transferable,
 		return text;
 	}
 
+	/**
+	 * collator according to language
+	 */
 	public static Collator fiCollator = Collator.getInstance(new Locale(
 			Resurses.getLanguage()));
 

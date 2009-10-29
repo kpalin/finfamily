@@ -70,6 +70,11 @@ public class ImportExcelData {
 		}
 	}
 
+	/**
+	 * import coordinates from excel xml
+	 * 
+	 * @throws SukuException
+	 */
 	public void importCoordinates() throws SukuException {
 
 		int idx;

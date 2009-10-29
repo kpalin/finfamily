@@ -14,6 +14,13 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
+/**
+ * 
+ * Dialog to request for notice to be added
+ * 
+ * @author Kalle
+ * 
+ */
 public class AddNotice extends JDialog implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
@@ -26,6 +33,12 @@ public class AddNotice extends JDialog implements MouseListener {
 
 	private String selectedTag = null;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param owner
+	 * @throws SukuException
+	 */
 	public AddNotice(Suku owner) throws SukuException {
 		super(owner, Resurses.getString("DIALOG_ADD_NOTICE"), true);
 
@@ -62,6 +75,9 @@ public class AddNotice extends JDialog implements MouseListener {
 
 	}
 
+	/**
+	 * @return the tag selected to be added
+	 */
 	public String getSelectedTag() {
 		return selectedTag;
 	}

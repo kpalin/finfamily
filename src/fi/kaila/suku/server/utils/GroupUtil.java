@@ -211,6 +211,14 @@ public class GroupUtil {
 		}
 	}
 
+	/**
+	 * Add group to listed persons if group is null
+	 * 
+	 * @param pidArray
+	 * @param group
+	 * @return result in a SukuData object
+	 * @throws SukuException
+	 */
 	public SukuData addSelectedGroups(int[] pidArray, String group)
 			throws SukuException {
 		SukuData resp = new SukuData();
@@ -244,6 +252,14 @@ public class GroupUtil {
 		}
 	}
 
+	/**
+	 * Add group to persons in view if group is null
+	 * 
+	 * @param vid
+	 * @param group
+	 * @return result as SukuData object
+	 * @throws SukuException
+	 */
 	public SukuData addViewGroups(int vid, String group) throws SukuException {
 		SukuData resp = new SukuData();
 
@@ -287,6 +303,16 @@ public class GroupUtil {
 		}
 	}
 
+	/**
+	 * add group to persons and his/her descendants
+	 * 
+	 * @param pid
+	 * @param group
+	 * @param gent
+	 * @param includeSpouses
+	 * @return as SukuData object
+	 * @throws SukuException
+	 */
 	public SukuData addDescendantsToGroup(int pid, String group, String gent,
 			boolean includeSpouses) throws SukuException {
 		SukuData resp = new SukuData();
@@ -377,6 +403,16 @@ public class GroupUtil {
 		}
 	}
 
+	/**
+	 * 
+	 * Add group to person and his ancestors
+	 * 
+	 * @param pid
+	 * @param group
+	 * @param gent
+	 * @return as SukuData object
+	 * @throws SukuException
+	 */
 	public SukuData addAncestorsToGroup(int pid, String group, String gent)
 			throws SukuException {
 		SukuData resp = new SukuData();

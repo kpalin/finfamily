@@ -37,6 +37,12 @@ import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
+/**
+ * pane for the single notice
+ * 
+ * @author Kalle
+ * 
+ */
 public class NoticePane extends JPanel implements ActionListener,
 		ComponentListener {
 
@@ -133,6 +139,11 @@ public class NoticePane extends JPanel implements ActionListener,
 	int pid;
 	UnitNotice notice = null;
 
+	/**
+	 * @param peronView
+	 * @param pid
+	 * @param notice
+	 */
 	public NoticePane(PersonView peronView, int pid, UnitNotice notice) {
 		this.personView = peronView;
 		this.pid = pid;
@@ -906,6 +917,9 @@ public class NoticePane extends JPanel implements ActionListener,
 		resizeNoticePane();
 	}
 
+	/**
+	 * resize the pane and check what is to be shown
+	 */
 	public void resizeNoticePane() {
 		Dimension currSize = getSize();
 		// System.out.println("LEVEYS: "+currSize.width);

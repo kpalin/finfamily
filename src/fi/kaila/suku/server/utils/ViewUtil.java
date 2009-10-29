@@ -27,11 +27,22 @@ public class ViewUtil {
 
 	private Connection con = null;
 
+	/**
+	 * contructor initalizes with database connection
+	 * 
+	 * @param con
+	 */
 	public ViewUtil(Connection con) {
 		this.con = con;
 
 	}
 
+	/**
+	 * remove the view
+	 * 
+	 * @param viewId
+	 * @return SukuData with resu != null if error
+	 */
 	public SukuData removeView(int viewId) {
 		SukuData resu = new SukuData();
 		try {
@@ -58,6 +69,12 @@ public class ViewUtil {
 		return resu;
 	}
 
+	/**
+	 * Add new named view
+	 * 
+	 * @param viewname
+	 * @return SukuData with resu != null if error
+	 */
 	public SukuData addView(String viewname) {
 		SukuData resu = new SukuData();
 		try {
@@ -90,6 +107,13 @@ public class ViewUtil {
 		return resu;
 	}
 
+	/**
+	 * 
+	 * get list of views a person is member of
+	 * 
+	 * @param pid
+	 * @return SukuData with resu != null if error
+	 */
 	public SukuData getViews(int pid) {
 		SukuData resu = new SukuData();
 		try {
@@ -118,6 +142,15 @@ public class ViewUtil {
 		return resu;
 	}
 
+	/**
+	 * add list of persons to view
+	 * 
+	 * @param vid
+	 * @param pidArray
+	 * @param emptyView
+	 *            true to empty view first
+	 * @return SukuData with resu != null if error
+	 */
 	public SukuData addViewUnits(int vid, int[] pidArray, boolean emptyView) {
 		SukuData resu = new SukuData();
 		resu.resuCount = 0;
@@ -153,6 +186,18 @@ public class ViewUtil {
 		return resu;
 	}
 
+	/**
+	 * 
+	 * Add person and his/her descendants to view
+	 * 
+	 * @param viewId
+	 * @param pid
+	 * @param gent
+	 * @param withSpouses
+	 * @param emptyView
+	 * @return SukuData with pidArray with persons added
+	 * @throws SukuException
+	 */
 	public SukuData addViewDesc(int viewId, int pid, String gent,
 			boolean withSpouses, boolean emptyView) throws SukuException {
 		SukuData resp = new SukuData();
@@ -253,6 +298,13 @@ public class ViewUtil {
 		}
 	}
 
+	/**
+	 * 
+	 * empty the view
+	 * 
+	 * @param vid
+	 * @return SukuData with resu != null if error
+	 */
 	public SukuData emptyView(int vid) {
 		SukuData resu = new SukuData();
 		try {
@@ -274,6 +326,13 @@ public class ViewUtil {
 		return resu;
 	}
 
+	/**
+	 * remove listed persons from view
+	 * 
+	 * @param vid
+	 * @param pidArray
+	 * @return SukuData with resu != null if error
+	 */
 	public SukuData removeViewUnits(int vid, int[] pidArray) {
 		SukuData resu = new SukuData();
 		try {
@@ -300,6 +359,16 @@ public class ViewUtil {
 		return resu;
 	}
 
+	/**
+	 * add person with ancestors to view
+	 * 
+	 * @param viewId
+	 * @param pid
+	 * @param gent
+	 * @param emptyView
+	 * @return SukuData with pidArray with persons added
+	 * @throws SukuException
+	 */
 	public SukuData addViewAnc(int viewId, int pid, String gent,
 			boolean emptyView) throws SukuException {
 		SukuData resp = new SukuData();

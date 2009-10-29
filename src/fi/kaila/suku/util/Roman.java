@@ -24,6 +24,9 @@ public class Roman {
 	// ============================================================== int2roman
 	/**
 	 * convert integer to roman number
+	 * 
+	 * @param n
+	 * @return number as roman numeral
 	 */
 	public static String int2roman(int n) {
 		if (n >= 4000 || n < 1) {

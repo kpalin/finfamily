@@ -23,36 +23,44 @@ public class NameArray implements Array {
 
 	private Vector<String> v = null;
 
+	/**
+	 * initialize class
+	 */
 	public NameArray() {
 		v = new Vector<String>();
 	}
 
+	/**
+	 * append to container vector
+	 * 
+	 * @param member
+	 */
 	public void append(String member) {
 		v.add(member);
 	}
 
 	@Override
 	public Object getArray() throws SQLException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public Object getArray(Map<String, Class<?>> arg0) throws SQLException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public Object getArray(long arg0, int arg1) throws SQLException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public Object getArray(long arg0, int arg1, Map<String, Class<?>> arg2)
 			throws SQLException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -68,27 +76,27 @@ public class NameArray implements Array {
 
 	@Override
 	public ResultSet getResultSet() throws SQLException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public ResultSet getResultSet(Map<String, Class<?>> arg0)
 			throws SQLException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public ResultSet getResultSet(long arg0, int arg1) throws SQLException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public ResultSet getResultSet(long arg0, int arg1,
 			Map<String, Class<?>> arg2) throws SQLException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 

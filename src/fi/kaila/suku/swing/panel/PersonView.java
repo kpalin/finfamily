@@ -54,6 +54,9 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	private Vector<SukuTabPane> paneTabs = new Vector<SukuTabPane>();
 
+	/**
+	 * @return main program handle
+	 */
 	public Suku getSuku() {
 		return suku;
 	}
@@ -90,6 +93,11 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
+	/**
+	 * add pane to end of tabbedpane
+	 * 
+	 * @param pane
+	 */
 	public void addTab(SukuTabPane pane) {
 		paneTabs.add(pane);
 		boolean isNotice = pane.pnl instanceof NoticePane;
@@ -100,6 +108,13 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * 
+	 * insert pane to tabbedpane
+	 * 
+	 * @param pane
+	 * @param index
+	 */
 	public void insertTab(SukuTabPane pane, int index) {
 		paneTabs.insertElementAt(pane, index);
 		boolean isNotice = pane.pnl instanceof NoticePane;
@@ -110,19 +125,38 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * @return count of tabs
+	 */
 	public int getTabCount() {
 		return paneTabs.size();
 	}
 
+	/**
+	 * @param idx
+	 * @return tabe at index
+	 */
 	public SukuTabPane getPane(int idx) {
 		return paneTabs.get(idx);
 	}
 
+	/**
+	 * 
+	 * move pane to new location
+	 * 
+	 * @param from
+	 * @param to
+	 */
 	public void movePane(int from, int to) {
 		SukuTabPane t = paneTabs.remove(from);
 		paneTabs.insertElementAt(t, to);
 	}
 
+	/**
+	 * tabs are shown or not shown as selected
+	 * 
+	 * @param value
+	 */
 	public void showNotices(boolean value) {
 
 		int noteIdx = getFirstNoticeIndex();
@@ -142,6 +176,13 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * set a hiskipanel person
+	 * 
+	 * @param idx
+	 * @param pid
+	 * @param nimi
+	 */
 	public void setHiskiPid(int idx, int pid, String nimi) {
 		HiskiImportPanel hiskiPanel = null;
 
@@ -157,6 +198,9 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * display the hiskipanel
+	 */
 	public void displayHiskiPane() {
 		HiskiImportPanel hiskiPanel = null;
 		int hiskiIdx = 0;
@@ -179,9 +223,12 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * resize all notice panes. resize forces the panels also to display fields
+	 * as defined by toolbox buttons
+	 */
 	public void resizeNoticePanes() {
 
-		// int isele = tabbedPane.getSelectedIndex();
 		int fnotice = getFirstNoticeIndex();
 		if (fnotice < 2)
 			return;
@@ -196,6 +243,12 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * Display person pane. I already open the close pervious first
+	 * 
+	 * @param pid
+	 * @throws SukuException
+	 */
 	public void displayPersonPane(int pid) throws SukuException {
 		int midx = getMainPaneIndex();
 		if (midx > 0) {
@@ -300,6 +353,9 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
+	/**
+	 * close the hiskipane
+	 */
 	public void closeHiskiPane() {
 
 		SukuTabPane spnl = null;
@@ -320,18 +376,35 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * @param tag
+	 * @return name of the tag
+	 */
 	public String getTypeValue(String tag) {
 		return typesTexts.get(tag);
 	}
 
+	/**
+	 * @return count of types
+	 */
 	public int getTypesCount() {
 		return types.length;
 	}
 
+	/**
+	 * @param idx
+	 * @return tag at idx
+	 */
 	public String getTypeTag(int idx) {
 		return types[idx];
 	}
 
+	/**
+	 * set familyview (graphic ) to show family
+	 * 
+	 * @param subject
+	 * @throws SukuException
+	 */
 	public void setSubjectForFamily(PersonShortData subject)
 			throws SukuException {
 
@@ -485,20 +558,32 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
+	/**
+	 * print contents of database draft
+	 */
 	public void testMe() {
 		// this.famPanel.setPreferredSize(new Dimension(1200, 1600));
 		PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
 		try {
 			textPerson.print();
 		} catch (PrinterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "printing database draft", e);
+			JOptionPane.showMessageDialog(this, "PRINT ERROR", Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+
 		}
 		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
 		famPanel.updateUI();
 
 	}
 
+	/**
+	 * 
+	 * set to show database draft
+	 * 
+	 * @param person
+	 * @throws SukuException
+	 */
 	public void setTextForPerson(PersonShortData person) throws SukuException {
 
 		SukuData pdata = Suku.kontroller.getSukuData("cmd=person", "pid="
@@ -511,6 +596,9 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
+	/**
+	 * @return the javatext document
+	 */
 	public StyledDocument getDoc() {
 		PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
 		if (textPerson == null)
@@ -518,6 +606,12 @@ public class PersonView extends JPanel implements ChangeListener {
 		return textPerson.getStyledDocument();
 	}
 
+	/**
+	 * 
+	 * sets the javatext documnet
+	 * 
+	 * @param doc
+	 */
 	public void setDoc(StyledDocument doc) {
 		PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
 		textPerson.setStyledDocument(doc);
@@ -526,6 +620,9 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	private int previousNoticeIndex = -1;
 
+	/**
+	 * @return index where main pane is ( 2 or 3)
+	 */
 	public int getMainPaneIndex() {
 		for (int i = 0; i < paneTabs.size(); i++) {
 			Component pan = paneTabs.get(i).pnl;
@@ -536,6 +633,9 @@ public class PersonView extends JPanel implements ChangeListener {
 		return -1;
 	}
 
+	/**
+	 * @return hiskipane idx if it ios open, else -1
+	 */
 	public int getHiskiPaneIndex() {
 		for (int i = 0; i < paneTabs.size(); i++) {
 			Component pan = paneTabs.get(i).pnl;
@@ -546,6 +646,9 @@ public class PersonView extends JPanel implements ChangeListener {
 		return -1;
 	}
 
+	/**
+	 * @return index of first notice
+	 */
 	public int getFirstNoticeIndex() {
 		int mainIndex = getMainPaneIndex();
 		if (mainIndex < 0)
@@ -554,6 +657,9 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
+	/**
+	 * update notices from mainpane
+	 */
 	public void updateNotices() {
 		int midx = getMainPaneIndex();
 
@@ -570,6 +676,12 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
+	/**
+	 * move noticepane from
+	 * 
+	 * @param toDirection
+	 *            + to left, - to right
+	 */
 	public void moveSelectedPane(int toDirection) {
 		boolean isFromName = false;
 		int isele = tabbedPane.getSelectedIndex();
@@ -606,6 +718,12 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
+	/**
+	 * add a notice
+	 * 
+	 * @param idx
+	 * @param tag
+	 */
 	public void addNotice(int idx, String tag) {
 		if (tag == null)
 			return;
@@ -666,13 +784,13 @@ public class PersonView extends JPanel implements ChangeListener {
 						return;
 					}
 					skipNextState = true;
-					// TODO tarkista vieläkö tämä on tarpeen. Näyttäisi olevan
+					// TO-DO tarkista vieläkö tämä on tarpeen. Näyttäisi olevan
 					// 14.9.09
 					tabbedPane.setSelectedIndex(previousNoticeIndex);
 					JOptionPane.showMessageDialog(this, resu, Resurses
 							.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
-					// TODO Auto-generated catch block
+
 					return;
 				}
 			}

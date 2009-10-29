@@ -109,6 +109,10 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 
 	private javax.swing.Timer t = null;
 
+	/**
+	 * @param parent
+	 * @throws SukuException
+	 */
 	public GroupMgrWindow(Suku parent) throws SukuException {
 		super(parent, Resurses.getString("DIALOG_GROUP_MGR"), false);
 		this.parent = parent;

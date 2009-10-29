@@ -33,6 +33,13 @@ import javax.swing.JTextArea;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.PlaceLocationData;
 
+/**
+ * 
+ * Shows map of Finland with locations of relatives
+ * 
+ * @author Kalle
+ * 
+ */
 public class SuomiMap extends JFrame implements ActionListener {
 
 	private static Logger logger = Logger.getLogger(SuomiMap.class.getName());
@@ -62,6 +69,11 @@ public class SuomiMap extends JFrame implements ActionListener {
 	@SuppressWarnings("unused")
 	private static final double suomiTop = 70.3;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param parent
+	 */
 	public SuomiMap(ISuku parent) {
 		this.parent = parent;
 		this.me = this;
@@ -146,6 +158,11 @@ public class SuomiMap extends JFrame implements ActionListener {
 	private int lukuri = 0;
 	private PlaceLocationData[] places = null;
 
+	/**
+	 * display map with listed places
+	 * 
+	 * @param places
+	 */
 	public void displaySuomiMap(PlaceLocationData[] places) {
 		lukuri++;
 		this.places = places;

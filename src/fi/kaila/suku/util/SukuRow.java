@@ -266,6 +266,9 @@ public class SukuRow {
 
 	}
 
+	/**
+	 * @return person in row
+	 */
 	public PersonShortData getPerson() {
 		return suku.getPerson(pid);
 	}
@@ -291,10 +294,16 @@ public class SukuRow {
 		return getPerson().getRefn();
 	}
 
+	/**
+	 * @return group of personm
+	 */
 	public String getGroup() {
 		return getPerson().getGroup();
 	}
 
+	/**
+	 * @return persons pid
+	 */
 	public int getPid() {
 		return pid;
 	}

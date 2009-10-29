@@ -43,6 +43,8 @@ public class SukuModel implements TableModel {
 	 * 
 	 *load icons in consrtuctor
 	 * 
+	 * @param suku
+	 * 
 	 * @throws SukuException
 	 */
 	public SukuModel(Suku suku) throws SukuException {
@@ -222,6 +224,11 @@ public class SukuModel implements TableModel {
 
 	}
 
+	/**
+	 * remove row from model
+	 * 
+	 * @param idx
+	 */
 	public void removeRow(int idx) {
 		this.tab.remove(idx);
 	}

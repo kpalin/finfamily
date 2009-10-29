@@ -9,6 +9,12 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.Utils;
 
+/**
+ * DateField is specific to genealogy app as dates need not be exact
+ * 
+ * @author Kalle
+ * 
+ */
 public class SukuDateField extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -18,6 +24,9 @@ public class SukuDateField extends JPanel {
 
 	JLabel datePost;
 
+	/**
+	 * 
+	 */
 	public SukuDateField() {
 
 		setLayout(null);
@@ -38,6 +47,9 @@ public class SukuDateField extends JPanel {
 
 	}
 
+	/**
+	 * @return the prefix tag for date (See GEDCOM)
+	 */
 	public String getDatePrefTag() {
 
 		int idx = datePref.getSelectedIndex();
@@ -61,28 +73,55 @@ public class SukuDateField extends JPanel {
 		}
 	}
 
+	/**
+	 * @return date in text format
+	 * @throws SukuDateException
+	 */
 	public String getFromDate() throws SukuDateException {
 		return Utils.dbDate(dateFrom.getText());
 	}
 
+	/**
+	 * @return true if no prefix exists for date
+	 */
 	public boolean isPlain() {
 		if (datePref.getSelectedIndex() == 0)
 			return true;
 		return false;
 	}
 
+	/**
+	 * @return text from dfatefield
+	 */
 	public String getTextFromDate() {
 		return dateFrom.getText();
 	}
 
+	/**
+	 * 
+	 * sets datefield (text)
+	 * 
+	 * @param text
+	 */
 	public void setTextFromDate(String text) {
 		dateFrom.setText(text);
 	}
 
+	/**
+	 * @return text format of date
+	 * @throws SukuDateException
+	 */
 	public String getToDate() throws SukuDateException {
 		return Utils.dbDate(dateTo.getText());
 	}
 
+	/**
+	 * sets full date
+	 * 
+	 * @param pre
+	 * @param from
+	 * @param to
+	 */
 	public void setDate(String pre, String from, String to) {
 		int preIdx = 0;
 
@@ -113,8 +152,8 @@ public class SukuDateField extends JPanel {
 		datePost.setText("");
 		if ("FROM".equals(pre) || "BET".equals(pre)) {
 			dateTo.setVisible(true);
-			// FIXME: Potential NPE
-			if (pre.equals("FROM")) {
+
+			if ("FROM".equals(pre)) {
 				datePost.setText(Resurses.getString("DATE_TO"));
 			} else {
 				datePost.setText(Resurses.getString("DATE_AND"));

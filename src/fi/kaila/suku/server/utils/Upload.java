@@ -248,6 +248,13 @@ public class Upload {
 		return pnid;
 	}
 
+	/**
+	 * get database version and do a vacuum
+	 * 
+	 * @param con
+	 * @return [0] = version, [1] = time to vacuum
+	 * @throws SQLException
+	 */
 	public static String[] getServerVersion(Connection con) throws SQLException {
 		Statement stm = con.createStatement();
 
@@ -266,6 +273,13 @@ public class Upload {
 		return vers;
 	}
 
+	/**
+	 * request list of report languages
+	 * 
+	 * @param con
+	 * @return list of report languages in format lancode;langname
+	 * @throws SQLException
+	 */
 	public static String[] getReportLanguages(Connection con)
 			throws SQLException {
 		Statement stm = con.createStatement();

@@ -59,6 +59,7 @@ public class SukuUtility {
 	 * Execute sql script
 	 * 
 	 * @param con
+	 * @param sqlpath
 	 * @throws SukuException
 	 * @throws IOException
 	 * @throws SQLException

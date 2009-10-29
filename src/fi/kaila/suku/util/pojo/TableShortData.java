@@ -58,14 +58,23 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	private Point p = new Point();
 
+	/**
+	 * @return the area for the table
+	 */
 	public Rectangle getArea() {
 		return currentArea;
 	}
 
+	/**
+	 * @param p
+	 */
 	public void setLocation(Point p) {
 		this.p = p;
 	}
 
+	/**
+	 * @param g
+	 */
 	public void DrawMe(Graphics g) {
 		if (famMember.size() == 1) {
 			DrawSubject(g);
@@ -115,8 +124,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 				g.drawImage(img, imgx, y, (int) xw, (int) yh, Color.red, null);
 
-				// FIXME: Not used anywhere. Can be removed?
-				imgx += imageSize.width + separatorWidth;
+				// imgx += imageSize.width + separatorWidth;
 			}
 
 			y += imageSize.height;
@@ -355,6 +363,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	}
 
+	/**
+	 * @param g
+	 * @return size of table
+	 */
 	public Dimension getSize(Graphics g) {
 		if (famMember.size() == 1) {
 			return getPersonSize(g);
@@ -514,6 +526,9 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	}
 
+	/**
+	 * @return count of images for parents
+	 */
 	public int mainImageCount() {
 		int resu = 0;
 		for (int i = 0; i < spouseIdx + spouseCount; i++) {
@@ -525,6 +540,9 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return resu;
 	}
 
+	/**
+	 * @return count of child images
+	 */
 	public int childImageCount() {
 		int resu = 0;
 
@@ -536,10 +554,16 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return resu;
 	}
 
+	/**
+	 * @return no of rows for subject
+	 */
 	public int getSubjectRows() {
 		return famMember.get(0).getGraphRowCount();
 	}
 
+	/**
+	 * @return no of rows for spouses
+	 */
 	public int getSpouseRows() {
 		int i = 0;
 		for (int j = spouseIdx; j < spouseIdx + spouseCount; j++) {
@@ -548,6 +572,9 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return i;
 	}
 
+	/**
+	 * @return no of rows for children
+	 */
 	public int getChildRows() {
 		int i = 0;
 		for (int j = childIdx; j < childIdx + childCount; j++) {
@@ -556,6 +583,9 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return i;
 	}
 
+	/**
+	 * @param subject
+	 */
 	public void setSubject(PersonShortData subject) {
 		famMember.removeAllElements();
 		famMemRel.removeAllElements();
@@ -572,16 +602,26 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	}
 
+	/**
+	 * @return teh subject
+	 */
 	public PersonShortData getSubject() {
 		if (famMember.size() == 0)
 			return null;
 		return famMember.get(0);
 	}
 
+	/**
+	 * @return count of children
+	 */
 	public int getChildCount() {
 		return childCount;
 	}
 
+	/**
+	 * @param index
+	 * @return child at index
+	 */
 	public PersonShortData getChild(int index) {
 		if (index < childCount) {
 			return famMember.get(childIdx + index);
@@ -589,10 +629,17 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return null;
 	}
 
+	/**
+	 * @return no of spouses
+	 */
 	public int getSpouseCount() {
 		return spouseCount;
 	}
 
+	/**
+	 * @param index
+	 * @return spouse at index
+	 */
 	public PersonShortData getSpouse(int index) {
 		if (index < spouseCount) {
 			return famMember.get(spouseIdx + index);
@@ -600,10 +647,17 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return null;
 	}
 
+	/**
+	 * @return count of fathers
+	 */
 	public int getFatherCount() {
 		return fatherCount;
 	}
 
+	/**
+	 * @param index
+	 * @return fatehr at index
+	 */
 	public PersonShortData getFather(int index) {
 		if (index < fatherCount) {
 			return famMember.get(fatherIdx + index);
@@ -611,10 +665,17 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return null;
 	}
 
+	/**
+	 * @return count of mothers
+	 */
 	public int getMotherCount() {
 		return motherCount;
 	}
 
+	/**
+	 * @param index
+	 * @return mother at index
+	 */
 	public PersonShortData getMother(int index) {
 		if (index < motherCount) {
 			return famMember.get(motherIdx + index);
@@ -622,6 +683,12 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return null;
 	}
 
+	/**
+	 * init structure
+	 * 
+	 * @param pers
+	 * @param rels
+	 */
 	public void initRelatives(PersonShortData[] pers, RelationShortData[] rels) {
 
 		Vector<PersonShortData> spouVec = new Vector<PersonShortData>();
@@ -744,6 +811,9 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		Rectangle rectangle;
 	}
 
+	/**
+	 * @return location
+	 */
 	public Point getLocation() {
 
 		return this.p;

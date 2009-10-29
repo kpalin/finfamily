@@ -31,6 +31,13 @@ import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitLanguage;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
+/**
+ * 
+ * Main pane is the first of person windows panes with person main data
+ * 
+ * @author Kalle
+ * 
+ */
 public class PersonMainPane extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
@@ -78,6 +85,11 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 	RelativesPane relas = null;
 
+	/**
+	 * @param peronView
+	 * @param pid
+	 * @throws SukuException
+	 */
 	public PersonMainPane(PersonView peronView, int pid) throws SukuException {
 		this.personView = peronView;
 
@@ -709,15 +721,16 @@ public class PersonMainPane extends JPanel implements ActionListener {
 					JOptionPane.showMessageDialog(this, e1.getMessage(),
 							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
-
-					e1.printStackTrace();
+					logger.log(Level.WARNING, "CLOSE", e1);
+					return;
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(this, e1.toString(), Resurses
 							.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					logger.log(Level.WARNING, "Closing person", e1);
-					e1.printStackTrace();
+
 					personView.closeMainPane(false);
+					return;
 				}
 			}
 		} catch (Exception ex) {
@@ -915,6 +928,9 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 	}
 
+	/**
+	 * update name notices fromn mainpane
+	 */
 	public void updateNameNotices() {
 
 		int lastNameidx = -1;
@@ -984,6 +1000,9 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 	}
 
+	/**
+	 * update non-name notices
+	 */
 	public void updateRestNotices() {
 		int birtCount = 0;
 		int chrCount = 0;
@@ -1110,6 +1129,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		// reorderRestNotices();
 	}
 
+	/**
+	 * reorder notices in preset order
+	 * 
+	 * @param unotices
+	 * @param wn
+	 * @return true if notice order has changed
+	 */
 	public boolean reorderNotices(Vector<UnitNotice> unotices, String[] wn) {
 
 		int lastCheckedIndex = -1;

@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -40,6 +41,12 @@ import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
+/**
+ * Panel to do traffic to hiski
+ * 
+ * @author Kalle
+ * 
+ */
 public class HiskiImportPanel extends JPanel implements ActionListener {
 
 	private static Logger logger = Logger.getLogger(HiskiImportPanel.class
@@ -99,6 +106,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private DocumentBuilderFactory factory = null;
 	private DocumentBuilder bld = null;
 
+	/**
+	 * @param suku
+	 */
 	public HiskiImportPanel(ISuku suku) {
 		this.suku = suku;
 		initMe();
@@ -307,6 +317,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		updateUI();
 	}
 
+	/**
+	 * reset all fields
+	 */
 	public void resetHiskiPids() {
 		for (int i = 0; i < hiskiPid.length; i++) {
 			hiskiPid[i] = 0;
@@ -316,6 +329,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * set a hiskipanel person
+	 * 
+	 * @param idx
+	 * @param pid
+	 * @param nimi
+	 */
 	public void setHiskiPid(int idx, int pid, String nimi) {
 		if (idx >= 0 && idx < hiskiPid.length) {
 			hiskiPid[idx] = pid;
@@ -998,9 +1018,10 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
-			e.printStackTrace();
+			logger.log(Level.WARNING, "hiski", e);
+			return;
 		}
-		// FIXME: Potential NPE
+
 		Element docEle = doc.getDocumentElement();
 		Element ele;
 		NodeList nl = docEle.getElementsByTagName("tapahtuma");

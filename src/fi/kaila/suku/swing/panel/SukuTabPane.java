@@ -38,6 +38,9 @@ public class SukuTabPane extends JScrollPane {
 		this.tip = tip;
 	}
 
+	/**
+	 * @return pid of pane
+	 */
 	public int getPid() {
 		if (pnl instanceof PersonMainPane) {
 			return ((PersonMainPane) pnl).getPersonPid();

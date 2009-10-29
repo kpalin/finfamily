@@ -48,6 +48,12 @@ import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 
+/**
+ * Relatives pane contains lists of relatives
+ * 
+ * @author Kalle
+ * 
+ */
 public class RelativesPane extends JPanel implements ActionListener,
 		ComponentListener, MouseListener {
 
@@ -112,6 +118,15 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 	private static RelativesPane me = null;
 
+	/**
+	 * relatives pane is singleton as else there is problems with listeners
+	 * 
+	 * @param peronView
+	 * @param longPers
+	 * @param relas
+	 * @param pers
+	 * @return relatives pane instance
+	 */
 	public static RelativesPane getInstance(PersonView peronView,
 			PersonLongData longPers, Relation[] relas, PersonShortData[] pers) {
 
@@ -628,18 +643,18 @@ public class RelativesPane extends JPanel implements ActionListener,
 		// tab.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		// tab.setFillsViewportHeight(true);
 
-		TableColumnModel modl = tab.getColumnModel();
+		// TableColumnModel modl = tab.getColumnModel();
 		// int checkWidth=40;
-		TableColumn c = modl.getColumn(0);
+		// TableColumn c = modl.getColumn(0);
 		// c.setMaxWidth(checkWidth);
-		// FIXME: Not used. Can be removed?
-		c = modl.getColumn(1);
+
+		// c = modl.getColumn(1);
 		// c.setMaxWidth(checkWidth);
+
+		// c = modl.getColumn(3);
 		// FIXME: Not used. Can be removed?
-		c = modl.getColumn(3);
-		// FIXME: Not used. Can be removed?
-		if (false)
-			System.out.println(c);
+		// if (false)
+		// System.out.println(c);
 
 		// c.setMaxWidth(checkWidth);
 		return tab;

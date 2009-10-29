@@ -19,6 +19,9 @@ public class PlaceLocationData implements Serializable {
 	private double latitude = 0;
 	private double longitude = 0;
 
+	/**
+	 * @param place
+	 */
 	public PlaceLocationData(String place) {
 		this.placeName = place;
 		this.counter = 1;
@@ -32,26 +35,44 @@ public class PlaceLocationData implements Serializable {
 		this.counter++;
 	}
 
+	/**
+	 * @return placename
+	 */
 	public String getName() {
 		return this.placeName;
 	}
 
+	/**
+	 * @return count of places
+	 */
 	public int getCount() {
 		return this.counter;
 	}
 
+	/**
+	 * @param latitude
+	 */
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
+	/**
+	 * @param longitude
+	 */
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
+	/**
+	 * @return latitude
+	 */
 	public double getLatitude() {
 		return this.latitude;
 	}
 
+	/**
+	 * @return longitude
+	 */
 	public double getLongitude() {
 		return this.longitude;
 	}

@@ -10,6 +10,13 @@ import javax.swing.JPopupMenu;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.PersonShortData;
 
+/**
+ * 
+ * The popup menu for relatives pane
+ * 
+ * @author Kalle
+ * 
+ */
 public class RelativePopupMenu {
 
 	private static RelativePopupMenu me = null;
@@ -38,17 +45,30 @@ public class RelativePopupMenu {
 		}
 	}
 
+	/**
+	 * @return no pf parents
+	 */
 	public int getParentCount() {
 		if (pAddParent == null)
 			return 0;
 		return pAddParent.length;
 	}
 
+	/**
+	 * @param child
+	 *            name to other parent menu cmd
+	 */
 	public void setChildName(PersonShortData child) {
 		pParent.setText(Resurses.getString("MENU_OTHER") + " "
 				+ child.getAlfaName());
 	}
 
+	/**
+	 * set parent at idx to show/not show
+	 * 
+	 * @param idx
+	 * @param value
+	 */
 	public void showParent(int idx, boolean value) {
 		pPerson.setVisible(true);
 		if (idx == 0) {
@@ -57,10 +77,23 @@ public class RelativePopupMenu {
 		pAddParent[idx].setVisible(value);
 	}
 
+	/**
+	 * set parent name at idx
+	 * 
+	 * @param idx
+	 * @param person
+	 */
 	public void setParentName(int idx, PersonShortData person) {
 		pAddParent[idx].setText(person.getAlfaName());
 	}
 
+	/**
+	 * show menu at location
+	 * 
+	 * @param e
+	 * @param x
+	 * @param y
+	 */
 	public void show(MouseEvent e, int x, int y) {
 		pMenu.show(e.getComponent(), x, y);
 	}
@@ -114,6 +147,12 @@ public class RelativePopupMenu {
 
 	PersonShortData currentPerson = null;
 
+	/**
+	 * set person name to menu commands
+	 * 
+	 * @param person
+	 * @param text
+	 */
 	public void setPerson(PersonShortData person, String text) {
 		this.currentPerson = person;
 
@@ -135,12 +174,17 @@ public class RelativePopupMenu {
 		}
 	}
 
+	/**
+	 * @return the current person
+	 */
 	public PersonShortData getPerson() {
 		return currentPerson;
 	}
 
 	/**
 	 * This class is a semi-singleton.
+	 * 
+	 * @param l
 	 * 
 	 * @return the menu
 	 */
@@ -166,6 +210,12 @@ public class RelativePopupMenu {
 
 	}
 
+	/**
+	 * used to setup the menu to paste person copy/paste probably not so much
+	 * used after drag-and-drop was introduced
+	 * 
+	 * @param pasteAtRow
+	 */
 	public void setPasteAtRow(int pasteAtRow) {
 
 		pPerson.setVisible(pasteAtRow >= 0);
@@ -197,10 +247,17 @@ public class RelativePopupMenu {
 
 	private PersonShortData mousePerson = null;
 
+	/**
+	 * @param mousePerson
+	 *            i.e. the person that paste should show
+	 */
 	public void setMousePerson(PersonShortData mousePerson) {
 		this.mousePerson = mousePerson;
 	}
 
+	/**
+	 * @return mouse person i.e. the person that paste should show
+	 */
 	public PersonShortData getMousePerson() {
 		return mousePerson;
 	}

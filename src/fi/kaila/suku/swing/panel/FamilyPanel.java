@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
@@ -18,6 +19,14 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.TableShortData;
 
+/**
+ * 
+ * FamilyPanel shows a simple graph of the subjects family, parents and
+ * grandparents
+ * 
+ * @author Kalle
+ * 
+ */
 public class FamilyPanel extends JPanel implements MouseListener {
 	/**
 	 * 
@@ -32,6 +41,9 @@ public class FamilyPanel extends JPanel implements MouseListener {
 
 	private PersonView parent;
 
+	/**
+	 * @param parent
+	 */
 	public FamilyPanel(PersonView parent) {
 		this.parent = parent;
 		this.addMouseListener(this);
@@ -103,11 +115,19 @@ public class FamilyPanel extends JPanel implements MouseListener {
 
 	}
 
+	/**
+	 * empty the grapf
+	 */
 	public void resetTable() {
 		tabs.removeAllElements();
 		pareRels.removeAllElements();
 	}
 
+	/**
+	 * add a table to the grapf
+	 * 
+	 * @param data
+	 */
 	public void addTable(TableShortData data) {
 		tabs.add(data);
 
@@ -115,13 +135,20 @@ public class FamilyPanel extends JPanel implements MouseListener {
 
 	}
 
+	/**
+	 * @return table size = num of tables in list
+	 */
 	public int getTabSize() {
 		return this.tabs.size();
 	}
 
+	/**
+	 * 
+	 * Add parent relation
+	 * 
+	 * @param relIdx
+	 */
 	public void addRels(FamilyParentRelationIndex relIdx) {
-		// System.out.println("addrel: " + relIdx.getChildIdx() + "/" +
-		// relIdx.getParentIdx());
 
 		pareRels.add(relIdx);
 		updateUI();
@@ -146,8 +173,8 @@ public class FamilyPanel extends JPanel implements MouseListener {
 							try {
 								parent.setSubjectForFamily(person);
 							} catch (SukuException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								logger.log(Level.WARNING, "failed", e1);
+
 							}
 						}
 					}

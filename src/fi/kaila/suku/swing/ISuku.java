@@ -12,11 +12,28 @@ import javax.swing.JFrame;
  */
 public interface ISuku {
 
+	/**
+	 * 
+	 * used by map form
+	 * 
+	 * @param me
+	 */
 	void SukuFormClosing(JFrame me);
 
+	/**
+	 * used by database admin frame
+	 * 
+	 * @param me
+	 */
 	void AdminFormClosing(JFrame me);
 
+	/**
+	 * used by hiski form
+	 */
 	void HiskiFormClosing();
 
+	/**
+	 * used by group window form
+	 */
 	void GroupWindowClosing();
 }

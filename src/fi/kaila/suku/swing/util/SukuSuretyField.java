@@ -5,11 +5,20 @@ import javax.swing.JPanel;
 
 import fi.kaila.suku.util.Resurses;
 
+/**
+ * Surety field component
+ * 
+ * @author Kalle
+ * 
+ */
 public class SukuSuretyField extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	JComboBox surety;
 
+	/**
+	 * constructor to setup from resurses
+	 */
 	public SukuSuretyField() {
 
 		setLayout(null);

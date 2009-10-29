@@ -16,13 +16,6 @@ public class RelationNotice implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// select
-	// a.rid,a.pid,b.pid,a.tag,rn.tag,rn.surety,rn.relationtype,rn.description,
-	// rn.dateprefix,rn.fromdate,rn.todate,rn.notetext,rn.sourcetext,rn.privatetext,a.createdate,rn.modified,rn.createdate
-	// from relation a inner join relation b on a.rid=b.rid left join
-	// relationnotice rn on a.rid=rn.rid
-	// where a.pid <> b.pid and a.pid=3 order by
-	// b.pid,a.rid,a.relationrow,rn.noticerow
 	private boolean toBeDeleted = false;
 	private boolean toBeUpdated = false;
 	int rnid = 0; // notice id
@@ -42,6 +35,23 @@ public class RelationNotice implements Serializable {
 	Timestamp created = null;
 	RelationLanguage[] languages = null;
 
+	/**
+	 * @param rnid
+	 * @param rid
+	 * @param surety
+	 * @param tag
+	 * @param type
+	 * @param description
+	 * @param datePrefix
+	 * @param fromDate
+	 * @param toDate
+	 * @param place
+	 * @param noteText
+	 * @param sourceText
+	 * @param privateText
+	 * @param modified
+	 * @param created
+	 */
 	public RelationNotice(int rnid, int rid, int surety, String tag,
 			String type, String description, String datePrefix,
 			String fromDate, String toDate, String place, String noteText,
@@ -64,41 +74,68 @@ public class RelationNotice implements Serializable {
 		this.created = created;
 	}
 
+	/**
+	 * @param tag
+	 */
 	public RelationNotice(String tag) {
 		this.tag = tag;
 	}
 
+	/**
+	 * @param value
+	 *            true if this is to be deleted
+	 */
 	public void setToBeDeleted(boolean value) {
 		toBeDeleted = value;
 	}
 
+	/**
+	 * reset modified status
+	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
+	/**
+	 * @return relation notice id
+	 */
 	public int getRnid() {
 		return rnid;
 	}
 
+	/**
+	 * @return is this to be deleted
+	 */
 	public boolean isToBeDeleted() {
 		return toBeDeleted;
 	}
 
-	// public void setToBeUpdated(){
-	// toBeUpdated=true;
-	// }
+	/**
+	 * @return is this to be updated
+	 */
 	public boolean isToBeUpdated() {
 		return toBeUpdated;
 	}
 
+	/**
+	 * @return array of languages
+	 */
 	public RelationLanguage[] getLanguages() {
 		return languages;
 	}
 
+	/**
+	 * @param langu
+	 *            array of languages for this relation notice
+	 */
 	public void setLanguages(RelationLanguage[] langu) {
 		languages = langu;
 	}
 
+	/**
+	 * @param text
+	 *            = the type
+	 */
 	public void setType(String text) {
 		if (!nv(this.type).equals(nv(text))) {
 			toBeUpdated = true;
@@ -107,6 +144,10 @@ public class RelationNotice implements Serializable {
 
 	}
 
+	/**
+	 * @param text
+	 *            = description
+	 */
 	public void setDescription(String text) {
 		if (!nv(this.description).equals(nv(text))) {
 			toBeUpdated = true;
@@ -115,6 +156,10 @@ public class RelationNotice implements Serializable {
 
 	}
 
+	/**
+	 * @param text
+	 *            first part of date
+	 */
 	public void setFromDate(String text) {
 		if (!nv(this.fromDate).equals(nv(text))) {
 			toBeUpdated = true;
@@ -123,6 +168,10 @@ public class RelationNotice implements Serializable {
 
 	}
 
+	/**
+	 * @param text
+	 *            = place
+	 */
 	public void setPlace(String text) {
 		if (!nv(this.place).equals(nv(text))) {
 			toBeUpdated = true;
@@ -131,6 +180,10 @@ public class RelationNotice implements Serializable {
 
 	}
 
+	/**
+	 * @param text
+	 *            source
+	 */
 	public void setSource(String text) {
 		if (!nv(this.sourceText).equals(nv(text))) {
 			toBeUpdated = true;
@@ -139,22 +192,38 @@ public class RelationNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return tag
+	 */
 	public String getTag() {
 		return tag;
 	}
 
+	/**
+	 * @return type of relationnotice
+	 */
 	public String getType() {
 		return trim(type);
 	}
 
+	/**
+	 * @return dscription
+	 */
 	public String getDescription() {
 		return trim(description);
 	}
 
+	/**
+	 * @return date prefix
+	 */
 	public String getDatePrefix() {
 		return datePrefix;
 	}
 
+	/**
+	 * @param text
+	 *            i.e. dateprefox (see GEDCOM)
+	 */
 	public void setDatePrefix(String text) {
 		if (!nv(this.datePrefix).equals(nv(text))) {
 			toBeUpdated = true;
@@ -163,14 +232,24 @@ public class RelationNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return first date
+	 */
 	public String getFromDate() {
 		return fromDate;
 	}
 
+	/**
+	 * @return second part of dateinterval
+	 */
 	public String getToDate() {
 		return toDate;
 	}
 
+	/**
+	 * @param text
+	 *            second part of dateinterval
+	 */
 	public void setToDate(String text) {
 		if (!nv(this.toDate).equals(nv(text))) {
 			toBeUpdated = true;
@@ -179,14 +258,24 @@ public class RelationNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return place
+	 */
 	public String getPlace() {
 		return place;
 	}
 
+	/**
+	 * @return notetext
+	 */
 	public String getNoteText() {
 		return trim(noteText);
 	}
 
+	/**
+	 * @param text
+	 *            = note text
+	 */
 	public void setNoteText(String text) {
 		if (!nv(this.noteText).equals(nv(text))) {
 			toBeUpdated = true;
@@ -195,18 +284,30 @@ public class RelationNotice implements Serializable {
 
 	}
 
+	/**
+	 * @return source
+	 */
 	public String getSource() {
 		return trim(sourceText);
 	}
 
+	/**
+	 * @return private text
+	 */
 	public String getPrivateText() {
 		return trim(privateText);
 	}
 
+	/**
+	 * @return when created
+	 */
 	public Timestamp getCreated() {
 		return created;
 	}
 
+	/**
+	 * @return when modified
+	 */
 	public Timestamp getModified() {
 		return modified;
 	}
@@ -226,10 +327,16 @@ public class RelationNotice implements Serializable {
 		return tag + "/" + type + "/" + description;
 	}
 
+	/**
+	 * @param surety
+	 */
 	public void setSurety(int surety) {
 		this.surety = surety;
 	}
 
+	/**
+	 * @return surety (0,20,40,60,80,100)
+	 */
 	public int getSurety() {
 		return surety;
 	}

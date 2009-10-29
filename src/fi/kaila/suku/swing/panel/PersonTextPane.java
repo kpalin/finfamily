@@ -5,8 +5,11 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -25,6 +28,13 @@ import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
+/**
+ * 
+ * database draft text is shown here
+ * 
+ * @author Kalle
+ * 
+ */
 public class PersonTextPane extends JTextPane {
 
 	/**
@@ -33,6 +43,11 @@ public class PersonTextPane extends JTextPane {
 	private static final long serialVersionUID = 1L;
 	private AbstractDocument doc;
 
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * default constructor
+	 */
 	public PersonTextPane() {
 
 		doc = new SukuDocument();
@@ -43,14 +58,18 @@ public class PersonTextPane extends JTextPane {
 			doc = (AbstractDocument) styledDoc;
 			doc.setDocumentFilter(new DocumentSukuFilter());
 		} else {
-			System.err
-					.println("Text pane's document isn't an AbstractDocument!");
-			// FIXME: Invoking System.exit shuts down the entire Java virtual
-			// machine.
-			System.exit(-1);
+			JOptionPane.showMessageDialog(this, "FAIELD TO START DOCUMENT",
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
+			logger.log(Level.WARNING, "CLOSE");
+			return;
+
 		}
 	}
 
+	/**
+	 * @return the doc
+	 */
 	public AbstractDocument getDoc() {
 		return doc;
 	}
@@ -62,6 +81,13 @@ public class PersonTextPane extends JTextPane {
 
 	}
 
+	/**
+	 * init the pane
+	 * 
+	 * @param pers
+	 * @param relations
+	 * @param namlist
+	 */
 	public void initPerson(PersonLongData pers, Relation[] relations,
 			PersonShortData[] namlist) {
 
@@ -291,7 +317,6 @@ public class PersonTextPane extends JTextPane {
 					bl = "";
 
 				}
-				// TODO do media
 
 				bl = appendName(bodyBold, underlinedBold, bl, notice
 						.getGivenname(), notice.getPatronym(), notice
@@ -521,8 +546,8 @@ public class PersonTextPane extends JTextPane {
 			// doc.insertString(0, "Kallen koetta", attrs);
 
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "FAILED", e);
+
 		}
 
 	}
@@ -574,34 +599,5 @@ public class PersonTextPane extends JTextPane {
 		return bl;
 
 	}
-
-	// SimpleAttributeSet bigTimes = new SimpleAttributeSet();
-	// StyleConstants.setFontFamily(bigTimes, "Times New Roman");
-	// StyleConstants.setFontSize(bigTimes, 28);
-	//	
-	// SimpleAttributeSet niceArial = new SimpleAttributeSet();
-	// StyleConstants.setFontFamily(niceArial, "Arial");
-	// StyleConstants.setFontSize(niceArial, 13);
-	//	
-	// SimpleAttributeSet blueForte = new SimpleAttributeSet();
-	// StyleConstants.setFontFamily(blueForte, "Forte");
-	// StyleConstants.setFontSize(blueForte, 15);
-	// StyleConstants.setForeground(blueForte, Color.blue);
-	//
-	//	
-	// try {
-	// AbstractDocument doc = textPerson.getDoc();
-	//		
-	// doc.remove(0, doc.getLength());
-	//		
-	// doc.insertString(0, "Text koetta for " + person.getTextName()+"\n",
-	// bigTimes);
-	// // doc.insertString(0, "Kallen koetta", attrs);
-	//		
-	//		
-	// } catch (BadLocationException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
 
 }

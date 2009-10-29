@@ -10,6 +10,13 @@ import javax.swing.JPopupMenu;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.PersonShortData;
 
+/**
+ * 
+ * popupmenu for database view
+ * 
+ * @author Kalle
+ * 
+ */
 public class SukuPopupMenu {
 
 	private static SukuPopupMenu me = null;
@@ -27,12 +34,23 @@ public class SukuPopupMenu {
 	private JMenuItem pReport = null;
 	private PersonShortData currentPerson = null;
 
+	/**
+	 * enables the hiskpperson menu
+	 * 
+	 * @param idx
+	 * @param b
+	 */
 	public void enableHiskiPerson(int idx, boolean b) {
 		if (idx >= 0 && idx < pHiskiPerson.length) {
 			pHiskiPerson[idx].setVisible(b);
 		}
 	}
 
+	/**
+	 * add all actionlisteners for menu commands
+	 * 
+	 * @param l
+	 */
 	public void addActionListener(ActionListener l) {
 		pShowPerson.addActionListener(l);
 		pMainPerson.addActionListener(l);
@@ -46,16 +64,32 @@ public class SukuPopupMenu {
 		}
 	}
 
+	/**
+	 * 
+	 * sets person on whom menu is shown
+	 * 
+	 * @param person
+	 */
 	public void setPerson(PersonShortData person) {
 		this.currentPerson = person;
 		// pShowPerson.setText(person.getAlfaName());
 		pMainPerson.setText(person.getAlfaName());
 	}
 
+	/**
+	 * @return the person for the meny
+	 */
 	public PersonShortData getPerson() {
 		return currentPerson;
 	}
 
+	/**
+	 * show menu at location
+	 * 
+	 * @param e
+	 * @param x
+	 * @param y
+	 */
 	public void show(MouseEvent e, int x, int y) {
 		pMenu.show(e.getComponent(), x, y);
 	}

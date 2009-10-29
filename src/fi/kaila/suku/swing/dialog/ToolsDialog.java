@@ -30,6 +30,13 @@ import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
+/**
+ * This dialog is now defining notice order possible other tasks will be done
+ * here later
+ * 
+ * @author Kalle
+ * 
+ */
 public class ToolsDialog extends JDialog implements ActionListener,
 		PropertyChangeListener, MouseListener {
 
@@ -52,6 +59,9 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	private JProgressBar progressBar;
 	private Task task;
 
+	/**
+	 * @return handle to this instance
+	 */
 	public static ToolsDialog getRunner() {
 		return runner;
 	}
@@ -70,6 +80,9 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	private Suku owner = null;
 	private static ToolsDialog runner = null;
 
+	/**
+	 * @param owner
+	 */
 	public ToolsDialog(Suku owner) {
 		super(owner, Resurses.getString("DIALOG_SORT_NOTICES"), true);
 		this.owner = owner;
@@ -231,6 +244,13 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * progressbar text is split with ; before ; is number 0-100 to show on
+	 * progressbar. After ; is shown in text field if no ; exists then text is
+	 * shown in textfiels
+	 * 
+	 * @param juttu
+	 */
 	public void setRunnerValue(String juttu) {
 		String[] kaksi = juttu.split(";");
 		if (kaksi.length >= 2) {
@@ -413,25 +433,21 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 

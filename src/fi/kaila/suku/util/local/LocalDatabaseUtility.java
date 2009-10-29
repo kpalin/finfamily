@@ -20,6 +20,11 @@ public class LocalDatabaseUtility {
 	private static Logger logger = Logger.getLogger(LocalDatabaseUtility.class
 			.getName());
 
+	/**
+	 * @param con
+	 * @return list of available databases
+	 * @throws SukuException
+	 */
 	public static String[] getListOfDatabases(Connection con)
 			throws SukuException {
 
@@ -48,9 +53,13 @@ public class LocalDatabaseUtility {
 
 	}
 
+	/**
+	 * @param con
+	 * @return list of available users
+	 * @throws SukuException
+	 */
 	// cmd.CommandText =
 	// "select rolname from pg_roles where rolname != 'postgres' ";
-
 	public static String[] getListOfUsers(Connection con) throws SukuException {
 
 		String sql = "select rolname from pg_roles where rolname != 'postgres' order by rolname ";

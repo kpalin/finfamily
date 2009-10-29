@@ -17,8 +17,27 @@ import fi.kaila.suku.util.pojo.ReportUnit;
  */
 public class Utils {
 
+	/**
+	 * enumerator for source of person for drag-and-drop
+	 * 
+	 */
 	public enum PersonSource {
-		DATABASE, PARENT, SPOUSE, CHILD
+		/**
+		 * Database table
+		 */
+		DATABASE,
+		/**
+		 * parent table
+		 */
+		PARENT,
+		/**
+		 * spouse table
+		 */
+		SPOUSE,
+		/**
+		 * child table
+		 */
+		CHILD
 	}
 
 	/**

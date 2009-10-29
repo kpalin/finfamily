@@ -14,6 +14,13 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 
+/**
+ * 
+ * Dialog to add relation notice
+ * 
+ * @author Kalle
+ * 
+ */
 public class AddRelationNotice extends JDialog implements ActionListener,
 		MouseListener {
 
@@ -27,6 +34,14 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 
 	private String selectedTag = null;
 
+	/**
+	 * 
+	 * Constructor
+	 * 
+	 * @param owner
+	 * @param isMarriage
+	 * @throws SukuException
+	 */
 	public AddRelationNotice(Suku owner, boolean isMarriage)
 			throws SukuException {
 		super(owner, Resurses.getString("DIALOG_ADD_NOTICE"), true);
@@ -64,6 +79,9 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * @return tag to be added
+	 */
 	public String getSelectedTag() {
 		return selectedTag;
 	}

@@ -124,6 +124,12 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 	}
 
+	/**
+	 * get index of named column
+	 * 
+	 * @param colname
+	 * @return column index
+	 */
 	public int getCurrentIndex(String colname) {
 		int i;
 		int resu = 0;
@@ -142,6 +148,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		return -1;
 	}
 
+	/**
+	 * @param idx
+	 * @return name of indexed column
+	 */
 	public String getColName(int idx) {
 		return this.coltables[idx].getColName();
 	}
@@ -410,6 +420,11 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		return this.coltables.length;
 	}
 
+	/**
+	 * populate combobox for views
+	 * 
+	 * @param lista
+	 */
 	public void populateViewList(String[] lista) {
 		viewArray = lista;
 		viewList.removeAllItems();
@@ -537,6 +552,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			return this.chk;
 		}
 
+		/**
+		 * @param state
+		 *            the column state (true = show column)
+		 */
 		public void setCurrentState(boolean state) {
 			this.currState = state;
 		}
@@ -582,6 +601,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		return null;
 	}
 
+	/**
+	 * @return no of fields
+	 */
 	public int getFieldCount() {
 		int addCol = 0;
 		for (int i = 1; i < 4; i++) {
@@ -594,6 +616,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		return 13 + addCol;
 	}
 
+	/**
+	 * @param idx
+	 * @return contents of requested field idx
+	 */
 	public String getCriteriaField(int idx) {
 		int vid;
 		switch (idx) {
@@ -634,6 +660,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		}
 	}
 
+	/**
+	 * @param idx
+	 * @return name of requested field idx
+	 */
 	public String getFieldName(int idx) {
 		switch (idx) {
 		case 0:

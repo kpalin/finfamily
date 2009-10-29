@@ -93,8 +93,7 @@ public class ReportUtil {
 			int round = females.size();
 			if (round > 0) {
 				unitMap = new HashMap<Integer, ReportUnit>();
-				// FIXME: lasttab not used. Can be removed?
-				lasttab = createDescendantTables(0, 0, chi, 1, generations,
+				createDescendantTables(0, 0, chi, 1, generations,
 						ReportWorkerDialog.SET_ORDER_NEWMALE, adopted, round);
 			}
 		}
@@ -615,6 +614,16 @@ public class ReportUtil {
 		}
 	}
 
+	/**
+	 * 
+	 * Create data for the descendant list (Excel report)
+	 * 
+	 * @param pid
+	 * @return result in Sukudata pers = list of persons, generalArray 0 tag,
+	 *         pidarray = generation of corresponding persons
+	 * @throws SukuException
+	 * @throws SQLException
+	 */
 	public SukuData createDescendantLista(int pid) throws SukuException,
 			SQLException {
 		descListaPersons = new Vector<PersonShortData>();

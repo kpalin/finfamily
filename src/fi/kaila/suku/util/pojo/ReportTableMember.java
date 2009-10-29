@@ -21,10 +21,16 @@ public class ReportTableMember implements Serializable {
 
 	private long tableNo = 0;
 
+	/**
+	 * @param table
+	 */
 	public void setTable(long table) {
 		tableNo = table;
 	}
 
+	/**
+	 * @return tableno
+	 */
 	public long getTable() {
 		return tableNo;
 	}
@@ -71,6 +77,9 @@ public class ReportTableMember implements Serializable {
 
 	private Vector<SubPersonMember> subs = new Vector<SubPersonMember>();
 
+	/**
+	 * @param asChild
+	 */
 	public void addAsChild(long asChild) {
 		for (int i = 0; i < alsoAsChild.size(); i++) {
 			if (asChild == alsoAsChild.get(i))
@@ -92,6 +101,9 @@ public class ReportTableMember implements Serializable {
 		subs.add(sub);
 	}
 
+	/**
+	 * sorts sub persons
+	 */
 	public void sortSubs() {
 		SubPersonMember[] subarray = subs.toArray(new SubPersonMember[0]);
 
@@ -143,6 +155,10 @@ public class ReportTableMember implements Serializable {
 		return subs.get(idx).getStrado();
 	}
 
+	/**
+	 * @param idx
+	 * @return dad or mom indicator for subperson
+	 */
 	public String getSubDadMom(int idx) {
 		long strado = subs.get(idx).getStrado();
 		String far = Resurses.getString("REPORT_F");
@@ -169,10 +185,16 @@ public class ReportTableMember implements Serializable {
 		return sb.toString();
 	}
 
+	/**
+	 * @return vector of tables where also as child
+	 */
 	public Vector<Long> getAlsoAsChild() {
 		return alsoAsChild;
 	}
 
+	/**
+	 * @return string with tableno, where as child
+	 */
 	public String getChildTables() {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < alsoAsChild.size(); i++) {
@@ -255,10 +277,18 @@ public class ReportTableMember implements Serializable {
 		return tag;
 	}
 
+	/**
+	 * set relative tag
+	 * 
+	 * @param value
+	 */
 	public void setRelTag(String value) {
 		reltag = value;
 	}
 
+	/**
+	 * @return the relative tag
+	 */
 	public String getRelTag() {
 		return reltag;
 	}

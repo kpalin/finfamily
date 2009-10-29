@@ -12,6 +12,13 @@ import javax.swing.JTextField;
 
 import fi.kaila.suku.util.Resurses;
 
+/**
+ * 
+ * The descendant part of report settings
+ * 
+ * @author Kalle
+ * 
+ */
 public class DescendantPane extends JPanel {
 
 	/**
@@ -25,6 +32,9 @@ public class DescendantPane extends JPanel {
 
 	private ButtonGroup tableOrder = null;
 
+	/**
+	 * setup pane
+	 */
 	public DescendantPane() {
 
 		int rtypx = 10;
@@ -141,6 +151,9 @@ public class DescendantPane extends JPanel {
 
 	}
 
+	/**
+	 * @return no of generations
+	 */
 	public int getGenerations() {
 
 		int gen = 0;
@@ -153,6 +166,9 @@ public class DescendantPane extends JPanel {
 		return gen;
 	}
 
+	/**
+	 * @return no of spouse ancestor generations
+	 */
 	public int getSpouseAncestors() {
 
 		int gen = 0;
@@ -165,6 +181,9 @@ public class DescendantPane extends JPanel {
 		return gen;
 	}
 
+	/**
+	 * @return no of child ancestor generations
+	 */
 	public int getChildAncestors() {
 
 		int gen = 0;
@@ -177,30 +196,44 @@ public class DescendantPane extends JPanel {
 		return gen;
 	}
 
+	/**
+	 * @return buttongroup for tableorder
+	 */
 	public ButtonGroup getTableOrder() {
 		return tableOrder;
 	}
 
-	public void setGenerations(String string) {
+	/**
+	 * set generations
+	 * 
+	 * @param string
+	 */
+	void setGenerations(String string) {
 		generations.setText(string);
 
 	}
 
-	public void setSpouseAncestors(String string) {
+	/**
+	 * @param string
+	 */
+	void setSpouseAncestors(String string) {
 		spouseAncestors.setText(string);
 
 	}
 
-	public void setChildAncestors(String string) {
+	void setChildAncestors(String string) {
 		childAncestors.setText(string);
 
 	}
 
+	/**
+	 * @return treu to show also adoped
+	 */
 	public boolean getAdopted() {
 		return adopted.isSelected();
 	}
 
-	public void setAdopted(boolean value) {
+	void setAdopted(boolean value) {
 		adopted.setSelected(value);
 
 	}

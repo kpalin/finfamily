@@ -28,6 +28,11 @@ public class PersonUtil {
 
 	private Connection con = null;
 
+	/**
+	 * Initlaize with database conmnection
+	 * 
+	 * @param con
+	 */
 	public PersonUtil(Connection con) {
 		this.con = con;
 
