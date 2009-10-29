@@ -2,7 +2,15 @@
 <opas title="Release notes">
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version.</p>
-<hdr>Release 97 on 28 Oct 2009</hdr>
+
+<hdr>Release 107 on 29 Oct 2009</hdr>
+<ul>
+<li>Removed xml format from report formats. xml-format is now additional format with .debug trailer when debug checkbox set</li>
+<li>Added optional numbering of images</li>
+<li>familytree bugfix. Showd subject as parents also</li>
+</ul>
+
+<hdr>Release 97 on 28 Oct 2009 ()</hdr>
 <ul>
 <li>Deleted files folder for html-report if empty. Moved stylesheet into html file so if no pictures then all in one file.</li>
 <li>Added image max width for reports</li>
