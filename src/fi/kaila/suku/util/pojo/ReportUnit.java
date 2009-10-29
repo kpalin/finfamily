@@ -117,7 +117,6 @@ public class ReportUnit implements Serializable {
 
 	/**
 	 * @param gen
-	 * @param gen
 	 *            = generation
 	 */
 	public void setGen(int gen) {
