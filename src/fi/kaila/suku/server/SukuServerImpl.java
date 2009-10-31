@@ -91,12 +91,11 @@ public class SukuServerImpl implements SukuServer {
 			String passwd) throws SukuException {
 		this.dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
 				+ userid;
+		logger.fine("Connection: " + this.dbConne + ";schema: " + this.schema);
 		if (passwd != null && !passwd.equals("")) {
 
 			this.dbConne += "&password=" + passwd;
 		}
-
-		logger.fine("Connection: " + this.dbConne + ";schema: " + this.schema);
 
 		try {
 			this.con = DriverManager.getConnection(this.dbConne);

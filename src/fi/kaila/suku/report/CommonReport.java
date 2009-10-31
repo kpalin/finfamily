@@ -7,6 +7,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
 import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ChildHeaderText;
 import fi.kaila.suku.report.style.ChildListText;
@@ -97,6 +99,8 @@ public class CommonReport {
 					"lang=" + Resurses.getLanguage());
 		} catch (SukuException e1) {
 			logger.log(Level.WARNING, "background reporting", e1);
+			JOptionPane.showMessageDialog(caller, e1.getMessage());
+			return;
 		}
 
 		// FIXME: Potential NPE

@@ -245,7 +245,7 @@ public class PersonShortData implements Serializable, Transferable,
 
 	/**
 	 * @param hasTodo
-	 *            i.e. a notice with tag TODO
+	 *            i.e. a notice with tag Todo
 	 */
 	public void setTodo(boolean hasTodo) {
 		this.hasTodo = hasTodo;

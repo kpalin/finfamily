@@ -652,7 +652,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		// c.setMaxWidth(checkWidth);
 
 		// c = modl.getColumn(3);
-		// FIXME: Not used. Can be removed?
+		// FIX-ME: Not used. Can be removed?
 		// if (false)
 		// System.out.println(c);
 

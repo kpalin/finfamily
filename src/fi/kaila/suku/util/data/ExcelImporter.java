@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jxl.Cell;
@@ -206,14 +207,10 @@ public class ExcelImporter {
 
 			workbook.close();
 
-		} catch (Exception e) {
-			// FIXME: Spaghetti code. This method uses a try-catch block that
-			// catches Exception objects, but Exception is not thrown within the
-			// try block, and RuntimeException is not explicitly caught. This
-			// construct also accidentally catches RuntimeException as well,
-			// masking potential bugs.
+		} catch (Throwable e) {
 			suk.resu = e.getMessage();
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Excel import", e);
+
 		}
 
 		return suk;

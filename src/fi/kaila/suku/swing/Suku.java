@@ -679,7 +679,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
+		logger.info("FinFamily [" + Resurses.getLanguage() + "] Version "
+				+ sukuVersion + " - Java Version: "
+				+ System.getProperty("java.version") + " from "
+				+ System.getProperty("java.vendor"));
 		// if (!this.isWebApp){
 		connectDb();
 		// }

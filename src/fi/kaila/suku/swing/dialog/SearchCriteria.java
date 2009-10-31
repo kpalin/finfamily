@@ -769,7 +769,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			Suku.kontroller.putPref(this, "viewGroup", viewGroup.getText());
 			int vid = this.getViewId();
 			preferredView = "";
-			if (vid > 0 && vid < viewArray.length) {
+			if (vid > 0 && vid <= viewArray.length) {
 
 				int ppnum = 0;
 

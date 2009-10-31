@@ -49,270 +49,193 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 		String cmd = a.getActionCommand();
 		if (cmd == null)
 			return;
-
-		if (cmd.equals(Resurses.TAB_PERSON)) {
-			try {
-				if (this.relativesPane.pop.getMousePerson() != null) {
-					this.relativesPane.personView
-							.displayPersonPane(relativesPane.pop
-									.getMousePerson().getPid());
-				}
-			} catch (SukuException e) {
-				logger.log(Level.WARNING, "Opening person "
-						+ relativesPane.pop.getMousePerson().getAlfaName(), e);
-				e.printStackTrace();
+		try {
+			if (cmd.equals(Resurses.TAB_PERSON)) {
+				doTabPerson();
 			}
-		}
-		if (cmd.equals(Resurses.TAB_PERSON_TEXT)) {
-			try {
+			if (cmd.equals(Resurses.TAB_PERSON_TEXT)) {
 				relativesPane.personView.setTextForPerson(relativesPane.pop
 						.getMousePerson());
-			} catch (SukuException e1) {
-				JOptionPane.showMessageDialog(null, "SHOW PERSON: "
-						+ relativesPane.pop.getPerson().getAlfaName()
-						+ " error " + e1.getMessage());
-				e1.printStackTrace();
 			}
-		}
-		if (cmd.equals(Resurses.TAB_FAMILY)) {
-			try {
+			if (cmd.equals(Resurses.TAB_FAMILY)) {
 				relativesPane.personView.setSubjectForFamily(relativesPane.pop
 						.getMousePerson());
-			} catch (SukuException e1) {
-				JOptionPane.showMessageDialog(null, "SHOW FAMILY: "
-						+ relativesPane.pop.getPerson().getAlfaName()
-						+ " error " + e1.getMessage());
-
-				e1.printStackTrace();
 			}
-		}
-		if (showTable == null)
-			return;
-		try {
-
+			if (showTable == null) {
+				return;
+			}
 			if (cmd.startsWith(Resurses.MENU_PASTE)) {
-				if (showTable == this.relativesPane.chilTab) {
-					// System.out.println("Lisätään siis lapseksi " +
-					// showNewPerson);
-					Relation rel = new Relation(0, this.relativesPane.longPers
-							.getPid(), showNewPerson.getPid(), "CHIL", 100,
-							null, null);
-					rel.setShortPerson(showNewPerson);
-					// String tag =
-					// (longPers.getSex().equals("M"))?"MOTH":"FATH";
-					// SukuData pareDat =
-					// Suku.kontroller.getSukuData("cmd=relatives",
-					// "pid="+showNewPerson.getPid(),"tag="+tag);
-					// if (pareDat.pidArray != null &&
-					// pareDat.pidArray.length>0){
-					// int parePid = pareDat.pidArray[0];
-					// PersonShortData pp = persMap.get(rel.getRelative());
-					// if (pp != null) {
-					// pp.setParentPid(parePid);
-					//							
-					// }
-					// }
-					try {
-						this.relativesPane
-								.checkLocalRelation(new PersonShortData(
-										this.relativesPane.longPers), rel,
-										showNewPerson);
-					} catch (SukuException e) {
-						JOptionPane.showMessageDialog(
-								this.relativesPane.personView, e.getMessage(),
-								Resurses.getString(Resurses.SUKU),
-								JOptionPane.ERROR_MESSAGE);
+				doPaste(cmd);
+			}
 
-						return;
-					}
-					// if (pasteAtRow < 0){
-					// children.list.add(rel);
-					// } else {
-					if (cmd.equals(Resurses.MENU_PASTE_BEFORE)
-							&& pasteAtRow >= 0) {
-						this.relativesPane.children.list.insertElementAt(rel,
-								pasteAtRow);
-					} else if (cmd.equals(Resurses.MENU_PASTE_AFTER)
-							&& pasteAtRow >= 0) {
-						// int rows = chilTab.getRowCount();
-						// if (pasteAtRow < rows-1){
-						pasteAtRow++;
-						// }
-						this.relativesPane.children.list.insertElementAt(rel,
-								pasteAtRow);
+			if (cmd.startsWith("PARE ")) {
+
+				doPare(cmd);
+
+			}
+		} catch (SukuException e) {
+			logger.log(Level.WARNING, "Opening person "
+					+ relativesPane.pop.getMousePerson().getAlfaName(), e);
+			JOptionPane.showMessageDialog(this.relativesPane.personView, e
+					.getMessage(), Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private void doPare(String cmd) throws SukuException {
+		if (showRela != null) {
+			int pareNo = -1;
+			try {
+				pareNo = Integer.parseInt(cmd.substring(5));
+			} catch (NumberFormatException ne) {
+				return;
+			}
+
+			PersonShortData mother = this.relativesPane.spouses.list
+					.get(pareNo).getShortPerson();
+
+			PersonShortData child = showRela.getShortPerson();
+			child.setParentPid(mother.getPid());
+
+			//
+			// add Relations for update purposes
+			//
+
+			String tag = "MOTH";
+			if (!this.relativesPane.longPers.getSex().equals("M")) {
+				tag = "FATH";
+			}
+			Relation rpare = new Relation(0, child.getPid(), mother.getPid(),
+					tag, 100, null, null);
+
+			this.relativesPane.checkLocalRelation(child, rpare, mother);
+
+			this.relativesPane.otherRelations.add(rpare);
+			showTable.updateUI();
+		}
+	}
+
+	private void doPaste(String cmd) throws SukuException {
+		if (showTable == this.relativesPane.chilTab) {
+			// System.out.println("Lisätään siis lapseksi " +
+
+			Relation rel = new Relation(0,
+					this.relativesPane.longPers.getPid(), showNewPerson
+							.getPid(), "CHIL", 100, null, null);
+			rel.setShortPerson(showNewPerson);
+
+			this.relativesPane.checkLocalRelation(new PersonShortData(
+					this.relativesPane.longPers), rel, showNewPerson);
+
+			if (cmd.equals(Resurses.MENU_PASTE_BEFORE) && pasteAtRow >= 0) {
+				this.relativesPane.children.list.insertElementAt(rel,
+						pasteAtRow);
+			} else if (cmd.equals(Resurses.MENU_PASTE_AFTER) && pasteAtRow >= 0) {
+
+				pasteAtRow++;
+
+				this.relativesPane.children.list.insertElementAt(rel,
+						pasteAtRow);
+			} else {
+				int newBirt = showNewPerson.getBirtYear();
+				if (newBirt == 0) {
+					if (pasteAtRow < 0
+							|| pasteAtRow >= this.relativesPane.children.list
+									.size() - 1) {
+						this.relativesPane.children.list.add(rel);
 					} else {
-						int newBirt = showNewPerson.getBirtYear();
-						if (newBirt == 0) {
-							if (pasteAtRow < 0
-									|| pasteAtRow >= this.relativesPane.children.list
-											.size() - 1) {
-								this.relativesPane.children.list.add(rel);
-							} else {
-								this.relativesPane.children.list
-										.insertElementAt(rel, pasteAtRow);
-							}
-						} else {
-							int birtIdx = -1;
-							for (int i = 0; i < this.relativesPane.children.list
-									.size(); i++) {
-								PersonShortData dd = this.relativesPane.children.list
-										.get(i).getShortPerson();
-								if (dd.getBirtYear() != 0
-										&& dd.getBirtYear() > newBirt) {
-									birtIdx = i;
-									break;
-								}
-							}
-
-							if (birtIdx >= 0) {
-								this.relativesPane.children.list
-										.insertElementAt(rel, birtIdx);
-							} else {
-								if (pasteAtRow >= 0
-										&& pasteAtRow < this.relativesPane.children.list
-												.size()) {
-									this.relativesPane.children.list
-											.insertElementAt(rel, pasteAtRow);
-								} else {
-									this.relativesPane.children.list.add(rel);
-								}
-							}
+						this.relativesPane.children.list.insertElementAt(rel,
+								pasteAtRow);
+					}
+				} else {
+					int birtIdx = -1;
+					for (int i = 0; i < this.relativesPane.children.list.size(); i++) {
+						PersonShortData dd = this.relativesPane.children.list
+								.get(i).getShortPerson();
+						if (dd.getBirtYear() != 0 && dd.getBirtYear() > newBirt) {
+							birtIdx = i;
+							break;
 						}
 					}
 
-					showTable.updateUI();
-				} else if (showTable == this.relativesPane.pareTab) {
-					// System.out.println("Lisätään siis vanhemmaksi " +
-					// showNewPerson);
-					String tag = "MOTH";
-					if (showNewPerson.getSex().equals("M")) {
-						tag = "FATH";
-					}
-					Relation rel = new Relation(0, this.relativesPane.longPers
-							.getPid(), showNewPerson.getPid(), tag, 100, null,
-							null);
-					rel.setShortPerson(showNewPerson);
-					try {
-						this.relativesPane
-								.checkLocalRelation(new PersonShortData(
-										this.relativesPane.longPers), rel,
-										showNewPerson);
-					} catch (SukuException e) {
-						JOptionPane.showMessageDialog(
-								this.relativesPane.personView, e.getMessage(),
-								Resurses.getString(Resurses.SUKU),
-								JOptionPane.ERROR_MESSAGE);
-
-						return;
-					}
-					if (this.relativesPane.parents.list.size() == 0
-							|| tag.equals("MOTH")) {
-						this.relativesPane.parents.list.add(rel);
+					if (birtIdx >= 0) {
+						this.relativesPane.children.list.insertElementAt(rel,
+								birtIdx);
 					} else {
-						this.relativesPane.parents.list.insertElementAt(rel, 0);
-					}
-					showTable.updateUI();
-				} else if (showTable == this.relativesPane.spouTab) {
-					// System.out.println("Lisätään siis puolisoksi " +
-					// showNewPerson);
-					String tag = "WIFE";
-					if (showNewPerson.getSex().equals("M")) {
-						tag = "HUSB";
-					}
-
-					Relation rel = new Relation(0, this.relativesPane.longPers
-							.getPid(), showNewPerson.getPid(), tag, 100, null,
-							null);
-					rel.setShortPerson(showNewPerson);
-
-					try {
-						this.relativesPane
-								.checkLocalRelation(new PersonShortData(
-										this.relativesPane.longPers), rel,
-										showNewPerson);
-					} catch (SukuException e) {
-						JOptionPane.showMessageDialog(
-								this.relativesPane.personView, e.getMessage(),
-								Resurses.getString(Resurses.SUKU),
-								JOptionPane.ERROR_MESSAGE);
-
-						return;
-					}
-
-					if (pasteAtRow < 0) {
-						this.relativesPane.spouses.list.add(rel);
-					} else {
-						if (cmd.equals(Resurses.MENU_PASTE_BEFORE)) {
-							this.relativesPane.spouses.list.insertElementAt(
+						if (pasteAtRow >= 0
+								&& pasteAtRow < this.relativesPane.children.list
+										.size()) {
+							this.relativesPane.children.list.insertElementAt(
 									rel, pasteAtRow);
 						} else {
-							if (pasteAtRow == this.relativesPane.spouses.list
-									.size() - 1) {
-								this.relativesPane.spouses.list.add(rel);
-							} else {
-
-								this.relativesPane.spouses.list
-										.insertElementAt(rel, pasteAtRow);
-							}
+							this.relativesPane.children.list.add(rel);
 						}
 					}
-					showTable.updateUI();
-				}
-			} else {
-				if (cmd.startsWith("PARE ")) {
-					// System.out.println("PARE:SHOWRELA: " + showRela);
-					if (showRela != null) {
-						int pareNo = -1;
-						try {
-							pareNo = Integer.parseInt(cmd.substring(5));
-						} catch (NumberFormatException ne) {
-							return;
-						}
-
-						PersonShortData mother = this.relativesPane.spouses.list
-								.get(pareNo).getShortPerson();
-
-						PersonShortData child = showRela.getShortPerson();
-						child.setParentPid(mother.getPid());
-
-						//
-						// add Relations for update purposes
-						//
-
-						String tag = "MOTH";
-						if (!this.relativesPane.longPers.getSex().equals("M")) {
-							tag = "FATH";
-						}
-						Relation rpare = new Relation(0, child.getPid(), mother
-								.getPid(), tag, 100, null, null);
-						try {
-							this.relativesPane.checkLocalRelation(child, rpare,
-									mother);
-						} catch (SukuException e) {
-							JOptionPane.showMessageDialog(
-									this.relativesPane.personView, e
-											.getMessage(), Resurses
-											.getString(Resurses.SUKU),
-									JOptionPane.ERROR_MESSAGE);
-
-							return;
-						}
-						this.relativesPane.otherRelations.add(rpare);
-						showTable.updateUI();
-					}
-
 				}
 			}
-		} catch (Exception e) {
-			// FIXME: Spaghetti code. This method uses a try-catch block that
-			// catches Exception objects, but Exception is not thrown within the
-			// try block, and RuntimeException is not explicitly caught. This
-			// construct also accidentally catches RuntimeException as well,
-			// masking potential bugs.
-			RelativesPane.logger.log(Level.WARNING, "Relatives action", e);
-			JOptionPane.showMessageDialog(this.relativesPane.personView
-					.getSuku(), "Relatives action" + ":" + e.getMessage());
 
+			showTable.updateUI();
+		} else if (showTable == this.relativesPane.pareTab) {
+
+			String tag = "MOTH";
+			if (showNewPerson.getSex().equals("M")) {
+				tag = "FATH";
+			}
+			Relation rel = new Relation(0,
+					this.relativesPane.longPers.getPid(), showNewPerson
+							.getPid(), tag, 100, null, null);
+			rel.setShortPerson(showNewPerson);
+
+			this.relativesPane.checkLocalRelation(new PersonShortData(
+					this.relativesPane.longPers), rel, showNewPerson);
+
+			if (this.relativesPane.parents.list.size() == 0
+					|| tag.equals("MOTH")) {
+				this.relativesPane.parents.list.add(rel);
+			} else {
+				this.relativesPane.parents.list.insertElementAt(rel, 0);
+			}
+			showTable.updateUI();
+		} else if (showTable == this.relativesPane.spouTab) {
+			// System.out.println("Lisätään siis puolisoksi " +
+
+			String tag = "WIFE";
+			if (showNewPerson.getSex().equals("M")) {
+				tag = "HUSB";
+			}
+
+			Relation rel = new Relation(0,
+					this.relativesPane.longPers.getPid(), showNewPerson
+							.getPid(), tag, 100, null, null);
+			rel.setShortPerson(showNewPerson);
+
+			this.relativesPane.checkLocalRelation(new PersonShortData(
+					this.relativesPane.longPers), rel, showNewPerson);
+
+			if (pasteAtRow < 0) {
+				this.relativesPane.spouses.list.add(rel);
+			} else {
+				if (cmd.equals(Resurses.MENU_PASTE_BEFORE)) {
+					this.relativesPane.spouses.list.insertElementAt(rel,
+							pasteAtRow);
+				} else {
+					if (pasteAtRow == this.relativesPane.spouses.list.size() - 1) {
+						this.relativesPane.spouses.list.add(rel);
+					} else {
+
+						this.relativesPane.spouses.list.insertElementAt(rel,
+								pasteAtRow);
+					}
+				}
+			}
+			showTable.updateUI();
+		}
+	}
+
+	private void doTabPerson() throws SukuException {
+		if (this.relativesPane.pop.getMousePerson() != null) {
+			this.relativesPane.personView.displayPersonPane(relativesPane.pop
+					.getMousePerson().getPid());
 		}
 	}
 

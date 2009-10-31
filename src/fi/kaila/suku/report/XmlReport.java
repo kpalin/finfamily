@@ -225,7 +225,7 @@ public class XmlReport implements ReportInterface {
 			}
 		}
 
-		logger.info("selected: " + filename);
+		logger.info("requested report : " + filename);
 
 		String tmp = f.getAbsolutePath().replace("\\", "/");
 		int i = tmp.lastIndexOf("/");
@@ -383,6 +383,7 @@ public class XmlReport implements ReportInterface {
 				dd.delete();
 			}
 			if (debugState) {
+				logger.info("raw xml-file stored at " + report + ".debug");
 				DOMSource docw = new DOMSource(doc);
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				TransformerFactory tfactory = TransformerFactory.newInstance();
@@ -395,6 +396,9 @@ public class XmlReport implements ReportInterface {
 			}
 
 			if (translator != null) {
+				logger.info("report will store at " + report);
+				File f = new File(translator);
+				logger.info("transformed with " + f.getAbsolutePath());
 				// redirect stderr to get transformation error data to the
 				// logger
 				PrintStream stderr = new PrintStream(barray);
@@ -412,7 +416,7 @@ public class XmlReport implements ReportInterface {
 				FileOutputStream fos = new FileOutputStream(report);
 				fos.write(bout.toByteArray());
 				fos.close();
-
+				logger.fine(report + " will be opened");
 				try {
 					String[] cmds = { "rundll32",
 							"url.dll,FileProtocolHandler", "" };
@@ -423,7 +427,7 @@ public class XmlReport implements ReportInterface {
 					//
 					// this should work on mac
 					//
-					// String [] macs = {"open","");
+					// String [] macs = {"open",report);
 					// macs[1] = report;
 					// Process p = Runtime.getRuntime().exec(macs);
 
@@ -433,23 +437,7 @@ public class XmlReport implements ReportInterface {
 				}
 
 			}
-			// else {
-			//
-			// DOMSource docw = new DOMSource(doc);
-			// ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			// TransformerFactory tfactory = TransformerFactory.newInstance();
-			//
-			// Transformer transformer = tfactory.newTransformer();//
-			// transformer.transform(docw, new StreamResult(bout));
-			// FileOutputStream fos = new FileOutputStream(report);
-			// fos.write(bout.toByteArray());
-			// fos.close();
-			// }
-			// } catch (TransformerConfigurationException tce) {
-			// String tt1 = tce.getLocationAsString();
-			// String tt2 = tce.getMessageAndLocation();
-			// System.out.println(tt1);
-			// System.out.println(tt2);
+
 		} catch (Throwable e) {
 			logger.log(Level.WARNING, barray.toString());
 			logger.log(Level.WARNING, e.getMessage(), e);

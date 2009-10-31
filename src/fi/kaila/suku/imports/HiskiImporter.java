@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -478,9 +479,6 @@ public class HiskiImporter extends JFrame implements ActionListener {
 		String requri; // http://hiski.genealogia.fi/hiski?fi+t23806+xml
 		int resu;
 
-		// String paras[] = new String[params.length];
-		// "suku?userno="+this.userno+"&person=" + pid
-
 		sb.append("hiski?fi+t");
 
 		String hiskiNumStr = this.hiskiNumber.getText();
@@ -527,9 +525,10 @@ public class HiskiImporter extends JFrame implements ActionListener {
 
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Hsiki fetching", e);
+			return;
 		}
-		// FIXME: Potential NPE
+
 		Element docEle = doc.getDocumentElement();
 		Element ele;
 		NodeList nl = docEle.getElementsByTagName("tapahtuma");

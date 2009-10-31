@@ -207,7 +207,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private HashMap<String, Integer> typeTexts = new HashMap<String, Integer>();
 	private HashMap<String, String> textTexts = new HashMap<String, String>();
 
+	String[] viewnames = null;
+	int[] viewids = null;
+
 	private ButtonGroup listaGroup = null;
+
+	private JComboBox viewlist = null;
 	private ButtonGroup spouseData = null;
 
 	private JComboBox settingsName = null;
@@ -730,6 +735,27 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		listad.setActionCommand("REPORT.LISTA.PERSONCARDS");
 		listaGroup.add(listad);
 
+		try {
+			SukuData vlist = kontroller.getSukuData("cmd=viewlist");
+			viewnames = new String[vlist.generalArray.length + 1];
+
+			viewids = new int[vlist.generalArray.length + 1];
+			viewnames[0] = "";
+			viewids[0] = 0;
+			for (int i = 0; i < vlist.generalArray.length; i++) {
+				String[] parts = vlist.generalArray[i].split(";");
+				viewnames[i + 1] = parts[1];
+				viewids[i + 1] = Integer.parseInt(parts[0]);
+			}
+
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
+
+		viewlist = new JComboBox(viewnames);
+		listaPanel.add(viewlist);
+		viewlist.setBounds(10, tabh - 60, 200, 20);
+
 		lb = new JLabel(Resurses.getString("REPORT.SETTINGS.NAME"));
 		lb.setBounds(x1 + 20, y3, 100, 20);
 		add(lb);
@@ -839,6 +865,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			boolean indexYears = false;
 			boolean descendantAdopted = false;
 			boolean ancestorFamily = false;
+			int vid = 0;
 			for (int i = 0; i < sets.vvTypes.size(); i++) {
 
 				vx = sets.vvTypes.get(i);
@@ -848,6 +875,17 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					numberImages = true;
 				} else if (vx[0].equals("images")) {
 					withImages = true;
+				} else if (vx[0].equals("viewId")) {
+					try {
+						vid = Integer.parseInt(vx[1]);
+					} catch (NumberFormatException ne) {
+					}
+					for (int j = 0; j < viewids.length; j++) {
+						if (viewids[j] == vid) {
+							viewlist.setSelectedIndex(j);
+							break;
+						}
+					}
 				} else if (vx[0].equals("imagewidth")) {
 					commonImageWidth.setText(vx[1]);
 				} else if (vx[0].equals("separate")) {
@@ -1157,6 +1195,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			v.add("listaGroup=" + model.getActionCommand());
 		}
 
+		int vidx = viewlist.getSelectedIndex();
+		int viid = viewids[vidx];
+		v.add("viewId=" + viid);
 		int typeCount = typesTable.getRowCount();
 
 		for (int row = 0; row < typeCount; row++) {
@@ -1211,6 +1252,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				ReportInterface repo = null;
 
 				int formatIdx = commonReportFormatList.getSelectedIndex();
+
 				if (formatIdx == 0) {
 					repo = new JavaReport();
 				} else {

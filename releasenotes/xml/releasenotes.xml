@@ -10,7 +10,7 @@
 <li>familytree bugfix. Showd subject as parents also</li>
 </ul>
 
-<hdr>Release 97 on 28 Oct 2009 ()</hdr>
+<hdr>Release 97 on 28 Oct 2009 (7)</hdr>
 <ul>
 <li>Deleted files folder for html-report if empty. Moved stylesheet into html file so if no pictures then all in one file.</li>
 <li>Added image max width for reports</li>
