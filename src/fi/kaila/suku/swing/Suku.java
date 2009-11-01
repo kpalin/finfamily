@@ -175,8 +175,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mDisconnect;
 	private JMenuItem mPrintPerson;
 	private JMenuItem mNewPerson;
-	private JMenuItem mTestSave;
-	private JMenuItem mTestOpen;
+	// private JMenuItem mTestSave;
+	// private JMenuItem mTestOpen;
 	private JMenuItem mShowInMap;
 	// private JMenuItem mReport;
 	private JMenuItem mExit;

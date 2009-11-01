@@ -29,6 +29,7 @@ public class SukuTabPane extends JScrollPane {
 		this.title = Resurses.getString(title);
 		this.pnl = pnl;
 		this.tip = Resurses.getString(title + "_TIP");
+
 	}
 
 	SukuTabPane(String title, Component pnl, String tip) {

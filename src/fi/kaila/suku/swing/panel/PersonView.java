@@ -1,5 +1,6 @@
 package fi.kaila.suku.swing.panel;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -84,11 +85,11 @@ public class PersonView extends JPanel implements ChangeListener {
 		famPanel.setOpaque(false);
 
 		addTab(new SukuTabPane(Resurses.TAB_FAMILY, famPanel));
-
+		tabbedPane.setForegroundAt(0, Color.BLUE);
 		PersonTextPane textPerson = new PersonTextPane();
 
 		addTab(new SukuTabPane(Resurses.TAB_PERSON_TEXT, textPerson));
-
+		tabbedPane.setForegroundAt(1, Color.BLUE);
 		add(this.tabbedPane);
 
 	}
