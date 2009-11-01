@@ -58,8 +58,8 @@ public class SuomiMap extends JFrame implements ActionListener {
 	JMenu mFile;
 	JMenuItem mGrid;
 
-	JTextArea currentPlace;
-	JTextArea missingPlaceList;
+	JTextArea currentPlaces;
+	JTextArea missingPlacesList;
 
 	private Rectangle suomiSize = new Rectangle();
 
@@ -118,10 +118,10 @@ public class SuomiMap extends JFrame implements ActionListener {
 		lbl.setBounds(20 + kartta.getWidth(), 0, 200, 20);
 		this.getContentPane().add(lbl);
 
-		this.currentPlace = new JTextArea("");
+		this.currentPlaces = new JTextArea("");
 		// this.currentPlace.setFont(fnt);
-		this.currentPlace.setEditable(false);
-		JScrollPane jsc = new JScrollPane(this.currentPlace);
+		this.currentPlaces.setEditable(false);
+		JScrollPane jsc = new JScrollPane(this.currentPlaces);
 		jsc.setBounds(20 + kartta.getWidth(), 20, 160, 100);
 		this.getContentPane().add(jsc);
 
@@ -129,9 +129,9 @@ public class SuomiMap extends JFrame implements ActionListener {
 		lbl.setBounds(20 + kartta.getWidth(), 120, 200, 20);
 		this.getContentPane().add(lbl);
 
-		this.missingPlaceList = new JTextArea();
-		this.missingPlaceList.setEditable(false);
-		JScrollPane js = new JScrollPane(this.missingPlaceList);
+		this.missingPlacesList = new JTextArea();
+		this.missingPlacesList.setEditable(false);
+		JScrollPane js = new JScrollPane(this.missingPlacesList);
 		js
 				.setBounds(20 + kartta.getWidth(), 140, 160,
 						kartta.getHeight() - 140);
@@ -179,7 +179,7 @@ public class SuomiMap extends JFrame implements ActionListener {
 						+ ")\n");
 			}
 		}
-		missingPlaceList.setText(sb.toString());
+		missingPlacesList.setText(sb.toString());
 
 		// JOptionPane.showMessageDialog(this, "Paikkoja [" + paikkoja +
 		// "]. Käynti no " + lukuri);
@@ -329,26 +329,30 @@ public class SuomiMap extends JFrame implements ActionListener {
 								place.getCount());
 
 						if (rec.contains(x, y)) {
-							String nytPaikka = place.getName() + "("
+							String selectedPlace = place.getName() + "("
 									+ place.getCount() + ")";
-							String olde = currentPlace.getText();
+							String olde = currentPlaces.getText();
 
-							String[] rivit = olde.split("\n");
+							String[] oldPlaces = olde.split("\n");
 
 							StringBuffer sb = new StringBuffer();
-							sb.append(nytPaikka);
-							sb.append("\n");
 							int rc = 8;
-							if (rivit.length < 8) {
-								rc = rivit.length;
+							if (oldPlaces.length < 8) {
+								rc = oldPlaces.length;
 							}
 							for (int i = 0; i < rc; i++) {
-								if (!nytPaikka.equals(rivit[i])) {
-									sb.append(rivit[i]);
-									sb.append("\n");
+								if (!selectedPlace.equals(oldPlaces[i])) {
+									if (i == 0 && rc == 8) {
+										// don't add
+									} else {
+										sb.append(oldPlaces[i]);
+										sb.append("\n");
+									}
 								}
 							}
-							currentPlace.setText(sb.toString());
+							sb.append(selectedPlace);
+							sb.append("\n");
+							currentPlaces.setText(sb.toString());
 						}
 					}
 				}
