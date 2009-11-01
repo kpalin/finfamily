@@ -185,7 +185,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	private JCheckBox commonWithImages = null;
-	private JTextField commonImageWidth = null;
+	private JTextField commonImageHeight = null;
+	private JTextField commonPersonImageHeight = null;
 	private JCheckBox commonNumberImages = null;
 	private JCheckBox commonBendNames = null;
 	private JCheckBox commonSeparateNotices = null;
@@ -277,11 +278,22 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
-	 * @return max width of image (in pixels)
+	 * @return max height of image (in pixels)
 	 */
-	public int getImageMaxWidth() {
+	public int getImageMaxHeight() {
 		try {
-			return Integer.parseInt(commonImageWidth.getText());
+			return Integer.parseInt(commonImageHeight.getText());
+		} catch (NumberFormatException ne) {
+			return 0;
+		}
+	}
+
+	/**
+	 * @return max height of pewrsonimage (in pixels)
+	 */
+	public int getPersonImageMaxHeight() {
+		try {
+			return Integer.parseInt(commonPersonImageHeight.getText());
 		} catch (NumberFormatException ne) {
 			return 0;
 		}
@@ -512,48 +524,56 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		commonWithImages.setBounds(x4, y1, 160, 20);
 		add(commonWithImages);
 
-		commonImageWidth = new JTextField();
-		commonImageWidth.setBounds(x4, y1 + 22, 60, 20);
-		add(commonImageWidth);
+		commonImageHeight = new JTextField();
+		commonImageHeight.setBounds(x4, y1 + 22, 60, 20);
+		add(commonImageHeight);
 
-		lb = new JLabel(Resurses.getString("REPORT.IMAGE.WIDTH"));
+		lb = new JLabel(Resurses.getString("REPORT.IMAGE.HEIGHT"));
 		add(lb);
 		lb.setBounds(x4 + 64, y1 + 22, 100, 20);
 
+		commonPersonImageHeight = new JTextField();
+		commonPersonImageHeight.setBounds(x4, y1 + 44, 60, 20);
+		add(commonPersonImageHeight);
+
+		lb = new JLabel(Resurses.getString("REPORT.PERSONIMAGE.HEIGHT"));
+		add(lb);
+		lb.setBounds(x4 + 64, y1 + 44, 100, 20);
+
 		commonNumberImages = new JCheckBox(Resurses
 				.getString("REPORT.IMAGE.NUMBER"), true);
-		commonNumberImages.setBounds(x4, y1 + 44, 160, 20);
+		commonNumberImages.setBounds(x4, y1 + 66, 160, 20);
 		add(commonNumberImages);
 
 		commonBendNames = new JCheckBox(Resurses.getString("REPORT.BENDNAMES"),
 				true);
-		commonBendNames.setBounds(x4, y1 + 66, 160, 20);
+		commonBendNames.setBounds(x4, y1 + 88, 160, 20);
 		add(commonBendNames);
 
 		commonSeparateNotices = new JCheckBox(Resurses
 				.getString("REPORT.SEPARATENOTICES"), true);
-		commonSeparateNotices.setBounds(x4, y1 + 88, 160, 20);
+		commonSeparateNotices.setBounds(x4, y1 + 110, 160, 20);
 		add(commonSeparateNotices);
 
 		commonDateFormatGroup = new ButtonGroup();
 
 		commonNamesBold = new JCheckBox(Resurses.getString("REPORT.NAME.BOLD"));
-		commonNamesBold.setBounds(x4, y1 + 110, 160, 20);
+		commonNamesBold.setBounds(x4, y1 + 132, 160, 20);
 		add(commonNamesBold);
 
 		commonNamesUnderline = new JCheckBox(Resurses
 				.getString("REPORT.NAME.UNDERLINE"));
-		commonNamesUnderline.setBounds(x4, y1 + 132, 160, 20);
+		commonNamesUnderline.setBounds(x4, y1 + 154, 160, 20);
 		add(commonNamesUnderline);
 
 		commonWithAddress = new JCheckBox(Resurses
 				.getString("REPORT.WITHADDERSS"), true);
-		commonWithAddress.setBounds(x4, y1 + 154, 160, 20);
+		commonWithAddress.setBounds(x4, y1 + 176, 160, 20);
 		add(commonWithAddress);
 
 		spouseData = new ButtonGroup();
 
-		int rtypy = y1 + 174;
+		int rtypy = y1 + 198;
 		pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.DESC.SPOUSE")));
@@ -887,7 +907,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						}
 					}
 				} else if (vx[0].equals("imagewidth")) {
-					commonImageWidth.setText(vx[1]);
+					commonImageHeight.setText(vx[1]);
+				} else if (vx[0].equals("personimagewidth")) {
+					commonPersonImageHeight.setText(vx[1]);
 				} else if (vx[0].equals("separate")) {
 					separateNotices = true;
 				} else if (vx[0].equals("bold")) {
@@ -1118,11 +1140,15 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			v.add("images=true");
 		}
 		try {
-			int ww = Integer.parseInt(commonImageWidth.getText());
+			int ww = Integer.parseInt(commonImageHeight.getText());
 			v.add("imagewidth=" + ww);
 		} catch (NumberFormatException ne) {
 		}
-
+		try {
+			int ww = Integer.parseInt(commonPersonImageHeight.getText());
+			v.add("personimagewidth=" + ww);
+		} catch (NumberFormatException ne) {
+		}
 		v.add("format=" + "" + commonReportFormatList.getSelectedIndex());
 
 		if (commonBendNames.getSelectedObjects() != null) {

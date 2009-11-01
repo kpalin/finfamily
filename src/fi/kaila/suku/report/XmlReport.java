@@ -60,7 +60,8 @@ public class XmlReport implements ReportInterface {
 	private String translator = null;
 	private String report = null;
 	private String folder = null;
-	private int maxImageWidth = 0;
+	private int maxImageHeight = 0;
+	private int maxPersonImageHeight = 0;
 	private int translatorIdx;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -84,7 +85,8 @@ public class XmlReport implements ReportInterface {
 		this.parent = parent;
 		this.title = title;
 		this.translatorIdx = translatorIdx;
-		maxImageWidth = parent.getImageMaxWidth();
+		maxImageHeight = parent.getImageMaxHeight();
+		maxPersonImageHeight = parent.getPersonImageMaxHeight();
 		debugState = parent.getDebugState();
 		switch (translatorIdx) {
 		case 1:
@@ -249,12 +251,13 @@ public class XmlReport implements ReportInterface {
 		int imgWidth = 0;
 		int imgHeight = 0;
 		String img = null;
+		boolean isPersonImage = false;
 		if (bt instanceof ImageText) {
 			ImageText it = (ImageText) bt;
 			imgWidth = it.getWidth();
 			imgHeight = it.getHeight();
 			imgTitle = it.getImageTitle();
-
+			isPersonImage = it.isPersonImage();
 			imageCounter++;
 			imgName = "" + imageCounter + "_" + it.getImageName();
 			File ff = new File(folder + "/" + imgName);
@@ -296,21 +299,29 @@ public class XmlReport implements ReportInterface {
 				ele.setAttribute("imageNo", "" + imageCounter);
 			}
 			ele.setAttribute("imageName", Resurses.getString("REPORT.IMAGE"));
-			if (imgWidth > maxImageWidth) {
-				float mw = maxImageWidth;
+			int maxHeight = maxImageHeight;
+			if (isPersonImage) {
+				maxHeight = maxPersonImageHeight;
+			}
 
-				float multip = mw / imgWidth;
+			if (imgHeight > maxHeight) {
+
+				float mh = maxHeight;
+
+				float multip = mh / imgHeight;
 				float w = imgWidth * multip;
 				float h = imgHeight * multip;
 
-				if (w > 10) {
+				if (h > 10) {
 					ele.setAttribute("width", "" + w);
 					ele.setAttribute("height", "" + h);
 				}
+
 			} else {
 				ele.setAttribute("width", "" + imgWidth);
 				ele.setAttribute("height", "" + imgHeight);
 			}
+
 			if (img != null) {
 				iii = doc.createElement("media");
 				iii.setTextContent(img);

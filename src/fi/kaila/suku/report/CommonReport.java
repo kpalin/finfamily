@@ -845,11 +845,10 @@ public class CommonReport {
 								Image imgs = img.getScaledInstance((int) neww,
 										(int) newh, Image.SCALE_DEFAULT);
 
-								imagetx
-										.setImage(imgs, nn.getMediaData(), img
-												.getWidth(), img.getHeight(),
-												nn.getMediaFilename(), nn
-														.getMediaTitle());
+								imagetx.setImage(imgs, nn.getMediaData(), img
+										.getWidth(), img.getHeight(), nn
+										.getMediaFilename(),
+										nn.getMediaTitle(), nn.getTag());
 								imagetx.addText("");
 							}
 							// if (nn.getMediaTitle() != null) {
