@@ -22,12 +22,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -65,7 +61,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
-import javax.swing.text.StyledDocument;
 
 import fi.kaila.suku.imports.Import2004Dialog;
 import fi.kaila.suku.kontroller.SukuKontroller;
@@ -396,15 +391,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mPrintPerson.setActionCommand(Resurses.PRINT_PERSON);
 		this.mPrintPerson.addActionListener(this);
 
-		this.mTestOpen = new JMenuItem(Resurses.getString(Resurses.TEST_OPEN));
-		this.mFile.add(this.mTestOpen);
-		this.mTestOpen.setActionCommand(Resurses.TEST_OPEN);
-		this.mTestOpen.addActionListener(this);
-
-		this.mTestSave = new JMenuItem(Resurses.getString(Resurses.TEST_SAVE));
-		this.mFile.add(this.mTestSave);
-		this.mTestSave.setActionCommand(Resurses.TEST_SAVE);
-		this.mTestSave.addActionListener(this);
+		// this.mTestOpen = new
+		// JMenuItem(Resurses.getString(Resurses.TEST_OPEN));
+		// this.mFile.add(this.mTestOpen);
+		// this.mTestOpen.setActionCommand(Resurses.TEST_OPEN);
+		// this.mTestOpen.addActionListener(this);
+		//
+		// this.mTestSave = new
+		// JMenuItem(Resurses.getString(Resurses.TEST_SAVE));
+		// this.mFile.add(this.mTestSave);
+		// this.mTestSave.setActionCommand(Resurses.TEST_SAVE);
+		// this.mTestSave.addActionListener(this);
 
 		this.mShowInMap = new JMenuItem(Resurses.getString(Resurses.SHOWINMAP));
 		this.mFile.add(this.mShowInMap);
@@ -1300,38 +1297,39 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				this.personView.testMe();
 
-			} else if (cmd.equals(Resurses.TEST_OPEN)) {
-				// File is opened as Follows:
-
-				try {
-					FileInputStream fis = new FileInputStream("test.ser");
-					ObjectInputStream ois = new ObjectInputStream(fis);
-					StyledDocument doc = (StyledDocument) ois.readObject();
-					ois.close();
-					this.personView.setDoc(doc);
-					// pane.setStyledDocument (doc);
-					validate();
-					// statusInfo.setText ("Reloaded from disk");
-				} catch (Exception ee) {
-					// statusInfo.setText ("Unable to reload");
-					ee.printStackTrace();
-				}
-			} else if (cmd.equals(Resurses.TEST_SAVE)) {
-				try {
-					StyledDocument doc = this.personView.getDoc();
-					FileOutputStream fos = new FileOutputStream("test.ser");
-					ObjectOutputStream oos = new ObjectOutputStream(fos);
-					oos.writeObject(doc);// doc is the styled document set for
-					// this textpane
-					oos.flush();
-					oos.close();
-					// statusInfo.setText ("Saved to disk");
-				} catch (IOException ee) {
-					// statusInfo.setText ("Unable to save");
-					ee.printStackTrace();
-				}
-
 			}
+			// else if (cmd.equals(Resurses.TEST_OPEN)) {
+			// // File is opened as Follows:
+			//
+			// try {
+			// FileInputStream fis = new FileInputStream("test.ser");
+			// ObjectInputStream ois = new ObjectInputStream(fis);
+			// StyledDocument doc = (StyledDocument) ois.readObject();
+			// ois.close();
+			// this.personView.setDoc(doc);
+			// // pane.setStyledDocument (doc);
+			// validate();
+			// // statusInfo.setText ("Reloaded from disk");
+			// } catch (Exception ee) {
+			// // statusInfo.setText ("Unable to reload");
+			// ee.printStackTrace();
+			// }
+			// } else if (cmd.equals(Resurses.TEST_SAVE)) {
+			// try {
+			// StyledDocument doc = this.personView.getDoc();
+			// FileOutputStream fos = new FileOutputStream("test.ser");
+			// ObjectOutputStream oos = new ObjectOutputStream(fos);
+			// oos.writeObject(doc);// doc is the styled document set for
+			// // this textpane
+			// oos.flush();
+			// oos.close();
+			// // statusInfo.setText ("Saved to disk");
+			// } catch (IOException ee) {
+			// // statusInfo.setText ("Unable to save");
+			// ee.printStackTrace();
+			// }
+			//
+			// }
 
 			else if (cmd.equals(Resurses.SHOWINMAP)) {
 				displayMap();

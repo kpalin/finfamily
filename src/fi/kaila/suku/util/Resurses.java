@@ -232,10 +232,6 @@ public class Resurses {
 	/** */
 	public static final String DATEFORMAT = "DATEFORMAT";
 	/** */
-	public static final String TEST_SAVE = "TEST_SAVE";
-	/** */
-	public static final String TEST_OPEN = "TEST_OPEN";
-	/** */
 	public static final String PGSQL_STOP = "PGSQL_STOP";
 	/** */
 	public static final String PGSQL_START = "PGSQL_START";
