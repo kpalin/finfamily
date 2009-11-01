@@ -1338,6 +1338,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			else if (cmd.equals(Resurses.QUERY)) {
 				queryDb();
 			} else if (cmd.equals(Resurses.TOOLBAR_PERSON_ACTION)) {
+				if (subjectPid == 0 && activePersonPid > 0) {
+					subjectPid = activePersonPid;
+					PersonShortData pp = tableMap.get(subjectPid);
+					if (pp != null) {
+						tSubjectName.setText(pp.getAlfaName());
+						tSubjectPButton.setEnabled(true);
+					}
+				}
 				activePersonPid = 0;
 				showPerson(activePersonPid);
 
@@ -1974,7 +1982,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		PersonShortData ret = this.tableMap.put(key, p);
 		if (ret == null) {
 			SukuRow row = new SukuRow(this, this.tableModel, p);
-			tableModel.addRow(row);
+			tableModel.addRow(0, row);
 		}
 		table.updateUI();
 		scrollPane.updateUI();

@@ -204,7 +204,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 */
 	public void displayHiskiPane() {
 		HiskiImportPanel hiskiPanel = null;
-		int hiskiIdx = 0;
+		int hiskiIdx = 2;
 		SukuTabPane spnl = null;
 
 		for (int i = 0; i < paneTabs.size(); i++) {
@@ -221,6 +221,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 			insertTab(new SukuTabPane("TAB_HISKI", hiskiPanel), hiskiIdx);
 			tabbedPane.setSelectedIndex(hiskiIdx);
+			tabbedPane.setForegroundAt(hiskiIdx, Color.RED);
 		}
 	}
 

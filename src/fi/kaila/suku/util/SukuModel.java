@@ -225,6 +225,19 @@ public class SukuModel implements TableModel {
 	}
 
 	/**
+	 * insert row at specified position
+	 * 
+	 * @param index
+	 * @param row
+	 */
+	public void addRow(int index, SukuRow row) {
+		this.row = row;
+
+		this.tab.add(index, this.row);
+
+	}
+
+	/**
 	 * remove row from model
 	 * 
 	 * @param idx
