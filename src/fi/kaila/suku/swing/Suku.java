@@ -1338,14 +1338,39 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			else if (cmd.equals(Resurses.QUERY)) {
 				queryDb();
 			} else if (cmd.equals(Resurses.TOOLBAR_PERSON_ACTION)) {
-				if (subjectPid == 0 && activePersonPid > 0) {
+
+				if (!tSubjectButton.isSelected() && activePersonPid > 0) {
 					subjectPid = activePersonPid;
+					tSubjectButton.setSelected(true);
 					PersonShortData pp = tableMap.get(subjectPid);
 					if (pp != null) {
 						tSubjectName.setText(pp.getAlfaName());
 						tSubjectPButton.setEnabled(true);
 					}
 				}
+				// if (!tSubjectButton.isSelected() && activePersonPid > 0) {
+				// subjectPid = activePersonPid;
+				// tSubjectButton.setSelected(true);
+				// PersonShortData pp = tableMap.get(subjectPid);
+				// if (pp != null) {
+				// tSubjectName.setText(pp.getAlfaName());
+				// tSubjectPButton.setEnabled(true);
+				// }
+				// } else if (tSubjectButton.isSelected()) {
+				// subjectPid = 0;
+				// tSubjectName.setText("");
+				// tSubjectPButton.setEnabled(false);
+				// tSubjectButton.setSelected(false);
+				// }
+
+				// if (subjectPid == 0 && activePersonPid > 0) {
+				// subjectPid = activePersonPid;
+				// PersonShortData pp = tableMap.get(subjectPid);
+				// if (pp != null) {
+				// tSubjectName.setText(pp.getAlfaName());
+				// tSubjectPButton.setEnabled(true);
+				// }
+				// }
 				activePersonPid = 0;
 				showPerson(activePersonPid);
 
@@ -1380,6 +1405,22 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				kontroller.putPref(this, Resurses.TOOLBAR_PRIVATE_ACTION, ""
 						+ theButt);
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_DOWN_ACTION)) {
+
+				if (!tSubjectButton.isSelected() && activePersonPid > 0) {
+					subjectPid = activePersonPid;
+					tSubjectButton.setSelected(true);
+					PersonShortData pp = tableMap.get(subjectPid);
+					if (pp != null) {
+						tSubjectName.setText(pp.getAlfaName());
+						tSubjectPButton.setEnabled(true);
+					}
+				} else if (tSubjectButton.isSelected()) {
+					subjectPid = 0;
+					tSubjectName.setText("");
+					tSubjectPButton.setEnabled(false);
+					tSubjectButton.setSelected(false);
+				}
+
 				if (activePersonPid > 0) {
 					boolean theButt = !tSubjectButton.isSelected();
 					tSubjectButton.setSelected(theButt);

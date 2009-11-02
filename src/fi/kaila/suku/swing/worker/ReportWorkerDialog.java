@@ -994,13 +994,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							}
 							typesTable.setValueAt(b, row, 2);
 							b = false;
-							if (vx[1].substring(2).equals("X")) {
+							if (vx[1].substring(2, 3).equals("X")) {
 								b = true;
 							}
 							typesTable.setValueAt(b, row, 3);
 
 							b = false;
-							if (vx[1].substring(3).equals("X")) {
+							if (vx[1].substring(3, 4).equals("X")) {
 								b = true;
 							}
 							typesTable.setValueAt(b, row, 4);
