@@ -112,6 +112,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		for (int i = 0; i < apu.length / 3; i++) {
 
 			this.langS[i] = apu[j++];
+			j++;
 			langNames[i] = apu[j++];
 		}
 
