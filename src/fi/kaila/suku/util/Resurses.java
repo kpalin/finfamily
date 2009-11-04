@@ -268,7 +268,7 @@ public class Resurses {
 	/** */
 	public static final String TOOLBAR_PERSON_IMAGE = "person";
 	/** */
-	public static final String TOOLBAR_PERSON_ACTION = "PERSON";
+	public static final String TOOLBAR_NEWPERSON_ACTION = "NEWPERSON";
 	/** */
 	public static final String TOOLBAR_MAP_IMAGE = "kartta";
 	/** */

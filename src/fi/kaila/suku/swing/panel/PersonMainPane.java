@@ -742,7 +742,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	}
 
 	SukuData updatePerson() throws SukuDateException {
-
+		SukuData resp = null;
 		personView.updateNotices();
 		int noticeFirst = personView.getFirstNoticeIndex();
 		int tabCount = personView.getTabCount();
@@ -840,7 +840,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		if (persLong != null) {
 			String[] notorder = null;
 			try {
-				SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
+				resp = Suku.kontroller.getSukuData("cmd=getsettings",
 						"type=order", "name=notice");
 				notorder = resp.generalArray;
 			} catch (SukuException e) {
@@ -863,8 +863,8 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				req.persLong.setNotices(un.toArray(new UnitNotice[0]));
 
 				try {
-					SukuData resp = Suku.kontroller.getSukuData(req,
-							"cmd=update", "type=person");
+					resp = Suku.kontroller.getSukuData(req, "cmd=update",
+							"type=person");
 					if (resp.pers != null && resp.pers.length > 0) {
 						PersonShortData shh = resp.pers[0];
 						personPid = shh.getPid();
@@ -924,7 +924,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 		}
 
-		return null;
+		return resp;
 
 	}
 
@@ -963,8 +963,11 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				lastNameidx = noticeFirst - 1;
 				firstNameidx = noticeFirst;
 			}
-
-			for (int i = lastNameidx + 1; i < firstNameidx + names.length; i++) {
+			int namesCount = names.length;
+			if (names[0].equals("")) {
+				namesCount = 0;
+			}
+			for (int i = lastNameidx + 1; i < firstNameidx + namesCount; i++) {
 				insertNamePane(i, "NAME");
 			}
 			tabCount = personView.getTabCount();

@@ -380,9 +380,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mQuery.addActionListener(this);
 
 		this.mNewPerson = new JMenuItem(Resurses
-				.getString("TOOLBAR.PERSON.TOOLTIP"));
+				.getString("TOOLBAR.NEWPERSON.TOOLTIP"));
 		this.mFile.add(this.mNewPerson);
-		this.mNewPerson.setActionCommand(Resurses.TOOLBAR_PERSON_ACTION);
+		this.mNewPerson.setActionCommand(Resurses.TOOLBAR_NEWPERSON_ACTION);
 		this.mNewPerson.addActionListener(this);
 
 		this.mPrintPerson = new JMenuItem(Resurses
@@ -534,9 +534,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
 			tPersonButton = makeNavigationButton(Resurses.TOOLBAR_PERSON_IMAGE,
-					Resurses.TOOLBAR_PERSON_ACTION, Resurses
-							.getString("TOOLBAR.PERSON.TOOLTIP"), Resurses
-							.getString("TOOLBAR.PERSON.ALTTEXT"));
+					Resurses.TOOLBAR_NEWPERSON_ACTION, Resurses
+							.getString("TOOLBAR.NEWPERSON.TOOLTIP"), Resurses
+							.getString("TOOLBAR.NEWPERSON.ALTTEXT"));
 
 			this.toolbar.add(tPersonButton);
 
@@ -1337,7 +1337,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			else if (cmd.equals(Resurses.QUERY)) {
 				queryDb();
-			} else if (cmd.equals(Resurses.TOOLBAR_PERSON_ACTION)) {
+			} else if (cmd.equals(Resurses.TOOLBAR_NEWPERSON_ACTION)) {
 
 				if (!tSubjectButton.isSelected() && activePersonPid > 0) {
 					subjectPid = activePersonPid;
@@ -1421,25 +1421,25 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					tSubjectButton.setSelected(false);
 				}
 
-				if (activePersonPid > 0) {
-					boolean theButt = !tSubjectButton.isSelected();
-					tSubjectButton.setSelected(theButt);
-					if (theButt) {
-						subjectPid = activePersonPid;
-						PersonShortData pp = tableMap.get(subjectPid);
-						if (pp != null) {
-							tSubjectName.setText(pp.getAlfaName());
-							tSubjectPButton.setEnabled(true);
-						} else {
-							tSubjectName.setText("");
-							tSubjectPButton.setEnabled(false);
-						}
-					} else {
-						subjectPid = 0;
-						tSubjectName.setText("");
-						tSubjectPButton.setEnabled(false);
-					}
-				}
+				// if (activePersonPid > 0) {
+				// boolean theButt = !tSubjectButton.isSelected();
+				// tSubjectButton.setSelected(theButt);
+				// if (theButt) {
+				// subjectPid = activePersonPid;
+				// PersonShortData pp = tableMap.get(subjectPid);
+				// if (pp != null) {
+				// tSubjectName.setText(pp.getAlfaName());
+				// tSubjectPButton.setEnabled(true);
+				// } else {
+				// tSubjectName.setText("");
+				// tSubjectPButton.setEnabled(false);
+				// }
+				// } else {
+				// subjectPid = 0;
+				// tSubjectName.setText("");
+				// tSubjectPButton.setEnabled(false);
+				// }
+				// }
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_UP_ACTION)) {
 				if (subjectPid > 0) {
 					showPerson(subjectPid);
@@ -1642,6 +1642,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void showPerson(int pid) {
 		try {
+
 			personView.displayPersonPane(pid);
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, Resurses
@@ -2489,8 +2490,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				} else if (cmd.equals(Resurses.CREATE_REPORT)) {
 					createReport(pop.getPerson());
 				} else if (cmd.equals(Resurses.TAB_PERSON)) {
-					activePersonPid = pop.getPerson().getPid();
-					showPerson(activePersonPid);
+
+					showPerson(pop.getPerson().getPid());
 					// setTitle(pop.getPerson().getAlfaName() + " "
 					// + nv4(pop.getPerson().getBirtDate()) + "-" +
 					// nv4(pop.getPerson().getDeatDate()));

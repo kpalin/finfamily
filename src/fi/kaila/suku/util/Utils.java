@@ -321,4 +321,18 @@ public class Utils {
 		return text;
 	}
 
+	/**
+	 * used primarily to display year only
+	 * 
+	 * @param text
+	 * @return 4 first chars of string if exist
+	 */
+	public static String nv4(String text) {
+		if (text == null)
+			return "";
+		if (text.length() < 4)
+			return text;
+		return text.substring(0, 4);
+	}
+
 }

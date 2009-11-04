@@ -26,6 +26,7 @@ import fi.kaila.suku.util.FamilyParentRelationIndex;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.RelationShortData;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -246,7 +247,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	}
 
 	/**
-	 * Display person pane. I already open the close pervious first
+	 * Display person pane. Close previous person first
 	 * 
 	 * @param pid
 	 * @throws SukuException
@@ -258,10 +259,15 @@ public class PersonView extends JPanel implements ChangeListener {
 
 			// int isele = tabbedPane.getSelectedIndex();
 			// int fnotice = getFirstNoticeIndex();
-			int mnotice = getMainPaneIndex();
+			// int mnotice = getMainPaneIndex();
 			if (main != null) {
 				try {
-					if (previousNoticeIndex == mnotice) {
+					//
+					// if previous was the mainpane
+					// then update notices
+					// else update mainpane
+					//
+					if (previousNoticeIndex == midx) {
 						main.updateNameNotices();
 						main.updateRestNotices();
 					} else {
@@ -270,8 +276,8 @@ public class PersonView extends JPanel implements ChangeListener {
 					}
 					main.updatePerson();
 				} catch (SukuDateException e1) {
-					if (previousNoticeIndex <= mnotice + 1) {
-						previousNoticeIndex = mnotice;
+					if (previousNoticeIndex <= midx + 1) {
+						previousNoticeIndex = midx;
 						tabbedPane.setSelectedIndex(previousNoticeIndex);
 					}
 					JOptionPane.showMessageDialog(this, e1.getMessage(),
@@ -294,7 +300,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		personMain.openPersonNotices(pid);
 
 		tabbedPane.setSelectedIndex(mainIdx);
-
+		// TODO
 		previousNoticeIndex = getMainPaneIndex();
 
 		PersonMainPane main = (PersonMainPane) paneTabs.get(mainIdx).pnl;
@@ -302,8 +308,8 @@ public class PersonView extends JPanel implements ChangeListener {
 			PersonShortData ps = new PersonShortData(main.persLong);
 
 			getSuku().setTitle(
-					ps.getAlfaName() + " " + nv4(ps.getBirtDate()) + "-"
-							+ nv4(ps.getDeatDate()));
+					ps.getAlfaName() + " " + Utils.nv4(ps.getBirtDate()) + "-"
+							+ Utils.nv4(ps.getDeatDate()));
 			getSuku().setActivePerson(ps.getPid());
 
 		}
@@ -327,7 +333,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	}
 
 	/**
-	 * Close the main pain. if pid is given then open new Mainpane with pid
+	 * Close the main pain.
 	 * 
 	 * @param reOpen
 	 *            true if page to be reopened
@@ -834,11 +840,4 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 	}
 
-	private String nv4(String text) {
-		if (text == null)
-			return "";
-		if (text.length() < 4)
-			return text;
-		return text.substring(0, 4);
-	}
 }
