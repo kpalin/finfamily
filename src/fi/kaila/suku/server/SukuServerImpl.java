@@ -431,10 +431,11 @@ public class SukuServerImpl implements SukuServer {
 			String path = map.get("path");
 			if (path == null) {
 				path = "/sql/finfamily.sql";
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_SQL_FILE");
-				return fam;
 			}
+			// else {
+			// fam.resu = Resurses.getString("GETSUKU_BAD_SQL_FILE");
+			// return fam;
+			// }
 			SukuUtility data = SukuUtility.instance();
 			data.createSukuDb(this.con, path);
 
@@ -1376,6 +1377,9 @@ public class SukuServerImpl implements SukuServer {
 		} else if ("types".equals(page)) {
 			ExcelImporter ex = new ExcelImporter();
 			return ex.importTypes(this.con, path);
+		} else if ("texts".equals(page)) {
+			ExcelImporter ex = new ExcelImporter();
+			return ex.importTexts(this.con, path);
 		}
 
 		return new SukuData();

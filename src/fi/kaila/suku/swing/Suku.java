@@ -1119,8 +1119,25 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			}
 			if (cmd.equals(Resurses.UPDATEDB)) {
-				kontroller.getSukuData("cmd=initdb", "path=/sql/dbupdates.sql");
-				JOptionPane.showMessageDialog(this, "OK", Resurses
+				SukuData resp = kontroller.getSukuData("cmd=initdb",
+						"path=/sql/dbupdates.sql");
+				String resu = "OK";
+				if (resp.resu != null) {
+					resu = resp.resu;
+				} else {
+					kontroller.getSukuData("cmd=excel",
+							"path=resources/excel/PaikatExcel.xls",
+							"page=coordinates");
+					kontroller
+							.getSukuData("cmd=excel",
+									"path=resources/excel/TypesExcel.xls",
+									"page=types");
+					kontroller
+							.getSukuData("cmd=excel",
+									"path=resources/excel/TextsExcel.xls",
+									"page=texts");
+				}
+				JOptionPane.showMessageDialog(this, resu, Resurses
 						.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
 			} else if (cmd.equals(Resurses.NEWDB)) {
@@ -1144,6 +1161,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						kontroller.getSukuData("cmd=excel",
 								"path=resources/excel/TypesExcel.xls",
 								"page=types");
+						kontroller.getSukuData("cmd=excel",
+								"path=resources/excel/TextsExcel.xls",
+								"page=texts");
 						JOptionPane.showMessageDialog(this, Resurses
 								.getString("CREATED_NEWDB"), Resurses
 								.getString(Resurses.SUKU),
@@ -2116,6 +2136,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
 			kontroller.getSukuData("cmd=excel",
 					"path=resources/excel/TypesExcel.xls", "page=types");
+			kontroller.getSukuData("cmd=excel",
+					"path=resources/excel/TextsExcel.xls", "page=texts");
 
 			queryDb();
 
