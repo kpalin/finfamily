@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -90,11 +91,11 @@ public class XmlReport implements ReportInterface {
 		debugState = parent.getDebugState();
 		switch (translatorIdx) {
 		case 1:
-			translator = "resources/xml/docx.xsl";
+			translator = "resources/xml/docSingle.xsl";
 			report = createFile("xml");
 			break;
 		case 2:
-			translator = "resources/xml/html.xsl";
+			translator = "resources/xml/htmlSingle.xsl";
 			report = createFile("html");
 			break;
 		default:
@@ -419,9 +420,8 @@ public class XmlReport implements ReportInterface {
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				TransformerFactory tfactory = TransformerFactory.newInstance();
 				// Create a transformer for the stylesheet.
-
-				Transformer transformer = tfactory
-						.newTransformer(new StreamSource(translator));
+				Source src = new StreamSource(translator);
+				Transformer transformer = tfactory.newTransformer(src);
 
 				transformer.transform(docw, new StreamResult(bout));
 				FileOutputStream fos = new FileOutputStream(report);
