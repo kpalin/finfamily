@@ -157,7 +157,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	/**
 	 * Application version
 	 */
-	public static final String sukuVersion = "11.-3.0119";
+	public static final String sukuVersion = "11.-3.0123";
 	/**
 	 * Server version
 	 */
@@ -627,6 +627,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (tmp.equals("true")) {
 				tPrivateButton.setSelected(true);
 			}
+			this.toolbar.add(tPrivateButton);
 
 		} catch (IOException e2) {
 			throw new SukuException("Failed to create toolbar", e2);

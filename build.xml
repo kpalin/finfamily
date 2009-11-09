@@ -101,6 +101,7 @@
    <copy file="${resources.home}/properties/logging.properties" todir="${dist.home}/properties"/>
    <copy file="${resources.home}/excel/PaikatExcel.xls" todir="${dist.home}/resources/excel"/>
    <copy file="${resources.home}/excel/TypesExcel.xls" todir="${dist.home}/resources/excel"/>
+   <copy file="${resources.home}/excel/TextsExcel.xls" todir="${dist.home}/resources/excel"/>
    <copy file="${resources.home}/images/suomikartta.jpg" todir="${dist.home}/resources/images"/>  
    <copy todir="${dist.home}/resources/string">
      <fileset dir="${resources.home}/string" includes="*.properties"/>
@@ -122,7 +123,8 @@
 	
 	<zip destfile="${swing.home}/finfamily.zip" basedir="${dist.home}"
 	  includes="suku.jar Suku.exe suku.sh lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar properties/* 
-	  resources/excel/PaikatExcel.xls resources/excel/TypesExcel.xls resources/images/suomikartta.jpg resources/string/*
+	  resources/excel/PaikatExcel.xls resources/excel/TypesExcel.xls resources/excel/TextsExcel.xls
+	  resources/images/suomikartta.jpg resources/string/*
 	  resources/xml/*">
 	
 	</zip>
