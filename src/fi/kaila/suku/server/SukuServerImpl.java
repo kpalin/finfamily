@@ -394,6 +394,7 @@ public class SukuServerImpl implements SukuServer {
 			} else {
 				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
 			}
+
 		} else if (cmd.equals("virtual")) {
 			tmp = map.get("pid");
 			if (tmp != null) {

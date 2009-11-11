@@ -74,6 +74,15 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Set value for relation surety
+	 * 
+	 * @param surety
+	 */
+	public void setSurety(int surety) {
+		this.surety = surety;
+	}
+
+	/**
 	 * reset modified status
 	 */
 	public void resetModified() {

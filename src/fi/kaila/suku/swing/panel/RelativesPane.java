@@ -880,7 +880,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		Relation rel = new Relation(0, longPers.getPid(), persShort.getPid(),
 				"CHIL", 100, null, null);
 		rel.setShortPerson(persShort);
-
+		String myRelTag = (longPers.getSex().equals("M")) ? "FATH" : "MOTH";
 		String tag = (longPers.getSex().equals("M")) ? "MOTH" : "FATH";
 		String pareTag = Resurses.getString("AS_" + tag);
 
@@ -931,6 +931,51 @@ public class RelativesPane extends JPanel implements ActionListener,
 				}
 
 			}
+		}
+		try {
+			SukuData chilDat = Suku.kontroller.getSukuData("cmd=person", "pid="
+					+ persShort.getPid());
+
+			if (chilDat.relations != null) {
+				for (int i = 0; i < chilDat.relations.length; i++) {
+					Relation chrel = chilDat.relations[i];
+					if (myRelTag.equals(chrel.getTag())) {
+						if (chrel.getNotices() == null
+								|| chrel.getNotices().length == 0) {
+							if (chrel.getSurety() > 50) {
+								rel.setSurety(40);
+								String[] sures = Resurses.getString(
+										"DATA_SURETY_VALUES").split(";");
+								StringBuffer sb = new StringBuffer();
+								sb.append(Resurses
+										.getString("RELA_" + myRelTag));
+								sb.append(" [");
+								if (chrel.getShortPerson() != null) {
+									sb.append(chrel.getShortPerson()
+											.getAlfaName());
+								} else {
+									sb.append("XXX");
+								}
+								sb.append("] ");
+								sb.append(Resurses.getString("PARE_DOUBT"));
+								sb.append(" [");
+								sb.append(sures[3]);
+								sb.append("]");
+
+								JOptionPane.showMessageDialog(personView, sb
+										.toString(), Resurses
+										.getString(Resurses.SUKU),
+										JOptionPane.WARNING_MESSAGE);
+
+								break;
+							}
+						}
+					}
+				}
+			}
+
+		} catch (SukuException e1) {
+			logger.log(Level.WARNING, "Check parent", e1);
 		}
 
 		if (newRow < 0) {
@@ -1074,6 +1119,40 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			return;
 		}
+
+		for (int i = 0; i < parents.list.size(); i++) {
+			Relation rowrel = parents.list.get(i);
+			if (rowrel.getTag().equals(tag)) {
+				if (rowrel.getNotices() == null
+						|| rowrel.getNotices().length == 0) {
+					// not adopted
+					if (rowrel.getSurety() > 50) {
+						// surety exists > 50%
+						rel.setSurety(40);
+
+						String[] sures = Resurses.getString(
+								"DATA_SURETY_VALUES").split(";");
+						StringBuffer sb = new StringBuffer();
+						sb.append(Resurses.getString("RELA_" + tag));
+						sb.append(" [");
+						sb.append(rowrel.getShortPerson().getAlfaName());
+						sb.append("] ");
+						sb.append(Resurses.getString("PARE_DOUBT"));
+						sb.append(" [");
+						sb.append(sures[3]);
+						sb.append("]");
+						JOptionPane.showMessageDialog(personView,
+								sb.toString(), Resurses
+										.getString(Resurses.SUKU),
+								JOptionPane.WARNING_MESSAGE);
+
+						break;
+					}
+				}
+			}
+
+		}
+
 		if (parents.list.size() == 0 || tag.equals("MOTH")) {
 			parents.list.add(rel);
 		} else {
