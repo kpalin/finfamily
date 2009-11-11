@@ -964,8 +964,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				firstNameidx = noticeFirst;
 			}
 			int namesCount = names.length;
-			if (names[0].equals("")) {
-				namesCount = 0;
+			if (namesCount == 0 && names[0].equals("")) {
+				if (givenname.getText().equals("")
+						&& patronym.getText().equals("")) {
+					namesCount = 0;
+				} else {
+					namesCount = 1;
+				}
 			}
 			for (int i = lastNameidx + 1; i < firstNameidx + namesCount; i++) {
 				insertNamePane(i, "NAME");
@@ -1042,9 +1047,9 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		}
 
 		int idx = personView.getFirstNoticeIndex();
-		if (idx <= lastNameIndex) {
-			idx = lastNameIndex + 1;
-		}
+		// if (idx <= lastNameIndex) {
+		// idx = lastNameIndex + 1;
+		// }
 
 		if (birtDate.isEnabled()) {
 			if (birtCount == 0
