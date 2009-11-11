@@ -882,11 +882,14 @@ public class RelativesPane extends JPanel implements ActionListener,
 		rel.setShortPerson(persShort);
 
 		String tag = (longPers.getSex().equals("M")) ? "MOTH" : "FATH";
+		String pareTag = Resurses.getString("AS_" + tag);
 
+		boolean hasParent = false;
 		try {
 			SukuData pareDat = Suku.kontroller.getSukuData("cmd=relatives",
 					"pid=" + persShort.getPid(), "tag=" + tag);
 			if (pareDat.pidArray.length > 0) {
+				hasParent = true;
 				persShort.setParentPid(pareDat.pidArray[0]);
 			}
 			for (int j = 0; j < me.spouses.list.size(); j++) {
@@ -937,6 +940,43 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 		}
 
+		if (!hasParent && spouses.list.size() > 0) {
+			PersonShortData pare;
+			if (spouses.list.size() == 1) {
+				pare = spouses.list.get(0).getShortPerson();
+
+				int resu = JOptionPane.showConfirmDialog(personView, Resurses
+						.getString("QUESTION_ADD")
+						+ " " + pare.getAlfaName() + " " + pareTag, Resurses
+						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (resu == JOptionPane.YES_OPTION) {
+
+					logger.info("Adding " + pare.getAlfaName() + " as "
+							+ pareTag);
+					Relation rpare = new Relation(0, persShort.getPid(), pare
+							.getPid(), tag, 100, null, null);
+					persShort.setParentPid(pare.getPid());
+					rpare.setShortPerson(pare);
+					pare.setParentPid(pare.getPid());
+
+					try {
+						checkLocalRelation(persShort, rpare, pare);
+					} catch (SukuException e) {
+						JOptionPane.showMessageDialog(personView, e
+								.getMessage(), Resurses
+								.getString(Resurses.SUKU),
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+
+					otherRelations.add(rpare);
+
+				}
+
+			}
+
+		}
 		// int newBirt = showNewPerson.getBirtYear();
 		// if (newBirt == 0 ) {
 		// if (pasteAtRow < 0 || pasteAtRow >= children.list.size()-1) {
