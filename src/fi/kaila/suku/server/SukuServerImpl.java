@@ -394,6 +394,13 @@ public class SukuServerImpl implements SukuServer {
 			} else {
 				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
 			}
+		} else if (cmd.equals("virtual")) {
+			tmp = map.get("pid");
+			if (tmp != null) {
+				pid = Integer.parseInt(tmp);
+
+				fam = getVirtualPerson(pid);
+			}
 		} else if (cmd.equals("upload")) {
 			fam = uploadFamily(request);
 		} else if (cmd.equals("dbversion")) {
@@ -663,6 +670,41 @@ public class SukuServerImpl implements SukuServer {
 		}
 
 		return fam;
+	}
+
+	private SukuData getVirtualPerson(int pid) {
+		SukuData resp = new SukuData();
+		resp.pidArray = new int[3];
+
+		String sql = "select tag,count(*) from relation where pid = ? "
+				+ " group by tag";
+
+		PreparedStatement pstm;
+		try {
+			pstm = this.con.prepareStatement(sql);
+
+			pstm.setInt(1, pid);
+			ResultSet prs = pstm.executeQuery();
+			while (prs.next()) {
+				String rtag = prs.getString(1);
+
+				if (rtag.equals("HUSB") || rtag.equals("WIFE")) {
+					resp.pidArray[1] = prs.getInt(2);
+
+				} else if (rtag.equals("CHIL")) {
+					resp.pidArray[0] = prs.getInt(2);
+
+				} else if (rtag.equals("MOTH") || rtag.equals("FATH")) {
+					resp.pidArray[2] = prs.getInt(2);
+
+				}
+
+			}
+			prs.close();
+		} catch (SQLException e) {
+			resp.resu = e.getMessage();
+		}
+		return resp;
 	}
 
 	private SukuData createDescendantLista(String spid) throws SukuException {

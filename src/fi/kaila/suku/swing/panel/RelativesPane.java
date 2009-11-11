@@ -941,16 +941,30 @@ public class RelativesPane extends JPanel implements ActionListener,
 		}
 
 		if (!hasParent && spouses.list.size() > 0) {
-			PersonShortData pare;
-			if (spouses.list.size() == 1) {
+			PersonShortData pare = null;
+			if (spouses.list.size() >= 1) {
 				pare = spouses.list.get(0).getShortPerson();
 
-				int resu = JOptionPane.showConfirmDialog(personView, Resurses
+				String[] pares = new String[spouses.list.size()];
+				for (int j = 0; j < spouses.list.size(); j++) {
+					pares[j] = spouses.list.get(j).getShortPerson()
+							.getAlfaName();
+				}
+				Object par = JOptionPane.showInputDialog(personView, Resurses
 						.getString("QUESTION_ADD")
-						+ " " + pare.getAlfaName() + " " + pareTag, Resurses
-						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
-				if (resu == JOptionPane.YES_OPTION) {
+						+ " " + pareTag, Resurses.getString(Resurses.SUKU),
+						JOptionPane.QUESTION_MESSAGE, null, pares, pares[0]);
+
+				if (par != null) {
+					int spouRow = -1;
+					for (int j = 0; j < spouses.list.size(); j++) {
+						if (par == pares[j]) {
+							spouRow = j;
+							break;
+						}
+
+					}
+					pare = spouses.list.get(spouRow).getShortPerson();
 
 					logger.info("Adding " + pare.getAlfaName() + " as "
 							+ pareTag);
@@ -977,34 +991,6 @@ public class RelativesPane extends JPanel implements ActionListener,
 			}
 
 		}
-		// int newBirt = showNewPerson.getBirtYear();
-		// if (newBirt == 0 ) {
-		// if (pasteAtRow < 0 || pasteAtRow >= children.list.size()-1) {
-		// children.list.add(rel);
-		// } else {
-		// children.list.insertElementAt(rel, pasteAtRow);
-		// }
-		// } else {
-		// int birtIdx=-1;
-		// for (int i = 0; i < children.list.size(); i++) {
-		// PersonShortData dd = children.list.get(i).getShortPerson();
-		// if (dd.getBirtYear() != 0 && dd.getBirtYear() > newBirt){
-		// birtIdx = i;
-		// break;
-		// }
-		// }
-		//
-		// if (birtIdx >= 0 ){
-		// children.list.insertElementAt(rel, birtIdx);
-		// } else {
-		// if (pasteAtRow >= 0 && pasteAtRow < children.list.size()){
-		// children.list.insertElementAt(rel, pasteAtRow);
-		// } else {
-		// children.list.add(rel);
-		// }
-		// }
-		// }
-		// }
 
 		chilTab.updateUI();
 	}

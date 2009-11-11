@@ -2038,11 +2038,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * Update database window with data for person
 	 * 
 	 * @param p
+	 * @throws SukuException
 	 */
-	public void updatePerson(PersonShortData p) {
+	public void updatePerson(PersonShortData p) throws SukuException {
 
 		int key = p.getPid();
 		PersonShortData ret = this.tableMap.put(key, p);
+
+		SukuData resp = kontroller.getSukuData("cmd=virtual", "pid=" + key);
+
+		if (resp.pidArray != null && resp.pidArray.length == 3) {
+			p.setChildCount(resp.pidArray[0]);
+			p.setMarrCount(resp.pidArray[1]);
+			p.setPareCount(resp.pidArray[2]);
+
+		}
 		if (ret == null) {
 			SukuRow row = new SukuRow(this, this.tableModel, p);
 			tableModel.addRow(0, row);

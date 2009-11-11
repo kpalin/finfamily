@@ -866,6 +866,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 					resp = Suku.kontroller.getSukuData(req, "cmd=update",
 							"type=person");
 					if (resp.pers != null && resp.pers.length > 0) {
+
 						PersonShortData shh = resp.pers[0];
 						personPid = shh.getPid();
 
