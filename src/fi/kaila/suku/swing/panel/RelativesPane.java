@@ -886,7 +886,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 		try {
 			SukuData pareDat = Suku.kontroller.getSukuData("cmd=relatives",
 					"pid=" + persShort.getPid(), "tag=" + tag);
-
+			if (pareDat.pidArray.length > 0) {
+				persShort.setParentPid(pareDat.pidArray[0]);
+			}
 			for (int j = 0; j < me.spouses.list.size(); j++) {
 				PersonShortData sh = me.spouses.list.get(j).getShortPerson();
 				for (int k = 0; k < pareDat.pidArray.length; k++) {
@@ -898,7 +900,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 			}
 
 		} catch (SukuException e1) {
-
+			// if problem then don't add Mother / father id
 		}
 
 		try {
@@ -979,6 +981,30 @@ public class RelativesPane extends JPanel implements ActionListener,
 		rel.setShortPerson(persShort);
 
 		try {
+			String ptag = (longPers.getSex().equals("M")) ? "MOTH" : "FATH";
+
+			for (int j = 0; j < me.children.list.size(); j++) {
+				PersonShortData child = me.children.list.get(j)
+						.getShortPerson();
+
+				SukuData pareDat = Suku.kontroller.getSukuData("cmd=relatives",
+						"pid=" + child.getPid(), "tag=" + ptag);
+
+				for (int k = 0; k < pareDat.pidArray.length; k++) {
+					if (pareDat.pidArray[k] == persShort.getPid()) {
+
+						child.setParentPid(persShort.getPid());
+						break;
+					}
+				}
+			}
+
+		} catch (SukuException e1) {
+			// if problem then don't add Mother / father id
+		}
+
+		persShort.setParentPid(persShort.getPid());
+		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(personView, e.getMessage(), Resurses
@@ -987,6 +1013,14 @@ public class RelativesPane extends JPanel implements ActionListener,
 			return;
 		}
 
+		// for (int i = 0; i < children.list.size(); i++) {
+		// System.out.println("CHILIST:" + i + "["
+		// + children.list.get(i).getPid() + "/"
+		// + children.list.get(i).getRelative() + "/"
+		// + children.list.get(i).getShortPerson().getParentPid()
+		// + "]");
+		// }
+
 		if (row >= 0 && row < spouses.list.size()) {
 			spouses.list.insertElementAt(rel, row);
 		} else {
@@ -994,6 +1028,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		}
 
 		spouTab.updateUI();
+		chilTab.updateUI();
 	}
 
 	private void insertIntoParentTable(PersonShortData persShort, int row) {
