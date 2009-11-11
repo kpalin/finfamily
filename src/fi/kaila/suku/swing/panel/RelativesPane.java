@@ -881,6 +881,26 @@ public class RelativesPane extends JPanel implements ActionListener,
 				"CHIL", 100, null, null);
 		rel.setShortPerson(persShort);
 
+		String tag = (longPers.getSex().equals("M")) ? "MOTH" : "FATH";
+
+		try {
+			SukuData pareDat = Suku.kontroller.getSukuData("cmd=relatives",
+					"pid=" + persShort.getPid(), "tag=" + tag);
+
+			for (int j = 0; j < me.spouses.list.size(); j++) {
+				PersonShortData sh = me.spouses.list.get(j).getShortPerson();
+				for (int k = 0; k < pareDat.pidArray.length; k++) {
+					if (pareDat.pidArray[k] == sh.getPid()) {
+						persShort.setParentPid(sh.getPid());
+						break;
+					}
+				}
+			}
+
+		} catch (SukuException e1) {
+
+		}
+
 		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
 		} catch (SukuException e) {
@@ -888,10 +908,31 @@ public class RelativesPane extends JPanel implements ActionListener,
 					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		if (row >= 0 && row < children.list.size()) {
-			children.list.insertElementAt(rel, row);
-		} else {
+
+		String newDate = persShort.getBirtDate();
+		int newRow = 0;
+		if (newDate == null) {
 			children.list.add(rel);
+		} else {
+			for (int i = 0; i < children.list.size(); i++) {
+				PersonShortData rowPers = children.list.get(i).getShortPerson();
+				String rowDate = rowPers.getBirtDate();
+				if (rowDate == null) {
+					newRow = -1;
+					break;
+				}
+				if (rowDate.compareTo(newDate) < 0) {
+					newRow = i + 1;
+				}
+
+			}
+		}
+
+		if (newRow < 0) {
+			children.list.add(rel);
+		} else {
+			children.list.insertElementAt(rel, newRow);
+
 		}
 
 		// int newBirt = showNewPerson.getBirtYear();

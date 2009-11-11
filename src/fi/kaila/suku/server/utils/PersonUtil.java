@@ -398,10 +398,10 @@ public class PersonUtil {
 					pst = con.prepareStatement(delRel);
 					pst.setInt(1, rid);
 					int laskRel = pst.executeUpdate();
-					logger.info("deleted relation [" + r.getTag() + "" + rid
+					logger.info("deleted relation [" + r.getTag() + "]" + rid
 							+ " between " + r.getPid() + "/" + r.getRelative()
 							+ " result [" + laskRel + "/" + laskNoti + "/"
-							+ laskLang);
+							+ laskLang + "]");
 				} else if (req.relations[i].isToBeUpdated()) {
 
 					if (rid == 0) {
