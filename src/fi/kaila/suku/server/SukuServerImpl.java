@@ -25,15 +25,9 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.data.ExcelImporter;
 import fi.kaila.suku.util.data.SukuUtility;
 import fi.kaila.suku.util.local.LocalDatabaseUtility;
-import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
-import fi.kaila.suku.util.pojo.Relation;
-import fi.kaila.suku.util.pojo.RelationLanguage;
-import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.RelationShortData;
 import fi.kaila.suku.util.pojo.SukuData;
-import fi.kaila.suku.util.pojo.UnitLanguage;
-import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
  * Serverpään mm tietokantaa käsittelevä
@@ -371,7 +365,8 @@ public class SukuServerImpl implements SukuServer {
 			if (tmp != null) {
 				pid = Integer.parseInt(tmp);
 				lang = map.get("lang");
-				fam = getFullPerson(pid, lang);
+				PersonUtil u = new PersonUtil(con);
+				fam = u.getFullPerson(pid, lang);
 			} else {
 				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
 			}
@@ -1180,223 +1175,6 @@ public class SukuServerImpl implements SukuServer {
 		resdat.resu = resu;
 
 		return resdat;
-	}
-
-	/**
-	 * Full person sisältää
-	 * 
-	 * SukuData siirto-oliossa
-	 * 
-	 * henkilön tiedot: persLong tietojaksot: persLong.notices[]
-	 * sukulaisuussuheet: relations[] sukujaksot: rellations[i].notices[]
-	 * 
-	 * @param pid
-	 * @return
-	 * @throws SukuException
-	 */
-
-	private SukuData getFullPerson(int pid, String lang) throws SukuException {
-		SukuData pers = new SukuData();
-		Vector<UnitNotice> nvec = new Vector<UnitNotice>();
-
-		Vector<Relation> rels = new Vector<Relation>();
-		Vector<RelationNotice> relNotices = null;
-		try {
-			String sql = "select * from unit where pid = ? ";
-			PreparedStatement pstm = con.prepareStatement(sql);
-			pstm.setInt(1, pid);
-
-			ResultSet rs = pstm.executeQuery();
-
-			if (rs.next()) {
-				pers.persLong = new PersonLongData(rs);
-			}
-			rs.close();
-			pstm.close();
-			if (pers.persLong != null) {
-				UnitNotice notice;
-				if (lang == null) {
-					sql = "select * from unitnotice where pid = ? order by noticerow ";
-				} else {
-					sql = "select * from unitnotice_" + lang
-							+ " where pid = ? order by noticerow ";
-				}
-				pstm = con.prepareStatement(sql);
-				pstm.setInt(1, pid);
-				rs = pstm.executeQuery();
-				while (rs.next()) {
-					notice = new UnitNotice(rs);
-					nvec.add(notice);
-				}
-				rs.close();
-				pstm.close();
-				pers.persLong.setNotices(nvec.toArray(new UnitNotice[0]));
-
-				if (lang == null) {
-					Vector<UnitLanguage> lvec = new Vector<UnitLanguage>();
-					UnitLanguage langnotice;
-					sql = "select * from unitlanguage where pid = ? order by pnid,langcode";
-
-					pstm = con.prepareStatement(sql);
-					pstm.setInt(1, pid);
-					rs = pstm.executeQuery();
-					while (rs.next()) {
-						langnotice = new UnitLanguage(rs);
-						lvec.add(langnotice);
-					}
-					rs.close();
-					pstm.close();
-
-					Vector<UnitLanguage> llvec = null;
-
-					for (int i = 0; i < pers.persLong.getNotices().length; i++) {
-						UnitNotice noti = pers.persLong.getNotices()[i];
-						llvec = new Vector<UnitLanguage>();
-						for (int j = 0; j < lvec.size(); j++) {
-							UnitLanguage ul = lvec.get(j);
-							if (noti.getPnid() == ul.getPnid()) {
-								llvec.add(ul);
-							}
-						}
-						if (llvec.size() > 0) {
-							noti.setLanguages(llvec
-									.toArray(new UnitLanguage[0]));
-						}
-
-					}
-
-					// pers.persLong.setLanguages(lvec.toArray(new
-					// UnitLanguage[0]));
-				}
-
-				sql = "select a.rid,a.pid,b.pid,a.tag,a.surety,a.modified,a.createdate,"
-						+ "rn.surety,rn.tag,rn.relationtype,rn.description,rn.dateprefix,"
-						+ "rn.fromdate,rn.todate,rn.place,rn.notetext,"
-						+ "rn.sourcetext,rn.privatetext,rn.modified,rn.createdate,rn.rnid "
-						+ "from relation a inner join relation b on a.rid=b.rid "
-						+ "left join relationnotice rn on a.rid=rn.rid "
-						+ "where a.pid <> b.pid and a.pid=? "
-						+ "order by a.tag,a.relationrow,rn.noticerow ,a.rid,b.pid";
-				pstm = con.prepareStatement(sql);
-				pstm.setInt(1, pid);
-				rs = pstm.executeQuery();
-				int prevRid = -1;
-				int rid;
-				int bid;
-				String tag;
-				Relation rel = null;
-				RelationNotice rnote = null;
-				Vector<Integer> relpids = new Vector<Integer>();
-				while (rs.next()) {
-					rid = rs.getInt(1);
-					bid = rs.getInt(3);
-					tag = rs.getString(4);
-					relpids.add(bid);
-
-					if (rid != prevRid) {
-						if (rel != null && relNotices != null
-								&& relNotices.size() > 0) {
-							rel.setNotices(relNotices
-									.toArray(new RelationNotice[0]));
-						}
-						relNotices = new Vector<RelationNotice>();
-						prevRid = rid;
-						rel = new Relation(rid, rs.getInt(2), bid, tag, rs
-								.getInt(5), rs.getTimestamp(6), rs
-								.getTimestamp(7));
-						rels.add(rel);
-
-					}
-					String rtag = rs.getString(9);
-					if (rtag != null) {
-						rnote = new RelationNotice(rs.getInt(21), rid, rs
-								.getInt(8), rtag, rs.getString(10), rs
-								.getString(11), rs.getString(12), rs
-								.getString(13), rs.getString(14), rs
-								.getString(15), rs.getString(16), rs
-								.getString(17), rs.getString(18), rs
-								.getTimestamp(19), rs.getTimestamp(20));
-
-						if (relNotices == null) {
-							relNotices = new Vector<RelationNotice>();
-						}
-						relNotices.add(rnote);
-					}
-
-				}
-				if (rel != null && relNotices != null && relNotices.size() > 0) {
-					rel.setNotices(relNotices.toArray(new RelationNotice[0]));
-				}
-
-				rs.close();
-				pstm.close();
-				if (rels.size() > 0) {
-					pers.relations = rels.toArray(new Relation[0]);
-				} else {
-					pers.relations = new Relation[0];
-				}
-
-				//
-				// lets still pick up the language variants
-				//
-
-				for (int i = 0; i < pers.relations.length; i++) {
-					if (pers.relations[i].getNotices() != null) {
-						for (int j = 0; j < pers.relations[i].getNotices().length; j++) {
-							RelationNotice rn = pers.relations[i].getNotices()[j];
-							Vector<RelationLanguage> rl = new Vector<RelationLanguage>();
-
-							sql = "select rnid,rid,langcode,relationtype,description,place,notetext,modified,createdate "
-									+ "from relationLanguage where rnid = ?";
-
-							pstm = con.prepareStatement(sql);
-							pstm.setInt(1, rn.getRnid());
-							rs = pstm.executeQuery();
-							while (rs.next()) {
-								RelationLanguage rrl = new RelationLanguage(rs);
-								rl.add(rrl);
-							}
-							rs.close();
-							pstm.close();
-
-							if (rl.size() > 0) {
-								rn.setLanguages(rl
-										.toArray(new RelationLanguage[0]));
-							}
-
-							// if
-							// (pers.relations[i].getNotices()[j].getLanguages()
-							// != null){
-							//								
-							//								
-							//								
-							// }
-						}
-					}
-				}
-
-				if (lang == null) {
-					Vector<PersonShortData> pv = new Vector<PersonShortData>();
-					HashMap<Integer, Integer> testPid = new HashMap<Integer, Integer>();
-					for (int i = 0; i < relpids.size(); i++) {
-						Integer test = relpids.get(i);
-
-						if (testPid.put(test, test) == null) {
-							// System.out.println("kalleko:" + test.intValue());
-							PersonShortData p = new PersonShortData(this.con,
-									test.intValue());
-							pv.add(p);
-						}
-					}
-					pers.pers = pv.toArray(new PersonShortData[0]);
-				}
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new SukuException(e);
-		}
-		return pers;
 	}
 
 	/**

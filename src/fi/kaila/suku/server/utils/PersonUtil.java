@@ -6,9 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.pojo.PersonLongData;
+import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationLanguage;
 import fi.kaila.suku.util.pojo.RelationNotice;
@@ -372,11 +377,11 @@ public class PersonUtil {
 		String delLangSql = "delete from relationlanguage where rnid=? and langcode = ?";
 
 		String insRelSql = "insert into relation (rid,pid,surety,tag,relationrow) values (?,?,?,?,?) ";
+		String updRowSql = "update relation set relationrow = ? where rid = ? and pid = ?";
 
 		SukuData res = new SukuData();
-
+		SukuData ffmm = null;
 		try {
-			// PreparedStatement updNoti = con.prepareStatement(updSql);
 
 			PreparedStatement pst;
 			Statement stm;
@@ -494,6 +499,76 @@ public class PersonUtil {
 											+ lukuri);
 								}
 							}
+
+							ffmm = getFullPerson(r.getRelative(), null);
+							Vector<Relation> ffvec = new Vector<Relation>();
+							Relation newrel = null;
+							for (int j = 0; j < ffmm.relations.length; j++) {
+								Relation rfm = ffmm.relations[j];
+								if (rfm.getTag().equals("CHIL")) {
+									for (int k = 0; k < ffmm.pers.length; k++) {
+										PersonShortData pfm = ffmm.pers[k];
+										if (pfm.getPid() == rfm.getRelative()) {
+											rfm.setShortPerson(pfm);
+										}
+									}
+									if (rfm.getRid() == rid) {
+										newrel = rfm;
+									} else {
+										ffvec.add(rfm);
+									}
+								}
+							}
+							if (newrel == null
+									|| newrel.getShortPerson() == null
+									|| newrel.getShortPerson().getBirtDate() == null
+									|| newrel.getShortPerson().getBirtDate()
+											.equals("")) {
+								newrel = null;
+							} else {
+								for (int j = 0; j < ffvec.size(); j++) {
+									Relation rfm = ffvec.get(j);
+									if (rfm.getShortPerson() == null
+											|| rfm.getShortPerson()
+													.getBirtDate() == null
+											|| rfm.getShortPerson()
+													.getBirtDate().equals("")) {
+										ffvec.insertElementAt(newrel, j);
+										newrel = null;
+										break;
+									} else {
+										if (newrel.getShortPerson()
+												.getBirtDate().compareTo(
+														rfm.getShortPerson()
+																.getBirtDate()) < 0) {
+											ffvec.insertElementAt(newrel, j);
+											newrel = null;
+											break;
+										}
+									}
+								}
+								if (newrel != null) {
+									ffvec.add(newrel);
+								}
+
+								// order childnotices for father or mother
+
+								for (int rivi0 = 0; rivi0 < ffvec.size(); rivi0++) {
+									Relation rr = ffvec.get(rivi0);
+
+									pst = con.prepareStatement(updRowSql);
+									pst.setInt(1, rivi0 + 1);
+									pst.setInt(2, rr.getRid());
+									pst.setInt(3, rr.getPid());
+									int lukuri = pst.executeUpdate();
+									if (false)
+										System.out.println("RELAFFMMROW # "
+												+ lukuri);
+
+								}
+
+							}
+
 						}
 					}
 				}
@@ -654,7 +729,6 @@ public class PersonUtil {
 			int spouseRow = 0;
 			int thisRow = 0;
 
-			String updRowSql = "update relation set relationrow = ? where rid = ? and pid = ?";
 			for (int i = 0; i < req.relations.length; i++) {
 				Relation r = req.relations[i];
 				if (r.getPid() == req.persLong.getPid()) {
@@ -684,6 +758,10 @@ public class PersonUtil {
 			res.resu = e.getMessage();
 			return res;
 
+		} catch (SukuException e) {
+			logger.log(Level.WARNING, "Person load", e);
+			res.resu = e.getMessage();
+			return res;
 		}
 
 		return res;
@@ -761,6 +839,224 @@ public class PersonUtil {
 		}
 
 		return res;
+	}
+
+	/**
+	 * Full person sisältää
+	 * 
+	 * SukuData siirto-oliossa
+	 * 
+	 * henkilön tiedot: persLong tietojaksot: persLong.notices[]
+	 * sukulaisuussuheet: relations[] sukujaksot: rellations[i].notices[]
+	 * 
+	 * @param pid
+	 * @param lang
+	 * @return SukuData result
+	 * @throws SukuException
+	 */
+
+	public SukuData getFullPerson(int pid, String lang) throws SukuException {
+		SukuData pers = new SukuData();
+		Vector<UnitNotice> nvec = new Vector<UnitNotice>();
+
+		Vector<Relation> rels = new Vector<Relation>();
+		Vector<RelationNotice> relNotices = null;
+		try {
+			String sql = "select * from unit where pid = ? ";
+			PreparedStatement pstm = con.prepareStatement(sql);
+			pstm.setInt(1, pid);
+
+			ResultSet rs = pstm.executeQuery();
+
+			if (rs.next()) {
+				pers.persLong = new PersonLongData(rs);
+			}
+			rs.close();
+			pstm.close();
+			if (pers.persLong != null) {
+				UnitNotice notice;
+				if (lang == null) {
+					sql = "select * from unitnotice where pid = ? order by noticerow ";
+				} else {
+					sql = "select * from unitnotice_" + lang
+							+ " where pid = ? order by noticerow ";
+				}
+				pstm = con.prepareStatement(sql);
+				pstm.setInt(1, pid);
+				rs = pstm.executeQuery();
+				while (rs.next()) {
+					notice = new UnitNotice(rs);
+					nvec.add(notice);
+				}
+				rs.close();
+				pstm.close();
+				pers.persLong.setNotices(nvec.toArray(new UnitNotice[0]));
+
+				if (lang == null) {
+					Vector<UnitLanguage> lvec = new Vector<UnitLanguage>();
+					UnitLanguage langnotice;
+					sql = "select * from unitlanguage where pid = ? order by pnid,langcode";
+
+					pstm = con.prepareStatement(sql);
+					pstm.setInt(1, pid);
+					rs = pstm.executeQuery();
+					while (rs.next()) {
+						langnotice = new UnitLanguage(rs);
+						lvec.add(langnotice);
+					}
+					rs.close();
+					pstm.close();
+
+					Vector<UnitLanguage> llvec = null;
+
+					for (int i = 0; i < pers.persLong.getNotices().length; i++) {
+						UnitNotice noti = pers.persLong.getNotices()[i];
+						llvec = new Vector<UnitLanguage>();
+						for (int j = 0; j < lvec.size(); j++) {
+							UnitLanguage ul = lvec.get(j);
+							if (noti.getPnid() == ul.getPnid()) {
+								llvec.add(ul);
+							}
+						}
+						if (llvec.size() > 0) {
+							noti.setLanguages(llvec
+									.toArray(new UnitLanguage[0]));
+						}
+
+					}
+
+					// pers.persLong.setLanguages(lvec.toArray(new
+					// UnitLanguage[0]));
+				}
+
+				sql = "select a.rid,a.pid,b.pid,a.tag,a.surety,a.modified,a.createdate,"
+						+ "rn.surety,rn.tag,rn.relationtype,rn.description,rn.dateprefix,"
+						+ "rn.fromdate,rn.todate,rn.place,rn.notetext,"
+						+ "rn.sourcetext,rn.privatetext,rn.modified,rn.createdate,rn.rnid "
+						+ "from relation a inner join relation b on a.rid=b.rid "
+						+ "left join relationnotice rn on a.rid=rn.rid "
+						+ "where a.pid <> b.pid and a.pid=? "
+						+ "order by a.tag,a.relationrow,rn.noticerow ,a.rid,b.pid";
+				pstm = con.prepareStatement(sql);
+				pstm.setInt(1, pid);
+				rs = pstm.executeQuery();
+				int prevRid = -1;
+				int rid;
+				int bid;
+				String tag;
+				Relation rel = null;
+				RelationNotice rnote = null;
+				Vector<Integer> relpids = new Vector<Integer>();
+				while (rs.next()) {
+					rid = rs.getInt(1);
+					bid = rs.getInt(3);
+					tag = rs.getString(4);
+					relpids.add(bid);
+
+					if (rid != prevRid) {
+						if (rel != null && relNotices != null
+								&& relNotices.size() > 0) {
+							rel.setNotices(relNotices
+									.toArray(new RelationNotice[0]));
+						}
+						relNotices = new Vector<RelationNotice>();
+						prevRid = rid;
+						rel = new Relation(rid, rs.getInt(2), bid, tag, rs
+								.getInt(5), rs.getTimestamp(6), rs
+								.getTimestamp(7));
+						rels.add(rel);
+
+					}
+					String rtag = rs.getString(9);
+					if (rtag != null) {
+						rnote = new RelationNotice(rs.getInt(21), rid, rs
+								.getInt(8), rtag, rs.getString(10), rs
+								.getString(11), rs.getString(12), rs
+								.getString(13), rs.getString(14), rs
+								.getString(15), rs.getString(16), rs
+								.getString(17), rs.getString(18), rs
+								.getTimestamp(19), rs.getTimestamp(20));
+
+						if (relNotices == null) {
+							relNotices = new Vector<RelationNotice>();
+						}
+						relNotices.add(rnote);
+					}
+
+				}
+				if (rel != null && relNotices != null && relNotices.size() > 0) {
+					rel.setNotices(relNotices.toArray(new RelationNotice[0]));
+				}
+
+				rs.close();
+				pstm.close();
+				if (rels.size() > 0) {
+					pers.relations = rels.toArray(new Relation[0]);
+				} else {
+					pers.relations = new Relation[0];
+				}
+
+				//
+				// lets still pick up the language variants
+				//
+
+				for (int i = 0; i < pers.relations.length; i++) {
+					if (pers.relations[i].getNotices() != null) {
+						for (int j = 0; j < pers.relations[i].getNotices().length; j++) {
+							RelationNotice rn = pers.relations[i].getNotices()[j];
+							Vector<RelationLanguage> rl = new Vector<RelationLanguage>();
+
+							sql = "select rnid,rid,langcode,relationtype,description,place,notetext,modified,createdate "
+									+ "from relationLanguage where rnid = ?";
+
+							pstm = con.prepareStatement(sql);
+							pstm.setInt(1, rn.getRnid());
+							rs = pstm.executeQuery();
+							while (rs.next()) {
+								RelationLanguage rrl = new RelationLanguage(rs);
+								rl.add(rrl);
+							}
+							rs.close();
+							pstm.close();
+
+							if (rl.size() > 0) {
+								rn.setLanguages(rl
+										.toArray(new RelationLanguage[0]));
+							}
+
+							// if
+							// (pers.relations[i].getNotices()[j].getLanguages()
+							// != null){
+							//								
+							//								
+							//								
+							// }
+						}
+					}
+				}
+
+				if (lang == null) {
+					Vector<PersonShortData> pv = new Vector<PersonShortData>();
+					HashMap<Integer, Integer> testPid = new HashMap<Integer, Integer>();
+					for (int i = 0; i < relpids.size(); i++) {
+						Integer test = relpids.get(i);
+
+						if (testPid.put(test, test) == null) {
+							// System.out.println("kalleko:" + test.intValue());
+							PersonShortData p = new PersonShortData(this.con,
+									test.intValue());
+							pv.add(p);
+						}
+					}
+					pers.pers = pv.toArray(new PersonShortData[0]);
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SukuException(e);
+		}
+		return pers;
 	}
 
 }

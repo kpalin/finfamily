@@ -944,6 +944,15 @@ public class RelativesPane extends JPanel implements ActionListener,
 								|| chrel.getNotices().length == 0) {
 							if (chrel.getSurety() > 50) {
 								rel.setSurety(40);
+
+								for (int j = 0; j < chilDat.pers.length; j++) {
+									PersonShortData pps = chilDat.pers[j];
+									if (chrel.getRelative() == pps.getPid()) {
+										chrel.setShortPerson(pps);
+										break;
+									}
+								}
+
 								String[] sures = Resurses.getString(
 										"DATA_SURETY_VALUES").split(";");
 								StringBuffer sb = new StringBuffer();
@@ -1225,19 +1234,19 @@ public class RelativesPane extends JPanel implements ActionListener,
 				|| e.getSource() == pareTab) {
 			if (e.getSource() == chilTab) {
 				int ii = chilTab.getSelectedRow();
-				if (ii < 0)
+				if (ii < 0 || ii >= children.list.size())
 					return;
 
 				activeRelation = children.list.get(ii);
 			} else if (e.getSource() == pareTab) {
 				int ii = pareTab.getSelectedRow();
-				if (ii < 0)
+				if (ii < 0 || ii >= parents.list.size())
 					return;
 				// System.out.println("vanhemmilta tuli riviltä " + ii);
 				activeRelation = parents.list.get(ii);
 			} else {
 				int ii = spouTab.getSelectedRow();
-				if (ii < 0)
+				if (ii < 0 || ii >= spouses.list.size())
 					return;
 				// System.out.println("puolisolta tuli riviltä " + ii);
 				activeRelation = spouses.list.get(ii);

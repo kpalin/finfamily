@@ -35,7 +35,7 @@ import fi.kaila.suku.util.pojo.TableShortData;
 /**
  * @author FIKAAKAIL
  * 
- *         PersonWindow for suku11J
+ *         PersonWindow for FinFamily
  * 
  */
 public class PersonView extends JPanel implements ChangeListener {

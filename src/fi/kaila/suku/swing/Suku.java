@@ -494,7 +494,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		setSize(d);
 		setExtendedState(MAXIMIZED_BOTH);
 
-		this.toolbar = new JToolBar("Suku11j tools");
+		this.toolbar = new JToolBar("FinFamily tools");
 		this.getContentPane().add(this.toolbar);
 		this.toolbar.setBounds(0, 0, getWidth(), 50);
 		this.toolbar.setFloatable(false);
