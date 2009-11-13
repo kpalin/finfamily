@@ -204,7 +204,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JButton tPersonButton;
 	private JButton tSubjectButton;
 	private JButton tSubjectPButton;
-	private JButton tSubjectName;
+	// private JButton tSubjectName;
 	private JButton tMapButton;
 	private JButton tRemovePerson;
 	private JButton tNoteButton;
@@ -213,6 +213,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JButton tImageButton;
 	private JButton tNoticesButton;
 	private JButton tPrivateButton;
+
+	private Vector<String> needle = new Vector<String>();
 
 	private boolean isConnected = false;
 	boolean isExiting = false;
@@ -519,10 +521,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.toolbar.add(tSubjectButton);
 
 			this.toolbar.addSeparator();
-			tSubjectName = new JButton("");
-			tSubjectName.setEnabled(false);
-
-			this.toolbar.add(tSubjectName);
+			// tSubjectName = new JButton("");
+			// tSubjectName.setEnabled(false);
+			//
+			// this.toolbar.add(tSubjectName);
 
 			tSubjectPButton = makeNavigationButton(
 					Resurses.TOOLBAR_SUBJECT_UP_IMAGE,
@@ -1237,7 +1239,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						if (tSubjectButton.isSelected()
 								&& subjectPid == p.getPid()) {
 							subjectPid = 0;
-							tSubjectName.setText("");
+							// tSubjectName.setText("");
+
+							for (int i = 0; i < needle.size(); i++) {
+								String[] dbl = needle.get(i).split(";");
+								int dblid = Integer.parseInt(dbl[0]);
+								if (p.getPid() == dblid) {
+									needle.remove(i);
+									break;
+								}
+							}
+
 							tSubjectPButton.setEnabled(false);
 							tSubjectButton.setSelected(false);
 						}
@@ -1369,7 +1381,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					tSubjectButton.setSelected(true);
 					PersonShortData pp = tableMap.get(subjectPid);
 					if (pp != null) {
-						tSubjectName.setText(pp.getAlfaName());
+						String dd = "" + subjectPid + ";" + pp.getAlfaName();
+						needle.insertElementAt(dd, 0);
+
+						for (int i = 1; i < needle.size(); i++) {
+							String[] dbl = needle.get(i).split(";");
+							int dblid = Integer.parseInt(dbl[0]);
+							if (subjectPid == dblid) {
+								needle.remove(i);
+								break;
+							}
+						}
+
+						// tSubjectName.setText(pp.getAlfaName());
 						tSubjectPButton.setEnabled(true);
 					}
 				}
@@ -1431,20 +1455,35 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						+ theButt);
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_DOWN_ACTION)) {
 
-				if (!tSubjectButton.isSelected() && activePersonPid > 0) {
+				// if (!tSubjectButton.isSelected() && activePersonPid > 0) {
+				if (activePersonPid > 0) {
 					subjectPid = activePersonPid;
-					tSubjectButton.setSelected(true);
+					// tSubjectButton.setSelected(true);
 					PersonShortData pp = tableMap.get(subjectPid);
 					if (pp != null) {
-						tSubjectName.setText(pp.getAlfaName());
+
+						String dd = "" + subjectPid + ";" + pp.getAlfaName();
+						needle.insertElementAt(dd, 0);
+
+						for (int i = 1; i < needle.size(); i++) {
+							String[] dbl = needle.get(i).split(";");
+							int dblid = Integer.parseInt(dbl[0]);
+							if (subjectPid == dblid) {
+								needle.remove(i);
+								break;
+							}
+						}
+
+						// tSubjectName.setText(pp.getAlfaName());
 						tSubjectPButton.setEnabled(true);
 					}
-				} else if (tSubjectButton.isSelected()) {
-					subjectPid = 0;
-					tSubjectName.setText("");
-					tSubjectPButton.setEnabled(false);
-					tSubjectButton.setSelected(false);
 				}
+				// else if (tSubjectButton.isSelected()) {
+				// subjectPid = 0;
+				// // tSubjectName.setText("");
+				// tSubjectPButton.setEnabled(false);
+				// tSubjectButton.setSelected(false);
+				// }
 
 				// if (activePersonPid > 0) {
 				// boolean theButt = !tSubjectButton.isSelected();
@@ -1466,10 +1505,41 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				// }
 				// }
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_UP_ACTION)) {
-				if (subjectPid > 0) {
-					showPerson(subjectPid);
-				}
+				if (needle.size() > 0) {
+					String[] subjes = null;
 
+					subjes = new String[needle.size()];
+					for (int i = 0; i < needle.size(); i++) {
+						String[] dbl = needle.get(i).split(";");
+						subjes[i] = dbl[1];
+					}
+
+					Object par = JOptionPane.showInputDialog(personView,
+							Resurses.getString("SELECT_PERSON")
+
+							, Resurses.getString(Resurses.SUKU),
+							JOptionPane.QUESTION_MESSAGE, null, subjes,
+							subjes[0]);
+
+					if (par != null) {
+						int subrow = -1;
+						for (int j = 0; j < subjes.length; j++) {
+
+							if (par == subjes[j]) {
+								subrow = j;
+								break;
+							}
+
+						}
+						if (subrow >= 0) {
+							String[] dbl = needle.get(subrow).split(";");
+							showPerson(Integer.parseInt(dbl[0]));
+						}
+					}
+					// if (subjectPid > 0) {
+					// showPerson(subjectPid);
+					// }
+				}
 			} else if (cmd.equals(Resurses.TOOLBAR_NOTICES_ACTION)) {
 				boolean notiButt = !tNoticesButton.isSelected();
 				tNoticesButton.setSelected(notiButt);
