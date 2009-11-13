@@ -70,10 +70,10 @@ public class Read2004XML extends DefaultHandler {
 	SimpleDateFormat cdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	private static final String INSERT_UNIT = "insert into Unit "
-			+ "(PID,tag,sex,userrefn,groupid,privacy,sid,createdate)"
-			+ " values (?,'INDI',?,?,?,?,?,?)";
+			+ "(PID,tag,sex,groupid,privacy,sid,createdate)"
+			+ " values (?,'INDI',?,?,?,?,?)";
 
-	private static final String UPDATE_UNIT = "update Unit set  sourcetext = ?, privatetext = ? "
+	private static final String UPDATE_UNIT = "update Unit set userrefn = ?,  sourcetext = ?, privatetext = ? "
 			+ "where pid = ? ";
 
 	private static final String INSERT_NAME_NOTICE = "insert into UnitNotice "
@@ -618,17 +618,16 @@ public class Read2004XML extends DefaultHandler {
 
 				this.pstm.setInt(1, id);
 				this.pstm.setString(2, this.unitSex);
-				this.pstm.setString(3, this.unitRefn);
-				this.unitRefn = null;
-				this.pstm.setString(4, this.unitGroupId);
-				this.pstm.setString(5, this.unitPrivacy);
+
+				this.pstm.setString(3, this.unitGroupId);
+				this.pstm.setString(4, this.unitPrivacy);
 
 				if (this.unitSourceId != null) {
-					this.pstm.setInt(6, idToInt(this.unitSourceId));
+					this.pstm.setInt(5, idToInt(this.unitSourceId));
 				} else {
-					this.pstm.setNull(6, Types.INTEGER);
+					this.pstm.setNull(5, Types.INTEGER);
 				}
-				this.pstm.setTimestamp(7, toTimestamp(this.unitCreateDate));
+				this.pstm.setTimestamp(6, toTimestamp(this.unitCreateDate));
 				this.pstm.executeUpdate();
 				if (this.unitId.equals("I24")) {
 					System.out.println("Nytte");
@@ -732,10 +731,11 @@ public class Read2004XML extends DefaultHandler {
 					throw new SAXException("UnitId " + this.unitId
 							+ " is not numeric");
 				}
-
-				this.pstm.setString(1, this.unitSourceText);
-				this.pstm.setString(2, this.unitPrivateText);
-				this.pstm.setInt(3, id);
+				this.pstm.setString(1, this.unitRefn);
+				this.unitRefn = null;
+				this.pstm.setString(2, this.unitSourceText);
+				this.pstm.setString(3, this.unitPrivateText);
+				this.pstm.setInt(4, id);
 				int resu = this.pstm.executeUpdate();
 				if (resu != 1) {
 					throw new SAXException("update of unit " + this.unitId
