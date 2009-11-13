@@ -1190,7 +1190,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (cmd.equals("MENU_COPY")) {
 				System.out.println("EDIT-COPY by ctrl/c");
 			}
-			if (cmd.equals("REMPERSON")) {
+			if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
 
 				int isele = table.getSelectedRow();
 				if (isele < 0) {
@@ -1206,12 +1206,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				PersonShortData p = tableMap.get(row.getPid());
 
-				// if (sukuObject != null){
-				// if (sukuObject instanceof PersonShortData){
-				// PersonShortData p = (PersonShortData)sukuObject;
-				// JOptionPane.showMessageDialog(this, "Under construction",
-				// Resurses.getString(Resurses.SUKU),
-				// JOptionPane.INFORMATION_MESSAGE);
 				int resu = JOptionPane.showConfirmDialog(this, Resurses
 						.getString("CONFIRM_DELETE")
 						+ " " + p.getAlfaName(), Resurses
@@ -1234,8 +1228,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							SukuTabPane pane = personView.getPane(mainpaneidx);
 							if (p.getPid() == pane.getPid()) {
 								personView.closeMainPane(false);
-							}
+							} else {
+								personView.refresRelativesPane();
 
+							}
+						}
+
+						if (tSubjectButton.isSelected()
+								&& subjectPid == p.getPid()) {
+							subjectPid = 0;
+							tSubjectName.setText("");
+							tSubjectPButton.setEnabled(false);
+							tSubjectButton.setSelected(false);
 						}
 
 						tableModel.removeRow(isele);

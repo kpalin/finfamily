@@ -843,36 +843,45 @@ public class RelativesPane extends JPanel implements ActionListener,
 			if (cmd.equals("DEL")) {
 				activeRelation.setToBeDeleted(true);
 			}
-
-			int midx = personView.getMainPaneIndex();
-			if (midx < 0)
-				return;
-			SukuTabPane pan = personView.getPane(midx);
-			PersonMainPane main = (PersonMainPane) pan.pnl;
-			int personPid = main.getPersonPid();
-
 			boolean reOpen = true;
 			if (cmd.equals(Resurses.CLOSE)) {
 				reOpen = false;
 			}
-			try {
-				personView.displayPersonPane(personPid);
-				personView.closeMainPane(reOpen);
-				if (reOpen) {
-					personView.selectRelativesPane();
 
-				}
-
-			} catch (SukuException e1) {
-				JOptionPane.showMessageDialog(this, e1.toString(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-				logger.log(Level.WARNING, "Closing relatives", e1);
-
-				e1.printStackTrace();
-			}
+			refreshRelativesPane(reOpen);
 
 		}
 
+	}
+
+	/**
+	 * Refresh the relatives lists from db
+	 * 
+	 * @param reOpen
+	 */
+	public void refreshRelativesPane(boolean reOpen) {
+		int midx = personView.getMainPaneIndex();
+		if (midx < 0)
+			return;
+		SukuTabPane pan = personView.getPane(midx);
+		PersonMainPane main = (PersonMainPane) pan.pnl;
+		int personPid = main.getPersonPid();
+
+		try {
+			personView.displayPersonPane(personPid);
+			personView.closeMainPane(reOpen);
+			if (reOpen) {
+				personView.selectRelativesPane();
+
+			}
+
+		} catch (SukuException e1) {
+			JOptionPane.showMessageDialog(this, e1.toString(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			logger.log(Level.WARNING, "Closing relatives", e1);
+
+			e1.printStackTrace();
+		}
 	}
 
 	private void insertIntoChildTable(PersonShortData persShort, int row) {
