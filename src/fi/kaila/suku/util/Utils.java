@@ -1,5 +1,6 @@
 package fi.kaila.suku.util;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -174,14 +175,115 @@ public class Utils {
 		// }
 
 		// String parts[] = textDate.split(separator);
-		String parts[] = textDate.split("\\.|/|-");
 
+		StringBuffer sb = new StringBuffer();
+
+		sb.append(Resurses.getString("ERROR_WRONGDATE"));
+		sb.append(" ");
+		sb.append(textDate);
+
+		String parts[] = textDate.split("\\.|/|-");
+		int parti[] = { -1, -1, -1 };
+		if (parts.length > 3) {
+			throw new SukuDateException(sb.toString());
+		}
 		for (int i = 0; i < parts.length; i++) {
 			try {
-				@SuppressWarnings("unused")
-				int j = Integer.parseInt(parts[i]);
+
+				parti[i] = Integer.parseInt(parts[i]);
 			} catch (NumberFormatException ne) {
-				throw new SukuDateException(textDate);
+				throw new SukuDateException(sb.toString());
+			}
+		}
+
+		SimpleDateFormat dfor = new SimpleDateFormat("yyyyMMdd");
+		String today = dfor.format(new java.util.Date());
+		int nowy = Integer.parseInt(today.substring(0, 4));
+		int y = -1;
+		int m = -1;
+		int d = -1;
+
+		if (parts.length == 1) {
+			y = parti[0];
+		}
+		if (parts.length == 2) {
+			if (df.equals("SE")) {
+				y = parti[0];
+				m = parti[1];
+			} else {
+				y = parti[1];
+				m = parti[2];
+			}
+		}
+		if (parts.length == 3) {
+			if (df.equals("SE")) {
+				y = parti[0];
+				m = parti[1];
+				d = parti[2];
+
+			} else if (df.equals("US")) {
+				y = parti[2];
+				m = parti[0];
+				d = parti[1];
+
+			}
+			y = parti[2];
+			m = parti[1];
+			d = parti[0];
+
+		}
+
+		int leap = y % 4;
+		if (leap == 0) {
+			leap = 29;
+		} else {
+			leap = 28;
+		}
+		if (y == 1712) {
+			leap = 30;
+		}
+		if (y > nowy) {
+			throw new SukuDateException(Resurses.getString("ERROR_FUTURE")
+					+ " [" + textDate + "]");
+		}
+
+		if (m >= 0 && (m == 0 || m > 12)) {
+			throw new SukuDateException(Resurses.getString("ERROR_MONTH")
+					+ " [" + textDate + "]");
+		}
+		if (d >= 0) {
+			if (d > 0 && d <= 31) {
+				switch (m) {
+				case 1:
+				case 3:
+				case 5:
+				case 7:
+				case 8:
+				case 10:
+				case 12:
+					break;
+				case 2:
+					if (d > leap) {
+						d = -1;
+					}
+					break;
+				case 4:
+				case 6:
+				case 9:
+				case 11:
+					if (d == 31) {
+						d = -1;
+
+					}
+					break;
+
+				}
+			} else {
+				d = -1;
+			}
+			if (d < 0) {
+				throw new SukuDateException(Resurses.getString("ERROR_DAY")
+						+ " [" + textDate + "]");
 			}
 		}
 
@@ -207,7 +309,7 @@ public class Utils {
 			return strl(parts[2], 4) + strl(parts[1], 2) + strl(parts[0], 2);
 
 		}
-		throw new SukuDateException(textDate);
+		throw new SukuDateException(sb.toString());
 
 	}
 

@@ -64,9 +64,9 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 			if (showTable == null) {
 				return;
 			}
-			if (cmd.startsWith(Resurses.MENU_PASTE)) {
-				doPaste(cmd);
-			}
+			// if (cmd.startsWith(Resurses.MENU_PASTE)) {
+			// doPaste(cmd);
+			// }
 
 			if (cmd.startsWith("PARE ")) {
 
@@ -115,122 +115,122 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 		}
 	}
 
-	private void doPaste(String cmd) throws SukuException {
-		if (showTable == this.relativesPane.chilTab) {
-			// System.out.println("Lisätään siis lapseksi " +
-
-			Relation rel = new Relation(0,
-					this.relativesPane.longPers.getPid(), showNewPerson
-							.getPid(), "CHIL", 100, null, null);
-			rel.setShortPerson(showNewPerson);
-
-			this.relativesPane.checkLocalRelation(new PersonShortData(
-					this.relativesPane.longPers), rel, showNewPerson);
-
-			if (cmd.equals(Resurses.MENU_PASTE_BEFORE) && pasteAtRow >= 0) {
-				this.relativesPane.children.list.insertElementAt(rel,
-						pasteAtRow);
-			} else if (cmd.equals(Resurses.MENU_PASTE_AFTER) && pasteAtRow >= 0) {
-
-				pasteAtRow++;
-
-				this.relativesPane.children.list.insertElementAt(rel,
-						pasteAtRow);
-			} else {
-				int newBirt = showNewPerson.getBirtYear();
-				if (newBirt == 0) {
-					if (pasteAtRow < 0
-							|| pasteAtRow >= this.relativesPane.children.list
-									.size() - 1) {
-						this.relativesPane.children.list.add(rel);
-					} else {
-						this.relativesPane.children.list.insertElementAt(rel,
-								pasteAtRow);
-					}
-				} else {
-					int birtIdx = -1;
-					for (int i = 0; i < this.relativesPane.children.list.size(); i++) {
-						PersonShortData dd = this.relativesPane.children.list
-								.get(i).getShortPerson();
-						if (dd.getBirtYear() != 0 && dd.getBirtYear() > newBirt) {
-							birtIdx = i;
-							break;
-						}
-					}
-
-					if (birtIdx >= 0) {
-						this.relativesPane.children.list.insertElementAt(rel,
-								birtIdx);
-					} else {
-						if (pasteAtRow >= 0
-								&& pasteAtRow < this.relativesPane.children.list
-										.size()) {
-							this.relativesPane.children.list.insertElementAt(
-									rel, pasteAtRow);
-						} else {
-							this.relativesPane.children.list.add(rel);
-						}
-					}
-				}
-			}
-
-			showTable.updateUI();
-		} else if (showTable == this.relativesPane.pareTab) {
-
-			String tag = "MOTH";
-			if (showNewPerson.getSex().equals("M")) {
-				tag = "FATH";
-			}
-			Relation rel = new Relation(0,
-					this.relativesPane.longPers.getPid(), showNewPerson
-							.getPid(), tag, 100, null, null);
-			rel.setShortPerson(showNewPerson);
-
-			this.relativesPane.checkLocalRelation(new PersonShortData(
-					this.relativesPane.longPers), rel, showNewPerson);
-
-			if (this.relativesPane.parents.list.size() == 0
-					|| tag.equals("MOTH")) {
-				this.relativesPane.parents.list.add(rel);
-			} else {
-				this.relativesPane.parents.list.insertElementAt(rel, 0);
-			}
-			showTable.updateUI();
-		} else if (showTable == this.relativesPane.spouTab) {
-			// System.out.println("Lisätään siis puolisoksi " +
-
-			String tag = "WIFE";
-			if (showNewPerson.getSex().equals("M")) {
-				tag = "HUSB";
-			}
-
-			Relation rel = new Relation(0,
-					this.relativesPane.longPers.getPid(), showNewPerson
-							.getPid(), tag, 100, null, null);
-			rel.setShortPerson(showNewPerson);
-
-			this.relativesPane.checkLocalRelation(new PersonShortData(
-					this.relativesPane.longPers), rel, showNewPerson);
-
-			if (pasteAtRow < 0) {
-				this.relativesPane.spouses.list.add(rel);
-			} else {
-				if (cmd.equals(Resurses.MENU_PASTE_BEFORE)) {
-					this.relativesPane.spouses.list.insertElementAt(rel,
-							pasteAtRow);
-				} else {
-					if (pasteAtRow == this.relativesPane.spouses.list.size() - 1) {
-						this.relativesPane.spouses.list.add(rel);
-					} else {
-
-						this.relativesPane.spouses.list.insertElementAt(rel,
-								pasteAtRow);
-					}
-				}
-			}
-			showTable.updateUI();
-		}
-	}
+	// private void doPaste(String cmd) throws SukuException {
+	// if (showTable == this.relativesPane.chilTab) {
+	// // System.out.println("Lisätään siis lapseksi " +
+	//
+	// Relation rel = new Relation(0,
+	// this.relativesPane.longPers.getPid(), showNewPerson
+	// .getPid(), "CHIL", 100, null, null);
+	// rel.setShortPerson(showNewPerson);
+	//
+	// this.relativesPane.checkLocalRelation(new PersonShortData(
+	// this.relativesPane.longPers), rel, showNewPerson);
+	//
+	// if (cmd.equals(Resurses.MENU_PASTE_BEFORE) && pasteAtRow >= 0) {
+	// this.relativesPane.children.list.insertElementAt(rel,
+	// pasteAtRow);
+	// } else if (cmd.equals(Resurses.MENU_PASTE_AFTER) && pasteAtRow >= 0) {
+	//
+	// pasteAtRow++;
+	//
+	// this.relativesPane.children.list.insertElementAt(rel,
+	// pasteAtRow);
+	// } else {
+	// int newBirt = showNewPerson.getBirtYear();
+	// if (newBirt == 0) {
+	// if (pasteAtRow < 0
+	// || pasteAtRow >= this.relativesPane.children.list
+	// .size() - 1) {
+	// this.relativesPane.children.list.add(rel);
+	// } else {
+	// this.relativesPane.children.list.insertElementAt(rel,
+	// pasteAtRow);
+	// }
+	// } else {
+	// int birtIdx = -1;
+	// for (int i = 0; i < this.relativesPane.children.list.size(); i++) {
+	// PersonShortData dd = this.relativesPane.children.list
+	// .get(i).getShortPerson();
+	// if (dd.getBirtYear() != 0 && dd.getBirtYear() > newBirt) {
+	// birtIdx = i;
+	// break;
+	// }
+	// }
+	//
+	// if (birtIdx >= 0) {
+	// this.relativesPane.children.list.insertElementAt(rel,
+	// birtIdx);
+	// } else {
+	// if (pasteAtRow >= 0
+	// && pasteAtRow < this.relativesPane.children.list
+	// .size()) {
+	// this.relativesPane.children.list.insertElementAt(
+	// rel, pasteAtRow);
+	// } else {
+	// this.relativesPane.children.list.add(rel);
+	// }
+	// }
+	// }
+	// }
+	//
+	// showTable.updateUI();
+	// } else if (showTable == this.relativesPane.pareTab) {
+	//
+	// String tag = "MOTH";
+	// if (showNewPerson.getSex().equals("M")) {
+	// tag = "FATH";
+	// }
+	// Relation rel = new Relation(0,
+	// this.relativesPane.longPers.getPid(), showNewPerson
+	// .getPid(), tag, 100, null, null);
+	// rel.setShortPerson(showNewPerson);
+	//
+	// this.relativesPane.checkLocalRelation(new PersonShortData(
+	// this.relativesPane.longPers), rel, showNewPerson);
+	//
+	// if (this.relativesPane.parents.list.size() == 0
+	// || tag.equals("MOTH")) {
+	// this.relativesPane.parents.list.add(rel);
+	// } else {
+	// this.relativesPane.parents.list.insertElementAt(rel, 0);
+	// }
+	// showTable.updateUI();
+	// } else if (showTable == this.relativesPane.spouTab) {
+	// // System.out.println("Lisätään siis puolisoksi " +
+	//
+	// String tag = "WIFE";
+	// if (showNewPerson.getSex().equals("M")) {
+	// tag = "HUSB";
+	// }
+	//
+	// Relation rel = new Relation(0,
+	// this.relativesPane.longPers.getPid(), showNewPerson
+	// .getPid(), tag, 100, null, null);
+	// rel.setShortPerson(showNewPerson);
+	//
+	// this.relativesPane.checkLocalRelation(new PersonShortData(
+	// this.relativesPane.longPers), rel, showNewPerson);
+	//
+	// if (pasteAtRow < 0) {
+	// this.relativesPane.spouses.list.add(rel);
+	// } else {
+	// if (cmd.equals(Resurses.MENU_PASTE_BEFORE)) {
+	// this.relativesPane.spouses.list.insertElementAt(rel,
+	// pasteAtRow);
+	// } else {
+	// if (pasteAtRow == this.relativesPane.spouses.list.size() - 1) {
+	// this.relativesPane.spouses.list.add(rel);
+	// } else {
+	//
+	// this.relativesPane.spouses.list.insertElementAt(rel,
+	// pasteAtRow);
+	// }
+	// }
+	// }
+	// showTable.updateUI();
+	// }
+	// }
 
 	private void doTabPerson() throws SukuException {
 		if (this.relativesPane.pop.getMousePerson() != null) {

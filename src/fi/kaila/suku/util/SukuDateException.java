@@ -25,12 +25,8 @@ public class SukuDateException extends Exception {
 
 	@Override
 	public String getMessage() {
-		StringBuffer sb = new StringBuffer();
 
-		sb.append(Resurses.getString("ERROR_WRONGDATE"));
-		sb.append(" ");
-		sb.append(mess);
-		return sb.toString();
+		return mess;
 
 	}
 

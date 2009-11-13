@@ -26,9 +26,9 @@ public class RelativePopupMenu {
 	private JMenuItem pPerson;
 	private JMenuItem pShowPerson;
 	private JMenuItem pShowFamily;
-	private JMenuItem pPaste;
-	private JMenuItem pPasteBefore;
-	private JMenuItem pPasteAfter;
+	// private JMenuItem pPaste;
+	// private JMenuItem pPasteBefore;
+	// private JMenuItem pPasteAfter;
 	private JMenu pParent;
 	private JMenuItem[] pAddParent;
 
@@ -37,9 +37,9 @@ public class RelativePopupMenu {
 		pPerson.addActionListener(l);
 		pShowFamily.addActionListener(l);
 		pShowPerson.addActionListener(l);
-		pPaste.addActionListener(l);
-		pPasteBefore.addActionListener(l);
-		pPasteAfter.addActionListener(l);
+		// pPaste.addActionListener(l);
+		// pPasteBefore.addActionListener(l);
+		// pPasteAfter.addActionListener(l);
 		for (int i = 0; i < pAddParent.length; i++) {
 			pAddParent[i].addActionListener(l);
 		}
@@ -120,17 +120,18 @@ public class RelativePopupMenu {
 		pShowFamily.setActionCommand(Resurses.TAB_FAMILY);
 		pMenu.add(pShowFamily);
 
-		pPasteBefore = new JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
-		pPasteBefore.setActionCommand(Resurses.MENU_PASTE_BEFORE);
-		pMenu.add(pPasteBefore);
-
-		pPaste = new JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
-		pPaste.setActionCommand(Resurses.MENU_PASTE);
-		pMenu.add(pPaste);
-
-		pPasteAfter = new JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
-		pPasteAfter.setActionCommand(Resurses.MENU_PASTE_AFTER);
-		pMenu.add(pPasteAfter);
+		// pPasteBefore = new
+		// JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
+		// pPasteBefore.setActionCommand(Resurses.MENU_PASTE_BEFORE);
+		// pMenu.add(pPasteBefore);
+		//
+		// pPaste = new JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
+		// pPaste.setActionCommand(Resurses.MENU_PASTE);
+		// pMenu.add(pPaste);
+		//
+		// pPasteAfter = new JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
+		// pPasteAfter.setActionCommand(Resurses.MENU_PASTE_AFTER);
+		// pMenu.add(pPasteAfter);
 
 		pParent = new JMenu(Resurses.getString("MENU_OTHER"));
 		pMenu.add(pParent);
@@ -162,16 +163,16 @@ public class RelativePopupMenu {
 			return;
 		}
 
-		if (text != null) {
-			pPaste.setText(Resurses.getString(Resurses.MENU_PASTE) + " "
-					+ person.getAlfaName() + " " + text);
-			pPasteAfter.setText(Resurses.getString(Resurses.MENU_PASTE) + " "
-					+ text + " [" + person.getAlfaName() + "] "
-					+ Resurses.getString(Resurses.MENU_PASTE_AFTER));
-			pPasteBefore.setText(Resurses.getString(Resurses.MENU_PASTE) + " "
-					+ text + " [" + person.getAlfaName() + "] "
-					+ Resurses.getString(Resurses.MENU_PASTE_BEFORE));
-		}
+		// if (text != null) {
+		// pPaste.setText(Resurses.getString(Resurses.MENU_PASTE) + " "
+		// + person.getAlfaName() + " " + text);
+		// pPasteAfter.setText(Resurses.getString(Resurses.MENU_PASTE) + " "
+		// + text + " [" + person.getAlfaName() + "] "
+		// + Resurses.getString(Resurses.MENU_PASTE_AFTER));
+		// pPasteBefore.setText(Resurses.getString(Resurses.MENU_PASTE) + " "
+		// + text + " [" + person.getAlfaName() + "] "
+		// + Resurses.getString(Resurses.MENU_PASTE_BEFORE));
+		// }
 	}
 
 	/**
@@ -214,23 +215,23 @@ public class RelativePopupMenu {
 		}
 		pPerson.setText(Resurses.getString(Resurses.TAB_PERSON) + " " + name);
 
-		if (currentPerson == null) {
-			pPaste.setVisible(false);
-			pPasteAfter.setVisible(false);
-			pPasteBefore.setVisible(false);
-			return;
-		}
-
-		if (pasteAtRow < 0) {
-			pPaste.setVisible(true);
-			pPasteAfter.setVisible(false);
-			pPasteBefore.setVisible(false);
-		} else {
-
-			pPaste.setVisible(true);
-			pPasteAfter.setVisible(true);
-			pPasteBefore.setVisible(true);
-		}
+		// if (currentPerson == null) {
+		// pPaste.setVisible(false);
+		// pPasteAfter.setVisible(false);
+		// pPasteBefore.setVisible(false);
+		// return;
+		// }
+		//
+		// if (pasteAtRow < 0) {
+		// pPaste.setVisible(true);
+		// pPasteAfter.setVisible(false);
+		// pPasteBefore.setVisible(false);
+		// } else {
+		//
+		// pPaste.setVisible(true);
+		// pPasteAfter.setVisible(true);
+		// pPasteBefore.setVisible(true);
+		// }
 
 	}
 
