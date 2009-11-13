@@ -254,7 +254,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * A "clipboard" location where a person can be copied to
 	 */
 	public static Object sukuObject = null;
-	private int subjectPid = 0;
+
 	private int activePersonPid = 0;
 	private boolean isWebApp = false;
 
@@ -1236,22 +1236,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							}
 						}
 
-						if (tSubjectButton.isSelected()
-								&& subjectPid == p.getPid()) {
-							subjectPid = 0;
-							// tSubjectName.setText("");
-
-							for (int i = 0; i < needle.size(); i++) {
-								String[] dbl = needle.get(i).split(";");
-								int dblid = Integer.parseInt(dbl[0]);
-								if (p.getPid() == dblid) {
-									needle.remove(i);
-									break;
-								}
+						for (int i = 0; i < needle.size(); i++) {
+							String[] dbl = needle.get(i).split(";");
+							int dblid = Integer.parseInt(dbl[0]);
+							if (p.getPid() == dblid) {
+								needle.remove(i);
+								break;
 							}
-
-							tSubjectPButton.setEnabled(false);
-							tSubjectButton.setSelected(false);
 						}
 
 						tableModel.removeRow(isele);
@@ -1267,8 +1258,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						e1.printStackTrace();
 					}
 
-					// }
-					// }
 				}
 			}
 			if (cmd.equals(Resurses.CONNECT)) {
@@ -1377,17 +1366,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			} else if (cmd.equals(Resurses.TOOLBAR_NEWPERSON_ACTION)) {
 
 				if (!tSubjectButton.isSelected() && activePersonPid > 0) {
-					subjectPid = activePersonPid;
+
 					tSubjectButton.setSelected(true);
-					PersonShortData pp = tableMap.get(subjectPid);
+					PersonShortData pp = tableMap.get(activePersonPid);
 					if (pp != null) {
-						String dd = "" + subjectPid + ";" + pp.getAlfaName();
+						String dd = "" + activePersonPid + ";"
+								+ pp.getAlfaName();
 						needle.insertElementAt(dd, 0);
 
 						for (int i = 1; i < needle.size(); i++) {
 							String[] dbl = needle.get(i).split(";");
 							int dblid = Integer.parseInt(dbl[0]);
-							if (subjectPid == dblid) {
+							if (activePersonPid == dblid) {
 								needle.remove(i);
 								break;
 							}
@@ -1457,18 +1447,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				// if (!tSubjectButton.isSelected() && activePersonPid > 0) {
 				if (activePersonPid > 0) {
-					subjectPid = activePersonPid;
+
 					// tSubjectButton.setSelected(true);
-					PersonShortData pp = tableMap.get(subjectPid);
+					PersonShortData pp = tableMap.get(activePersonPid);
 					if (pp != null) {
 
-						String dd = "" + subjectPid + ";" + pp.getAlfaName();
+						String dd = "" + activePersonPid + ";"
+								+ pp.getAlfaName();
 						needle.insertElementAt(dd, 0);
 
 						for (int i = 1; i < needle.size(); i++) {
 							String[] dbl = needle.get(i).split(";");
 							int dblid = Integer.parseInt(dbl[0]);
-							if (subjectPid == dblid) {
+							if (activePersonPid == dblid) {
 								needle.remove(i);
 								break;
 							}
@@ -1710,23 +1701,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		ReportWorkerDialog dlg = new ReportWorkerDialog(this, kontroller, pers);
 		dlg.setVisible(true);
 
-	}
-
-	/**
-	 * If subject has been set by the Subject toolbar button then this returns
-	 * the subjectPid
-	 * 
-	 * @return Pid of the subject
-	 */
-	public int getSubjectPid() {
-		return subjectPid;
-	}
-
-	/**
-	 * Called to remove the subject
-	 */
-	public void resetSubjectPid() {
-		subjectPid = 0;
 	}
 
 	private void importFromHiski() {
