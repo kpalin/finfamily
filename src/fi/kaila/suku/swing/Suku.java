@@ -1338,23 +1338,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					tSubjectButton.setSelected(true);
 					PersonShortData pp = tableMap.get(activePersonPid);
 					if (pp != null) {
-						String dd = "" + activePersonPid + ";"
-								+ pp.getAlfaName(true) + " "
-								+ Utils.nv4(pp.getBirtDate()) + "-"
-								+ Utils.nv4(pp.getDeatDate());
-						needle.insertElementAt(dd, 0);
+						addToNeedle(pp);
 
-						for (int i = needle.size() - 1; i > 0; i--) {
-							String[] dbl = needle.get(i).split(";");
-							int dblid = Integer.parseInt(dbl[0]);
-							if (activePersonPid == dblid || i >= maxNeedle) {
-								needle.remove(i);
-
-							}
-						}
-
-						// tSubjectName.setText(pp.getAlfaName());
-						tSubjectPButton.setEnabled(true);
 					}
 				}
 
@@ -1393,59 +1378,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						+ theButt);
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_DOWN_ACTION)) {
 
-				// if (!tSubjectButton.isSelected() && activePersonPid > 0) {
 				if (activePersonPid > 0) {
 
-					// tSubjectButton.setSelected(true);
 					PersonShortData pp = tableMap.get(activePersonPid);
 					if (pp != null) {
 
-						String dd = "" + activePersonPid + ";"
-								+ pp.getAlfaName(true) + " "
-								+ Utils.nv4(pp.getBirtDate()) + "-"
-								+ Utils.nv4(pp.getDeatDate());
-
-						needle.insertElementAt(dd, 0);
-
-						for (int i = needle.size() - 1; i > 0; i--) {
-							String[] dbl = needle.get(i).split(";");
-							int dblid = Integer.parseInt(dbl[0]);
-							if (activePersonPid == dblid || i >= maxNeedle) {
-								needle.remove(i);
-
-							}
-						}
-
-						// tSubjectName.setText(pp.getAlfaName());
-						tSubjectPButton.setEnabled(true);
+						addToNeedle(pp);
 					}
 				}
-				// else if (tSubjectButton.isSelected()) {
-				// subjectPid = 0;
-				// // tSubjectName.setText("");
-				// tSubjectPButton.setEnabled(false);
-				// tSubjectButton.setSelected(false);
-				// }
 
-				// if (activePersonPid > 0) {
-				// boolean theButt = !tSubjectButton.isSelected();
-				// tSubjectButton.setSelected(theButt);
-				// if (theButt) {
-				// subjectPid = activePersonPid;
-				// PersonShortData pp = tableMap.get(subjectPid);
-				// if (pp != null) {
-				// tSubjectName.setText(pp.getAlfaName());
-				// tSubjectPButton.setEnabled(true);
-				// } else {
-				// tSubjectName.setText("");
-				// tSubjectPButton.setEnabled(false);
-				// }
-				// } else {
-				// subjectPid = 0;
-				// tSubjectName.setText("");
-				// tSubjectPButton.setEnabled(false);
-				// }
-				// }
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_UP_ACTION)) {
 				if (needle.size() > 0) {
 					String[] subjes = null;
@@ -1497,6 +1438,26 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					+ ":" + ex.getMessage());
 
 		}
+	}
+
+	/**
+	 * @param pp
+	 */
+	private void addToNeedle(PersonShortData pp) {
+		String dd = "" + activePersonPid + ";" + pp.getAlfaName(true) + " "
+				+ Utils.nv4(pp.getBirtDate()) + "-"
+				+ Utils.nv4(pp.getDeatDate());
+		needle.insertElementAt(dd, 0);
+
+		for (int i = needle.size() - 1; i > 0; i--) {
+			String[] dbl = needle.get(i).split(";");
+			int dblid = Integer.parseInt(dbl[0]);
+			if (activePersonPid == dblid || i >= maxNeedle) {
+				needle.remove(i);
+
+			}
+		}
+		tSubjectPButton.setEnabled(true);
 	}
 
 	private void importDefaultTypes() {

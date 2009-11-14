@@ -95,17 +95,6 @@ public class SukuServerImpl implements SukuServer {
 			this.con = DriverManager.getConnection(this.dbConne);
 			Statement stm = this.con.createStatement();
 			stm.executeUpdate("set search_path to " + this.schema);
-			// boolean needsState = false;
-			// try {
-			// ResultSet rs = stm
-			// .executeQuery("select state from unitnotice limit 1");
-			// } catch (SQLException e) {
-			// needsState = true;
-			// }
-			// if (needsState) {
-			// stm
-			// .executeUpdate("ALTER TABLE unitnotice ADD COLUMN state varchar");
-			// }
 
 			stm.close();
 
@@ -182,13 +171,6 @@ public class SukuServerImpl implements SukuServer {
 				+ "and rn.tag='MARR') left join relationNotice as rd on r.rid = rd.rid  "
 				+ "and rd.tag='DIV' where s.aid = ? order by r.relationrow ";
 
-		// String sql = "select s.bid,r.relationrow,r.tag,rn.fromdate " +
-		// "from (spouse as s inner join relation as r on s.rid = r.rid and s.tag=r.tag) "
-		// +
-		// "left join relationNotice as rn on r.rid = rn.rid  " +
-		// "where s.aid = ? order by r.relationrow";
-
-		// System.out.println( sql);
 		Vector<RelationShortData> v = new Vector<RelationShortData>();
 		try {
 			PreparedStatement pstm = this.con.prepareStatement(sql);
@@ -1206,110 +1188,9 @@ public class SukuServerImpl implements SukuServer {
 		return new SukuData();
 	}
 
-	// private SukuData getShortParents(int pid) throws SukuException {
-	// Vector<PersonShortData> v = new Vector<PersonShortData>();
-	//		
-	// try {
-	// String sql = "select aid,bid,tag from parent where aid in (?,?) ";
-	// // String sql =
-	// "select u.pid,u.sex,n.tag,n.MainItem,n.givenname,n.prefix," +
-	// // "n.surname,n.postfix,n.fromdate,n.LangCode " +
-	// // "from unit as u left join unitnotice as n " +
-	// // "on u.pid = n.pid and n.tag in ('BIRT','DEAT','NAME') " +
-	// // "where u.pid in (select bid from parent where aid=?) order by u.pid ";
-	//
-	// // PersonShortData dao;
-	// PreparedStatement stm = this.con.prepareStatement(sql);
-	// stm.setInt(1, pid);
-	// stm.setInt(2, pid);
-	// // String tag,sex=null;
-	// //
-	// // String givenname=null;
-	// // String prefix=null,surname=null,postfix=null;
-	// // String bdate=null,ddate=null;
-	// // boolean isMainItem=false;
-	// ResultSet rs = stm.executeQuery();
-	// int bid;
-	//			
-	// String tag;
-	// String sex;
-	// String famType;
-	// int mo = 0;
-	// int fa = 0;
-	// int aid=0;
-	// while (rs.next()){
-	// aid = rs.getInt(1);
-	// bid = rs.getInt(2);
-	// tag = rs.getString(3);
-	// if (tag != null){
-	// famType= "1"; // generation
-	// if (tag.equals("FATH")){
-	// sex = "M";
-	// fa=bid;
-	// } else {
-	// sex = "F";
-	// mo = bid;
-	// }
-	//				
-	//					
-	// PersonShortData dao = new PersonShortData(bid,null,sex,null,null,
-	// null,null,null,null,null,null,null,null,null,null,famType,0,0,0,null);
-	// v.add(dao);
-	// }
-	// }
-	// rs.close();
-	// if (fa != 0 || mo != 0) {
-	// if (fa != 0 && mo != 0){
-	// stm.setInt(1, fa);
-	// stm.setInt(2, mo);
-	// } else if (fa != 0){
-	// stm.setInt(1, fa);
-	// stm.setInt(2, fa);
-	// } else {
-	// stm.setInt(1, mo);
-	// stm.setInt(2, mo);
-	// }
-	//			
-	// rs = stm.executeQuery();
-	// famType="2"; // generation
-	// while (rs.next()){
-	// aid = rs.getInt(1);
-	// bid = rs.getInt(2);
-	// tag = rs.getString(3);
-	// if (aid == fa){
-	// if (tag.equals("FATH")){
-	// sex = "M";
-	//							
-	// } else {
-	// sex = "F";
-	//							
-	// }
-	// } else {
-	// if (tag.equals("FATH")){
-	// sex = "M";
-	//							
-	// } else {
-	// sex = "F";
-	//							
-	// }
-	// }
-	// PersonShortData dao = new PersonShortData(bid,null,sex,null,null,
-	// null,null,null,null,null,null,null,null,null,null,famType,0,0,0,null);
-	// v.add(dao);
-	// }
-	// }
-	//			
-	// } catch (SQLException e) {
-	//			
-	// throw new SukuException(e);
-	// }
-	// PersonShortData[] dt = new PersonShortData[0];
-	// SukuData fam = new SukuData();
-	// fam.pers =v.toArray(dt);
-	//		
-	// return fam;
-	//
-	// }
+	/**
+	 * sets the opened file name
+	 */
 	@Override
 	public void setOpenFile(String f) {
 		this.openFile = f;
