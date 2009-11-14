@@ -1244,6 +1244,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 								break;
 							}
 						}
+						tSubjectPButton.setEnabled(needle.size() > 0);
 
 						tableModel.removeRow(isele);
 
