@@ -215,7 +215,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JButton tPrivateButton;
 
 	private Vector<String> needle = new Vector<String>();
-
+	private static final int maxNeedle = 16;
 	private boolean isConnected = false;
 	boolean isExiting = false;
 	private String databaseName = null;
@@ -1324,38 +1324,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				this.personView.testMe();
 
 			}
-			// else if (cmd.equals(Resurses.TEST_OPEN)) {
-			// // File is opened as Follows:
-			//
-			// try {
-			// FileInputStream fis = new FileInputStream("test.ser");
-			// ObjectInputStream ois = new ObjectInputStream(fis);
-			// StyledDocument doc = (StyledDocument) ois.readObject();
-			// ois.close();
-			// this.personView.setDoc(doc);
-			// // pane.setStyledDocument (doc);
-			// validate();
-			// // statusInfo.setText ("Reloaded from disk");
-			// } catch (Exception ee) {
-			// // statusInfo.setText ("Unable to reload");
-			// ee.printStackTrace();
-			// }
-			// } else if (cmd.equals(Resurses.TEST_SAVE)) {
-			// try {
-			// StyledDocument doc = this.personView.getDoc();
-			// FileOutputStream fos = new FileOutputStream("test.ser");
-			// ObjectOutputStream oos = new ObjectOutputStream(fos);
-			// oos.writeObject(doc);// doc is the styled document set for
-			// // this textpane
-			// oos.flush();
-			// oos.close();
-			// // statusInfo.setText ("Saved to disk");
-			// } catch (IOException ee) {
-			// // statusInfo.setText ("Unable to save");
-			// ee.printStackTrace();
-			// }
-			//
-			// }
 
 			else if (cmd.equals(Resurses.SHOWINMAP)) {
 				displayMap();
@@ -1371,15 +1339,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					PersonShortData pp = tableMap.get(activePersonPid);
 					if (pp != null) {
 						String dd = "" + activePersonPid + ";"
-								+ pp.getAlfaName();
+								+ pp.getAlfaName(true) + " "
+								+ Utils.nv4(pp.getBirtDate()) + "-"
+								+ Utils.nv4(pp.getDeatDate());
 						needle.insertElementAt(dd, 0);
 
-						for (int i = 1; i < needle.size(); i++) {
+						for (int i = needle.size() - 1; i > 0; i--) {
 							String[] dbl = needle.get(i).split(";");
 							int dblid = Integer.parseInt(dbl[0]);
-							if (activePersonPid == dblid) {
+							if (activePersonPid == dblid || i >= maxNeedle) {
 								needle.remove(i);
-								break;
+
 							}
 						}
 
@@ -1387,29 +1357,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						tSubjectPButton.setEnabled(true);
 					}
 				}
-				// if (!tSubjectButton.isSelected() && activePersonPid > 0) {
-				// subjectPid = activePersonPid;
-				// tSubjectButton.setSelected(true);
-				// PersonShortData pp = tableMap.get(subjectPid);
-				// if (pp != null) {
-				// tSubjectName.setText(pp.getAlfaName());
-				// tSubjectPButton.setEnabled(true);
-				// }
-				// } else if (tSubjectButton.isSelected()) {
-				// subjectPid = 0;
-				// tSubjectName.setText("");
-				// tSubjectPButton.setEnabled(false);
-				// tSubjectButton.setSelected(false);
-				// }
 
-				// if (subjectPid == 0 && activePersonPid > 0) {
-				// subjectPid = activePersonPid;
-				// PersonShortData pp = tableMap.get(subjectPid);
-				// if (pp != null) {
-				// tSubjectName.setText(pp.getAlfaName());
-				// tSubjectPButton.setEnabled(true);
-				// }
-				// }
 				activePersonPid = 0;
 				showPerson(activePersonPid);
 
@@ -1453,15 +1401,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					if (pp != null) {
 
 						String dd = "" + activePersonPid + ";"
-								+ pp.getAlfaName();
+								+ pp.getAlfaName(true) + " "
+								+ Utils.nv4(pp.getBirtDate()) + "-"
+								+ Utils.nv4(pp.getDeatDate());
+
 						needle.insertElementAt(dd, 0);
 
-						for (int i = 1; i < needle.size(); i++) {
+						for (int i = needle.size() - 1; i > 0; i--) {
 							String[] dbl = needle.get(i).split(";");
 							int dblid = Integer.parseInt(dbl[0]);
-							if (activePersonPid == dblid) {
+							if (activePersonPid == dblid || i >= maxNeedle) {
 								needle.remove(i);
-								break;
+
 							}
 						}
 
