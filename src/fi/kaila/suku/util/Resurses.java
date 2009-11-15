@@ -53,6 +53,8 @@ public class Resurses {
 	/** */
 	public static final String MENU_PASTE = "MENU_PASTE";
 	/** */
+	public static final String MENU_NEEDLE = "MENU_NEEDLE";
+	/** */
 	public static final String MENU_PASTE_BEFORE = "MENU_PASTE_BEFORE";
 	/** */
 	public static final String MENU_PASTE_AFTER = "MENU_PASTE_AFTER";
@@ -311,6 +313,7 @@ public class Resurses {
 	public static final String TOOLBAR_SUBJECT_DOWN_ACTION = "SUBJECTC";
 	/** */
 	public static final String TOOLBAR_SUBJECT_UP_ACTION = "SUBJECTP";
+
 	/** */
 	private static Resurses myself = null;
 	private static ResourceBundle resources = null;

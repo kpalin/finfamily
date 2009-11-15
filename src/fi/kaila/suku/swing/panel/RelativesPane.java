@@ -843,11 +843,12 @@ public class RelativesPane extends JPanel implements ActionListener,
 			if (cmd.equals("DEL")) {
 				activeRelation.setToBeDeleted(true);
 			}
+
 			boolean reOpen = true;
 			if (cmd.equals(Resurses.CLOSE)) {
 				reOpen = false;
 			}
-
+			checkActiveRelationSurety();
 			refreshRelativesPane(reOpen);
 
 		}
@@ -1239,6 +1240,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() != 1)
 			return;
+
+		checkActiveRelationSurety();
+
 		if (e.getSource() == spouTab || e.getSource() == chilTab
 				|| e.getSource() == pareTab) {
 			if (e.getSource() == chilTab) {
@@ -1296,6 +1300,18 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 		}
 		// System.out.println("mc:" + e);
+
+	}
+
+	private void checkActiveRelationSurety() {
+		if (activeRelation == null)
+			return;
+
+		int sure = surety.getSurety();
+		if (sure != activeRelation.getSurety()) {
+			activeRelation.setSurety(sure);
+			activeRelation.setToBeUpdated(true);
+		}
 
 	}
 

@@ -114,6 +114,15 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * @param value
+	 *            true if this is to be deleted
+	 */
+	public void setToBeUpdated(boolean value) {
+
+		toBeUpdated = value;
+	}
+
+	/**
 	 * @return true if it is to be deleted
 	 */
 	public boolean isToBeDeleted() {

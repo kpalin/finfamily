@@ -570,6 +570,18 @@ public class PersonUtil {
 							}
 
 						}
+					} else {
+						String updSureSql = "update relation set surety = ?,Modified=now() where rid = ?";
+
+						PreparedStatement updLang = con
+								.prepareStatement(updSureSql);
+						updLang.setInt(1, r.getSurety());
+
+						updLang.setInt(2, r.getRid());
+
+						int rner = updLang.executeUpdate();
+						logger.fine("Surety set to " + r.getSurety()
+								+ " for rid " + r.getRid() + " cnt " + rner);
 					}
 				}
 				if (req.relations[i].getNotices() != null) {

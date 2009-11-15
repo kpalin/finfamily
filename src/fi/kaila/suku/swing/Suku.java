@@ -215,7 +215,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JButton tPrivateButton;
 
 	private Vector<String> needle = new Vector<String>();
-	private static final int maxNeedle = 16;
+	private static final int maxNeedle = 32;
 	private boolean isConnected = false;
 	boolean isExiting = false;
 	private String databaseName = null;
@@ -1091,6 +1091,20 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				SukuData rlang = kontroller.getSukuData("cmd=repolanguages");
 
 				repoLangList = rlang.generalArray;
+
+				SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
+						"type=needle", "name=needle");
+
+				if (resp.generalArray != null) {
+
+					for (int i = 0; i < resp.generalArray.length; i++) {
+						needle.add(resp.generalArray[i]);
+					}
+					if (resp.generalArray.length > 0) {
+						tSubjectPButton.setEnabled(true);
+					}
+				}
+
 				return;
 
 			} catch (SukuException e) {
@@ -1445,7 +1459,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * @param pp
 	 */
 	private void addToNeedle(PersonShortData pp) {
-		String dd = "" + activePersonPid + ";" + pp.getAlfaName(true) + " "
+		String dd = "" + pp.getPid() + ";" + pp.getAlfaName(true) + " "
 				+ Utils.nv4(pp.getBirtDate()) + "-"
 				+ Utils.nv4(pp.getDeatDate());
 		needle.insertElementAt(dd, 0);
@@ -1453,7 +1467,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		for (int i = needle.size() - 1; i > 0; i--) {
 			String[] dbl = needle.get(i).split(";");
 			int dblid = Integer.parseInt(dbl[0]);
-			if (activePersonPid == dblid || i >= maxNeedle) {
+			if (pp.getPid() == dblid || i >= maxNeedle) {
 				needle.remove(i);
 
 			}
@@ -2069,6 +2083,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void disconnectDb() {
 		this.isConnected = false;
 
+		SukuData request = new SukuData();
+		request.generalArray = needle.toArray(new String[0]);
+
+		try {
+			Suku.kontroller.getSukuData(request, "cmd=updatesettings",
+					"type=needle", "name=needle");
+
+		} catch (SukuException ee) {
+			JOptionPane.showMessageDialog(this, ee.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			ee.printStackTrace();
+		}
+
 		try {
 			kontroller.getSukuData("cmd=logout");
 			this.tableModel.resetModel(); // clear contents of table first
@@ -2528,6 +2555,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 					copyToClip(sb.toString());
 
+				}
+				if (cmd.equals(Resurses.MENU_NEEDLE)) {
+					PersonShortData pp = pop.getPerson();
+					if (pp != null) {
+						addToNeedle(pp);
+					}
 				}
 			}
 

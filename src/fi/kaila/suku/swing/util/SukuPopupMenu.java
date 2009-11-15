@@ -27,6 +27,7 @@ public class SukuPopupMenu {
 	private JMenuItem pMainPerson;
 	private JMenuItem pPersonView;
 	private JMenuItem pCopy;
+	private JMenuItem pNeedle;
 	// private JMenuItem pPaste;
 	private JMenu pHiskiConnect = null;
 	private JMenuItem[] pHiskiPerson = null;
@@ -57,7 +58,7 @@ public class SukuPopupMenu {
 		pShowFamily.addActionListener(l);
 		pPersonView.addActionListener(l);
 		pCopy.addActionListener(l);
-		// pPaste.addActionListener(l);
+		pNeedle.addActionListener(l);
 		pReport.addActionListener(l);
 		for (int i = 0; i < 30; i++) {
 			pHiskiPerson[i].addActionListener(l);
@@ -128,11 +129,11 @@ public class SukuPopupMenu {
 		pCopy.setActionCommand(Resurses.MENU_COPY);
 		pMenu.add(pCopy);
 
-		// pPaste = new JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
-		// // pShowFamily.addActionListener(popupListener);
-		// pPaste.setActionCommand(Resurses.MENU_PASTE);
-		// pPaste.setEnabled(false);
-		// pMenu.add(pPaste);
+		pNeedle = new JMenuItem(Resurses.getString(Resurses.MENU_NEEDLE));
+		// pShowFamily.addActionListener(popupListener);
+		pNeedle.setActionCommand(Resurses.MENU_NEEDLE);
+
+		pMenu.add(pNeedle);
 		pMenu.addSeparator();
 		pHiskiPerson = new JMenuItem[30];
 		pHiskiConnect = new JMenu(Resurses.getString("HISKI_CONNECT"));
