@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -61,9 +62,9 @@ public class UnitNotice implements Serializable {
 	String givenname = null; // varchar, -- Givenname
 	String patronym = null; // varchar, -- Patronyymi NEW
 	String postFix = null; // varchar, -- Name Postfix
-	String[] RefNames = null; // varchar, -- List of names within notice for
+	String[] refNames = null; // varchar, -- List of names within notice for
 	// index
-	String[] RefPlaces = null; // varchar, -- List of places within notice for
+	String[] refPlaces = null; // varchar, -- List of places within notice for
 	// index
 	String sourceText = null; // varchar , -- Source as text
 	String privateText = null; // varchar, -- Private researcher information
@@ -149,12 +150,21 @@ public class UnitNotice implements Serializable {
 		givenname = rs.getString("givenname");
 		patronym = rs.getString("patronym");
 		postFix = rs.getString("postfix");
-		@SuppressWarnings("unused")
-		String[] RefNames = null; // varchar, -- List of names within notice for
-		// index
-		@SuppressWarnings("unused")
-		String[] RefPlaces = null; // varchar, -- List of places within notice
-		// for index
+		refNames = null;
+		if ("NOTE".equals(tag)) {
+			Array xx = rs.getArray("refnames");
+			if (xx != null) {
+				refNames = (String[]) xx.getArray();
+
+			}
+			xx = rs.getArray("refplaces");
+			if (xx != null) {
+				refPlaces = (String[]) xx.getArray();
+
+			}
+
+		}
+
 		sourceText = rs.getString("sourcetext");
 		privateText = rs.getString("privatetext");
 		modified = rs.getTimestamp("modified");
@@ -474,6 +484,26 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * @param names
+	 *            new namelist
+	 */
+	public void setRefNames(String[] names) {
+
+		toBeUpdated = true;
+		this.refNames = names;
+	}
+
+	/**
+	 * @param places
+	 *            ne place list
+	 */
+	public void setRefPlaces(String[] places) {
+
+		toBeUpdated = true;
+		this.refPlaces = places;
+	}
+
+	/**
 	 * @return postoiffixe
 	 */
 	public String getPostOffice() {
@@ -767,6 +797,20 @@ public class UnitNotice implements Serializable {
 	 */
 	public String getSource() {
 		return trim(sourceText);
+	}
+
+	/**
+	 * @return array of names in note text
+	 */
+	public String[] getRefNames() {
+		return refNames;
+	}
+
+	/**
+	 * @return array of places in note text
+	 */
+	public String[] getRefPlaces() {
+		return refPlaces;
 	}
 
 	/**

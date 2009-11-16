@@ -329,6 +329,11 @@ public class ReportUtil {
 		// create a table for the child
 		ReportUnit unit = createOneTable(nexttab, chi, gen, adopted);
 
+		if (nexttab == 0 && unit.getChild().size() == 0) {
+			unitMap.put(unit.getPid(), unit);
+			return 0;
+		}
+
 		//
 		// if child has no children then copy spouses to child at parent
 		//

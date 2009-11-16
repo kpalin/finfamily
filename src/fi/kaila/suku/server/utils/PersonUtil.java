@@ -1,11 +1,13 @@
 package fi.kaila.suku.server.utils;
 
 import java.awt.Dimension;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -65,7 +67,7 @@ public class PersonUtil {
 				+ "PostalCode=?,PostOffice=?,State=?,Country=?,Email=?,"
 				+ "NoteText=?,MediaFilename=?,MediaTitle=?,Prefix=?,"
 				+ "Surname=?,Givenname=?,Patronym=?,PostFix=?,"
-				+ "SourceText=?,PrivateText=?,Modified=now() "
+				+ "SourceText=?,PrivateText=?,RefNames=?,RefPlaces=?,Modified=now() "
 				+ "where pnid=? ";
 
 		String insSql = "insert into unitnotice  ("
@@ -75,9 +77,9 @@ public class PersonUtil {
 				+ "PostalCode,PostOffice,State,Country,Email,"
 				+ "NoteText,MediaFilename,MediaTitle,Prefix,"
 				+ "Surname,Givenname,Patronym,PostFix,"
-				+ "SourceText,PrivateText,pnid,pid,tag) values ("
+				+ "SourceText,PrivateText,RefNames,Refplaces,pnid,pid,tag) values ("
 				+ "?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?,"
-				+ "?,?,?,?,?,?) ";
+				+ "?,?,?,?,?,?,?,?) ";
 
 		String updLangSql = "update unitlanguage set "
 				+ "NoticeType=?,Description=?," + "Place=?,"
@@ -219,18 +221,36 @@ public class PersonUtil {
 						pst.setString(25, n.getPostfix());
 						pst.setString(26, n.getSource());
 						pst.setString(27, n.getPrivateText());
+						if (n.getRefNames() == null) {
+							pst.setNull(28, Types.ARRAY);
+						} else {
+
+							Array xx = con.createArrayOf("varchar", n
+									.getRefNames());
+							pst.setArray(28, xx);
+
+						}
+						if (n.getRefPlaces() == null) {
+							pst.setNull(29, Types.ARRAY);
+						} else {
+
+							Array xx = con.createArrayOf("varchar", n
+									.getRefPlaces());
+							pst.setArray(29, xx);
+
+						}
 					}
 					if (n.getPnid() > 0) {
-						pst.setInt(28, n.getPnid());
+						pst.setInt(30, n.getPnid());
 						int luku = pst.executeUpdate();
 						// System.out.println("Päivitettiin " + luku +
 						// " tietuetta");
 						logger.fine("Päivitettiin " + luku
 								+ " tietuetta pnid=[" + n.getPnid() + "]");
 					} else {
-						pst.setInt(28, pnid);
-						pst.setInt(29, pid);
-						pst.setString(30, n.getTag());
+						pst.setInt(30, pnid);
+						pst.setInt(31, pid);
+						pst.setString(32, n.getTag());
 						int luku = pst.executeUpdate();
 						// System.out.println("Luotiin " + luku +
 						// " uusi tietue");

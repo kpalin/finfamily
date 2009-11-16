@@ -2067,13 +2067,13 @@ public class Read2004XML extends DefaultHandler {
 						}
 
 						if (etu != null || suku != null) {
+							if (suku != null) {
+								tnimi.append(suku);
+							}
+							tnimi.append(",");
+
 							if (etu != null) {
 								tnimi.append(etu);
-							}
-
-							if (suku != null && tnimi.length() > 0) {
-								tnimi.append("/");
-								tnimi.append(suku);
 							}
 
 							sb.append(tuloste);

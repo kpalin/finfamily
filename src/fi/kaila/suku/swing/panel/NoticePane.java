@@ -13,12 +13,14 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,6 +28,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.swing.dialog.AddNotice;
@@ -44,7 +48,7 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  * 
  */
 public class NoticePane extends JPanel implements ActionListener,
-		ComponentListener {
+		ComponentListener, ListSelectionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -130,6 +134,21 @@ public class NoticePane extends JPanel implements ActionListener,
 	JTextArea source;
 	JTextArea privateText;
 
+	JList nameList;
+	JScrollPane scrollNames;
+	JLabel nameLabel;
+	Vector<String> namesVector = null;
+	JTextField listaName;
+	int listaSelectedName = -1;
+	int listaSelectedPlace = -1;
+	JButton listaAddname;
+	JLabel addLabel;
+	JList placeList;
+	JScrollPane scrollPlaces;
+	JLabel placeLabel;
+	Vector<String> placesVector = null;
+	JTextField listaPlace;
+	JButton listaAddplace;
 	JButton noteTextLang = null;
 
 	Rectangle noteLoc = null;
@@ -424,6 +443,45 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		add(privateLbl);
 
+		addLabel = new JLabel(Resurses.getString("DATA_ADDLIST"));
+		add(addLabel);
+
+		nameLabel = new JLabel(Resurses.getString("DATA_NAMES"));
+		add(nameLabel);
+
+		namesVector = new Vector<String>();
+
+		nameList = new JList(namesVector);
+
+		nameList.addListSelectionListener(this);
+
+		scrollNames = new JScrollPane(nameList);
+		add(scrollNames);
+		listaAddname = new JButton(Resurses.getString("DATA_ADDNAME"));
+		listaAddname.setActionCommand("DATA_ADDNAME");
+		listaAddname.addActionListener(this);
+		add(listaAddname);
+		listaName = new JTextField();
+		add(listaName);
+
+		placeLabel = new JLabel(Resurses.getString("DATA_PLACES"));
+
+		add(placeLabel);
+
+		placesVector = new Vector<String>();
+
+		placeList = new JList(placesVector);
+		placeList.addListSelectionListener(this);
+
+		scrollPlaces = new JScrollPane(placeList);
+		add(scrollPlaces);
+		listaAddplace = new JButton(Resurses.getString("DATA_ADDPLACE"));
+		listaAddplace.setActionCommand("DATA_ADDPLACE");
+		listaAddplace.addActionListener(this);
+		add(listaAddplace);
+		listaPlace = new JTextField();
+		add(listaPlace);
+
 		// setPreferredSize(new Dimension(rcol+rwidth*2, lrivi));
 
 	}
@@ -544,6 +602,33 @@ public class NoticePane extends JPanel implements ActionListener,
 		if (tmp == null)
 			tmp = "";
 		privateText.setText(tmp);
+
+		String[] arra = notice.getRefNames();
+		if (arra != null) {
+			for (int i = 0; i < arra.length; i++) {
+				String[] vahasuku = arra[i].split("/");
+				String[] etusuku = arra[i].split(",");
+				if (vahasuku.length > 1) {
+					etusuku = new String[2];
+					etusuku[0] = vahasuku[1];
+					etusuku[1] = vahasuku[0];
+				}
+				StringBuffer sb = new StringBuffer();
+				if (etusuku.length > 1) {
+					sb.append(etusuku[0]);
+				}
+				sb.append(",");
+				sb.append(etusuku[1]);
+				namesVector.add(sb.toString());
+			}
+		}
+
+		arra = notice.getRefPlaces();
+		if (arra != null) {
+			for (int i = 0; i < arra.length; i++) {
+				placesVector.add(arra[i]);
+			}
+		}
 
 	}
 
@@ -832,6 +917,62 @@ public class NoticePane extends JPanel implements ActionListener,
 		} else if (cmd.equals(">")) {
 			personView.moveSelectedPane(+1);
 		}
+		if (cmd.equals("DATA_ADDNAME")) {
+
+			String gv = listaName.getText();
+			int idt = gv.indexOf(",");
+			if (idt < 0) {
+				int ids = gv.lastIndexOf(" ");
+				if (ids > 1) {
+					gv = gv.substring(ids + 1) + "," + gv.substring(0, ids);
+				}
+			}
+
+			if (gv.equals("")) {
+				if (listaSelectedName >= 0) {
+					namesVector.removeElementAt(listaSelectedName);
+				}
+			} else {
+				if (listaSelectedName >= 0) {
+					namesVector.removeElementAt(listaSelectedName);
+					namesVector.insertElementAt(gv, listaSelectedName);
+				} else {
+					namesVector.add(gv);
+				}
+			}
+			listaSelectedName = -1;
+			nameList.clearSelection();
+			nameList.updateUI();
+			listaName.setText("");
+
+			notice.setRefNames(namesVector.toArray(new String[0]));
+
+		}
+		if (cmd.equals("DATA_ADDPLACE")) {
+
+			String pl = listaPlace.getText();
+
+			if (pl.equals("")) {
+				if (listaSelectedPlace >= 0) {
+					placesVector.removeElementAt(listaSelectedPlace);
+				}
+			} else {
+
+				if (listaSelectedPlace >= 0) {
+					placesVector.removeElementAt(listaSelectedPlace);
+					placesVector.insertElementAt(pl, listaSelectedPlace);
+				} else {
+					placesVector.add(pl);
+				}
+
+			}
+			listaSelectedPlace = -1;
+			placeList.clearSelection();
+			placeList.updateUI();
+			listaPlace.setText("");
+			notice.setRefPlaces(placesVector.toArray(new String[0]));
+
+		}
 		if (cmd.equals(Resurses.CLOSE) || cmd.equals(Resurses.UPDATE)) {
 
 			int midx = personView.getMainPaneIndex();
@@ -970,7 +1111,7 @@ public class NoticePane extends JPanel implements ActionListener,
 				|| notice.getMediaTitle() != null) {
 			mustImage = true;
 		}
-
+		int rrNameList = 0;
 		int rrivi = 10;
 		moveToLeft.setBounds(rcol, rrivi, rwidth, 20);
 		moveToRight.setBounds(rcol + rwidth, rrivi, rwidth, 20);
@@ -997,6 +1138,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		rrivi += 24;
 		privacy.setBounds(rcol, rrivi, 100, 20);
 		rrivi += 24;
+		rrNameList = rrivi;
 		image.setBounds(rcol, rrivi, 150, 300);
 
 		int lrivi = 10;
@@ -1100,6 +1242,13 @@ public class NoticePane extends JPanel implements ActionListener,
 		// countryLbl.setVisible(addressShow);
 		emailLbl.setVisible(addressShow);
 
+		scrollNames.setVisible(showType == TagType.NOTE);
+		listaAddname.setVisible(showType == TagType.NOTE);
+		listaName.setVisible(showType == TagType.NOTE);
+
+		listaAddplace.setVisible(showType == TagType.NOTE);
+		listaPlace.setVisible(showType == TagType.NOTE);
+		addLabel.setVisible(showType == TagType.NOTE);
 		switch (showType) {
 		case NOTE:
 
@@ -1107,8 +1256,23 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			noteLoc = new Rectangle(lcol, lrivi, lwidth, 400);
 			scrollNote.setBounds(noteLoc);
-
+			image.setVisible(false);
 			lrivi += 404;
+			addLabel.setBounds(10, lrivi, 70, 20);
+			listaName.setBounds(lcol, lrivi, 160, 20);
+
+			listaAddname.setBounds(lcol + 165, lrivi, 90, 20);
+
+			listaPlace.setBounds(lcol + 260, lrivi, 130, 20);
+			listaAddplace.setBounds(lcol + 400, lrivi, 70, 20);
+
+			nameLabel.setBounds(rcol, rrNameList, rwidth * 2, 20);
+			scrollNames.setBounds(rcol, rrNameList + 20, rwidth * 2, 60);
+
+			placeLabel.setBounds(rcol, rrNameList + 90, rwidth * 2, 20);
+			scrollPlaces.setBounds(rcol, rrNameList + 110, rwidth * 2, 60);
+
+			lrivi += 24;
 			break;
 		case NAME:
 			scrollNote.setVisible(false);
@@ -1216,6 +1380,20 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	@Override
 	public void componentShown(ComponentEvent arg0) {
+
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent lse) {
+		if (lse.getSource() == nameList) {
+			listaSelectedName = nameList.getSelectedIndex();
+			String text = (String) nameList.getSelectedValue();
+			listaName.setText(text);
+		} else if (lse.getSource() == placeList) {
+			listaSelectedPlace = placeList.getSelectedIndex();
+			String text = (String) placeList.getSelectedValue();
+			listaPlace.setText(text);
+		}
 
 	}
 
