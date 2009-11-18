@@ -74,7 +74,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	JLabel typeLbl;
 	JLabel descLbl;
 
-	JTextField noticetype;
+	JTextField noticeType;
 	JTextField description;
 
 	JLabel dateLbl;
@@ -310,6 +310,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		noteText = new JTextArea();
 		noteText.setLineWrap(true);
+		noteText.setWrapStyleWord(true);
 		scrollNote = new JScrollPane(noteText,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -370,8 +371,8 @@ public class NoticePane extends JPanel implements ActionListener,
 		add(typeLbl);
 
 		// newTextLang.setBounds(500,lrivi,140,20);
-		noticetype = new JTextField();
-		add(noticetype);
+		noticeType = new JTextField();
+		add(noticeType);
 
 		descLbl = new JLabel(Resurses.getString("DATA_DESCRIPTION"));
 		add(descLbl);
@@ -493,7 +494,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		String tmp = notice.getNoticeType();
 		if (tmp == null)
 			tmp = "";
-		noticetype.setText(tmp);
+		noticeType.setText(tmp);
 
 		tmp = notice.getDescription();
 		if (tmp == null)
@@ -644,7 +645,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			return false;
 		if (privacy.isSelected())
 			return false;
-		if (!"".equals(noticetype.getText()))
+		if (!"".equals(noticeType.getText()))
 			return false;
 		if (!"".equals(description.getText())) {
 			if (!notice.getTag().equals("OCCU"))
@@ -790,7 +791,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		notice.setSurety(sureIdx);
 		notice.setPrivacy(privacy.isSelected() ? "P" : null);
 
-		notice.setNoticeType(noticetype.getText());
+		notice.setNoticeType(noticeType.getText());
 
 		notice.setDescription(description.getText());
 
@@ -837,7 +838,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			lan.setBounds(r);
 
-			lan.setLanguages(notice.getLanguages());
+			lan.setLanguages(notice.getTag(), notice.getLanguages());
 
 			lan.setVisible(true);
 			lan.langTextToPojo(null);
@@ -1050,7 +1051,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	private int lcol = 75;
 	private int lwidth = 300;
 	private int rwidth = 70;
-	private int rcol = lwidth + lcol + 10;
+	private int rcol = lwidth + lcol + 5;
 	private int lbuttoncol = 240;
 
 	@Override
@@ -1069,7 +1070,8 @@ public class NoticePane extends JPanel implements ActionListener,
 			rcol = lwidth + lcol + 5;
 			// setPreferredSize(new Dimension(rcol+rwidth*2, lrivi));
 		}
-
+		int listY1 = 10;
+		int listY2 = 34;
 		TagType showType;
 
 		if (notice.getTag().equals("NOTE")) {
@@ -1121,7 +1123,8 @@ public class NoticePane extends JPanel implements ActionListener,
 		rrivi += 24;
 		close.setBounds(rcol, rrivi, rwidth, 24);
 		update.setBounds(rcol + rwidth, rrivi, rwidth, 24);
-
+		rrivi += 24;
+		noteTextLang.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
 		suretyLbl.setBounds(rcol, rrivi, 100, 20);
 		rrivi += 20;
@@ -1144,8 +1147,8 @@ public class NoticePane extends JPanel implements ActionListener,
 		int lrivi = 10;
 		typeLbl.setBounds(10, lrivi, 70, 20);
 
-		noticetype.setBounds(lcol, lrivi, 150, 20);
-		noteTextLang.setBounds(lbuttoncol, lrivi, 200, 20);
+		noticeType.setBounds(lcol, lrivi, 150, 20);
+		// noteTextLang.setBounds(lcol + lwidth - 150, lrivi, 150, 20);
 		lrivi += 24;
 		descLbl.setBounds(10, lrivi, 70, 20);
 		description.setBounds(lcol, lrivi, lwidth, 20);
@@ -1154,6 +1157,10 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		switch (showType) {
 		case NOTE:
+			description.setVisible(false);
+			descLbl.setVisible(false);
+			noticeType.setVisible(false);
+			typeLbl.setVisible(false);
 		case NAME:
 		case RESI:
 			// place.setVisible(false);
@@ -1254,17 +1261,19 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			noteLbl.setBounds(10, lrivi, 70, 20);
 
-			noteLoc = new Rectangle(lcol, lrivi, lwidth, 400);
+			noteLoc = new Rectangle(lcol, lrivi, lwidth, 424);
+
 			scrollNote.setBounds(noteLoc);
 			image.setVisible(false);
-			lrivi += 404;
-			addLabel.setBounds(10, lrivi, 70, 20);
-			listaName.setBounds(lcol, lrivi, 160, 20);
+			lrivi += 428;
 
-			listaAddname.setBounds(lcol + 165, lrivi, 90, 20);
+			addLabel.setBounds(10, listY1, 70, 20);
+			listaName.setBounds(lcol, listY1, 200, 20);
 
-			listaPlace.setBounds(lcol + 260, lrivi, 130, 20);
-			listaAddplace.setBounds(lcol + 400, lrivi, 70, 20);
+			listaAddname.setBounds(lcol + 205, listY1, 100, 20);
+
+			listaPlace.setBounds(lcol, listY2, 200, 20);
+			listaAddplace.setBounds(lcol + 205, listY2, 100, 20);
 
 			nameLabel.setBounds(rcol, rrNameList, rwidth * 2, 20);
 			scrollNames.setBounds(rcol, rrNameList + 20, rwidth * 2, 60);
@@ -1272,7 +1281,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			placeLabel.setBounds(rcol, rrNameList + 90, rwidth * 2, 20);
 			scrollPlaces.setBounds(rcol, rrNameList + 110, rwidth * 2, 60);
 
-			lrivi += 24;
+			// lrivi += 24;
 			break;
 		case NAME:
 			scrollNote.setVisible(false);

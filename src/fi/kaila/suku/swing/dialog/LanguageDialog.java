@@ -38,12 +38,18 @@ public class LanguageDialog extends JDialog implements ActionListener,
 
 	private static final long serialVersionUID = 1L;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-
+	private String tag = null;
 	private JTextField noticeType = null;
 
 	private JTextField description = null;
 	private JTextField place = null;
 	private JTextArea noteText = null;
+
+	private JLabel typeLbl = null;
+	private JLabel descLbl = null;
+	private JLabel placeLbl = null;
+	private JLabel noteLbl = null;
+	private JLabel mediaLbl = null;
 	JScrollPane scrollArea = null;
 	private JTextField mediaTitle = null;
 
@@ -73,9 +79,9 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		super(owner, Resurses.getString("DATA_LANG_PAGE"), true);
 		setLayout(null);
 
-		JLabel lbl = new JLabel(Resurses.getString("DATA_LANG_PAGE"));
-		add(lbl);
-		lbl.setBounds(10, 5, 75, 20);
+		JLabel lbll = new JLabel(Resurses.getString("DATA_LANG_PAGE"));
+		add(lbll);
+		lbll.setBounds(10, 5, 75, 20);
 		languageGroup = new ButtonGroup();
 
 		int lcnt = Suku.getRepoLanguageCount();
@@ -94,36 +100,36 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		}
 		langxx[0].setSelected(true);
 
-		lbl = new JLabel(Resurses.getString("DATA_TYPE"));
-		add(lbl);
-		lbl.setBounds(10, ytype, 80, 20);
+		typeLbl = new JLabel(Resurses.getString("DATA_TYPE"));
+		add(typeLbl);
+
 		noticeType = new JTextField();
 		add(noticeType);
-		lbl = new JLabel(Resurses.getString("DATA_DESCRIPTION"));
-		add(lbl);
-		lbl.setBounds(10, ydesc, 80, 20);
+		descLbl = new JLabel(Resurses.getString("DATA_DESCRIPTION"));
+		add(descLbl);
+
 		description = new JTextField();
 		add(description);
-		lbl = new JLabel(Resurses.getString("DATA_PLACE"));
-		add(lbl);
-		lbl.setBounds(10, yplace, 80, 20);
+		placeLbl = new JLabel(Resurses.getString("DATA_PLACE"));
+		add(placeLbl);
+
 		place = new JTextField();
 		add(place);
 
-		lbl = new JLabel(Resurses.getString("DATA_NOTE"));
-		add(lbl);
-		lbl.setBounds(10, ynote, 80, 20);
+		noteLbl = new JLabel(Resurses.getString("DATA_NOTE"));
+		add(noteLbl);
 
 		noteText = new JTextArea();
 		noteText.setLineWrap(true);
+		noteText.setWrapStyleWord(true);
 		scrollArea = new JScrollPane(noteText,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(scrollArea);
 
-		lbl = new JLabel(Resurses.getString("DATA_MEDIA_TITLE"));
-		add(lbl);
-		lbl.setBounds(10, ytitle, 80, 20);
+		mediaLbl = new JLabel(Resurses.getString("DATA_MEDIA_TITLE"));
+		add(mediaLbl);
+
 		mediaTitle = new JTextField();
 		add(mediaTitle);
 
@@ -157,7 +163,8 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		for (int i = 0; i < languages.length; i++) {
 			UnitLanguage u = languages[i];
 			if (u.getNoticeType() == null && u.getMediaTitle() == null
-					&& u.getDescription() == null && u.getPlace() == null) {
+					&& u.getDescription() == null && u.getPlace() == null
+					&& u.getNoteText() == null) {
 				u.setToBeDeleted(true);
 			}
 		}
@@ -169,14 +176,16 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	 * @param languages
 	 *            to be initialized
 	 */
-	public void setLanguages(UnitLanguage[] languages) {
-
+	public void setLanguages(String tag, UnitLanguage[] languages) {
+		this.tag = tag;
 		if (languages != null) {
 			for (int i = 0; i < languages.length; i++) {
 				int idx = Suku.getRepoLanguageIndex(languages[i].getLangCode());
 				if (idx >= 0) {
 					this.languages[idx] = languages[i];
-					langxx[idx].setForeground(Color.RED);
+					if (languages[i].getPid() > 0
+							|| languages[i].isToBeUpdated())
+						langxx[idx].setForeground(Color.RED);
 				} else {
 					logger.warning("language code not known ["
 							+ languages[i].getLangCode() + "]");
@@ -316,8 +325,8 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		}
 
 		Dimension currSize = getSize();
-		int leftWidth = currSize.width - 320;
-		int rightColumn = 120 + leftWidth;
+		int leftWidth = currSize.width - 260;
+		int rightColumn = 85 + leftWidth;
 
 		int ry = ytype;
 		ok.setBounds(rightColumn, ry, 80, 20);
@@ -331,16 +340,44 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		modifiedLbl.setBounds(rightColumn, ry, 100, 20);
 		ry += 22;
 		modified.setBounds(rightColumn, ry, 150, 20);
+		int yl = ytype;
+		if (!tag.equals("NOTE")) {
+			typeLbl.setBounds(5, yl, 70, 20);
+			noticeType.setBounds(80, yl, leftWidth, 20);
+			yl += 24;
+			descLbl.setBounds(5, yl, 70, 20);
+			description.setBounds(80, yl, leftWidth, 20);
+			yl += 24;
+			if (!tag.equals("NAME")) {
+				placeLbl.setBounds(5, yplace, 70, 20);
+				place.setBounds(80, yl, leftWidth, 20);
+				yl += 24;
+				mediaLbl.setBounds(5, ytitle, 70, 20);
+				mediaTitle.setBounds(80, yl, leftWidth, 20);
+				yl += 24;
+			} else {
 
-		noticeType.setBounds(100, ytype, leftWidth, 20);
-		description.setBounds(100, ydesc, leftWidth, 20);
-		place.setBounds(100, yplace, leftWidth, 20);
-		mediaTitle.setBounds(100, ytitle, leftWidth, 20);
+				place.setVisible(false);
+				mediaTitle.setVisible(false);
+				scrollArea.setVisible(false);
+				placeLbl.setVisible(false);
+				mediaLbl.setVisible(false);
+				noteLbl.setVisible(false);
+			}
 
-		scrollArea.setBounds(100, ynote, leftWidth, currSize.height - ynote
-				- 40);
+		} else {
+			typeLbl.setVisible(false);
+			descLbl.setVisible(false);
+			placeLbl.setVisible(false);
+			mediaLbl.setVisible(false);
+			noticeType.setVisible(false);
+			description.setVisible(false);
+			place.setVisible(false);
+			mediaTitle.setVisible(false);
+		}
+		noteLbl.setBounds(5, yl, 70, 20);
+		scrollArea.setBounds(80, yl, leftWidth, currSize.height - yl - 40);
 		scrollArea.updateUI();
-
 		// if (firstEnabledLangu != null) {
 		// langTextToPojo(firstEnabledLangu);
 		// }
