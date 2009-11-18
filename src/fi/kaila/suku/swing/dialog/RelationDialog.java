@@ -8,6 +8,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -15,6 +16,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
@@ -22,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -67,12 +70,14 @@ public class RelationDialog extends JDialog implements ActionListener,
 	private JLabel placeLbl = null;
 	private JTextArea noteTextLang = null;
 	private JLabel noteLbl = null;
+
+	private JPanel langPanel;
 	private JScrollPane scrollNoteLang = null;
 	private JLabel sourceLbl = null;
 	private JLabel privateLbl = null;
 	private JLabel langLbl = null;
-	private JLabel typeLangLbl = null;
-	private JLabel descLangLbl = null;
+	// private JLabel typeLangLbl = null;
+	// private JLabel descLangLbl = null;
 	private JLabel placeLangLbl = null;
 	private JLabel noteLangLbl = null;
 	private JButton ok;
@@ -86,10 +91,10 @@ public class RelationDialog extends JDialog implements ActionListener,
 	// private static int ysource = 164;
 	// private static int yprivate = 226;
 	// private static int langselect = 290;
-	private static int ytypeLang = 320;
-	private static int ydescLang = 344;
-	private static int yplaceLang = 368;
-	private static int ynoteLang = 392;
+	private static int ytypeLang = 24;
+	private static int ydescLang = 48;
+	private static int yplaceLang = 72;
+	private static int ynoteLang = 96;
 
 	private RelationNotice rela = null;
 
@@ -212,33 +217,39 @@ public class RelationDialog extends JDialog implements ActionListener,
 		privateLbl = new JLabel(Resurses.getString("DATA_PRIVATETEXT"));
 		add(privateLbl);
 
-		typeLangLbl = new JLabel(Resurses.getString("DATA_TYPE"));
-		add(typeLangLbl);
-		// lbl.setBounds(10, ytypeLang, 80, 20);
+		langPanel = new JPanel();
+		add(langPanel);
+		langPanel.setLayout(null);
+
+		langPanel.setBorder(BorderFactory.createTitledBorder(""));
+		JLabel llbl = new JLabel(Resurses.getString("DATA_TYPE"));
+		langPanel.add(llbl);
+
+		llbl.setBounds(5, ytypeLang, 80, 20);
 		relationTypeLang = new JTextField();
-		add(relationTypeLang);
-		descLangLbl = new JLabel(Resurses.getString("DATA_DESCRIPTION"));
-		add(descLangLbl);
-		// lbl.setBounds(10, ydescLang, 80, 20);
+		langPanel.add(relationTypeLang);
+		llbl = new JLabel(Resurses.getString("DATA_DESCRIPTION"));
+		langPanel.add(llbl);
+		llbl.setBounds(5, ydescLang, 80, 20);
 		descriptionLang = new JTextField();
-		add(descriptionLang);
+		langPanel.add(descriptionLang);
 
 		placeLangLbl = new JLabel(Resurses.getString("DATA_PLACE"));
-		add(placeLangLbl);
-		// lbl.setBounds(10, yplaceLang, 80, 20);
+		langPanel.add(placeLangLbl);
+		// placeLangLbl.setBounds(5, yplaceLang, 80, 20);
 		placeLang = new JTextField();
-		add(placeLang);
+		langPanel.add(placeLang);
 
 		noteLangLbl = new JLabel(Resurses.getString("DATA_NOTE"));
-		add(noteLangLbl);
-		// lbl.setBounds(10, ynoteLang, 80, 20);
+		langPanel.add(noteLangLbl);
+		// noteLangLbl.setBounds(5, ynoteLang, 80, 20);
 
 		noteTextLang = new JTextArea();
 		noteTextLang.setLineWrap(true);
 		scrollNoteLang = new JScrollPane(noteTextLang,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		add(scrollNoteLang);
+		langPanel.add(scrollNoteLang);
 
 		addComponentListener(this);
 
@@ -271,8 +282,10 @@ public class RelationDialog extends JDialog implements ActionListener,
 			if (rr != null) {
 				for (int j = 0; j < rr.length; j++) {
 					if (lan.equals(rr[j].getLangCode())) {
-						fixed[i] = rr[j];
-						langxx[i].setForeground(Color.RED);
+						if (rr[j].isToBeUpdated() || rr[j].getRid() > 0) {
+							fixed[i] = rr[j];
+							langxx[i].setForeground(Color.RED);
+						}
 						break;
 					}
 				}
@@ -341,10 +354,11 @@ public class RelationDialog extends JDialog implements ActionListener,
 			langxx[firstIdx].setSelected(true);
 			showLanguage(Suku.getRepoLanguage(firstIdx, true));
 		} else {
-			relationTypeLang.setVisible(false);
-			descriptionLang.setVisible(false);
-			placeLang.setVisible(false);
-			noteTextLang.setVisible(false);
+			langPanel.setVisible(false);
+			// relationTypeLang.setVisible(false);
+			// descriptionLang.setVisible(false);
+			// placeLang.setVisible(false);
+			// scrollNoteLang.setVisible(false);
 		}
 
 	}
@@ -449,19 +463,27 @@ public class RelationDialog extends JDialog implements ActionListener,
 	private void showLanguage(String langcode) {
 		boolean foundLangu = false;
 		RelationLanguage rl = null;
-		relationTypeLang.setVisible(true);
-		descriptionLang.setVisible(true);
+		langPanel.setVisible(true);
+		String langName = "";
+		// descriptionLang.setVisible(true);
 		for (int i = 0; i < rela.getLanguages().length; i++) {
 			if (langcode.equals(rela.getLanguages()[i].getLangCode())) {
 				rl = rela.getLanguages()[i];
 				if (!foundLangu) {
 					langxx[i].setSelected(true);
+
+					langName = Suku.getRepoLanguage(i, false);
+
 					foundLangu = true;
 				}
 				break;
 			}
 		}
 		if (rl != null) {
+
+			TitledBorder bb = (TitledBorder) langPanel.getBorder();
+			bb.setTitle(langName);
+			langPanel.updateUI();
 
 			relationTypeLang.setText(rl.getRelationType());
 			this.descriptionLang.setText(rl.getDescription());
@@ -470,10 +492,10 @@ public class RelationDialog extends JDialog implements ActionListener,
 			this.noteTextLang.setText(rl.getNoteText());
 			if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")) {
 				placeLang.setVisible(true);
-				noteTextLang.setVisible(true);
+				scrollNoteLang.setVisible(true);
 			} else {
 				placeLang.setVisible(false);
-				noteTextLang.setVisible(false);
+				scrollNoteLang.setVisible(false);
 			}
 		}
 		oldLanguage = langcode;
@@ -581,18 +603,19 @@ public class RelationDialog extends JDialog implements ActionListener,
 			langxx[i].updateUI();
 		}
 		ly += 24;
-		relationTypeLang.setBounds(80, ly, leftWidth, 20);
-		typeLangLbl.setBounds(10, ly, 70, 20);
-		ly += 24;
-		descriptionLang.setBounds(80, ly, leftWidth, 20);
-		descLangLbl.setBounds(10, ly, 70, 20);
-		ly += 24;
-		placeLang.setBounds(80, ly, leftWidth, 20);
-		placeLangLbl.setBounds(10, ly, 70, 20);
-		ly += 24;
-		scrollNoteLang.setBounds(80, ly, leftWidth, 60);
-		noteLangLbl.setBounds(10, ly, 70, 20);
-		scrollNote.updateUI();
+		langPanel.setBounds(5, ly, leftWidth + 100, 180);
+		relationTypeLang.setBounds(80, ytypeLang, leftWidth, 20);
+		// typeLangLbl.setBounds(10, ly, 70, 20);
+
+		descriptionLang.setBounds(80, ydescLang, leftWidth, 20);
+		// descLangLbl.setBounds(10, ly, 70, 20);
+
+		placeLang.setBounds(80, yplaceLang, leftWidth, 20);
+		placeLangLbl.setBounds(5, yplaceLang, 70, 20);
+
+		scrollNoteLang.setBounds(80, ynoteLang, leftWidth, 60);
+		noteLangLbl.setBounds(5, ynoteLang, 70, 20);
+		langPanel.updateUI();
 
 	}
 
