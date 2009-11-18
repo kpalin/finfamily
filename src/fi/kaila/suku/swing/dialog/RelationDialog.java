@@ -62,21 +62,30 @@ public class RelationDialog extends JDialog implements ActionListener,
 	private JTextField relationTypeLang = null;
 
 	private JTextField descriptionLang = null;
+	private JLabel dateLbl = null;
 	private JTextField placeLang = null;
+	private JLabel placeLbl = null;
 	private JTextArea noteTextLang = null;
-	JScrollPane scrollNoteLang = null;
-
+	private JLabel noteLbl = null;
+	private JScrollPane scrollNoteLang = null;
+	private JLabel sourceLbl = null;
+	private JLabel privateLbl = null;
+	private JLabel langLbl = null;
+	private JLabel typeLangLbl = null;
+	private JLabel descLangLbl = null;
+	private JLabel placeLangLbl = null;
+	private JLabel noteLangLbl = null;
 	private JButton ok;
 	private JButton delete;
 	private static int ytype = 10;
 	private static int ydesc = 34;
 	private static int ydate = 58;
-	private static int yplace = 80;
-
-	private static int ynote = 102;
-	private static int ysource = 164;
-	private static int yprivate = 226;
-	private static int langselect = 290;
+	// private static int yplace = 80;
+	//
+	// private static int ynote = 102;
+	// private static int ysource = 164;
+	// private static int yprivate = 226;
+	// private static int langselect = 290;
 	private static int ytypeLang = 320;
 	private static int ydescLang = 344;
 	private static int yplaceLang = 368;
@@ -86,7 +95,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 	private ButtonGroup languageGroup = null;
 
-	JRadioButton[] langxx;
+	volatile JRadioButton[] langxx;
 
 	SukuSuretyField surety;
 	JLabel suretyLbl;
@@ -102,9 +111,9 @@ public class RelationDialog extends JDialog implements ActionListener,
 		super(owner, Resurses.getString("RELA_UPDATE_PAGE"), true);
 		setLayout(null);
 
-		JLabel lbl = new JLabel(Resurses.getString("DATA_LANG_PAGE"));
-		add(lbl);
-		lbl.setBounds(10, langselect, 75, 20);
+		langLbl = new JLabel(Resurses.getString("DATA_LANG_PAGE"));
+		add(langLbl);
+
 		languageGroup = new ButtonGroup();
 
 		int lcnt = Suku.getRepoLanguageCount();
@@ -114,7 +123,6 @@ public class RelationDialog extends JDialog implements ActionListener,
 			langxx[i] = new JRadioButton(Suku.getRepoLanguage(i, false));
 			langxx[i].setActionCommand(Suku.getRepoLanguage(i, true));
 
-			langxx[i].setBounds(80 + (i * 80), langselect, 80, 20);
 			langxx[i].addActionListener(this);
 			languageGroup.add(langxx[i]);
 			add(langxx[i]);
@@ -150,7 +158,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 		modified.setEditable(false);
 		add(modified);
 
-		lbl = new JLabel(Resurses.getString("DATA_TYPE"));
+		JLabel lbl = new JLabel(Resurses.getString("DATA_TYPE"));
 		add(lbl);
 		lbl.setBounds(10, ytype, 80, 20);
 		relationType = new JTextField();
@@ -160,21 +168,21 @@ public class RelationDialog extends JDialog implements ActionListener,
 		lbl.setBounds(10, ydesc, 80, 20);
 		description = new JTextField();
 		add(description);
-		lbl = new JLabel(Resurses.getString("DATA_DATE"));
-		add(lbl);
-		lbl.setBounds(10, ydate, 80, 20);
+		dateLbl = new JLabel(Resurses.getString("DATA_DATE"));
+		add(dateLbl);
+
 		date = new SukuDateField();
 		add(date);
 
-		lbl = new JLabel(Resurses.getString("DATA_PLACE"));
-		add(lbl);
-		lbl.setBounds(10, yplace, 80, 20);
+		placeLbl = new JLabel(Resurses.getString("DATA_PLACE"));
+		add(placeLbl);
+
 		place = new JTextField();
 		add(place);
 
-		lbl = new JLabel(Resurses.getString("DATA_NOTE"));
-		add(lbl);
-		lbl.setBounds(10, ynote, 80, 20);
+		noteLbl = new JLabel(Resurses.getString("DATA_NOTE"));
+		add(noteLbl);
+		// lbl.setBounds(10, ynote, 80, 20);
 
 		noteText = new JTextArea();
 		noteText.setLineWrap(true);
@@ -197,34 +205,33 @@ public class RelationDialog extends JDialog implements ActionListener,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(scrollPrivate);
 
-		lbl = new JLabel(Resurses.getString("DATA_SOURCE"));
-		lbl.setBounds(10, ysource, 70, 20);
-		add(lbl);
+		sourceLbl = new JLabel(Resurses.getString("DATA_SOURCE"));
 
-		lbl = new JLabel(Resurses.getString("DATA_PRIVATETEXT"));
-		lbl.setBounds(10, yprivate, 70, 20);
-		add(lbl);
+		add(sourceLbl);
 
-		lbl = new JLabel(Resurses.getString("DATA_TYPE"));
-		add(lbl);
-		lbl.setBounds(10, ytypeLang, 80, 20);
+		privateLbl = new JLabel(Resurses.getString("DATA_PRIVATETEXT"));
+		add(privateLbl);
+
+		typeLangLbl = new JLabel(Resurses.getString("DATA_TYPE"));
+		add(typeLangLbl);
+		// lbl.setBounds(10, ytypeLang, 80, 20);
 		relationTypeLang = new JTextField();
 		add(relationTypeLang);
-		lbl = new JLabel(Resurses.getString("DATA_DESCRIPTION"));
-		add(lbl);
-		lbl.setBounds(10, ydescLang, 80, 20);
+		descLangLbl = new JLabel(Resurses.getString("DATA_DESCRIPTION"));
+		add(descLangLbl);
+		// lbl.setBounds(10, ydescLang, 80, 20);
 		descriptionLang = new JTextField();
 		add(descriptionLang);
 
-		lbl = new JLabel(Resurses.getString("DATA_PLACE"));
-		add(lbl);
-		lbl.setBounds(10, yplaceLang, 80, 20);
+		placeLangLbl = new JLabel(Resurses.getString("DATA_PLACE"));
+		add(placeLangLbl);
+		// lbl.setBounds(10, yplaceLang, 80, 20);
 		placeLang = new JTextField();
 		add(placeLang);
 
-		lbl = new JLabel(Resurses.getString("DATA_NOTE"));
-		add(lbl);
-		lbl.setBounds(10, ynoteLang, 80, 20);
+		noteLangLbl = new JLabel(Resurses.getString("DATA_NOTE"));
+		add(noteLangLbl);
+		// lbl.setBounds(10, ynoteLang, 80, 20);
 
 		noteTextLang = new JTextArea();
 		noteTextLang.setLineWrap(true);
@@ -300,11 +307,21 @@ public class RelationDialog extends JDialog implements ActionListener,
 		if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")) {
 			date.setVisible(true);
 			place.setVisible(true);
-			noteText.setVisible(true);
+			scrollNoteLang.setVisible(true);
+			dateLbl.setVisible(true);
+			placeLbl.setVisible(true);
+			noteLbl.setVisible(true);
+			placeLangLbl.setVisible(true);
+			noteLangLbl.setVisible(true);
 		} else {
 			date.setVisible(false);
 			place.setVisible(false);
-			noteText.setVisible(false);
+			scrollNoteLang.setVisible(false);
+			dateLbl.setVisible(false);
+			placeLbl.setVisible(false);
+			noteLbl.setVisible(false);
+			placeLangLbl.setVisible(false);
+			noteLangLbl.setVisible(false);
 		}
 		date
 				.setDate(rela.getDatePrefix(), rela.getFromDate(), rela
@@ -533,23 +550,48 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 		relationType.setBounds(80, ytype, leftWidth, 20);
 		description.setBounds(80, ydesc, leftWidth, 20);
+		int ly = ydate;
+		if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")) {
 
-		date.setBounds(80, ydate, 360, 20);
-		place.setBounds(80, yplace, leftWidth, 20);
+			date.setBounds(80, ly, 360, 20);
+			dateLbl.setBounds(10, ly, 70, 20);
 
-		scrollNote.setBounds(80, ynote, leftWidth, 60);
+			ly += 24;
+			place.setBounds(80, ly, leftWidth, 20);
+			placeLbl.setBounds(10, ly, 70, 20);
+			ly += 24;
+			scrollNote.setBounds(80, ly, leftWidth, 60);
+			noteLbl.setBounds(10, ly, 70, 20);
+			ly += 64;
+		}
+		scrollSource.setBounds(80, ly, leftWidth, 60);
+		sourceLbl.setBounds(10, ly, 70, 20);
+		ly += 64;
+		scrollPrivate.setBounds(80, ly, leftWidth, 60);
+		privateLbl.setBounds(10, ly, 70, 20);
+		ly += 80;
 
-		scrollSource.setBounds(80, ysource, leftWidth, 60);
-
-		scrollPrivate.setBounds(80, yprivate, leftWidth, 60);
-
-		relationTypeLang.setBounds(80, ytypeLang, leftWidth, 20);
-		descriptionLang.setBounds(80, ydescLang, leftWidth, 20);
-
-		placeLang.setBounds(80, yplaceLang, leftWidth, 20);
-
-		scrollNoteLang.setBounds(80, ynoteLang, leftWidth, 60);
-
+		int lcnt = Suku.getRepoLanguageCount();
+		langLbl.setBounds(10, ly, 70, 20);
+		for (int i = 0; i < lcnt; i++) {
+			if (langxx[i] == null) {
+				System.out.println("seonnull");
+			}
+			langxx[i].setBounds(80 + (i * 80), ly, 80, 20);
+			langxx[i].updateUI();
+		}
+		ly += 24;
+		relationTypeLang.setBounds(80, ly, leftWidth, 20);
+		typeLangLbl.setBounds(10, ly, 70, 20);
+		ly += 24;
+		descriptionLang.setBounds(80, ly, leftWidth, 20);
+		descLangLbl.setBounds(10, ly, 70, 20);
+		ly += 24;
+		placeLang.setBounds(80, ly, leftWidth, 20);
+		placeLangLbl.setBounds(10, ly, 70, 20);
+		ly += 24;
+		scrollNoteLang.setBounds(80, ly, leftWidth, 60);
+		noteLangLbl.setBounds(10, ly, 70, 20);
 		scrollNote.updateUI();
 
 	}
