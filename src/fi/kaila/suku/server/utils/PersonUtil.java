@@ -375,14 +375,14 @@ public class PersonUtil {
 		String updSql = "update relationnotice set "
 				+ "surety=?,RelationType=?,Description=?,"
 				+ "DatePrefix=?,FromDate=?,ToDate=?,Place=?,"
-				+ "NoteText=?,Modified=now()" +
+				+ "NoteText=?,SourceText=?,PrivateText=?,Modified=now()" +
 				// "SourceText=?,PrivateText=?,Modified=now() " +
 				"where rnid=? ";
 
 		String insSql = "insert into relationnotice  "
 				+ "(surety,RelationType,Description,DatePrefix,FromDate,ToDate,"
-				+ "Place,NoteText,rnid,rid,tag,noticerow)"
-				+ " values (?,?,?,?,?,?,?,?,?,?,?,0) ";
+				+ "Place,NoteText,sourcetext,privatetext,rnid,rid,tag,noticerow)"
+				+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,0) ";
 
 		String updLangSql = "update relationlanguage set "
 				+ "RelationType=?,Description=?,Place=?,"
@@ -658,17 +658,19 @@ public class PersonUtil {
 								pst.setString(6, rn.getToDate());
 								pst.setString(7, rn.getPlace());
 								pst.setString(8, rn.getNoteText());
-								pst.setInt(9, rnid);
+								pst.setString(9, rn.getSource());
+								pst.setString(10, rn.getPrivateText());
+								pst.setInt(11, rnid);
 								if (rn.getRnid() > 0) {
 									int rer = pst.executeUpdate();
-									System.out.println("update rn for " + rnid
-											+ "[" + rer + "]");
+									logger.fine("update rn for " + rnid + "["
+											+ rer + "]");
 								} else {
-									pst.setInt(10, rid);
-									pst.setString(11, rn.getTag());
+									pst.setInt(11, rid);
+									pst.setString(12, rn.getTag());
 									int rer = pst.executeUpdate();
-									System.out.println("insert rn for " + rnid
-											+ "[" + rer + "]");
+									logger.fine("insert rn for " + rnid + "["
+											+ rer + "]");
 
 								}
 							}
@@ -701,12 +703,10 @@ public class PersonUtil {
 													.getNoteText());
 
 											int rier = updLang.executeUpdate();
-											System.out
-													.println("insert rl rnid: "
-															+ rnid + "/"
-															+ rl.getLangCode()
-															+ "count:[" + rier
-															+ "]");
+											logger.fine("insert rl rnid: "
+													+ rnid + "/"
+													+ rl.getLangCode()
+													+ "count:[" + rier + "]");
 
 										} else if (rl.isToBeDeleted()) {
 											PreparedStatement updLang = con
@@ -715,12 +715,10 @@ public class PersonUtil {
 											updLang.setString(2, rl
 													.getLangCode());
 											int rder = updLang.executeUpdate();
-											System.out
-													.println("delete rl rnid: "
-															+ rnid + "/"
-															+ rl.getLangCode()
-															+ "count:[" + rder
-															+ "]");
+											logger.fine("delete rl rnid: "
+													+ rnid + "/"
+													+ rl.getLangCode()
+													+ "count:[" + rder + "]");
 
 										} else {
 
@@ -737,7 +735,7 @@ public class PersonUtil {
 											updLang.setString(6, rl
 													.getLangCode());
 											int rner = updLang.executeUpdate();
-											System.out.println("update rl for "
+											logger.fine("update rl for "
 													+ rl.getRnid() + "/"
 													+ rl.getLangCode() + "["
 													+ rner + "]");

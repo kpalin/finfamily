@@ -57,18 +57,21 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 		// RELA_TAG_ADOP=Adoptoitu
 
 		if (isMarriage) {
-			kokoLista = new String[2];
-			kokoTags = new String[2];
+			kokoLista = new String[3];
+			kokoTags = new String[3];
 			kokoLista[0] = Resurses.getString("RELA_TAG_MARR");
 			kokoLista[1] = Resurses.getString("RELA_TAG_DIV");
+			kokoLista[2] = Resurses.getString("RELA_TAG_SOUR");
 			kokoTags[0] = "MARR";
 			kokoTags[1] = "DIV";
-
+			kokoTags[2] = "SOUR";
 		} else {
-			kokoLista = new String[1];
-			kokoTags = new String[1];
+			kokoLista = new String[2];
+			kokoTags = new String[2];
 			kokoLista[0] = Resurses.getString("RELA_TAG_ADOP");
+			kokoLista[1] = Resurses.getString("RELA_TAG_SOUR");
 			kokoTags[0] = "ADOP";
+			kokoTags[1] = "SOUR";
 		}
 
 		koko = new JList(kokoLista);

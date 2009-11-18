@@ -193,6 +193,18 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * @param text
+	 *            private text
+	 */
+	public void setPrivateText(String text) {
+		if (!nv(this.privateText).equals(nv(text))) {
+			toBeUpdated = true;
+			this.privateText = vn(text);
+		}
+
+	}
+
+	/**
 	 * @return tag
 	 */
 	public String getTag() {

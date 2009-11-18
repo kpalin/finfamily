@@ -441,10 +441,11 @@ public class Read2004XML extends DefaultHandler {
 				maxpid = rs.getInt(1);
 			}
 			rs.close();
-			sql = "SELECT setval('unitseq'," + maxpid + ")";
-			rs = stm.executeQuery(sql);
-			rs.close();
-
+			if (maxpid > 0) {
+				sql = "SELECT setval('unitseq'," + maxpid + ")";
+				rs = stm.executeQuery(sql);
+				rs.close();
+			}
 			// initializize also vid sequence
 			sql = "select max(vid) from views";
 			rs = stm.executeQuery(sql);
@@ -453,10 +454,11 @@ public class Read2004XML extends DefaultHandler {
 				maxvid = rs.getInt(1);
 			}
 			rs.close();
-			sql = "SELECT setval('viewseq'," + maxvid + ")";
-			rs = stm.executeQuery(sql);
-			rs.close();
-
+			if (maxvid > 0) {
+				sql = "SELECT setval('viewseq'," + maxvid + ")";
+				rs = stm.executeQuery(sql);
+				rs.close();
+			}
 			stm.executeUpdate(VACUUM);
 			long ended = System.currentTimeMillis();
 			logger.info("Backup " + this.urli + " converted in "

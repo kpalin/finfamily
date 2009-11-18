@@ -297,13 +297,22 @@ public class RelationDialog extends JDialog implements ActionListener,
 		}
 		relationType.setText(rela.getType());
 		description.setText(rela.getDescription());
-
+		if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")) {
+			date.setVisible(true);
+			place.setVisible(true);
+			noteText.setVisible(true);
+		} else {
+			date.setVisible(false);
+			place.setVisible(false);
+			noteText.setVisible(false);
+		}
 		date
 				.setDate(rela.getDatePrefix(), rela.getFromDate(), rela
 						.getToDate());
 		place.setText(rela.getPlace());
 		noteText.setText(rela.getNoteText());
-
+		sourceText.setText(rela.getSource());
+		privateText.setText(rela.getPrivateText());
 		int firstIdx = -1;
 		for (int i = 0; i < Suku.getRepoLanguageCount(); i++) {
 			if (rela.getLanguages()[i].getRnid() > 0) {
@@ -314,6 +323,11 @@ public class RelationDialog extends JDialog implements ActionListener,
 		if (firstIdx >= 0) {
 			langxx[firstIdx].setSelected(true);
 			showLanguage(Suku.getRepoLanguage(firstIdx, true));
+		} else {
+			relationTypeLang.setVisible(false);
+			descriptionLang.setVisible(false);
+			placeLang.setVisible(false);
+			noteTextLang.setVisible(false);
 		}
 
 	}
@@ -352,8 +366,9 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 		rela.setNoteText(noteText.getText());
 
-		noteText.setText(rela.getNoteText());
-
+		// noteText.setText(rela.getNoteText());
+		rela.setSource(sourceText.getText());
+		rela.setPrivateText(privateText.getText());
 		return;
 	}
 
@@ -415,11 +430,17 @@ public class RelationDialog extends JDialog implements ActionListener,
 	}
 
 	private void showLanguage(String langcode) {
-
+		boolean foundLangu = false;
 		RelationLanguage rl = null;
+		relationTypeLang.setVisible(true);
+		descriptionLang.setVisible(true);
 		for (int i = 0; i < rela.getLanguages().length; i++) {
 			if (langcode.equals(rela.getLanguages()[i].getLangCode())) {
 				rl = rela.getLanguages()[i];
+				if (!foundLangu) {
+					langxx[i].setSelected(true);
+					foundLangu = true;
+				}
 				break;
 			}
 		}
@@ -427,8 +448,16 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 			relationTypeLang.setText(rl.getRelationType());
 			this.descriptionLang.setText(rl.getDescription());
+
 			this.placeLang.setText(rl.getPlace());
 			this.noteTextLang.setText(rl.getNoteText());
+			if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")) {
+				placeLang.setVisible(true);
+				noteTextLang.setVisible(true);
+			} else {
+				placeLang.setVisible(false);
+				noteTextLang.setVisible(false);
+			}
 		}
 		oldLanguage = langcode;
 	}
