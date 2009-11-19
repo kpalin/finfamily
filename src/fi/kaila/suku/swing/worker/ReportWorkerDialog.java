@@ -2017,13 +2017,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				Label label = new Label(0, 0, "Nimi", arial0bold);
 				sheet.addCell(label);
 
-				// label = new Label(1, 0, "Pid");
-				// sheet.addCell(label);
-
 				label = new Label(1, 0, "Taulu", arial0bold);
 				sheet.addCell(label);
-				// label = new Label(3, 0, "Muu", arial0bold);
-				// sheet.addCell(label);
 
 				int row = 2;
 				if (dr != null) {
@@ -2059,87 +2054,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					PersonInTables[] pits = vv.toArray(new PersonInTables[0]);
 					Arrays.sort(pits);
 
-					// row++;
-
-					// HashMap<Integer, PersonShortData> pmap = new
-					// HashMap<Integer, PersonShortData>();
-
-					// for (int i = 0; i < dr.getTables().size(); i++) {
-					// ReportUnit unit = dr.getTables().get(i);
-					//
-					// PersonInTables n = dr.getPersonReferences().get(
-					// unit.getPid());
-					// // if (n == null) {
-					// // System.out.println("EIOOKAIKKIALISAATANNE");
-					// // } else {
-					// // if (n.name == null) {
-					// // SukuData resp = Suku.kontroller.getSukuData(
-					// // "cmd=person", "mode=short", "pid="
-					// // + n.pid);
-					// //
-					// // if (resp.pers != null) {
-					// // n.name = resp.pers[0].getAlfaName(true);
-					// // }
-					// // }
-					// // }
-					//
-					// // for (int j = 0; j < unit.getMemberCount(); j++) {
-					// //
-					// // ReportTableMember m = unit.getMember(j);
-					// //
-					// // PersonInTables n2 = dr.getPersonReferences().get(
-					// // m.getPid());
-					// // if (n2 == null) {
-					// // System.out.println("EIOOKAIKKIALISAATANNE");
-					// // } else {
-					// // if (n2.name == null) {
-					// // SukuData resp = Suku.kontroller
-					// // .getSukuData("cmd=person",
-					// // "mode=short", "pid="
-					// // + n2.pid);
-					// //
-					// // if (resp.pers != null) {
-					// // n2.name = resp.pers[0]
-					// // .getAlfaName(true);
-					// // }
-					// // }
-					// // }
-					// //
-					// // }
-					//
-					// float prose = (i * 100f) / dr.getTables().size();
-					// setRunnerValue("" + (int) prose + ";");
-					//
-					// }
-
-					// for (int i = 0; i < dr.getTables().size(); i++) {
-					// ReportUnit unit = dr.getTables().get(i);
-					//
-					// for (int j = 0; j < unit.getMemberCount(); j++) {
-					// ReportTableMember m = unit.getMember(j);
-					//
-					// PersonInTables n = dr.getPersonReferences().get(
-					// m.getPid());
-					// label = new Label(0, row, "" + n.pid, arial0);
-					// sheet.addCell(label);
-					// label = new Label(1, row, "" + n.name, arial0);
-					// sheet.addCell(label);
-					// float prose = (i * 100f) / dr.getTables().size();
-					// setRunnerValue("" + (int) prose + ";" + n.name);
-					//
-					// row++;
-					// }
-					// }
-
-					// entries = dr.getPersonReferences().entrySet();
-					// ee = entries.iterator();
-					//
-					// while (ee.hasNext()) {
-					// Map.Entry<Integer, PersonInTables> entry =
-					// (Map.Entry<Integer, PersonInTables>) ee
-					// .next();
-					//
-					// PersonInTables pit = entry.getValue();
 					for (int i = 0; i < pits.length; i++) {
 						PersonInTables pit = pits[i];
 						label = new Label(0, row, ""
