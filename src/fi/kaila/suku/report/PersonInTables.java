@@ -1,6 +1,12 @@
 package fi.kaila.suku.report;
 
+import java.text.Collator;
+import java.util.Locale;
 import java.util.Vector;
+
+import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.pojo.PersonShortData;
 
 /**
  * <h1>Collector for person references in report</h1>
@@ -13,9 +19,16 @@ import java.util.Vector;
  * @author Kalle
  * 
  */
-public class PersonInTables {
+public class PersonInTables implements Comparable<PersonInTables> {
 
-	int pid = 0;
+	/**
+	 * owner pid
+	 */
+	public int pid = 0;
+	/**
+	 * name used for index
+	 */
+	public PersonShortData shortPerson = null;
 	/**
 	 * references as child
 	 */
@@ -37,6 +50,7 @@ public class PersonInTables {
 	 */
 	public PersonInTables(int pid) {
 		this.pid = pid;
+
 	}
 
 	/**
@@ -145,4 +159,56 @@ public class PersonInTables {
 		return sx.toString();
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[" + pid + "]:");
+		sb.append("chils:(");
+		for (int i = 0; i < asChildren.size(); i++) {
+			if (i > 0)
+				sb.append(",");
+			sb.append("" + asChildren.get(i));
+		}
+		sb.append(")");
+		sb.append(",pars:(");
+		for (int i = 0; i < asParents.size(); i++) {
+			if (i > 0)
+				sb.append(",");
+			sb.append("" + asParents.get(i));
+		}
+		sb.append(")");
+		sb.append(",refs:(");
+		for (int i = 0; i < references.size(); i++) {
+			if (i > 0)
+				sb.append(",");
+			sb.append("" + references.get(i));
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+
+	/**
+	 * collator according to language
+	 */
+	public static Collator fiCollator = Collator.getInstance(new Locale(
+			Resurses.getLanguage()));
+
+	@Override
+	public int compareTo(PersonInTables o) {
+		if (shortPerson == null || o.shortPerson == null)
+			return 0;
+		int cl = fiCollator.compare(Utils.nv(shortPerson.getSurname()), Utils
+				.nv(o.shortPerson.getSurname()));
+		if (cl != 0) {
+			return cl;
+		}
+		cl = fiCollator.compare(Utils.nv(shortPerson.getGivenname()), Utils
+				.nv(o.shortPerson.getGivenname()));
+		if (cl != 0) {
+			return cl;
+		}
+		return (Utils.nv(shortPerson.getBirtDate()).compareTo(Utils
+				.nv(o.shortPerson.getBirtDate())));
+
+	}
 }

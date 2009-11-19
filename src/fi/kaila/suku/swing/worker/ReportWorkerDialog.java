@@ -12,8 +12,12 @@ import java.beans.PropertyChangeListener;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,6 +61,7 @@ import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
 import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
 import fi.kaila.suku.report.JavaReport;
+import fi.kaila.suku.report.PersonInTables;
 import fi.kaila.suku.report.ReportInterface;
 import fi.kaila.suku.report.XmlReport;
 import fi.kaila.suku.swing.ISuku;
@@ -156,13 +161,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	private static final long serialVersionUID = 1L;
 	private boolean DEBUG = false;
-	private static final String CANCEL = "CANCEL";
+	private static final String EXIT = "EXIT";
 	private static final String START = "START";
+	private static final String LISTA = "REPORT.INDEX";
 	private JLabel textContent;
 
 	private JButton cancel;
 	private JButton start;
-
+	private JButton lista;
 	private static Logger logger = Logger.getLogger(ReportWorkerDialog.class
 			.getName());
 
@@ -172,6 +178,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private Task task;
 	private TaskLista taskLista;
 	private TaskCards taskCards;
+	private TaskIndex taskIndex;
 	private ReportWorkerDialog self;
 
 	JTabbedPane reportTypePane = null;
@@ -806,10 +813,17 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		this.start.setActionCommand(START);
 		this.start.addActionListener(this);
 
-		this.cancel = new JButton(Resurses.getString(CANCEL));
+		this.lista = new JButton(Resurses.getString(LISTA));
+		getContentPane().add(this.lista);
+		this.lista.setBounds(140, footery + 60, 100, 24);
+		this.lista.setActionCommand(LISTA);
+		this.lista.addActionListener(this);
+		this.lista.setEnabled(false);
+
+		this.cancel = new JButton(Resurses.getString(EXIT));
 		getContentPane().add(this.cancel);
-		this.cancel.setBounds(150, footery + 60, 100, 24);
-		this.cancel.setActionCommand(CANCEL);
+		this.cancel.setBounds(250, footery + 60, 100, 24);
+		this.cancel.setActionCommand(EXIT);
 		this.cancel.addActionListener(this);
 
 		this.task = null;
@@ -1078,11 +1092,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 			return;
 		}
-		if (cmd.equals(CANCEL)) {
+		if (cmd.equals(EXIT)) {
 			if (this.task == null) {
 				setVisible(false);
 			} else {
 				this.task.cancel(true);
+				this.task = null;
+				setVisible(false);
 			}
 		}
 
@@ -1124,6 +1140,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						.getString("REPORT.NOTSUPPORTED"));
 				return;
 			}
+		} else if (cmd.equals(LISTA)) {
+			taskIndex = new TaskIndex();
+			taskIndex.addPropertyChangeListener(this);
+			taskIndex.execute();
 		}
 	}
 
@@ -1263,9 +1283,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		return spouseData;
 	}
 
+	DescendantReport dr = null;
+
 	class Task extends SwingWorker<Void, Void> {
 
-		DescendantReport dr = null;
+		int reportFormatidx = 0;
 
 		/*
 		 * Main task. Executed in background thread.
@@ -1277,13 +1299,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 				ReportInterface repo = null;
 
-				int formatIdx = commonReportFormatList.getSelectedIndex();
+				reportFormatidx = commonReportFormatList.getSelectedIndex();
 
-				if (formatIdx == 0) {
+				if (reportFormatidx == 0) {
 					repo = new JavaReport();
 				} else {
 					try {
-						repo = new XmlReport(runner, formatIdx, self.pers
+						repo = new XmlReport(runner, reportFormatidx, self.pers
 								.getAlfaName(true));
 					} catch (SukuException se) {
 						JOptionPane.showMessageDialog(runner, se.getMessage(),
@@ -1315,7 +1337,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
-			setVisible(false);
+			start.setEnabled(false);
+			lista.setEnabled(true);
+			if (reportFormatidx == 0) {
+				setVisible(false);
+			}
+
 			if (dr != null) {
 				try {
 					dr.getWriter().closeReport();
@@ -1959,54 +1986,238 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	}
 
-	// class SettingxModel implements ComboBoxModel {
-	//
-	// @Override
-	// public Object getSelectedItem() {
-	// if (settingsList != null && settingsIndex < settingsList.length){
-	// return settingsList[settingsIndex];
-	// }
-	// return null;
-	//			
-	// }
-	//
-	// @Override
-	// public void setSelectedItem(Object arg) {
-	//			
-	// // settingsList[settingsIndex] = (String)arg;
-	//			
-	// System.out.println("Tuli:   setSele [" + settingsIndex + "]: " +arg);
-	//			
-	// }
-	//
-	// @Override
-	// public void addListDataListener(ListDataListener arg0) {
-	// System.out.println("tuli add");
-	//			
-	// }
-	//
-	// @Override
-	// public Object getElementAt(int index) {
-	// if (settingsList != null && index < settingsList.length){
-	// return settingsList[index];
-	// }
-	// return null;
-	// }
-	//
-	// @Override
-	// public int getSize() {
-	// if (settingsList != null){
-	// return settingsList.length;
-	// }
-	// return 0;
-	// }
-	//
-	// @Override
-	// public void removeListDataListener(ListDataListener arg0) {
-	// System.out.println("tuli remove");
-	//			
-	// }
-	//		
-	// }
+	/**
+	 * Create index for the report executed
+	 */
+	class TaskIndex extends SwingWorker<Void, Void> {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			try {
+
+				if (!Suku.kontroller.createLocalFile("xls")) {
+					return null;
+				}
+
+				setProgress(0);
+
+				BufferedOutputStream bstr = new BufferedOutputStream(
+						Suku.kontroller.getOutputStream());
+				WritableWorkbook workbook = Workbook.createWorkbook(bstr);
+
+				WritableFont arial10bold = new WritableFont(WritableFont.ARIAL,
+						10, WritableFont.BOLD, true);
+				WritableFont arial10 = new WritableFont(WritableFont.ARIAL, 10,
+						WritableFont.NO_BOLD, false);
+				WritableCellFormat arial0bold = new WritableCellFormat(
+						arial10bold);
+				WritableCellFormat arial0 = new WritableCellFormat(arial10);
+				WritableSheet sheet = workbook.createSheet("Index", 0);
+
+				Label label = new Label(0, 0, "Nimi", arial0bold);
+				sheet.addCell(label);
+
+				// label = new Label(1, 0, "Pid");
+				// sheet.addCell(label);
+
+				label = new Label(1, 0, "Taulu", arial0bold);
+				sheet.addCell(label);
+				// label = new Label(3, 0, "Muu", arial0bold);
+				// sheet.addCell(label);
+
+				int row = 2;
+				if (dr != null) {
+
+					Set<Map.Entry<Integer, PersonInTables>> entries = dr
+							.getPersonReferences().entrySet();
+					Iterator<Map.Entry<Integer, PersonInTables>> ee = entries
+							.iterator();
+					Vector<PersonInTables> vv = new Vector<PersonInTables>();
+					int runnervalue = 0;
+					float mapsize = dr.getPersonReferences().size();
+					while (ee.hasNext()) {
+						Map.Entry<Integer, PersonInTables> entry = (Map.Entry<Integer, PersonInTables>) ee
+								.next();
+
+						PersonInTables pit = entry.getValue();
+						vv.add(pit);
+						if (pit.shortPerson == null) {
+							SukuData resp = Suku.kontroller.getSukuData(
+									"cmd=person", "mode=short", "pid="
+											+ pit.pid);
+
+							if (resp.pers != null) {
+								pit.shortPerson = resp.pers[0];
+							}
+						}
+						float prose = (runnervalue * 100f) / mapsize;
+						if (prose > 100)
+							prose = 100;
+						setRunnerValue("" + prose + ";");
+
+					}
+					PersonInTables[] pits = vv.toArray(new PersonInTables[0]);
+					Arrays.sort(pits);
+
+					// row++;
+
+					// HashMap<Integer, PersonShortData> pmap = new
+					// HashMap<Integer, PersonShortData>();
+
+					// for (int i = 0; i < dr.getTables().size(); i++) {
+					// ReportUnit unit = dr.getTables().get(i);
+					//
+					// PersonInTables n = dr.getPersonReferences().get(
+					// unit.getPid());
+					// // if (n == null) {
+					// // System.out.println("EIOOKAIKKIALISAATANNE");
+					// // } else {
+					// // if (n.name == null) {
+					// // SukuData resp = Suku.kontroller.getSukuData(
+					// // "cmd=person", "mode=short", "pid="
+					// // + n.pid);
+					// //
+					// // if (resp.pers != null) {
+					// // n.name = resp.pers[0].getAlfaName(true);
+					// // }
+					// // }
+					// // }
+					//
+					// // for (int j = 0; j < unit.getMemberCount(); j++) {
+					// //
+					// // ReportTableMember m = unit.getMember(j);
+					// //
+					// // PersonInTables n2 = dr.getPersonReferences().get(
+					// // m.getPid());
+					// // if (n2 == null) {
+					// // System.out.println("EIOOKAIKKIALISAATANNE");
+					// // } else {
+					// // if (n2.name == null) {
+					// // SukuData resp = Suku.kontroller
+					// // .getSukuData("cmd=person",
+					// // "mode=short", "pid="
+					// // + n2.pid);
+					// //
+					// // if (resp.pers != null) {
+					// // n2.name = resp.pers[0]
+					// // .getAlfaName(true);
+					// // }
+					// // }
+					// // }
+					// //
+					// // }
+					//
+					// float prose = (i * 100f) / dr.getTables().size();
+					// setRunnerValue("" + (int) prose + ";");
+					//
+					// }
+
+					// for (int i = 0; i < dr.getTables().size(); i++) {
+					// ReportUnit unit = dr.getTables().get(i);
+					//
+					// for (int j = 0; j < unit.getMemberCount(); j++) {
+					// ReportTableMember m = unit.getMember(j);
+					//
+					// PersonInTables n = dr.getPersonReferences().get(
+					// m.getPid());
+					// label = new Label(0, row, "" + n.pid, arial0);
+					// sheet.addCell(label);
+					// label = new Label(1, row, "" + n.name, arial0);
+					// sheet.addCell(label);
+					// float prose = (i * 100f) / dr.getTables().size();
+					// setRunnerValue("" + (int) prose + ";" + n.name);
+					//
+					// row++;
+					// }
+					// }
+
+					// entries = dr.getPersonReferences().entrySet();
+					// ee = entries.iterator();
+					//
+					// while (ee.hasNext()) {
+					// Map.Entry<Integer, PersonInTables> entry =
+					// (Map.Entry<Integer, PersonInTables>) ee
+					// .next();
+					//
+					// PersonInTables pit = entry.getValue();
+					for (int i = 0; i < pits.length; i++) {
+						PersonInTables pit = pits[i];
+						label = new Label(0, row, ""
+								+ pit.shortPerson.getAlfaName(), arial0);
+						sheet.addCell(label);
+						// label = new Label(1, row, "" + pit.pid, arial0);
+						// sheet.addCell(label);
+
+						String refe = pit.getReferences(0, true, false, false);
+						// label = new Label(4, row, "" + refe, arial0);
+						// sheet.addCell(label);
+						String cefe = pit.getReferences(0, false, true, false);
+						// label = new Label(5, row, "" + cefe, arial0);
+						// sheet.addCell(label);
+						if (refe.equals("")) {
+							refe = cefe;
+						}
+						String mefe = pit.getReferences(0, false, false, true);
+						// label = new Label(6, row, "" + mefe, arial0);
+						// sheet.addCell(label);
+						if (!mefe.equals("")) {
+							if (!refe.equals("")) {
+								refe += "," + mefe;
+							} else {
+								refe = mefe;
+							}
+						}
+
+						label = new Label(1, row, "" + refe, arial0);
+						sheet.addCell(label);
+
+						float prose = (i * 100f) / pits.length;
+						setRunnerValue("" + (int) prose + ";"
+								+ pit.shortPerson.getAlfaName());
+
+						// label = new Label(3, row, ""
+						// + pit.getReferences(0, false, true, false),
+						// arial0);
+						// sheet.addCell(label);
+						// label = new Label(3, row, ""
+						// + pit.getReferences(0, false, false, true),
+						// arial0);
+						// sheet.addCell(label);
+						row++;
+					}
+				}
+				workbook.write();
+				workbook.close();
+				bstr.close();
+
+			} catch (Throwable e) {
+
+				logger.log(Level.WARNING, "Exception in background thread", e);
+			}
+			return null;
+		}
+
+		/*
+		 * Executed in event dispatching thread
+		 */
+		@Override
+		public void done() {
+			Toolkit.getDefaultToolkit().beep();
+			setVisible(false);
+			// this would require local write instead of webstrart write
+			// try {
+			// String[] cmds = { "rundll32",
+			// "url.dll,FileProtocolHandler", "" };
+			// cmds[2] = report;
+			// Process p = Runtime.getRuntime().exec(cmds);
+			// p.waitFor();
+			//
+			// } catch (Throwable t) {
+			// logger.log(Level.INFO, "rundll32", t);
+			//
+			// }
+
+		}
+	}
 
 }

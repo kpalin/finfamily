@@ -59,6 +59,20 @@ public class CommonReport {
 	protected HashMap<Integer, PersonInTables> personReferences = null;
 
 	/**
+	 * @return vector of tables
+	 */
+	public Vector<ReportUnit> getTables() {
+		return tables;
+	}
+
+	/**
+	 * @return hashmap with references
+	 */
+	public HashMap<Integer, PersonInTables> getPersonReferences() {
+		return personReferences;
+	}
+
+	/**
 	 * access to report writer
 	 * 
 	 * @return the report writer
@@ -102,8 +116,9 @@ public class CommonReport {
 			JOptionPane.showMessageDialog(caller, e1.getMessage());
 			return;
 		}
+		if (pdata.persLong == null)
+			return;
 
-		// FIXME: Potential NPE
 		UnitNotice[] xnotices = pdata.persLong.getNotices();
 
 		int tableCount = 0;

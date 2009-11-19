@@ -70,6 +70,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	 */
 	public void setLocation(Point p) {
 		this.p = p;
+		// p.x += 10;
+		// p.y += 10;
 	}
 
 	/**

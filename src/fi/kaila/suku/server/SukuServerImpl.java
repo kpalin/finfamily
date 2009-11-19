@@ -346,6 +346,14 @@ public class SukuServerImpl implements SukuServer {
 			tmp = map.get("pid");
 			if (tmp != null) {
 				pid = Integer.parseInt(tmp);
+				String mode = map.get("mode");
+				if ("short".equals(mode)) {
+					PersonShortData psp = new PersonShortData(this.con, pid);
+					fam.pers = new PersonShortData[1];
+					fam.pers[0] = psp;
+					return fam;
+				}
+
 				lang = map.get("lang");
 				PersonUtil u = new PersonUtil(con);
 				fam = u.getFullPerson(pid, lang);

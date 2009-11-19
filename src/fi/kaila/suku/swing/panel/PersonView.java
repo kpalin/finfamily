@@ -12,7 +12,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -471,7 +470,7 @@ public class PersonView extends JPanel implements ChangeListener {
 						grands.add(rel);
 					}
 				}
-				ftab.setLocation(new Point(x, y));
+				ftab.setLocation(new Point(x + 10, y));
 				parents.add(ftab);
 				famPanel.addTable(ftab);
 				famPanel.addRels(new FamilyParentRelationIndex(0, parents
@@ -500,7 +499,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 				ftab.setSubject(family.pers[0]);
 				// ftab.initRelatives(family.pers, family.rels);
-				ftab.setLocation(new Point(x, y));
+				ftab.setLocation(new Point(x + 10, y));
 				famPanel.addTable(ftab);
 				famPanel.addRels(new FamilyParentRelationIndex(rel.getAux(),
 						famPanel.getTabSize() - 1));
@@ -528,8 +527,8 @@ public class PersonView extends JPanel implements ChangeListener {
 				tt.setLocation(pp);
 			}
 
-			table.setLocation(new Point(rw / 2 - xw / 2, maxheight + gheight
-					+ y + 50));
+			table.setLocation(new Point(rw / 2 - xw / 2 + 10, maxheight
+					+ gheight + y + 50));
 
 			famPanel.setPreferredSize(reqDim);
 
@@ -539,16 +538,6 @@ public class PersonView extends JPanel implements ChangeListener {
 
 		}
 		tabbedPane.setSelectedIndex(0);
-	}
-
-	protected JPanel makeTextPanel(String text) {
-		JPanel panel = new JPanel(false);
-		JLabel filler = new JLabel(text);
-		filler.setBounds(10, 30, 300, 20);
-		// filler.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.setLayout(null);
-		panel.add(filler);
-		return panel;
 	}
 
 	/**
