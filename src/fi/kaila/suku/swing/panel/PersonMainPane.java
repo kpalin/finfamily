@@ -300,8 +300,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 
 			if (pane.notice.getTag().equals("OCCU")) {
+				// if (!pane.notice.isToBeDeleted()) {
 				occuVec.add(pane.description.getText());
+				// } else {
+				// occuVec.add("");
+				// }
 				occuCount++;
+
 				// occupation.setText(pane.description.getText());
 				if (!pane.isPlain())
 					occuCount += 100;
@@ -1123,9 +1128,12 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				pane.place.setText(buriPlace.getText());
 			}
 			if (tag.equals("OCCU")) {
-
-				pane.setToBeDeleted(occus[occuIndex].equals(""));
-				pane.description.setText(occus[occuIndex]);
+				if (pane.notice.isToBeDeleted() || occuIndex >= occus.length) {
+					pane.setToBeDeleted(true);
+				} else {
+					pane.setToBeDeleted(occus[occuIndex].equals(""));
+					pane.description.setText(occus[occuIndex]);
+				}
 				occuIndex++;
 			}
 			if (tag.equals("NOTE")) {
