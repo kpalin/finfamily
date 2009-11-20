@@ -4,7 +4,13 @@
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version.</p>
 
 
-<hdr>Release 162 on 19 Nov 2009 </hdr>
+<hdr>Release 164 on 20 Nov 2009 </hdr>
+<ul>
+<li>Bugfixes for table duplicate links</li>
+
+</ul>
+
+<hdr>Release 162 on 19 Nov 2009 (3)</hdr>
 <ul>
 <li>Added preliminary index as excel file for descendant report.</li>
 
