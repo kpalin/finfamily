@@ -178,6 +178,7 @@ public class CommonReport {
 		bt = new TableSubHeaderText();
 		PersonInTables ref;
 		String fromTable = "";
+		String fromSubTable = "";
 		ref = personReferences.get(tab.getPid());
 		if (ref != null) {
 			fromTable = ref.getReferences(tab.getTableNo(), false, true, false);
@@ -351,6 +352,8 @@ public class CommonReport {
 		SukuData cdata;
 		ReportTableMember childMember;
 		ReportTableMember childSpouseMember;
+		String toTable = "";
+		boolean hasOwnTable = false;
 		for (int ichil = 0; ichil < tab.getChild().size(); ichil++) {
 			bt = new ChildListText();
 			childMember = tab.getChild().get(ichil);
@@ -359,9 +362,14 @@ public class CommonReport {
 				cdata = caller.getKontroller().getSukuData("cmd=person",
 						"pid=" + childMember.getPid());
 				ref = personReferences.get(childMember.getPid());
-				fromTable = "";
+				toTable = "";
+				hasOwnTable = false;
 				if (ref != null) {
-					fromTable = ref.getReferences(0, true, false, false);
+					toTable = ref.getReferences(0, true, false, false);
+					if (!toTable.equals("") && ref.asOwner > 0) {
+						hasOwnTable = true;
+					}
+
 				}
 
 				//
@@ -418,8 +426,8 @@ public class CommonReport {
 				if (adopTag != null) {
 					bt.addText("(" + caller.getTextValue(adopTag) + ") ");
 				}
-				printName(bt, notices, (fromTable.equals("") ? 2 : 3));
-				printNotices(bt, notices, (fromTable.equals("") ? 2 : 3));
+				printName(bt, notices, (hasOwnTable ? 2 : 3));
+				printNotices(bt, notices, (hasOwnTable ? 2 : 3));
 
 				if (childMember.getSubCount() > 0) {
 					repoWriter.addText(bt);
@@ -434,14 +442,14 @@ public class CommonReport {
 						printName(bt, notices, 4);
 						printNotices(bt, notices, 4);
 
-						fromTable = "";
+						fromSubTable = "";
 						ref = personReferences.get(childMember.getSubPid(i));
 						if (ref != null) {
-							fromTable = ref.getReferences(tab.getTableNo(),
+							fromSubTable = ref.getReferences(tab.getTableNo(),
 									true, true, true);
-							if (fromTable.length() > 0) {
+							if (fromSubTable.length() > 0) {
 								bt.addText(caller.getTextValue("ALSO") + " "
-										+ fromTable + ". ", true, false);
+										+ fromSubTable + ". ", true, false);
 							}
 						}
 
@@ -450,147 +458,152 @@ public class CommonReport {
 					}
 				}
 
-				if (!fromTable.equals("")) {
-					bt.addText(caller.getTextValue("TABLE") + " " + fromTable
-							+ ". ", true, false);
+				if (!toTable.equals("")) {
+					if (hasOwnTable) {
+						bt.addText(caller.getTextValue("TABLE") + " " + toTable
+								+ ". ", true, false);
+					} else {
+						bt.addText(caller.getTextValue("ALSO") + " " + toTable
+								+ ". ", true, false);
+					}
 					repoWriter.addText(bt);
 
-				} else {
-					if (childMember.getSpouses() != null
-							&& childMember.getSpouses().length > 0) {
+				}
 
-						for (int j = 0; j < childMember.getSpouses().length; j++) {
-							childSpouseMember = childMember.getSpouses()[j];
-							SukuData child = caller
-									.getKontroller()
-									.getSukuData("cmd=person",
-											"pid=" + childSpouseMember.getPid());
-							String tmp;
-							if ("M".equals(child.persLong.getSex())) {
-								tmp = "HUSB";
-							} else {
-								tmp = "WIFE";
-							}
-							String spouType = caller.getTextValue(tmp);
+				// else {
+				if (childMember.getSpouses() != null
+						&& childMember.getSpouses().length > 0) {
 
-							int spouNum = 0;
-							if (childMember.getSpouses().length > 1) {
-								spouNum = j + 1;
+					for (int j = 0; j < childMember.getSpouses().length; j++) {
+						childSpouseMember = childMember.getSpouses()[j];
+						SukuData child = caller.getKontroller().getSukuData(
+								"cmd=person",
+								"pid=" + childSpouseMember.getPid());
+						String tmp;
+						if ("M".equals(child.persLong.getSex())) {
+							tmp = "HUSB";
+						} else {
+							tmp = "WIFE";
+						}
+						String spouType = caller.getTextValue(tmp);
 
-							}
+						int spouNum = 0;
+						if (childMember.getSpouses().length > 1) {
+							spouNum = j + 1;
 
-							RelationNotice rnn[] = null;
-							if (child.relations != null) {
+						}
 
-								for (int i = 0; i < child.relations.length; i++) {
-									if (child.relations[i].getRelative() == childMember
-											.getPid()) {
-										if (child.relations[i].getNotices() != null) {
-											rnn = child.relations[i]
-													.getNotices();
-											for (int jj = 0; jj < rnn.length; jj++) {
-												RelationNotice rn = rnn[jj];
-												spouType = printRelationNotice(
-														rn, spouType, spouNum);
-											}
+						RelationNotice rnn[] = null;
+						if (child.relations != null) {
+
+							for (int i = 0; i < child.relations.length; i++) {
+								if (child.relations[i].getRelative() == childMember
+										.getPid()) {
+									if (child.relations[i].getNotices() != null) {
+										rnn = child.relations[i].getNotices();
+										for (int jj = 0; jj < rnn.length; jj++) {
+											RelationNotice rn = rnn[jj];
+											spouType = printRelationNotice(rn,
+													spouType, spouNum);
 										}
 									}
+								}
 
+							}
+						}
+
+						bt.addText("- ");
+						bt.addText(spouType);
+						bt.addText(" ");
+
+						notices = child.persLong.getNotices();
+						int typesColumn = 2;
+						ref = personReferences.get(childSpouseMember.getPid());
+						if (ref != null) {
+							typesColumn = ref.getTypesColumn(tab.getTableNo(),
+									true, true, false);
+						}
+
+						printName(bt, notices, typesColumn);
+						printNotices(bt, notices, typesColumn);
+
+						if (rnn != null && rnn.length > 1) {
+							for (int i = 1; i < rnn.length; i++) {
+								RelationNotice rn = rnn[i];
+
+								// spouType = printRelationNotice(rn,
+								// spouType, spouNum);
+								//									
+
+								spouType = printRelationNotice(rn, null, 0);
+								if (spouType.length() > 0) {
+									bt.addText(" ");
+									bt.addText(spouType);
+									bt.addText(".");
 								}
 							}
+						}
 
-							bt.addText("- ");
-							bt.addText(spouType);
-							bt.addText(" ");
-
-							notices = child.persLong.getNotices();
-							int typesColumn = 2;
-							ref = personReferences.get(childSpouseMember
-									.getPid());
-							if (ref != null) {
-								typesColumn = ref.getTypesColumn(tab
-										.getTableNo(), true, true, false);
+						fromTable = "";
+						// ref =
+						// personReferences.get(child.persLong.getPid()) ;
+						if (ref != null) {
+							fromTable = ref.getReferences(tab.getTableNo(),
+									true, false, false);
+							if (fromTable.equals("")) {
+								fromTable = ref.getReferences(tab.getTableNo(),
+										false, true, false);
 							}
+							if (fromTable.equals("")) {
+								fromTable = ref.getReferences(tab.getTableNo(),
+										false, false, true);
+							}
+							if (fromTable.length() > 0) {
+								bt.addText(caller.getTextValue("ALSO") + " "
+										+ fromTable + ". ", true, false);
+							}
+						}
+						if (bt.getCount() > 0) {
+							repoWriter.addText(bt);
 
-							printName(bt, notices, typesColumn);
-							printNotices(bt, notices, typesColumn);
+						}
 
-							if (rnn != null && rnn.length > 1) {
-								for (int i = 1; i < rnn.length; i++) {
-									RelationNotice rn = rnn[i];
+						if (childSpouseMember.getSubCount() > 0) {
 
-									// spouType = printRelationNotice(rn,
-									// spouType, spouNum);
-									//									
+							for (int i = 0; i < childSpouseMember.getSubCount(); i++) {
+								bt = new SubPersonText();
+								bt.addText(childSpouseMember.getSubDadMom(i)
+										+ " ");
+								SukuData sub = caller.getKontroller()
+										.getSukuData(
+												"cmd=person",
+												"pid="
+														+ childSpouseMember
+																.getSubPid(i));
+								notices = sub.persLong.getNotices();
+								printName(bt, notices, 4);
+								printNotices(bt, notices, 4);
 
-									spouType = printRelationNotice(rn, null, 0);
-									if (spouType.length() > 0) {
-										bt.addText(" ");
-										bt.addText(spouType);
-										bt.addText(".");
+								fromTable = "";
+								ref = personReferences.get(childSpouseMember
+										.getSubPid(i));
+								if (ref != null) {
+									fromTable = ref.getReferences(tab
+											.getTableNo(), true, true, true);
+									if (fromTable.length() > 0) {
+										bt.addText(caller.getTextValue("ALSO")
+												+ " " + fromTable + ". ", true,
+												false);
 									}
 								}
-							}
 
-							fromTable = "";
-							// ref =
-							// personReferences.get(child.persLong.getPid()) ;
-							if (ref != null) {
-								fromTable = ref.getReferences(tab.getTableNo(),
-										true, true, false);
-								if (fromTable.length() > 0) {
-									bt.addText(caller.getTextValue("ALSO")
-											+ " " + fromTable + ". ", true,
-											false);
-								}
-							}
-							if (bt.getCount() > 0) {
 								repoWriter.addText(bt);
 
-							}
-
-							if (childSpouseMember.getSubCount() > 0) {
-
-								for (int i = 0; i < childSpouseMember
-										.getSubCount(); i++) {
-									bt = new SubPersonText();
-									bt.addText(childSpouseMember
-											.getSubDadMom(i)
-											+ " ");
-									SukuData sub = caller
-											.getKontroller()
-											.getSukuData(
-													"cmd=person",
-													"pid="
-															+ childSpouseMember
-																	.getSubPid(i));
-									notices = sub.persLong.getNotices();
-									printName(bt, notices, 4);
-									printNotices(bt, notices, 4);
-
-									fromTable = "";
-									ref = personReferences
-											.get(childSpouseMember.getSubPid(i));
-									if (ref != null) {
-										fromTable = ref
-												.getReferences(
-														tab.getTableNo(), true,
-														true, true);
-										if (fromTable.length() > 0) {
-											bt.addText(caller
-													.getTextValue("ALSO")
-													+ " " + fromTable + ". ",
-													true, false);
-										}
-									}
-
-									repoWriter.addText(bt);
-
-								}
 							}
 						}
 					}
 				}
+				// }
 
 				if (bt.getCount() > 0) {
 					repoWriter.addText(bt);

@@ -29,6 +29,11 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 * name used for index
 	 */
 	public PersonShortData shortPerson = null;
+
+	/**
+	 * references as owner
+	 */
+	public long asOwner = 0;
 	/**
 	 * references as child
 	 */

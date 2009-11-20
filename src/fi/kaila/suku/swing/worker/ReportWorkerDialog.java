@@ -2028,7 +2028,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					Iterator<Map.Entry<Integer, PersonInTables>> ee = entries
 							.iterator();
 					Vector<PersonInTables> vv = new Vector<PersonInTables>();
-					int runnervalue = 0;
+					float runnervalue = 0;
 					float mapsize = dr.getPersonReferences().size();
 					while (ee.hasNext()) {
 						Map.Entry<Integer, PersonInTables> entry = (Map.Entry<Integer, PersonInTables>) ee
@@ -2048,8 +2048,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						float prose = (runnervalue * 100f) / mapsize;
 						if (prose > 100)
 							prose = 100;
-						setRunnerValue("" + prose + ";");
-
+						setRunnerValue("" + (int) prose + ";"
+								+ pit.shortPerson.getAlfaName());
+						runnervalue++;
 					}
 					PersonInTables[] pits = vv.toArray(new PersonInTables[0]);
 					Arrays.sort(pits);
@@ -2059,21 +2060,25 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						label = new Label(0, row, ""
 								+ pit.shortPerson.getAlfaName(), arial0);
 						sheet.addCell(label);
-						// label = new Label(1, row, "" + pit.pid, arial0);
-						// sheet.addCell(label);
 
-						String refe = pit.getReferences(0, true, false, false);
-						// label = new Label(4, row, "" + refe, arial0);
-						// sheet.addCell(label);
+						String kefe = pit.getReferences(0, true, false, false);
+
 						String cefe = pit.getReferences(0, false, true, false);
-						// label = new Label(5, row, "" + cefe, arial0);
-						// sheet.addCell(label);
-						if (refe.equals("")) {
-							refe = cefe;
+						String refe = kefe;
+
+						if (pit.asOwner == 0) {
+
+							if (refe.equals("")) {
+								refe = cefe;
+							} else {
+								if (!cefe.equals("")) {
+									refe += "," + cefe;
+								}
+							}
 						}
+
 						String mefe = pit.getReferences(0, false, false, true);
-						// label = new Label(6, row, "" + mefe, arial0);
-						// sheet.addCell(label);
+
 						if (!mefe.equals("")) {
 							if (!refe.equals("")) {
 								refe += "," + mefe;
@@ -2084,7 +2089,18 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 						label = new Label(1, row, "" + refe, arial0);
 						sheet.addCell(label);
-
+						if (pit.asOwner > 0) {
+							label = new Label(2, row, "" + pit.asOwner, arial0);
+							sheet.addCell(label);
+						}
+						label = new Label(3, row, "" + pit.pid, arial0);
+						sheet.addCell(label);
+						label = new Label(4, row, "" + kefe, arial0);
+						sheet.addCell(label);
+						label = new Label(5, row, "" + cefe, arial0);
+						sheet.addCell(label);
+						label = new Label(6, row, "" + mefe, arial0);
+						sheet.addCell(label);
 						float prose = (i * 100f) / pits.length;
 						setRunnerValue("" + (int) prose + ";"
 								+ pit.shortPerson.getAlfaName());

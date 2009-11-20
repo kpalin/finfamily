@@ -383,6 +383,21 @@ public class Utils {
 			}
 			for (int j = 0; j < tab.getParent().size(); j++) {
 				member = tab.getParent().get(j);
+				if (tab.getPid() == member.getPid()) {
+					// were the owner here
+					ref = personReferences.get(member.getPid());
+					if (ref == null) {
+						ref = new PersonInTables(member.getPid());
+						ref.asOwner = tab.getTableNo();
+						personReferences.put(Integer.valueOf(member.getPid()),
+								ref);
+					} else {
+						ref.asOwner = tab.getTableNo();
+
+					}
+
+				}
+
 				ref = personReferences.get(member.getPid());
 				if (ref == null) {
 					ref = new PersonInTables(member.getPid());

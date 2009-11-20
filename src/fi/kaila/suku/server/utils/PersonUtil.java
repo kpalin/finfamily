@@ -660,14 +660,17 @@ public class PersonUtil {
 								pst.setString(8, rn.getNoteText());
 								pst.setString(9, rn.getSource());
 								pst.setString(10, rn.getPrivateText());
-								pst.setInt(11, rnid);
+
 								if (rn.getRnid() > 0) {
+									pst.setInt(11, rnid);
 									int rer = pst.executeUpdate();
 									logger.fine("update rn for " + rnid + "["
 											+ rer + "]");
 								} else {
-									pst.setInt(11, rid);
-									pst.setString(12, rn.getTag());
+
+									pst.setInt(11, rnid);
+									pst.setInt(12, rid);
+									pst.setString(13, rn.getTag());
 									int rer = pst.executeUpdate();
 									logger.fine("insert rn for " + rnid + "["
 											+ rer + "]");

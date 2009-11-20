@@ -99,9 +99,10 @@ public class DescendantReport extends CommonReport {
 
 			ReportUnit tab = tables.get(i);
 			createTable(i, tab);
-			float prose = 100f;
-			caller.setRunnerValue("" + (int) prose + ";OK");
 		}
+
+		caller.setRunnerValue("100;OK");
+
 	}
 
 	/**
