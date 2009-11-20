@@ -209,9 +209,12 @@ public class CommonReport {
 		if (ref != null) {
 			fromTable = ref.getReferences(tab.getTableNo(), true, false, false);
 		}
+		if (fromTable.equals("")) {
 
-		if (fromTable.length() > 0) {
-			bt.addText(caller.getTypeText("ALSO") + " " + fromTable + ". ",
+			fromTable = ref.getReferences(tab.getTableNo(), false, false, true);
+		}
+		if (!fromTable.equals("")) {
+			bt.addText(caller.getTextValue("ALSO") + " " + fromTable + ". ",
 					true, false);
 		}
 
@@ -426,8 +429,8 @@ public class CommonReport {
 				if (adopTag != null) {
 					bt.addText("(" + caller.getTextValue(adopTag) + ") ");
 				}
-				printName(bt, notices, (hasOwnTable ? 2 : 3));
-				printNotices(bt, notices, (hasOwnTable ? 2 : 3));
+				printName(bt, notices, (toTable.equals("") ? 2 : 3));
+				printNotices(bt, notices, (toTable.equals("") ? 2 : 3));
 
 				if (childMember.getSubCount() > 0) {
 					repoWriter.addText(bt);
@@ -916,39 +919,56 @@ public class CommonReport {
 	private int printText(BodyText bt, String text) {
 		if (text == null)
 			return 0;
-		int i = text.indexOf('\n');
-		int j = 0;
-		if (i > 0) {
-			j = text.indexOf('\n', i + 1);
-			if (j > i) {
-				for (int k = i + 1; k < j; k++) {
-					char c = text.charAt(k);
-					if (c != ' ' && c != '\r') {
-						i = 0;
-						break;
-					}
+
+		StringBuffer sb = new StringBuffer();
+		Vector<String> v = new Vector<String>();
+		boolean wasWhite = false;
+		boolean wasNl = false;
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if (c == ' ' || c == '\r' || c == '\t') {
+				if (!wasWhite) {
+					sb.append(' ');
+					wasWhite = true;
 				}
-				if (i > 0 && text.charAt(0) == '*') {
-					repoWriter.addText(bt);
-					int fontSize = bt.getFontSize();
-					if (text.length() > 2 && text.substring(0, 2).equals("**")) {
-						bt.setFontSize(fontSize + 2);
-						bt.addText(text.substring(2, i), true, false);
+			} else {
+				if (c == '\n') {
+					if (wasNl) {
+						v.add(sb.toString());
+						sb.delete(0, sb.length());
+						wasNl = false;
 					} else {
-						bt.setFontSize(fontSize + 1);
-						bt.addText(text.substring(1, i), true, false);
+						wasNl = true;
 					}
-					repoWriter.addText(bt);
-					bt.setFontSize(fontSize);
-					bt.addText(text.substring(j));
-				} else {
-					i = 0;
 				}
+				wasWhite = false;
+				sb.append(c);
 			}
 		}
-		if (i <= 0) {
-			bt.addText(text);
+		if (sb.length() > 0) {
+			v.add(sb.toString());
 		}
+		for (int i = 0; i < v.size(); i++) {
+			String aux = v.get(i);
+			if (i == 0 && aux.charAt(0) == '*') {
+				repoWriter.addText(bt);
+				int fontSize = bt.getFontSize();
+				if (aux.length() > 2 && aux.substring(0, 2).equals("**")) {
+					bt.setFontSize(fontSize + 2);
+					bt.addText(aux.substring(2), true, false);
+				} else {
+					bt.setFontSize(fontSize + 1);
+					bt.addText(aux.substring(1), true, false);
+				}
+				repoWriter.addText(bt);
+				bt.setFontSize(fontSize);
+			} else {
+				bt.addText(aux);
+			}
+		}
+
+
+
 		return text.length();
 	}
 
