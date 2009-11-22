@@ -307,32 +307,29 @@ public class CommonReport {
 					repoWriter.addText(bt);
 
 				}
-				if (spouseMember.getSubCount() > 0) {
 
-					for (int i = 0; i < spouseMember.getSubCount(); i++) {
-						bt = new SubPersonText();
-						bt.addText(spouseMember.getSubDadMom(i) + " ");
-						SukuData sub = caller.getKontroller().getSukuData(
-								"cmd=person",
-								"pid=" + spouseMember.getSubPid(i));
-						notices = sub.persLong.getNotices();
-						printName(bt, notices, 4);
-						printNotices(bt, notices, 4);
+				for (int i = 0; i < spouseMember.getSubCount(); i++) {
+					bt = new SubPersonText();
+					bt.addText(spouseMember.getSubDadMom(i) + " ");
+					SukuData sub = caller.getKontroller().getSukuData(
+							"cmd=person", "pid=" + spouseMember.getSubPid(i));
+					notices = sub.persLong.getNotices();
+					printName(bt, notices, 4);
+					printNotices(bt, notices, 4);
 
-						fromTable = "";
-						ref = personReferences.get(spouseMember.getSubPid(i));
-						if (ref != null) {
-							fromTable = ref.getReferences(tab.getTableNo(),
-									true, true, true);
-							if (fromTable.length() > 0) {
-								bt.addText(caller.getTextValue("ALSO") + " "
-										+ fromTable + ". ", true, false);
-							}
+					fromTable = "";
+					ref = personReferences.get(spouseMember.getSubPid(i));
+					if (ref != null) {
+						fromTable = ref.getReferences(tab.getTableNo(), true,
+								true, true);
+						if (fromTable.length() > 0) {
+							bt.addText(caller.getTextValue("ALSO") + " "
+									+ fromTable + ". ", true, false);
 						}
-
-						repoWriter.addText(bt);
-
 					}
+
+					repoWriter.addText(bt);
+
 				}
 
 			} catch (SukuException e1) {
@@ -966,8 +963,6 @@ public class CommonReport {
 				bt.addText(aux);
 			}
 		}
-
-
 
 		return text.length();
 	}

@@ -1217,15 +1217,15 @@ public class SukuServerImpl implements SukuServer {
 		try {
 			StringBuffer seleSQL = new StringBuffer();
 
-			seleSQL
-					.append("select u.pid,u.sex,u.userrefn,u.groupid,u.tag,n.tag,n.givenname,");
+			seleSQL.append("select u.pid,u.sex,u.userrefn,"
+					+ "u.groupid,u.tag,n.tag,n.givenname,");
 			seleSQL.append("n.patronym,n.prefix,n.surname,n.postfix,");
-			seleSQL
-					.append("n.fromdate,n.Place,n.Description,n.pnid,n.mediafilename,n.mediatitle ");
-			seleSQL
-					.append("from unit as u left join unitnotice as n on u.pid = n.pid ");
-			seleSQL
-					.append("and n.tag in ('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU'");
+			seleSQL.append("n.fromdate,n.Place,n.Description,"
+					+ "n.pnid,n.mediafilename,n.mediatitle ");
+			seleSQL.append("from unit as u left join unitnotice "
+					+ "as n on u.pid = n.pid ");
+			seleSQL.append("and n.tag in ('BIRT','DEAT','CHR',"
+					+ "'BURI','NAME','PHOT','OCCU'");
 			if (this.toDoTagName != null) {
 				seleSQL.append(",'TODO'");
 			}
@@ -1493,31 +1493,37 @@ public class SukuServerImpl implements SukuServer {
 
 				}
 				if (dbntag != null) {
-					if (dbntag.equals("NAME") && perso.getNameTag() == null) {
-						perso.setNameTag(dbntag);
-						perso.setGivenname(dbgivenname);
-						perso.setPatronym(dbpatronym);
-						perso.setPrefix(dbprefix);
-						perso.setSurname(dbsurname);
-						perso.setPostfix(dbpostfix);
-
-					} else if (dbntag.equals("NAME")
-							&& perso.getNameTag() != null) {
-
-						StringBuffer sb = new StringBuffer();
-						if (perso.getMorenames() != null) {
-							sb.append(perso.getMorenames());
-							sb.append(";");
-						}
-						if (dbprefix != null) {
-							sb.append(dbprefix);
-							sb.append(" ");
-						}
-						if (dbsurname != null) {
-							sb.append(dbsurname);
-						}
-						perso.setMorenames(sb.toString());
+					if (dbntag.equals("NAME")) {
+						perso.addName(dbgivenname, dbpatronym, dbprefix,
+								dbsurname, dbpostfix);
 					}
+
+					// if (dbntag.equals("NAME") && perso.getNameCount()>0) {
+					//						
+					// perso.setNameTag(dbntag);
+					// perso.setGivenname(dbgivenname);
+					// perso.setPatronym(dbpatronym);
+					// perso.setPrefix(dbprefix);
+					// perso.setSurname(dbsurname);
+					// perso.setPostfix(dbpostfix);
+					//
+					// } else if (dbntag.equals("NAME")
+					// && perso.getNameTag() != null) {
+					//
+					// StringBuffer sb = new StringBuffer();
+					// if (perso.getMorenames() != null) {
+					// sb.append(perso.getMorenames());
+					// sb.append(";");
+					// }
+					// if (dbprefix != null) {
+					// sb.append(dbprefix);
+					// sb.append(" ");
+					// }
+					// if (dbsurname != null) {
+					// sb.append(dbsurname);
+					// }
+					// perso.setMorenames(sb.toString());
+					// }
 
 					if (dbntag.equals("OCCU")) {
 						perso.setOccupation(dbdescription);

@@ -346,7 +346,6 @@ public class Utils {
 			ReportUnit tab = tables.get(i);
 			PersonInTables ref;
 			ReportTableMember member;
-			ReportTableMember subMember;
 
 			for (int j = 0; j < tab.getChild().size(); j++) {
 				member = tab.getChild().get(j);
@@ -364,18 +363,46 @@ public class Utils {
 					}
 				}
 
+				for (int m = 0; m < member.getSubCount(); m++) {
+					ref = personReferences.get(member.getSubPid(m));
+					if (ref == null) {
+						ref = new PersonInTables(member.getSubPid(m));
+						ref.references.add(Long.valueOf(tab.getTableNo()));
+						personReferences.put(Integer.valueOf(member
+								.getSubPid(m)), ref);
+					} else {
+						ref.references.add(tab.getTableNo());
+					}
+				}
+
 				if (member.getSpouses() != null) {
-					ReportTableMember[] subMembers = member.getSpouses();
-					for (int k = 0; k < subMembers.length; k++) {
-						subMember = subMembers[k];
-						ref = personReferences.get(subMember.getPid());
+					ReportTableMember[] spouseMembers = member.getSpouses();
+					ReportTableMember spouseMember;
+					for (int k = 0; k < spouseMembers.length; k++) {
+						spouseMember = spouseMembers[k];
+						ref = personReferences.get(spouseMember.getPid());
 						if (ref == null) {
-							ref = new PersonInTables(subMember.getPid());
-							ref.references.add(Long.valueOf(tab.getTableNo()));
-							personReferences.put(Integer.valueOf(subMember
+							ref = new PersonInTables(spouseMember.getPid());
+							ref.asParents.add(Long.valueOf(tab.getTableNo()));
+							personReferences.put(Integer.valueOf(spouseMember
 									.getPid()), ref);
 						} else {
-							ref.references.add(tab.getTableNo());
+							ref.asParents.add(tab.getTableNo());
+						}
+						for (int m = 0; m < spouseMember.getSubCount(); m++) {
+							ref = personReferences.get(spouseMember
+									.getSubPid(m));
+							if (ref == null) {
+								ref = new PersonInTables(spouseMember
+										.getSubPid(m));
+								ref.references.add(Long.valueOf(tab
+										.getTableNo()));
+								personReferences.put(Integer
+										.valueOf(spouseMember.getSubPid(m)),
+										ref);
+							} else {
+								ref.references.add(tab.getTableNo());
+							}
 						}
 					}
 				}
@@ -409,6 +436,17 @@ public class Utils {
 				} else {
 					if (tab.getChild().size() > 0) {
 						ref.asParents.add(Long.valueOf(tab.getTableNo()));
+					}
+				}
+				for (int m = 0; m < member.getSubCount(); m++) {
+					ref = personReferences.get(member.getSubPid(m));
+					if (ref == null) {
+						ref = new PersonInTables(member.getSubPid(m));
+						ref.references.add(Long.valueOf(tab.getTableNo()));
+						personReferences.put(Integer.valueOf(member
+								.getSubPid(m)), ref);
+					} else {
+						ref.references.add(tab.getTableNo());
 					}
 				}
 			}

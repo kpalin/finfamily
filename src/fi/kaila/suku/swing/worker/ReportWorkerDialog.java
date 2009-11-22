@@ -2043,8 +2043,31 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 							if (resp.pers != null) {
 								pit.shortPerson = resp.pers[0];
+
+								for (int i = 1; i < pit.shortPerson
+										.getNameCount(); i++) {
+									PersonInTables pitt = new PersonInTables(
+											pit.shortPerson.getPid());
+									pitt.asChildren = pit.asChildren;
+									pitt.asOwner = pit.asOwner;
+									pitt.asParents = pit.asParents;
+									PersonShortData p = pit.shortPerson;
+									PersonShortData alias = new PersonShortData(
+											p.getPid(), p.getGivenname(i), p
+													.getPatronym(i), p
+													.getPrefix(i), p
+													.getSurname(i), p
+													.getPostfix(i), p
+													.getBirtDate(), p
+													.getDeatDate());
+									pitt.shortPerson = alias;
+									vv.add(pitt);
+								}
+
 							}
+
 						}
+
 						float prose = (runnervalue * 100f) / mapsize;
 						if (prose > 100)
 							prose = 100;
@@ -2089,18 +2112,32 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 						label = new Label(1, row, "" + refe, arial0);
 						sheet.addCell(label);
-						if (pit.asOwner > 0) {
-							label = new Label(2, row, "" + pit.asOwner, arial0);
+
+						if (pit.shortPerson.getBirtDate() != null) {
+							label = new Label(2, row, Utils.nv4(pit.shortPerson
+									.getBirtDate()), arial0);
 							sheet.addCell(label);
 						}
-						label = new Label(3, row, "" + pit.pid, arial0);
+						if (pit.shortPerson.getDeatDate() != null) {
+							label = new Label(3, row, Utils.nv4(pit.shortPerson
+									.getDeatDate()), arial0);
+							sheet.addCell(label);
+						}
+
+						if (pit.asOwner > 0) {
+							label = new Label(5, row, "" + pit.asOwner, arial0);
+							sheet.addCell(label);
+						}
+
+						label = new Label(6, row, "" + pit.pid, arial0);
 						sheet.addCell(label);
-						label = new Label(4, row, "" + kefe, arial0);
+						label = new Label(7, row, "" + kefe, arial0);
 						sheet.addCell(label);
-						label = new Label(5, row, "" + cefe, arial0);
+						label = new Label(8, row, "" + cefe, arial0);
 						sheet.addCell(label);
-						label = new Label(6, row, "" + mefe, arial0);
+						label = new Label(9, row, "" + mefe, arial0);
 						sheet.addCell(label);
+
 						float prose = (i * 100f) / pits.length;
 						setRunnerValue("" + (int) prose + ";"
 								+ pit.shortPerson.getAlfaName());

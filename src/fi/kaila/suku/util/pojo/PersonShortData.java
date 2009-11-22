@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.text.Collator;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -40,13 +41,15 @@ public class PersonShortData implements Serializable, Transferable,
 	private String refn = null;
 	private String sex = null;
 	private String group = null;
-	private String nameTag = null;
-	private String givenname = null;
-	private String patronym = null;
-	private String prefix = null;
-	private String morenames = null;
-	private String surname = null;
-	private String postfix = null;
+	private ShortName[] names = null;
+
+	// private String namesTag = null;
+	// private String givenname = null;
+	// private String patronym = null;
+	// private String prefix = null;
+	// private String morenames = null;
+	// private String surname = null;
+	// private String postfix = null;
 	private String bDate = null;
 	private String dDate = null;
 	private String birtTag = null;
@@ -64,6 +67,7 @@ public class PersonShortData implements Serializable, Transferable,
 	private int pareCount = 0;
 	private boolean hasTodo = false;
 	private byte[] imageData = null;
+
 	// FIX-ME: This Serializable class defines a non-primitive instance field
 	// which is neither transient, Serializable, or java.lang.Object, and does
 	// not appear to implement the Externalizable interface or the readObject()
@@ -142,56 +146,56 @@ public class PersonShortData implements Serializable, Transferable,
 		this.group = group;
 	}
 
-	/**
-	 * @param nameTag
-	 */
-	public void setNameTag(String nameTag) {
-		this.nameTag = nameTag;
-	}
-
-	/**
-	 * @param givenname
-	 */
-	public void setGivenname(String givenname) {
-		this.givenname = givenname;
-	}
-
-	/**
-	 * @param patronym
-	 */
-	public void setPatronym(String patronym) {
-		this.patronym = patronym;
-	}
-
-	/**
-	 * @param prefix
-	 *            for name
-	 */
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-
-	/**
-	 * @param surname
-	 */
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	/**
-	 * @param postfix
-	 */
-	public void setPostfix(String postfix) {
-		this.postfix = postfix;
-	}
-
-	/**
-	 * @param morenames
-	 *            is names later than first
-	 */
-	public void setMorenames(String morenames) {
-		this.morenames = morenames;
-	}
+	// /**
+	// * @param nameTag
+	// */
+	// public void setNameTag(String nameTag) {
+	// this.nameTag = nameTag;
+	// }
+	//
+	// /**
+	// * @param givenname
+	// */
+	// public void setGivenname(String givenname) {
+	// this.givenname = givenname;
+	// }
+	//
+	// /**
+	// * @param patronym
+	// */
+	// public void setPatronym(String patronym) {
+	// this.patronym = patronym;
+	// }
+	//
+	// /**
+	// * @param prefix
+	// * for name
+	// */
+	// public void setPrefix(String prefix) {
+	// this.prefix = prefix;
+	// }
+	//
+	// /**
+	// * @param surname
+	// */
+	// public void setSurname(String surname) {
+	// this.surname = surname;
+	// }
+	//
+	// /**
+	// * @param postfix
+	// */
+	// public void setPostfix(String postfix) {
+	// this.postfix = postfix;
+	// }
+	//
+	// /**
+	// * @param morenames
+	// * is names later than first
+	// */
+	// public void setMorenames(String morenames) {
+	// this.morenames = morenames;
+	// }
 
 	/**
 	 * @param birtDate
@@ -317,6 +321,58 @@ public class PersonShortData implements Serializable, Transferable,
 	}
 
 	/**
+	 * Add new name. This is intended for use with query database and default
+	 * constructor
+	 * 
+	 * @param givenname
+	 * @param patronym
+	 * @param prefix
+	 * @param surname
+	 * @param postfix
+	 */
+	public void addName(String givenname, String patronym, String prefix,
+			String surname, String postfix) {
+		ShortName nn = new ShortName(givenname, patronym, prefix, surname,
+				postfix);
+		int namesize = 0;
+		if (names != null) {
+			namesize = names.length;
+			ShortName[] nnn = names;
+			names = new ShortName[namesize + 1];
+			for (int i = 0; i < nnn.length; i++) {
+				names[i] = nnn[i];
+			}
+		} else {
+			names = new ShortName[1];
+		}
+		names[namesize] = nn;
+
+	}
+
+	/**
+	 * Constuctor for alias person used for indexes to add altarnatives name
+	 * 
+	 * @param pid
+	 * @param givenname
+	 * @param patronyme
+	 * @param prefix
+	 * @param surname
+	 * @param postfix
+	 * @param birtDate
+	 * @param deatDate
+	 */
+	public PersonShortData(int pid, String givenname, String patronyme,
+			String prefix, String surname, String postfix, String birtDate,
+			String deatDate) {
+
+		this.pid = pid;
+		addName(givenname, patronyme, prefix, surname, postfix);
+		this.bDate = birtDate;
+		this.dDate = deatDate;
+
+	}
+
+	/**
 	 * Copy constuctor
 	 * 
 	 * @param lon
@@ -326,23 +382,17 @@ public class PersonShortData implements Serializable, Transferable,
 
 		pid = lon.getPid();
 		sex = lon.getSex();
+		Vector<ShortName> sn = new Vector<ShortName>();
+
 		for (int i = 0; i < lon.getNotices().length; i++) {
 			UnitNotice n = lon.getNotices()[i];
 			if (n.getTag().equals("NAME")) {
-				if (nameTag == null) {
-					nameTag = n.getTag();
-					givenname = n.getGivenname();
-					patronym = n.getPatronym();
-					prefix = n.getPrefix();
-					surname = n.getSurname();
-					postfix = n.getPostfix();
-				}
-				if (morenames == null) {
-					morenames = n.getSurname();
-				} else {
-					morenames += ";";
-					morenames += n.getSurname();
-				}
+
+				ShortName nn = new ShortName(n.getGivenname(), n.getPatronym(),
+						n.getPrefix(), n.getSurname(), n.getPostfix());
+
+				sn.add(nn);
+
 			} else if (n.getTag().equals("BIRT") || n.getTag().equals("CHR")) {
 				if (birtTag == null || !birtTag.equals("BIRT")) {
 					birtTag = n.getTag();
@@ -370,6 +420,7 @@ public class PersonShortData implements Serializable, Transferable,
 			}
 
 		}
+		names = sn.toArray(new ShortName[0]);
 
 	}
 
@@ -401,20 +452,22 @@ public class PersonShortData implements Serializable, Transferable,
 			throws SukuException {
 		this.pid = pid;
 		// this.famType = famType;
-
-		this.givenname = this.patronym = this.prefix = this.surname = this.postfix = null;
+		Vector<ShortName> sn = new Vector<ShortName>();
+		// int nameIdx = 0;
+		// this.givenname = this.patronym = this.prefix = this.surname =
+		// this.postfix = null;
 
 		StringBuffer sql = new StringBuffer();
-		sql
-				.append("select u.sex,u.userrefn,u.groupid,u.tag,n.tag,n.givenname,");
+		sql.append("select u.sex,u.userrefn,u.groupid,"
+				+ "u.tag,n.tag,n.givenname,");
 		sql.append("n.patronym,n.prefix,n.surname,n.postfix,");
-		sql
-				.append("n.fromdate,n.Place,n.Description,n.pnid,n.mediadata,n.mediafilename,n.mediatitle ");
-		sql
-				.append("from unit as u left join unitnotice as n on u.pid = n.pid ");
+		sql.append("n.fromdate,n.Place,n.Description,"
+				+ "n.pnid,n.mediadata,n.mediafilename,n.mediatitle ");
+		sql.append("from unit as u left join unitnotice "
+				+ "as n on u.pid = n.pid ");
 		if (!withAllTags) {
-			sql
-					.append("and n.tag in ('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU') ");
+			sql.append("and n.tag in "
+					+ "('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU') ");
 		}
 		sql.append("and n.surety >= 80 where u.pid = ? ");
 		sql.append("order by n.noticerow ");
@@ -434,27 +487,34 @@ public class PersonShortData implements Serializable, Transferable,
 				}
 				tag = rs.getString(5);
 				if (tag != null) {
-					if (this.nameTag == null && "NAME".equals(tag)
-							&& this.givenname == null && this.patronym == null
-							&& this.prefix == null && this.surname == null
-							&& this.postfix == null) {
-						this.givenname = rs.getString(6);
-						this.patronym = rs.getString(7);
-						this.prefix = rs.getString(8);
-						this.surname = rs.getString(9);
-						this.postfix = rs.getString(10);
-						this.nameTag = tag;
-					} else if (this.nameTag != null && "NAME".equals(tag)) {
-						String restname = rs.getString(9);
-						if (restname != null) {
-							if (this.morenames == null) {
-								this.morenames = restname;
-							} else {
-								this.morenames += ";";
-								this.morenames += restname;
-							}
-						}
+					if (tag.equals("NAME")) {
+						ShortName nn = new ShortName(rs.getString(6), rs
+								.getString(7), rs.getString(8),
+								rs.getString(9), rs.getString(10));
+
+						sn.add(nn);
 					}
+					// if (this.nameTag == null && "NAME".equals(tag)
+					// && this.givenname == null && this.patronym == null
+					// && this.prefix == null && this.surname == null
+					// && this.postfix == null) {
+					// this.givenname = rs.getString(6);
+					// this.patronym = rs.getString(7);
+					// this.prefix = rs.getString(8);
+					// this.surname = rs.getString(9);
+					// this.postfix = rs.getString(10);
+					// this.nameTag = tag;
+					// } else if (this.nameTag != null && "NAME".equals(tag)) {
+					// String restname = rs.getString(9);
+					// if (restname != null) {
+					// if (this.morenames == null) {
+					// this.morenames = restname;
+					// } else {
+					// this.morenames += ";";
+					// this.morenames += restname;
+					// }
+					// }
+					// }
 
 					if (tag.equals("BIRT") || tag.equals("CHR")) {
 
@@ -493,6 +553,7 @@ public class PersonShortData implements Serializable, Transferable,
 			rs.close();
 			pstm.close();
 
+			names = sn.toArray(new ShortName[0]);
 		} catch (Exception e) {
 			throw new SukuException(e);
 		}
@@ -560,52 +621,118 @@ public class PersonShortData implements Serializable, Transferable,
 	}
 
 	/**
-	 * @return name tag
+	 * @return name count
 	 */
-	public String getNameTag() {
-		return this.nameTag;
+	public int getNameCount() {
+		return this.names.length;
 	}
 
 	/**
-	 * @return givenname
+	 * @return givenname 0 (first)
 	 */
 	public String getGivenname() {
-		return this.givenname;
+		if (names == null)
+			return null;
+		return getGivenname(0);
 	}
 
 	/**
-	 * @return getter for patronym
+	 * @param idx
+	 * @return givenname idx
+	 */
+	public String getGivenname(int idx) {
+		return names[idx].getGivenname();
+	}
+
+	/**
+	 * @return patronym for first name
 	 */
 	public String getPatronym() {
-		return this.patronym;
+		if (names == null)
+			return null;
+		return getPatronym(0);
 	}
 
 	/**
-	 * @return name prefix
+	 * @param idx
+	 * @return patronyme for name idx
+	 */
+	public String getPatronym(int idx) {
+		return names[idx].getPatronyme();
+	}
+
+	/**
+	 * @return name prefix for first name
 	 */
 	public String getPrefix() {
-		return this.prefix;
+		if (names == null)
+			return null;
+		return getPrefix(0);
 	}
 
 	/**
-	 * @return surname
+	 * @param idx
+	 * @return prefix for name idx
+	 */
+	public String getPrefix(int idx) {
+		return names[idx].getPrefix();
+	}
+
+	/**
+	 * @return surname for first name
 	 */
 	public String getSurname() {
-		return this.surname;
+		if (names == null)
+			return null;
+		return getSurname(0);
 	}
 
 	/**
-	 * @return name postfix
+	 * @param idx
+	 * @return surname for name idx
+	 */
+	public String getSurname(int idx) {
+		return names[idx].getSurname();
+	}
+
+	/**
+	 * @return name postfix for first name
 	 */
 	public String getPostfix() {
-		return this.postfix;
+		if (names == null)
+			return null;
+		return getPostfix(0);
+	}
+
+	/**
+	 * @param idx
+	 * @return postfix for name idx
+	 */
+	public String getPostfix(int idx) {
+		return names[idx].getPostfix();
 	}
 
 	/**
 	 * @return morenames
 	 */
 	public String getMorenames() {
-		return this.morenames;
+		if (names == null || names.length < 2)
+			return null;
+		StringBuffer sb = new StringBuffer();
+		for (int i = 1; i < names.length; i++) {
+			if (i > 1) {
+				sb.append(";");
+			}
+			if (names[i].getPrefix() != null) {
+				sb.append(names[i].getPrefix());
+				sb.append(" ");
+			}
+			if (names[i].getSurname() != null) {
+				sb.append(names[i].getSurname());
+			}
+		}
+
+		return sb.toString();
 	}
 
 	/**
@@ -840,23 +967,23 @@ public class PersonShortData implements Serializable, Transferable,
 	public String getTextName() {
 
 		StringBuilder sb = new StringBuilder();
-		if (this.givenname != null) {
-			sb.append(this.givenname);
+		if (getGivenname() != null) {
+			sb.append(getGivenname());
 		}
-		if (this.prefix != null) {
+		if (getPrefix() != null) {
 			if (sb.length() > 0)
 				sb.append(" ");
-			sb.append(this.prefix);
+			sb.append(getPrefix());
 		}
-		if (this.surname != null) {
+		if (getSurname() != null) {
 			if (sb.length() > 0)
 				sb.append(" ");
-			sb.append(this.surname);
+			sb.append(getSurname());
 		}
-		if (this.postfix != null) {
+		if (getPostfix() != null) {
 			if (sb.length() > 0)
 				sb.append(" ");
-			sb.append(this.postfix);
+			sb.append(getPostfix());
 		}
 		return sb.toString();
 	}
@@ -876,32 +1003,32 @@ public class PersonShortData implements Serializable, Transferable,
 
 		StringBuilder sb = new StringBuilder();
 
-		if (this.prefix != null) {
-			sb.append(this.prefix);
+		if (getPrefix() != null) {
+			sb.append(getPrefix());
 		}
 
-		if (this.surname != null) {
+		if (getSurname() != null) {
 			if (sb.length() > 0)
 				sb.append(" ");
-			sb.append(this.surname);
+			sb.append(getSurname());
 		}
-		if (this.givenname != null) {
+		if (getGivenname() != null) {
 			if (sb.length() > 0)
 				sb.append(" ");
-			sb.append(this.givenname);
+			sb.append(getGivenname());
 		}
 		if (withPatronyme) {
-			if (patronym != null) {
+			if (getPatronym() != null) {
 				if (sb.length() > 0)
 					sb.append(" ");
-				sb.append(this.patronym);
+				sb.append(getPatronym());
 			}
 		}
 
-		if (this.postfix != null) {
+		if (getPostfix() != null) {
 			if (sb.length() > 0)
 				sb.append(" ");
-			sb.append(this.postfix);
+			sb.append(getPostfix());
 		}
 		return sb.toString();
 	}
@@ -983,6 +1110,59 @@ public class PersonShortData implements Serializable, Transferable,
 		}
 		return (nv(getBirtDate()).compareTo(nv(o.getBirtDate())));
 
+	}
+
+	private class ShortName {
+
+		private String shGivenname;
+		private String shPatronyme;
+		private String shPrefix;
+		private String shSurname;
+		private String shPostfix;
+
+		ShortName(String given, String patro, String pre, String sur,
+				String postf) {
+			shGivenname = given;
+			shPatronyme = patro;
+			shPrefix = pre;
+			shSurname = sur;
+			shPostfix = postf;
+		}
+
+		/**
+		 * @return the shGivenname
+		 */
+		public String getGivenname() {
+			return shGivenname;
+		}
+
+		/**
+		 * @return the shPatronyme
+		 */
+		public String getPatronyme() {
+			return shPatronyme;
+		}
+
+		/**
+		 * @return the shPrefix
+		 */
+		public String getPrefix() {
+			return shPrefix;
+		}
+
+		/**
+		 * @return the shSurname
+		 */
+		public String getSurname() {
+			return shSurname;
+		}
+
+		/**
+		 * @return the shPostfix
+		 */
+		public String getPostfix() {
+			return shPostfix;
+		}
 	}
 
 }
