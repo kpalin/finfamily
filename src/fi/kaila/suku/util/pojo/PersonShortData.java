@@ -624,6 +624,8 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return name count
 	 */
 	public int getNameCount() {
+		if (names == null)
+			return 0;
 		return this.names.length;
 	}
 
@@ -631,8 +633,6 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return givenname 0 (first)
 	 */
 	public String getGivenname() {
-		if (names == null)
-			return null;
 		return getGivenname(0);
 	}
 
@@ -641,6 +641,8 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return givenname idx
 	 */
 	public String getGivenname(int idx) {
+		if (names == null || names.length == 0)
+			return null;
 		return names[idx].getGivenname();
 	}
 
@@ -648,8 +650,7 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return patronym for first name
 	 */
 	public String getPatronym() {
-		if (names == null)
-			return null;
+
 		return getPatronym(0);
 	}
 
@@ -658,6 +659,8 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return patronyme for name idx
 	 */
 	public String getPatronym(int idx) {
+		if (names == null || names.length == 0)
+			return null;
 		return names[idx].getPatronyme();
 	}
 
@@ -665,8 +668,7 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return name prefix for first name
 	 */
 	public String getPrefix() {
-		if (names == null)
-			return null;
+
 		return getPrefix(0);
 	}
 
@@ -675,6 +677,8 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return prefix for name idx
 	 */
 	public String getPrefix(int idx) {
+		if (names == null || names.length == 0)
+			return null;
 		return names[idx].getPrefix();
 	}
 
@@ -682,8 +686,7 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return surname for first name
 	 */
 	public String getSurname() {
-		if (names == null)
-			return null;
+
 		return getSurname(0);
 	}
 
@@ -692,6 +695,8 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return surname for name idx
 	 */
 	public String getSurname(int idx) {
+		if (names == null || names.length == 0)
+			return null;
 		return names[idx].getSurname();
 	}
 
@@ -699,8 +704,7 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return name postfix for first name
 	 */
 	public String getPostfix() {
-		if (names == null)
-			return null;
+
 		return getPostfix(0);
 	}
 
@@ -709,6 +713,8 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return postfix for name idx
 	 */
 	public String getPostfix(int idx) {
+		if (names == null || names.length == 0)
+			return null;
 		return names[idx].getPostfix();
 	}
 
@@ -1112,8 +1118,10 @@ public class PersonShortData implements Serializable, Transferable,
 
 	}
 
-	private class ShortName {
+	private class ShortName implements Serializable {
 
+		/**  */
+		private static final long serialVersionUID = 1L;
 		private String shGivenname;
 		private String shPatronyme;
 		private String shPrefix;

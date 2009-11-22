@@ -827,7 +827,17 @@ public class PersonView extends JPanel implements ChangeListener {
 						main.updateName();
 						main.updateRest();
 					}
-					main.updatePerson();
+					if (true) {
+						for (int i = fnotice; i < getTabCount(); i++) {
+							NoticePane pane = (NoticePane) getPane(i).pnl;
+							pane.verifyUnitNotice();
+						}
+
+					} else {
+						// the idea with forced update was to aide in comparing
+						// dates for corrctness
+						main.updatePerson();
+					}
 				} catch (SukuDateException e1) {
 					if (previousNoticeIndex <= mnotice + 1) {
 						previousNoticeIndex = mnotice;
