@@ -252,8 +252,20 @@ public class PersonView extends JPanel implements ChangeListener {
 	 * @throws SukuException
 	 */
 	public void displayPersonPane(int pid) throws SukuException {
+		reOpenIndex = previousNoticeIndex;
+
 		int midx = getMainPaneIndex();
 		if (midx > 0) {
+			reOpenIndex = getFirstNoticeIndex();
+			int notCounter = 0;
+			for (int m = reOpenIndex; m < previousNoticeIndex; m++) {
+				NoticePane nn = (NoticePane) paneTabs.get(m).pnl;
+				if (nn.notice.isToBeDeleted() == false) {
+					notCounter++;
+				}
+			}
+			reOpenIndex += notCounter;
+
 			PersonMainPane main = (PersonMainPane) paneTabs.get(midx).pnl;
 
 			// int isele = tabbedPane.getSelectedIndex();
@@ -299,8 +311,12 @@ public class PersonView extends JPanel implements ChangeListener {
 		personMain.openPersonNotices(pid);
 
 		tabbedPane.setSelectedIndex(mainIdx);
-		// TODO
+
 		previousNoticeIndex = getMainPaneIndex();
+		if (reOpenIndex > previousNoticeIndex && reOpenIndex < getTabCount()) {
+			tabbedPane.setSelectedIndex(reOpenIndex);
+			reOpenIndex = -1;
+		}
 
 		PersonMainPane main = (PersonMainPane) paneTabs.get(mainIdx).pnl;
 		if (main != null) {
@@ -616,6 +632,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	}
 
 	private int previousNoticeIndex = -1;
+	private int reOpenIndex = -1;
 
 	/**
 	 * @return index where main pane is ( 2 or 3)
