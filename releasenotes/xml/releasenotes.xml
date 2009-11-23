@@ -4,7 +4,18 @@
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version.</p>
 
 
-<hdr>Release 164 on 20 Nov 2009 </hdr>
+<hdr>Release 170 on 23 Nov 2009 </hdr>
+<ul>
+<li>fixed with severeal occupations</li>
+<li>fixed bug with note texts with several chapters</li>
+<li>Added to indexes multiple names, childrens and spouses parents ancestor names</li>
+<li>Fixed bug with text notice not being copied from main to notice</li>
+<li>Removed update to db when viewing relations notice</li>
+<li>Converted unicode names to ascii by converting non ascii to x or a or o</li>
+</ul>
+
+
+<hdr>Release 164 on 20 Nov 2009 (2)</hdr>
 <ul>
 <li>Bugfixes for table duplicate links</li>
 
