@@ -246,13 +246,23 @@ public class PersonView extends JPanel implements ChangeListener {
 	}
 
 	/**
+	 * Display anothet person than current resets selected index
+	 * 
+	 * @param pid
+	 * @throws SukuException
+	 */
+	public void displayNewPersonPane(int pid) throws SukuException {
+		reOpenIndex = -1;
+		displayPersonPane(pid);
+	}
+
+	/**
 	 * Display person pane. Close previous person first
 	 * 
 	 * @param pid
 	 * @throws SukuException
 	 */
-	public void displayPersonPane(int pid) throws SukuException {
-		reOpenIndex = previousNoticeIndex;
+	protected void displayPersonPane(int pid) throws SukuException {
 
 		int midx = getMainPaneIndex();
 		if (midx > 0) {
@@ -312,11 +322,12 @@ public class PersonView extends JPanel implements ChangeListener {
 
 		tabbedPane.setSelectedIndex(mainIdx);
 
-		previousNoticeIndex = getMainPaneIndex();
-		if (reOpenIndex > previousNoticeIndex && reOpenIndex < getTabCount()) {
-			tabbedPane.setSelectedIndex(reOpenIndex);
-			reOpenIndex = -1;
-		}
+		// previousNoticeIndex = getMainPaneIndex();
+		// if (reOpenIndex > previousNoticeIndex && reOpenIndex < getTabCount())
+		// {
+		// // tabbedPane.setSelectedIndex(reOpenIndex);
+		// reOpenIndex = -1;
+		// }
 
 		PersonMainPane main = (PersonMainPane) paneTabs.get(mainIdx).pnl;
 		if (main != null) {
@@ -355,6 +366,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 * @throws SukuException
 	 */
 	public void closeMainPane(boolean reOpen) throws SukuException {
+
 		int midx = getMainPaneIndex();
 		if (midx < 0)
 			return;
@@ -370,6 +382,13 @@ public class PersonView extends JPanel implements ChangeListener {
 
 		if (reOpen && personPid > 0) {
 			displayPersonPane(personPid);
+
+			if (reOpenIndex > previousNoticeIndex
+					&& reOpenIndex < getTabCount()) {
+				tabbedPane.setSelectedIndex(reOpenIndex);
+				reOpenIndex = -1;
+			}
+
 		} else {
 			getSuku().setTitle(null);
 		}

@@ -157,7 +157,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	/**
 	 * Application version
 	 */
-	public static final String sukuVersion = "11.-3.0172";
+	public static final String sukuVersion = "11.-3.0174";
 	/**
 	 * Server version
 	 */
@@ -1639,7 +1639,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void showPerson(int pid) {
 		try {
 
-			personView.displayPersonPane(pid);
+			personView.displayNewPersonPane(pid);
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, Resurses
 					.getString(Resurses.TAB_PERSON)
