@@ -1,5 +1,6 @@
 package fi.kaila.suku.util.local;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -304,6 +305,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 
 			String newDb = toAscii(JOptionPane.showInputDialog(this, Resurses
 					.getString("NEWDATABASENAME")));
+			Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
+			setCursor(hourglassCursor);
 
 			String owner = (String) this.userCombo.getSelectedItem();
 
@@ -325,7 +328,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(this, "Error: "
 							+ e1.getMessage());
 				}
-
+				Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+				setCursor(normalCursor);
 			}
 
 		} else if (cmd.equals(Resurses.DROPDB)) {
@@ -370,26 +374,25 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 		if (text == null)
 			return null;
 		StringBuffer sb = new StringBuffer();
-		String uml = "åäöÅÄÖ";
 
 		for (int i = 0; i < text.length(); i++) {
-			char c = text.charAt(i);
-			if (c == uml.charAt(0))
-				c = 'a';
-			else if (c == uml.charAt(1))
-				c = 'a';
-			else if (c == uml.charAt(2))
-				c = 'o';
-			else if (c == uml.charAt(3))
-				c = 'A';
-			else if (c == uml.charAt(4))
-				c = 'A';
-			else if (c == uml.charAt(5))
-				c = 'O';
-			else if (c <= ' ')
-				c = '_';
-			else if (c > 'z')
-				c = 'x';
+			String c = text.substring(i, i + 1);
+			if (c.equals("å"))
+				c = "a";
+			else if (c.equals("ä"))
+				c = "a";
+			else if (c.equals("ö"))
+				c = "ö";
+			else if (c.equals("Å"))
+				c = "A";
+			else if (c.equals("Ä"))
+				c = "A";
+			else if (c.equals("Ö"))
+				c = "O";
+			else if (c.compareTo(" ") <= 0)
+				c = "_";
+			else if (c.compareTo("z") > 0)
+				c = "x";
 			sb.append(c);
 
 		}
