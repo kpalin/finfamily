@@ -230,7 +230,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 			LocalUserAdmin ladm = new LocalUserAdmin(this);
 			ladm.setVisible(true);
 
-			newUser = ladm.getUserid();
+			newUser = toAscii(ladm.getUserid());
 			newPassword = ladm.getPassword();
 
 			if (newUser != null && newPassword != null && newUser.length() > 2
@@ -302,8 +302,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 			}
 		} else if (cmd.equals(Resurses.NEWDB)) {
 
-			String newDb = JOptionPane.showInputDialog(this, Resurses
-					.getString("NEWDATABASENAME"));
+			String newDb = toAscii(JOptionPane.showInputDialog(this, Resurses
+					.getString("NEWDATABASENAME")));
 
 			String owner = (String) this.userCombo.getSelectedItem();
 
@@ -364,6 +364,35 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 			this.setVisible(false);
 		}
 
+	}
+
+	private String toAscii(String text) {
+		if (text == null)
+			return null;
+		StringBuffer sb = new StringBuffer();
+
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if (c == 'ä')
+				c = 'a';
+			else if (c == 'å')
+				c = 'a';
+			else if (c == 'ö')
+				c = 'o';
+			else if (c == 'Ä')
+				c = 'A';
+			else if (c == 'Å')
+				c = 'A';
+			else if (c == 'Ö')
+				c = 'O';
+			else if (c <= ' ')
+				c = '_';
+			else if (c > 'z')
+				c = 'x';
+			sb.append(c);
+
+		}
+		return sb.toString();
 	}
 
 }
