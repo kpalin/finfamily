@@ -370,20 +370,21 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 		if (text == null)
 			return null;
 		StringBuffer sb = new StringBuffer();
+		String uml = "åäöÅÄÖ";
 
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			if (c == 'ä')
+			if (c == uml.charAt(0))
 				c = 'a';
-			else if (c == 'å')
+			else if (c == uml.charAt(1))
 				c = 'a';
-			else if (c == 'ö')
+			else if (c == uml.charAt(2))
 				c = 'o';
-			else if (c == 'Ä')
+			else if (c == uml.charAt(3))
 				c = 'A';
-			else if (c == 'Å')
+			else if (c == uml.charAt(4))
 				c = 'A';
-			else if (c == 'Ö')
+			else if (c == uml.charAt(5))
 				c = 'O';
 			else if (c <= ' ')
 				c = '_';
