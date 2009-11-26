@@ -937,9 +937,11 @@ public class CommonReport {
 					} else {
 						wasNl = true;
 					}
+				} else {
+					wasNl = false;
+					wasWhite = false;
+					sb.append(c);
 				}
-				wasWhite = false;
-				sb.append(c);
 			}
 		}
 		if (sb.length() > 0) {
@@ -951,14 +953,18 @@ public class CommonReport {
 				repoWriter.addText(bt);
 				int fontSize = bt.getFontSize();
 				if (aux.length() > 2 && aux.substring(0, 2).equals("**")) {
-					bt.setFontSize(fontSize + 2);
+					bt.setFontSize(fontSize + 4);
 					bt.addText(aux.substring(2), true, false);
 				} else {
-					bt.setFontSize(fontSize + 1);
+					bt.setFontSize(fontSize + 2);
 					bt.addText(aux.substring(1), true, false);
+
 				}
-				repoWriter.addText(bt);
+				// repoWriter.addText(bt);
 				bt.setFontSize(fontSize);
+			} else if (i > 0) {
+				repoWriter.addText(bt);
+				bt.addText(aux);
 			} else {
 				bt.addText(aux);
 			}

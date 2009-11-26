@@ -796,6 +796,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		}
 
 		Vector<UnitNotice> un = new Vector<UnitNotice>();
+
 		for (int i = noticeFirst; i < tabCount; i++) {
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 
@@ -803,7 +804,8 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				foundModification = true;
 			} else {
 				pane.copyToUnitNotice();
-				if (pane.notice.isToBeUpdated() || pane.notice.getPnid() == 0) {
+
+				if (pane.notice.isToBeUpdated()) {
 					foundModification = true;
 				}
 			}
@@ -861,8 +863,20 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			for (int i = 0; i < notorder.length; i++) {
 				wn[i + 1] = notorder[i];
 			}
-			boolean hasOrdered = reorderNotices(un, wn);
-			if (foundModification || hasOrdered) {
+
+			if (reorderNotices(un, wn)) {
+				foundModification = true;
+			}
+			if (persLong.getPid() == 0) {
+				foundModification = false;
+				for (int i = noticeFirst; i < tabCount; i++) {
+					NoticePane pane = (NoticePane) personView.getPane(i).pnl;
+					if (pane.notice.isToBeUpdated()) {
+						foundModification = true;
+					}
+				}
+			}
+			if (foundModification) {
 				req.persLong = persLong;
 
 				req.persLong.setNotices(un.toArray(new UnitNotice[0]));
