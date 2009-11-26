@@ -138,75 +138,79 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		String tmp;
 		int noticeFirst = personView.getFirstNoticeIndex();
 		int noticeCount = personView.getTabCount();
+		givenname.setText("");
+		patronym.setText("");
+		surname.setText("");
+		postfix.setText("");
 		for (int i = noticeFirst; i < noticeCount; i++) {
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
-			if (pane.notice.getTag().equals("NAME")
-					&& !pane.notice.isToBeDeleted()) {
+			if (pane.notice.getTag().equals("NAME")) {
+				if (!pane.notice.isToBeDeleted()) {
 
-				prexi = pane.prefix.getText();
+					prexi = pane.prefix.getText();
 
-				if (firstName) {
-					fgiven = pane.givenname.getText();
-					fpatro = pane.patronym.getText();
-					posti = pane.postfix.getText();
-					givenname.setText(fgiven);
-					patronym.setText(fpatro);
-					tmp = prexi;
-					if (!tmp.equals("")) {
-						if (isKnownPrefix(tmp)) {
-							comboname += tmp + " ";
-						} else {
-							specialFirst = true;
+					if (firstName) {
+						fgiven = pane.givenname.getText();
+						fpatro = pane.patronym.getText();
+						posti = pane.postfix.getText();
+						givenname.setText(fgiven);
+						patronym.setText(fpatro);
+						tmp = prexi;
+						if (!tmp.equals("")) {
+							if (isKnownPrefix(tmp)) {
+								comboname += tmp + " ";
+							} else {
+								specialFirst = true;
+							}
 						}
-					}
-					// prefix.setText(tmp);
-					comboname += pane.surname.getText();
-					surname.setText(comboname);
-					tmp = pane.postfix.getText();
-					// if (!tmp.equals("")){
-					// specialFirst=true;
-					// }
-					postfix.setText(tmp);
+						// prefix.setText(tmp);
+						comboname += pane.surname.getText();
+						surname.setText(comboname);
+						tmp = pane.postfix.getText();
+						// if (!tmp.equals("")){
+						// specialFirst=true;
+						// }
+						postfix.setText(tmp);
 
-					firstName = false;
-				} else {
-					if (!posti.equals(pane.postfix.getText())) {
-						specialName = true;
-					}
-					if (specialFirst) {
-						specialName = true;
-						break;
-					}
-					if (!fgiven.equals(pane.givenname.getText())) {
-						specialName = true;
-						break;
-					}
-					if (!fpatro.equals(pane.patronym.getText())) {
-						specialName = true;
-						break;
-					}
-					String nextpre = "";
-					if (!prexi.equals("")) {
-
-						if (isKnownPrefix(prexi)) {
-							nextpre = prexi + " ";
-						} else {
+						firstName = false;
+					} else {
+						if (!posti.equals(pane.postfix.getText())) {
 							specialName = true;
 						}
+						if (specialFirst) {
+							specialName = true;
+							break;
+						}
+						if (!fgiven.equals(pane.givenname.getText())) {
+							specialName = true;
+							break;
+						}
+						if (!fpatro.equals(pane.patronym.getText())) {
+							specialName = true;
+							break;
+						}
+						String nextpre = "";
+						if (!prexi.equals("")) {
+
+							if (isKnownPrefix(prexi)) {
+								nextpre = prexi + " ";
+							} else {
+								specialName = true;
+							}
+						}
+						// if (!"".equals(pane.prefix.getText())){
+						// specialName=true;
+						// break;
+						// }
+						// if (!"".equals(pane.postfix.getText())){
+						// specialName=true;
+						// break;
+						// }
+						// comboname += ";" + nextpre
+						comboname += ";" + nextpre + pane.surname.getText();
 					}
-					// if (!"".equals(pane.prefix.getText())){
-					// specialName=true;
-					// break;
-					// }
-					// if (!"".equals(pane.postfix.getText())){
-					// specialName=true;
-					// break;
-					// }
-					// comboname += ";" + nextpre
-					comboname += ";" + nextpre + pane.surname.getText();
 				}
 			}
-
 		}
 		givenname.setEnabled(!specialName);
 		patronym.setEnabled(!specialName);
@@ -872,7 +876,9 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				for (int i = noticeFirst; i < tabCount; i++) {
 					NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 					if (pane.notice.isToBeUpdated()) {
-						foundModification = true;
+						if (pane.notice.isToBeDeleted() == false) {
+							foundModification = true;
+						}
 					}
 				}
 			}
