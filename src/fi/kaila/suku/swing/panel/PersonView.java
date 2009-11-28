@@ -220,7 +220,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			hiskiPanel = new HiskiImportPanel(suku);
 
 			insertTab(new SukuTabPane("TAB_HISKI", hiskiPanel), hiskiIdx);
-			tabbedPane.setSelectedIndex(hiskiIdx);
+			setSelectedIndex(hiskiIdx);
 			tabbedPane.setForegroundAt(hiskiIdx, Color.RED);
 		}
 	}
@@ -299,7 +299,7 @@ public class PersonView extends JPanel implements ChangeListener {
 				} catch (SukuDateException e1) {
 					if (previousNoticeIndex <= midx + 1) {
 						previousNoticeIndex = midx;
-						tabbedPane.setSelectedIndex(previousNoticeIndex);
+						setSelectedIndex(previousNoticeIndex);
 					}
 					JOptionPane.showMessageDialog(this, e1.getMessage(),
 							Resurses.getString(Resurses.SUKU),
@@ -320,7 +320,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 		personMain.openPersonNotices(pid);
 
-		tabbedPane.setSelectedIndex(mainIdx);
+		setSelectedIndex(mainIdx);
 
 		// previousNoticeIndex = getMainPaneIndex();
 		// if (reOpenIndex > previousNoticeIndex && reOpenIndex < getTabCount())
@@ -344,7 +344,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	void closePerson() {
 
 		SukuTabPane pnl = null;
-		tabbedPane.setSelectedIndex(1);
+		// setSelectedIndex(1);
 		for (int i = paneTabs.size() - 1; i > 0; i--) {
 
 			Component pan = paneTabs.get(i).pnl;
@@ -385,7 +385,8 @@ public class PersonView extends JPanel implements ChangeListener {
 
 			if (reOpenIndex > previousNoticeIndex
 					&& reOpenIndex < getTabCount()) {
-				tabbedPane.setSelectedIndex(reOpenIndex);
+
+				// setSelectedIndex(reOpenIndex);
 				reOpenIndex = -1;
 			}
 
@@ -572,7 +573,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			gg.dispose();
 
 		}
-		tabbedPane.setSelectedIndex(0);
+		setSelectedIndex(0);
 	}
 
 	/**
@@ -624,7 +625,7 @@ public class PersonView extends JPanel implements ChangeListener {
 				+ person.getPid(), "parents=yes");
 		PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
 		textPerson.initPerson(pdata.persLong, pdata.relations, family.pers);
-		tabbedPane.setSelectedIndex(1);
+		setSelectedIndex(1);
 
 	}
 
@@ -747,7 +748,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		;
 		paneTabs.insertElementAt(pane, toIdx);
 		tabbedPane.insertTab(pane.title, null, pane, pane.tip, toIdx);
-		tabbedPane.setSelectedIndex(toIdx);
+		setSelectedIndex(toIdx);
 
 	}
 
@@ -772,7 +773,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		if (main == null)
 			return;
 		main.insertNamePane(isele, tag);
-		tabbedPane.setSelectedIndex(isele);
+		setSelectedIndex(isele);
 		updateUI();
 	}
 
@@ -782,7 +783,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			return;
 		int relaIdx = midx + 1;
 		previousNoticeIndex = relaIdx;
-		tabbedPane.setSelectedIndex(relaIdx);
+		setSelectedIndex(relaIdx);
 
 	}
 
@@ -799,8 +800,6 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 
 	}
-
-	boolean skipNextState = false;
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -833,7 +832,7 @@ public class PersonView extends JPanel implements ChangeListener {
 					skipNextState = true;
 					// TO-DO tarkista vieläkö tämä on tarpeen. Näyttäisi olevan
 					// 14.9.09
-					tabbedPane.setSelectedIndex(previousNoticeIndex);
+					setSelectedIndex(previousNoticeIndex);
 					JOptionPane.showMessageDialog(this, resu, Resurses
 							.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
@@ -877,7 +876,7 @@ public class PersonView extends JPanel implements ChangeListener {
 				} catch (SukuDateException e1) {
 					if (previousNoticeIndex <= mnotice + 1) {
 						previousNoticeIndex = mnotice;
-						tabbedPane.setSelectedIndex(previousNoticeIndex);
+						setSelectedIndex(previousNoticeIndex);
 					}
 					JOptionPane.showMessageDialog(this, e1.getMessage(),
 							Resurses.getString(Resurses.SUKU),
@@ -887,6 +886,13 @@ public class PersonView extends JPanel implements ChangeListener {
 				}
 			}
 		}
+	}
+
+	boolean skipNextState = false;
+
+	void setSelectedIndex(int tabIndex) {
+		skipNextState = true;
+		tabbedPane.setSelectedIndex(tabIndex);
 	}
 
 }

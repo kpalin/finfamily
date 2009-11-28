@@ -318,7 +318,11 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			if (pane.notice.getTag().equals("NOTE")) {
 				noteCount++;
 				if (noteCount == 1) {
-					notetext.setText(pane.noteText.getText());
+					if (!pane.notice.isToBeDeleted()) {
+						notetext.setText(pane.noteText.getText());
+					} else {
+						notetext.setText("");
+					}
 				}
 				if (!pane.isPlain())
 					noteCount++;
@@ -968,6 +972,20 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			int nameCount = 0;
 			String names[] = surname.getText().split(";");
 
+			boolean hasName = false;
+			if (names.length > 1) {
+				hasName = true;
+			}
+			if (!givenname.getText().equals("")) {
+				hasName = true;
+			}
+			if (!patronym.getText().equals("")) {
+				hasName = true;
+			}
+			if (!postfix.getText().equals("")) {
+				hasName = true;
+			}
+
 			for (int i = noticeFirst; i < tabCount; i++) {
 
 				NoticePane pane = (NoticePane) personView.getPane(i).pnl;
@@ -980,8 +998,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 					if (nameCount > names.length) {
 						pane.setToBeDeleted(true);
 					} else {
-						pane.setToBeDeleted(false);
-						lastNameidx = i;
+						if (!hasName) {
+							lastNameidx = 0;
+							pane.setToBeDeleted(true);
+						} else {
+							pane.setToBeDeleted(false);
+							lastNameidx = i;
+						}
 					}
 				}
 			}
@@ -990,7 +1013,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				firstNameidx = noticeFirst;
 			}
 			int namesCount = names.length;
-			if (namesCount == 0 && names[0].equals("")) {
+			if (namesCount == 1 && names[0].equals("")) {
 				if (givenname.getText().equals("")
 						&& patronym.getText().equals("")) {
 					namesCount = 0;
@@ -998,8 +1021,10 @@ public class PersonMainPane extends JPanel implements ActionListener {
 					namesCount = 1;
 				}
 			}
-			for (int i = lastNameidx + 1; i < firstNameidx + namesCount; i++) {
-				insertNamePane(i, "NAME");
+			if (hasName) {
+				for (int i = lastNameidx + 1; i < firstNameidx + namesCount; i++) {
+					insertNamePane(i, "NAME");
+				}
 			}
 			tabCount = personView.getTabCount();
 
