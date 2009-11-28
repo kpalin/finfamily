@@ -3,8 +3,13 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in <link lref="releasenotes0172"/></p>
 
+<hdr>Release 178 on 29 Nov 2009 </hdr>
+<ul>
+<li>Fixed problems with synchronizing mainpane and notices</li>
+<li>Ficed problem with notice text printing</li>
+</ul>
 
-<hdr>Release 174 on 23 Nov 2009 </hdr>
+<hdr>Release 174 on 23 Nov 2009 (5)</hdr>
 <ul>
 <li>Reopen person with same notice at update</li>
 
