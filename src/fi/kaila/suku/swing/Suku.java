@@ -277,32 +277,28 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void startMe(String[] args) throws SukuException {
 
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
+		 try {
 
-			logger.log(Level.INFO, "look-and-feel virhe", e);
-			throw new SukuException(e);
-		}
+			 if (java.io.File.pathSeparatorChar == ';') {
+				 // use Windows lookandfeel if Windows
+				 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			 } else {
+				 // else use Metal
 
-		// if (java.io.File.pathSeparatorChar == ';') {
-		// // use Windows lookandfeel if Windows
-		// try {
-		// //
-		// UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-		// UIManager.LookAndFeelInfo[] liz = UIManager
-		// .getInstalledLookAndFeels();
-		//				
-		// for (int i = 0;i < liz.length;i++) {
-		// logger.info("lndfeel " + liz[i].getClassName());
-		//					
-		// }
-		// UIManager.setLookAndFeel(liz[2].getClassName());
-		// } catch (Exception e) {
-		// logger.log(Level.INFO, "look-and-feel virhe", e);
-		//
-		// }
-		// }
+				 UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			 }
+//		 UIManager.LookAndFeelInfo[] liz = UIManager
+//		 .getInstalledLookAndFeels();
+//						
+//		 for (int i = 0;i < liz.length;i++) {
+//		 logger.info("lndfeel " + liz[i].getClassName());
+//							
+//		 }
+//		 UIManager.setLookAndFeel(liz[0].getClassName());
+		 } catch (Exception e) {
+		 logger.log(Level.INFO, "look-and-feel virhe", e);
+		
+		 }
 		String arg1 = null;
 		if (args.length > 0) {
 			arg1 = args[0];
