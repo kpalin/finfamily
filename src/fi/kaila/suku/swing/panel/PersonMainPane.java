@@ -1182,8 +1182,8 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				occuIndex++;
 			}
 			if (tag.equals("NOTE")) {
-				pane.setToBeDeleted(notetext.getText().equals(""));
-				if (noteCount <= 1) {
+				if (noteCount == 1) {
+					pane.setToBeDeleted(notetext.getText().equals(""));
 					pane.noteText.setText(notetext.getText());
 				}
 			}
