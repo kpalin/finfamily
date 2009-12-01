@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -25,6 +27,7 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * Window that is shown before database search is made Windows contains the
@@ -362,27 +365,30 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		// SukuData fam = kontroller.getSukuData(auxes);
 		//		
 
-		patronyme.setText(Suku.kontroller.getPref(this, "patronyme", ""));
-		surname.setText(Suku.kontroller.getPref(this, "surname", ""));
-		givenname.setText(Suku.kontroller.getPref(this, "givenname", ""));
-		// putPref(this, "patronym", patronyme.getText());
-
-		birtFromDate.setText(Suku.kontroller.getPref(this, "birtFromDate", ""));
-		birtToDate.setText(Suku.kontroller.getPref(this, "birtToDate", ""));
-		birtPlace.setText(Suku.kontroller.getPref(this, "birtPlace", ""));
-
-		deatFromDate.setText(Suku.kontroller.getPref(this, "deatFromDate", ""));
-		deatToDate.setText(Suku.kontroller.getPref(this, "givdeatToDateenname",
-				""));
-		deatPlace.setText(Suku.kontroller.getPref(this, "deatPlace", ""));
-
-		createdFromDate.setText(Suku.kontroller.getPref(this,
-				"createdFromDate", ""));
-		createdToDate.setText(Suku.kontroller
-				.getPref(this, "createdToDate", ""));
-		viewGroup.setText(Suku.kontroller.getPref(this, "viewGroup", ""));
-
-		preferredView = Suku.kontroller.getPref(this, "viewId", "0");
+		// patronyme.setText(Suku.kontroller.getPref(this, "patronyme", ""));
+		// surname.setText(Suku.kontroller.getPref(this, "surname", ""));
+		// givenname.setText(Suku.kontroller.getPref(this, "givenname", ""));
+		// // putPref(this, "patronym", patronyme.getText());
+		//
+		// birtFromDate.setText(Suku.kontroller.getPref(this, "birtFromDate",
+		// ""));
+		// birtToDate.setText(Suku.kontroller.getPref(this, "birtToDate", ""));
+		// birtPlace.setText(Suku.kontroller.getPref(this, "birtPlace", ""));
+		//
+		// deatFromDate.setText(Suku.kontroller.getPref(this, "deatFromDate",
+		// ""));
+		// deatToDate.setText(Suku.kontroller.getPref(this,
+		// "givdeatToDateenname",
+		// ""));
+		// deatPlace.setText(Suku.kontroller.getPref(this, "deatPlace", ""));
+		//
+		// createdFromDate.setText(Suku.kontroller.getPref(this,
+		// "createdFromDate", ""));
+		// createdToDate.setText(Suku.kontroller
+		// .getPref(this, "createdToDate", ""));
+		// viewGroup.setText(Suku.kontroller.getPref(this, "viewGroup", ""));
+		//
+		// preferredView = Suku.kontroller.getPref(this, "viewId", "0");
 
 		y = 380;
 
@@ -425,40 +431,93 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 * 
 	 * @param lista
 	 */
-	public void populateViewList(String[] lista) {
-		viewArray = lista;
-		viewList.removeAllItems();
-		String[] vnum = null;
-		int preferredVid = 0;
-		int preferredIndex = 0;
-		if (preferredView != null) {
-			vnum = preferredView.split(";");
-			try {
-				preferredVid = Integer.parseInt(vnum[0]);
-			} catch (NumberFormatException ne) {
-			}
-		}
+	public void populateFields(String[] lista) {
 
-		viewList.addItem("");
-		for (int i = 0; i < viewArray.length; i++) {
-			String[] pp = viewArray[i].split(";");
-			if (pp.length > 1) {
-				int vid = 0;
-				try {
-					vid = Integer.parseInt(pp[0]);
-				} catch (NumberFormatException ne) {
+		try {
+			viewArray = lista;
+			SukuData sets = Suku.kontroller.getSukuData("cmd=getsettings",
+					"type=query");
+
+			int preferredVid = 0;
+			int preferredIndex = 0;
+			for (int i = 0; i < sets.generalArray.length; i++) {
+
+				String[] parts = sets.generalArray[i].split("=");
+				if (parts.length == 2) {
+					if (parts[0].equals("patronyme")) {
+						patronyme.setText(parts[1]);
+					} else if (parts[0].equals("surname")) {
+						surname.setText(parts[1]);
+					} else if (parts[0].equals("givenname")) {
+						givenname.setText(parts[1]);
+
+					} else if (parts[0].equals("birtFromDate")) {
+						birtFromDate.setText(parts[1]);
+
+					} else if (parts[0].equals("birtToDate")) {
+						birtToDate.setText(parts[1]);
+
+					} else if (parts[0].equals("birtPlace")) {
+						birtPlace.setText(parts[1]);
+
+					} else if (parts[0].equals("deatFromDate")) {
+						deatFromDate.setText(parts[1]);
+
+					} else if (parts[0].equals("deatToDate")) {
+						deatToDate.setText(parts[1]);
+
+					} else if (parts[0].equals("deatPlace")) {
+						deatPlace.setText(parts[1]);
+
+					} else if (parts[0].equals("createdFromDate")) {
+						createdFromDate.setText(parts[1]);
+					} else if (parts[0].equals("createdToDate")) {
+						createdToDate.setText(parts[1]);
+					} else if (parts[0].equals("viewGroup")) {
+						viewGroup.setText(parts[1]);
+					} else if (parts[0].equals("viewId")) {
+
+						viewList.removeAllItems();
+						String[] vnum = null;
+
+						if (preferredView != null) {
+							vnum = parts[1].split(";");
+							try {
+								preferredVid = Integer.parseInt(vnum[0]);
+							} catch (NumberFormatException ne) {
+							}
+						}
+
+					}
+
 				}
-				if (vid == preferredVid) {
-					preferredIndex = i;
+
+			}
+
+			viewList.addItem("");
+			for (int i = 0; i < viewArray.length; i++) {
+				String[] pp = viewArray[i].split(";");
+				if (pp.length > 1) {
+					int vid = 0;
+					try {
+						vid = Integer.parseInt(pp[0]);
+					} catch (NumberFormatException ne) {
+					}
+					if (vid == preferredVid) {
+						preferredIndex = i;
+					}
+
+					viewList.addItem(pp[1]);
 				}
 
-				viewList.addItem(pp[1]);
 			}
-		}
-		if (preferredIndex > 0) {
-			viewList.setSelectedIndex(preferredIndex + 1);
-		}
 
+			if (preferredIndex > 0) {
+				viewList.setSelectedIndex(preferredIndex + 1);
+			}
+		} catch (SukuException e) {
+			//
+		}
 	}
 
 	private int getViewId() {
@@ -748,25 +807,20 @@ public class SearchCriteria extends JDialog implements ActionListener {
 				tbl.setCurrentState(bvalue);
 			}
 
-			Suku.kontroller.putPref(this, "patronyme", patronyme.getText());
-			Suku.kontroller.putPref(this, "surname", surname.getText());
-			Suku.kontroller.putPref(this, "givenname", givenname.getText());
+			Vector<String> v = new Vector<String>();
+			v.add("patronyme=" + patronyme.getText());
+			v.add("surname=" + surname.getText());
+			v.add("givenname=" + givenname.getText());
+			v.add("birtFromDate=" + birtFromDate.getText());
+			v.add("birtToDate=" + birtToDate.getText());
+			v.add("birtPlace=" + birtPlace.getText());
+			v.add("deatFromDate=" + deatFromDate.getText());
+			v.add("deatToDate=" + deatToDate.getText());
+			v.add("deatPlace=" + deatPlace.getText());
+			v.add("createdFromDate=" + createdFromDate.getText());
+			v.add("createdToDate=" + createdToDate.getText());
+			v.add("viewGroup=" + viewGroup.getText());
 
-			Suku.kontroller.putPref(this, "birtFromDate", birtFromDate
-					.getText());
-			Suku.kontroller.putPref(this, "birtToDate", birtToDate.getText());
-			Suku.kontroller.putPref(this, "birtPlace", birtPlace.getText());
-
-			Suku.kontroller.putPref(this, "deatFromDate", deatFromDate
-					.getText());
-			Suku.kontroller.putPref(this, "deatToDate", deatToDate.getText());
-			Suku.kontroller.putPref(this, "deatPlace", deatPlace.getText());
-
-			Suku.kontroller.putPref(this, "createdFromDate", createdFromDate
-					.getText());
-			Suku.kontroller.putPref(this, "createdToDate", createdToDate
-					.getText());
-			Suku.kontroller.putPref(this, "viewGroup", viewGroup.getText());
 			int vid = this.getViewId();
 			preferredView = "";
 			if (vid > 0 && vid <= viewArray.length) {
@@ -790,7 +844,18 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 				}
 			}
-			Suku.kontroller.putPref(this, "viewId", preferredView);
+			v.add("viewGroup=" + viewGroup.getText());
+			SukuData request = new SukuData();
+			request.generalArray = v.toArray(new String[0]);
+			try {
+				SukuData sets = Suku.kontroller.getSukuData(request,
+						"cmd=updatesettings", "type=query");
+			} catch (SukuException e1) {
+				logger
+						.log(Level.WARNING, "Failed to write query settings ",
+								e1);
+			}
+			// Suku.kontroller.putPref(this, "viewId", preferredView);
 			// this.surnameTx = this.surname.getText();
 			// this.givennameTx = this.givenname.getText();
 			// this.patronymeTx = this.patronyme.getText();

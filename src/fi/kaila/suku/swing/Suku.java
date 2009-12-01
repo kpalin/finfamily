@@ -1852,7 +1852,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			SukuData vlist = kontroller.getSukuData(viewlist);
 
 			SearchCriteria crit = SearchCriteria.getCriteria(this);
-			crit.populateViewList(vlist.generalArray);
+			crit.populateFields(vlist.generalArray);
 			crit.setVisible(true);
 
 			TableColumnModel tc = this.table.getColumnModel();

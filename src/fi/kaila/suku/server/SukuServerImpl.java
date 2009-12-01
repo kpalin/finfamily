@@ -793,32 +793,53 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData updateSettings(SukuData request, String index,
 			String type, String name) {
 
-		// String sql = "select settingvalue " +
-		// "from sukusettings where settingtype = '"+type+"' " +
-		// "and settingname = '"+name+"' " +
-		// "order by settingindex ";
 		SukuData resp = new SukuData();
-		String sql = "delete from sukusettings where  settingtype = '" + type
-				+ "' " + "and settingname = '" + name + "' ";
 
-		String insSql = "insert into sukusettings "
-				+ "(settingtype,settingindex,settingname,settingvalue) values (?,?,?,?)";
 		try {
-			PreparedStatement pst = con.prepareStatement(sql);
-			int lukuri = pst.executeUpdate();
-			pst.close();
+			String sql = "delete from sukusettings where  settingtype = '"
+					+ type + "' " + "and settingname = '" + name + "' ";
 
-			logger.fine("deleted [" + lukuri + "] settings where type =" + type
-					+ " and name = " + name);
-			pst = con.prepareStatement(insSql);
-			for (int i = 0; i < request.generalArray.length; i++) {
+			String insSql = "insert into sukusettings "
+					+ "(settingtype,settingindex,settingname,settingvalue) values (?,?,?,?)";
+			if (name != null) {
+
+				PreparedStatement pst = con.prepareStatement(sql);
+				int lukuri = pst.executeUpdate();
+				pst.close();
+
+				logger.fine("deleted [" + lukuri + "] settings where type ="
+						+ type + " and name = " + name);
+				pst = con.prepareStatement(insSql);
+				for (int i = 0; i < request.generalArray.length; i++) {
+					pst.setString(1, type);
+					pst.setInt(2, i);
+					pst.setString(3, name);
+					pst.setString(4, request.generalArray[i]);
+					pst.executeUpdate();
+				}
+				pst.close();
+			} else {
+				sql = "delete from sukusettings where settingtype = ?";
+				PreparedStatement pst = con.prepareStatement(sql);
 				pst.setString(1, type);
-				pst.setInt(2, i);
-				pst.setString(3, name);
-				pst.setString(4, request.generalArray[i]);
 				pst.executeUpdate();
+				pst.close();
+
+				pst = con.prepareStatement(insSql);
+
+				for (int i = 0; i < request.generalArray.length; i++) {
+					String[] parts = request.generalArray[i].split("=");
+					if (parts.length == 2) {
+						pst.setString(1, type);
+						pst.setInt(2, i);
+						pst.setString(3, parts[0]);
+						pst.setString(4, parts[1]);
+						pst.executeUpdate();
+					}
+				}
+				pst.close();
+
 			}
-			pst.close();
 		} catch (SQLException e) {
 			resp.resu = e.getMessage();
 			e.printStackTrace();
@@ -903,7 +924,24 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData getSettings(String index, String type, String name) {
 		SukuData res = new SukuData();
 		try {
-			if (name == null && index != null) {
+			if ("query".equals(type)) {
+				String sql = "select settingname,settingvalue from SukuSettings "
+						+ "where settingtype = '"
+						+ type
+						+ "' order by settingindex ";
+				Vector<String> v = new Vector<String>();
+
+				Statement stm = con.createStatement();
+				ResultSet rs = stm.executeQuery(sql);
+				while (rs.next()) {
+					v.add(rs.getString(1) + "=" + rs.getString(2));
+				}
+				rs.close();
+				stm.close();
+
+				res.generalArray = v.toArray(new String[0]);
+
+			} else if (name == null && index != null) {
 
 				String sql = "select settingindex,settingvalue "
 						+ "from sukusettings where settingtype = 'report' and settingname = 'name' "
