@@ -437,7 +437,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			viewArray = lista;
 			SukuData sets = Suku.kontroller.getSukuData("cmd=getsettings",
 					"type=query");
-
+			resetArguments();
 			int preferredVid = 0;
 			int preferredIndex = 0;
 			for (int i = 0; i < sets.generalArray.length; i++) {
@@ -766,25 +766,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			return;
 		if (cmd.equals(Resurses.RESET)) {
 
-			surname.setText("");
-			givenname.setText("");
-			patronyme.setText("");
-
-			birtFromDate.setText("");
-			birtToDate.setText("");
-			birtPlace.setText("");
-
-			deatFromDate.setText("");
-			deatToDate.setText("");
-			deatPlace.setText("");
-
-			createdFromDate.setText("");
-			createdToDate.setText("");
-
-			viewList.setSelectedIndex(0);
-
-			viewGroup.setText("");
-			preferredView = "";
+			resetArguments();
 		} else if (cmd.equals(Resurses.OK)) {
 
 			for (idx = 0; idx < this.coltables.length; idx++) {
@@ -863,6 +845,28 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			this.setVisible(false);
 		}
 
+	}
+
+	private void resetArguments() {
+		surname.setText("");
+		givenname.setText("");
+		patronyme.setText("");
+
+		birtFromDate.setText("");
+		birtToDate.setText("");
+		birtPlace.setText("");
+
+		deatFromDate.setText("");
+		deatToDate.setText("");
+		deatPlace.setText("");
+
+		createdFromDate.setText("");
+		createdToDate.setText("");
+		if (viewList.getItemCount()>0){
+			viewList.setSelectedIndex(0);
+		}
+		viewGroup.setText("");
+		preferredView = "";
 	}
 
 }
