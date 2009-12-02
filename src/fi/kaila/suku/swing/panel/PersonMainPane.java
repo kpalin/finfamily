@@ -22,6 +22,8 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTextField;
+import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
@@ -65,14 +67,14 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	private JTextField postfix;
 
 	private JTextField birtDate;
-	private JTextField birtPlace;
-
+	// private JTextField birtPlace;
+	private SukuTextField birtPlace;
 	private JTextField chrDate;
-	private JTextField chrPlace;
+	private SukuTextField chrPlace;
 	private JTextField deatDate;
-	private JTextField deatPlace;
+	private SukuTextField deatPlace;
 	private JTextField buriDate;
-	private JTextField buriPlace;
+	private SukuTextField buriPlace;
 	private JTextField occupation;
 
 	private JTextArea notetext;
@@ -505,7 +507,8 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		birtDate = new JTextField();
 		add(birtDate);
 		birtDate.setBounds(lcol, rivi, datelen, 20);
-		birtPlace = new JTextField();
+		birtPlace = new SukuTextField(null, Field.Fld_Place);
+
 		add(birtPlace);
 		birtPlace.setBounds(lcol + datelen + colbet, rivi, placlen, 20);
 
@@ -516,7 +519,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		chrDate = new JTextField();
 		add(chrDate);
 		chrDate.setBounds(lcol, rivi, datelen, 20);
-		chrPlace = new JTextField();
+		chrPlace = new SukuTextField(null, Field.Fld_Place);
 		add(chrPlace);
 		chrPlace.setBounds(lcol + datelen + colbet, rivi, placlen, 20);
 
@@ -527,7 +530,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		deatDate = new JTextField();
 		add(deatDate);
 		deatDate.setBounds(lcol, rivi, datelen, 20);
-		deatPlace = new JTextField();
+		deatPlace = new SukuTextField(null, Field.Fld_Place);
 		add(deatPlace);
 		deatPlace.setBounds(lcol + datelen + colbet, rivi, placlen, 20);
 
@@ -538,7 +541,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		buriDate = new JTextField();
 		add(buriDate);
 		buriDate.setBounds(lcol, rivi, datelen, 20);
-		buriPlace = new JTextField();
+		buriPlace = new SukuTextField(null, Field.Fld_Place);
 		add(buriPlace);
 		buriPlace.setBounds(lcol + datelen + colbet, rivi, placlen, 20);
 

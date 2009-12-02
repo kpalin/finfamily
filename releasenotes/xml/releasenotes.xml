@@ -3,6 +3,15 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in <link lref="releasenotes0172"/></p>
 
+
+<hdr>Release 183 on 2 dec 2009 </hdr>
+<ul>
+<li>Changed to use Metal look-and-feel if not windows</li>
+<li>Fixes to problems with synchronizing person pane with the notice panes</li>
+<li>Problems with synchronizing person pane with the notice panes</li>
+<li>Added "intellisens" proto to main person place fields - with deno data</li>
+</ul>
+
 <hdr>Release 178 on 29 Nov 2009 </hdr>
 <ul>
 <li>Fixed problems with synchronizing mainpane and notices</li>

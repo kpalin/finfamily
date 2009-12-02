@@ -157,7 +157,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	/**
 	 * Application version
 	 */
-	public static final String sukuVersion = "11.-3.0178";
+	public static final String sukuVersion = "11.-3.0183";
 	/**
 	 * Server version
 	 */
@@ -277,28 +277,30 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void startMe(String[] args) throws SukuException {
 
-		 try {
+		try {
 
-			 if (java.io.File.pathSeparatorChar == ';') {
-				 // use Windows lookandfeel if Windows
-				 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			 } else {
-				 // else use Metal
+			if (java.io.File.pathSeparatorChar == ';') {
+				// use Windows lookandfeel if Windows
+				UIManager.setLookAndFeel(UIManager
+						.getSystemLookAndFeelClassName());
+			} else {
+				// else use Metal
 
-				 UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-			 }
-//		 UIManager.LookAndFeelInfo[] liz = UIManager
-//		 .getInstalledLookAndFeels();
-//						
-//		 for (int i = 0;i < liz.length;i++) {
-//		 logger.info("lndfeel " + liz[i].getClassName());
-//							
-//		 }
-//		 UIManager.setLookAndFeel(liz[0].getClassName());
-		 } catch (Exception e) {
-		 logger.log(Level.INFO, "look-and-feel virhe", e);
-		
-		 }
+				UIManager.setLookAndFeel(UIManager
+						.getCrossPlatformLookAndFeelClassName());
+			}
+			// UIManager.LookAndFeelInfo[] liz = UIManager
+			// .getInstalledLookAndFeels();
+			//						
+			// for (int i = 0;i < liz.length;i++) {
+			// logger.info("lndfeel " + liz[i].getClassName());
+			//							
+			// }
+			// UIManager.setLookAndFeel(liz[0].getClassName());
+		} catch (Exception e) {
+			logger.log(Level.INFO, "look-and-feel virhe", e);
+
+		}
 		String arg1 = null;
 		if (args.length > 0) {
 			arg1 = args[0];
