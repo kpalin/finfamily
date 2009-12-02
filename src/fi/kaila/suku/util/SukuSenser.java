@@ -65,6 +65,10 @@ public class SukuSenser implements ListSelectionListener {
 	/**
 	 * Show intellisens
 	 * 
+	 * @param parent
+	 * @param tag
+	 * @param fld
+	 * 
 	 * @param txt
 	 */
 	public void showSens(SukuTextField parent, String tag, Field fld) {
@@ -104,8 +108,6 @@ public class SukuSenser implements ListSelectionListener {
 
 	/**
 	 * 
-	 * 
-	 * @param value
 	 */
 	public void hide() {
 		sens.setVisible(false);
