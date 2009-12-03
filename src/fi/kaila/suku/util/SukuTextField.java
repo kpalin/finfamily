@@ -74,7 +74,7 @@ public class SukuTextField extends JTextField implements FocusListener,
 		addKeyListener(this);
 
 		senser = SukuSenser.getInstance();
-		
+
 	}
 
 	boolean hasFocus = false;
@@ -92,35 +92,37 @@ public class SukuTextField extends JTextField implements FocusListener,
 
 	@Override
 	public void keyPressed(KeyEvent k) {
-//		System.out.println("k:" + k.toString());
+		// System.out.println("p:" + k.toString());
 		int cmd = k.getKeyCode();
 		// 40 = down
 		// 38 = up
-		if (cmd == 40 || cmd == 38 || cmd == 10){
-		senser.selectList(cmd);
+		if (cmd == 40 || cmd == 38 || cmd == 10) {
+			senser.selectList(cmd);
 		}
-		
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent k) {
+		// System.out.println("r:" + k.toString());
 		char c = k.getKeyChar();
 		int cmd = k.getKeyCode();
-		if ( cmd == 40 || cmd == 38 || cmd == 10){
+		if (cmd == 40 || cmd == 38) {
 			return;
 		}
-//		if (c == '\n') {
-//			senser.getSens(this);
-//			return;
-//		}
+		// if (c == '\n') {
+		// senser.getSens(this);
+		// return;
+		// }
 		senser.showSens(this, null, Field.Fld_Place);
-		
+		if (cmd == 10) {
+			senser.hide();
+		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent k) {
-
+		// System.out.println("t:" + k.toString());
 		// char c = k.getKeyChar();
 		//
 		// if (c == '\n') {

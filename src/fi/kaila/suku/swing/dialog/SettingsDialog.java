@@ -137,7 +137,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		this.ok.setBounds(120, 220, 100, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 120, d.height / 2 - 150, 240, 300);
+		setBounds(d.width / 2 - 200, d.height / 2 - 150, 400, 300);
 		getRootPane().setDefaultButton(this.ok);
 
 	}
@@ -164,6 +164,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			Suku.kontroller.putPref(owner, Resurses.DATEFORMAT,
 					dateCodes[newDateIndex]);
 			Resurses.setDateFormat(dateCodes[newDateIndex]);
+
 			setVisible(false);
 		}
 	}

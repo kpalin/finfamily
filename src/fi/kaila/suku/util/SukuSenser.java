@@ -3,6 +3,8 @@ package fi.kaila.suku.util;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import javax.swing.JList;
@@ -10,14 +12,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 
-
 import fi.kaila.suku.util.SukuTextField.Field;
 
 /**
  * @author Kalle A singleton class that displays an intellisens window below a
  *         SukuTextField
  */
-public class SukuSenser { 
+public class SukuSenser implements MouseListener {
 
 	private JWindow sens;
 	private JScrollPane scroller;
@@ -30,7 +31,9 @@ public class SukuSenser {
 
 		lista = new JList(model);
 		scroller = new JScrollPane(lista);
-//		lista.addListSelectionListener(this);
+
+		// lista.addListSelectionListener(this);
+		lista.addMouseListener(this);
 		sens.add(scroller, BorderLayout.CENTER);
 	}
 
@@ -42,6 +45,15 @@ public class SukuSenser {
 	private String[] paikat = { "Helsinki", "Espoo", "Tampere", "Porvoo",
 			"Bromarf", "Hangö", "Tyrvää", "Tammela", "Peuramaa", "Borgå",
 			"Heinola", "Hämeenlinna" };
+
+	/**
+	 * Initialize the places
+	 * 
+	 * @param places
+	 */
+	public void setPaikat(String[] places) {
+		this.paikat = places;
+	}
 
 	/**
 	 * @param tag
@@ -82,17 +94,22 @@ public class SukuSenser {
 		this.parent = parent;
 		sens.setBounds(rs);
 		String txt = parent.getText();
-		model.removeAllElements();
-		for (int i = 0; i < paikat.length; i++) {
-			if (paikat[i].toLowerCase().startsWith(txt.toLowerCase())) {
-				model.add(paikat[i]);
+		if (txt.length() > 0) {
+			model.removeAllElements();
+			for (int i = 0; i < paikat.length; i++) {
+				if (paikat[i].toLowerCase().startsWith(txt.toLowerCase())) {
+					model.add(paikat[i]);
+				}
 			}
+
+			lista.updateUI();
+			listIndex = 0;
+			lista.setSelectedIndex(listIndex);
+			// System.out.println("reset to -1");
+			sens.setVisible(model.size() > 0);
+		} else {
+			sens.setVisible(false);
 		}
-		
-		lista.updateUI();
-		listIndex=-1;
-//		System.out.println("reset to -1");
-		sens.setVisible(model.size() > 0);
 	}
 
 	/**
@@ -115,33 +132,76 @@ public class SukuSenser {
 		sens.setVisible(false);
 	}
 
-	private int listIndex=-1;
-	
+	private int listIndex = 0;
+
+	/**
+	 * move selection in sens-list forward or backward
+	 * 
+	 * @param direction
+	 */
 	public void selectList(int direction) {
-		
+		// System.out.println("d:" + direction);
 		if (direction == 40) {
-			listIndex ++;
-		} else if (direction == 38)  {
+			listIndex++;
+		} else if (direction == 38) {
 			listIndex--;
-		} else if (direction == 10){
+		} else if (direction == 10) {
 			int indexi = lista.getSelectedIndex();
 			if (indexi >= 0 && indexi < model.size()) {
 				String aux = (String) lista.getSelectedValue();
 				if (parent != null) {
 					parent.setText(aux);
 				}
-				sens.setVisible(false);
+
 				parent = null;
 				return;
 			}
+			sens.setVisible(false);
+
 		}
-		if (listIndex >= model.size()){
-			listIndex = model.size()-1;
+		if (listIndex >= model.size()) {
+			listIndex = model.size() - 1;
 		}
-//		System.out.println("cmd:" + direction + "/"+listIndex+"/" + model.size());
-		if (listIndex>= 0 ){
+
+		if (listIndex >= 0) {
 			lista.setSelectedIndex(listIndex);
+			lista.ensureIndexIsVisible(listIndex);
+
 		}
 	}
-	
+
+	@Override
+	public void mouseClicked(MouseEvent m) {
+		int indexi = lista.getSelectedIndex();
+		if (indexi >= 0 && indexi < model.size()) {
+			String aux = (String) lista.getSelectedValue();
+			if (parent != null) {
+				parent.setText(aux);
+			}
+			sens.setVisible(false);
+			parent = null;
+		}
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+
+	}
+
 }

@@ -87,6 +87,7 @@ import fi.kaila.suku.util.SukuNameComparator;
 import fi.kaila.suku.util.SukuNumStringComparator;
 import fi.kaila.suku.util.SukuPidComparator;
 import fi.kaila.suku.util.SukuRow;
+import fi.kaila.suku.util.SukuSenser;
 import fi.kaila.suku.util.SukuStringComparator;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.local.LocalAdminUtilities;
@@ -1101,6 +1102,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					if (resp.generalArray.length > 0) {
 						tSubjectPButton.setEnabled(true);
 					}
+				}
+
+				SukuData dat = Suku.kontroller.getSukuData("cmd=intelli");
+
+				SukuSenser sens = SukuSenser.getInstance();
+				if (dat != null && dat.generalArray != null
+						&& dat.generalArray.length > 1) {
+					sens.setPaikat(dat.generalArray);
 				}
 
 				return;
@@ -2262,6 +2271,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mImport2004.setEnabled(this.isConnected);
 		this.mImportGedcom.setEnabled(this.isConnected);
 		this.mQuery.setEnabled(this.isConnected);
+		this.mSettings.setEnabled(this.isConnected);
 		this.mNewDatabase.setEnabled(this.isConnected);
 		this.mDisconnect.setEnabled(this.isConnected);
 		this.tQueryButton.setEnabled(this.isConnected);
@@ -2275,8 +2285,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.tRemovePerson.setEnabled(this.isConnected);
 		this.mGroupMgr.setEnabled(this.isConnected);
 		this.tSubjectButton.setEnabled(this.isConnected);
-
-		// this.mReport.setEnabled(this.isConnected);
 	}
 
 	/**

@@ -438,6 +438,8 @@ public class SukuServerImpl implements SukuServer {
 			fam = getTypes(map.get("lang"));
 			SukuData txts = getTexts(map.get("lang"));
 			fam.vvTexts = txts.vvTexts;
+		} else if (cmd.equals("intelli")) {
+			fam = getIntelliSensData();
 		} else if (cmd.equals("getsettings")) {
 
 			fam = getSettings(map.get("index"), map.get("type"), map
@@ -656,6 +658,33 @@ public class SukuServerImpl implements SukuServer {
 		}
 
 		return fam;
+	}
+
+	private SukuData getIntelliSensData() {
+		SukuData res = new SukuData();
+
+		Vector<String> v = new Vector<String>();
+
+		try {
+			String sql = "select place,count(*) from unitnotice where place is not null group by place having count(*) > 3 order by 2 desc limit 256";
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				v.add(rs.getString(1));
+			}
+			rs.close();
+
+			res.generalArray = v.toArray(new String[0]);
+			stm.close();
+
+		} catch (SQLException e) {
+			res.resu = e.getMessage();
+			e.printStackTrace();
+		}
+
+		return res;
+
 	}
 
 	private SukuData getVirtualPerson(int pid) {
