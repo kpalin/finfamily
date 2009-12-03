@@ -3,13 +3,18 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in <link lref="releasenotes0172"/></p>
 
+<hdr>Release 188 on 4 dec 2009 </hdr>
+<ul>
+<li>Initialized intellisens places with actual data from db at connect</li>
+<li>Intellisens in use at main person place fields. press first character to display list of places. Select from list using arrowkeys and enter or mouse. Arrow keys are forwarded to scrollbar and window may scroll because of that. Searching still for solution to the scrolling efect.</li>
+</ul>
 
 <hdr>Release 184 on 2 dec 2009 </hdr>
 <ul>
 <li>Changed to use Metal look-and-feel if not windows</li>
 <li>Fixes to problems with synchronizing person pane with the notice panes</li>
 <li>Problems with synchronizing person pane with the notice panes</li>
-<li>Added "intellisens" proto to main person place fields - with deno data</li>
+<li>Added "intellisens" proto to main person place fields - with demo data</li>
 </ul>
 
 <hdr>Release 178 on 29 Nov 2009 </hdr>
