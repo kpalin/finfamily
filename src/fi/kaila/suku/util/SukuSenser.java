@@ -9,8 +9,7 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+
 
 import fi.kaila.suku.util.SukuTextField.Field;
 
@@ -18,7 +17,7 @@ import fi.kaila.suku.util.SukuTextField.Field;
  * @author Kalle A singleton class that displays an intellisens window below a
  *         SukuTextField
  */
-public class SukuSenser implements ListSelectionListener {
+public class SukuSenser { 
 
 	private JWindow sens;
 	private JScrollPane scroller;
@@ -31,7 +30,7 @@ public class SukuSenser implements ListSelectionListener {
 
 		lista = new JList(model);
 		scroller = new JScrollPane(lista);
-		lista.addListSelectionListener(this);
+//		lista.addListSelectionListener(this);
 		sens.add(scroller, BorderLayout.CENTER);
 	}
 
@@ -89,7 +88,10 @@ public class SukuSenser implements ListSelectionListener {
 				model.add(paikat[i]);
 			}
 		}
+		
 		lista.updateUI();
+		listIndex=-1;
+//		System.out.println("reset to -1");
 		sens.setVisible(model.size() > 0);
 	}
 
@@ -113,17 +115,33 @@ public class SukuSenser implements ListSelectionListener {
 		sens.setVisible(false);
 	}
 
-	@Override
-	public void valueChanged(ListSelectionEvent l) {
-		int indexi = lista.getSelectedIndex();
-		if (indexi >= 0 && indexi < model.size()) {
-			String aux = (String) lista.getSelectedValue();
-			if (parent != null) {
-				parent.setText(aux);
+	private int listIndex=-1;
+	
+	public void selectList(int direction) {
+		
+		if (direction == 40) {
+			listIndex ++;
+		} else if (direction == 38)  {
+			listIndex--;
+		} else if (direction == 10){
+			int indexi = lista.getSelectedIndex();
+			if (indexi >= 0 && indexi < model.size()) {
+				String aux = (String) lista.getSelectedValue();
+				if (parent != null) {
+					parent.setText(aux);
+				}
+				sens.setVisible(false);
+				parent = null;
+				return;
 			}
-			sens.setVisible(false);
-			parent = null;
+		}
+		if (listIndex >= model.size()){
+			listIndex = model.size()-1;
+		}
+//		System.out.println("cmd:" + direction + "/"+listIndex+"/" + model.size());
+		if (listIndex>= 0 ){
+			lista.setSelectedIndex(listIndex);
 		}
 	}
-
+	
 }
