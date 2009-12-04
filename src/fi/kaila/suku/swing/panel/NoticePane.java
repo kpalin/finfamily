@@ -39,6 +39,8 @@ import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTextField;
+import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
@@ -74,13 +76,13 @@ public class NoticePane extends JPanel implements ActionListener,
 	JLabel typeLbl;
 	JLabel descLbl;
 
-	JTextField noticeType;
-	JTextField description;
+	SukuTextField noticeType;
+	SukuTextField description;
 
 	JLabel dateLbl;
 	JLabel placeLbl;
 	SukuDateField date;
-	JTextField place;
+	SukuTextField place;
 
 	JLabel villageLbl;
 	JLabel farmLbl;
@@ -99,7 +101,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	JTextArea address;
 	JTextField postalCode;
-	JTextField postOffice;
+	SukuTextField postOffice;
 	JTextField state;
 	JTextField country;
 	JTextField email;
@@ -122,10 +124,10 @@ public class NoticePane extends JPanel implements ActionListener,
 	JLabel surLbl;
 	JLabel postLbl;
 
-	JTextField givenname;
-	JTextField patronym;
+	SukuTextField givenname;
+	SukuTextField patronym;
 	JTextField prefix;
-	JTextField surname;
+	SukuTextField surname;
 	JTextField postfix;
 	JLabel sourceLbl;
 	JLabel privateLbl;
@@ -268,7 +270,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		date = new SukuDateField();
 		add(date);
-		place = new JTextField();
+		place = new SukuTextField(null, Field.Fld_Place);
 		add(place);
 
 		village = new JTextField();
@@ -297,7 +299,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		postalCode = new JTextField();
 		add(postalCode);
-		postOffice = new JTextField();
+		postOffice = new SukuTextField(null, Field.Fld_Place);
 		add(postOffice);
 
 		country = new JTextField();
@@ -335,16 +337,16 @@ public class NoticePane extends JPanel implements ActionListener,
 		mediaTitle = new JTextField();
 		add(mediaTitle);
 
-		givenname = new JTextField();
+		givenname = new SukuTextField(null, Field.Fld_Givenname);
 		add(givenname);
 
-		patronym = new JTextField();
+		patronym = new SukuTextField(null, Field.Fld_Patronyme);
 		add(patronym);
 
 		prefix = new JTextField();
 		add(prefix);
 
-		surname = new JTextField();
+		surname = new SukuTextField(null, Field.Fld_Surname);
 		add(surname);
 
 		postfix = new JTextField();
@@ -371,13 +373,13 @@ public class NoticePane extends JPanel implements ActionListener,
 		add(typeLbl);
 
 		// newTextLang.setBounds(500,lrivi,140,20);
-		noticeType = new JTextField();
+		noticeType = new SukuTextField(null, Field.Fld_Type);
 		add(noticeType);
 
 		descLbl = new JLabel(Resurses.getString("DATA_DESCRIPTION"));
 		add(descLbl);
 
-		description = new JTextField();
+		description = new SukuTextField(notice.getTag(), Field.Fld_Description);
 		add(description);
 
 		dateLbl = new JLabel(Resurses.getString("DATA_DATE"));

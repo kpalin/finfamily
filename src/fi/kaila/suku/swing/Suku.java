@@ -1104,13 +1104,29 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					}
 				}
 
+				long startOfIntelli = System.currentTimeMillis();
 				SukuData dat = Suku.kontroller.getSukuData("cmd=intelli");
 
 				SukuSenser sens = SukuSenser.getInstance();
-				if (dat != null && dat.generalArray != null
-						&& dat.generalArray.length > 1) {
-					sens.setPaikat(dat.generalArray);
+
+				if (dat != null && dat.vvTexts != null
+						&& dat.vvTexts.size() > 5) {
+					sens.setPlaces(dat.vvTexts.get(0));
+					sens.setGivennames(dat.vvTexts.get(1));
+					sens.setPatronymes(dat.vvTexts.get(2));
+					sens.setSurnames(dat.vvTexts.get(3));
+					sens.setDescriptions(dat.vvTexts.get(4));
+					sens.setNoticeTypes(dat.vvTexts.get(5));
 				}
+				long endOfIntelli = System.currentTimeMillis();
+				long timeOfIntelli = (endOfIntelli - startOfIntelli) / 1000;
+				postServerVersion += ", Intellisens [" + timeOfIntelli
+						+ "] secs";
+
+				// if (dat != null && dat.generalArray != null
+				// && dat.generalArray.length > 1) {
+				// sens.setPaikat(dat.generalArray);
+				// }
 
 				return;
 

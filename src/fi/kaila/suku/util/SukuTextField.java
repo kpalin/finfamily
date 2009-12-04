@@ -64,6 +64,8 @@ public class SukuTextField extends JTextField implements FocusListener,
 	};
 
 	SukuSenser senser = null;
+	private String tag = null;
+	private Field type = Field.Fld_Null;
 
 	/**
 	 * @param tag
@@ -72,7 +74,8 @@ public class SukuTextField extends JTextField implements FocusListener,
 	public SukuTextField(String tag, Field type) {
 		addFocusListener(this);
 		addKeyListener(this);
-
+		this.tag = tag;
+		this.type = type;
 		senser = SukuSenser.getInstance();
 
 	}
@@ -105,7 +108,7 @@ public class SukuTextField extends JTextField implements FocusListener,
 	@Override
 	public void keyReleased(KeyEvent k) {
 		// System.out.println("r:" + k.toString());
-		char c = k.getKeyChar();
+		// char c = k.getKeyChar();
 		int cmd = k.getKeyCode();
 		if (cmd == 40 || cmd == 38) {
 			return;
@@ -114,7 +117,7 @@ public class SukuTextField extends JTextField implements FocusListener,
 		// senser.getSens(this);
 		// return;
 		// }
-		senser.showSens(this, null, Field.Fld_Place);
+		senser.showSens(this, tag, type);
 		if (cmd == 10) {
 			senser.hide();
 		}

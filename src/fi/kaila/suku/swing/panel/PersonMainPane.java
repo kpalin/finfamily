@@ -60,10 +60,10 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	private JTextField created;
 	private JTextField modified;
 
-	private JTextField givenname;
-	private JTextField patronym;
+	private SukuTextField givenname;
+	private SukuTextField patronym;
 	// private JTextField prefix;
-	private JTextField surname;
+	private SukuTextField surname;
 	private JTextField postfix;
 
 	private JTextField birtDate;
@@ -75,7 +75,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	private SukuTextField deatPlace;
 	private JTextField buriDate;
 	private SukuTextField buriPlace;
-	private JTextField occupation;
+	private SukuTextField occupation;
 
 	private JTextArea notetext;
 	private JTextArea source;
@@ -448,11 +448,11 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		add(lbl);
 		lbl.setBounds(10, rivi, 100, 20);
 
-		givenname = new JTextField();
+		givenname = new SukuTextField(null, Field.Fld_Givenname);
 		add(givenname);
 		givenname.setBounds(lcol, rivi, gnlen, 20);
 
-		patronym = new JTextField();
+		patronym = new SukuTextField(null, Field.Fld_Patronyme);
 		add(patronym);
 		patronym.setBounds(lcol + gnlen + colbet, rivi, gnlen - 5, 20);
 
@@ -471,7 +471,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		// add(prefix);
 		// prefix.setBounds(lcol, rivi, prelen, 20);
 
-		surname = new JTextField();
+		surname = new SukuTextField(null, Field.Fld_Surname);
 		add(surname);
 		surname.setBounds(lcol, rivi, surlen, 20);
 
@@ -554,7 +554,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		add(lbl);
 		lbl.setBounds(10, rivi, 100, 20);
 
-		occupation = new JTextField();
+		occupation = new SukuTextField("OCCU", Field.Fld_Description);
 		add(occupation);
 		occupation.setBounds(lcol, rivi, datelen + placlen + colbet, 20);
 

@@ -662,20 +662,89 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData getIntelliSensData() {
 		SukuData res = new SukuData();
-
-		Vector<String> v = new Vector<String>();
-
+		res.vvTexts = new Vector<String[]>();
+		Vector<String> vPlaces = new Vector<String>();
+		Vector<String> vGivennames = new Vector<String>();
+		Vector<String> vPatronymes = new Vector<String>();
+		Vector<String> vSurnames = new Vector<String>();
+		Vector<String> vDescriptions = new Vector<String>();
+		Vector<String> vTypes = new Vector<String>();
 		try {
-			String sql = "select place,count(*) from unitnotice where place is not null group by place having count(*) > 3 order by 2 desc limit 256";
+			String sql = "select place,count(*) from unitnotice "
+					+ "where place is not null group by place  "
+					+ "order by 2 desc limit 256";
+			// having count(*) > 3
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 
 			while (rs.next()) {
-				v.add(rs.getString(1));
+				vPlaces.add(rs.getString(1));
 			}
 			rs.close();
 
-			res.generalArray = v.toArray(new String[0]);
+			res.vvTexts.add(vPlaces.toArray(new String[0]));
+
+			sql = "select givenname,count(*) from unitnotice "
+					+ "where givenname is not null group by givenname "
+					+ "order by 2 desc limit 256";
+
+			rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				vGivennames.add(rs.getString(1));
+			}
+			rs.close();
+			res.vvTexts.add(vGivennames.toArray(new String[0]));
+
+			sql = "select patronym,count(*) from unitnotice "
+					+ "where patronym is not null group by patronym "
+					+ "order by 2 desc limit 256";
+
+			rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				vPatronymes.add(rs.getString(1));
+			}
+			rs.close();
+
+			res.vvTexts.add(vPatronymes.toArray(new String[0]));
+
+			sql = "select surname,count(*) from unitnotice "
+					+ "where surname is not null group by surname "
+					+ "order by 2 desc limit 256";
+
+			rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				vSurnames.add(rs.getString(1));
+			}
+			rs.close();
+			res.vvTexts.add(vSurnames.toArray(new String[0]));
+
+			sql = "select tag || ';' || description,count(*) from unitnotice "
+					+ "where description is not null group by tag,description "
+					+ "order by 2 desc limit 1024";
+
+			rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				vDescriptions.add(rs.getString(1));
+			}
+			rs.close();
+			res.vvTexts.add(vDescriptions.toArray(new String[0]));
+
+			sql = "select noticetype,count(*) from unitnotice "
+					+ "where noticetype is not null group by noticetype "
+					+ "order by 2 desc limit 256";
+
+			rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				vTypes.add(rs.getString(1));
+			}
+			rs.close();
+			res.vvTexts.add(vTypes.toArray(new String[0]));
+
 			stm.close();
 
 		} catch (SQLException e) {

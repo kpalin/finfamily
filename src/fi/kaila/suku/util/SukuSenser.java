@@ -46,19 +46,69 @@ public class SukuSenser implements MouseListener {
 			"Bromarf", "Hangö", "Tyrvää", "Tammela", "Peuramaa", "Borgå",
 			"Heinola", "Hämeenlinna" };
 
+	private String[] givennames = null;
+	private String[] patronymes = null;
+	private String[] surnames = null;
+	private String[] descriptions = null;
+	private String[] noticeTypes = null;
+
 	/**
 	 * Initialize the places
 	 * 
 	 * @param places
 	 */
-	public void setPaikat(String[] places) {
+	public void setPlaces(String[] places) {
 		this.paikat = places;
 	}
 
 	/**
-	 * @param tag
-	 * @param fld
-	 * @param parent
+	 * Initialize the givennames
+	 * 
+	 * @param givennames
+	 */
+	public void setGivennames(String[] givennames) {
+		this.givennames = givennames;
+	}
+
+	/**
+	 * Initialize the patronymes
+	 * 
+	 * @param patronymes
+	 */
+	public void setPatronymes(String[] patronymes) {
+		this.patronymes = patronymes;
+	}
+
+	/**
+	 * 
+	 * Initialize the surnames
+	 * 
+	 * @param surnames
+	 */
+	public void setSurnames(String[] surnames) {
+		this.surnames = surnames;
+	}
+
+	/**
+	 * initialize the descriptions
+	 * 
+	 * @param descriptions
+	 */
+	public void setDescriptions(String[] descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	/**
+	 * 
+	 * initialize the noticetypes
+	 * 
+	 * @param noticeTypes
+	 */
+	public void setNoticeTypes(String[] noticeTypes) {
+		this.noticeTypes = noticeTypes;
+	}
+
+	/**
 	 * @return the handle
 	 */
 	public static SukuSenser getInstance() {
@@ -79,8 +129,6 @@ public class SukuSenser implements MouseListener {
 	 * @param parent
 	 * @param tag
 	 * @param fld
-	 * 
-	 * @param txt
 	 */
 	public void showSens(SukuTextField parent, String tag, Field fld) {
 		Rectangle rt = parent.getBounds();
@@ -96,12 +144,65 @@ public class SukuSenser implements MouseListener {
 		String txt = parent.getText();
 		if (txt.length() > 0) {
 			model.removeAllElements();
-			for (int i = 0; i < paikat.length; i++) {
-				if (paikat[i].toLowerCase().startsWith(txt.toLowerCase())) {
-					model.add(paikat[i]);
+			switch (fld) {
+			case Fld_Place:
+				for (int i = 0; i < paikat.length; i++) {
+					if (paikat[i].toLowerCase().startsWith(txt.toLowerCase())) {
+						model.add(paikat[i]);
+					}
 				}
-			}
+				break;
+			case Fld_Givenname:
+				for (int i = 0; i < givennames.length; i++) {
+					if (givennames[i].toLowerCase().startsWith(
+							txt.toLowerCase())) {
+						model.add(givennames[i]);
+					}
+				}
+				break;
+			case Fld_Patronyme:
+				for (int i = 0; i < patronymes.length; i++) {
+					if (patronymes[i].toLowerCase().startsWith(
+							txt.toLowerCase())) {
+						model.add(patronymes[i]);
+					}
+				}
+				break;
+			case Fld_Surname:
+				for (int i = 0; i < surnames.length; i++) {
+					if (surnames[i].toLowerCase().startsWith(txt.toLowerCase())) {
+						model.add(surnames[i]);
+					}
+				}
+				break;
+			case Fld_Type:
+				for (int i = 0; i < noticeTypes.length; i++) {
+					if (noticeTypes[i].toLowerCase().startsWith(
+							txt.toLowerCase())) {
+						model.add(noticeTypes[i]);
+					}
+				}
+				break;
+			case Fld_Description:
+				if (tag != null) {
+					for (int i = 0; i < descriptions.length; i++) {
+						int iix = descriptions[i].indexOf(';');
+						if (iix > 0) {
+							String myTag = descriptions[i].substring(0, iix);
+							String myText = descriptions[i].substring(iix + 1);
+							if (myTag.equals(tag)) {
 
+								if (myText.toLowerCase().startsWith(
+										txt.toLowerCase())) {
+									model.add(myText);
+								}
+							}
+						}
+					}
+				}
+				break;
+
+			}
 			lista.updateUI();
 			listIndex = 0;
 			lista.setSelectedIndex(listIndex);
