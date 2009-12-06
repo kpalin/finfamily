@@ -1163,6 +1163,9 @@ public class NoticePane extends JPanel implements ActionListener,
 			descLbl.setVisible(false);
 			noticeType.setVisible(false);
 			typeLbl.setVisible(false);
+			// FIXME: This method contains a switch statement where one case
+			// branch will fall through to the next case. Usually you need to
+			// end this case with a break or return.
 		case NAME:
 		case RESI:
 			// place.setVisible(false);

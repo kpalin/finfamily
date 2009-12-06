@@ -10,6 +10,7 @@ import java.util.Vector;
  */
 public class PersonInTables {
 
+	// FIXME: This field is never read. Consider removing it from the class.
 	int pid = 0;
 	Vector<Long> asChildren = new Vector<Long>();
 	Vector<Long> asParents = new Vector<Long>();

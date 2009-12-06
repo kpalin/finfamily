@@ -785,6 +785,7 @@ public class SukuServerImpl implements SukuServer {
 
 			}
 			prs.close();
+			pstm.close();
 		} catch (SQLException e) {
 			resp.resu = e.getMessage();
 		}
