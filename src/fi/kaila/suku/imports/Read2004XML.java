@@ -631,9 +631,7 @@ public class Read2004XML extends DefaultHandler {
 				}
 				this.pstm.setTimestamp(6, toTimestamp(this.unitCreateDate));
 				this.pstm.executeUpdate();
-				if (this.unitId.equals("I24")) {
-					System.out.println("Nytte");
-				}
+
 				logger.fine("Unit: " + this.unitId + "/" + this.unitSex + "/"
 						+ this.unitSourceId);
 

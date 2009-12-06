@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.server.utils.GroupUtil;
+import fi.kaila.suku.server.utils.ImportGedcomUtil;
 import fi.kaila.suku.server.utils.PersonUtil;
 import fi.kaila.suku.server.utils.ReportUtil;
 import fi.kaila.suku.server.utils.Upload;
@@ -484,7 +485,8 @@ public class SukuServerImpl implements SukuServer {
 			} else {
 				fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
 			}
-			fam = importGedcom(file, db);
+			ImportGedcomUtil inged = new ImportGedcomUtil(con);
+			fam = inged.importGedcom(file, db);
 
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");
@@ -702,39 +704,6 @@ public class SukuServerImpl implements SukuServer {
 
 		}
 		return resp;
-	}
-
-	private SukuData importGedcom(String file, String db) throws SukuException {
-		SukuData resp = new SukuData();
-
-		Statement stm;
-		try {
-			int unitCount = 0;
-			stm = con.createStatement();
-			ResultSet rs = stm.executeQuery("select count(*) from unit");
-
-			if (rs.next()) {
-				unitCount = rs.getInt(1);
-
-			}
-			rs.close();
-			stm.close();
-			// if (unitCount > 0) {
-			// throw new SukuException(Resurses
-			// .getString("DATABASE_NOT_EMPTY"));
-			//
-			// }
-
-		} catch (SQLException e) {
-			throw new SukuException(e);
-
-		}
-		return resp;
-		// SukuUtility data = SukuUtility.instance();
-		// data.createSukuDb(this.con, "/sql/finfamily.sql");
-
-		// logger.fine("database created for " + path);
-
 	}
 
 	private SukuData getIntelliSensData() {

@@ -20,6 +20,7 @@ import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * 
@@ -179,9 +180,14 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 						"path=resources/excel/TextsExcel.xls", "page=texts");
 
 				if (!fileName.getText().equals("")) {
-					kontroller.getSukuData("cmd=importGedcom", "db="
-							+ fileName.getText());
+					SukuData resp = kontroller.getSukuData("cmd=importGedcom",
+							"db=" + fileName.getText());
 
+					if (resp.resu != null) {
+						JOptionPane.showMessageDialog(owner, Resurses
+								.getString("IMPORT_GEDCOM")
+								+ ":" + resp.resu);
+					}
 				}
 			} catch (SukuException e) {
 				e.printStackTrace();
@@ -233,7 +239,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				progressBar.setValue(0);
 				return;
 			}
-
+			progressBar.setIndeterminate(false);
 			progressBar.setValue(progress);
 			textContent.setText(kaksi[1]);
 
