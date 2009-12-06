@@ -719,7 +719,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * @return the tag or the name of the requested text
 	 */
 	public static String getRepoLanguage(int idx, boolean theCode) {
-		if (repoLangList == null && idx >= 0)
+		if (repoLangList == null || idx < repoLangList.length)
 			return null;
 		String[] tmp = repoLangList[idx].split(";");
 		if (theCode)
@@ -1499,16 +1499,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				ImportGedcomDialog dlg = new ImportGedcomDialog(this, dbname);
 				dlg.setVisible(true);
 			}
-			// dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
-			// kontroller.getSukuData("cmd=excel",
-			// "path=resources/excel/PaikatExcel.xls", "page=coordinates");
-			// dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
-			// kontroller.getSukuData("cmd=excel",
-			// "path=resources/excel/TypesExcel.xls", "page=types");
-			// kontroller.getSukuData("cmd=excel",
-			// "path=resources/excel/TextsExcel.xls", "page=texts");
-			//
-			// queryDb();
+
+			JOptionPane.showMessageDialog(this,
+					"Gedcom import under construction", Resurses
+							.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 
 		} catch (SukuException e1) {
 			JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses

@@ -156,10 +156,11 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			Suku.kontroller.putPref(owner, Resurses.LOCALE, locas[newLoca]);
 
 			int newLang = repolang.getSelectedIndex();
-			Suku.kontroller.putPref(owner, Resurses.REPOLANG, Suku
-					.getRepoLanguage(newLang, true));
-			Resurses.setLanguage(locas[newLang]);
-
+			if (newLang >= 0) {
+				Suku.kontroller.putPref(owner, Resurses.REPOLANG, Suku
+						.getRepoLanguage(newLang, true));
+				Resurses.setLanguage(locas[newLang]);
+			}
 			int newDateIndex = dateFormat.getSelectedIndex();
 			Suku.kontroller.putPref(owner, Resurses.DATEFORMAT,
 					dateCodes[newDateIndex]);

@@ -269,9 +269,6 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 	class Task extends SwingWorker<Void, Void> {
 
-		// FIXME: This field is never read. Consider removing it from the class.
-		String lang = null;
-
 		Vector<String> wn = null;
 
 		/*
