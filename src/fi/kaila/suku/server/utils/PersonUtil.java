@@ -581,9 +581,7 @@ public class PersonUtil {
 									pst.setInt(2, rr.getRid());
 									pst.setInt(3, rr.getPid());
 									int lukuri = pst.executeUpdate();
-									if (false)
-										System.out.println("RELAFFMMROW # "
-												+ lukuri);
+									logger.finest("RELAFFMMROW # " + lukuri);
 
 								}
 
@@ -681,8 +679,8 @@ public class PersonUtil {
 							rorder.setInt(1, j);
 							rorder.setInt(2, rnid);
 							int orderit = rorder.executeUpdate();
-							if (false)
-								System.out.println("RN order lkm = " + orderit);
+
+							logger.finest("RN order lkm = " + orderit);
 							if (rn.getLanguages() != null) {
 
 								for (int k = 0; k < rn.getLanguages().length; k++) {
@@ -779,8 +777,8 @@ public class PersonUtil {
 					pst.setInt(2, r.getRid());
 					pst.setInt(3, r.getPid());
 					int lukuri = pst.executeUpdate();
-					if (false)
-						System.out.println("RELAROW # " + lukuri);
+
+					logger.finest("RELAROW # " + lukuri);
 
 				}
 			}

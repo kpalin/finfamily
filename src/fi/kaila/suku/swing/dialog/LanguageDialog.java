@@ -54,10 +54,10 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	private JTextField mediaTitle = null;
 
 	private static int ytype = 40;
-	private static int ydesc = 64;
+	// private static int ydesc = 64;
 	private static int yplace = 88;
 	private static int ytitle = 110;
-	private static int ynote = 132;
+	// private static int ynote = 132;
 
 	private JButton ok;
 	JLabel createdLbl = null;
@@ -173,6 +173,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * @param tag
 	 * @param languages
 	 *            to be initialized
 	 */

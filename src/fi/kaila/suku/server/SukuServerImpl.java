@@ -474,6 +474,18 @@ public class SukuServerImpl implements SukuServer {
 					import2004Data(file, lang);
 				}
 			}
+		} else if (cmd.equals("unitCount")) {
+			fam = getUnitCount();
+		} else if (cmd.equals("importGedcom")) {
+			String db = map.get("db");
+			file = this.openFile;
+			if (file == null) {
+				file = map.get("filename"); // probably not used
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
+			}
+			fam = importGedcom(file, db);
+
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");
 			String path = map.get("path");
@@ -658,6 +670,71 @@ public class SukuServerImpl implements SukuServer {
 		}
 
 		return fam;
+	}
+
+	private SukuData getUnitCount() throws SukuException {
+		SukuData resp = new SukuData();
+		Statement stm;
+		try {
+
+			stm = con.createStatement();
+			boolean unitExists = false;
+			ResultSet rs = stm
+					.executeQuery("select tablename from pg_tables where tablename = 'unit'");
+
+			if (rs.next()) {
+				unitExists = true;
+			} else {
+				resp.resuCount = -1;
+			}
+			rs.close();
+			if (unitExists) {
+				rs = stm.executeQuery("select count(*) from unit");
+				if (rs.next()) {
+					resp.resuCount = rs.getInt(1);
+				}
+				rs.close();
+			}
+			stm.close();
+
+		} catch (SQLException e) {
+			throw new SukuException(e);
+
+		}
+		return resp;
+	}
+
+	private SukuData importGedcom(String file, String db) throws SukuException {
+		SukuData resp = new SukuData();
+
+		Statement stm;
+		try {
+			int unitCount = 0;
+			stm = con.createStatement();
+			ResultSet rs = stm.executeQuery("select count(*) from unit");
+
+			if (rs.next()) {
+				unitCount = rs.getInt(1);
+
+			}
+			rs.close();
+			stm.close();
+			// if (unitCount > 0) {
+			// throw new SukuException(Resurses
+			// .getString("DATABASE_NOT_EMPTY"));
+			//
+			// }
+
+		} catch (SQLException e) {
+			throw new SukuException(e);
+
+		}
+		return resp;
+		// SukuUtility data = SukuUtility.instance();
+		// data.createSukuDb(this.con, "/sql/finfamily.sql");
+
+		// logger.fine("database created for " + path);
+
 	}
 
 	private SukuData getIntelliSensData() {

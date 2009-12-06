@@ -63,6 +63,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 import fi.kaila.suku.imports.Import2004Dialog;
+import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
 import fi.kaila.suku.kontroller.SukuKontrollerWebstartImpl;
@@ -1309,9 +1310,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			} else if (cmd.equals("MENU_TOOLS_LOAD_TYPES")) {
 				importDefaultTypes();
 			} else if (cmd.equals(Resurses.IMPORT_GEDCOM)) {
-				JOptionPane.showMessageDialog(this, "Under construction",
-						Resurses.getString(Resurses.SUKU),
-						JOptionPane.INFORMATION_MESSAGE);
+				importGedcom();
+				// JOptionPane.showMessageDialog(this, "Under construction",
+				// Resurses.getString(Resurses.SUKU),
+				// JOptionPane.INFORMATION_MESSAGE);
 
 			} else if (cmd.equals(Resurses.IMPORT_HISKI)) {
 				importFromHiski();
@@ -1476,6 +1478,44 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					+ ":" + ex.getMessage());
 
 		}
+	}
+
+	private void importGedcom() {
+
+		boolean isOpened;
+		try {
+			SukuData resp = kontroller.getSukuData("cmd=unitCount");
+			if (resp.resuCount > 0) {
+				JOptionPane.showMessageDialog(this, Resurses
+						.getString("DATABASE_NOT_EMPTY"), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			isOpened = kontroller.openLocalFile("ged");
+			String dbname = kontroller.getFileName();
+			logger.finest("Opened GEDCOM FILE status " + isOpened);
+			if (isOpened) {
+				ImportGedcomDialog dlg = new ImportGedcomDialog(this, dbname);
+				dlg.setVisible(true);
+			}
+			// dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
+			// kontroller.getSukuData("cmd=excel",
+			// "path=resources/excel/PaikatExcel.xls", "page=coordinates");
+			// dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
+			// kontroller.getSukuData("cmd=excel",
+			// "path=resources/excel/TypesExcel.xls", "page=types");
+			// kontroller.getSukuData("cmd=excel",
+			// "path=resources/excel/TextsExcel.xls", "page=texts");
+			//
+			// queryDb();
+
+		} catch (SukuException e1) {
+			JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			e1.printStackTrace();
+		}
+
 	}
 
 	/**

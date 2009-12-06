@@ -830,8 +830,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			SukuData request = new SukuData();
 			request.generalArray = v.toArray(new String[0]);
 			try {
-				SukuData sets = Suku.kontroller.getSukuData(request,
-						"cmd=updatesettings", "type=query");
+				Suku.kontroller.getSukuData(request, "cmd=updatesettings",
+						"type=query");
 			} catch (SukuException e1) {
 				logger
 						.log(Level.WARNING, "Failed to write query settings ",
@@ -862,7 +862,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		createdFromDate.setText("");
 		createdToDate.setText("");
-		if (viewList.getItemCount()>0){
+		if (viewList.getItemCount() > 0) {
 			viewList.setSelectedIndex(0);
 		}
 		viewGroup.setText("");
