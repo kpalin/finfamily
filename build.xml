@@ -159,7 +159,7 @@
     <mkdir dir="${build.home}/classes"/>
 
     <javac   source="1.6" destdir="${build.home}/classes" 
-		debug="yes" >
+		debug="yes" encoding="UTF-8">
 		 <src path="${src.home}" />
 		  <src path="${junit.home}" />
         <classpath>
@@ -213,7 +213,7 @@
 
 
     <target name="javadoc">
-        <javadoc access="public" author="true" classpath="lib/servlet.jar;lib/postgresql-8.3-604.jdbc4.jar;lib/jxl.jar;resources;lib/junit-4.4.jar;lib/jnlp.jar" 
+        <javadoc access="public" encoding="UTF-8" author="true" classpath="lib/servlet.jar;lib/postgresql-8.3-604.jdbc4.jar;lib/jxl.jar;resources;lib/junit-4.4.jar;lib/jnlp.jar" 
 		destdir="guide/javadoc" doctitle="FinFamily 11" nodeprecated="false" 
 		nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" 
 		stylesheetfile="guide/xml/stylesheet.css"
