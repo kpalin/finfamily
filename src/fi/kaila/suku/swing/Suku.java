@@ -72,6 +72,7 @@ import fi.kaila.suku.swing.dialog.ConnectDialog;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SettingsDialog;
+import fi.kaila.suku.swing.dialog.SukuPad;
 import fi.kaila.suku.swing.dialog.ToolsDialog;
 import fi.kaila.suku.swing.dialog.ViewMgrWindow;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
@@ -1498,24 +1499,25 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (isOpened) {
 				ImportGedcomDialog dlg = new ImportGedcomDialog(this, dbname);
 				dlg.setVisible(true);
-				
-				String [] failedLines = dlg.getResult();
+
+				String[] failedLines = dlg.getResult();
 				if (failedLines != null) {
-				StringBuffer sb = new StringBuffer();
-				for (int i = 0; i < failedLines.length; i++) {
-					sb.append(failedLines[i] + "\n");
+					StringBuffer sb = new StringBuffer();
+					for (int i = 0; i < failedLines.length; i++) {
+						sb.append(failedLines[i] + "\n");
+					}
+
+					SukuPad pad = new SukuPad(this, sb.toString());
+					pad.setVisible(true);
+					// JOptionPane.showMessageDialog(this,sb.toString());
 				}
-				
-				
-				JOptionPane.showMessageDialog(this,sb.toString());
-				}
-				
+
 			}
 
-			JOptionPane.showMessageDialog(this,
-					"Gedcom import under construction", Resurses
-							.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+			// JOptionPane.showMessageDialog(this,
+			// "Gedcom import under construction", Resurses
+			// .getString(Resurses.SUKU),
+			// JOptionPane.ERROR_MESSAGE);
 
 		} catch (SukuException e1) {
 			JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
