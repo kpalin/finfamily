@@ -26,7 +26,9 @@ import javax.swing.border.TitledBorder;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTextField;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
@@ -46,9 +48,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JTextField surname;
-	private JTextField givenname;
-	private JTextField patronyme;
+	private SukuTextField surname;
+	private SukuTextField givenname;
+	private SukuTextField patronyme;
 
 	private JTextField birtFromDate;
 	private JTextField birtToDate;
@@ -266,11 +268,11 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		lbl = new JLabel(Resurses.getString(Resurses.CRITERIA_PATRONYME));
 		this.namePanel.add(lbl);
 
-		this.surname = new JTextField();
+		this.surname = new SukuTextField(null, Field.Fld_Surname);
 		this.namePanel.add(this.surname);
-		this.givenname = new JTextField();
+		this.givenname = new SukuTextField(null, Field.Fld_Givenname);
 		this.namePanel.add(this.givenname);
-		this.patronyme = new JTextField();
+		this.patronyme = new SukuTextField(null, Field.Fld_Patronyme);
 		this.namePanel.add(this.patronyme);
 
 		y += 80;

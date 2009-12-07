@@ -1270,7 +1270,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							if (p.getPid() == pane.getPid()) {
 								personView.closeMainPane(false);
 							} else {
-								personView.refresRelativesPane();
+								personView.refreshRelativesPane();
 
 							}
 						}
@@ -2683,6 +2683,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		protected Transferable createTransferable(JComponent c) {
 			if (c instanceof JTable) {
+				int midx = personView.getMainPaneIndex();
+				if (midx >= 2) {
+					personView.setSelectedIndex(midx + 1);
+				}
 
 				PersonShortData ps = getSelectedPerson();
 				if (ps != null) {

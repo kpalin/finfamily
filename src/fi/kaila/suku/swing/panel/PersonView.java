@@ -787,7 +787,10 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
-	public void refresRelativesPane() {
+	/**
+	 * refresh the relatives pane
+	 */
+	public void refreshRelativesPane() {
 		int midx = getMainPaneIndex();
 		if (midx < 0)
 			return;
@@ -862,17 +865,17 @@ public class PersonView extends JPanel implements ChangeListener {
 						main.updateName();
 						main.updateRest();
 					}
-					if (true) {
-						for (int i = fnotice; i < getTabCount(); i++) {
-							NoticePane pane = (NoticePane) getPane(i).pnl;
-							pane.verifyUnitNotice();
-						}
-
-					} else {
-						// the idea with forced update was to aide in comparing
-						// dates for corrctness
-						main.updatePerson();
+					// if (true) {
+					for (int i = fnotice; i < getTabCount(); i++) {
+						NoticePane pane = (NoticePane) getPane(i).pnl;
+						pane.verifyUnitNotice();
 					}
+
+					// } else {
+					// // the idea with forced update was to aide in comparing
+					// // dates for corrctness
+					// main.updatePerson();
+					// }
 				} catch (SukuDateException e1) {
 					if (previousNoticeIndex <= mnotice + 1) {
 						previousNoticeIndex = mnotice;
@@ -890,7 +893,12 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	boolean skipNextState = false;
 
-	void setSelectedIndex(int tabIndex) {
+	/**
+	 * Select a pane to show
+	 * 
+	 * @param tabIndex
+	 */
+	public void setSelectedIndex(int tabIndex) {
 		skipNextState = true;
 		tabbedPane.setSelectedIndex(tabIndex);
 	}
