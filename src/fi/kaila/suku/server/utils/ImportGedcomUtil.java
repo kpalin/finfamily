@@ -136,96 +136,234 @@ public class ImportGedcomUtil {
 
 					break;
 				case Set_Utf8:
-					if ((data & 0x80)== 0) {
-						c = (char)data;
+					if ((data & 0x80) == 0) {
+						c = (char) data;
 						break;
 					}
 					datax = bis.read();
-					if ((data & 0x20)== 0) {
+					if ((data & 0x20) == 0) {
 						datax &= 0x3F;
 						data &= 0x1F;
 						data = data << 6;
-						c = (char)(data | datax);
+						c = (char) (data | datax);
 						break;
 					}
 					datay = bis.read();
-					if ((data & 0x10)==0) {
+					if ((data & 0x10) == 0) {
 						datay &= 0x3F;
 						datax &= 0x3F;
-						data  &= 0x0F;
+						data &= 0x0F;
 						datax = datax << 6;
 						data = data << 10;
-						c = (char)(data|datax|datay);
+						c = (char) (data | datax | datay);
 					}
 					dataz = bis.read();
 					dataz &= 0x3F;
 					datay &= 0x3F;
 					datax &= 0x3F;
-					data  &= 0x07;
+					data &= 0x07;
 					datay = datay << 6;
 					datax = datax << 12;
 					data = data << 18;
-					c = (char)(data | datax | datay | dataz);
+					c = (char) (data | datax | datay | dataz);
 					break;
-					
+
 				case Set_Ansel:
-					
-					if ((data & 0x80 ) == 0){
-						c = (char)data;
+
+					if ((data & 0x80) == 0) {
+						c = (char) data;
 						break;
 					}
-					datax = bis.read();
-					switch (data){
-					case 0xE8:
-						switch (datax) {
-						case 'a':
-							c = 'ä';
+					if (data < 0xE0) {
+						if (data == 0xA4)
+							c = 'Þ';
+						else if (data == 0xA2)
+							c = 'Ø';
+						else if (data == 0xA5)
+							c = 'Æ';
+						else if (data == 0xA6)
+							c = 'Œ';
+						else if (data == 0xAA)
+							c = '®';
+
+						else if (data == 0xAB)
+							c = '±';
+						else if (data == 0xB2)
+							c = 'ø';
+						else if (data == 0xB4)
+							c = 'þ';
+						else if (data == 0xB5)
+							c = 'æ';
+						else if (data == 0xB6)
+							c = 'œ';
+						else if (data == 0xB9)
+							c = '£';
+						else if (data == 0xBA)
+							c = 'ð';
+						else if (data == 0xC3)
+							c = '©';
+						else if (data == 0xC5)
+							c = '¿';
+						else if (data == 0xC6)
+							c = '¡';
+						else if (data == 0xCF)
+							c = 'ß';
+						else
+							c = '?';
+
+					} else {
+						datax = bis.read();
+
+						switch (data) {
+						case 0xE1: // grave accent
+							if (datax == 'a')
+								c = 'à';
+							else if (datax == 'A')
+								c = 'À';
+							else if (datax == 'e')
+								c = 'è';
+							else if (datax == 'E')
+								c = 'È';
+							else if (datax == 'i')
+								c = 'ì';
+							else if (datax == 'I')
+								c = 'ì';
+							else if (datax == 'o')
+								c = 'ò';
+							else if (datax == 'O')
+								c = 'Ò';
+							else if (datax == 'u')
+								c = 'ù';
+							else if (datax == 'U')
+								c = 'Ù';
+							else
+								c = (char) datax;
 							break;
-						case 'A':
-							c = 'Ä';
+						case 0xE2: // acute accent
+							if (datax == 'a')
+								c = 'á';
+							else if (datax == 'A')
+								c = 'Á';
+							else if (datax == 'e')
+								c = 'é';
+							else if (datax == 'E')
+								c = 'É';
+							else if (datax == 'i')
+								c = 'í';
+							else if (datax == 'I')
+								c = 'Í';
+							else if (datax == 'o')
+								c = 'ó';
+							else if (datax == 'O')
+								c = 'Ó';
+							else if (datax == 'u')
+								c = 'ú';
+							else if (datax == 'U')
+								c = 'Ú';
+							else
+								c = (char) datax;
 							break;
-						case 'o':
-							c = 'ö';
+						case 0xE3: // circumflex accent
+							if (datax == 'a')
+								c = 'â';
+							else if (datax == 'A')
+								c = 'Â';
+							else if (datax == 'e')
+								c = 'ê';
+							else if (datax == 'E')
+								c = 'Ê';
+							else if (datax == 'i')
+								c = 'î';
+							else if (datax == 'I')
+								c = 'Î';
+							else if (datax == 'o')
+								c = 'ô';
+							else if (datax == 'O')
+								c = 'Ô';
+							else if (datax == 'u')
+								c = 'û';
+							else if (datax == 'U')
+								c = 'Û';
+							else
+								c = (char) datax;
 							break;
-						case 'O':
-							c = 'Ö';
+						case 0xE4: // tilde
+							if (datax == 'a')
+								c = 'ã';
+							else if (datax == 'A')
+								c = 'Ã';
+							else if (datax == 'n')
+								c = 'ñ';
+							else if (datax == 'N')
+								c = 'Ñ';
+							else if (datax == 'o')
+								c = 'õ';
+							else if (datax == 'O')
+								c = 'Õ';
+							else
+								c = (char) datax;
 							break;
-						case 'u':
-							c = 'ü';
+						case 0xF0: // cedilla
+							if (datax == 'c')
+								c = 'ç';
+							else if (datax == 'C')
+								c = 'Ç';
+							else if (datax == 'n')
+								c = 'ñ';
+							else if (datax == 'N')
+								c = 'Ñ';
+							else if (datax == 'o')
+								c = 'õ';
+							else if (datax == 'O')
+								c = 'Õ';
+							else
+								c = (char) datax;
 							break;
-						case 'U':
-							c = 'Ü';
+
+						case 0xE8: // umlaut
+							if (datax == 'a')
+								c = 'ä';
+							else if (datax == 'A')
+								c = 'Ä';
+							else if (datax == 'o')
+								c = 'ö';
+							else if (datax == 'O')
+								c = 'Ö';
+							else if (datax == 'u')
+								c = 'ü';
+							else if (datax == 'U')
+								c = 'Ü';
+							else if (datax == 'e')
+								c = 'ë';
+							else if (datax == 'E')
+								c = 'Ë';
+							else if (datax == 'i')
+								c = 'ï';
+							else if (datax == 'I')
+								c = 'Ï';
+							else
+								c = (char) datax;
 							break;
+						case 0xEA: // ringabove
+							if (datax == 'a')
+								c = 'å';
+							else if (datax == 'A')
+								c = 'Å';
+							else
+								c = (char) datax;
+							break;
+
 						default:
-							c = (char)datax;
+							c = (char) datax;
 							break;
 						}
-						break;
-					case 0xEA:
-						switch (datax) {
-						case 'a':
-							c = 'å';
-							break;
-						case 'A':
-							c = 'Å';
-							break;
-						default:
-							c = (char)datax;
-							break;
-						}
-						break;
-					default:
-						c = (char)datax;
-						break;
-					}
-					
+					} // end of ansel
 					break;
 				default:
 					c = (char) data;
-
+					break;
 				}
-				
-				
+
 				if (c != '\n' && c != '\r') {
 					if (line.length() > 0 || c != ' ') {
 						line.append(c);
@@ -271,24 +409,23 @@ public class ImportGedcomUtil {
 						} else {
 							tag = linex.substring(i1 + 1);
 						}
-//						System.out.println("'" + level + "'" + refId + "'"
-//								+ tag + "'" + lineValue);
+						// System.out.println("'" + level + "'" + refId + "'"
+						// + tag + "'" + lineValue);
 					}
-					if (tag == null) continue; 
-					if (thisSet == GedSet.Set_None && lineValue != null &&
-							level==1 && tag.equals("CHAR")) {
-						 if (lineValue.equalsIgnoreCase("UNICODE") || 
-								lineValue.equalsIgnoreCase("UTF-8") || 
-								lineValue.equalsIgnoreCase("UTF8")){
-							 thisSet = GedSet.Set_Utf8;
-						 } else if (lineValue.equalsIgnoreCase("ANSEL")){
-							 thisSet = GedSet.Set_Ansel;
-						 }
+					if (tag == null)
+						continue;
+					if (thisSet == GedSet.Set_None && lineValue != null
+							&& level == 1 && tag.equals("CHAR")) {
+						if (lineValue.equalsIgnoreCase("UNICODE")
+								|| lineValue.equalsIgnoreCase("UTF-8")
+								|| lineValue.equalsIgnoreCase("UTF8")) {
+							thisSet = GedSet.Set_Utf8;
+						} else if (lineValue.equalsIgnoreCase("ANSEL")) {
+							thisSet = GedSet.Set_Ansel;
+						}
 
 					}
-					
-					
-					
+
 					line = new StringBuffer();
 				}
 
