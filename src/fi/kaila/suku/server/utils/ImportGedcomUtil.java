@@ -113,6 +113,8 @@ public class ImportGedcomUtil {
 			System.out.println("GEDC" + data0 + "/" + data1 + "/" + data2 + "/"
 					+ data3);
 			int datax;
+			int datay;
+			int dataz;
 			int level = 0;
 			String tag;
 			String refId;
@@ -125,7 +127,7 @@ public class ImportGedcomUtil {
 				switch (thisSet) {
 				case Set_Utf16le:
 					datax = bis.read();
-					c = (char) (datax * 256 + datax);
+					c = (char) (datax * 256 + data);
 
 					break;
 				case Set_Utf16be:
@@ -133,10 +135,97 @@ public class ImportGedcomUtil {
 					c = (char) (data * 256 + datax);
 
 					break;
+				case Set_Utf8:
+					if ((data & 0x80)== 0) {
+						c = (char)data;
+						break;
+					}
+					datax = bis.read();
+					if ((data & 0x20)== 0) {
+						datax &= 0x3F;
+						data &= 0x1F;
+						data = data << 6;
+						c = (char)(data | datax);
+						break;
+					}
+					datay = bis.read();
+					if ((data & 0x10)==0) {
+						datay &= 0x3F;
+						datax &= 0x3F;
+						data  &= 0x0F;
+						datax = datax << 6;
+						data = data << 10;
+						c = (char)(data|datax|datay);
+					}
+					dataz = bis.read();
+					dataz &= 0x3F;
+					datay &= 0x3F;
+					datax &= 0x3F;
+					data  &= 0x07;
+					datay = datay << 6;
+					datax = datax << 12;
+					data = data << 18;
+					c = (char)(data | datax | datay | dataz);
+					break;
+					
+				case Set_Ansel:
+					
+					if ((data & 0x80 ) == 0){
+						c = (char)data;
+						break;
+					}
+					datax = bis.read();
+					switch (data){
+					case 0xE8:
+						switch (datax) {
+						case 'a':
+							c = 'ä';
+							break;
+						case 'A':
+							c = 'Ä';
+							break;
+						case 'o':
+							c = 'ö';
+							break;
+						case 'O':
+							c = 'Ö';
+							break;
+						case 'u':
+							c = 'ü';
+							break;
+						case 'U':
+							c = 'Ü';
+							break;
+						default:
+							c = (char)datax;
+							break;
+						}
+						break;
+					case 0xEA:
+						switch (datax) {
+						case 'a':
+							c = 'å';
+							break;
+						case 'A':
+							c = 'Å';
+							break;
+						default:
+							c = (char)datax;
+							break;
+						}
+						break;
+					default:
+						c = (char)datax;
+						break;
+					}
+					
+					break;
 				default:
 					c = (char) data;
 
 				}
+				
+				
 				if (c != '\n' && c != '\r') {
 					if (line.length() > 0 || c != ' ') {
 						line.append(c);
@@ -182,10 +271,24 @@ public class ImportGedcomUtil {
 						} else {
 							tag = linex.substring(i1 + 1);
 						}
-						System.out.println("'" + level + "'" + refId + "'"
-								+ tag + "'" + lineValue);
+//						System.out.println("'" + level + "'" + refId + "'"
+//								+ tag + "'" + lineValue);
 					}
+					if (tag == null) continue; 
+					if (thisSet == GedSet.Set_None && lineValue != null &&
+							level==1 && tag.equals("CHAR")) {
+						 if (lineValue.equalsIgnoreCase("UNICODE") || 
+								lineValue.equalsIgnoreCase("UTF-8") || 
+								lineValue.equalsIgnoreCase("UTF8")){
+							 thisSet = GedSet.Set_Utf8;
+						 } else if (lineValue.equalsIgnoreCase("ANSEL")){
+							 thisSet = GedSet.Set_Ansel;
+						 }
 
+					}
+					
+					
+					
 					line = new StringBuffer();
 				}
 
