@@ -1498,6 +1498,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (isOpened) {
 				ImportGedcomDialog dlg = new ImportGedcomDialog(this, dbname);
 				dlg.setVisible(true);
+				
+				String [] failedLines = dlg.getResult();
+				if (failedLines != null) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < failedLines.length; i++) {
+					sb.append(failedLines[i] + "\n");
+				}
+				
+				
+				JOptionPane.showMessageDialog(this,sb.toString());
+				}
+				
 			}
 
 			JOptionPane.showMessageDialog(this,

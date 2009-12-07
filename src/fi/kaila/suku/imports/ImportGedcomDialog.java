@@ -60,19 +60,26 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 		return runner;
 	}
 
-	private JFrame owner = null;
+	private Suku owner = null;
 	private static ImportGedcomDialog runner = null;
 
+	private SukuData gedcomResult=null;
+	/**
+	 * 
+	 * @return failed gedcom lines
+	 */
+	public String[] getResult(){
+		return gedcomResult.generalArray;
+	}
+	
 	/**
 	 * 
 	 * Constructor takes {@link fi.kaila.suku.swing.Suku main program} and
-	 * {@link fi.kaila.suku.kontroller.SukuKontroller kontroller interface} as
-	 * parameters
 	 * 
 	 * @param owner
 	 * @param dbName
 	 */
-	public ImportGedcomDialog(JFrame owner, String dbName) {
+	public ImportGedcomDialog(Suku owner, String dbName) {
 		super(owner, Resurses.getString("IMPORT"), true);
 		this.owner = owner;
 		runner = this;
@@ -182,7 +189,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				if (!fileName.getText().equals("")) {
 					SukuData resp = kontroller.getSukuData("cmd=importGedcom",
 							"db=" + fileName.getText());
-
+					gedcomResult = resp;
 					if (resp.resu != null) {
 						JOptionPane.showMessageDialog(owner, Resurses
 								.getString("IMPORT_GEDCOM")

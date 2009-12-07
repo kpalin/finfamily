@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Vector;
 
 import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.swing.Suku;
@@ -84,18 +85,20 @@ public class ImportGedcomUtil {
 			int data1 = bis.read();
 			int data2 = bis.read();
 			int data3 = bis.read();
+			Vector<String> unknown = new Vector<String>();
+			int lineNumber=0;
 			StringBuffer line = new StringBuffer();
 			if (data0 == 255 && data1 == 254) {
 				thisSet = GedSet.Set_Utf16le;
 				c = (char) (data3 * 256 + data2);
 				line.append(c);
 			}
-			if (data1 == 255 && data0 == 254) {
+			else if (data1 == 255 && data0 == 254) {
 				thisSet = GedSet.Set_Utf16be;
 				c = (char) (data2 * 256 + data3);
 				line.append(c);
 			}
-			if (data0 == 239 && data1 == 187 && data2 == 191) {
+			else if (data0 == 239 && data1 == 187 && data2 == 191) {
 				thisSet = GedSet.Set_Utf8;
 				c = (char) data3;
 				line.append(c);
@@ -133,6 +136,7 @@ public class ImportGedcomUtil {
 					}
 				}
 				if (c == '\n' && line.length() > 0) {
+					
 					System.out.println(line.toString());
 					// now we have next line
 					// split into parts
@@ -177,6 +181,7 @@ public class ImportGedcomUtil {
 					}
 					if (tag == null)
 						continue;
+					
 					if (thisSet == GedSet.Set_None && lineValue != null
 							&& level == 1 && tag.equals("CHAR")) {
 						if (lineValue.equalsIgnoreCase("UNICODE")
@@ -190,8 +195,17 @@ public class ImportGedcomUtil {
 					}
 
 					line = new StringBuffer();
+				
+					lineNumber++;
+					if (tag != null) { // at beginning nothing is known
+					
+						unknown.add("[" + lineNumber + "] " +linex);
+					}
+				
 				}
-
+				
+				
+				
 				if (this.runner != null) {
 					StringBuffer sb = new StringBuffer();
 
@@ -231,6 +245,8 @@ public class ImportGedcomUtil {
 				//
 				// }
 			}
+			
+			resp.generalArray = unknown.toArray(new String [0]);
 			bis.close();
 		} catch (Exception e) {
 			throw new SukuException(e);
