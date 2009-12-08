@@ -6,6 +6,10 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import fi.kaila.suku.imports.ImportGedcomDialog;
@@ -43,9 +47,9 @@ public class ImportGedcomUtil {
 		this.runner = ImportGedcomDialog.getRunner();
 	}
 
-	Vector<GedcomLine> gedLines= new Vector<GedcomLine>();
-	
-	
+	LinkedHashMap<String, GedcomRecord> gedMap = null;
+	Vector<String> unknownLine = new Vector<String>();
+
 	/**
 	 * @param file
 	 * @param db
@@ -54,10 +58,8 @@ public class ImportGedcomUtil {
 	 */
 	public SukuData importGedcom(String file, String db) throws SukuException {
 		SukuData resp = new SukuData();
-		gedLines = new Vector<GedcomLine>();
-		
-		
-		
+		gedMap = new LinkedHashMap<String, GedcomRecord>();
+		GedcomRecord record = null;
 		Statement stm;
 		try {
 			int unitCount = 0;
@@ -81,7 +83,7 @@ public class ImportGedcomUtil {
 			long dataLen = Suku.kontroller.getFileLength();
 			double dLen = dataLen;
 			int data = 0;
-			fileIndex=4;
+			fileIndex = 4;
 			if (dataLen < 10) {
 				resp.resu = Resurses.getString("GEDCOM_BAD_FORMAT");
 				return resp;
@@ -91,20 +93,18 @@ public class ImportGedcomUtil {
 			int data1 = bis.read();
 			int data2 = bis.read();
 			int data3 = bis.read();
-			Vector<String> unknown = new Vector<String>();
-			int lineNumber=0;
+
+			// int lineNumber = 0;
 			StringBuffer line = new StringBuffer();
 			if (data0 == 255 && data1 == 254) {
 				thisSet = GedSet.Set_Utf16le;
 				c = (char) (data3 * 256 + data2);
 				line.append(c);
-			}
-			else if (data1 == 255 && data0 == 254) {
+			} else if (data1 == 255 && data0 == 254) {
 				thisSet = GedSet.Set_Utf16be;
 				c = (char) (data2 * 256 + data3);
 				line.append(c);
-			}
-			else if (data0 == 239 && data1 == 187 && data2 == 191) {
+			} else if (data0 == 239 && data1 == 187 && data2 == 191) {
 				thisSet = GedSet.Set_Utf8;
 				c = (char) data3;
 				line.append(c);
@@ -121,15 +121,11 @@ public class ImportGedcomUtil {
 
 			}
 
-			int currLevel=0;
-			
-
 			while ((data = bis.read()) >= 0) {
 
 				fileIndex++;
-				
-				c = cnvToChar(data,bis);
-				
+
+				c = cnvToChar(data, bis);
 
 				if (c != '\n' && c != '\r') {
 					if (line.length() > 0 || c != ' ') {
@@ -137,46 +133,43 @@ public class ImportGedcomUtil {
 					}
 				}
 				if (c == '\n' && line.length() > 0) {
-					
-//					System.out.println(line.toString());
+
+					// System.out.println(line.toString());
 					// now we have next line
 					// split into parts
 					String linex = line.toString();
 					int i1 = linex.indexOf(' ');
 					int i2 = 0;
 					int i3 = 0;
-					int ix=0;
-					
-					GedcomLine lineg=null;
+					int ix = 0;
+
+					GedcomLine lineg = null;
 					String aux;
 					if (i1 > 0 && i1 < linex.length()) {
 						try {
 							ix = Integer.parseInt(linex.substring(0, i1));
-							
-							if (ix <= currLevel){
-								saveGedcomNotice();
-								
-								currLevel=ix;
-							}
-							else if (ix == currLevel+1){
-								saveGedcomData();
-							} else {
-								
-							}
-						} catch (NumberFormatException ne) {
 
+						} catch (NumberFormatException ne) {
+							ix = -1;
 						}
 						lineg = new GedcomLine(ix);
-						gedLines.add(lineg);
-						
-						
+						if (ix == 0) {
+							if (record != null) {
+								String key = record.getKey();
+								gedMap.put(key, record);
+								consumeGedcomRecord(record);
+							}
+							record = new GedcomRecord();
+
+						}
+
 						i2 = linex.indexOf(' ', i1 + 1);
 						if (i2 > 0 && i2 < linex.length()) {
 							aux = linex.substring(i1 + 1, i2);
 							i3 = i2;
 							if (aux.charAt(0) == '@'
 									&& aux.charAt(aux.length() - 1) == '@') {
-								lineg.refId = aux;
+								lineg.id = aux;
 								i3 = linex.indexOf(' ', i2 + 1);
 								if (i3 > 0) {
 									lineg.tag = linex.substring(i2 + 1, i3);
@@ -192,39 +185,38 @@ public class ImportGedcomUtil {
 						} else {
 							lineg.tag = linex.substring(i1 + 1);
 						}
-						 System.out.println("'" + lineg.level + "'" + lineg.refId + "'"
-						 + lineg.tag + "'" + lineg.lineValue);
+						// System.out.println("'" + lineg.level + "'" + lineg.id
+						// + "'" + lineg.tag + "'" + lineg.lineValue);
 					}
 					if (lineg.tag == null)
 						continue;
-					
-					
-					
-					
-					if (thisSet == GedSet.Set_None && lineg.lineValue != null
-							&& lineg.level == 1 && lineg.tag.equals("CHAR")) {
-						if (lineg.lineValue.equalsIgnoreCase("UNICODE")
-								|| lineg.lineValue.equalsIgnoreCase("UTF-8")
-								|| lineg.lineValue.equalsIgnoreCase("UTF8")) {
-							thisSet = GedSet.Set_Utf8;
-						} else if (lineg.lineValue.equalsIgnoreCase("ANSEL")) {
-							thisSet = GedSet.Set_Ansel;
+
+					if (lineg.lineValue != null && lineg.level == 1
+							&& lineg.tag.equals("CHAR")) {
+						if (thisSet == GedSet.Set_None) {
+							if (lineg.lineValue.equalsIgnoreCase("UNICODE")
+									|| lineg.lineValue
+											.equalsIgnoreCase("UTF-8")
+									|| lineg.lineValue.equalsIgnoreCase("UTF8")) {
+								thisSet = GedSet.Set_Utf8;
+							} else if (lineg.lineValue
+									.equalsIgnoreCase("ANSEL")) {
+								thisSet = GedSet.Set_Ansel;
+							}
 						}
-
+					} else {
+						record.add(lineg);
 					}
-
 					line = new StringBuffer();
-				
-					lineNumber++;
-					if (lineg.tag != null) { // at beginning nothing is known
-					
-						unknown.add("[" + lineNumber + "] " +linex);
-					}
-				
+
+					// lineNumber++;
+					// if (lineg.tag != null) { // at beginning nothing is known
+					//
+					// unknown.add("[" + lineNumber + "] " + linex);
+					// }
+
 				}
-				
-				
-				
+
 				if (this.runner != null) {
 					StringBuffer sb = new StringBuffer();
 
@@ -250,11 +242,11 @@ public class ImportGedcomUtil {
 					sb.append("" + intprose + ";Kalle koetta");
 					this.runner.setRunnerValue(sb.toString());
 
-//					 try {
-//					 Thread.sleep(1);
-//					
-//					 } catch (InterruptedException ie) {
-//					 }
+					// try {
+					// Thread.sleep(1);
+					//					
+					// } catch (InterruptedException ie) {
+					// }
 
 				}
 
@@ -264,9 +256,21 @@ public class ImportGedcomUtil {
 				//
 				// }
 			}
-			
-			resp.generalArray = unknown.toArray(new String [0]);
-			
+
+			String key = record.getKey();
+			gedMap.put(key, record);
+
+			Set<Map.Entry<String, GedcomRecord>> entries = gedMap.entrySet();
+			Iterator<Map.Entry<String, GedcomRecord>> ee = entries.iterator();
+			Vector<String> recs = new Vector<String>();
+			while (ee.hasNext()) {
+				Map.Entry<String, GedcomRecord> entry = (Map.Entry<String, GedcomRecord>) ee
+						.next();
+				recs.add(entry.getValue().toString());
+			}
+
+			resp.generalArray = recs.toArray(new String[0]);
+
 			bis.close();
 		} catch (Exception e) {
 			throw new SukuException(e);
@@ -279,18 +283,53 @@ public class ImportGedcomUtil {
 
 	}
 
-	private void saveGedcomNotice() {
-		// TODO Auto-generated method stub
-		
+	int recordCount = 0;
+	String submitterId = null;
+
+	private void consumeGedcomRecord(GedcomRecord record) {
+		recordCount++;
+		if (recordCount == 1) { // expected HEAD record
+			if (record.lines.get(0).tag.equals("HEAD")) {
+				consumeGedcomHead(record);
+			}
+		}
+		if (record.lines.get(0).tag.equals("SUBM")) {
+			cosumeGedcomSubmitter(record);
+		}
+
 	}
 
-	private void saveGedcomData() {
+	private void cosumeGedcomSubmitter(GedcomRecord record) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private void consumeGedcomHead(GedcomRecord record) {
+		for (int i = 1; i < record.lines.size(); i++) {
+			GedcomLine line = record.lines.get(i);
+			if (line.level == 1) {
+				if (line.tag.equals("SOUR")) {
+				} else if (line.tag.equals("SUBM")) {
+					submitterId = line.lineValue;
+				} else if (line.tag.equals("GEDC")) {
+				}
+			} else if (line.level > 1) {
+				if (line.tag.equals("VERS") || line.tag.equals("NAME")
+						|| line.tag.equals("CORP") || line.tag.equals("ADDR")
+						|| line.tag.equals("VERS") || line.tag.equals("FORM")
+						|| line.tag.equals("CONT") || line.tag.equals("CONC"))
+					continue;
+			} else {
+				this.unknownLine.add(line.toString());
+			}
+
+		}
+
 	}
 
 	private long fileIndex = 0;
-	private char cnvToChar(int data,InputStream bis) throws IOException{
+
+	private char cnvToChar(int data, InputStream bis) throws IOException {
 		char c;
 		int datax;
 		int datay;
@@ -539,23 +578,74 @@ public class ImportGedcomUtil {
 			c = (char) data;
 			break;
 		}
-	return c;
-		
+		return c;
+
 	}
-	
-	class GedcomLine{
+
+	int keyCounter = 0;
+
+	class GedcomRecord {
+		Vector<GedcomLine> lines = new Vector<GedcomLine>();
+		String key = null;
+
+		String getKey() {
+
+			GedcomLine line = lines.get(0);
+			if (line.id != null) {
+				return line.id;
+			}
+
+			if (key != null) {
+				return key;
+			}
+			key = "X" + keyCounter + "X";
+			return key;
+
+		}
+
+		void add(GedcomLine line) {
+
+			lines.add(line);
+		}
+
+		public String toString() {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < lines.size(); i++) {
+				sb.append(lines.get(i));
+				sb.append("\n");
+			}
+			return sb.toString();
+
+		}
+
+	}
+
+	class GedcomLine {
 		int level = -1;
-		String tag=null;
-		String refId=null;
-		String lineValue=null;
-		
-		GedcomLine (int level) {
-			this.level=level;
+		String tag = null;
+		String id = null;
+		String lineValue = null;
+
+		GedcomLine(int level) {
+			this.level = level;
 		}
-		
-		public String toString(){
-			return ""+level+"/"+refId+"/"+tag+"/"+lineValue;
+
+		public String toString() {
+			StringBuffer sb = new StringBuffer();
+			// sb.append("                          ".substring(0, level*2));
+			sb.append(level);
+			sb.append(" ");
+			if (id != null) {
+				sb.append(id);
+				sb.append(" ");
+			}
+			sb.append(tag);
+			if (lineValue != null) {
+				sb.append(" ");
+				sb.append(lineValue);
+			}
+			return sb.toString();
 		}
 	}
-	
+
 }
