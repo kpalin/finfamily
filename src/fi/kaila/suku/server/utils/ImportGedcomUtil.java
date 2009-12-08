@@ -43,6 +43,9 @@ public class ImportGedcomUtil {
 		this.runner = ImportGedcomDialog.getRunner();
 	}
 
+	Vector<GedcomLine> gedLines= new Vector<GedcomLine>();
+	
+	
 	/**
 	 * @param file
 	 * @param db
@@ -51,7 +54,10 @@ public class ImportGedcomUtil {
 	 */
 	public SukuData importGedcom(String file, String db) throws SukuException {
 		SukuData resp = new SukuData();
-
+		gedLines = new Vector<GedcomLine>();
+		
+		
+		
 		Statement stm;
 		try {
 			int unitCount = 0;
@@ -115,13 +121,8 @@ public class ImportGedcomUtil {
 
 			}
 
-			System.out.println("GEDC" + data0 + "/" + data1 + "/" + data2 + "/"
-					+ data3);
-
-			int level = 0;
-			String tag;
-			String refId;
-			String lineValue;
+			int currLevel=0;
+			
 
 			while ((data = bis.read()) >= 0) {
 
@@ -137,58 +138,76 @@ public class ImportGedcomUtil {
 				}
 				if (c == '\n' && line.length() > 0) {
 					
-					System.out.println(line.toString());
+//					System.out.println(line.toString());
 					// now we have next line
 					// split into parts
 					String linex = line.toString();
 					int i1 = linex.indexOf(' ');
 					int i2 = 0;
 					int i3 = 0;
-					tag = null;
-					refId = null;
-					lineValue = null;
+					int ix=0;
+					
+					GedcomLine lineg=null;
 					String aux;
 					if (i1 > 0 && i1 < linex.length()) {
 						try {
-							level = Integer.parseInt(linex.substring(0, i1));
+							ix = Integer.parseInt(linex.substring(0, i1));
+							
+							if (ix <= currLevel){
+								saveGedcomNotice();
+								
+								currLevel=ix;
+							}
+							else if (ix == currLevel+1){
+								saveGedcomData();
+							} else {
+								
+							}
 						} catch (NumberFormatException ne) {
 
 						}
+						lineg = new GedcomLine(ix);
+						gedLines.add(lineg);
+						
+						
 						i2 = linex.indexOf(' ', i1 + 1);
 						if (i2 > 0 && i2 < linex.length()) {
 							aux = linex.substring(i1 + 1, i2);
 							i3 = i2;
 							if (aux.charAt(0) == '@'
 									&& aux.charAt(aux.length() - 1) == '@') {
-								refId = aux.substring(1, aux.length() - 1);
+								lineg.refId = aux;
 								i3 = linex.indexOf(' ', i2 + 1);
 								if (i3 > 0) {
-									tag = linex.substring(i2 + 1, i3);
+									lineg.tag = linex.substring(i2 + 1, i3);
 								} else {
-									tag = linex.substring(i2 + 1);
+									lineg.tag = linex.substring(i2 + 1);
 								}
 							} else {
-								tag = aux;
+								lineg.tag = aux;
 							}
 							if (i3 > 0) {
-								lineValue = linex.substring(i3 + 1);
+								lineg.lineValue = linex.substring(i3 + 1);
 							}
 						} else {
-							tag = linex.substring(i1 + 1);
+							lineg.tag = linex.substring(i1 + 1);
 						}
-						// System.out.println("'" + level + "'" + refId + "'"
-						// + tag + "'" + lineValue);
+						 System.out.println("'" + lineg.level + "'" + lineg.refId + "'"
+						 + lineg.tag + "'" + lineg.lineValue);
 					}
-					if (tag == null)
+					if (lineg.tag == null)
 						continue;
 					
-					if (thisSet == GedSet.Set_None && lineValue != null
-							&& level == 1 && tag.equals("CHAR")) {
-						if (lineValue.equalsIgnoreCase("UNICODE")
-								|| lineValue.equalsIgnoreCase("UTF-8")
-								|| lineValue.equalsIgnoreCase("UTF8")) {
+					
+					
+					
+					if (thisSet == GedSet.Set_None && lineg.lineValue != null
+							&& lineg.level == 1 && lineg.tag.equals("CHAR")) {
+						if (lineg.lineValue.equalsIgnoreCase("UNICODE")
+								|| lineg.lineValue.equalsIgnoreCase("UTF-8")
+								|| lineg.lineValue.equalsIgnoreCase("UTF8")) {
 							thisSet = GedSet.Set_Utf8;
-						} else if (lineValue.equalsIgnoreCase("ANSEL")) {
+						} else if (lineg.lineValue.equalsIgnoreCase("ANSEL")) {
 							thisSet = GedSet.Set_Ansel;
 						}
 
@@ -197,7 +216,7 @@ public class ImportGedcomUtil {
 					line = new StringBuffer();
 				
 					lineNumber++;
-					if (tag != null) { // at beginning nothing is known
+					if (lineg.tag != null) { // at beginning nothing is known
 					
 						unknown.add("[" + lineNumber + "] " +linex);
 					}
@@ -247,6 +266,7 @@ public class ImportGedcomUtil {
 			}
 			
 			resp.generalArray = unknown.toArray(new String [0]);
+			
 			bis.close();
 		} catch (Exception e) {
 			throw new SukuException(e);
@@ -257,6 +277,16 @@ public class ImportGedcomUtil {
 
 		// logger.fine("database created for " + path);
 
+	}
+
+	private void saveGedcomNotice() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void saveGedcomData() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private long fileIndex = 0;
@@ -512,4 +542,20 @@ public class ImportGedcomUtil {
 	return c;
 		
 	}
+	
+	class GedcomLine{
+		int level = -1;
+		String tag=null;
+		String refId=null;
+		String lineValue=null;
+		
+		GedcomLine (int level) {
+			this.level=level;
+		}
+		
+		public String toString(){
+			return ""+level+"/"+refId+"/"+tag+"/"+lineValue;
+		}
+	}
+	
 }
