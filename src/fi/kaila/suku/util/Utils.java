@@ -490,4 +490,59 @@ public class Utils {
 		return text.substring(0, 4);
 	}
 
+	/**
+	 * check if name begins with von part
+	 * 
+	 * @param name
+	 *            to check
+	 * @return parts
+	 */
+	public static int isKnownPrefix(String name) {
+		String[] prexes = Resurses.getString("NAME_VON").split(";");
+		for (int i = 0; i < prexes.length; i++) {
+			if (name.toLowerCase().startsWith(prexes[i])) {
+				return prexes[i].length();
+			}
+		}
+		return 0;
+	}
+
+	private static String[] patronymeEnds = null; // {"poika","son","dotter","tytär"};
+
+	/**
+	 * @param noticeGivenName
+	 * @param patronymePart
+	 * @return patronym for true, else givenname
+	 */
+	public static String extractPatronyme(String noticeGivenName,
+			boolean patronymePart) {
+
+		if (patronymeEnds == null) {
+
+			String tmp = Resurses.getString("PATRONYM_ENDINGS");
+			patronymeEnds = tmp.split(";");
+		}
+		if (noticeGivenName == null)
+			return null;
+		int j;
+		for (int i = 0; i < patronymeEnds.length; i++) {
+			if (noticeGivenName.endsWith(patronymeEnds[i])) {
+				j = noticeGivenName.lastIndexOf(' ');
+				if (j > 0) {
+					if (patronymePart)
+						return noticeGivenName.substring(j + 1);
+					return noticeGivenName.substring(0, j);
+				} else {
+					if (patronymePart)
+						return null;
+					return noticeGivenName;
+				}
+			}
+		}
+		if (patronymePart)
+			return null;
+
+		return noticeGivenName;
+	}
+
 }

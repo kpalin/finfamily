@@ -30,8 +30,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import fi.kaila.suku.util.NameArray;
-import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 
 /**
  * 
@@ -659,10 +659,10 @@ public class Read2004XML extends DefaultHandler {
 					this.pstm.setInt(1, id);
 					this.pstm.setInt(2, pnid);
 					this.pstm.setString(3, "NAME");
-					this.pstm.setString(4, extractPatronyme(this.unitGivenName,
-							false));
-					this.pstm.setString(5, extractPatronyme(this.unitGivenName,
-							true));
+					this.pstm.setString(4, Utils.extractPatronyme(
+							this.unitGivenName, false));
+					this.pstm.setString(5, Utils.extractPatronyme(
+							this.unitGivenName, true));
 					this.pstm.setString(6, this.unitPrefix);
 					this.pstm.setString(7, this.unitSurName);
 					this.pstm.setString(8, this.unitPostfix);
@@ -885,10 +885,10 @@ public class Read2004XML extends DefaultHandler {
 				this.pstm.setString(17, this.noticeMediaFilename);
 				this.pstm.setString(18, langText(this.noticeMediaTitle,
 						this.oldCode));
-				this.pstm.setString(19, extractPatronyme(this.noticeGivenName,
-						false));
-				this.pstm.setString(20, extractPatronyme(this.noticeGivenName,
-						true));
+				this.pstm.setString(19, Utils.extractPatronyme(
+						this.noticeGivenName, false));
+				this.pstm.setString(20, Utils.extractPatronyme(
+						this.noticeGivenName, true));
 				this.pstm.setString(21, this.noticePrefix);
 				this.pstm.setString(22, this.noticeSurname);
 				this.pstm.setString(23, this.noticePostfix);
@@ -1735,38 +1735,6 @@ public class Read2004XML extends DefaultHandler {
 	}
 
 	private static final String[] farmTags = { "BIRT", "DEAT", "EMIG", "IMMI" };
-	private static String[] patronymeEnds = null; // {"poika","son","dotter","tytär"};
-
-	private String extractPatronyme(String noticeGivenName,
-			boolean patronymePart) {
-
-		if (patronymeEnds == null) {
-
-			String tmp = Resurses.getString("PATRONYM_ENDINGS");
-			patronymeEnds = tmp.split(";");
-		}
-		if (noticeGivenName == null)
-			return null;
-		int j;
-		for (int i = 0; i < patronymeEnds.length; i++) {
-			if (noticeGivenName.endsWith(patronymeEnds[i])) {
-				j = noticeGivenName.lastIndexOf(' ');
-				if (j > 0) {
-					if (patronymePart)
-						return noticeGivenName.substring(j + 1);
-					return noticeGivenName.substring(0, j);
-				} else {
-					if (patronymePart)
-						return null;
-					return noticeGivenName;
-				}
-			}
-		}
-		if (patronymePart)
-			return null;
-
-		return noticeGivenName;
-	}
 
 	private String toLangCode(String oldCode) {
 		String tocode = oldCode.toLowerCase();

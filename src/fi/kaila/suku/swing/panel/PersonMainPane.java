@@ -23,6 +23,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTextField;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
@@ -117,16 +118,6 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		return personPid;
 	}
 
-	private boolean isKnownPrefix(String prefix) {
-		String[] prexes = Resurses.getString("NAME_VON").split(";");
-		for (int i = 0; i < prexes.length; i++) {
-			if (prefix.equalsIgnoreCase(prexes[i])) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	void updateName() {
 
 		boolean firstName = true;
@@ -159,7 +150,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 						patronym.setText(fpatro);
 						tmp = prexi;
 						if (!tmp.equals("")) {
-							if (isKnownPrefix(tmp)) {
+							if (Utils.isKnownPrefix(tmp) > 0) {
 								comboname += tmp + " ";
 							} else {
 								specialFirst = true;
@@ -194,7 +185,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 						String nextpre = "";
 						if (!prexi.equals("")) {
 
-							if (isKnownPrefix(prexi)) {
+							if (Utils.isKnownPrefix(prexi) > 0) {
 								nextpre = prexi + " ";
 							} else {
 								specialName = true;
@@ -1038,10 +1029,11 @@ public class PersonMainPane extends JPanel implements ActionListener {
 					pane.givenname.setText(givenname.getText());
 					pane.patronym.setText(patronym.getText());
 					String name = names[i - noticeFirst];
-					String[] namex = name.split(" ");
-					if (namex.length > 1 && isKnownPrefix(namex[0])) {
-						pane.prefix.setText(namex[0]);
-						name = name.substring(namex[0].length() + 1);
+
+					int vonIndex = Utils.isKnownPrefix(name);
+					if (vonIndex > 0) {
+						pane.prefix.setText(name.substring(0, vonIndex));
+						name = name.substring(vonIndex + 1);
 					}
 
 					// pane.prefix.setText(name);

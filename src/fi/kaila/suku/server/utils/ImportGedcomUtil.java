@@ -16,6 +16,7 @@ import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
@@ -329,10 +330,24 @@ public class ImportGedcomUtil {
 					String parts[] = noti.lineValue.split("/");
 					if (parts.length > 0) {
 						if (parts[0].length() > 0) {
-							notice.setGivenname(parts[0]);
+
+							notice.setGivenname(Utils.extractPatronyme(
+									parts[0], false));
+							notice.setPatronym(Utils.extractPatronyme(parts[0],
+									true));
 						}
 						if (parts.length > 1 && parts[1].length() > 0) {
-							notice.setSurname(parts[1]);
+
+							int vonIndex = Utils.isKnownPrefix(parts[1]);
+							if (vonIndex > 0) {
+								notice.setPrefix(parts[1]
+										.substring(0, vonIndex));
+								notice.setSurname(parts[1]
+										.substring(vonIndex + 1));
+							} else {
+
+								notice.setSurname(parts[1]);
+							}
 						}
 						if (parts.length > 2 && parts[2].length() > 0) {
 							notice.setPostfix(parts[2]);
