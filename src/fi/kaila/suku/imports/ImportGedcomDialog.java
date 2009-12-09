@@ -9,7 +9,6 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -63,15 +62,17 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private Suku owner = null;
 	private static ImportGedcomDialog runner = null;
 
-	private SukuData gedcomResult=null;
+	private SukuData gedcomResult = null;
+
 	/**
 	 * 
 	 * @return failed gedcom lines
 	 */
-	public String[] getResult(){
+	public String[] getResult() {
+
 		return gedcomResult.generalArray;
 	}
-	
+
 	/**
 	 * 
 	 * Constructor takes {@link fi.kaila.suku.swing.Suku main program} and
