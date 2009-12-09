@@ -354,17 +354,53 @@ public class ImportGedcomUtil {
 						}
 					}
 				}
-			} else if (noti.tag.equals("OCCU") || noti.tag.equals("EDUC")
-					|| noti.tag.equals("TITL")) {
-				UnitNotice notice = new UnitNotice(noti.tag);
-				notices.add(notice);
-				notice.setDescription(noti.lineValue);
 			} else if (noti.tag.equals("NOTE")) {
 				if (noti.lineValue != null) {
 					UnitNotice notice = new UnitNotice("NOTE");
 					notices.add(notice);
 					notice.setNoteText(noti.lineValue);
 				}
+			} else if (noti.tag.equals("OCCU") || noti.tag.equals("EDUC")
+					|| noti.tag.equals("TITL") || noti.tag.equals("RESI")
+					|| noti.tag.equals("PROP") || noti.tag.equals("FACT")
+					|| noti.tag.equals("BIRT") || noti.tag.equals("CHR")
+					|| noti.tag.equals("DEAT") || noti.tag.equals("BURI")
+					|| noti.tag.equals("EVEN") || noti.tag.startsWith("_PHOT")
+					|| noti.tag.startsWith("_SPEC")
+					|| noti.tag.startsWith("_EXTR")) {
+				UnitNotice notice = new UnitNotice(noti.tag);
+				notices.add(notice);
+				notice.setDescription(noti.lineValue);
+				for (int j = 0; j < noti.lines.size(); j++) {
+					GedcomLine detail = noti.lines.get(j);
+					if (detail.tag.equals("TYPE")) {
+						notice.setNoticeType(detail.lineValue);
+					} else if (detail.tag.equals("PLAC")) {
+						notice.setPlace(detail.lineValue);
+					} else if (detail.tag.equals("DATE")) {
+						String[] dateParts = consumeGedcomDate(detail.lineValue);
+						if (dateParts[0] != null) {
+							notice.setDatePrefix(dateParts[0]);
+						}
+						if (dateParts[1] != null) {
+							notice.setFromDate(dateParts[1]);
+						}
+						if (dateParts[2] != null) {
+							notice.setToDate(dateParts[2]);
+						}
+						if (dateParts[3] != null) {
+							if (notice.getDescription() != null) {
+								notice.setDescription(dateParts[3]);
+							} else {
+								notice.setDescription(notice.getDescription()
+										+ " " + dateParts[3]);
+							}
+						}
+					} else {
+						unknownLine.add(detail.toString());
+					}
+				}
+
 			} else {
 				unknownLine.add(noti.toString());
 			}
@@ -377,6 +413,125 @@ public class ImportGedcomUtil {
 		PersonUtil u = new PersonUtil(con);
 
 		u.updatePerson(request);
+
+	}
+
+	private String[] consumeGedcomDate(String lineValue) {
+		if (lineValue == null)
+			return null;
+		String[] dateparts = new String[4];
+
+		int spIdx = lineValue.indexOf(" ");
+		if (spIdx > 0) {
+			String fp = lineValue.substring(0, spIdx);
+
+			if (fp.equalsIgnoreCase("FROM") || fp.equalsIgnoreCase("ABT")
+					|| fp.equalsIgnoreCase("CAL") || fp.equalsIgnoreCase("EST")
+					|| fp.equalsIgnoreCase("TO") || fp.equalsIgnoreCase("BEF")
+					|| fp.equalsIgnoreCase("AFT") || fp.equalsIgnoreCase("BET")) {
+				dateparts[0] = fp;
+
+				int i1 = 0;
+				int i2 = 0;
+				if (fp.equalsIgnoreCase("FROM")) {
+					i1 = lineValue.indexOf("TO");
+					i2 = lineValue.indexOf(" ", i1 + 2);
+				} else if (fp.equalsIgnoreCase("BET")) {
+					i1 = lineValue.indexOf("AND");
+					i2 = lineValue.indexOf(" ", i1 + 2);
+				}
+
+				String aux = null;
+				if (i1 > 0) {
+					aux = toSukuDate(lineValue.substring(spIdx, i1));
+				} else {
+					aux = toSukuDate(lineValue.substring(spIdx));
+				}
+				if (aux != null) {
+					dateparts[1] = aux;
+				} else {
+					dateparts[3] = lineValue;
+				}
+				if (i2 > 0) {
+					aux = toSukuDate(lineValue.substring(i2));
+					if (aux != null) {
+						dateparts[2] = aux;
+					} else {
+						dateparts[3] = lineValue;
+					}
+				}
+
+			} else { // assume it's date format only
+				String aux = toSukuDate(lineValue);
+				if (aux != null) {
+					dateparts[1] = aux;
+				} else {
+					dateparts[3] = lineValue;
+				}
+			}
+		} else {
+			String aux = toSukuDate(lineValue);
+			if (aux != null) {
+				dateparts[1] = aux;
+			} else {
+				dateparts[3] = lineValue;
+			}
+		}
+		return dateparts;
+	}
+
+	private String toSukuDate(String gedcomDate) {
+		String[] parts = gedcomDate.split(" ");
+		int dl = parts.length - 1;
+		if (dl > 3) {
+			return null;
+		}
+		StringBuffer sb = new StringBuffer();
+		int year;
+		try {
+			year = Integer.parseInt(parts[dl]);
+		} catch (NumberFormatException ne) {
+			return null;
+		}
+		if (year <= 0 || year >= 3000) {
+			return null;
+		}
+		String aux = "0000" + year;
+		sb.append(aux.substring(aux.length() - 4, aux.length()));
+		dl--;
+		String mm = null;
+		if (dl >= 0) {
+			int kk = "|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|"
+					.indexOf(parts[dl].toUpperCase());
+			if (kk > 0) {
+				kk--;
+				kk /= 2;
+				mm = "01020304050607080901012".substring(kk, kk + 2);
+			}
+		}
+		if (mm != null) {
+			sb.append(mm);
+		} else {
+			return sb.toString();
+		}
+		dl--;
+		String dat = null;
+		if (dl >= 0) {
+			int dd = 0;
+			try {
+				dd = Integer.parseInt(parts[dl]);
+			} catch (NumberFormatException ne) {
+				return null;
+			}
+			if (dd > 0 && dd <= 31) {
+				dat = "000" + dd;
+				dat = dat.substring(dat.length() - 2, dat.length());
+			}
+		}
+		if (dat != null) {
+			sb.append(dat);
+		}
+		return sb.toString();
 
 	}
 
