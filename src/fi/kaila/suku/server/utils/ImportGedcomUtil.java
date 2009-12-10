@@ -379,9 +379,7 @@ public class ImportGedcomUtil {
 					|| noti.tag.equals("BIRT") || noti.tag.equals("CHR")
 					|| noti.tag.equals("DEAT") || noti.tag.equals("BURI")
 					|| noti.tag.equals("EVEN") || noti.tag.equals("RESI") 
-					|| noti.tag.startsWith("_PHOT")
-					|| noti.tag.startsWith("_SPEC")
-					|| noti.tag.startsWith("_EXTR")) {
+					|| noti.tag.startsWith("_")) {
 				String notiTag=noti.tag;
 				if (notiTag.startsWith("_"))notiTag=noti.tag.substring(1);
 				UnitNotice notice = new UnitNotice(notiTag);
