@@ -162,6 +162,19 @@ public class ImportGedcomUtil {
 								String key = record.getKey();
 								gedMap.put(key, record);
 								consumeGedcomRecord(record);
+								if (this.runner != null) {
+									StringBuffer sb = new StringBuffer();
+
+
+									double dluku = fileIndex;
+
+									double prose = (dluku * 100) / dLen;
+									int intprose = (int) prose;
+									sb.append("" + intprose + ";" + record.toString());
+									this.runner.setRunnerValue(sb.toString());
+
+
+								}
 							}
 							record = lineg;
 
@@ -222,45 +235,26 @@ public class ImportGedcomUtil {
 					// }
 
 				}
+//
+//				if (this.runner != null) {
+//					StringBuffer sb = new StringBuffer();
+//
+//
+//					double dluku = fileIndex;
+//
+//					double prose = (dluku * 100) / dLen;
+//					int intprose = (int) prose;
+//					sb.append("" + intprose + ";Kalle koetta");
+//					this.runner.setRunnerValue(sb.toString());
+//
+//					// try {
+//					// Thread.sleep(1);
+//					//					
+//					// } catch (InterruptedException ie) {
+//					// }
+//
+//				}
 
-				if (this.runner != null) {
-					StringBuffer sb = new StringBuffer();
-
-					// sb.append(this.unitId + ":  ");
-					// sb.append(this.unitGivenName);
-					// if (this.unitPrefix != null) {
-					// sb.append(" ");
-					// sb.append(this.unitPrefix);
-					// }
-					// if (this.unitSurName != null) {
-					// sb.append(" ");
-					// sb.append(this.unitSurName);
-					// }
-					// if (this.unitPostfix != null) {
-					// sb.append(" ");
-					// sb.append(this.unitPostfix);
-					// }
-
-					double dluku = fileIndex;
-
-					double prose = (dluku * 100) / dLen;
-					int intprose = (int) prose;
-					sb.append("" + intprose + ";Kalle koetta");
-					this.runner.setRunnerValue(sb.toString());
-
-					// try {
-					// Thread.sleep(1);
-					//					
-					// } catch (InterruptedException ie) {
-					// }
-
-				}
-
-				// if (unitCount > 0) {
-				// throw new SukuException(Resurses
-				// .getString("DATABASE_NOT_EMPTY"));
-				//
-				// }
 			}
 
 			String key = record.getKey();
@@ -313,6 +307,22 @@ public class ImportGedcomUtil {
 
 	}
 
+	private String extractGedcomSource(GedcomLine record) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(record.lineValue);
+		for (int i = 0 ; i < record.lines.size(); i++) {
+			GedcomLine line = record.lines.get(i);
+			if (line.tag.equals("TEXT") || line.tag.equals("NOTE")){
+				if (sb.length()>0){
+					sb.append(" ");
+				}
+				sb.append(line.lineValue);
+			}
+		}
+		if (sb.length()==0) return null;
+		return sb.toString();
+	}
+
 	private void consumeGedcomIndi(GedcomLine record) {
 		PersonLongData pers = new PersonLongData(0, "INDI", "U");
 		Vector<UnitNotice> notices = new Vector<UnitNotice>();
@@ -360,15 +370,21 @@ public class ImportGedcomUtil {
 					notices.add(notice);
 					notice.setNoteText(noti.lineValue);
 				}
+			} else if (noti.tag.equals("SOUR")) {
+				String src=extractGedcomSource(record);
+				pers.setSource(src);
 			} else if (noti.tag.equals("OCCU") || noti.tag.equals("EDUC")
 					|| noti.tag.equals("TITL") || noti.tag.equals("RESI")
 					|| noti.tag.equals("PROP") || noti.tag.equals("FACT")
 					|| noti.tag.equals("BIRT") || noti.tag.equals("CHR")
 					|| noti.tag.equals("DEAT") || noti.tag.equals("BURI")
-					|| noti.tag.equals("EVEN") || noti.tag.startsWith("_PHOT")
+					|| noti.tag.equals("EVEN") || noti.tag.equals("RESI") 
+					|| noti.tag.startsWith("_PHOT")
 					|| noti.tag.startsWith("_SPEC")
 					|| noti.tag.startsWith("_EXTR")) {
-				UnitNotice notice = new UnitNotice(noti.tag);
+				String notiTag=noti.tag;
+				if (notiTag.startsWith("_"))notiTag=noti.tag.substring(1);
+				UnitNotice notice = new UnitNotice(notiTag);
 				notices.add(notice);
 				notice.setDescription(noti.lineValue);
 				for (int j = 0; j < noti.lines.size(); j++) {
@@ -377,6 +393,17 @@ public class ImportGedcomUtil {
 						notice.setNoticeType(detail.lineValue);
 					} else if (detail.tag.equals("PLAC")) {
 						notice.setPlace(detail.lineValue);
+					} else if (detail.tag.equals("ADDR")) {
+						GedcomAddress address = splitAddress(detail.lineValue);
+						notice.setAddress(address.address);
+						notice.setPostalCode(address.postalCode);
+						notice.setPostOffice(address.postOffice);
+						notice.setCountry(address.country);
+						notice.setEmail(address.email);
+					} else if (detail.tag.equals("SOUR")) {
+						String src=extractGedcomSource(detail);
+						pers.setSource(src);
+						notice.setSurety(extractGedcomSurety(detail));
 					} else if (detail.tag.equals("DATE")) {
 						String[] dateParts = consumeGedcomDate(detail.lineValue);
 						if (dateParts[0] != null) {
@@ -414,6 +441,21 @@ public class ImportGedcomUtil {
 
 		u.updatePerson(request);
 
+	}
+
+	private int extractGedcomSurety(GedcomLine record) {
+		for (int i = 0; i < record.lines.size(); i++) {
+			GedcomLine line = record.lines.get(i);
+			if (line.tag.equals("QUAY")){
+				if (line.lineValue==null) return 100;
+				if (line.lineValue.equals("0")) return 40;
+				if (line.lineValue.equals("1")) return 60;
+				if (line.lineValue.equals("2")) return 80;
+				if (line.lineValue.equals("3")) return 100;
+		
+			}
+		}
+		return 100;
 	}
 
 	private String[] consumeGedcomDate(String lineValue) {
@@ -537,11 +579,7 @@ public class ImportGedcomUtil {
 
 	private void consumeGedcomSubmitter(GedcomLine record) throws SQLException {
 		String name = null;
-		StringBuffer address = new StringBuffer();
-		String postalcode = null;
-		String postoffice = null;
-		StringBuffer country = new StringBuffer();
-		String email = null;
+		GedcomAddress address=null;
 		StringBuffer note = new StringBuffer();
 		if (ownerInfo != null) {
 			note.append(ownerInfo);
@@ -552,51 +590,7 @@ public class ImportGedcomUtil {
 			if (noti.tag.equals("NAME")) {
 				name = noti.lineValue;
 			} else if (noti.tag.equals("ADDR")) {
-				if (noti.lineValue != null) {
-					String parts[] = noti.lineValue.split("\n");
-					boolean wasPo = false;
-					for (int j = 0; j < parts.length; j++) {
-						if (j == 0) {
-							address.append(parts[j]);
-						} else {
-							if (parts[j].indexOf('@') > 0) { // possibly email
-								email = parts[j];
-							} else if (!wasPo) {
-								String posts[] = parts[j].split(" ");
-								if (posts.length > 1) {
-									int ponum = -1;
-									try {
-										ponum = Integer.parseInt(posts[0]);
-									} catch (NumberFormatException ne) {
-
-									}
-									if (ponum > 1) { // now assume beginning is
-										// postalcode
-										postalcode = posts[0];
-										postoffice = parts[j]
-												.substring(posts[0].length() + 1);
-										wasPo = true;
-									}
-								}
-								if (!wasPo) {
-									if (address.length() > 0) {
-										address.append("\n");
-									}
-									address.append(parts[j]);
-
-								}
-							} else {
-								if (country.length() > 0) {
-									country.append("\n");
-								}
-								country.append(parts[j]);
-							}
-
-						}
-					}
-
-				}
-
+				address = splitAddress(noti.lineValue);
 			}
 		}
 
@@ -607,15 +601,73 @@ public class ImportGedcomUtil {
 		PreparedStatement pst = con.prepareStatement(sql);
 		pst.setString(1, name);
 		pst.setString(2, ownerInfo.toString());
-		pst.setString(3, address.toString());
-		pst.setString(4, postalcode);
-		pst.setString(5, postoffice);
-		pst.setString(6, country.toString());
-		pst.setString(7, email);
+		pst.setString(3, address.address);
+		pst.setString(4, address.postalCode);
+		pst.setString(5, address.postOffice);
+		pst.setString(6, address.country);
+		pst.setString(7, address.email);
 		int lukuri = pst.executeUpdate();
 		logger.info("Sukuvariables updated " + lukuri + " lines");
 	}
 
+	
+	private GedcomAddress splitAddress(String lineValue) {
+		StringBuffer address = new StringBuffer();
+		StringBuffer country = new StringBuffer();
+		GedcomAddress addr = new GedcomAddress();
+		if (lineValue != null) {
+		String parts[] = lineValue.split("\n");
+		boolean wasPo = false;
+		for (int j = 0; j < parts.length; j++) {
+			if (j == 0) {
+				address.append(parts[j]);
+			} else {
+				if (parts[j].indexOf('@') > 0) { // possibly email
+					addr.email = parts[j];
+				} else if (!wasPo) {
+					String posts[] = parts[j].split(" ");
+					if (posts.length > 1) {
+						int ponum = -1;
+						try {
+							ponum = Integer.parseInt(posts[0]);
+						} catch (NumberFormatException ne) {
+
+						}
+						if (ponum > 1) { // now assume beginning is
+							// postalcode
+							addr.postalCode = posts[0];
+							addr.postOffice = parts[j]
+									.substring(posts[0].length() + 1);
+							wasPo = true;
+						}
+					}
+					if (!wasPo) {
+						if (address.length() > 0) {
+							address.append("\n");
+						}
+						address.append(parts[j]);
+
+					}
+				} else {
+					if (country.length() > 0) {
+						country.append("\n");
+					}
+					country.append(parts[j]);
+				}
+
+			}
+		}
+		
+		if (address.length()>0){
+			addr.address = address.toString();
+		}
+		if (country.length()>0){
+			addr.country = country.toString();
+		}
+		}
+		return addr;
+	}
+	
 	private void consumeGedcomHead(GedcomLine record) {
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine notice1 = record.lines.get(i);
@@ -985,6 +1037,14 @@ public class ImportGedcomUtil {
 			}
 			return sb.toString();
 		}
+	}
+	
+	class GedcomAddress{
+		String address=null;
+		String postalCode=null;
+		String postOffice=null;
+		String country=null;
+		String email=null;
 	}
 
 }
