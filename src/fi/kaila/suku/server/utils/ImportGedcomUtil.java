@@ -423,6 +423,11 @@ public class ImportGedcomUtil {
 										+ " " + dateParts[3]);
 							}
 						}
+					} else if (detail.tag.equals("OBJE")) {
+						for (int k = 0; k < detail.lines.size(); k++){
+							GedcomLine item = detail.lines.get(k);
+							unknownLine.add(item.toString());
+						}
 					} else {
 						unknownLine.add(detail.toString());
 					}
