@@ -132,5 +132,15 @@ public interface SukuKontroller {
 	 * @return created local file as an output stream
 	 */
 	public OutputStream getOutputStream();
-
+	/**
+	 * 
+	 * Opening a named local file 
+	 * In webstart the file is read from a zip-package uploaded before this is done
+	 * 
+	 * @param path of file to open
+	 * 
+	 * @return InputStream to the file
+	 */
+	public InputStream openFile(String path);
+	
 }

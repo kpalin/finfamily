@@ -1,6 +1,7 @@
 package fi.kaila.suku.server.utils;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -185,7 +186,7 @@ public class ImportGedcomUtil {
 							aux = linex.substring(i1 + 1, i2);
 							i3 = i2;
 							if (aux.charAt(0) == '@'
-									&& aux.charAt(aux.length() - 1) == '@') {
+								&& aux.charAt(aux.length() - 1) == '@') {
 								lineg.id = aux;
 								i3 = linex.indexOf(' ', i2 + 1);
 								if (i3 > 0) {
@@ -213,7 +214,7 @@ public class ImportGedcomUtil {
 						if (thisSet == GedSet.Set_None) {
 							if (lineg.lineValue.equalsIgnoreCase("UNICODE")
 									|| lineg.lineValue
-											.equalsIgnoreCase("UTF-8")
+									.equalsIgnoreCase("UTF-8")
 									|| lineg.lineValue.equalsIgnoreCase("UTF8")) {
 								thisSet = GedSet.Set_Utf8;
 							} else if (lineg.lineValue
@@ -235,25 +236,25 @@ public class ImportGedcomUtil {
 					// }
 
 				}
-//
-//				if (this.runner != null) {
-//					StringBuffer sb = new StringBuffer();
-//
-//
-//					double dluku = fileIndex;
-//
-//					double prose = (dluku * 100) / dLen;
-//					int intprose = (int) prose;
-//					sb.append("" + intprose + ";Kalle koetta");
-//					this.runner.setRunnerValue(sb.toString());
-//
-//					// try {
-//					// Thread.sleep(1);
-//					//					
-//					// } catch (InterruptedException ie) {
-//					// }
-//
-//				}
+				//
+				//				if (this.runner != null) {
+				//					StringBuffer sb = new StringBuffer();
+				//
+				//
+				//					double dluku = fileIndex;
+				//
+				//					double prose = (dluku * 100) / dLen;
+				//					int intprose = (int) prose;
+				//					sb.append("" + intprose + ";Kalle koetta");
+				//					this.runner.setRunnerValue(sb.toString());
+				//
+				//					// try {
+				//					// Thread.sleep(1);
+				//					//					
+				//					// } catch (InterruptedException ie) {
+				//					// }
+				//
+				//				}
 
 			}
 
@@ -351,9 +352,9 @@ public class ImportGedcomUtil {
 							int vonIndex = Utils.isKnownPrefix(parts[1]);
 							if (vonIndex > 0) {
 								notice.setPrefix(parts[1]
-										.substring(0, vonIndex));
+								                       .substring(0, vonIndex));
 								notice.setSurname(parts[1]
-										.substring(vonIndex + 1));
+								                        .substring(vonIndex + 1));
 							} else {
 
 								notice.setSurname(parts[1]);
@@ -424,7 +425,54 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("OBJE")) {
 						for (int k = 0; k < detail.lines.size(); k++){
 							GedcomLine item = detail.lines.get(k);
-							unknownLine.add(item.toString());
+
+							if (item.tag.equals("FILE")){
+
+								InputStream ins = Suku.kontroller.openFile(item.lineValue);
+								if (ins != null) {
+									BufferedInputStream bstr = new BufferedInputStream(ins);
+									// System.out.println("OPEN: " + openedImage);
+
+									ByteArrayOutputStream bos = new ByteArrayOutputStream();
+									byte [] buff= new byte[2048];
+									int imgSize=0;
+									while (true){
+										int rdbytes;
+										try {
+											rdbytes = bstr.read(buff);
+										} catch (IOException e) {
+											imgSize=-1;
+											break;
+										}
+										imgSize += rdbytes;
+										if (rdbytes<0)break;
+										bos.write(buff, 0, rdbytes);
+
+									}
+									if (imgSize>0){
+										notice.setMediaData(bos.toByteArray());
+									}
+								} else {
+									unknownLine.add(item.toString());
+								}
+								//								try {
+								//									int luettu = bstr.read(buffer);
+								//									if (luettu == filesize) {
+								//										notice.setMediaData(buffer);
+								//									} else {
+								//										logger.warning("Filesize expected " + filesize
+								//												+ " read " + luettu);
+								//									}
+								//									bstr.close();
+								//								
+								//								
+							}else if (item.tag.equals("FORM")){
+							}else if (item.tag.equals("TITL")){
+								notice.setMediaTitle(item.lineValue);
+							} else {
+
+								unknownLine.add(item.toString());
+							}
 						}
 					} else {
 						unknownLine.add(detail.toString());
@@ -455,7 +503,7 @@ public class ImportGedcomUtil {
 				if (line.lineValue.equals("1")) return 60;
 				if (line.lineValue.equals("2")) return 80;
 				if (line.lineValue.equals("3")) return 100;
-		
+
 			}
 		}
 		return 100;
@@ -547,7 +595,7 @@ public class ImportGedcomUtil {
 		String mm = null;
 		if (dl >= 0) {
 			int kk = "|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|"
-					.indexOf(parts[dl].toUpperCase());
+				.indexOf(parts[dl].toUpperCase());
 			if (kk > 0) {
 				kk--;
 				kk /= 2;
@@ -598,8 +646,8 @@ public class ImportGedcomUtil {
 		}
 
 		String sql = "insert into sukuvariables (owner_name,owner_info, "
-				+ "owner_address,owner_postalcode,owner_postoffice,"
-				+ "owner_country,owner_email,user_id) values (?,?,?,?,?,?,?,user) ";
+			+ "owner_address,owner_postalcode,owner_postoffice,"
+			+ "owner_country,owner_email,user_id) values (?,?,?,?,?,?,?,user) ";
 
 		PreparedStatement pst = con.prepareStatement(sql);
 		pst.setString(1, name);
@@ -613,64 +661,64 @@ public class ImportGedcomUtil {
 		logger.info("Sukuvariables updated " + lukuri + " lines");
 	}
 
-	
+
 	private GedcomAddress splitAddress(String lineValue) {
 		StringBuffer address = new StringBuffer();
 		StringBuffer country = new StringBuffer();
 		GedcomAddress addr = new GedcomAddress();
 		if (lineValue != null) {
-		String parts[] = lineValue.split("\n");
-		boolean wasPo = false;
-		for (int j = 0; j < parts.length; j++) {
-			if (j == 0) {
-				address.append(parts[j]);
-			} else {
-				if (parts[j].indexOf('@') > 0) { // possibly email
-					addr.email = parts[j];
-				} else if (!wasPo) {
-					String posts[] = parts[j].split(" ");
-					if (posts.length > 1) {
-						int ponum = -1;
-						try {
-							ponum = Integer.parseInt(posts[0]);
-						} catch (NumberFormatException ne) {
-
-						}
-						if (ponum > 1) { // now assume beginning is
-							// postalcode
-							addr.postalCode = posts[0];
-							addr.postOffice = parts[j]
-									.substring(posts[0].length() + 1);
-							wasPo = true;
-						}
-					}
-					if (!wasPo) {
-						if (address.length() > 0) {
-							address.append("\n");
-						}
-						address.append(parts[j]);
-
-					}
+			String parts[] = lineValue.split("\n");
+			boolean wasPo = false;
+			for (int j = 0; j < parts.length; j++) {
+				if (j == 0) {
+					address.append(parts[j]);
 				} else {
-					if (country.length() > 0) {
-						country.append("\n");
-					}
-					country.append(parts[j]);
-				}
+					if (parts[j].indexOf('@') > 0) { // possibly email
+						addr.email = parts[j];
+					} else if (!wasPo) {
+						String posts[] = parts[j].split(" ");
+						if (posts.length > 1) {
+							int ponum = -1;
+							try {
+								ponum = Integer.parseInt(posts[0]);
+							} catch (NumberFormatException ne) {
 
+							}
+							if (ponum > 1) { // now assume beginning is
+								// postalcode
+								addr.postalCode = posts[0];
+								addr.postOffice = parts[j]
+								                        .substring(posts[0].length() + 1);
+								wasPo = true;
+							}
+						}
+						if (!wasPo) {
+							if (address.length() > 0) {
+								address.append("\n");
+							}
+							address.append(parts[j]);
+
+						}
+					} else {
+						if (country.length() > 0) {
+							country.append("\n");
+						}
+						country.append(parts[j]);
+					}
+
+				}
 			}
-		}
-		
-		if (address.length()>0){
-			addr.address = address.toString();
-		}
-		if (country.length()>0){
-			addr.country = country.toString();
-		}
+
+			if (address.length()>0){
+				addr.address = address.toString();
+			}
+			if (country.length()>0){
+				addr.country = country.toString();
+			}
 		}
 		return addr;
 	}
-	
+
 	private void consumeGedcomHead(GedcomLine record) {
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine notice1 = record.lines.get(i);
@@ -1041,7 +1089,7 @@ public class ImportGedcomUtil {
 			return sb.toString();
 		}
 	}
-	
+
 	class GedcomAddress{
 		String address=null;
 		String postalCode=null;

@@ -579,4 +579,10 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		return null;
 	}
 
+	@Override
+	public InputStream openFile(String path) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
