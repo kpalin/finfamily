@@ -157,206 +157,213 @@ public class PersonUtil {
 			PreparedStatement pstDel = con.prepareStatement(delSql);
 			PreparedStatement pstDelLang = con.prepareStatement(delAllLangSql);
 			PreparedStatement pstUpdRow = con.prepareStatement(updRowSql);
+			if (nn != null) {
+				for (int i = 0; i < nn.length; i++) {
+					UnitNotice n = nn[i];
+					int pnid = 0;
+					if (n.isToBeDeleted()) {
+						pstDelLang.setInt(1, n.getPnid());
+						int landelcnt = pstDelLang.executeUpdate();
+						pstDel.setInt(1, n.getPnid());
+						int delcnt = pstDel.executeUpdate();
+						String text = "Poistettiin " + delcnt + " riviä ["
+								+ landelcnt + "] kieliversiota pid = "
+								+ n.getPid() + " tag=" + n.getTag();
+						// System.out.println(text);
+						logger.fine(text);
+					} else if (n.getPnid() == 0 || n.isToBeUpdated()) {
 
-			for (int i = 0; i < nn.length; i++) {
-				UnitNotice n = nn[i];
-				int pnid = 0;
-				if (n.isToBeDeleted()) {
-					pstDelLang.setInt(1, n.getPnid());
-					int landelcnt = pstDelLang.executeUpdate();
-					pstDel.setInt(1, n.getPnid());
-					int delcnt = pstDel.executeUpdate();
-					String text = "Poistettiin " + delcnt + " riviä ["
-							+ landelcnt + "] kieliversiota pid = " + n.getPid()
-							+ " tag=" + n.getTag();
-					// System.out.println(text);
-					logger.fine(text);
-				} else if (n.getPnid() == 0 || n.isToBeUpdated()) {
+						if (n.getPnid() == 0) {// is this new i.e. insert
 
-					if (n.getPnid() == 0) {// is this new i.e. insert
+							stm = con.createStatement();
+							ResultSet rs = stm
+									.executeQuery("select nextval('unitnoticeseq')");
 
-						stm = con.createStatement();
-						ResultSet rs = stm
-								.executeQuery("select nextval('unitnoticeseq')");
-
-						if (rs.next()) {
-							pnid = rs.getInt(1);
+							if (rs.next()) {
+								pnid = rs.getInt(1);
+							} else {
+								throw new SQLException(
+										"Sequence unitnoticeseq error");
+							}
+							rs.close();
+							pst = con.prepareStatement(insSql);
 						} else {
-							throw new SQLException(
-									"Sequence unitnoticeseq error");
+							pst = con.prepareStatement(updSql);
+							pnid = n.getPnid();
 						}
-						rs.close();
-						pst = con.prepareStatement(insSql);
-					} else {
-						pst = con.prepareStatement(updSql);
+
+						if (n.isToBeUpdated() || n.getPnid() == 0) {
+
+							pst.setInt(1, n.getSurety());
+							pst.setString(2, n.getPrivacy());
+							pst.setString(3, n.getNoticeType());
+							pst.setString(4, n.getDescription());
+							pst.setString(5, n.getDatePrefix());
+							pst.setString(6, n.getFromDate());
+							pst.setString(7, n.getToDate());
+							pst.setString(8, n.getPlace());
+							pst.setString(9, n.getVillage());
+							pst.setString(10, n.getFarm());
+							pst.setString(11, n.getCroft());
+							pst.setString(12, n.getAddress());
+							pst.setString(13, n.getPostalCode());
+							pst.setString(14, n.getPostOffice());
+							pst.setString(15, n.getState());
+							pst.setString(16, n.getCountry());
+							pst.setString(17, n.getEmail());
+							pst.setString(18, n.getNoteText());
+							pst.setString(19, n.getMediaFilename());
+							pst.setString(20, n.getMediaTitle());
+							pst.setString(21, n.getPrefix());
+							pst.setString(22, n.getSurname());
+							pst.setString(23, n.getGivenname());
+							pst.setString(24, n.getPatronym());
+							pst.setString(25, n.getPostfix());
+							pst.setString(26, n.getSource());
+							pst.setString(27, n.getPrivateText());
+							if (n.getRefNames() == null) {
+								pst.setNull(28, Types.ARRAY);
+							} else {
+
+								Array xx = con.createArrayOf("varchar", n
+										.getRefNames());
+								pst.setArray(28, xx);
+
+							}
+							if (n.getRefPlaces() == null) {
+								pst.setNull(29, Types.ARRAY);
+							} else {
+
+								Array xx = con.createArrayOf("varchar", n
+										.getRefPlaces());
+								pst.setArray(29, xx);
+
+							}
+						}
+						if (n.getPnid() > 0) {
+							pst.setInt(30, n.getPnid());
+							int luku = pst.executeUpdate();
+							// System.out.println("Päivitettiin " + luku +
+							// " tietuetta");
+							logger.fine("Päivitettiin " + luku
+									+ " tietuetta pnid=[" + n.getPnid() + "]");
+						} else {
+							pst.setInt(30, pnid);
+							pst.setInt(31, pid);
+							pst.setString(32, n.getTag());
+							int luku = pst.executeUpdate();
+							// System.out.println("Luotiin " + luku +
+							// " uusi tietue");
+							logger.fine("Luotiin " + luku + " tietue pnid=["
+									+ pnid + "]");
+						}
+
+						if (n.getMediaData() == null) {
+							String sql = "update unitnotice set mediadata = null where pnid = ?";
+							pst = con.prepareStatement(sql);
+							pst.setInt(1, pnid);
+							int lukuri = pst.executeUpdate();
+							if (lukuri != 1) {
+								logger.warning("media deleted for pnid "
+										+ n.getPnid() + " gave result "
+										+ lukuri);
+							}
+						} else {
+							String UPDATE_IMAGE_DATA = "update UnitNotice set MediaData = ?,"
+									+ "mediaWidth = ?,mediaheight = ? where PNID = ? ";
+
+							PreparedStatement ps = this.con
+									.prepareStatement(UPDATE_IMAGE_DATA);
+
+							ps.setBytes(1, n.getMediaData());
+							Dimension d = n.getMediaSize();
+							ps.setInt(2, d.width);
+							ps.setInt(3, d.height);
+							ps.setInt(4, pnid);
+							ps.executeUpdate();
+						}
+
+					}
+
+					if (n.getLanguages() != null) {
+
+						for (int l = 0; l < n.getLanguages().length; l++) {
+							UnitLanguage ll = n.getLanguages()[l];
+							if (ll.isToBeDeleted()) {
+								if (ll.getPnid() > 0) {
+									pst = con.prepareStatement(delOneLangSql);
+									pst.setInt(1, ll.getPnid());
+									pst.setString(2, ll.getLangCode());
+									int lukuri = pst.executeUpdate();
+									if (lukuri != 1) {
+										logger
+												.warning("language deleted for pnid "
+														+ n.getPnid()
+														+ " ["
+														+ ll.getLangCode()
+														+ "] gave result "
+														+ lukuri);
+									}
+								}
+							}
+
+							if (ll.isToBeUpdated()) {
+
+								if (ll.getPnid() == 0) {
+									//								
+									pst = con.prepareStatement(insLangSql);
+									pst.setInt(1, n.getPnid());
+									pst.setInt(2, pid);
+									pst.setString(3, n.getTag());
+									pst.setString(4, ll.getLangCode());
+									pst.setString(5, ll.getNoticeType());
+									pst.setString(6, ll.getDescription());
+									pst.setString(7, ll.getPlace());
+									pst.setString(8, ll.getNoteText());
+									pst.setString(9, ll.getMediaTitle());
+									int lukuri = pst.executeUpdate();
+									if (lukuri != 1) {
+										logger
+												.warning("language added for pnid "
+														+ n.getPnid()
+														+ " ["
+														+ ll.getLangCode()
+														+ "] gave result "
+														+ lukuri);
+									}
+
+								} else {
+									pst = con.prepareStatement(updLangSql);
+									pst.setString(1, ll.getNoticeType());
+									pst.setString(2, ll.getDescription());
+									pst.setString(3, ll.getPlace());
+									pst.setString(4, ll.getNoteText());
+									pst.setString(5, ll.getMediaTitle());
+									pst.setInt(6, ll.getPnid());
+									pst.setString(7, ll.getLangCode());
+									int lukuri = pst.executeUpdate();
+									if (lukuri != 1) {
+										logger.warning("language for pnid "
+												+ ll.getPnid() + " ["
+												+ ll.getLangCode()
+												+ "] gave result " + lukuri);
+									}
+									pst.close();
+								}
+							}
+
+						}
+
+					}
+
+					if (n.getPnid() > 0) {
 						pnid = n.getPnid();
 					}
-
-					if (n.isToBeUpdated() || n.getPnid() == 0) {
-
-						pst.setInt(1, n.getSurety());
-						pst.setString(2, n.getPrivacy());
-						pst.setString(3, n.getNoticeType());
-						pst.setString(4, n.getDescription());
-						pst.setString(5, n.getDatePrefix());
-						pst.setString(6, n.getFromDate());
-						pst.setString(7, n.getToDate());
-						pst.setString(8, n.getPlace());
-						pst.setString(9, n.getVillage());
-						pst.setString(10, n.getFarm());
-						pst.setString(11, n.getCroft());
-						pst.setString(12, n.getAddress());
-						pst.setString(13, n.getPostalCode());
-						pst.setString(14, n.getPostOffice());
-						pst.setString(15, n.getState());
-						pst.setString(16, n.getCountry());
-						pst.setString(17, n.getEmail());
-						pst.setString(18, n.getNoteText());
-						pst.setString(19, n.getMediaFilename());
-						pst.setString(20, n.getMediaTitle());
-						pst.setString(21, n.getPrefix());
-						pst.setString(22, n.getSurname());
-						pst.setString(23, n.getGivenname());
-						pst.setString(24, n.getPatronym());
-						pst.setString(25, n.getPostfix());
-						pst.setString(26, n.getSource());
-						pst.setString(27, n.getPrivateText());
-						if (n.getRefNames() == null) {
-							pst.setNull(28, Types.ARRAY);
-						} else {
-
-							Array xx = con.createArrayOf("varchar", n
-									.getRefNames());
-							pst.setArray(28, xx);
-
-						}
-						if (n.getRefPlaces() == null) {
-							pst.setNull(29, Types.ARRAY);
-						} else {
-
-							Array xx = con.createArrayOf("varchar", n
-									.getRefPlaces());
-							pst.setArray(29, xx);
-
-						}
-					}
-					if (n.getPnid() > 0) {
-						pst.setInt(30, n.getPnid());
-						int luku = pst.executeUpdate();
-						// System.out.println("Päivitettiin " + luku +
-						// " tietuetta");
-						logger.fine("Päivitettiin " + luku
-								+ " tietuetta pnid=[" + n.getPnid() + "]");
-					} else {
-						pst.setInt(30, pnid);
-						pst.setInt(31, pid);
-						pst.setString(32, n.getTag());
-						int luku = pst.executeUpdate();
-						// System.out.println("Luotiin " + luku +
-						// " uusi tietue");
-						logger.fine("Luotiin " + luku + " tietue pnid=[" + pnid
-								+ "]");
-					}
-
-					if (n.getMediaData() == null) {
-						String sql = "update unitnotice set mediadata = null where pnid = ?";
-						pst = con.prepareStatement(sql);
-						pst.setInt(1, pnid);
-						int lukuri = pst.executeUpdate();
-						if (lukuri != 1) {
-							logger.warning("media deleted for pnid "
-									+ n.getPnid() + " gave result " + lukuri);
-						}
-					} else {
-						String UPDATE_IMAGE_DATA = "update UnitNotice set MediaData = ?,"
-								+ "mediaWidth = ?,mediaheight = ? where PNID = ? ";
-
-						PreparedStatement ps = this.con
-								.prepareStatement(UPDATE_IMAGE_DATA);
-
-						ps.setBytes(1, n.getMediaData());
-						Dimension d = n.getMediaSize();
-						ps.setInt(2, d.width);
-						ps.setInt(3, d.height);
-						ps.setInt(4, pnid);
-						ps.executeUpdate();
-					}
-
+					pstUpdRow.setInt(1, i + 1);
+					pstUpdRow.setInt(2, pnid);
+					pstUpdRow.executeUpdate();
 				}
-
-				if (n.getLanguages() != null) {
-
-					for (int l = 0; l < n.getLanguages().length; l++) {
-						UnitLanguage ll = n.getLanguages()[l];
-						if (ll.isToBeDeleted()) {
-							if (ll.getPnid() > 0) {
-								pst = con.prepareStatement(delOneLangSql);
-								pst.setInt(1, ll.getPnid());
-								pst.setString(2, ll.getLangCode());
-								int lukuri = pst.executeUpdate();
-								if (lukuri != 1) {
-									logger.warning("language deleted for pnid "
-											+ n.getPnid() + " ["
-											+ ll.getLangCode()
-											+ "] gave result " + lukuri);
-								}
-							}
-						}
-
-						if (ll.isToBeUpdated()) {
-
-							if (ll.getPnid() == 0) {
-								//								
-								pst = con.prepareStatement(insLangSql);
-								pst.setInt(1, n.getPnid());
-								pst.setInt(2, pid);
-								pst.setString(3, n.getTag());
-								pst.setString(4, ll.getLangCode());
-								pst.setString(5, ll.getNoticeType());
-								pst.setString(6, ll.getDescription());
-								pst.setString(7, ll.getPlace());
-								pst.setString(8, ll.getNoteText());
-								pst.setString(9, ll.getMediaTitle());
-								int lukuri = pst.executeUpdate();
-								if (lukuri != 1) {
-									logger.warning("language added for pnid "
-											+ n.getPnid() + " ["
-											+ ll.getLangCode()
-											+ "] gave result " + lukuri);
-								}
-
-							} else {
-								pst = con.prepareStatement(updLangSql);
-								pst.setString(1, ll.getNoticeType());
-								pst.setString(2, ll.getDescription());
-								pst.setString(3, ll.getPlace());
-								pst.setString(4, ll.getNoteText());
-								pst.setString(5, ll.getMediaTitle());
-								pst.setInt(6, ll.getPnid());
-								pst.setString(7, ll.getLangCode());
-								int lukuri = pst.executeUpdate();
-								if (lukuri != 1) {
-									logger.warning("language for pnid "
-											+ ll.getPnid() + " ["
-											+ ll.getLangCode()
-											+ "] gave result " + lukuri);
-								}
-								pst.close();
-							}
-						}
-
-					}
-
-				}
-
-				if (n.getPnid() > 0) {
-					pnid = n.getPnid();
-				}
-				pstUpdRow.setInt(1, i + 1);
-				pstUpdRow.setInt(2, pnid);
-				pstUpdRow.executeUpdate();
 			}
-
 		} catch (SQLException e) {
 			// e.printStackTrace();
 			logger.log(Level.WARNING, "person update", e);

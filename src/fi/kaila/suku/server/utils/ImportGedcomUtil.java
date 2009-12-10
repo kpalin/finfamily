@@ -9,7 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -19,6 +22,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
+import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
@@ -52,7 +56,9 @@ public class ImportGedcomUtil {
 		this.runner = ImportGedcomDialog.getRunner();
 	}
 
+	LinkedHashMap<String, GedcomPidEle> gedPid = null;
 	LinkedHashMap<String, GedcomLine> gedMap = null;
+	LinkedHashMap<String, GedcomLine> gedFamMap = null;
 	Vector<String> unknownLine = new Vector<String>();
 
 	/**
@@ -64,6 +70,9 @@ public class ImportGedcomUtil {
 	public SukuData importGedcom(String file, String db) throws SukuException {
 		SukuData resp = new SukuData();
 		gedMap = new LinkedHashMap<String, GedcomLine>();
+		gedFamMap = new LinkedHashMap<String, GedcomLine>();
+		gedPid = new LinkedHashMap<String, GedcomPidEle>();
+		seenTrlr = false;
 		GedcomLine record = null;
 		Statement stm;
 		try {
@@ -166,14 +175,13 @@ public class ImportGedcomUtil {
 								if (this.runner != null) {
 									StringBuffer sb = new StringBuffer();
 
-
 									double dluku = fileIndex;
 
 									double prose = (dluku * 100) / dLen;
 									int intprose = (int) prose;
-									sb.append("" + intprose + ";" + record.toString());
+									sb.append("" + intprose + ";"
+											+ record.toString());
 									this.runner.setRunnerValue(sb.toString());
-
 
 								}
 							}
@@ -186,7 +194,7 @@ public class ImportGedcomUtil {
 							aux = linex.substring(i1 + 1, i2);
 							i3 = i2;
 							if (aux.charAt(0) == '@'
-								&& aux.charAt(aux.length() - 1) == '@') {
+									&& aux.charAt(aux.length() - 1) == '@') {
 								lineg.id = aux;
 								i3 = linex.indexOf(' ', i2 + 1);
 								if (i3 > 0) {
@@ -214,7 +222,7 @@ public class ImportGedcomUtil {
 						if (thisSet == GedSet.Set_None) {
 							if (lineg.lineValue.equalsIgnoreCase("UNICODE")
 									|| lineg.lineValue
-									.equalsIgnoreCase("UTF-8")
+											.equalsIgnoreCase("UTF-8")
 									|| lineg.lineValue.equalsIgnoreCase("UTF8")) {
 								thisSet = GedSet.Set_Utf8;
 							} else if (lineg.lineValue
@@ -237,42 +245,46 @@ public class ImportGedcomUtil {
 
 				}
 				//
-				//				if (this.runner != null) {
-				//					StringBuffer sb = new StringBuffer();
+				// if (this.runner != null) {
+				// StringBuffer sb = new StringBuffer();
 				//
 				//
-				//					double dluku = fileIndex;
+				// double dluku = fileIndex;
 				//
-				//					double prose = (dluku * 100) / dLen;
-				//					int intprose = (int) prose;
-				//					sb.append("" + intprose + ";Kalle koetta");
-				//					this.runner.setRunnerValue(sb.toString());
+				// double prose = (dluku * 100) / dLen;
+				// int intprose = (int) prose;
+				// sb.append("" + intprose + ";Kalle koetta");
+				// this.runner.setRunnerValue(sb.toString());
 				//
-				//					// try {
-				//					// Thread.sleep(1);
-				//					//					
-				//					// } catch (InterruptedException ie) {
-				//					// }
+				// // try {
+				// // Thread.sleep(1);
+				// //
+				// // } catch (InterruptedException ie) {
+				// // }
 				//
-				//				}
+				// }
 
 			}
 
 			String key = record.getKey();
 			gedMap.put(key, record);
 			consumeGedcomRecord(record);
+			if (!seenTrlr) {
+				resp.resu = Resurses.getString("GEDCOM_NO_TRLR");
+			}
 
-			// Set<Map.Entry<String, GedcomLine>> entries = gedMap.entrySet();
-			// Iterator<Map.Entry<String, GedcomLine>> ee = entries.iterator();
-			// Vector<String> recs = new Vector<String>();
-			// while (ee.hasNext()) {
-			// Map.Entry<String, GedcomLine> entry = (Map.Entry<String,
-			// GedcomLine>) ee
-			// .next();
-			// recs.add(entry.getValue().toString());
-			// }
-			//
+			Set<Map.Entry<String, GedcomLine>> entries = gedFamMap.entrySet();
+			Iterator<Map.Entry<String, GedcomLine>> ee = entries.iterator();
+			Vector<String> recs = new Vector<String>();
+			while (ee.hasNext()) {
+				Map.Entry<String, GedcomLine> entry = (Map.Entry<String, GedcomLine>) ee
+						.next();
+				consumeGedcomFam(entry.getValue());
+				recs.add(entry.getValue().toString());
+			}
+
 			// resp.generalArray = recs.toArray(new String[0]);
+
 			resp.generalArray = unknownLine.toArray(new String[0]);
 			bis.close();
 		} catch (Exception e) {
@@ -286,12 +298,101 @@ public class ImportGedcomUtil {
 
 	}
 
+	private void consumeGedcomFam(GedcomLine notice) {
+		SukuData req = new SukuData();
+
+		Vector<Relation> rels = new Vector<Relation>();
+		Relation rel;
+		int ownerPid = 0;
+		int pareIdx = 0;
+		int childIdx = 0;
+		GedcomLine linePare = null;
+		GedcomLine lineChil = null;
+		while (pareIdx < notice.lines.size()) {
+			int ppstart = pareIdx;
+			for (int i = ppstart; i < notice.lines.size(); i++) {
+				linePare = notice.lines.get(i);
+
+				if ("|HUSB|WIFE|".indexOf(linePare.tag) > 0) {
+					pareIdx = i;
+					if (childIdx <= pareIdx) {
+						childIdx = pareIdx + 1;
+					}
+					break;
+				} else {
+					pareIdx = i + 1;
+				}
+			}
+			int chstart = childIdx;
+			for (int i = chstart; i < notice.lines.size(); i++) {
+				lineChil = notice.lines.get(i);
+				if ("|HUSB|WIFE|CHIL|".indexOf(lineChil.tag) > 0) {
+					childIdx = i;
+					break;
+				} else {
+					childIdx = i + 1;
+				}
+			}
+			if (pareIdx == notice.lines.size()) {
+				break;
+			}
+			// public Relation(int rid, int aid, int bid, String tag, int
+			// surety,
+			// Timestamp modified, Timestamp created) {
+			if (childIdx < notice.lines.size()) {
+				GedcomPidEle aid = gedPid.get(linePare.lineValue);
+				GedcomPidEle bid = gedPid.get(lineChil.lineValue);
+
+				if (aid == null || bid == null) {
+					System.out.println("FAMBAD");
+					unknownLine.add(notice.toString());
+					continue;
+				}
+				String tag = "FATH";
+				if (linePare.tag.equals("HUSB") && lineChil.tag.equals("WIFE")) {
+					tag = "HUSB";
+				} else if (linePare.tag.equals("WIFE")
+						&& lineChil.tag.equals("HUSB")) {
+					tag = "WIFE";
+				} else if (linePare.tag.equals("HUSB")
+						&& lineChil.tag.equals("CHIL")) {
+					tag = "FATH";
+				} else {
+					tag = "MOTH";
+				}
+				if (ownerPid == 0) {
+					ownerPid = bid.pid;
+				}
+				rel = new Relation(0, bid.pid, aid.pid, tag, 100, null, null);
+				rels.add(rel);
+				childIdx++;
+			} else {
+				pareIdx++;
+				childIdx = pareIdx + 1;
+			}
+
+		}
+
+		req.persLong = new PersonLongData(ownerPid, "INDI", "U");
+		req.relations = rels.toArray(new Relation[0]);
+
+		PersonUtil u = new PersonUtil(con);
+
+		SukuData resp = u.updatePerson(req);
+
+	}
+
 	int recordCount = 0;
 	String submitterId = null;
 	String ownerInfo = null;
+	boolean seenTrlr = false;
 
 	private void consumeGedcomRecord(GedcomLine record) throws SQLException {
 		recordCount++;
+		if (seenTrlr) {
+			unknownLine.add(record.toString());
+			return;
+		}
 		if (recordCount == 1) { // expected HEAD record
 			if (!record.tag.equals("HEAD")) {
 				unknownLine.add(Resurses.getString("GEDCOM_MISSING_HEAD"));
@@ -302,6 +403,10 @@ public class ImportGedcomUtil {
 			consumeGedcomSubmitter(record);
 		} else if (record.tag.equals("INDI")) {
 			consumeGedcomIndi(record);
+		} else if (record.tag.equals("FAM")) {
+			gedFamMap.put(record.id, record);
+		} else if (record.tag.equals("TRLR")) {
+			seenTrlr = true;
 		} else {
 			unknownLine.add(record.toString());
 		}
@@ -311,16 +416,17 @@ public class ImportGedcomUtil {
 	private String extractGedcomSource(GedcomLine record) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(record.lineValue);
-		for (int i = 0 ; i < record.lines.size(); i++) {
+		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine line = record.lines.get(i);
-			if (line.tag.equals("TEXT") || line.tag.equals("NOTE")){
-				if (sb.length()>0){
+			if (line.tag.equals("TEXT") || line.tag.equals("NOTE")) {
+				if (sb.length() > 0) {
 					sb.append(" ");
 				}
 				sb.append(line.lineValue);
 			}
 		}
-		if (sb.length()==0) return null;
+		if (sb.length() == 0)
+			return null;
 		return sb.toString();
 	}
 
@@ -352,9 +458,9 @@ public class ImportGedcomUtil {
 							int vonIndex = Utils.isKnownPrefix(parts[1]);
 							if (vonIndex > 0) {
 								notice.setPrefix(parts[1]
-								                       .substring(0, vonIndex));
+										.substring(0, vonIndex));
 								notice.setSurname(parts[1]
-								                        .substring(vonIndex + 1));
+										.substring(vonIndex + 1));
 							} else {
 
 								notice.setSurname(parts[1]);
@@ -372,17 +478,18 @@ public class ImportGedcomUtil {
 					notice.setNoteText(noti.lineValue);
 				}
 			} else if (noti.tag.equals("SOUR")) {
-				String src=extractGedcomSource(record);
+				String src = extractGedcomSource(record);
 				pers.setSource(src);
 			} else if (noti.tag.equals("OCCU") || noti.tag.equals("EDUC")
 					|| noti.tag.equals("TITL") || noti.tag.equals("RESI")
 					|| noti.tag.equals("PROP") || noti.tag.equals("FACT")
 					|| noti.tag.equals("BIRT") || noti.tag.equals("CHR")
 					|| noti.tag.equals("DEAT") || noti.tag.equals("BURI")
-					|| noti.tag.equals("EVEN") || noti.tag.equals("RESI") 
+					|| noti.tag.equals("EVEN") || noti.tag.equals("RESI")
 					|| noti.tag.startsWith("_")) {
-				String notiTag=noti.tag;
-				if (notiTag.startsWith("_"))notiTag=noti.tag.substring(1);
+				String notiTag = noti.tag;
+				if (notiTag.startsWith("_"))
+					notiTag = noti.tag.substring(1);
 				UnitNotice notice = new UnitNotice(notiTag);
 				notices.add(notice);
 				notice.setDescription(noti.lineValue);
@@ -400,7 +507,7 @@ public class ImportGedcomUtil {
 						notice.setCountry(address.country);
 						notice.setEmail(address.email);
 					} else if (detail.tag.equals("SOUR")) {
-						String src=extractGedcomSource(detail);
+						String src = extractGedcomSource(detail);
 						pers.setSource(src);
 						notice.setSurety(extractGedcomSurety(detail));
 					} else if (detail.tag.equals("DATE")) {
@@ -423,51 +530,64 @@ public class ImportGedcomUtil {
 							}
 						}
 					} else if (detail.tag.equals("OBJE")) {
-						for (int k = 0; k < detail.lines.size(); k++){
+						for (int k = 0; k < detail.lines.size(); k++) {
 							GedcomLine item = detail.lines.get(k);
 
-							if (item.tag.equals("FILE")){
+							if (item.tag.equals("FILE")) {
 
-								InputStream ins = Suku.kontroller.openFile(item.lineValue);
+								InputStream ins = Suku.kontroller
+										.openFile(item.lineValue);
 								if (ins != null) {
-									BufferedInputStream bstr = new BufferedInputStream(ins);
-									// System.out.println("OPEN: " + openedImage);
+									BufferedInputStream bstr = new BufferedInputStream(
+											ins);
+									// System.out.println("OPEN: " +
+									// openedImage);
 
 									ByteArrayOutputStream bos = new ByteArrayOutputStream();
-									byte [] buff= new byte[2048];
-									int imgSize=0;
-									while (true){
+									byte[] buff = new byte[2048];
+									int imgSize = 0;
+									while (true) {
 										int rdbytes;
 										try {
 											rdbytes = bstr.read(buff);
 										} catch (IOException e) {
-											imgSize=-1;
+											imgSize = -1;
 											break;
 										}
 										imgSize += rdbytes;
-										if (rdbytes<0)break;
+										if (rdbytes < 0)
+											break;
 										bos.write(buff, 0, rdbytes);
 
 									}
-									if (imgSize>0){
+
+									int lastdir = item.lineValue.replace('\\',
+											'/').lastIndexOf('/');
+									if (lastdir > 0) {
+										notice.setMediaFilename(item.lineValue
+												.substring(lastdir + 1));
+									}
+
+									if (imgSize > 0) {
 										notice.setMediaData(bos.toByteArray());
 									}
 								} else {
 									unknownLine.add(item.toString());
 								}
-								//								try {
-								//									int luettu = bstr.read(buffer);
-								//									if (luettu == filesize) {
-								//										notice.setMediaData(buffer);
-								//									} else {
-								//										logger.warning("Filesize expected " + filesize
-								//												+ " read " + luettu);
-								//									}
-								//									bstr.close();
+								// try {
+								// int luettu = bstr.read(buffer);
+								// if (luettu == filesize) {
+								// notice.setMediaData(buffer);
+								// } else {
+								// logger.warning("Filesize expected " +
+								// filesize
+								// + " read " + luettu);
+								// }
+								// bstr.close();
 								//								
 								//								
-							}else if (item.tag.equals("FORM")){
-							}else if (item.tag.equals("TITL")){
+							} else if (item.tag.equals("FORM")) {
+							} else if (item.tag.equals("TITL")) {
 								notice.setMediaTitle(item.lineValue);
 							} else {
 
@@ -490,19 +610,31 @@ public class ImportGedcomUtil {
 		request.persLong = pers;
 		PersonUtil u = new PersonUtil(con);
 
-		u.updatePerson(request);
+		SukuData resp = u.updatePerson(request);
+		if (resp.resultPid > 0) {
+			GedcomPidEle pide = new GedcomPidEle();
+			pide.pid = resp.resultPid;
+			pide.sex = pers.getSex();
+
+			gedPid.put(record.id, pide);
+		}
 
 	}
 
 	private int extractGedcomSurety(GedcomLine record) {
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine line = record.lines.get(i);
-			if (line.tag.equals("QUAY")){
-				if (line.lineValue==null) return 100;
-				if (line.lineValue.equals("0")) return 40;
-				if (line.lineValue.equals("1")) return 60;
-				if (line.lineValue.equals("2")) return 80;
-				if (line.lineValue.equals("3")) return 100;
+			if (line.tag.equals("QUAY")) {
+				if (line.lineValue == null)
+					return 100;
+				if (line.lineValue.equals("0"))
+					return 40;
+				if (line.lineValue.equals("1"))
+					return 60;
+				if (line.lineValue.equals("2"))
+					return 80;
+				if (line.lineValue.equals("3"))
+					return 100;
 
 			}
 		}
@@ -595,7 +727,7 @@ public class ImportGedcomUtil {
 		String mm = null;
 		if (dl >= 0) {
 			int kk = "|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|"
-				.indexOf(parts[dl].toUpperCase());
+					.indexOf(parts[dl].toUpperCase());
 			if (kk > 0) {
 				kk--;
 				kk /= 2;
@@ -630,7 +762,7 @@ public class ImportGedcomUtil {
 
 	private void consumeGedcomSubmitter(GedcomLine record) throws SQLException {
 		String name = null;
-		GedcomAddress address=null;
+		GedcomAddress address = null;
 		StringBuffer note = new StringBuffer();
 		if (ownerInfo != null) {
 			note.append(ownerInfo);
@@ -646,8 +778,8 @@ public class ImportGedcomUtil {
 		}
 
 		String sql = "insert into sukuvariables (owner_name,owner_info, "
-			+ "owner_address,owner_postalcode,owner_postoffice,"
-			+ "owner_country,owner_email,user_id) values (?,?,?,?,?,?,?,user) ";
+				+ "owner_address,owner_postalcode,owner_postoffice,"
+				+ "owner_country,owner_email,user_id) values (?,?,?,?,?,?,?,user) ";
 
 		PreparedStatement pst = con.prepareStatement(sql);
 		pst.setString(1, name);
@@ -660,7 +792,6 @@ public class ImportGedcomUtil {
 		int lukuri = pst.executeUpdate();
 		logger.info("Sukuvariables updated " + lukuri + " lines");
 	}
-
 
 	private GedcomAddress splitAddress(String lineValue) {
 		StringBuffer address = new StringBuffer();
@@ -687,8 +818,8 @@ public class ImportGedcomUtil {
 							if (ponum > 1) { // now assume beginning is
 								// postalcode
 								addr.postalCode = posts[0];
-								addr.postOffice = parts[j]
-								                        .substring(posts[0].length() + 1);
+								addr.postOffice = parts[j].substring(posts[0]
+										.length() + 1);
 								wasPo = true;
 							}
 						}
@@ -709,10 +840,10 @@ public class ImportGedcomUtil {
 				}
 			}
 
-			if (address.length()>0){
+			if (address.length() > 0) {
 				addr.address = address.toString();
 			}
-			if (country.length()>0){
+			if (country.length() > 0) {
 				addr.country = country.toString();
 			}
 		}
@@ -1090,12 +1221,17 @@ public class ImportGedcomUtil {
 		}
 	}
 
-	class GedcomAddress{
-		String address=null;
-		String postalCode=null;
-		String postOffice=null;
-		String country=null;
-		String email=null;
+	class GedcomAddress {
+		String address = null;
+		String postalCode = null;
+		String postOffice = null;
+		String country = null;
+		String email = null;
+	}
+
+	class GedcomPidEle {
+		int pid = 0;
+		String sex = "U";
 	}
 
 }
