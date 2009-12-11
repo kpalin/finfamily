@@ -1484,47 +1484,40 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void importGedcom() {
 
 		boolean isOpened;
-		try {
-			SukuData resp = kontroller.getSukuData("cmd=unitCount");
-			if (resp.resuCount > 0) {
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("DATABASE_NOT_EMPTY"), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+		
+
+		isOpened = kontroller.openLocalFile("ged");
+		String dbname = kontroller.getFileName();
+		logger.finest("Opened GEDCOM FILE status " + isOpened);
+		if (isOpened) {
+			ImportGedcomDialog dlg;
+			try {
+				dlg = new ImportGedcomDialog(this, dbname);
+			} catch (SukuException e) {
 				return;
 			}
+			dlg.setVisible(true);
 
-			isOpened = kontroller.openLocalFile("ged");
-			String dbname = kontroller.getFileName();
-			logger.finest("Opened GEDCOM FILE status " + isOpened);
-			if (isOpened) {
-				ImportGedcomDialog dlg = new ImportGedcomDialog(this, dbname);
-				dlg.setVisible(true);
-
-				String[] failedLines = dlg.getResult();
-				if (failedLines != null) {
-					StringBuffer sb = new StringBuffer();
-					for (int i = 0; i < failedLines.length; i++) {
-						sb.append(failedLines[i]);
-					}
-
-					SukuPad pad = new SukuPad(this, sb.toString());
-					pad.setVisible(true);
-					// JOptionPane.showMessageDialog(this,sb.toString());
+			String[] failedLines = dlg.getResult();
+			if (failedLines != null) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < failedLines.length; i++) {
+					sb.append(failedLines[i]);
 				}
 
+				SukuPad pad = new SukuPad(this, sb.toString());
+				pad.setVisible(true);
+				// JOptionPane.showMessageDialog(this,sb.toString());
 			}
 
-			// JOptionPane.showMessageDialog(this,
-			// "Gedcom import under construction", Resurses
-			// .getString(Resurses.SUKU),
-			// JOptionPane.ERROR_MESSAGE);
-
-		} catch (SukuException e1) {
-			JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-			e1.printStackTrace();
 		}
 
+		// JOptionPane.showMessageDialog(this,
+		// "Gedcom import under construction", Resurses
+		// .getString(Resurses.SUKU),
+		// JOptionPane.ERROR_MESSAGE);
+
+		
 	}
 
 	/**

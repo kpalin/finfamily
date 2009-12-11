@@ -23,6 +23,7 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.Relation;
+import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
@@ -194,7 +195,7 @@ public class ImportGedcomUtil {
 							aux = linex.substring(i1 + 1, i2);
 							i3 = i2;
 							if (aux.charAt(0) == '@'
-									&& aux.charAt(aux.length() - 1) == '@') {
+								&& aux.charAt(aux.length() - 1) == '@') {
 								lineg.id = aux;
 								i3 = linex.indexOf(' ', i2 + 1);
 								if (i3 > 0) {
@@ -222,7 +223,7 @@ public class ImportGedcomUtil {
 						if (thisSet == GedSet.Set_None) {
 							if (lineg.lineValue.equalsIgnoreCase("UNICODE")
 									|| lineg.lineValue
-											.equalsIgnoreCase("UTF-8")
+									.equalsIgnoreCase("UTF-8")
 									|| lineg.lineValue.equalsIgnoreCase("UTF8")) {
 								thisSet = GedSet.Set_Utf8;
 							} else if (lineg.lineValue
@@ -278,7 +279,7 @@ public class ImportGedcomUtil {
 			Vector<String> recs = new Vector<String>();
 			while (ee.hasNext()) {
 				Map.Entry<String, GedcomLine> entry = (Map.Entry<String, GedcomLine>) ee
-						.next();
+				.next();
 				consumeGedcomFam(entry.getValue());
 				recs.add(entry.getValue().toString());
 			}
@@ -298,80 +299,194 @@ public class ImportGedcomUtil {
 
 	}
 
-	private void consumeGedcomFam(GedcomLine notice) {
+	private void consumeGedcomFam(GedcomLine record) {
 		SukuData req = new SukuData();
 
 		Vector<Relation> rels = new Vector<Relation>();
-		Relation rel;
+		Relation rel=null;
+		Relation crel;
 		int ownerPid = 0;
 		int pareIdx = 0;
 		int childIdx = 0;
-		GedcomLine linePare = null;
+		GedcomLine lineHusb = null;
+		GedcomLine lineWife = null;
 		GedcomLine lineChil = null;
-		while (pareIdx < notice.lines.size()) {
-			int ppstart = pareIdx;
-			for (int i = ppstart; i < notice.lines.size(); i++) {
-				linePare = notice.lines.get(i);
+		Relation famRel=null;
+		GedcomPidEle aid = null;
+		GedcomPidEle bid = null;
+		GedcomPidEle cid = null;
 
-				if ("|HUSB|WIFE|".indexOf(linePare.tag) > 0) {
-					pareIdx = i;
-					if (childIdx <= pareIdx) {
-						childIdx = pareIdx + 1;
-					}
-					break;
-				} else {
-					pareIdx = i + 1;
-				}
+		Vector<RelationNotice> relNotice = new Vector<RelationNotice>();
+		for (int i = 0; i < record.lines.size(); i++) {
+			if (record.lines.get(i).tag.equals("HUSB")){
+				lineHusb = record.lines.get(i);
+			}else if (record.lines.get(i).tag.equals("WIFE")){
+				lineWife = record.lines.get(i);
 			}
-			int chstart = childIdx;
-			for (int i = chstart; i < notice.lines.size(); i++) {
-				lineChil = notice.lines.get(i);
-				if ("|HUSB|WIFE|CHIL|".indexOf(lineChil.tag) > 0) {
-					childIdx = i;
-					break;
-				} else {
-					childIdx = i + 1;
-				}
-			}
-			if (pareIdx == notice.lines.size()) {
-				break;
-			}
-			// public Relation(int rid, int aid, int bid, String tag, int
-			// surety,
-			// Timestamp modified, Timestamp created) {
-			if (childIdx < notice.lines.size()) {
-				GedcomPidEle aid = gedPid.get(linePare.lineValue);
-				GedcomPidEle bid = gedPid.get(lineChil.lineValue);
-
-				if (aid == null || bid == null) {
-					System.out.println("FAMBAD");
-					unknownLine.add(notice.toString());
-					continue;
-				}
-				String tag = "FATH";
-				if (linePare.tag.equals("HUSB") && lineChil.tag.equals("WIFE")) {
-					tag = "HUSB";
-				} else if (linePare.tag.equals("WIFE")
-						&& lineChil.tag.equals("HUSB")) {
-					tag = "WIFE";
-				} else if (linePare.tag.equals("HUSB")
-						&& lineChil.tag.equals("CHIL")) {
-					tag = "FATH";
-				} else {
-					tag = "MOTH";
-				}
-				if (ownerPid == 0) {
-					ownerPid = bid.pid;
-				}
-				rel = new Relation(0, bid.pid, aid.pid, tag, 100, null, null);
-				rels.add(rel);
-				childIdx++;
-			} else {
-				pareIdx++;
-				childIdx = pareIdx + 1;
-			}
-
 		}
+		if (lineHusb != null && lineWife != null) {
+			aid = gedPid.get(lineHusb.lineValue);
+			bid = gedPid.get(lineWife.lineValue);
+			if (aid != null && bid != null) {
+				if (ownerPid == 0) {
+					ownerPid = aid.pid;
+				}
+
+				rel = new Relation(0, aid.pid, bid.pid, "WIFE", 100, null, null);
+				rels.add(rel);
+			}
+		} 
+		if (lineHusb != null) {
+			aid = gedPid.get(lineHusb.lineValue);
+			if (aid != null){
+				ownerPid = aid.pid;
+			}
+		} else {
+			bid = gedPid.get(lineWife.lineValue);
+			if (bid == null) {
+				ownerPid = bid.pid;
+			}
+		}
+
+		RelationNotice rnmarr=null;
+		RelationNotice rn=null;
+		for (int i = 0; i < record.lines.size(); i++) {
+			GedcomLine line = record.lines.get(i);
+			if (line.tag.equals("MARR") || line.tag.equals("DIV")){
+				if (line.tag.equals("MARR")){
+				rnmarr = new RelationNotice(line.tag);
+				rnmarr.setSurety(100);
+				relNotice.add(rnmarr);
+				rn = rnmarr;
+				} else {
+					rn = new RelationNotice(line.tag);
+					rn.setSurety(100);
+					relNotice.add(rn);
+				}
+				for (int j = 0; j < line.lines.size(); j++){
+					GedcomLine detail = line.lines.get(j);
+
+					if (detail.tag.equals("TYPE")) {
+						rn.setType(detail.lineValue);
+					} else	if (detail.tag.equals("NOTE")) {
+						rn.setNoteText(detail.lineValue);
+					} else if (detail.tag.equals("PLAC")) {
+						rn.setPlace(detail.lineValue);
+					} else if (detail.tag.equals("SOUR")) {
+						rn.setSource(detail.lineValue);
+					} else if (detail.tag.equals("DATE")) {
+						String[] dparts = consumeGedcomDate(detail.lineValue);
+						if (dparts != null && dparts.length>3){
+							rn.setDatePrefix(dparts[0]);
+							rn.setFromDate(dparts[1]);
+							rn.setToDate(dparts[2]);
+							rn.setDescription(dparts[3]);
+						}
+						
+					} else {
+						unknownLine.add(detail.toString());
+					}
+
+
+				}
+
+
+
+			} else if (line.tag.equals("HUSB") || line.tag.equals("WIFE")){
+			} else if (line.tag.equals("NOTE")){
+				if (rnmarr != null) {
+					StringBuffer sb = new StringBuffer();
+					if (rnmarr.getNoteText()!= null){
+						sb.append(rnmarr.getNoteText());
+						sb.append(" ");
+					}
+					sb.append(line.lineValue);
+					rnmarr.setNoteText(sb.toString());
+				}
+				
+			} else if (line.tag.equals("CHIL")){
+				lineChil = record.lines.get(i);
+				cid = gedPid.get(lineChil.lineValue);
+				if (cid != null) {
+					if (aid != null){
+						crel = new Relation(0, cid.pid, aid.pid, "FATH", 100, null, null);
+						rels.add(crel);
+					}
+					if (bid != null){
+						crel = new Relation(0, cid.pid, bid.pid, "MOTH", 100, null, null);
+						rels.add(crel);
+					}
+				}
+			} else {
+				unknownLine.add(line.toString());
+			}
+		}
+		if (relNotice != null && rel != null){
+			rel.setNotices(relNotice.toArray(new RelationNotice[0]));
+		}
+
+		//		while (pareIdx < record.lines.size()) {
+		//			int ppstart = pareIdx;
+		//			for (int i = ppstart; i < record.lines.size(); i++) {
+		//				linePare = record.lines.get(i);
+		//
+		//				if ("|HUSB|WIFE|".indexOf(linePare.tag) > 0) {
+		//					pareIdx = i;
+		//					if (childIdx <= pareIdx) {
+		//						childIdx = pareIdx + 1;
+		//					}
+		//					break;
+		//				} else {
+		//					pareIdx = i + 1;
+		//				}
+		//			}
+		//			int chstart = childIdx;
+		//			for (int i = chstart; i < record.lines.size(); i++) {
+		//				lineChil = record.lines.get(i);
+		//				if ("|HUSB|WIFE|CHIL|".indexOf(lineChil.tag) > 0) {
+		//					childIdx = i;
+		//					break;
+		//				} else {
+		//					childIdx = i + 1;
+		//				}
+		//			}
+		//			if (pareIdx == record.lines.size()) {
+		//				break;
+		//			}
+		//	
+		//			if (childIdx < record.lines.size()) {
+		//				GedcomPidEle aid = gedPid.get(linePare.lineValue);
+		//				GedcomPidEle bid = gedPid.get(lineChil.lineValue);
+		//
+		//				if (aid == null || bid == null) {
+		//					System.out.println("FAMBAD");
+		//					unknownLine.add(record.toString());
+		//					continue;
+		//				}
+		//				String tag = "FATH";
+		//				if (linePare.tag.equals("HUSB") && lineChil.tag.equals("WIFE")) {
+		//					tag = "HUSB";
+		//				} else if (linePare.tag.equals("WIFE")
+		//						&& lineChil.tag.equals("HUSB")) {
+		//					tag = "WIFE";
+		//				} else if (linePare.tag.equals("HUSB")
+		//						&& lineChil.tag.equals("CHIL")) {
+		//					tag = "FATH";
+		//				} else {
+		//					tag = "MOTH";
+		//				}
+		//				if (ownerPid == 0) {
+		//					ownerPid = bid.pid;
+		//				}
+		//				rel = new Relation(0, bid.pid, aid.pid, tag, 100, null, null);
+		//				rels.add(rel);
+		//				childIdx++;
+		//			} else {
+		//				pareIdx++;
+		//				childIdx = pareIdx + 1;
+		//			}
+		//
+		//		}
 
 		req.persLong = new PersonLongData(ownerPid, "INDI", "U");
 		req.relations = rels.toArray(new Relation[0]);
@@ -458,9 +573,9 @@ public class ImportGedcomUtil {
 							int vonIndex = Utils.isKnownPrefix(parts[1]);
 							if (vonIndex > 0) {
 								notice.setPrefix(parts[1]
-										.substring(0, vonIndex));
+								                       .substring(0, vonIndex));
 								notice.setSurname(parts[1]
-										.substring(vonIndex + 1));
+								                        .substring(vonIndex + 1));
 							} else {
 
 								notice.setSurname(parts[1]);
@@ -536,7 +651,7 @@ public class ImportGedcomUtil {
 							if (item.tag.equals("FILE")) {
 
 								InputStream ins = Suku.kontroller
-										.openFile(item.lineValue);
+								.openFile(item.lineValue);
 								if (ins != null) {
 									BufferedInputStream bstr = new BufferedInputStream(
 											ins);
@@ -562,7 +677,7 @@ public class ImportGedcomUtil {
 									}
 
 									int lastdir = item.lineValue.replace('\\',
-											'/').lastIndexOf('/');
+									'/').lastIndexOf('/');
 									if (lastdir > 0) {
 										notice.setMediaFilename(item.lineValue
 												.substring(lastdir + 1));
@@ -727,7 +842,7 @@ public class ImportGedcomUtil {
 		String mm = null;
 		if (dl >= 0) {
 			int kk = "|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|"
-					.indexOf(parts[dl].toUpperCase());
+				.indexOf(parts[dl].toUpperCase());
 			if (kk > 0) {
 				kk--;
 				kk /= 2;
@@ -778,8 +893,8 @@ public class ImportGedcomUtil {
 		}
 
 		String sql = "insert into sukuvariables (owner_name,owner_info, "
-				+ "owner_address,owner_postalcode,owner_postoffice,"
-				+ "owner_country,owner_email,user_id) values (?,?,?,?,?,?,?,user) ";
+			+ "owner_address,owner_postalcode,owner_postoffice,"
+			+ "owner_country,owner_email,user_id) values (?,?,?,?,?,?,?,user) ";
 
 		PreparedStatement pst = con.prepareStatement(sql);
 		pst.setString(1, name);
@@ -819,7 +934,7 @@ public class ImportGedcomUtil {
 								// postalcode
 								addr.postalCode = posts[0];
 								addr.postOffice = parts[j].substring(posts[0]
-										.length() + 1);
+								                                           .length() + 1);
 								wasPo = true;
 							}
 						}

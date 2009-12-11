@@ -79,8 +79,9 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	 * 
 	 * @param owner
 	 * @param dbName
+	 * @throws SukuException 
 	 */
-	public ImportGedcomDialog(Suku owner, String dbName) {
+	public ImportGedcomDialog(Suku owner, String dbName) throws SukuException {
 		super(owner, Resurses.getString("IMPORT"), true);
 		this.owner = owner;
 		runner = this;
@@ -131,6 +132,25 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, y + 100);
 
+		
+		SukuData resp;
+		
+			resp = Suku.kontroller.getSukuData("cmd=unitCount");
+		
+			if (resp.resuCount > 0) {
+				
+				int answer=JOptionPane.showConfirmDialog(this, Resurses
+						.getString("DATABASE_NOT_EMPTY")+ " " + resp.resuCount + " "   
+						+ Resurses.getString("DELETE_DATA_OK"), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				if (answer==1){
+					throw new SukuException (Resurses.getString("DATABASE_NOT_EMPTY"));
+					
+				}
+			}
+		
+		
+		
 	}
 
 	@Override
@@ -138,6 +158,8 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 		String cmd = e.getActionCommand();
 		if (cmd.equals(OK)) {
 
+		
+			
 			this.ok.setEnabled(false);
 
 			// we create new instances as needed.
