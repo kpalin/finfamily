@@ -7,8 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -967,67 +969,80 @@ public class PersonUtil {
 					// UnitLanguage[0]));
 				}
 
-				sql = "select a.rid,a.pid,b.pid,a.tag,a.surety,a.modified,a.createdate,"
-						+ "rn.surety,rn.tag,rn.relationtype,rn.description,rn.dateprefix,"
-						+ "rn.fromdate,rn.todate,rn.place,rn.notetext,"
-						+ "rn.sourcetext,rn.privatetext,rn.modified,rn.createdate,rn.rnid "
-						+ "from relation a inner join relation b on a.rid=b.rid "
-						+ "left join relationnotice rn on a.rid=rn.rid "
-						+ "where a.pid <> b.pid and a.pid=? "
-						+ "order by a.tag,a.relationrow,rn.noticerow ,a.rid,b.pid";
+				
+				sql = "select a.rid,a.pid,b.pid,a.tag,a.surety,a.modified,a.createdate  " +
+						"from relation a inner join relation b on a.rid=b.rid " +
+						"where a.pid <> b.pid and a.pid=? order by a.tag,a.relationrow";
 				pstm = con.prepareStatement(sql);
 				pstm.setInt(1, pid);
 				rs = pstm.executeQuery();
-				int prevRid = -1;
 				int rid;
+				int aid;
 				int bid;
 				String tag;
 				Relation rel = null;
-				RelationNotice rnote = null;
+				
+			
 				Vector<Integer> relpids = new Vector<Integer>();
+				LinkedHashMap<Integer,Relation> relmap = new LinkedHashMap<Integer,Relation>(); 
 				while (rs.next()) {
 					rid = rs.getInt(1);
+					aid = rs.getInt(2);
 					bid = rs.getInt(3);
 					tag = rs.getString(4);
 					relpids.add(bid);
+					
+					rel = new Relation(rid, aid, bid, tag, rs
+							.getInt(5), rs.getTimestamp(6), rs
+							.getTimestamp(7));
+					rels.add(rel);
+					relmap.put(rid, rel);
 
-					if (rid != prevRid) {
-						if (rel != null && relNotices != null
-								&& relNotices.size() > 0) {
-							rel.setNotices(relNotices
-									.toArray(new RelationNotice[0]));
+				}
+				rs.close();
+				
+				sql = "select * from relationnotice " 
+						+ "where rid in (select rid from relation where pid=?) order by rid,noticerow";
+				pstm = con.prepareStatement(sql);
+				pstm.setInt(1, pid);
+				rs = pstm.executeQuery();
+				int curid=0;
+				rid=0;
+				RelationNotice rnote = null;
+				rs = pstm.executeQuery();
+				relNotices = new Vector<RelationNotice>();
+				while (rs.next()){
+					rid=rs.getInt("rid");
+					if (rid != curid) {
+						rel = relmap.get(Integer.valueOf(curid));
+						if (rel != null  && relNotices.size()>0){							
+							rel.setNotices(relNotices.toArray(new RelationNotice[0]));							
 						}
+						relNotices=null;
+						curid=rid;
 						relNotices = new Vector<RelationNotice>();
-						prevRid = rid;
-						rel = new Relation(rid, rs.getInt(2), bid, tag, rs
-								.getInt(5), rs.getTimestamp(6), rs
-								.getTimestamp(7));
-						rels.add(rel);
-
-					}
-					String rtag = rs.getString(9);
-					if (rtag != null) {
-						rnote = new RelationNotice(rs.getInt(21), rid, rs
-								.getInt(8), rtag, rs.getString(10), rs
-								.getString(11), rs.getString(12), rs
-								.getString(13), rs.getString(14), rs
-								.getString(15), rs.getString(16), rs
-								.getString(17), rs.getString(18), rs
-								.getTimestamp(19), rs.getTimestamp(20));
-
-						if (relNotices == null) {
-							relNotices = new Vector<RelationNotice>();
-						}
-						relNotices.add(rnote);
-					}
-
+					} 
+						
+					rnote = new RelationNotice(rs.getInt("rnid"), rid, rs
+							.getInt("surety"), rs.getString("tag"), rs.getString("relationtype"), rs
+							.getString("description"), rs.getString("dateprefix"), rs
+							.getString("fromdate"), rs.getString("todate"), rs
+							.getString("place"), rs.getString("notetext"), rs
+							.getString("sourcetext"), rs.getString("privatetext"), rs
+							.getTimestamp("modified"), rs.getTimestamp("createdate"));						
+					relNotices.add(rnote);
 				}
-				if (rel != null && relNotices != null && relNotices.size() > 0) {
-					rel.setNotices(relNotices.toArray(new RelationNotice[0]));
+				
+				if ( relNotices.size()>0){	
+					rel = relmap.get(Integer.valueOf(curid));
+					if (rel != null ){							
+						rel.setNotices(relNotices.toArray(new RelationNotice[0]));
+					}
 				}
-
 				rs.close();
 				pstm.close();
+				
+
 				if (rels.size() > 0) {
 					pers.relations = rels.toArray(new Relation[0]);
 				} else {
