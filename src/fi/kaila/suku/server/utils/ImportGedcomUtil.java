@@ -841,12 +841,13 @@ public class ImportGedcomUtil {
 		dl--;
 		String mm = null;
 		if (dl >= 0) {
+			
 			int kk = "|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|"
 				.indexOf(parts[dl].toUpperCase());
 			if (kk > 0) {
 				kk--;
 				kk /= 2;
-				mm = "01020304050607080901012".substring(kk, kk + 2);
+				mm = "010203040506070809101112".substring(kk, kk + 2);
 			}
 		}
 		if (mm != null) {
@@ -898,7 +899,7 @@ public class ImportGedcomUtil {
 
 		PreparedStatement pst = con.prepareStatement(sql);
 		pst.setString(1, name);
-		pst.setString(2, ownerInfo.toString());
+		pst.setString(2, ownerInfo);
 		pst.setString(3, address.address);
 		pst.setString(4, address.postalCode);
 		pst.setString(5, address.postOffice);
@@ -1284,9 +1285,10 @@ public class ImportGedcomUtil {
 				int last = lines.size() - 1;
 				if (last < 0) {
 					unknownLine.add(line.toString());
+				} else {
+					GedcomLine subline = lines.get(last);
+					subline.add(line);
 				}
-				GedcomLine subline = lines.get(last);
-				subline.add(line);
 			}
 		}
 
