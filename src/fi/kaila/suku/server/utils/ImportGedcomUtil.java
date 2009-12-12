@@ -364,7 +364,8 @@ public class ImportGedcomUtil {
 		RelationNotice rn = null;
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine line = record.lines.get(i);
-			if (line.tag.equals("MARR") || line.tag.equals("DIV")) {
+			if ("|MARR|DIV|ANUL|CENS|DIVF|ENGA|MARB|MARC|MARL|MARS|"
+					.indexOf(line.tag) > 0) {
 				if (line.tag.equals("MARR")) {
 					rnmarr = new RelationNotice(line.tag);
 					rnmarr.setSurety(100);
@@ -556,6 +557,11 @@ public class ImportGedcomUtil {
 		return sb.toString();
 	}
 
+	private static final String notiTags = "|OCCU|EDUC|TITL|RESI|PROP|FACT"
+			+ "|BIRT|CHR|DEAT|BURI|EVEN|RESI|EMIG|IMMI|CAST|DSCR|EDUC|IDNO"
+			+ "|NATI|NCHI|NMR|PROP|RELI|SSN|FACT|CREM|BAPM|BASM|BLES|BARM"
+			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|";
+
 	private void consumeGedcomIndi(GedcomLine record) {
 		PersonLongData pers = new PersonLongData(0, "INDI", "U");
 		Vector<UnitNotice> notices = new Vector<UnitNotice>();
@@ -606,27 +612,9 @@ public class ImportGedcomUtil {
 			} else if (noti.tag.equals("SOUR")) {
 				String src = extractGedcomSource(record);
 				pers.setSource(src);
-			} else if (noti.tag.equals("OCCU") || noti.tag.equals("EDUC")
-					|| noti.tag.equals("TITL") || noti.tag.equals("RESI")
-					|| noti.tag.equals("PROP") || noti.tag.equals("FACT")
-					|| noti.tag.equals("BIRT") || noti.tag.equals("CHR")
-					|| noti.tag.equals("DEAT") || noti.tag.equals("BURI")
-					|| noti.tag.equals("EVEN") || noti.tag.equals("RESI")
-					|| noti.tag.equals("EMIG") || noti.tag.equals("IMMI")
-					|| noti.tag.equals("CAST") || noti.tag.equals("DSCR")
-					|| noti.tag.equals("EDUC") || noti.tag.equals("IDNO")
-					|| noti.tag.equals("NATI") || noti.tag.equals("NCHI")
-					|| noti.tag.equals("NMR") || noti.tag.equals("PROP")
-					|| noti.tag.equals("RELI") || noti.tag.equals("SSN")
-					|| noti.tag.equals("FACT") || noti.tag.equals("CREM")
-					|| noti.tag.equals("BAPM") || noti.tag.equals("BASM")
-					|| noti.tag.equals("BLES") || noti.tag.equals("BARM")
-					|| noti.tag.equals("CHRA") || noti.tag.equals("CONF")
-					|| noti.tag.equals("FCOM") || noti.tag.equals("ORND")
-					|| noti.tag.equals("NATU") || noti.tag.equals("CENS")
-					|| noti.tag.equals("PROB") || noti.tag.equals("WILL")
-					|| noti.tag.equals("GRAD") || noti.tag.equals("RETI")
-					|| noti.tag.startsWith("_")) {
+			} else if (notiTags.indexOf(noti.tag) > 0
+
+			|| noti.tag.startsWith("_")) {
 				String notiTag = noti.tag;
 				if (notiTag.startsWith("_"))
 					notiTag = noti.tag.substring(1);
