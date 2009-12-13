@@ -634,6 +634,8 @@ public class ImportGedcomUtil {
 						notice.setPostOffice(address.postOffice);
 						notice.setCountry(address.country);
 						notice.setEmail(address.email);
+					} else if (detail.tag.equals("NOTE")) {
+						notice.setNoteText(detail.lineValue);
 					} else if (detail.tag.equals("SOUR")) {
 						String src = extractGedcomSource(detail);
 						pers.setSource(src);
@@ -889,11 +891,13 @@ public class ImportGedcomUtil {
 
 	}
 
+	boolean submitterDone = false;
+
 	private void consumeGedcomSubmitter(GedcomLine record) throws SQLException {
 		String name = null;
 		GedcomAddress address = null;
 
-		if (submitterDone) {
+		if (submitter == null || !submitter.equals(record.id) || submitterDone) {
 			unknownLine.add(record.toString());
 			return;
 		}
@@ -985,7 +989,7 @@ public class ImportGedcomUtil {
 		return addr;
 	}
 
-	boolean submitterDone = false;
+	String submitter = null;
 
 	private void consumeGedcomHead(GedcomLine record) {
 		boolean submitterDone = false;
@@ -996,8 +1000,7 @@ public class ImportGedcomUtil {
 			} else if (notice1.tag.equals("DEST")) {
 				continue;
 			} else if (notice1.tag.equals("SUBM")) {
-
-				unknownLine.add(notice1.toString());
+				submitter = notice1.lineValue;
 				continue;
 			} else if (notice1.tag.equals("GEDC")) {
 				continue;
