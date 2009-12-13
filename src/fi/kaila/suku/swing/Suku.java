@@ -1484,12 +1484,16 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void importGedcom() {
 
 		boolean isOpened;
-		
 
 		isOpened = kontroller.openLocalFile("ged");
 		String dbname = kontroller.getFileName();
 		logger.finest("Opened GEDCOM FILE status " + isOpened);
 		if (isOpened) {
+			this.tableModel.resetModel(); // clear contents of table first
+			this.personView.reset();
+			this.table.updateUI();
+			this.scrollPane.updateUI();
+
 			ImportGedcomDialog dlg;
 			try {
 				dlg = new ImportGedcomDialog(this, dbname);
@@ -1504,9 +1508,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				for (int i = 0; i < failedLines.length; i++) {
 					sb.append(failedLines[i]);
 				}
-
-				SukuPad pad = new SukuPad(this, sb.toString());
-				pad.setVisible(true);
+				if (sb.length() > 0) {
+					SukuPad pad = new SukuPad(this, sb.toString());
+					pad.setVisible(true);
+				}
 				// JOptionPane.showMessageDialog(this,sb.toString());
 			}
 
@@ -1517,7 +1522,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		// .getString(Resurses.SUKU),
 		// JOptionPane.ERROR_MESSAGE);
 
-		
 	}
 
 	/**

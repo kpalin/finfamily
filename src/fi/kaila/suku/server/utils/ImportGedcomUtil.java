@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.imports.ImportGedcomDialog;
@@ -61,6 +62,8 @@ public class ImportGedcomUtil {
 	LinkedHashMap<String, GedcomLine> gedMap = null;
 	LinkedHashMap<String, GedcomLine> gedFamMap = null;
 	Vector<String> unknownLine = new Vector<String>();
+	LinkedHashMap<String, GedcomFams> gedFams = null;
+	Vector<GedcomLine> gedAdopt = null;
 
 	/**
 	 * @param file
@@ -73,6 +76,8 @@ public class ImportGedcomUtil {
 		gedMap = new LinkedHashMap<String, GedcomLine>();
 		gedFamMap = new LinkedHashMap<String, GedcomLine>();
 		gedPid = new LinkedHashMap<String, GedcomPidEle>();
+		gedFams = new LinkedHashMap<String, GedcomFams>();
+		gedAdopt = new Vector<GedcomLine>();
 		seenTrlr = false;
 		GedcomLine record = null;
 		Statement stm;
@@ -250,32 +255,7 @@ public class ImportGedcomUtil {
 					}
 					line = new StringBuffer();
 
-					// lineNumber++;
-					// if (lineg.tag != null) { // at beginning nothing is known
-					//
-					// unknown.add("[" + lineNumber + "] " + linex);
-					// }
-
 				}
-				//
-				// if (this.runner != null) {
-				// StringBuffer sb = new StringBuffer();
-				//
-				//
-				// double dluku = fileIndex;
-				//
-				// double prose = (dluku * 100) / dLen;
-				// int intprose = (int) prose;
-				// sb.append("" + intprose + ";Kalle koetta");
-				// this.runner.setRunnerValue(sb.toString());
-				//
-				// // try {
-				// // Thread.sleep(1);
-				// //
-				// // } catch (InterruptedException ie) {
-				// // }
-				//
-				// }
 
 			}
 
@@ -285,17 +265,17 @@ public class ImportGedcomUtil {
 			if (!seenTrlr) {
 				resp.resu = Resurses.getString("GEDCOM_NO_TRLR");
 			}
-
+			this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
 			Set<Map.Entry<String, GedcomLine>> entries = gedFamMap.entrySet();
 			Iterator<Map.Entry<String, GedcomLine>> ee = entries.iterator();
-			Vector<String> recs = new Vector<String>();
+			// Vector<String> recs = new Vector<String>();
 			while (ee.hasNext()) {
 				Map.Entry<String, GedcomLine> entry = (Map.Entry<String, GedcomLine>) ee
 						.next();
 				consumeGedcomFam(entry.getValue());
-				recs.add(entry.getValue().toString());
+				// recs.add(entry.getValue().toString());
 			}
-
+			consumeFams();
 			// resp.generalArray = recs.toArray(new String[0]);
 
 			resp.generalArray = unknownLine.toArray(new String[0]);
@@ -309,6 +289,215 @@ public class ImportGedcomUtil {
 
 		// logger.fine("database created for " + path);
 
+	}
+
+	/**
+	 * The FAMS lines from INDI records have been stored in the gedFams map We
+	 * use those to put spouses in correcto order
+	 * 
+	 */
+	private void consumeFams() {
+		Set<Map.Entry<String, GedcomFams>> entries = gedFams.entrySet();
+		Iterator<Map.Entry<String, GedcomFams>> ee = entries.iterator();
+		Vector<String> recs = new Vector<String>();
+		while (ee.hasNext()) {
+			Map.Entry<String, GedcomFams> entry = (Map.Entry<String, GedcomFams>) ee
+					.next();
+
+			GedcomFams fam = entry.getValue();
+
+			int spouseRow = 0;
+			if (fam.fams.size() > 1) {
+				System.out.println("DO FAM for " + fam.id);
+
+				for (int i = 0; i < fam.fams.size(); i++) {
+
+					GedcomLine lin = fam.fams.get(i);
+
+					GedcomLine ff = gedFamMap.get(lin.lineValue);
+					if (ff != null) {
+						System.out.println("FAM " + i + " with " + ff);
+
+						//
+						// now lets get the other spouse from ff
+						//
+						String spouseId = null;
+						for (int j = 0; j < ff.lines.size(); j++) {
+							GedcomLine fff = ff.lines.get(j);
+							if (fff.tag.equals("HUSB")
+									|| fff.tag.equals("WIFE")) {
+								// if (!fff.lineValue.equals(fam.id)) {
+								if (!fam.id.equals(fff.lineValue)) {
+									spouseId = fff.lineValue;
+									break;
+								}
+							}
+						}
+						if (spouseId != null) {
+							GedcomPidEle pele = this.gedPid.get(spouseId);
+							if (pele != null) {
+								int spousePid = pele.pid;
+								spouseRow++;
+
+								updateSpouseRow(fam.pid, spousePid, spouseRow);
+
+							}
+						}
+
+					}
+					// else {
+					// // it should be adopted if we come here
+					// if (ff.tag.equals("ADxOP")) {
+					//
+					// } else {
+					// unknownLine.add(ff.toString());
+					// }
+					// }
+
+				}
+
+			}
+
+		}
+
+		for (int i = 0; i < gedAdopt.size(); i++) {
+
+			GedcomLine line = gedAdopt.get(i);
+			for (int j = 0; j < line.lines.size(); j++) {
+				GedcomLine item = line.lines.get(j);
+				if (item.tag.equals("FAMC")) {// check the FAMC case here
+					GedcomLine detail = null;
+					for (int k = 0; k < item.lines.size(); k++) {
+						detail = item.lines.get(k);
+						// detail tag
+					}
+					System.out.println("ADOPT1:" + line.toString());
+					System.out.println("ADOPT2:" + item.toString());
+					System.out.println("ADOPT3:" + detail.toString());
+					GedcomPidEle pele = this.gedPid.get(line.lineValue);
+					if (pele != null) {
+
+						GedcomLine ff = gedFamMap.get(item.lineValue); // get
+						// fam
+						// id
+						if (ff != null) {
+
+							for (int ii = 0; ii < ff.lines.size(); ii++) {
+								GedcomLine fff = ff.lines.get(ii);
+								String pareId = null;
+								if (detail == null) {
+									if (fff.tag.equals("HUSB")
+											|| fff.tag.equals("WIFE")) {
+										pareId = fff.lineValue;
+									}
+								} else if ("FATH".equals(detail.lineValue)) {
+									if (fff.tag.equals("HUSB")) {
+										pareId = fff.lineValue;
+									}
+								} else if ("MOTH".equals(detail.lineValue)) {
+									if (fff.tag.equals("WIFE")) {
+										pareId = fff.lineValue;
+									}
+								}
+								if (pareId != null) {
+
+									System.out.println("LL:" + line.lineValue
+											+ "/" + pareId);
+									GedcomPidEle cele = this.gedPid
+											.get(line.lineValue);
+									GedcomPidEle fmele = this.gedPid
+											.get(pareId);
+
+									insertAdoptedNotice(cele.pid, fmele.pid);
+
+								}
+								// if (fff.tag.equals("HUSB")
+								// || fff.tag.equals("WIFE")) {
+								// // if (!fff.lineValue.equals(fam.id)) {
+								// if (!fam.id.equals(fff.lineValue)) {
+								// spouseId = fff.lineValue;
+								// break;
+								// }
+								// }
+							}
+						}
+
+					}
+
+				}
+			}
+
+		}
+
+	}
+
+	private void insertAdoptedNotice(int childpid, int parepid) {
+
+		Statement stm;
+		try {
+			stm = con.createStatement();
+			ResultSet rs = stm
+					.executeQuery("select nextval('RelationNoticeSeq')");
+			int rnid = 0;
+			int rid = 0;
+			if (rs.next()) {
+				rnid = rs.getInt(1);
+			} else {
+				throw new SQLException("Sequence relationseq error");
+			}
+			rs.close();
+
+			String sql = "select rid from parent where aid=? and bid = ? and tag in ('FATH','MOTH')";
+			PreparedStatement pst = con.prepareStatement(sql);
+			pst.setInt(1, childpid);
+			pst.setInt(2, parepid);
+			rs = pst.executeQuery();
+			while (rs.next()) {
+				rid = rs.getInt(1);
+			}
+			rs.close();
+			if (rnid > 0 && rid > 0) {
+
+				sql = "insert into relationnotice (rnid,rid,noticerow,tag) values (?,?,1,'ADOP')";
+				pst = con.prepareStatement(sql);
+				pst.setInt(1, rnid);
+				pst.setInt(2, rid);
+				pst.executeUpdate();
+				pst.close();
+			} else {
+				logger.warning("adopted rid = " + rid + " and rnid = " + rnid
+						+ " failed");
+			}
+			// pst = con.prepareStatement(insSql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void updateSpouseRow(int pid, int spousePid, int spouseRow) {
+		String sql = "update relation set relationrow = ? "
+				+ "where pid = ? and rid in (select rid from spouse where aid = ? and bid = ?)";
+
+		PreparedStatement pst;
+		try {
+			pst = con.prepareStatement(sql);
+
+			pst.setInt(1, spouseRow);
+			pst.setInt(2, pid);
+			pst.setInt(3, pid);
+			pst.setInt(4, spousePid);
+			int resu = pst.executeUpdate();
+			if (resu != 1) {
+				logger.warning("Spouse row update for pid [" + pid
+						+ "], spousepid [" + spousePid
+						+ "] reulted in update of [" + resu + "] lines.");
+			}
+
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Spouse row update failed", e);
+		}
 	}
 
 	private void consumeGedcomFam(GedcomLine record) {
@@ -560,11 +749,13 @@ public class ImportGedcomUtil {
 	private static final String notiTags = "|OCCU|EDUC|TITL|RESI|PROP|FACT"
 			+ "|BIRT|CHR|DEAT|BURI|EVEN|RESI|EMIG|IMMI|CAST|DSCR|EDUC|IDNO"
 			+ "|NATI|NCHI|NMR|PROP|RELI|SSN|FACT|CREM|BAPM|BASM|BLES|BARM"
-			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|";
+			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|ADOP|";
 
 	private void consumeGedcomIndi(GedcomLine record) {
 		PersonLongData pers = new PersonLongData(0, "INDI", "U");
 		Vector<UnitNotice> notices = new Vector<UnitNotice>();
+		GedcomFams f = new GedcomFams();
+		f.id = record.id;
 		pers.setUserRefn(record.id);
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine noti = record.lines.get(i);
@@ -609,12 +800,25 @@ public class ImportGedcomUtil {
 					notices.add(notice);
 					notice.setNoteText(noti.lineValue);
 				}
+			} else if (noti.tag.equals("OBJE")) {
+				UnitNotice notice = new UnitNotice("PHOT");
+				notices.add(notice);
+				extractMultimedia(notice, noti);
+			} else if (noti.tag.equals("FAMC")) {
+			} else if (noti.tag.equals("FAMS")) {
+				f.fams.add(noti);
 			} else if (noti.tag.equals("SOUR")) {
 				String src = extractGedcomSource(record);
 				pers.setSource(src);
 			} else if (notiTags.indexOf(noti.tag) > 0
 
 			|| noti.tag.startsWith("_")) {
+
+				if (noti.tag.equals("ADOP")) {
+					noti.lineValue = record.id;
+					gedAdopt.add(noti);
+				}
+
 				String notiTag = noti.tag;
 				if (notiTag.startsWith("_"))
 					notiTag = noti.tag.substring(1);
@@ -625,6 +829,7 @@ public class ImportGedcomUtil {
 					GedcomLine detail = noti.lines.get(j);
 					if (detail.tag.equals("TYPE")) {
 						notice.setNoticeType(detail.lineValue);
+					} else if (detail.tag.equals("FAMC")) {
 					} else if (detail.tag.equals("PLAC")) {
 						notice.setPlace(detail.lineValue);
 					} else if (detail.tag.equals("ADDR")) {
@@ -660,70 +865,8 @@ public class ImportGedcomUtil {
 							}
 						}
 					} else if (detail.tag.equals("OBJE")) {
-						for (int k = 0; k < detail.lines.size(); k++) {
-							GedcomLine item = detail.lines.get(k);
 
-							if (item.tag.equals("FILE")) {
-
-								InputStream ins = Suku.kontroller
-										.openFile(item.lineValue);
-								if (ins != null) {
-									BufferedInputStream bstr = new BufferedInputStream(
-											ins);
-									// System.out.println("OPEN: " +
-									// openedImage);
-
-									ByteArrayOutputStream bos = new ByteArrayOutputStream();
-									byte[] buff = new byte[2048];
-									int imgSize = 0;
-									while (true) {
-										int rdbytes;
-										try {
-											rdbytes = bstr.read(buff);
-										} catch (IOException e) {
-											imgSize = -1;
-											break;
-										}
-										imgSize += rdbytes;
-										if (rdbytes < 0)
-											break;
-										bos.write(buff, 0, rdbytes);
-
-									}
-
-									int lastdir = item.lineValue.replace('\\',
-											'/').lastIndexOf('/');
-									if (lastdir > 0) {
-										notice.setMediaFilename(item.lineValue
-												.substring(lastdir + 1));
-									}
-
-									if (imgSize > 0) {
-										notice.setMediaData(bos.toByteArray());
-									}
-								} else {
-									unknownLine.add(item.toString());
-								}
-								// try {
-								// int luettu = bstr.read(buffer);
-								// if (luettu == filesize) {
-								// notice.setMediaData(buffer);
-								// } else {
-								// logger.warning("Filesize expected " +
-								// filesize
-								// + " read " + luettu);
-								// }
-								// bstr.close();
-								//								
-								//								
-							} else if (item.tag.equals("FORM")) {
-							} else if (item.tag.equals("TITL")) {
-								notice.setMediaTitle(item.lineValue);
-							} else {
-
-								unknownLine.add(item.toString());
-							}
-						}
+						extractMultimedia(notice, detail);
 					} else {
 						unknownLine.add(detail.toString());
 					}
@@ -747,8 +890,79 @@ public class ImportGedcomUtil {
 			pide.sex = pers.getSex();
 
 			gedPid.put(record.id, pide);
+			f.pid = pide.pid;
+			gedFams.put(f.id, f);
 		}
 
+	}
+
+	/**
+	 * @param notice
+	 * @param detail
+	 */
+	private void extractMultimedia(UnitNotice notice, GedcomLine detail) {
+		for (int k = 0; k < detail.lines.size(); k++) {
+			GedcomLine item = detail.lines.get(k);
+
+			if (item.tag.equals("FILE")) {
+
+				InputStream ins = Suku.kontroller.openFile(item.lineValue);
+				if (ins != null) {
+					BufferedInputStream bstr = new BufferedInputStream(ins);
+					// System.out.println("OPEN: " +
+					// openedImage);
+
+					ByteArrayOutputStream bos = new ByteArrayOutputStream();
+					byte[] buff = new byte[2048];
+					int imgSize = 0;
+					while (true) {
+						int rdbytes;
+						try {
+							rdbytes = bstr.read(buff);
+						} catch (IOException e) {
+							imgSize = -1;
+							break;
+						}
+						imgSize += rdbytes;
+						if (rdbytes < 0)
+							break;
+						bos.write(buff, 0, rdbytes);
+
+					}
+
+					int lastdir = item.lineValue.replace('\\', '/')
+							.lastIndexOf('/');
+					if (lastdir > 0) {
+						notice.setMediaFilename(item.lineValue
+								.substring(lastdir + 1));
+					}
+
+					if (imgSize > 0) {
+						notice.setMediaData(bos.toByteArray());
+					}
+				} else {
+					unknownLine.add(item.toString());
+				}
+				// try {
+				// int luettu = bstr.read(buffer);
+				// if (luettu == filesize) {
+				// notice.setMediaData(buffer);
+				// } else {
+				// logger.warning("Filesize expected " +
+				// filesize
+				// + " read " + luettu);
+				// }
+				// bstr.close();
+				//								
+				//								
+			} else if (item.tag.equals("FORM")) {
+			} else if (item.tag.equals("TITL")) {
+				notice.setMediaTitle(item.lineValue);
+			} else {
+
+				unknownLine.add(item.toString());
+			}
+		}
 	}
 
 	private int extractGedcomSurety(GedcomLine record) {
@@ -1375,6 +1589,12 @@ public class ImportGedcomUtil {
 	class GedcomPidEle {
 		int pid = 0;
 		String sex = "U";
+	}
+
+	class GedcomFams {
+		int pid;
+		String id;
+		Vector<GedcomLine> fams = new Vector<GedcomLine>();
 	}
 
 }
