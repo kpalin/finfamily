@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -65,14 +66,14 @@ public class ImportGedcomUtil {
 	Vector<String> unknownLine = new Vector<String>();
 	LinkedHashMap<String, GedcomFams> gedFams = null;
 	Vector<GedcomLine> gedAdopt = null;
-
+	HashMap<String,String> texts =null;
 	/**
 	 * @param file
 	 * @param db
 	 * @return result in SukuData
 	 * @throws SukuException
 	 */
-	public SukuData importGedcom(String file, String db) throws SukuException {
+	public SukuData importGedcom(String file, String db,Vector<String[]> vvTexts) throws SukuException {
 		SukuData resp = new SukuData();
 		gedMap = new LinkedHashMap<String, GedcomLine>();
 		gedSource = new LinkedHashMap<String, GedcomLine>();
@@ -84,6 +85,17 @@ public class ImportGedcomUtil {
 		double indiCount=0;
 		GedcomLine record = null;
 		Statement stm;
+		
+		texts = new HashMap<String,String>();
+		if (vvTexts != null) {
+			for (int i = 0; i < vvTexts.size(); i++){
+				String []parts = vvTexts.get(i);
+				texts.put(parts[0], parts[1]);
+			}
+		}
+	
+		
+		
 		try {
 			int unitCount = 0;
 			stm = con.createStatement();
@@ -818,7 +830,8 @@ public class ImportGedcomUtil {
 			} else if (noti.tag.equals("SOUR")) {
 				if (noti.lineValue.startsWith("@") && noti.lineValue.indexOf('@',1)>1){
 					GedcomLine dets = gedMap.get(noti.lineValue);
-					pers.setSource(dets.toString(true));
+					
+					pers.setSource(extractSourceText(dets));
 				} else {
 					String src = extractGedcomSource(record);
 					pers.setSource(src);
@@ -872,7 +885,7 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("SOUR")) {
 						if (detail.lineValue.startsWith("@") && detail.lineValue.indexOf('@',1)>1){
 							GedcomLine dets = gedMap.get(detail.lineValue);
-							notice.setSource(dets.toString(true));
+							notice.setSource(extractSourceText(dets));
 						} else  {
 						
 							String src = extractGedcomSource(detail);
@@ -928,6 +941,33 @@ public class ImportGedcomUtil {
 			gedFams.put(f.id, f);
 		}
 
+	}
+
+	private String extractSourceText(GedcomLine dets) {
+		StringBuffer sb = new StringBuffer();
+		if (dets.lineValue != null) {
+			sb.append(dets.lineValue);
+		}
+		extractSourceChild(dets,sb);
+		return sb.toString();
+	}
+
+	private void extractSourceChild(GedcomLine dets, StringBuffer sb) {
+		for (int i = 0; i < dets.lines.size(); i++) {
+			GedcomLine detl = dets.lines.get(i);
+			String name = texts.get("REF_" + detl.tag);
+			if (name != null) {
+				sb.append(name);
+				sb.append(" ");
+			
+				if (detl.lineValue != null) {
+					sb.append(detl.lineValue);
+					sb.append(", ");
+				}
+			}
+			extractSourceChild(detl,sb);
+		}
+		
 	}
 
 	/**
