@@ -250,19 +250,20 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	@Override
 	public InputStream openFile(String path) {
 		if (path != null) {
-			
-			if (file == null) return null;
-			
+
+			if (file == null)
+				return null;
+
 			String mainPath = file.getAbsolutePath();
 			int last = mainPath.replace('\\', '/').lastIndexOf('/');
-			if (last <0) return null;
-			String absPath = mainPath.substring(0,last+1) + path;	
-			
+			if (last < 0)
+				return null;
+			String absPath = mainPath.substring(0, last + 1) + path;
+
 			try {
 				return new FileInputStream(absPath);
 			} catch (FileNotFoundException e) {
-				logger.log(Level.WARNING,
-						"Failed to get input stream for file", e);
+				logger.log(Level.WARNING, e.getMessage());
 
 			}
 

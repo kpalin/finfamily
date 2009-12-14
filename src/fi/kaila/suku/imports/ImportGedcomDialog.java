@@ -69,7 +69,14 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	 * @return failed gedcom lines
 	 */
 	public String[] getResult() {
-
+		if (gedcomResult == null) {
+			String[] resu = new String[0];
+			return resu;
+		}
+		if (gedcomResult.generalArray == null) {
+			String[] resu = { "generalArray missing" };
+			return resu;
+		}
 		return gedcomResult.generalArray;
 	}
 
@@ -79,7 +86,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	 * 
 	 * @param owner
 	 * @param dbName
-	 * @throws SukuException 
+	 * @throws SukuException
 	 */
 	public ImportGedcomDialog(Suku owner, String dbName) throws SukuException {
 		super(owner, Resurses.getString("IMPORT"), true);
@@ -132,25 +139,26 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, y + 100);
 
-		
 		SukuData resp;
-		
-			resp = Suku.kontroller.getSukuData("cmd=unitCount");
-		
-			if (resp.resuCount > 0) {
-				
-				int answer=JOptionPane.showConfirmDialog(this, Resurses
-						.getString("DATABASE_NOT_EMPTY")+ " " + resp.resuCount + " "   
-						+ Resurses.getString("DELETE_DATA_OK"), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-				if (answer==1){
-					throw new SukuException (Resurses.getString("DATABASE_NOT_EMPTY"));
-					
-				}
+
+		resp = Suku.kontroller.getSukuData("cmd=unitCount");
+
+		if (resp.resuCount > 0) {
+
+			int answer = JOptionPane.showConfirmDialog(this, Resurses
+					.getString("DATABASE_NOT_EMPTY")
+					+ " "
+					+ resp.resuCount
+					+ " "
+					+ Resurses.getString("DELETE_DATA_OK"), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			if (answer == 1) {
+				throw new SukuException(Resurses
+						.getString("DATABASE_NOT_EMPTY"));
+
 			}
-		
-		
-		
+		}
+
 	}
 
 	@Override
@@ -158,8 +166,6 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 		String cmd = e.getActionCommand();
 		if (cmd.equals(OK)) {
 
-		
-			
 			this.ok.setEnabled(false);
 
 			// we create new instances as needed.
