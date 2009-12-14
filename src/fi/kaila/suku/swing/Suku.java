@@ -2195,7 +2195,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			logger.finest("Opened IMPORT FILE status " + isOpened);
 
-			Import2004Dialog dlg = new Import2004Dialog(this, kontroller);
+			Import2004Dialog dlg = null;
+			try {
+			dlg = new Import2004Dialog(this, kontroller);
+			} catch (SukuException ex) {
+				return;
+			}
+			
 			dlg.setVisible(true);
 
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));

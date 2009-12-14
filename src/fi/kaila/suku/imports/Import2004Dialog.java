@@ -20,8 +20,10 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
 import fi.kaila.suku.kontroller.SukuKontroller;
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * 
@@ -84,8 +86,9 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	 * 
 	 * @param owner
 	 * @param kontroller
+	 * @throws SukuException 
 	 */
-	public Import2004Dialog(JFrame owner, SukuKontroller kontroller) {
+	public Import2004Dialog(JFrame owner, SukuKontroller kontroller) throws SukuException {
 		super(owner, Resurses.getString("IMPORT"), true);
 		this.owner = owner;
 		runner = this;
@@ -151,6 +154,22 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 		this.task = null;
 
+		SukuData resp= Suku.kontroller.getSukuData("cmd=unitCount");
+		if (resp.resuCount > 0) {
+			
+			int answer=JOptionPane.showConfirmDialog(this, Resurses
+					.getString("DATABASE_NOT_EMPTY")+ " " + resp.resuCount + " "   
+					+ Resurses.getString("DELETE_DATA_OK"), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			if (answer==1){
+				throw new SukuException (Resurses.getString("DATABASE_NOT_EMPTY"));
+				
+			}
+		}
+	
+	
+		
+		
 	}
 
 	@Override
