@@ -272,7 +272,7 @@ public class ImportGedcomUtil {
 					} else {
 						if (lineg.level > 0) {
 							record.add(lineg);
-							
+
 						}
 					}
 					line = new StringBuffer();
@@ -283,6 +283,7 @@ public class ImportGedcomUtil {
 
 			String key = record.getKey();
 			gedMap.put(key, record);
+			logger.info("Starting to do INDI");
 			// consumeGedcomRecord(record);
 			Set<Map.Entry<String, GedcomLine>> lineSet = gedMap.entrySet();
 			Iterator<Map.Entry<String, GedcomLine>> ite = lineSet.iterator();
@@ -304,6 +305,7 @@ public class ImportGedcomUtil {
 			if (!seenTrlr) {
 				resp.resu = Resurses.getString("GEDCOM_NO_TRLR");
 			}
+			logger.info("Starting to do FAM");
 			this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
 			Set<Map.Entry<String, GedcomLine>> entries = gedFamMap.entrySet();
 			Iterator<Map.Entry<String, GedcomLine>> ee = entries.iterator();
@@ -320,8 +322,9 @@ public class ImportGedcomUtil {
 				this.runner.setRunnerValue(sb.toString());
 				famIndex++;
 			}
-//			this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
-//			consumeFams();
+			logger.info("Mostly done now");
+			// this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
+			// consumeFams();
 			// resp.generalArray = recs.toArray(new String[0]);
 
 			resp.generalArray = unknownLine.toArray(new String[0]);
@@ -649,64 +652,64 @@ public class ImportGedcomUtil {
 		}
 
 		//
-		// pick up the position of both husband and wife from FAMS lines in INDI records
+		// pick up the position of both husband and wife from FAMS lines in INDI
+		// records
 		// to set row number of spouse
 		//
-		
-		int husbandNumber=0;
-		int wifeNumber=0;
+
+		int husbandNumber = 0;
+		int wifeNumber = 0;
 		if (aid != null && bid != null) {
-			
+
 			GedcomFams fms = gedFams.get(aid.id);
-			wifeNumber=-1;
-			for (int ffi = 0; ffi < fms.fams.size(); ffi++){				
-				GedcomLine fam = fms.fams.get(ffi); 
-				GedcomLine faw	= gedFamMap.get(fam.lineValue);
-				for (int ffj = 0; ffj < faw.lines.size(); ffj++){
+			wifeNumber = -1;
+			for (int ffi = 0; ffi < fms.fams.size(); ffi++) {
+				GedcomLine fam = fms.fams.get(ffi);
+				GedcomLine faw = gedFamMap.get(fam.lineValue);
+				for (int ffj = 0; ffj < faw.lines.size(); ffj++) {
 					GedcomLine fax = faw.lines.get(ffj);
-					if (fax.lineValue != null && fax.lineValue.equals(bid.id)){
+					if (fax.lineValue != null && fax.lineValue.equals(bid.id)) {
 						wifeNumber = ffi;
 						break;
 					}
 				}
-				if (wifeNumber>=0){
+				if (wifeNumber >= 0) {
 					break;
 				}
 			}
-			if (wifeNumber<=0){
-				wifeNumber=0;
+			if (wifeNumber <= 0) {
+				wifeNumber = 0;
 			}
-			
 
 			fms = gedFams.get(bid.id);
-			husbandNumber=-1;
-			for (int ffi = 0; ffi < fms.fams.size(); ffi++){				
-				GedcomLine fam = fms.fams.get(ffi); 
-				GedcomLine faw	= gedFamMap.get(fam.lineValue);
-				for (int ffj = 0; ffj < faw.lines.size(); ffj++){
+			husbandNumber = -1;
+			for (int ffi = 0; ffi < fms.fams.size(); ffi++) {
+				GedcomLine fam = fms.fams.get(ffi);
+				GedcomLine faw = gedFamMap.get(fam.lineValue);
+				for (int ffj = 0; ffj < faw.lines.size(); ffj++) {
 					GedcomLine fax = faw.lines.get(ffj);
-					if (fax.lineValue != null && fax.lineValue.equals(aid.id)){
+					if (fax.lineValue != null && fax.lineValue.equals(aid.id)) {
 						husbandNumber = ffi;
 						break;
 					}
 				}
-				if (husbandNumber>=0){
+				if (husbandNumber >= 0) {
 					break;
 				}
 			}
-			if (husbandNumber<=0){
-				husbandNumber=0;
+			if (husbandNumber <= 0) {
+				husbandNumber = 0;
 			}
-			
+
 		}
-		
-		
+
 		PersonUtil u = new PersonUtil(con);
-		String resu = u.insertGedcomRelations(husbandNumber,wifeNumber,rels.toArray(new Relation[0]));
+		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber, rels
+				.toArray(new Relation[0]));
 		if (resu != null) {
 			unknownLine.add(record.toString() + ":" + resu);
 		}
-//		SukuData resp = u.updatePerson(req);
+		// SukuData resp = u.updatePerson(req);
 
 	}
 
@@ -1610,8 +1613,6 @@ public class ImportGedcomUtil {
 		GedcomLine parent = null;
 		Vector<GedcomLine> lines = new Vector<GedcomLine>();
 
-	
-		
 		void add(GedcomLine line) {
 			if (line.level == level + 1) {
 				if (line.tag.equals("CONT")) {
@@ -1620,7 +1621,7 @@ public class ImportGedcomUtil {
 					lineValue += line.lineValue;
 				} else {
 					lines.add(line);
-					line.parent=this;
+					line.parent = this;
 				}
 			} else {
 				int last = lines.size() - 1;
@@ -1630,7 +1631,7 @@ public class ImportGedcomUtil {
 					GedcomLine subline = lines.get(last);
 					subline.add(line);
 					line.parent = subline;
-					
+
 				}
 			}
 		}
@@ -1652,7 +1653,7 @@ public class ImportGedcomUtil {
 			key = "X" + keyCounter + "X";
 			return key;
 		}
-		
+
 		GedcomLine(int level) {
 			this.level = level;
 		}
@@ -1665,27 +1666,28 @@ public class ImportGedcomUtil {
 			StringBuffer sb = new StringBuffer();
 			if (level > 0) {
 				Vector<String> stack = new Vector<String>();
-				GedcomLine pareLine=this.parent;
-				while(pareLine != null) {
+				GedcomLine pareLine = this.parent;
+				while (pareLine != null) {
 					if (pareLine.id != null) {
-						stack.add(""+pareLine.level + " " + pareLine.id + " " + pareLine.tag);
+						stack.add("" + pareLine.level + " " + pareLine.id + " "
+								+ pareLine.tag);
 					} else {
-						if (pareLine.level>0){
-						stack.add(pareLine.tag);
+						if (pareLine.level > 0) {
+							stack.add(pareLine.tag);
 						} else {
-							stack.add(""+pareLine.level + " "  + pareLine.tag);
+							stack.add("" + pareLine.level + " " + pareLine.tag);
 						}
 					}
-					
+
 					pareLine = pareLine.parent;
-					
+
 				}
-				for (int i = stack.size()-1; i >= 0; i--) {
+				for (int i = stack.size() - 1; i >= 0; i--) {
 					sb.append(stack.get(i));
 					sb.append("|");
 				}
 			}
-			if (level == 0){
+			if (level == 0) {
 				sb.append(level);
 				sb.append(" ");
 			}

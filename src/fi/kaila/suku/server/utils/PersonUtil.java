@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -969,10 +968,9 @@ public class PersonUtil {
 					// UnitLanguage[0]));
 				}
 
-				
-				sql = "select a.rid,a.pid,b.pid,a.tag,a.surety,a.modified,a.createdate  " +
-						"from relation a inner join relation b on a.rid=b.rid " +
-						"where a.pid <> b.pid and a.pid=? order by a.tag,a.relationrow";
+				sql = "select a.rid,a.pid,b.pid,a.tag,a.surety,a.modified,a.createdate  "
+						+ "from relation a inner join relation b on a.rid=b.rid "
+						+ "where a.pid <> b.pid and a.pid=? order by a.tag,a.relationrow";
 				pstm = con.prepareStatement(sql);
 				pstm.setInt(1, pid);
 				rs = pstm.executeQuery();
@@ -981,67 +979,70 @@ public class PersonUtil {
 				int bid;
 				String tag;
 				Relation rel = null;
-				
-			
+
 				Vector<Integer> relpids = new Vector<Integer>();
-				LinkedHashMap<Integer,Relation> relmap = new LinkedHashMap<Integer,Relation>(); 
+				LinkedHashMap<Integer, Relation> relmap = new LinkedHashMap<Integer, Relation>();
 				while (rs.next()) {
 					rid = rs.getInt(1);
 					aid = rs.getInt(2);
 					bid = rs.getInt(3);
 					tag = rs.getString(4);
 					relpids.add(bid);
-					
-					rel = new Relation(rid, aid, bid, tag, rs
-							.getInt(5), rs.getTimestamp(6), rs
-							.getTimestamp(7));
+
+					rel = new Relation(rid, aid, bid, tag, rs.getInt(5), rs
+							.getTimestamp(6), rs.getTimestamp(7));
 					rels.add(rel);
 					relmap.put(rid, rel);
 
 				}
 				rs.close();
-				
-				sql = "select * from relationnotice " 
+
+				sql = "select * from relationnotice "
 						+ "where rid in (select rid from relation where pid=?) order by rid,noticerow";
 				pstm = con.prepareStatement(sql);
 				pstm.setInt(1, pid);
 				rs = pstm.executeQuery();
-				int curid=0;
-				rid=0;
+				int curid = 0;
+				rid = 0;
 				RelationNotice rnote = null;
 				rs = pstm.executeQuery();
 				relNotices = new Vector<RelationNotice>();
-				while (rs.next()){
-					rid=rs.getInt("rid");
+				while (rs.next()) {
+					rid = rs.getInt("rid");
 					if (rid != curid) {
 						rel = relmap.get(Integer.valueOf(curid));
-						if (rel != null  && relNotices.size()>0){							
-							rel.setNotices(relNotices.toArray(new RelationNotice[0]));							
+						if (rel != null && relNotices.size() > 0) {
+							rel.setNotices(relNotices
+									.toArray(new RelationNotice[0]));
 						}
-						relNotices=null;
-						curid=rid;
+						relNotices = null;
+						curid = rid;
 						relNotices = new Vector<RelationNotice>();
-					} 
-						
+					}
+
 					rnote = new RelationNotice(rs.getInt("rnid"), rid, rs
-							.getInt("surety"), rs.getString("tag"), rs.getString("relationtype"), rs
-							.getString("description"), rs.getString("dateprefix"), rs
-							.getString("fromdate"), rs.getString("todate"), rs
-							.getString("place"), rs.getString("notetext"), rs
-							.getString("sourcetext"), rs.getString("privatetext"), rs
-							.getTimestamp("modified"), rs.getTimestamp("createdate"));						
+							.getInt("surety"), rs.getString("tag"), rs
+							.getString("relationtype"), rs
+							.getString("description"), rs
+							.getString("dateprefix"), rs.getString("fromdate"),
+							rs.getString("todate"), rs.getString("place"), rs
+									.getString("notetext"), rs
+									.getString("sourcetext"), rs
+									.getString("privatetext"), rs
+									.getTimestamp("modified"), rs
+									.getTimestamp("createdate"));
 					relNotices.add(rnote);
 				}
-				
-				if ( relNotices.size()>0){	
+
+				if (relNotices.size() > 0) {
 					rel = relmap.get(Integer.valueOf(curid));
-					if (rel != null ){							
-						rel.setNotices(relNotices.toArray(new RelationNotice[0]));
+					if (rel != null) {
+						rel.setNotices(relNotices
+								.toArray(new RelationNotice[0]));
 					}
 				}
 				rs.close();
 				pstm.close();
-				
 
 				if (rels.size() > 0) {
 					pers.relations = rels.toArray(new Relation[0]);
@@ -1112,12 +1113,19 @@ public class PersonUtil {
 		return pers;
 	}
 
-	public String insertGedcomRelations(int husbandNumber,int wifeNumber,Relation [] relations) {
+	/**
+	 * @param husbandNumber
+	 * @param wifeNumber
+	 * @param relations
+	 * @return result of insert,null if ok
+	 */
+	public String insertGedcomRelations(int husbandNumber, int wifeNumber,
+			Relation[] relations) {
 
 		String insSql = "insert into relationnotice  "
-			+ "(surety,RelationType,Description,DatePrefix,FromDate,ToDate,"
-			+ "Place,NoteText,sourcetext,privatetext,rnid,rid,tag,noticerow)"
-			+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				+ "(surety,RelationType,Description,DatePrefix,FromDate,ToDate,"
+				+ "Place,NoteText,sourcetext,privatetext,rnid,rid,tag,noticerow)"
+				+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		String insRelSql = "insert into relation (rid,pid,surety,tag,relationrow) values (?,?,?,?,?) ";
 
@@ -1126,20 +1134,19 @@ public class PersonUtil {
 
 			PreparedStatement pst;
 			Statement stm;
-			
-			int childForFatherRow=husbandNumber*50;
-			int childForMotherRow=wifeNumber*50;
-			
-			int aid=0;
-			int bid=0;
-			
+
+			int childForFatherRow = husbandNumber * 50;
+			int childForMotherRow = wifeNumber * 50;
+
+			// int aid=0;
+			// int bid=0;
+
 			for (int i = 0; i < relations.length; i++) {
 				Relation r = relations[i];
 				int rid = r.getRid();
 
 				stm = con.createStatement();
-				rs = stm
-				.executeQuery("select nextval('relationseq')");
+				rs = stm.executeQuery("select nextval('relationseq')");
 
 				if (rs.next()) {
 					rid = rs.getInt(1);
@@ -1147,6 +1154,7 @@ public class PersonUtil {
 					throw new SQLException("Sequence relationseq error");
 				}
 				rs.close();
+				stm.close();
 				r.setRid(rid);
 
 				pst = con.prepareStatement(insRelSql);
@@ -1157,33 +1165,32 @@ public class PersonUtil {
 				pst.setString(4, r.getTag());
 				if (r.getTag().equals("WIFE")) {
 					pst.setInt(5, wifeNumber);
-					aid=r.getPid();
-				} else  {
-					pst.setInt(5,1);
+					// aid=r.getPid();
+				} else {
+					pst.setInt(5, 1);
 				}
-//				pst.setInt(5, childRow);
+				// pst.setInt(5, childRow);
 				int lukuri = pst.executeUpdate();
 				if (lukuri != 1) {
-					logger.warning("relation for rid " + rid
-							+ "  gave result " + lukuri);
+					logger.warning("relation for rid " + rid + "  gave result "
+							+ lukuri);
 				}
 
 				String tag;
-				if (r.getTag().equals("FATH")
-						|| r.getTag().equals("MOTH")) {
+				if (r.getTag().equals("FATH") || r.getTag().equals("MOTH")) {
 					tag = "CHIL";
 				} else {
 					tag = "HUSB";
-					bid=r.getRelative();
+					// bid=r.getRelative();
 				}
 				pst.setInt(1, rid);
 				pst.setInt(2, r.getRelative());
 				pst.setInt(3, r.getSurety());
 				pst.setString(4, tag);
-				if (tag.equals("HUSB")){
+				if (tag.equals("HUSB")) {
 					pst.setInt(5, husbandNumber);
 				} else {
-					if (r.getTag().equals("FATH")){
+					if (r.getTag().equals("FATH")) {
 						pst.setInt(5, childForMotherRow++);
 					} else {
 						pst.setInt(5, childForFatherRow++);
@@ -1191,28 +1198,27 @@ public class PersonUtil {
 				}
 				lukuri = pst.executeUpdate();
 				if (lukuri != 1) {
-					logger.warning("relation for rid " + rid
-							+ "  gave result " + lukuri);
+					logger.warning("relation for rid " + rid + "  gave result "
+							+ lukuri);
 				}
-				
+				pst.close();
 				if (relations[i].getNotices() != null) {
 
-		
 					for (int j = 0; j < relations[i].getNotices().length; j++) {
 						RelationNotice rn = relations[i].getNotices()[j];
 						int rnid = rn.getRnid();
 
 						stm = con.createStatement();
 						rs = stm
-						.executeQuery("select nextval('RelationNoticeSeq')");
+								.executeQuery("select nextval('RelationNoticeSeq')");
 
 						if (rs.next()) {
 							rnid = rs.getInt(1);
 						} else {
-							throw new SQLException(
-									"Sequence relationseq error");
+							throw new SQLException("Sequence relationseq error");
 						}
 						rs.close();
+						stm.close();
 
 						pst = con.prepareStatement(insSql);
 						pst.setInt(1, rn.getSurety());
@@ -1224,15 +1230,14 @@ public class PersonUtil {
 						pst.setString(7, rn.getPlace());
 						pst.setString(8, rn.getNoteText());
 						pst.setString(9, rn.getSource());
-						pst.setString(10, rn.getPrivateText());	
+						pst.setString(10, rn.getPrivateText());
 						pst.setInt(11, rnid);
 						pst.setInt(12, rid);
 						pst.setString(13, rn.getTag());
-						pst.setInt(14,j+1);
+						pst.setInt(14, j + 1);
 						int rer = pst.executeUpdate();
-						
-						logger.fine("insert rn for " + rnid + "["
-								+ rer + "]");
+						pst.close();
+						logger.fine("insert rn for " + rnid + "[" + rer + "]");
 
 					}
 				}
@@ -1247,5 +1252,5 @@ public class PersonUtil {
 		return null;
 
 	}
-	
+
 }
