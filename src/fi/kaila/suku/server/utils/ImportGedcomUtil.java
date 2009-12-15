@@ -272,6 +272,7 @@ public class ImportGedcomUtil {
 					} else {
 						if (lineg.level > 0) {
 							record.add(lineg);
+							
 						}
 					}
 					line = new StringBuffer();
@@ -1615,8 +1616,11 @@ public class ImportGedcomUtil {
 		String tag = null;
 		String id = null;
 		String lineValue = null;
+		GedcomLine parent = null;
 		Vector<GedcomLine> lines = new Vector<GedcomLine>();
 
+	
+		
 		void add(GedcomLine line) {
 			if (line.level == level + 1) {
 				if (line.tag.equals("CONT")) {
@@ -1625,6 +1629,7 @@ public class ImportGedcomUtil {
 					lineValue += line.lineValue;
 				} else {
 					lines.add(line);
+					line.parent=this;
 				}
 			} else {
 				int last = lines.size() - 1;
@@ -1633,6 +1638,8 @@ public class ImportGedcomUtil {
 				} else {
 					GedcomLine subline = lines.get(last);
 					subline.add(line);
+					line.parent = subline;
+					
 				}
 			}
 		}
@@ -1654,7 +1661,7 @@ public class ImportGedcomUtil {
 			key = "X" + keyCounter + "X";
 			return key;
 		}
-
+		
 		GedcomLine(int level) {
 			this.level = level;
 		}
@@ -1665,9 +1672,32 @@ public class ImportGedcomUtil {
 
 		public String toString(boolean withLevels) {
 			StringBuffer sb = new StringBuffer();
-			// sb.append("                          ".substring(0, level*2));
-			sb.append(level);
-			sb.append(" ");
+			if (level > 0) {
+				Vector<String> stack = new Vector<String>();
+				GedcomLine pareLine=this.parent;
+				while(pareLine != null) {
+					if (pareLine.id != null) {
+						stack.add(""+pareLine.level + " " + pareLine.id + " " + pareLine.tag);
+					} else {
+						if (pareLine.level>0){
+						stack.add(pareLine.tag);
+						} else {
+							stack.add(""+pareLine.level + " "  + pareLine.tag);
+						}
+					}
+					
+					pareLine = pareLine.parent;
+					
+				}
+				for (int i = stack.size()-1; i >= 0; i--) {
+					sb.append(stack.get(i));
+					sb.append("|");
+				}
+			}
+			if (level == 0){
+				sb.append(level);
+				sb.append(" ");
+			}
 			if (id != null) {
 				sb.append(id);
 				sb.append(" ");
