@@ -1112,4 +1112,140 @@ public class PersonUtil {
 		return pers;
 	}
 
+	public String insertGedcomRelations(int husbandNumber,int wifeNumber,Relation [] relations) {
+
+		String insSql = "insert into relationnotice  "
+			+ "(surety,RelationType,Description,DatePrefix,FromDate,ToDate,"
+			+ "Place,NoteText,sourcetext,privatetext,rnid,rid,tag,noticerow)"
+			+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+
+		String insRelSql = "insert into relation (rid,pid,surety,tag,relationrow) values (?,?,?,?,?) ";
+
+		ResultSet rs;
+		try {
+
+			PreparedStatement pst;
+			Statement stm;
+			
+			int childForFatherRow=husbandNumber*50;
+			int childForMotherRow=wifeNumber*50;
+			
+			int aid=0;
+			int bid=0;
+			
+			for (int i = 0; i < relations.length; i++) {
+				Relation r = relations[i];
+				int rid = r.getRid();
+
+				stm = con.createStatement();
+				rs = stm
+				.executeQuery("select nextval('relationseq')");
+
+				if (rs.next()) {
+					rid = rs.getInt(1);
+				} else {
+					throw new SQLException("Sequence relationseq error");
+				}
+				rs.close();
+				r.setRid(rid);
+
+				pst = con.prepareStatement(insRelSql);
+
+				pst.setInt(1, rid);
+				pst.setInt(2, r.getPid());
+				pst.setInt(3, r.getSurety());
+				pst.setString(4, r.getTag());
+				if (r.getTag().equals("WIFE")) {
+					pst.setInt(5, wifeNumber);
+					aid=r.getPid();
+				} else  {
+					pst.setInt(5,1);
+				}
+//				pst.setInt(5, childRow);
+				int lukuri = pst.executeUpdate();
+				if (lukuri != 1) {
+					logger.warning("relation for rid " + rid
+							+ "  gave result " + lukuri);
+				}
+
+				String tag;
+				if (r.getTag().equals("FATH")
+						|| r.getTag().equals("MOTH")) {
+					tag = "CHIL";
+				} else {
+					tag = "HUSB";
+					bid=r.getRelative();
+				}
+				pst.setInt(1, rid);
+				pst.setInt(2, r.getRelative());
+				pst.setInt(3, r.getSurety());
+				pst.setString(4, tag);
+				if (tag.equals("HUSB")){
+					pst.setInt(5, husbandNumber);
+				} else {
+					if (r.getTag().equals("FATH")){
+						pst.setInt(5, childForMotherRow++);
+					} else {
+						pst.setInt(5, childForFatherRow++);
+					}
+				}
+				lukuri = pst.executeUpdate();
+				if (lukuri != 1) {
+					logger.warning("relation for rid " + rid
+							+ "  gave result " + lukuri);
+				}
+				
+				if (relations[i].getNotices() != null) {
+
+		
+					for (int j = 0; j < relations[i].getNotices().length; j++) {
+						RelationNotice rn = relations[i].getNotices()[j];
+						int rnid = rn.getRnid();
+
+						stm = con.createStatement();
+						rs = stm
+						.executeQuery("select nextval('RelationNoticeSeq')");
+
+						if (rs.next()) {
+							rnid = rs.getInt(1);
+						} else {
+							throw new SQLException(
+									"Sequence relationseq error");
+						}
+						rs.close();
+
+						pst = con.prepareStatement(insSql);
+						pst.setInt(1, rn.getSurety());
+						pst.setString(2, rn.getType());
+						pst.setString(3, rn.getDescription());
+						pst.setString(4, rn.getDatePrefix());
+						pst.setString(5, rn.getFromDate());
+						pst.setString(6, rn.getToDate());
+						pst.setString(7, rn.getPlace());
+						pst.setString(8, rn.getNoteText());
+						pst.setString(9, rn.getSource());
+						pst.setString(10, rn.getPrivateText());	
+						pst.setInt(11, rnid);
+						pst.setInt(12, rid);
+						pst.setString(13, rn.getTag());
+						pst.setInt(14,j+1);
+						int rer = pst.executeUpdate();
+						
+						logger.fine("insert rn for " + rnid + "["
+								+ rer + "]");
+
+					}
+				}
+			}
+
+		} catch (SQLException e) {
+			// e.printStackTrace();
+			logger.log(Level.WARNING, "Relation update", e);
+			return e.getMessage();
+		}
+
+		return null;
+
+	}
+	
 }

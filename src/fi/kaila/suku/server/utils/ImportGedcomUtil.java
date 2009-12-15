@@ -320,8 +320,8 @@ public class ImportGedcomUtil {
 				this.runner.setRunnerValue(sb.toString());
 				famIndex++;
 			}
-			this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
-			consumeFams();
+//			this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
+//			consumeFams();
 			// resp.generalArray = recs.toArray(new String[0]);
 
 			resp.generalArray = unknownLine.toArray(new String[0]);
@@ -340,7 +340,7 @@ public class ImportGedcomUtil {
 
 	/**
 	 * The FAMS lines from INDI records have been stored in the gedFams map We
-	 * use those to put spouses in correcto order
+	 * use those to put spouses in correct order
 	 * 
 	 */
 	private void consumeFams() {
@@ -648,75 +648,65 @@ public class ImportGedcomUtil {
 			rel.setNotices(relNotice.toArray(new RelationNotice[0]));
 		}
 
-		// while (pareIdx < record.lines.size()) {
-		// int ppstart = pareIdx;
-		// for (int i = ppstart; i < record.lines.size(); i++) {
-		// linePare = record.lines.get(i);
 		//
-		// if ("|HUSB|WIFE|".indexOf(linePare.tag) > 0) {
-		// pareIdx = i;
-		// if (childIdx <= pareIdx) {
-		// childIdx = pareIdx + 1;
-		// }
-		// break;
-		// } else {
-		// pareIdx = i + 1;
-		// }
-		// }
-		// int chstart = childIdx;
-		// for (int i = chstart; i < record.lines.size(); i++) {
-		// lineChil = record.lines.get(i);
-		// if ("|HUSB|WIFE|CHIL|".indexOf(lineChil.tag) > 0) {
-		// childIdx = i;
-		// break;
-		// } else {
-		// childIdx = i + 1;
-		// }
-		// }
-		// if (pareIdx == record.lines.size()) {
-		// break;
-		// }
-		//	
-		// if (childIdx < record.lines.size()) {
-		// GedcomPidEle aid = gedPid.get(linePare.lineValue);
-		// GedcomPidEle bid = gedPid.get(lineChil.lineValue);
+		// pick up the position of both husband and wife from FAMS lines in INDI records
+		// to set row number of spouse
 		//
-		// if (aid == null || bid == null) {
-		// System.out.println("FAMBAD");
-		// unknownLine.add(record.toString());
-		// continue;
-		// }
-		// String tag = "FATH";
-		// if (linePare.tag.equals("HUSB") && lineChil.tag.equals("WIFE")) {
-		// tag = "HUSB";
-		// } else if (linePare.tag.equals("WIFE")
-		// && lineChil.tag.equals("HUSB")) {
-		// tag = "WIFE";
-		// } else if (linePare.tag.equals("HUSB")
-		// && lineChil.tag.equals("CHIL")) {
-		// tag = "FATH";
-		// } else {
-		// tag = "MOTH";
-		// }
-		// if (ownerPid == 0) {
-		// ownerPid = bid.pid;
-		// }
-		// rel = new Relation(0, bid.pid, aid.pid, tag, 100, null, null);
-		// rels.add(rel);
-		// childIdx++;
-		// } else {
-		// pareIdx++;
-		// childIdx = pareIdx + 1;
-		// }
-		//
-		// }
+		
+		int husbandNumber=0;
+		int wifeNumber=0;
+		if (aid != null && bid != null) {
+			
+			GedcomFams fms = gedFams.get(aid.id);
+			wifeNumber=-1;
+			for (int ffi = 0; ffi < fms.fams.size(); ffi++){				
+				GedcomLine fam = fms.fams.get(ffi); 
+				GedcomLine faw	= gedFamMap.get(fam.lineValue);
+				for (int ffj = 0; ffj < faw.lines.size(); ffj++){
+					GedcomLine fax = faw.lines.get(ffj);
+					if (fax.lineValue != null && fax.lineValue.equals(bid.id)){
+						wifeNumber = ffi;
+						break;
+					}
+				}
+				if (wifeNumber>=0){
+					break;
+				}
+			}
+			if (wifeNumber<=0){
+				wifeNumber=0;
+			}
+			
 
-		req.persLong = new PersonLongData(ownerPid, "INDI", "U");
-		req.relations = rels.toArray(new Relation[0]);
-
+			fms = gedFams.get(bid.id);
+			husbandNumber=-1;
+			for (int ffi = 0; ffi < fms.fams.size(); ffi++){				
+				GedcomLine fam = fms.fams.get(ffi); 
+				GedcomLine faw	= gedFamMap.get(fam.lineValue);
+				for (int ffj = 0; ffj < faw.lines.size(); ffj++){
+					GedcomLine fax = faw.lines.get(ffj);
+					if (fax.lineValue != null && fax.lineValue.equals(aid.id)){
+						husbandNumber = ffi;
+						break;
+					}
+				}
+				if (husbandNumber>=0){
+					break;
+				}
+			}
+			if (husbandNumber<=0){
+				husbandNumber=0;
+			}
+			
+		}
+		
+		
 		PersonUtil u = new PersonUtil(con);
-
-		SukuData resp = u.updatePerson(req);
+		String resu = u.insertGedcomRelations(husbandNumber,wifeNumber,rels.toArray(new Relation[0]));
+		if (resu != null) {
+			unknownLine.add(record.toString() + ":" + resu);
+		}
+//		SukuData resp = u.updatePerson(req);
 
 	}
 
@@ -959,6 +949,7 @@ public class ImportGedcomUtil {
 			GedcomPidEle pide = new GedcomPidEle();
 			pide.pid = resp.resultPid;
 			pide.sex = pers.getSex();
+			pide.id = record.id;
 
 			gedPid.put(record.id, pide);
 			f.pid = pide.pid;
@@ -1726,6 +1717,7 @@ public class ImportGedcomUtil {
 	}
 
 	class GedcomPidEle {
+		public String id;
 		int pid = 0;
 		String sex = "U";
 	}
