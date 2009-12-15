@@ -1509,7 +1509,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					sb.append(failedLines[i]);
 				}
 				if (sb.length() > 0) {
-					SukuPad pad = new SukuPad(this, sb.toString());
+					
+					java.util.Date d = new java.util.Date();
+					SukuPad pad = new SukuPad(this, kontroller.getFileName()+"\n" +
+							d.toString() + "\n" +
+							Resurses.getString("GEDCOM_IMPORT_IGNORED") +"\n\n" +sb.toString());
 					pad.setVisible(true);
 				}
 				// JOptionPane.showMessageDialog(this,sb.toString());
