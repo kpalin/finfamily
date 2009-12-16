@@ -751,16 +751,16 @@ public class ImportGedcomUtil {
 				for (int ffj = 0; ffj < faw.lines.size(); ffj++) {
 					GedcomLine fax = faw.lines.get(ffj);
 					if (fax.lineValue != null && fax.lineValue.equals(cid.id)) {
-						wifeNumber = ffi;
+						husbandNumber = ffi;
 						break;
 					}
 				}
-				if (wifeNumber >= 0) {
+				if (husbandNumber >= 0) {
 					break;
 				}
 			}
-			if (wifeNumber <= 0) {
-				wifeNumber = 0;
+			if (husbandNumber <= 0) {
+				husbandNumber = 0;
 			}
 		}
 
