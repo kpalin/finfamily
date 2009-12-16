@@ -220,8 +220,10 @@ public class ImportGedcomUtil {
 									int intprose = (int) prose;
 									sb.append("" + intprose + ";"
 											+ record.toString(false));
-									if (this.runner.setRunnerValue(sb.toString())) {
-										throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+									if (this.runner.setRunnerValue(sb
+											.toString())) {
+										throw new SukuException(Resurses
+												.getString("GEDCOM_CANCELLED"));
 									}
 
 								}
@@ -301,7 +303,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(Resurses
+							.getString("GEDCOM_CANCELLED"));
 				}
 				indiIndex++;
 			}
@@ -324,7 +327,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(Resurses
+							.getString("GEDCOM_CANCELLED"));
 				}
 				famIndex++;
 			}
@@ -716,6 +720,48 @@ public class ImportGedcomUtil {
 				husbandNumber = 0;
 			}
 
+		} else if (aid != null) {
+
+			GedcomFams fms = gedFams.get(aid.id);
+			wifeNumber = -1;
+			for (int ffi = 0; ffi < fms.fams.size(); ffi++) {
+				GedcomLine fam = fms.fams.get(ffi);
+				GedcomLine faw = gedFamMap.get(fam.lineValue);
+				for (int ffj = 0; ffj < faw.lines.size(); ffj++) {
+					GedcomLine fax = faw.lines.get(ffj);
+					if (fax.lineValue != null && fax.lineValue.equals(cid.id)) {
+						wifeNumber = ffi;
+						break;
+					}
+				}
+				if (wifeNumber >= 0) {
+					break;
+				}
+			}
+			if (wifeNumber <= 0) {
+				wifeNumber = 0;
+			}
+		} else if (bid != null) {
+
+			GedcomFams fms = gedFams.get(bid.id);
+			wifeNumber = -1;
+			for (int ffi = 0; ffi < fms.fams.size(); ffi++) {
+				GedcomLine fam = fms.fams.get(ffi);
+				GedcomLine faw = gedFamMap.get(fam.lineValue);
+				for (int ffj = 0; ffj < faw.lines.size(); ffj++) {
+					GedcomLine fax = faw.lines.get(ffj);
+					if (fax.lineValue != null && fax.lineValue.equals(cid.id)) {
+						wifeNumber = ffi;
+						break;
+					}
+				}
+				if (wifeNumber >= 0) {
+					break;
+				}
+			}
+			if (wifeNumber <= 0) {
+				wifeNumber = 0;
+			}
 		}
 
 		PersonUtil u = new PersonUtil(con);
@@ -733,7 +779,8 @@ public class ImportGedcomUtil {
 	String ownerInfo = null;
 	boolean seenTrlr = false;
 
-	private void consumeGedcomRecord(GedcomLine record) throws SQLException, SukuException {
+	private void consumeGedcomRecord(GedcomLine record) throws SQLException,
+			SukuException {
 		recordCount++;
 		if (seenTrlr) {
 			unknownLine.add(record.toString());
