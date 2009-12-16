@@ -198,9 +198,10 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			// setVisible(false);
 		}
 		if (cmd.equals(CANCEL)) {
+			setVisible(false);
+
 			if (this.task == null) {
 
-				setVisible(false);
 			} else {
 				isCancelled=true;
 				this.task.cancel(true);
