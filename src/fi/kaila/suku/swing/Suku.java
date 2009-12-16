@@ -1509,22 +1509,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					sb.append(failedLines[i]);
 				}
 				if (sb.length() > 0) {
-					
+
 					java.util.Date d = new java.util.Date();
-					SukuPad pad = new SukuPad(this, kontroller.getFileName()+"\n" +
-							d.toString() + "\n" +
-							Resurses.getString("GEDCOM_IMPORT_IGNORED") +"\n\n" +sb.toString());
+					SukuPad pad = new SukuPad(this, kontroller.getFileName()
+							+ "\n" + d.toString() + "\n"
+							+ Resurses.getString("GEDCOM_IMPORT_IGNORED")
+							+ "\n\n" + sb.toString());
 					pad.setVisible(true);
 				}
-				// JOptionPane.showMessageDialog(this,sb.toString());
+
 			}
 
 		}
-
-		// JOptionPane.showMessageDialog(this,
-		// "Gedcom import under construction", Resurses
-		// .getString(Resurses.SUKU),
-		// JOptionPane.ERROR_MESSAGE);
 
 	}
 
@@ -2201,11 +2197,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			Import2004Dialog dlg = null;
 			try {
-			dlg = new Import2004Dialog(this, kontroller);
+				dlg = new Import2004Dialog(this, kontroller);
 			} catch (SukuException ex) {
 				return;
 			}
-			
+
 			dlg.setVisible(true);
 
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));

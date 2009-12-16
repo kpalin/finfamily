@@ -70,9 +70,9 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	 */
 	public String[] getResult() {
 		String[] resu;
-	
+
 		if (gedcomResult == null) {
-			if (errorMessage != null){
+			if (errorMessage != null) {
 				resu = new String[1];
 				resu[0] = errorMessage;
 			} else {
@@ -81,7 +81,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			return resu;
 		}
 		if (gedcomResult.generalArray == null) {
-			if (errorMessage != null){
+			if (errorMessage != null) {
 				resu = new String[1];
 				resu[0] = errorMessage;
 			} else {
@@ -90,14 +90,14 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			}
 			return resu;
 		}
-		if (errorMessage != null){
-			resu = new String[gedcomResult.generalArray.length+1];
+		if (errorMessage != null) {
+			resu = new String[gedcomResult.generalArray.length + 1];
 			resu[0] = errorMessage;
-			for (int i = 0; i < gedcomResult.generalArray.length; i++){
-				resu[i+1] = gedcomResult.generalArray[i];
+			for (int i = 0; i < gedcomResult.generalArray.length; i++) {
+				resu[i + 1] = gedcomResult.generalArray[i];
 			}
 			return resu;
-		} 
+		}
 		return gedcomResult.generalArray;
 	}
 
@@ -198,15 +198,10 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			// setVisible(false);
 		}
 		if (cmd.equals(CANCEL)) {
-			setVisible(false);
 
-			if (this.task == null) {
+			this.cancel.setEnabled(false);
+			isCancelled = true;
 
-			} else {
-				isCancelled=true;
-				this.task.cancel(true);
-				
-			}
 		}
 
 	}
@@ -252,46 +247,42 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			} catch (SukuException e) {
 				e.printStackTrace();
 				errorMessage = e.getMessage();
-//				JOptionPane.showMessageDialog(owner, Resurses
-//						.getString("IMPORT_GEDCOM")
-//						+ ":" + e.getMessage());
 
-				
 			}
 			setVisible(false);
 			return null;
 		}
 
-		
-		
 		/*
 		 * Executed in event dispatching thread
 		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
-//			setVisible(false);
-			
+			// setVisible(false);
+
 			// startButton.setEnabled(true);
 			// setCursor(null); //turn off the wait cursor
 			// taskOutput.append("Done!\n");
 		}
 	}
+
 	private String errorMessage = null;
-	private boolean isCancelled=false;
-	
+	private boolean isCancelled = false;
+
 	/**
-	 * The runner is the progressbar on the import dialog. Set new values to the
-	 * progress bar using this command
+	 * The runner is the progress bar on the import dialog. Set new values to
+	 * the progress bar using this command
 	 * 
-	 * the text may be split in two parts seperated by ";"
+	 * the text may be split in two parts separated by ";"
 	 * 
 	 * if the text is divided then part before ; must be an integer number
 	 * between 0-100 for the progress bar. Text behind ; or if ; does not exist
-	 * is diplayed above the progress bar
+	 * is displayed above the progress bar
 	 * 
 	 * 
 	 * @param juttu
+	 * @return true if cancel command has been issued
 	 */
 	public boolean setRunnerValue(String juttu) {
 		String[] kaksi = juttu.split(";");
@@ -311,13 +302,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 		} else {
 			textContent.setText(juttu);
-			// int progre = progressBar.getValue();
-			// if (progre > 95) {
-			// progre=0;
-			//	        		
-			// } else {
-			// progre++;
-			// }
+
 			progressBar.setIndeterminate(true);
 			progressBar.setValue(0);
 		}

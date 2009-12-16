@@ -191,48 +191,15 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 			// setVisible(false);
 		}
 		if (cmd.equals(CANCEL)) {
-			if (this.task == null) {
+			isCancelled=true;
+			this.cancel.setEnabled(false);
 
-				setVisible(false);
-			} else {
-				this.task.cancel(true);
-			}
 		}
 
 	}
 
-	// /**
-	// * @return true if language selected
-	// */
-	// public boolean isOK(){
-	// if (this.selectedLang != null){
-	// return true;
-	// }
-	// return false;
-	// }
 
-	// /**
-	// * Suku 2004 data may consist of special characters for defining text
-	// * e.g. in different languages. In Suku11 database the different languages
-	// are
-	// * stored in separate language pages. The user must choose the main
-	// language
-	// * during import to be stored with the main data. Other languages will be
-	// * stored in the language pages
-	// *
-	// * @return selected language
-	// */
-	// public String getSelectedLang(){
-	// return this.selectedLang;
-	// }
-	//
-	//	
-	// /**
-	// * @return selected old language
-	// */
-	// public String getSelected2004Lang(){
-	// return this.selectedOldLang;
-	// }
+
 
 	class Task extends SwingWorker<Void, Void> {
 
@@ -251,29 +218,15 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 			try {
 				kontroller.getSukuData("cmd=import2004", "lang=" + lang);
 			} catch (SukuException e) {
+				errorMessage = e.getMessage();
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(owner, Resurses
 						.getString(Resurses.IMPORT_SUKU)
 						+ ":" + e.getMessage());
 
-				return null;
+				
 			}
-
-			// Random random = new Random();
-			// int progress = 0;
-			// //Initialize progress property.
-			// setProgress(0);
-			// while (progress < 100) {
-			// //Sleep for up to one second.
-			// try {
-			// Thread.sleep(random.nextInt(1000));
-			// } catch (InterruptedException ignore) {}
-			// //Make random progress.
-			// progress += random.nextInt(10);
-			// setProgress(Math.min(progress, 100));
-			// firePropertyChange("progress", "old", "" + progress + ";prgii[" +
-			// progress + "]");
-			// }
+			setVisible(false);
 			return null;
 		}
 
@@ -283,13 +236,21 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
-			setVisible(false);
-			// startButton.setEnabled(true);
-			// setCursor(null); //turn off the wait cursor
-			// taskOutput.append("Done!\n");
+
 		}
 	}
 
+	/**
+	 * 
+	 * @return error message in case of failure of import. null stands for ok
+	 */
+	public String getResult(){
+		return errorMessage;
+	}
+	
+	private String errorMessage = null;
+	private boolean isCancelled=false;
+	
 	/**
 	 * The runner is the progressbar on the import dialog. Set new values to the
 	 * progress bar using this command
@@ -302,8 +263,9 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	 * 
 	 * 
 	 * @param juttu
+	 * @return true if cancel command given
 	 */
-	public void setRunnerValue(String juttu) {
+	public boolean setRunnerValue(String juttu) {
 		String[] kaksi = juttu.split(";");
 		if (kaksi.length >= 2) {
 			int progress = 0;
@@ -313,7 +275,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 				textContent.setText(juttu);
 				progressBar.setIndeterminate(true);
 				progressBar.setValue(0);
-				return;
+				return isCancelled;
 			}
 
 			progressBar.setValue(progress);
@@ -321,16 +283,11 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 		} else {
 			textContent.setText(juttu);
-			// int progre = progressBar.getValue();
-			// if (progre > 95) {
-			// progre=0;
-			//	        		
-			// } else {
-			// progre++;
-			// }
+
 			progressBar.setIndeterminate(true);
 			progressBar.setValue(0);
 		}
+		return isCancelled;
 	}
 
 	@Override

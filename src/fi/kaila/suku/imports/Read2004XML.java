@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import fi.kaila.suku.util.NameArray;
+import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
 
@@ -690,7 +691,9 @@ public class Read2004XML extends DefaultHandler {
 							sb.append(" ");
 							sb.append(this.unitPostfix);
 						}
-						this.runner.setRunnerValue(sb.toString());
+						if (this.runner.setRunnerValue(sb.toString())) {
+							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+						}
 					}
 
 				} catch (SQLException e) {
@@ -1260,7 +1263,10 @@ public class Read2004XML extends DefaultHandler {
 					this.pstm.executeUpdate();
 
 					if (this.runner != null) {
-						this.runner.setRunnerValue("RelationId: " + rid);
+						if (this.runner.setRunnerValue("RelationId: " + rid)) {
+							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+						}
+						
 					}
 
 					if (this.relationBegDateFrom != null
@@ -1491,7 +1497,10 @@ public class Read2004XML extends DefaultHandler {
 
 					this.pstm.executeUpdate();
 					if (this.runner != null) {
-						this.runner.setRunnerValue("SourceId: " + sid);
+						
+						if (this.runner.setRunnerValue("SourceId: " + sid)) {
+							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+						}
 					}
 
 				} catch (SQLException e) {
@@ -1519,7 +1528,9 @@ public class Read2004XML extends DefaultHandler {
 				this.pstm.setString(3, this.groupDescription);
 				this.pstm.executeUpdate();
 				if (this.runner != null) {
-					this.runner.setRunnerValue("GroupId: " + this.groupId);
+					if (this.runner.setRunnerValue("GroupId: " + this.groupId)){
+						throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+					}
 				}
 				laskuriGroups++;
 			} catch (SQLException e) {
@@ -1606,8 +1617,10 @@ public class Read2004XML extends DefaultHandler {
 					this.pstm.executeUpdate();
 					laskuriConversion++;
 					if (this.runner != null) {
-						this.runner.setRunnerValue("ConversionId: "
-								+ laskuriConversion);
+						if (this.runner.setRunnerValue("ConversionId: "
+								+ laskuriConversion)) {
+							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+						}
 					}
 				} catch (SQLException e) {
 					logger.log(Level.SEVERE, "importing conversion failed", e);
@@ -1647,7 +1660,9 @@ public class Read2004XML extends DefaultHandler {
 					laskuriViews++;
 
 					if (this.runner != null) {
-						this.runner.setRunnerValue("ViewId: " + vid);
+						if(this.runner.setRunnerValue("ViewId: " + vid)) {
+							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+						}
 					}
 
 				} catch (SQLException e) {
