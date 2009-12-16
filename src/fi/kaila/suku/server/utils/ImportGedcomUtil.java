@@ -219,8 +219,10 @@ public class ImportGedcomUtil {
 									double prose = (dluku * 100) / dLen;
 									int intprose = (int) prose;
 									sb.append("" + intprose + ";"
-											+ record.toString());
-									this.runner.setRunnerValue(sb.toString());
+											+ record.toString(false));
+									if (this.runner.setRunnerValue(sb.toString())) {
+										throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+									}
 
 								}
 							}
@@ -297,8 +299,10 @@ public class ImportGedcomUtil {
 
 				double prose = (indiIndex * 100) / indiCount;
 				int intprose = (int) prose;
-				sb.append("" + intprose + ";" + rec.toString());
-				this.runner.setRunnerValue(sb.toString());
+				sb.append("" + intprose + ";" + rec.toString(false));
+				if (this.runner.setRunnerValue(sb.toString())) {
+					throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+				}
 				indiIndex++;
 			}
 
@@ -318,8 +322,10 @@ public class ImportGedcomUtil {
 				StringBuffer sb = new StringBuffer();
 				double prose = (famIndex * 100) / famCount;
 				int intprose = (int) prose;
-				sb.append("" + intprose + ";" + rec.toString());
-				this.runner.setRunnerValue(sb.toString());
+				sb.append("" + intprose + ";" + rec.toString(false));
+				if (this.runner.setRunnerValue(sb.toString())) {
+					throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+				}
 				famIndex++;
 			}
 			logger.info("Mostly done now");
@@ -330,8 +336,17 @@ public class ImportGedcomUtil {
 			resp.generalArray = unknownLine.toArray(new String[0]);
 			bis.close();
 		} catch (Exception e) {
+			unknownLine.add(e.getMessage());
 			resp.generalArray = unknownLine.toArray(new String[0]);
 			throw new SukuException(e);
+		} finally {
+			gedMap.clear();
+			gedSource.clear();
+			gedFamMap.clear();
+			gedPid.clear();
+			gedFams.clear();
+			gedAdopt.removeAllElements();
+			logger.info("maps cleared");
 		}
 		return resp;
 		// SukuUtility data = SukuUtility.instance();
@@ -718,7 +733,7 @@ public class ImportGedcomUtil {
 	String ownerInfo = null;
 	boolean seenTrlr = false;
 
-	private void consumeGedcomRecord(GedcomLine record) throws SQLException {
+	private void consumeGedcomRecord(GedcomLine record) throws SQLException, SukuException {
 		recordCount++;
 		if (seenTrlr) {
 			unknownLine.add(record.toString());
@@ -768,7 +783,7 @@ public class ImportGedcomUtil {
 			+ "|NATI|NCHI|NMR|PROP|RELI|SSN|FACT|CREM|BAPM|BASM|BLES|BARM"
 			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|ADOP|";
 
-	private void consumeGedcomIndi(GedcomLine record) {
+	private void consumeGedcomIndi(GedcomLine record) throws SukuException {
 		PersonLongData pers = new PersonLongData(0, "INDI", "U");
 		Vector<UnitNotice> notices = new Vector<UnitNotice>();
 		GedcomFams f = new GedcomFams();
@@ -948,6 +963,9 @@ public class ImportGedcomUtil {
 		PersonUtil u = new PersonUtil(con);
 
 		SukuData resp = u.updatePerson(request);
+		if (resp.resu != null) {
+			throw new SukuException(resp.resu);
+		}
 		if (resp.resultPid > 0) {
 			GedcomPidEle pide = new GedcomPidEle();
 			pide.pid = resp.resultPid;
@@ -1659,7 +1677,7 @@ public class ImportGedcomUtil {
 		}
 
 		public String toString() {
-			return toString(false);
+			return toString(true);
 		}
 
 		public String toString(boolean withLevels) {

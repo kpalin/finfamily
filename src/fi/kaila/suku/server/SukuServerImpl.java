@@ -492,6 +492,7 @@ public class SukuServerImpl implements SukuServer {
 			SukuData txts = getTexts(lang);
 			ImportGedcomUtil inged = new ImportGedcomUtil(con);
 			fam = inged.importGedcom(file, db,txts.vvTexts);
+			inged = null;
 
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");

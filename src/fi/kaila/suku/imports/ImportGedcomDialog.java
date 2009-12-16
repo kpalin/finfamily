@@ -69,14 +69,35 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	 * @return failed gedcom lines
 	 */
 	public String[] getResult() {
+		String[] resu;
+	
 		if (gedcomResult == null) {
-			String[] resu = new String[0];
+			if (errorMessage != null){
+				resu = new String[1];
+				resu[0] = errorMessage;
+			} else {
+				resu = new String[0];
+			}
 			return resu;
 		}
 		if (gedcomResult.generalArray == null) {
-			String[] resu = { "generalArray missing" };
+			if (errorMessage != null){
+				resu = new String[1];
+				resu[0] = errorMessage;
+			} else {
+				resu = new String[0];
+				resu[0] = "generalArray missing";
+			}
 			return resu;
 		}
+		if (errorMessage != null){
+			resu = new String[gedcomResult.generalArray.length+1];
+			resu[0] = errorMessage;
+			for (int i = 0; i < gedcomResult.generalArray.length; i++){
+				resu[i+1] = gedcomResult.generalArray[i];
+			}
+			return resu;
+		} 
 		return gedcomResult.generalArray;
 	}
 
@@ -181,7 +202,9 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 				setVisible(false);
 			} else {
+				isCancelled=true;
 				this.task.cancel(true);
+				
 			}
 		}
 
@@ -227,29 +250,35 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				}
 			} catch (SukuException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(owner, Resurses
-						.getString("IMPORT_GEDCOM")
-						+ ":" + e.getMessage());
+				errorMessage = e.getMessage();
+//				JOptionPane.showMessageDialog(owner, Resurses
+//						.getString("IMPORT_GEDCOM")
+//						+ ":" + e.getMessage());
 
-				return null;
+				
 			}
-
+			setVisible(false);
 			return null;
 		}
 
+		
+		
 		/*
 		 * Executed in event dispatching thread
 		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
-			setVisible(false);
+//			setVisible(false);
+			
 			// startButton.setEnabled(true);
 			// setCursor(null); //turn off the wait cursor
 			// taskOutput.append("Done!\n");
 		}
 	}
-
+	private String errorMessage = null;
+	private boolean isCancelled=false;
+	
 	/**
 	 * The runner is the progressbar on the import dialog. Set new values to the
 	 * progress bar using this command
@@ -263,7 +292,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	 * 
 	 * @param juttu
 	 */
-	public void setRunnerValue(String juttu) {
+	public boolean setRunnerValue(String juttu) {
 		String[] kaksi = juttu.split(";");
 		if (kaksi.length >= 2) {
 			int progress = 0;
@@ -273,7 +302,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				textContent.setText(juttu);
 				progressBar.setIndeterminate(true);
 				progressBar.setValue(0);
-				return;
+				return isCancelled;
 			}
 			progressBar.setIndeterminate(false);
 			progressBar.setValue(progress);
@@ -291,6 +320,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			progressBar.setIndeterminate(true);
 			progressBar.setValue(0);
 		}
+		return isCancelled;
 	}
 
 	@Override
