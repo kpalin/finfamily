@@ -4,7 +4,16 @@
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
 
-<hdr>Release 236 on 16 dec 2009 </hdr>
+<hdr>Release 242 on 22 dec 2009 </hdr>
+<ul>
+<li>Added textpersons to index.</li>
+<li>Fixed bug with language version. Restored check of old language to suku 2004 import.</li> 
+<li>Moved image before text. This enables us to write in the standard note field a bit more text for preceding image.</li>
+
+</ul>
+
+
+<hdr>Release 236 on 16 dec 2009 (14)</hdr>
 <ul>
 <li>gedcom import improvements</li>
 
