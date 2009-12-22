@@ -305,8 +305,6 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	@Override
 	public void componentResized(ComponentEvent e) {
 
-		// String firstEnabledLangu=null;
-
 		for (int i = 0; i < langxx.length; i++) {
 			int j = 0;
 			for (j = 0; j < languages.length; j++) {
@@ -315,14 +313,6 @@ public class LanguageDialog extends JDialog implements ActionListener,
 					break;
 				}
 			}
-			// boolean enableThis = j != languages.length;
-
-			// if (firstEnabledLangu==null && enableThis) {
-			// firstEnabledLangu = Suku.getRepoLanguage(i,true);
-			// // langxx[i].setSelected(true);
-			//				
-			// }
-
 		}
 
 		Dimension currSize = getSize();
@@ -332,8 +322,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		int ry = ytype;
 		ok.setBounds(rightColumn, ry, 80, 20);
 		ry += 22;
-		// ok.setBounds(rightColumn,ry,80,20);
-		// ry += 22;
+
 		createdLbl.setBounds(rightColumn, ry, 100, 20);
 		ry += 22;
 		created.setBounds(rightColumn, ry, 150, 20);

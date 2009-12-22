@@ -717,7 +717,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * @return the tag or the name of the requested text
 	 */
 	public static String getRepoLanguage(int idx, boolean theCode) {
-		if (repoLangList == null || idx < repoLangList.length)
+		if (repoLangList == null || idx >= repoLangList.length)
 			return null;
 		String[] tmp = repoLangList[idx].split(";");
 		if (theCode)
