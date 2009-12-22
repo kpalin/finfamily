@@ -2098,7 +2098,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 								}
 							}
 						}
-
+						// System.out.println("RUN:"
+						// + pit.shortPerson.getAlfaName());
 						String mefe = pit.getReferences(0, false, false, true);
 
 						if (!mefe.equals("")) {

@@ -891,8 +891,8 @@ public class CommonReport {
 												parts[0], null, null, null);
 										textReferences.put(txtName, ppText);
 									}
-									ppText.references.add(tableNo);
 								}
+								ppText.references.add(tableNo);
 
 							}
 

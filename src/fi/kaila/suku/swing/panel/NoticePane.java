@@ -927,8 +927,12 @@ public class NoticePane extends JPanel implements ActionListener,
 			if (idt < 0) {
 				int ids = gv.lastIndexOf(" ");
 				if (ids > 1) {
-					gv = gv.substring(ids + 1) + "," + gv.substring(0, ids);
+					gv = gv.substring(ids + 1).trim() + ","
+							+ gv.substring(0, ids).trim();
 				}
+			} else {
+				gv = gv.substring(0, idt).trim() + ","
+						+ gv.substring(idt + 1).trim();
 			}
 
 			if (gv.equals("")) {
