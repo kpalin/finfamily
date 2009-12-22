@@ -60,7 +60,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private JButton cancel;
 
 	private String langS[];
-
+	private String oldLangS[];
 	private String selectedOldLang = null;
 
 	private SukuKontroller kontroller = null;
@@ -86,9 +86,10 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	 * 
 	 * @param owner
 	 * @param kontroller
-	 * @throws SukuException 
+	 * @throws SukuException
 	 */
-	public Import2004Dialog(JFrame owner, SukuKontroller kontroller) throws SukuException {
+	public Import2004Dialog(JFrame owner, SukuKontroller kontroller)
+			throws SukuException {
 		super(owner, Resurses.getString("IMPORT"), true);
 		this.owner = owner;
 		runner = this;
@@ -110,12 +111,13 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		String apu[] = lanlist.split(";");
 
 		this.langS = new String[apu.length / 3];
+		this.oldLangS = new String[apu.length / 3];
 		String langNames[] = new String[apu.length / 3];
 		int j = 0;
 		for (int i = 0; i < apu.length / 3; i++) {
 
 			this.langS[i] = apu[j++];
-			j++;
+			this.oldLangS[i] = apu[j++];
 			langNames[i] = apu[j++];
 		}
 
@@ -154,22 +156,23 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 		this.task = null;
 
-		SukuData resp= Suku.kontroller.getSukuData("cmd=unitCount");
+		SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
 		if (resp.resuCount > 0) {
-			
-			int answer=JOptionPane.showConfirmDialog(this, Resurses
-					.getString("DATABASE_NOT_EMPTY")+ " " + resp.resuCount + " "   
+
+			int answer = JOptionPane.showConfirmDialog(this, Resurses
+					.getString("DATABASE_NOT_EMPTY")
+					+ " "
+					+ resp.resuCount
+					+ " "
 					+ Resurses.getString("DELETE_DATA_OK"), Resurses
 					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-			if (answer==1){
-				throw new SukuException (Resurses.getString("DATABASE_NOT_EMPTY"));
-				
+			if (answer == 1) {
+				throw new SukuException(Resurses
+						.getString("DATABASE_NOT_EMPTY"));
+
 			}
 		}
-	
-	
-		
-		
+
 	}
 
 	@Override
@@ -178,7 +181,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		if (cmd.equals(OK)) {
 			int indx = this.lista.getSelectedIndex();
 
-			this.selectedOldLang = this.langS[indx];
+			this.selectedOldLang = this.oldLangS[indx];
 
 			this.ok.setEnabled(false);
 
@@ -191,15 +194,12 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 			// setVisible(false);
 		}
 		if (cmd.equals(CANCEL)) {
-			isCancelled=true;
+			isCancelled = true;
 			this.cancel.setEnabled(false);
 
 		}
 
 	}
-
-
-
 
 	class Task extends SwingWorker<Void, Void> {
 
@@ -224,7 +224,6 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 						.getString(Resurses.IMPORT_SUKU)
 						+ ":" + e.getMessage());
 
-				
 			}
 			setVisible(false);
 			return null;
@@ -244,13 +243,13 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	 * 
 	 * @return error message in case of failure of import. null stands for ok
 	 */
-	public String getResult(){
+	public String getResult() {
 		return errorMessage;
 	}
-	
+
 	private String errorMessage = null;
-	private boolean isCancelled=false;
-	
+	private boolean isCancelled = false;
+
 	/**
 	 * The runner is the progressbar on the import dialog. Set new values to the
 	 * progress bar using this command
