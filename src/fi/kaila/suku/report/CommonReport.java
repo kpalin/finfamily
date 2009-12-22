@@ -3,6 +3,9 @@ package fi.kaila.suku.report;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +24,7 @@ import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.Roman;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.ReportTableMember;
 import fi.kaila.suku.util.pojo.ReportUnit;
@@ -58,6 +62,9 @@ public class CommonReport {
 
 	protected HashMap<Integer, PersonInTables> personReferences = null;
 
+	protected HashMap<String, PersonInTables> textReferences = null;
+	private int referencePid = 0;
+
 	/**
 	 * @return vector of tables
 	 */
@@ -68,8 +75,33 @@ public class CommonReport {
 	/**
 	 * @return hashmap with references
 	 */
-	public HashMap<Integer, PersonInTables> getPersonReferences() {
-		return personReferences;
+	public Vector<PersonInTables> getPersonReferences() {
+
+		Vector<PersonInTables> vv = new Vector<PersonInTables>();
+
+		Set<Map.Entry<Integer, PersonInTables>> entriesx = personReferences
+				.entrySet();
+		Iterator<Map.Entry<Integer, PersonInTables>> eex = entriesx.iterator();
+		while (eex.hasNext()) {
+			Map.Entry<Integer, PersonInTables> entrx = (Map.Entry<Integer, PersonInTables>) eex
+					.next();
+
+			PersonInTables pit = entrx.getValue();
+			vv.add(pit);
+		}
+
+		Set<Map.Entry<String, PersonInTables>> entriesy = textReferences
+				.entrySet();
+		Iterator<Map.Entry<String, PersonInTables>> eey = entriesy.iterator();
+		while (eey.hasNext()) {
+			Map.Entry<String, PersonInTables> entry = (Map.Entry<String, PersonInTables>) eey
+					.next();
+
+			PersonInTables pit = entry.getValue();
+			vv.add(pit);
+		}
+
+		return vv;
 	}
 
 	/**
@@ -192,7 +224,7 @@ public class CommonReport {
 
 		if (tableNotices.length > 0) {
 			bt = new BodyText();
-			printNotices(bt, tableNotices, 2);
+			printNotices(bt, tableNotices, 2, tab.getTableNo());
 			repoWriter.addText(bt);
 		}
 		bt = new MainPersonText();
@@ -202,7 +234,7 @@ public class CommonReport {
 		}
 
 		printName(bt, notices, 2);
-		printNotices(bt, notices, 2);
+		printNotices(bt, notices, 2, tab.getTableNo());
 
 		fromTable = "";
 		ref = personReferences.get(tab.getPid());
@@ -280,7 +312,7 @@ public class CommonReport {
 
 				notices = sdata.persLong.getNotices();
 				printName(bt, notices, typesColumn);
-				printNotices(bt, notices, typesColumn);
+				printNotices(bt, notices, typesColumn, tab.getTableNo());
 
 				if (rnn != null && rnn.length > 1) {
 					for (int i = 1; i < rnn.length; i++) {
@@ -315,7 +347,7 @@ public class CommonReport {
 							"cmd=person", "pid=" + spouseMember.getSubPid(i));
 					notices = sub.persLong.getNotices();
 					printName(bt, notices, 4);
-					printNotices(bt, notices, 4);
+					printNotices(bt, notices, 4, tab.getTableNo());
 
 					fromTable = "";
 					ref = personReferences.get(spouseMember.getSubPid(i));
@@ -427,7 +459,8 @@ public class CommonReport {
 					bt.addText("(" + caller.getTextValue(adopTag) + ") ");
 				}
 				printName(bt, notices, (toTable.equals("") ? 2 : 3));
-				printNotices(bt, notices, (toTable.equals("") ? 2 : 3));
+				printNotices(bt, notices, (toTable.equals("") ? 2 : 3), tab
+						.getTableNo());
 
 				if (childMember.getSubCount() > 0) {
 					repoWriter.addText(bt);
@@ -440,7 +473,7 @@ public class CommonReport {
 										"pid=" + childMember.getSubPid(i));
 						notices = sub.persLong.getNotices();
 						printName(bt, notices, 4);
-						printNotices(bt, notices, 4);
+						printNotices(bt, notices, 4, tab.getTableNo());
 
 						fromSubTable = "";
 						ref = personReferences.get(childMember.getSubPid(i));
@@ -525,7 +558,7 @@ public class CommonReport {
 						}
 
 						printName(bt, notices, typesColumn);
-						printNotices(bt, notices, typesColumn);
+						printNotices(bt, notices, typesColumn, tab.getTableNo());
 
 						if (rnn != null && rnn.length > 1) {
 							for (int i = 1; i < rnn.length; i++) {
@@ -582,7 +615,7 @@ public class CommonReport {
 																.getSubPid(i));
 								notices = sub.persLong.getNotices();
 								printName(bt, notices, 4);
-								printNotices(bt, notices, 4);
+								printNotices(bt, notices, 4, tab.getTableNo());
 
 								fromTable = "";
 								ref = personReferences.get(childSpouseMember
@@ -615,7 +648,7 @@ public class CommonReport {
 		}
 		if (famtNotices.length > 0) {
 			bt = new BodyText();
-			printNotices(bt, famtNotices, 2);
+			printNotices(bt, famtNotices, 2, tab.getTableNo());
 			repoWriter.addText(bt);
 		}
 	}
@@ -712,7 +745,8 @@ public class CommonReport {
 		return sb.toString();
 	}
 
-	private void printNotices(BodyText bt, UnitNotice[] notices, int colType) {
+	private void printNotices(BodyText bt, UnitNotice[] notices, int colType,
+			long tableNo) {
 		boolean addSpace = false;
 		boolean addDot = false;
 		String tag;
@@ -839,6 +873,29 @@ public class CommonReport {
 								addSpace = true;
 								addDot = true;
 							}
+						}
+
+						if (nn.getRefNames() != null) {
+
+							for (int i = 0; i < nn.getRefNames().length; i++) {
+								String txtName = nn.getRefNames()[i];
+								PersonInTables ppText = textReferences
+										.get(txtName);
+								if (ppText == null) {
+									int refpid = --referencePid;
+									ppText = new PersonInTables(refpid);
+									String[] parts = txtName.split(",");
+									if (parts.length == 2) {
+										ppText.shortPerson = new PersonShortData(
+												refpid, parts[1], null, null,
+												parts[0], null, null, null);
+										textReferences.put(txtName, ppText);
+									}
+									ppText.references.add(tableNo);
+								}
+
+							}
+
 						}
 						if (caller.showAddress()) {
 

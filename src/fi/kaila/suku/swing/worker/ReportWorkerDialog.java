@@ -15,9 +15,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -2023,19 +2020,23 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				int row = 2;
 				if (dr != null) {
 
-					Set<Map.Entry<Integer, PersonInTables>> entries = dr
-							.getPersonReferences().entrySet();
-					Iterator<Map.Entry<Integer, PersonInTables>> ee = entries
-							.iterator();
-					Vector<PersonInTables> vv = new Vector<PersonInTables>();
+					// Set<Map.Entry<Integer, PersonInTables>> entries = dr
+					// .getPersonReferences().entrySet();
+					// Iterator<Map.Entry<Integer, PersonInTables>> ee = entries
+					// .iterator();
+					Vector<PersonInTables> vv = dr.getPersonReferences();
+					// new Vector<PersonInTables>();
 					float runnervalue = 0;
 					float mapsize = dr.getPersonReferences().size();
-					while (ee.hasNext()) {
-						Map.Entry<Integer, PersonInTables> entry = (Map.Entry<Integer, PersonInTables>) ee
-								.next();
-
-						PersonInTables pit = entry.getValue();
-						vv.add(pit);
+					// while (ee.hasNext()) {
+					// Map.Entry<Integer, PersonInTables> entry =
+					// (Map.Entry<Integer, PersonInTables>) ee
+					// .next();
+					//
+					// PersonInTables pit = entry.getValue();
+					for (int j = 0; j < vv.size(); j++) {
+						PersonInTables pit = vv.get(j);
+						// vv.add(pit);
 						if (pit.shortPerson == null) {
 							SukuData resp = Suku.kontroller.getSukuData(
 									"cmd=person", "mode=short", "pid="
@@ -2061,7 +2062,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 													.getBirtDate(), p
 													.getDeatDate());
 									pitt.shortPerson = alias;
-									vv.add(pitt);
+									// vv.add(pitt);
 								}
 
 							}
@@ -2083,9 +2084,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						label = new Label(0, row, ""
 								+ pit.shortPerson.getAlfaName(), arial0);
 						sheet.addCell(label);
-
 						String kefe = pit.getReferences(0, true, false, false);
-
 						String cefe = pit.getReferences(0, false, true, false);
 						String refe = kefe;
 

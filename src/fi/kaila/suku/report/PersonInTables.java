@@ -47,6 +47,11 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 */
 	public Vector<Long> references = new Vector<Long>();
 
+	// /**
+	// * persons from note text fields i.e. from list of refNames
+	// */
+	// public Vector<Long> textReferences = new Vector<Long>();
+
 	/**
 	 * Constructor
 	 * 

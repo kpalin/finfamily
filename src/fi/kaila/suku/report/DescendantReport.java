@@ -1,5 +1,6 @@
 package fi.kaila.suku.report;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -95,6 +96,7 @@ public class DescendantReport extends CommonReport {
 	}
 
 	private void createReport() {
+		textReferences = new HashMap<String, PersonInTables>();
 		for (int i = 0; i < tables.size(); i++) {
 
 			ReportUnit tab = tables.get(i);
