@@ -1184,12 +1184,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			lrivi += 24;
 			placeLbl.setBounds(10, lrivi, 70, 20);
 			place.setBounds(lcol, lrivi, lwidth, 20);
-			lrivi += 24;
-			stateLbl.setBounds(10, lrivi, 70, 20);
-			countryLbl.setBounds(lcol + lwidth / 3 + 10, lrivi, 70, 20);
-			state.setBounds(lcol, lrivi, lwidth / 3, 20);
-			country.setBounds(lcol + lwidth / 3 + 80, lrivi,
-					lwidth * 2 / 3 - 80, 20);
+
 			lrivi += 24;
 			boolean farmShow = mustFarm;
 			if (mustFarm) {
@@ -1237,6 +1232,13 @@ public class NoticePane extends JPanel implements ActionListener,
 			email.setBounds(lcol, lrivi, lwidth, 20);
 
 			lrivi += 24;
+
+			stateLbl.setBounds(10, lrivi, 70, 20);
+			countryLbl.setBounds(lcol + lwidth / 3 + 10, lrivi, 70, 20);
+			state.setBounds(lcol, lrivi, lwidth / 3, 20);
+			country.setBounds(lcol + lwidth / 3 + 80, lrivi,
+					lwidth * 2 / 3 - 80, 20);
+			lrivi += 24;
 		}
 
 		scrollAddress.setVisible(addressShow);
@@ -1253,6 +1255,10 @@ public class NoticePane extends JPanel implements ActionListener,
 		postOfficeLbl.setVisible(addressShow);
 		// countryLbl.setVisible(addressShow);
 		emailLbl.setVisible(addressShow);
+		stateLbl.setVisible(addressShow);
+		countryLbl.setVisible(addressShow);
+		state.setVisible(addressShow);
+		country.setVisible(addressShow);
 
 		scrollNames.setVisible(showType == TagType.NOTE);
 		listaAddname.setVisible(showType == TagType.NOTE);
@@ -1261,6 +1267,34 @@ public class NoticePane extends JPanel implements ActionListener,
 		listaAddplace.setVisible(showType == TagType.NOTE);
 		listaPlace.setVisible(showType == TagType.NOTE);
 		addLabel.setVisible(showType == TagType.NOTE);
+
+		boolean mediaShow = false;
+		if ((showType == TagType.PHOT || mustImage)
+				&& (showType != TagType.NAME && showType != TagType.NOTE)) {
+
+			// if (!(notice.getTag().equals("NOTE") &&
+			// notice.getTag().equals("NAME")) &&
+			// notice.getTag().startsWith("PHOT") || mustImage){
+			mediaShow = true;
+			mediaFilenameLbl.setBounds(10, lrivi, 70, 20);
+
+			mediaFilename.setBounds(lcol, lrivi, 160, 20);
+			mediaOpenFile.setBounds(lbuttoncol, lrivi, 100, 20);
+
+			lrivi += 24;
+
+			mediaTitleLbl.setBounds(10, lrivi, 70, 20);
+
+			mediaTitle.setBounds(lcol, lrivi, lwidth, 20);
+
+			lrivi += 24;
+		}
+		mediaOpenFile.setVisible(mediaShow);
+		mediaFilenameLbl.setVisible(mediaShow);
+		mediaTitleLbl.setVisible(mediaShow);
+		mediaFilename.setVisible(mediaShow);
+		mediaTitle.setVisible(mediaShow);
+
 		switch (showType) {
 		case NOTE:
 
@@ -1307,33 +1341,6 @@ public class NoticePane extends JPanel implements ActionListener,
 			noteLbl.setVisible(noteShow);
 
 		}
-
-		boolean mediaShow = false;
-		if ((showType == TagType.PHOT || mustImage)
-				&& (showType != TagType.NAME && showType != TagType.NOTE)) {
-
-			// if (!(notice.getTag().equals("NOTE") &&
-			// notice.getTag().equals("NAME")) &&
-			// notice.getTag().startsWith("PHOT") || mustImage){
-			mediaShow = true;
-			mediaFilenameLbl.setBounds(10, lrivi, 70, 20);
-
-			mediaFilename.setBounds(lcol, lrivi, 160, 20);
-			mediaOpenFile.setBounds(lbuttoncol, lrivi, 100, 20);
-
-			lrivi += 24;
-
-			mediaTitleLbl.setBounds(10, lrivi, 70, 20);
-
-			mediaTitle.setBounds(lcol, lrivi, lwidth, 20);
-
-			lrivi += 24;
-		}
-		mediaOpenFile.setVisible(mediaShow);
-		mediaFilenameLbl.setVisible(mediaShow);
-		mediaTitleLbl.setVisible(mediaShow);
-		mediaFilename.setVisible(mediaShow);
-		mediaTitle.setVisible(mediaShow);
 
 		switch (showType) {
 		case NAME:

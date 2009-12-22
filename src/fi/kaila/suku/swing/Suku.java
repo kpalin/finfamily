@@ -560,10 +560,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
 
-			tNoticesButton = makeNavigationButton(
-					Resurses.TOOLBAR_NOTICES_IMAGE,
-					Resurses.TOOLBAR_NOTICES_ACTION, Resurses
-							.getString("TOOLBAR.NOTICES.TOOLTIP"), Resurses
+			tNoticesButton = makeNavigationButton("Tietojaksot24",
+					"Tietojaksot24_nega", Resurses.TOOLBAR_NOTICES_ACTION,
+					Resurses.getString("TOOLBAR.NOTICES.TOOLTIP"), Resurses
 							.getString("TOOLBAR.NOTICES.ALTTEXT"));
 
 			String tmp = kontroller.getPref(this, Resurses.NOTICES_BUTTON,
@@ -573,7 +572,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 			this.toolbar.add(tNoticesButton);
 
-			tNoteButton = makeNavigationButton(Resurses.TOOLBAR_NOTE_IMAGE,
+			tNoteButton = makeNavigationButton("Teksti24", "Teksti24_nega",
 					Resurses.TOOLBAR_NOTE_ACTION, Resurses
 							.getString("TOOLBAR.NOTE.TOOLTIP"), Resurses
 							.getString("TOOLBAR.NOTE.ALTTEXT"));
@@ -584,10 +583,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 			this.toolbar.add(tNoteButton);
 
-			tAddressButton = makeNavigationButton(
-					Resurses.TOOLBAR_ADDRESS_IMAGE,
-					Resurses.TOOLBAR_ADDRESS_ACTION, Resurses
-							.getString("TOOLBAR.ADDRESS.TOOLTIP"), Resurses
+			tAddressButton = makeNavigationButton("showAddress",
+					"showAddress_nega", Resurses.TOOLBAR_ADDRESS_ACTION,
+					Resurses.getString("TOOLBAR.ADDRESS.TOOLTIP"), Resurses
 							.getString("TOOLBAR.ADDRESS.ALTTEXT"));
 			tmp = kontroller.getPref(this, Resurses.TOOLBAR_ADDRESS_ACTION,
 					"false");
@@ -596,7 +594,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 			this.toolbar.add(tAddressButton);
 
-			tFarmButton = makeNavigationButton(Resurses.TOOLBAR_FARM_IMAGE,
+			tFarmButton = makeNavigationButton("talo", "talo_nega",
 					Resurses.TOOLBAR_FARM_ACTION, Resurses
 							.getString("TOOLBAR.FARM.TOOLTIP"), Resurses
 							.getString("TOOLBAR.FARM.ALTTEXT"));
@@ -609,7 +607,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.add(tFarmButton);
 
-			tImageButton = makeNavigationButton(Resurses.TOOLBAR_IMAGE_IMAGE,
+			tImageButton = makeNavigationButton("kamera", "kamera_nega",
 					Resurses.TOOLBAR_IMAGE_ACTION, Resurses
 							.getString("TOOLBAR.IMAGE.TOOLTIP"), Resurses
 							.getString("TOOLBAR.IMAGE.ALTTEXT"));
@@ -620,10 +618,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 			this.toolbar.add(tImageButton);
 
-			tPrivateButton = makeNavigationButton(
-					Resurses.TOOLBAR_PRIVATE_IMAGE,
-					Resurses.TOOLBAR_PRIVATE_ACTION, Resurses
-							.getString("TOOLBAR.PRIVATE.TOOLTIP"), Resurses
+			tPrivateButton = makeNavigationButton("showPrivate",
+					"showPrivate_nega", Resurses.TOOLBAR_PRIVATE_ACTION,
+					Resurses.getString("TOOLBAR.PRIVATE.TOOLTIP"), Resurses
 							.getString("TOOLBAR.PRIVATE.ALTTEXT"));
 			tmp = kontroller.getPref(this, Resurses.TOOLBAR_PRIVATE_ACTION,
 					"false");
@@ -939,7 +936,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		String selectedLocation = "/images/" + selectedName + ".gif";
 		ImageIcon icon = null;
 		ImageIcon selectedIcon = null;
-		// System.out.println("NAV1: " + imageName );
+		// System.out.println("NAV1: " + imageName);
 		byte imbytes[] = new byte[8192];
 
 		InputStream in = null;

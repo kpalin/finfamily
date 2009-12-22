@@ -280,27 +280,15 @@ public class Resurses {
 	/** */
 	public static final String TOOLBAR_REMPERSON_ACTION = "REMPERSON";
 	/** */
-	public static final String TOOLBAR_NOTICES_IMAGE = "Tietojaksot24";
-	/** */
 	public static final String TOOLBAR_NOTICES_ACTION = "SHOW_NOTICES";
-	/** */
-	public static final String TOOLBAR_NOTE_IMAGE = "Teksti24";
 	/** */
 	public static final String TOOLBAR_NOTE_ACTION = "SHOW_NOTE";
 	/** */
-	public static final String TOOLBAR_ADDRESS_IMAGE = "Osoite24";
-	/** */
 	public static final String TOOLBAR_ADDRESS_ACTION = "SHOW_ADDRESS";
-	/** */
-	public static final String TOOLBAR_FARM_IMAGE = "talo";
 	/** */
 	public static final String TOOLBAR_FARM_ACTION = "SHOW_FARM";
 	/** */
-	public static final String TOOLBAR_IMAGE_IMAGE = "kamera";
-	/** */
 	public static final String TOOLBAR_IMAGE_ACTION = "SHOW_IMAGE";
-	/** */
-	public static final String TOOLBAR_PRIVATE_IMAGE = "showPrivate";
 	/** */
 	public static final String TOOLBAR_PRIVATE_ACTION = "SHOW_PRIVATE";
 	/** */
