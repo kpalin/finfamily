@@ -126,11 +126,17 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		setLayout(null);
 		// setLocation(200, 200);
 
+		JTextField lblTest = new JTextField(
+				"Hiskinumeroita: 23806 , 8279487 , 8252920 , 178151 , 176075 ");
+		add(lblTest);
+		lblTest.setEditable(false);
+		lblTest.setBounds(40, 0, 400, 20);
+
 		JLabel lbl = new JLabel(Resurses.getString(Resurses.HISKI_NUMBER));
 		add(lbl);
 		lbl.setBounds(40, 20, 190, 20);
 
-		this.hiskiNumber = new JTextField("23806");
+		this.hiskiNumber = new JTextField();
 		add(this.hiskiNumber);
 		this.hiskiNumber.setBounds(40, 50, 150, 20);
 
