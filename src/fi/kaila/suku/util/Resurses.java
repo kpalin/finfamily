@@ -238,7 +238,7 @@ public class Resurses {
 	/** */
 	public static final String PGSQL_START = "PGSQL_START";
 	/** */
-	public static final String TEST_DO = "TEST_DO";
+	public static final String HISKI_UPLOAD = "HISKI_UPLOAD";
 	/** */
 	public static final String ABOUT_DB_VERSION = "ABOUT_DB_VERSION";
 	/** */

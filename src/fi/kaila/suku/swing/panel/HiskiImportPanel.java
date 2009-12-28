@@ -220,10 +220,10 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 		y += 30;
 
-		this.testDo = new JButton(Resurses.getString(Resurses.TEST_DO));
+		this.testDo = new JButton(Resurses.getString(Resurses.HISKI_UPLOAD));
 		// this.ok.setDefaultCapable(true);
 		add(this.testDo);
-		this.testDo.setActionCommand(Resurses.TEST_DO);
+		this.testDo.setActionCommand(Resurses.HISKI_UPLOAD);
 		this.testDo.addActionListener(this);
 		this.testDo.setBounds(40, y, 150, 24);
 
@@ -395,7 +395,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 			fetchFromHiski();
 
-		} else if (cmd.equals(Resurses.TEST_DO)) {
+		} else if (cmd.equals(Resurses.HISKI_UPLOAD)) {
 			if ("kastetut".equals(bookName)) {
 				uploadKastetutToDb();
 			} else if ("vihityt".equals(bookName)) {
