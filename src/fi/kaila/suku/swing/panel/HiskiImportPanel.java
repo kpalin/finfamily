@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 
 import fi.kaila.suku.swing.ISuku;
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.swing.util.SukuDateField;
 import fi.kaila.suku.swing.util.SukuPopupMenu;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
@@ -42,9 +43,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * Panel to do traffic to hiski
+ * Panel to do traffic to Hiski
  * 
- * @author Kalle
+ * @author Kaarle Kaila
  * 
  */
 public class HiskiImportPanel extends JPanel implements ActionListener {
@@ -82,6 +83,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private JTextField eventVillage;
 	private JTextField eventFarm;
 	private JTextField eventRemark;
+	private JLabel eventExtraType;
+	private SukuDateField eventExtraDate;
 
 	private JLabel[] pNumero;
 	private String[] pTypeName;
@@ -120,6 +123,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private int[] hiskiPid = { 0, 0, 0 };
 
 	// private String [] sukuName = {null,null,null};
+	int y = 20;
 
 	private void initMe() {
 
@@ -127,120 +131,142 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		// setLocation(200, 200);
 
 		JTextField lblTest = new JTextField(
-				"Hiskinumeroita: 23806 , 8279487 , 8252920 , 178151 , 176075 ");
+				"Hiskinumeroita: k 23806 v8279487  h 167312 167313 167314 167315 p 178151s 176075 ");
 		add(lblTest);
 		lblTest.setEditable(false);
 		lblTest.setBounds(40, 0, 400, 20);
-
-		JLabel lbl = new JLabel(Resurses.getString(Resurses.HISKI_NUMBER));
-		add(lbl);
-		lbl.setBounds(40, 20, 190, 20);
-
-		this.hiskiNumber = new JTextField();
-		add(this.hiskiNumber);
-		this.hiskiNumber.setBounds(40, 50, 150, 20);
-
-		this.getHiski = new JButton(Resurses.getString(Resurses.GET_HISKI));
-		// this.ok.setDefaultCapable(true);
-		add(this.getHiski);
-		this.getHiski.setActionCommand(Resurses.GET_HISKI);
-		this.getHiski.addActionListener(this);
-		this.getHiski.setBounds(40, 80, 150, 24);
-
-		this.close = new JButton(Resurses.getString(Resurses.CLOSE));
-		// this.ok.setDefaultCapable(true);
-		add(this.close);
-		this.close.setActionCommand(Resurses.CLOSE);
-		this.close.addActionListener(this);
-		this.close.setBounds(40, 110, 150, 24);
-
-		this.testDo = new JButton(Resurses.getString(Resurses.TEST_DO));
-		// this.ok.setDefaultCapable(true);
-		add(this.testDo);
-		this.testDo.setActionCommand(Resurses.TEST_DO);
-		this.testDo.addActionListener(this);
-		this.testDo.setBounds(40, 140, 150, 24);
 
 		sexes[0] = "";
 		sexes[1] = Resurses.getString("SEX_M");
 		sexes[2] = Resurses.getString("SEX_F");
 		sexes[3] = Resurses.getString("SEX_U");
 
+		JLabel lbl = new JLabel(Resurses.getString(Resurses.HISKI_NUMBER));
+		add(lbl);
+		lbl.setBounds(40, y, 190, 20);
+
 		book = new JLabel();
 		add(book);
-		book.setBounds(200, 20, 100, 20);
+		book.setBounds(200, y, 100, 20);
 
 		srkNo = new JLabel();
 		add(srkNo);
-		srkNo.setBounds(310, 20, 40, 20);
+		srkNo.setBounds(310, y, 40, 20);
 
 		srk = new JTextField();
 		add(srk);
-		srk.setBounds(360, 20, 150, 20);
+		srk.setBounds(360, y, 150, 20);
+
+		y += 30;
+
+		this.hiskiNumber = new JTextField();
+		add(this.hiskiNumber);
+		this.hiskiNumber.setBounds(40, y, 150, 20);
 
 		eventFirstType = new JLabel();
 		add(eventFirstType);
-		eventFirstType.setBounds(200, 50, 65, 20);
+		eventFirstType.setBounds(200, y, 65, 20);
 
 		eventFirstDate = new JTextField();
 		add(eventFirstDate);
-		eventFirstDate.setBounds(275, 50, 75, 20);
+		eventFirstDate.setBounds(275, y, 75, 20);
 
 		eventLastType = new JLabel();
 		add(eventLastType);
-		eventLastType.setBounds(360, 50, 65, 20);
+		eventLastType.setBounds(360, y, 65, 20);
 
 		eventLastDate = new JTextField();
 		add(eventLastDate);
-		eventLastDate.setBounds(435, 50, 75, 20);
+		eventLastDate.setBounds(435, y, 75, 20);
 
-		eventVillage = new JTextField();
-		add(eventVillage);
-		eventVillage.setBounds(200, 80, 150, 20);
+		y += 30;
 
-		eventFarm = new JTextField();
-		add(eventFarm);
-		eventFarm.setBounds(360, 80, 150, 20);
-
-		eventRemark = new JTextField();
-		add(eventRemark);
-		eventRemark.setBounds(200, 110, 310, 20);
-
-		eventFrom = new JTextField();
-		add(eventFrom);
-		eventFrom.setBounds(200, 140, 150, 20);
-
-		eventTo = new JTextField();
-		add(eventTo);
-		eventTo.setBounds(360, 140, 150, 20);
+		this.getHiski = new JButton(Resurses.getString(Resurses.GET_HISKI));
+		// this.ok.setDefaultCapable(true);
+		add(this.getHiski);
+		this.getHiski.setActionCommand(Resurses.GET_HISKI);
+		this.getHiski.addActionListener(this);
+		this.getHiski.setBounds(40, y, 150, 24);
 
 		lbl = new JLabel(Resurses.getString("HISKI_VILLAGEFARM"));
 		add(lbl);
-		lbl.setBounds(520, 80, 120, 20);
+		lbl.setBounds(520, y, 120, 20);
+
+		eventVillage = new JTextField();
+		add(eventVillage);
+		eventVillage.setBounds(200, y, 150, 20);
+
+		eventFarm = new JTextField();
+		add(eventFarm);
+		eventFarm.setBounds(360, y, 150, 20);
+
+		y += 30;
+
+		this.close = new JButton(Resurses.getString(Resurses.CLOSE));
+		// this.ok.setDefaultCapable(true);
+		add(this.close);
+		this.close.setActionCommand(Resurses.CLOSE);
+		this.close.addActionListener(this);
+		this.close.setBounds(40, y, 150, 24);
+
 		lbl = new JLabel(Resurses.getString("HISKI_HUOM"));
 		add(lbl);
-		lbl.setBounds(520, 110, 120, 20);
+		lbl.setBounds(520, y, 120, 20);
+
+		eventRemark = new JTextField();
+		add(eventRemark);
+		eventRemark.setBounds(200, y, 310, 20);
+
+		y += 30;
+
+		this.testDo = new JButton(Resurses.getString(Resurses.TEST_DO));
+		// this.ok.setDefaultCapable(true);
+		add(this.testDo);
+		this.testDo.setActionCommand(Resurses.TEST_DO);
+		this.testDo.addActionListener(this);
+		this.testDo.setBounds(40, y, 150, 24);
+
 		lbl = new JLabel(Resurses.getString("HISKI_MISTAMINNE"));
 		add(lbl);
-		lbl.setBounds(520, 140, 120, 20);
+		lbl.setBounds(520, y, 120, 20);
 
+		eventFrom = new JTextField();
+		add(eventFrom);
+		eventFrom.setBounds(200, y, 150, 20);
+
+		eventTo = new JTextField();
+		add(eventTo);
+		eventTo.setBounds(360, y, 150, 20);
+
+		y += 30;
+
+		eventExtraType = new JLabel(Resurses.getString("DATA_BIRT"));
+		add(eventExtraType);
+		eventExtraType.setBounds(200, y, 65, 20);
+		eventExtraType.setVisible(false);
+		eventExtraDate = new SukuDateField();
+		add(eventExtraDate);
+		eventExtraDate.setBounds(275, y, 283, 20);
+		eventExtraDate.setVisible(false);
 		initHiskiPersons(0);
+
+		y += 30;
 
 		lbl = new JLabel(Resurses.getString("HISKI_TYPEOCCU"));
 		add(lbl);
-		lbl.setBounds(40, 180, 120, 20);
+		lbl.setBounds(40, y, 120, 20);
 
 		lbl = new JLabel(Resurses.getString("HISKI_GIVEAGE"));
 		add(lbl);
-		lbl.setBounds(200, 180, 120, 20);
+		lbl.setBounds(200, y, 120, 20);
 
 		lbl = new JLabel(Resurses.getString("HISKI_PATROREASON"));
 		add(lbl);
-		lbl.setBounds(360, 180, 120, 20);
+		lbl.setBounds(360, y, 120, 20);
 
 		lbl = new JLabel(Resurses.getString("HISKI_SUR"));
 		add(lbl);
-		lbl.setBounds(520, 180, 120, 20);
+		lbl.setBounds(520, y, 120, 20);
 
 		this.factory = DocumentBuilderFactory.newInstance();
 		this.factory.setValidating(false);
@@ -273,52 +299,52 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 			pSukuPid[i] = new JLabel();
 			add(pSukuPid[i]);
-			pSukuPid[i].setBounds(40, 210 + i * 70, 100, 20);
+			pSukuPid[i].setBounds(40, y + i * 70, 100, 20);
 
 			pSukuName[i] = new JLabel();
 			add(pSukuName[i]);
-			pSukuName[i].setBounds(200, 210 + i * 70, 200, 20);
+			pSukuName[i].setBounds(200, y + i * 70, 200, 20);
 
 			pNumero[i] = new JLabel();
 			add(pNumero[i]);
-			pNumero[i].setBounds(40, 230 + i * 70, 40, 20);
+			pNumero[i].setBounds(40, y + 20 + i * 70, 40, 20);
 
 			pTypeName[i] = null;
 
 			pType[i] = new JLabel();
 			add(pType[i]);
-			pType[i].setBounds(60, 230 + i * 70, 40, 20);
+			pType[i].setBounds(60, y + 20 + i * 70, 40, 20);
 
 			pSex[i] = new JComboBox(sexes);
 			add(pSex[i]);
-			pSex[i].setBounds(100, 230 + i * 70, 80, 20);
+			pSex[i].setBounds(100, y + 45 + i * 70, 80, 20);
 
 			pOccu[i] = new JTextField();
 			add(pOccu[i]);
-			pOccu[i].setBounds(40, 255 + i * 70, 150, 20);
+			pOccu[i].setBounds(40, y + 20 + i * 70, 150, 20);
 
 			pGivenname[i] = new JTextField();
 			add(pGivenname[i]);
-			pGivenname[i].setBounds(200, 230 + i * 70, 150, 20);
+			pGivenname[i].setBounds(200, y + 20 + i * 70, 150, 20);
 
 			pPatronym[i] = new JTextField();
 			add(pPatronym[i]);
-			pPatronym[i].setBounds(360, 230 + i * 70, 150, 20);
+			pPatronym[i].setBounds(360, y + 20 + i * 70, 150, 20);
 
 			pSurname[i] = new JTextField();
 			add(pSurname[i]);
-			pSurname[i].setBounds(520, 230 + i * 70, 150, 20);
+			pSurname[i].setBounds(520, y + 20 + i * 70, 150, 20);
 
 			pAge[i] = new JTextField();
 			add(pAge[i]);
-			pAge[i].setBounds(200, 255 + i * 70, 150, 20);
+			pAge[i].setBounds(200, y + 45 + i * 70, 150, 20);
 
 			pReason[i] = new JTextField();
 			add(pReason[i]);
-			pReason[i].setBounds(360, 255 + i * 70, 310, 20);
+			pReason[i].setBounds(360, y + 45 + i * 70, 310, 20);
 
 		}
-		Dimension panelSize = new Dimension(740, 255 + i * 70);
+		Dimension panelSize = new Dimension(740, y + 45 + i * 70);
 		this.setPreferredSize(panelSize);
 		updateUI();
 	}
@@ -998,14 +1024,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		requri = sb.toString();
 		try {
 
-			System.out.println("URI on: " + requri);
 			logger.fine("URILOG: " + requri);
 			URL url = new URL(requri);
 			HttpURLConnection uc = (HttpURLConnection) url.openConnection();
 			// String encoding = uc.getContentEncoding();
 
 			resu = uc.getResponseCode();
-			System.out.println("Resu = " + resu);
+			// System.out.println("Resu = " + resu);
 			if (resu == 200) {
 
 				InputStream in = uc.getInputStream();
@@ -1047,6 +1072,11 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			personCount = henkNodes.getLength();
 			initHiskiPersons(personCount);
 
+			String vv = null;
+			String kk = null;
+			String vk = null;
+			String pv = null;
+
 			for (int pidx = 0; pidx < personCount; pidx++) {
 
 				ele = (Element) henkNodes.item(pidx);
@@ -1069,6 +1099,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 				NodeList nlh = ele.getChildNodes();
 				Element elp;
+
 				StringBuffer muut = new StringBuffer();
 				for (int j = 0; j < nlh.getLength(); j++) {
 					if (nlh.item(j).getNodeType() == Node.ELEMENT_NODE) {
@@ -1092,20 +1123,25 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 						} else if (elpNam.equals("ika")) {
 							StringBuffer age = new StringBuffer();
 
-							String x = elp.getAttribute("vv");
-							if (!x.equals(""))
-								age.append("vv=" + x + ";");
-							x = elp.getAttribute("kk");
-							if (!x.equals(""))
-								age.append("kk=" + x + ";");
-							x = elp.getAttribute("vk");
-							if (!x.equals(""))
-								age.append("vk=" + x + ";");
-							x = elp.getAttribute("pv");
-							if (!x.equals(""))
-								age.append("pv=" + x);
+							vv = elp.getAttribute("vv");
+							if (!vv.equals("")) {
+								age.append("vv=" + vv + ";");
+							}
+							kk = elp.getAttribute("kk");
+							if (!kk.equals("")) {
+								age.append("kk=" + kk + ";");
+							}
+							vk = elp.getAttribute("vk");
+							if (!vk.equals("")) {
+								age.append("vk=" + vk + ";");
+							}
+							pv = elp.getAttribute("pv");
+							if (!pv.equals("")) {
+								age.append("pv=" + pv);
+							}
+
 							if (age.length() > 0) {
-								pAge[pidx].setText("ikä=" + age.toString());
+								pAge[pidx].setText(age.toString());
 							}
 						} else {
 							if (muut.length() > 0) {
@@ -1136,6 +1172,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 						eventId = ele.getAttribute("id");
 					} else if (eleName.equals("pvm")) {
 						pvmno++;
+						String datex = null;
 						if (pvmno == 1) {
 							try {
 								pvm1Name = ele.getAttribute("tyyppi");
@@ -1144,7 +1181,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							} catch (MissingResourceException mre) {
 								eventFirstType.setText(pvm1Name);
 							}
-							eventFirstDate.setText(ele.getTextContent());
+							datex = ele.getTextContent();
+							eventFirstDate.setText(datex);
 						} else {
 							try {
 								pvm2Name = ele.getAttribute("tyyppi");
@@ -1153,9 +1191,26 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							} catch (MissingResourceException mre) {
 								eventLastType.setText(pvm2Name);
 							}
-							eventLastDate.setText(ele.getTextContent());
+							datex = ele.getTextContent();
+							eventLastDate.setText(datex);
 
 						}
+
+						if ("haudatut".equals(bookName)
+								&& ((vv + kk + vk + pv).length() > 0)) {
+							String aux = toBirthDate(datex, vv, kk, vk, pv);
+							if (aux != null && !aux.equals("")) {
+								eventExtraType.setVisible(true);
+								eventExtraDate.setVisible(true);
+								// eventExtraDate.setText(aux);
+								eventExtraDate.setDate("CAL", aux, "");
+							}
+
+						} else {
+							eventExtraType.setVisible(false);
+							eventExtraDate.setVisible(false);
+						}
+
 					} else if (eleName.equals("kyla")) {
 						eventVillage.setText(ele.getTextContent());
 					} else if (eleName.equals("talo")) {
@@ -1166,13 +1221,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 						eventTo.setText(ele.getTextContent());
 					} else if (eleName.equals("henkilo")) {
 
-					} else if (eleName.equals("ika")) {
-						remark.append("ikä=");
-						remark.append("vv=" + ele.getAttribute("vv") + ";");
-						remark.append("kk=" + ele.getAttribute("kk") + ";");
-						remark.append("vk=" + ele.getAttribute("vk") + ";");
-						remark.append("pv=" + ele.getAttribute("pv"));
-						eventRemark.setText(remark.toString());
+						// } else if (eleName.equals("ika")) {
+						// remark.append("ikä=");
+						// remark.append("vv=" + ele.getAttribute("vv") + ";");
+						// remark.append("kk=" + ele.getAttribute("kk") + ";");
+						// remark.append("vk=" + ele.getAttribute("vk") + ";");
+						// remark.append("pv=" + ele.getAttribute("pv"));
+						// eventRemark.setText(remark.toString());
 
 					} else {
 
@@ -1182,6 +1237,133 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 			}
 		}
+	}
+
+	private String toBirthDate(String eventDate, String ageYy, String ageMm,
+			String ageWk, String ageDy) {
+		String auxDate = toTextDate(eventDate);
+
+		// first subtract year
+
+		int year = 0;
+		int month = 0;
+		int day = 0;
+		int yy, mm, wk, dy;
+		if (auxDate == null || auxDate.length() < 4) {
+			return "";
+		}
+		try {
+			year = Integer.parseInt(auxDate.substring(0, 4));
+		} catch (NumberFormatException ne) {
+			return "";
+		}
+
+		try {
+			yy = Integer.parseInt(ageYy);
+		} catch (NumberFormatException ne) {
+			yy = 0;
+		}
+		year -= yy;
+
+		if (auxDate.length() > 5) {
+			try {
+				month = Integer.parseInt(auxDate.substring(4, 6));
+
+			} catch (NumberFormatException ne) {
+				month = 0;
+				day = 0;
+			}
+			if (month > 0) {
+				try {
+					mm = Integer.parseInt(ageMm);
+				} catch (NumberFormatException ne) {
+					mm = 0;
+				}
+				try {
+					wk = Integer.parseInt(ageWk);
+				} catch (NumberFormatException ne) {
+					wk = 0;
+
+				}
+				try {
+					dy = Integer.parseInt(ageDy);
+				} catch (NumberFormatException ne) {
+					dy = 0;
+				}
+				if (auxDate.length() > 7) {
+					try {
+						day = Integer.parseInt(auxDate.substring(6, 8));
+					} catch (NumberFormatException ne) {
+						day = 0;
+					}
+				}
+				if (month > 0) {
+					while (mm > month) {
+						year--;
+						mm -= 12;
+					}
+					month -= mm;
+
+					if (wk > 0) {
+						dy += wk * 7;
+						// int mm1 = ((int) (wk * (30. / 7.))) / 30;
+						// int mm2 = ((int) (wk * (30. / 7.))) % 30;
+						//
+						// while (mm1 > month) {
+						// year--;
+						// mm1 -= 12;
+						// }
+						// month -= mm1;
+						// dy += mm2;
+					}
+
+					if (day > 0 && dy > 0) {
+						while (dy >= day) {
+							if (month > 1) {
+								month--;
+							} else {
+								year--;
+								month = 12;
+							}
+							switch (month) {
+							case 2:
+							case 4:
+							case 6:
+							case 7:
+							case 9:
+							case 11:
+							case 12:
+								dy -= 31;
+								break;
+							case 1:
+								dy -= 28;
+								break;
+							default:
+								dy -= 30;
+							}
+						}
+						day -= dy;
+					}
+				}
+			}
+		}
+
+		StringBuffer sb = new StringBuffer();
+
+		String aux = "0000" + year;
+		String tmp = aux.substring(aux.length() - 4);
+		sb.append(tmp);
+		if (month > 0) {
+			aux = "00" + month;
+			tmp = aux.substring(aux.length() - 2);
+			sb.append(tmp);
+			if (day > 0) {
+				aux = "00" + day;
+				tmp = aux.substring(aux.length() - 2);
+				sb.append(tmp);
+			}
+		}
+		return sb.toString();
 	}
 
 	private String toTextDate(String hiskiDate) {
