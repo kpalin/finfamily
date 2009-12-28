@@ -35,6 +35,7 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.swing.util.SukuDateField;
 import fi.kaila.suku.swing.util.SukuPopupMenu;
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.Relation;
@@ -131,7 +132,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		// setLocation(200, 200);
 
 		JTextField lblTest = new JTextField(
-				"Hiskinumeroita: k 23806 v8279487  h 167312 167313 167314 167315 p 178151s 176075 ");
+				"Hiskinum: k: 23806 v: 8279487  h: 167312 167313 167314 167315 p: 178151 s: 176075 ");
 		add(lblTest);
 		lblTest.setEditable(false);
 		lblTest.setBounds(40, 0, 400, 20);
@@ -625,6 +626,21 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notice.setSource(hiskiSource);
 					notices.add(notice);
 				}
+				String bdate = null;
+
+				try {
+					bdate = eventExtraDate.getFromDate();
+				} catch (SukuDateException e) {
+					bdate = null;
+				}
+
+				if (bdate != null && !bdate.equals("")) {
+					notice = new UnitNotice("BIRT");
+					notice.setFromDate(bdate);
+					notice.setDatePrefix(eventExtraDate.getDatePrefTag());
+					notice.setSource(hiskiSource);
+					notices.add(notice);
+				}
 
 				if (notices.size() > 0) {
 					kast.persons[i].setNotices(notices
@@ -740,8 +756,6 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 			}
 		}
-
-		// TODO MARR notiisi pävämäärineen mukaan
 
 		Vector<Relation> relations = new Vector<Relation>();
 		Relation rel;
@@ -925,6 +939,12 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					null);
 			relations.add(rel);
 		}
+		if (isaId != 0 && aitiId != 0) {
+			rel = new Relation(0, isaId, aitiId, "WIFE", hiskiSurety, null,
+					null);
+			relations.add(rel);
+		}
+
 		kast.relations = relations.toArray(new Relation[0]);
 
 		try {

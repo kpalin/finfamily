@@ -82,9 +82,9 @@ public class Upload {
 
 		String sql = "insert into Unit (pid,tag,privacy,groupid,sex,sourcetext,privatetext,userrefn) "
 				+ "values (?,?,?,?, ?,?,?,?)";
-		String sqlnotice = "insert into unitnotice (pid,pnid,noticerow,tag,noticetype,description,fromdate,"
+		String sqlnotice = "insert into unitnotice (pid,pnid,surety,noticerow,tag,noticetype,description,fromdate,"
 				+ "place,village,farm,notetext,prefix,surname,givenname,patronym,postfix,sourcetext) "
-				+ "values (?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?,?) ";
+				+ "values (?,?,80,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?,?) ";
 
 		PreparedStatement pstm = con.prepareStatement(sql);
 		PreparedStatement pstmn = con.prepareStatement(sqlnotice);
@@ -162,7 +162,7 @@ public class Upload {
 
 		pstmn = con.prepareStatement(sqlrn);
 
-		sql = "insert into relation (rid,pid,tag,relationrow) values (?,?,?,?) ";
+		sql = "insert into relation (rid,pid,surety,tag,relationrow) values (?,?,80,?,?) ";
 
 		pstm = con.prepareStatement(sql);
 		int rid;
@@ -219,7 +219,7 @@ public class Upload {
 					pstmn.setString(8, noti[j].getPlace());
 					pstmn.setString(9, noti[j].getNoteText());
 					pstmn.setString(10, noti[j].getSource());
-					luk = pstm.executeUpdate();
+					luk = pstmn.executeUpdate();
 					if (luk != 1) {
 						logger.warning("Insert to RelationNotice "
 								+ rel.getRelative() + " result " + luk
