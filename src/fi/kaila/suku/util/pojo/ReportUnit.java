@@ -6,7 +6,7 @@ import java.util.Vector;
 /**
  * ReportUnit contains whole structure of one table
  * 
- * @author Kalle
+ * @author Kaarle Kaila
  * 
  */
 public class ReportUnit implements Serializable {
@@ -25,14 +25,14 @@ public class ReportUnit implements Serializable {
 	private Vector<ReportTableMember> asChild = new Vector<ReportTableMember>();
 
 	/**
-	 * @return vecrot of parents
+	 * @return Vector of parents
 	 */
 	public Vector<ReportTableMember> getParent() {
 		return asParent;
 	}
 
 	/**
-	 * @return vector of children
+	 * @return Vector of children
 	 */
 	public Vector<ReportTableMember> getChild() {
 		return asChild;

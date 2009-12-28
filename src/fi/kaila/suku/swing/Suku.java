@@ -262,10 +262,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private boolean isWebApp = false;
 
 	/**
-	 * Suku11 main program entrypoint when used as standard Swing application
+	 * Suku11 main program entry point when used as standard Swing application
 	 * 
 	 * @param args
-	 * @throws SukuException
 	 */
 	public static void main(String[] args) {
 
