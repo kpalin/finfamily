@@ -3,6 +3,13 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
+<hdr>Release 250 on 29 dec 2009 </hdr>
+<ul>
+<li>Source window with content sensitive menu for Hiskipage added.</li>
+
+</ul>
+
+
 <hdr>Release 248 on 28 dec 2009 </hdr>
 <ul>
 <li>Hiski import of all types to database added.</li>
