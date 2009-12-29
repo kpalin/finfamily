@@ -78,15 +78,16 @@ public class Read2004XML extends DefaultHandler {
 			+ "where pid = ? ";
 
 	private static final String INSERT_NAME_NOTICE = "insert into UnitNotice "
-			+ "(PID,PNID,tag,givenname,patronym,prefix,surname,postfix,createdate) values (?,?,?,?,?,?,?,?,?)";
+			+ "(PID,PNID,tag,privacy,givenname,patronym,prefix,surname,postfix,createdate)"
+			+ " values (?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String INSERT_UNIT_NOTICE = "insert into UnitNotice "
-			+ "(PID,PNID,tag,noticerow,noticetype,"
+			+ "(PID,PNID,tag,privacy,noticerow,noticetype,"
 			+ "description,dateprefix,fromdate,todate,place,"
 			+ "address,postalcode,postoffice,country,email,"
 			+ "notetext,mediafilename,mediatitle,givenname,patronym,prefix,"
 			+ "surname,postfix,SID,village,farm,croft,sourcetext,privatetext,createdate) "
-			+ "values (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?)";
+			+ "values (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?)";
 
 	private static final String INSERT_UNIT_LANGUAGE = "insert into UnitLanguage "
 			+ "(PID,PNID,tag,langCode,noticetype,"
@@ -261,6 +262,7 @@ public class Read2004XML extends DefaultHandler {
 	private String noticeTag = null;
 	private String noticeRow = null;
 	private String noticeType = null;
+	private String noticePrivacy = null;
 	private String noticeDescription = null;
 	private String noticeDatePrefix = null;
 	private String noticeDateFrom = null;
@@ -509,6 +511,7 @@ public class Read2004XML extends DefaultHandler {
 		} else if (this.currentEle.equals(noticeTG)) {
 			this.noticeRow = attributes.getValue("row");
 			this.noticeTag = attributes.getValue("tag");
+			this.noticePrivacy = attributes.getValue("privacy");
 			this.noticeSourceId = attributes.getValue("sourceid");
 			this.noticeCreateDate = attributes.getValue("createdate");
 		} else if (this.currentEle.equals(noticeSourceTG)) {
@@ -660,14 +663,16 @@ public class Read2004XML extends DefaultHandler {
 					this.pstm.setInt(1, id);
 					this.pstm.setInt(2, pnid);
 					this.pstm.setString(3, "NAME");
-					this.pstm.setString(4, Utils.extractPatronyme(
-							this.unitGivenName, false));
+					this.pstm.setString(4, this.unitPrivacy);
 					this.pstm.setString(5, Utils.extractPatronyme(
+							this.unitGivenName, false));
+					this.pstm.setString(6, Utils.extractPatronyme(
 							this.unitGivenName, true));
-					this.pstm.setString(6, this.unitPrefix);
-					this.pstm.setString(7, this.unitSurName);
-					this.pstm.setString(8, this.unitPostfix);
-					this.pstm.setTimestamp(9, toTimestamp(this.unitCreateDate));
+					this.pstm.setString(7, this.unitPrefix);
+					this.pstm.setString(8, this.unitSurName);
+					this.pstm.setString(9, this.unitPostfix);
+					this.pstm
+							.setTimestamp(10, toTimestamp(this.unitCreateDate));
 					this.pstm.executeUpdate();
 
 					logger.fine("UnitName: " + this.unitId + "/"
@@ -692,7 +697,8 @@ public class Read2004XML extends DefaultHandler {
 							sb.append(this.unitPostfix);
 						}
 						if (this.runner.setRunnerValue(sb.toString())) {
-							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+							throw new SAXException(Resurses
+									.getString("SUKU_CANCELLED"));
 						}
 					}
 
@@ -783,7 +789,7 @@ public class Read2004XML extends DefaultHandler {
 		}
 		if (this.currentEle.equals(noticeNoteTextTG)) {
 			aux = this.currentChars.toString();
-			this.noticeNoteText = langText(aux);
+			this.noticeNoteText = aux;
 
 		}
 		if (this.currentEle.equals(noticeSourceTG)) {
@@ -861,57 +867,58 @@ public class Read2004XML extends DefaultHandler {
 				this.pstm.setInt(1, id);
 				this.pstm.setInt(2, pnid);
 				this.pstm.setString(3, this.noticeTag);
+				this.pstm.setString(4, this.noticePrivacy);
 				try {
 					rowno = Integer.parseInt(this.noticeRow);
 				} catch (NumberFormatException ne) {
 					throw new SAXException("Rownumber " + this.unitId + "/"
 							+ this.noticeRow + " is not numeric");
 				}
-				this.pstm.setInt(4, rowno);
-				this.pstm.setString(5, langText(this.noticeType, this.oldCode));
-				this.pstm.setString(6, langText(this.noticeDescription,
+				this.pstm.setInt(5, rowno);
+				this.pstm.setString(6, langText(this.noticeType, this.oldCode));
+				this.pstm.setString(7, langText(this.noticeDescription,
 						this.oldCode));
-				this.pstm.setString(7, this.noticeDatePrefix);
-				this.pstm.setString(8, this.noticeDateFrom);
-				this.pstm.setString(9, this.noticeDateTo);
-				this.pstm.setString(10,
+				this.pstm.setString(8, this.noticeDatePrefix);
+				this.pstm.setString(9, this.noticeDateFrom);
+				this.pstm.setString(10, this.noticeDateTo);
+				this.pstm.setString(11,
 						langText(this.noticePlace, this.oldCode));
-				this.pstm.setString(11, extractCSVPart(this.noticeTag,
+				this.pstm.setString(12, extractCSVPart(this.noticeTag,
 						this.noticeAddress, 0));
-				this.pstm.setString(12, this.noticePostalCode);
-				this.pstm.setString(13, this.noticePostOffice);
-				this.pstm.setString(14, this.noticeCountry);
-				this.pstm.setString(15, this.noticeEmail);
+				this.pstm.setString(13, this.noticePostalCode);
+				this.pstm.setString(14, this.noticePostOffice);
+				this.pstm.setString(15, this.noticeCountry);
+				this.pstm.setString(16, this.noticeEmail);
 				// String t1 = langText(this.noticeNoteText,this.oldCode);
-				this.pstm.setString(16, langText(this.noticeNoteText,
+				this.pstm.setString(17, langText(this.noticeNoteText,
 						this.oldCode));
-				this.pstm.setString(17, this.noticeMediaFilename);
-				this.pstm.setString(18, langText(this.noticeMediaTitle,
+				this.pstm.setString(18, this.noticeMediaFilename);
+				this.pstm.setString(19, langText(this.noticeMediaTitle,
 						this.oldCode));
-				this.pstm.setString(19, Utils.extractPatronyme(
-						this.noticeGivenName, false));
 				this.pstm.setString(20, Utils.extractPatronyme(
+						this.noticeGivenName, false));
+				this.pstm.setString(21, Utils.extractPatronyme(
 						this.noticeGivenName, true));
-				this.pstm.setString(21, this.noticePrefix);
-				this.pstm.setString(22, this.noticeSurname);
-				this.pstm.setString(23, this.noticePostfix);
+				this.pstm.setString(22, this.noticePrefix);
+				this.pstm.setString(23, this.noticeSurname);
+				this.pstm.setString(24, this.noticePostfix);
 				if (this.noticeSourceId != null) {
-					this.pstm.setInt(24, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
+					this.pstm.setInt(25, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
 				} else {
-					this.pstm.setNull(24, Types.INTEGER);
+					this.pstm.setNull(25, Types.INTEGER);
 				}
 
-				this.pstm.setString(25, extractCSVPart(this.noticeTag,
-						this.noticeAddress, 1));
 				this.pstm.setString(26, extractCSVPart(this.noticeTag,
-						this.noticeAddress, 2));
+						this.noticeAddress, 1));
 				this.pstm.setString(27, extractCSVPart(this.noticeTag,
+						this.noticeAddress, 2));
+				this.pstm.setString(28, extractCSVPart(this.noticeTag,
 						this.noticeAddress, 3));
 
-				this.pstm.setString(28, this.noticeSourceText);
-				this.pstm.setString(29, this.noticePrivateText);
+				this.pstm.setString(29, this.noticeSourceText);
+				this.pstm.setString(30, this.noticePrivateText);
 
-				this.pstm.setTimestamp(30, toTimestamp(this.noticeCreateDate));
+				this.pstm.setTimestamp(31, toTimestamp(this.noticeCreateDate));
 
 				this.pstm.executeUpdate();
 
@@ -1264,9 +1271,10 @@ public class Read2004XML extends DefaultHandler {
 
 					if (this.runner != null) {
 						if (this.runner.setRunnerValue("RelationId: " + rid)) {
-							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+							throw new SAXException(Resurses
+									.getString("SUKU_CANCELLED"));
 						}
-						
+
 					}
 
 					if (this.relationBegDateFrom != null
@@ -1497,9 +1505,10 @@ public class Read2004XML extends DefaultHandler {
 
 					this.pstm.executeUpdate();
 					if (this.runner != null) {
-						
+
 						if (this.runner.setRunnerValue("SourceId: " + sid)) {
-							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+							throw new SAXException(Resurses
+									.getString("SUKU_CANCELLED"));
 						}
 					}
 
@@ -1528,8 +1537,9 @@ public class Read2004XML extends DefaultHandler {
 				this.pstm.setString(3, this.groupDescription);
 				this.pstm.executeUpdate();
 				if (this.runner != null) {
-					if (this.runner.setRunnerValue("GroupId: " + this.groupId)){
-						throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+					if (this.runner.setRunnerValue("GroupId: " + this.groupId)) {
+						throw new SAXException(Resurses
+								.getString("SUKU_CANCELLED"));
 					}
 				}
 				laskuriGroups++;
@@ -1619,7 +1629,8 @@ public class Read2004XML extends DefaultHandler {
 					if (this.runner != null) {
 						if (this.runner.setRunnerValue("ConversionId: "
 								+ laskuriConversion)) {
-							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+							throw new SAXException(Resurses
+									.getString("SUKU_CANCELLED"));
 						}
 					}
 				} catch (SQLException e) {
@@ -1660,8 +1671,9 @@ public class Read2004XML extends DefaultHandler {
 					laskuriViews++;
 
 					if (this.runner != null) {
-						if(this.runner.setRunnerValue("ViewId: " + vid)) {
-							throw new SAXException(Resurses.getString("SUKU_CANCELLED"));
+						if (this.runner.setRunnerValue("ViewId: " + vid)) {
+							throw new SAXException(Resurses
+									.getString("SUKU_CANCELLED"));
 						}
 					}
 
@@ -1758,138 +1770,6 @@ public class Read2004XML extends DefaultHandler {
 		}
 
 		return tocode;
-	}
-
-	private String langText(String text) {
-		if (text == null)
-			return null;
-		if (true)
-			return text;
-		StringBuffer sbs[];
-		String langs[];
-		Iterator<String> it;
-		int i;
-		HashMap<String, String> map = new HashMap<String, String>();
-		String s;
-		int i1 = 0;
-		int i2 = 0;
-		while (true) {
-
-			i1 = text.indexOf("{$", i2);
-
-			if (i1 > 0) {
-				i2 = text.indexOf("}", i1);
-				if (i2 > i1 + 2) {
-					s = text.substring(i1 + 2, i2);
-					map.put(s, s);
-				}
-
-			} else {
-				break;
-			}
-			i2++;
-
-		}
-
-		map.put(this.oldCode, this.oldCode);
-
-		sbs = new StringBuffer[map.size()];
-		langs = new String[sbs.length];
-		for (i = 0; i < sbs.length; i++) {
-			sbs[i] = new StringBuffer();
-
-		}
-		i = 0;
-		it = map.keySet().iterator();
-
-		while (it.hasNext()) {
-			langs[i++] = it.next();
-			// System.out.println(":" + it.next() + ":");
-		}
-
-		String v, aputext;
-		StringBuffer sb = new StringBuffer();
-
-		int pnt = 0;
-		int nxt = 0;
-		int fine = 0;
-
-		while (true) {
-			nxt = text.indexOf("{$", pnt);
-
-			aputext = null;
-			if (nxt < 0) {
-
-				aputext = text.substring(pnt);
-
-				sb.append(text.substring(pnt));
-				System.out.println("{" + this.oldCode + "}:"
-						+ text.substring(pnt));
-				break;
-			} else if (nxt > 0) {
-				aputext = text.substring(pnt, nxt);
-				v = map.get(this.oldCode);
-				v += text.substring(pnt, nxt);
-				sb.append(text.substring(pnt, nxt));
-				System.out.println("<" + this.oldCode + ">:"
-						+ text.substring(pnt, nxt));
-				pnt = nxt + 1;
-			}
-
-			if (aputext != null) {
-
-				for (i = 0; i < sbs.length; i++) {
-					sbs[i].append(aputext);
-				}
-
-			}
-
-			fine = text.indexOf("{$}", pnt);
-			if (fine < 0) {
-				fine = text.length();
-			}
-
-			if (fine > nxt) {
-
-				String apu = text.substring(nxt, fine);
-				int ix = apu.indexOf("}");
-				int jx;
-				String lan;
-				String val;
-				while (apu != null) {
-					ix = apu.indexOf("}");
-					if (ix < 0 || ix > 5)
-						break;
-					lan = apu.substring(2, ix);
-					jx = apu.indexOf("{$", ix);
-					if (jx < 0) {
-						val = apu.substring(ix + 1);
-						apu = null;
-					} else {
-						val = apu.substring(ix + 1, jx);
-						apu = apu.substring(jx);
-					}
-					for (i = 0; i < sbs.length; i++) {
-						if (langs[i].equals(lan)) {
-							sbs[i].append(val);
-						}
-					}
-
-					// System.out.println("(" + lan + "):" + val );
-
-				}
-				sb.append("Textiä[" + (fine - nxt) + "]. ");
-				// System.out.println("[:" + text.substring(nxt,fine)+":]");
-			}
-			pnt = fine + 3;
-		}
-
-		for (i = 0; i < sbs.length; i++) {
-			System.out.println("[" + langs[i] + "]:" + sbs[i].toString());
-		}
-
-		return sb.toString();
-
 	}
 
 	/**
