@@ -39,6 +39,7 @@ import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTextArea;
 import fi.kaila.suku.util.SukuTextField;
 import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.UnitNotice;
@@ -133,7 +134,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	JLabel privateLbl;
 	JScrollPane scrollSource;
 	JScrollPane scrollPrivate;
-	JTextArea source;
+	SukuTextArea source;
 	JTextArea privateText;
 
 	JList nameList;
@@ -352,7 +353,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		postfix = new JTextField();
 		add(postfix);
 
-		source = new JTextArea();
+		source = new SukuTextArea();
 		source.setLineWrap(true);
 		scrollSource = new JScrollPane(source,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,

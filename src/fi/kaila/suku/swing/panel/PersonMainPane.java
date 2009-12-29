@@ -22,6 +22,7 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTextArea;
 import fi.kaila.suku.util.SukuTextField;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.SukuTextField.Field;
@@ -79,7 +80,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	private SukuTextField occupation;
 
 	private JTextArea notetext;
-	private JTextArea source;
+	private SukuTextArea source;
 	private JTextArea privateText;
 
 	private int personPid = 0;
@@ -568,7 +569,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		lbl = new JLabel(Resurses.getString("DATA_SOURCE"));
 		add(lbl);
 		lbl.setBounds(10, rivi, 100, 20);
-		source = new JTextArea();
+		source = new SukuTextArea();
 
 		source.setLineWrap(true);
 		scrollPane = new JScrollPane(source,
