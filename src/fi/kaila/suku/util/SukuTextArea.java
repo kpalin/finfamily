@@ -78,32 +78,49 @@ public class SukuTextArea extends JTextArea implements ActionListener {
 
 		private void maybeShowPopup(MouseEvent e) {
 
-			String selected = me.getSelectedText();
-			if (selected == null || selected.length() == 0) {
-				return;
-			}
-
-			try {
-				hiskiNumero = Long.parseLong(selected);
-			} catch (NumberFormatException ne) {
-				hiskiNumero = 0;
-			}
-
-			int alk = me.getSelectionStart();
-			int lop = me.getSelectionEnd();
-			boolean maybeHiski = false;
 			String aux = me.getText();
-			if (hiskiNumero > 0 && alk > 0 && lop > 0 && alk < lop
-					&& lop < aux.length() && lop == alk + selected.length()) {
+			int hiskiIdx = aux.indexOf("Hiski");
+			hiskiNumero = 0;
+			boolean maybeHiski = false;
+			String selected = me.getSelectedText();
+			if (selected == null) {
+				selected = "";
+			}
+			if (selected.length() > 0) {
 
-				char aca = aux.charAt(alk - 1);
-				char lca = aux.charAt(lop);
-				if (aca == '[' && lca == ']') {
-					int hiskiIdx = aux.indexOf("Hiski");
-					if (hiskiIdx >= 0 && hiskiIdx < alk) {
-						maybeHiski = true;
+				try {
+					hiskiNumero = Long.parseLong(selected);
+				} catch (NumberFormatException ne) {
+				}
+
+				int alk = me.getSelectionStart();
+				int lop = me.getSelectionEnd();
+
+				if (hiskiNumero > 0 && alk > 0 && lop > 0 && alk < lop
+						&& lop < aux.length() && lop == alk + selected.length()) {
+
+					char aca = aux.charAt(alk - 1);
+					char lca = aux.charAt(lop);
+					if (aca == '[' && lca == ']') {
+						if (hiskiIdx >= 0 && hiskiIdx < alk) {
+							maybeHiski = true;
+						}
 					}
 				}
+			}
+
+			if (!maybeHiski && hiskiIdx >= 0) {
+				int icb = aux.indexOf('[', hiskiIdx);
+				int ice = aux.indexOf(']', hiskiIdx);
+				if (icb > hiskiIdx && ice > icb + 1) {
+					try {
+						hiskiNumero = Long.parseLong(aux
+								.substring(icb + 1, ice));
+						maybeHiski = true;
+					} catch (NumberFormatException ne) {
+					}
+				}
+
 			}
 
 			if (e.isPopupTrigger()) {
