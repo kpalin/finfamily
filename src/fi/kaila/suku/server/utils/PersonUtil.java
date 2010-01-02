@@ -996,15 +996,18 @@ public class PersonUtil {
 
 				}
 				rs.close();
+				pstm.close();
 
 				sql = "select * from relationnotice "
 						+ "where rid in (select rid from relation where pid=?) order by rid,noticerow";
 				pstm = con.prepareStatement(sql);
 				pstm.setInt(1, pid);
+				// FIXME: Query executed twice???
 				rs = pstm.executeQuery();
 				int curid = 0;
 				rid = 0;
 				RelationNotice rnote = null;
+				// FIXME: Query executed twice??? Unnecessary?
 				rs = pstm.executeQuery();
 				relNotices = new Vector<RelationNotice>();
 				while (rs.next()) {
