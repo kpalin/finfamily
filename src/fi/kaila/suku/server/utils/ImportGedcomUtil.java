@@ -477,7 +477,8 @@ public class ImportGedcomUtil {
 
 	private void insertAdoptedNotice(int childpid, int parepid) {
 
-		Statement stm;
+		Statement stm = null;
+		PreparedStatement pst = null;
 		try {
 			stm = con.createStatement();
 			ResultSet rs = stm
@@ -492,7 +493,7 @@ public class ImportGedcomUtil {
 			rs.close();
 
 			String sql = "select rid from parent where aid=? and bid = ? and tag in ('FATH','MOTH')";
-			PreparedStatement pst = con.prepareStatement(sql);
+			pst = con.prepareStatement(sql);
 			pst.setInt(1, childpid);
 			pst.setInt(2, parepid);
 			rs = pst.executeQuery();
@@ -516,6 +517,19 @@ public class ImportGedcomUtil {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (stm != null) {
+				try {
+					stm.close();
+				} catch (SQLException ignored) {
+				}
+			}
+			if (pst != null) {
+				try {
+					pst.close();
+				} catch (SQLException ignored) {
+				}
+			}
 		}
 
 	}
@@ -524,7 +538,7 @@ public class ImportGedcomUtil {
 		String sql = "update relation set relationrow = ? "
 				+ "where pid = ? and rid in (select rid from spouse where aid = ? and bid = ?)";
 
-		PreparedStatement pst;
+		PreparedStatement pst = null;
 		try {
 			pst = con.prepareStatement(sql);
 
@@ -541,6 +555,13 @@ public class ImportGedcomUtil {
 
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Spouse row update failed", e);
+		} finally {
+			if (pst != null) {
+				try {
+					pst.close();
+				} catch (SQLException ignored) {
+				}
+			}
 		}
 	}
 
@@ -1065,28 +1086,38 @@ public class ImportGedcomUtil {
 
 				InputStream ins = Suku.kontroller.openFile(item.lineValue);
 				if (ins != null) {
-					BufferedInputStream bstr = new BufferedInputStream(ins);
+					BufferedInputStream bstr = null;
 					// System.out.println("OPEN: " +
 					// openedImage);
 
-					ByteArrayOutputStream bos = new ByteArrayOutputStream();
-					byte[] buff = new byte[2048];
+					ByteArrayOutputStream bos = null;
 					int imgSize = 0;
-					while (true) {
-						int rdbytes;
-						try {
-							rdbytes = bstr.read(buff);
-						} catch (IOException e) {
-							imgSize = -1;
-							break;
+					try {
+						bstr = new BufferedInputStream(ins);
+						bos = new ByteArrayOutputStream();
+						byte[] buff = new byte[2048];
+						while (true) {
+							int rdbytes;
+							try {
+								rdbytes = bstr.read(buff);
+							} catch (IOException e) {
+								imgSize = -1;
+								break;
+							}
+							imgSize += rdbytes;
+							if (rdbytes < 0)
+								break;
+							bos.write(buff, 0, rdbytes);
+
 						}
-						imgSize += rdbytes;
-						if (rdbytes < 0)
-							break;
-						bos.write(buff, 0, rdbytes);
-
+					} finally {
+						if (bstr != null) {
+							try {
+								bstr.close();
+							} catch (IOException ignored) {
+							}
+						}
 					}
-
 					int lastdir = item.lineValue.replace('\\', '/')
 							.lastIndexOf('/');
 					if (lastdir > 0) {
@@ -1291,23 +1322,35 @@ public class ImportGedcomUtil {
 				+ "owner_address,owner_postalcode,owner_postoffice,"
 				+ "owner_country,owner_email,user_id) values (?,?,?,?,?,?,?,user) ";
 
-		PreparedStatement pst = con.prepareStatement(sql);
-		pst.setString(1, name);
-		pst.setString(2, ownerInfo);
-		if (address != null) {
-			pst.setString(3, address.address);
-			pst.setString(4, address.postalCode);
-			pst.setString(5, address.postOffice);
-			pst.setString(6, address.country);
-			pst.setString(7, address.email);
-		} else {
-			pst.setString(3, null);
-			pst.setString(4, null);
-			pst.setString(5, null);
-			pst.setString(6, null);
-			pst.setString(7, null);
+		PreparedStatement pst = null;
+		int lukuri;
+		try {
+			pst = con.prepareStatement(sql);
+			pst.setString(1, name);
+			pst.setString(2, ownerInfo);
+			if (address != null) {
+				pst.setString(3, address.address);
+				pst.setString(4, address.postalCode);
+				pst.setString(5, address.postOffice);
+				pst.setString(6, address.country);
+				pst.setString(7, address.email);
+			} else {
+				pst.setString(3, null);
+				pst.setString(4, null);
+				pst.setString(5, null);
+				pst.setString(6, null);
+				pst.setString(7, null);
+			}
+			lukuri = pst.executeUpdate();
+		} finally {
+			if (pst != null) {
+				try {
+					pst.close();
+				} catch (SQLException ignored) {
+				}
+			}
 		}
-		int lukuri = pst.executeUpdate();
+
 		logger.info("Sukuvariables updated " + lukuri + " lines");
 	}
 
