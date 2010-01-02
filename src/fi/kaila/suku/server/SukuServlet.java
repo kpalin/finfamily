@@ -49,11 +49,14 @@ public class SukuServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	// FIXME:This Serializable class defines a non-primitive instance field
+	// FIXME: Class fi.kaila.suku.server.SukuServlet defines non-transient
+	// non-serializable instance field ctx. This Serializable class defines a
+	// non-primitive instance field
 	// which is neither transient, Serializable, or java.lang.Object, and does
 	// not appear to implement the Externalizable interface or the readObject()
 	// and writeObject() methods. Objects of this class will not be deserialized
 	// correctly if a non-Serializable object is stored in this field.
+	// Mika: Maybe you should set it transient?
 	private Context ctx = null;
 
 	private HashMap<String, UserInfo> usermap = null;

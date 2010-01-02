@@ -72,6 +72,14 @@ public class UnitNotice implements Serializable {
 	Timestamp createDate = null; // timestamp not null default now() --
 	// timestamp created
 
+	// FIXME: Class fi.kaila.suku.util.pojo.UnitNotice defines non-transient
+	// non-serializable instance field image. This Serializable class defines a
+	// non-primitive instance field which is neither transient, Serializable, or
+	// java.lang.Object, and does not appear to implement the Externalizable
+	// interface or the readObject() and writeObject() methods. Objects of this
+	// class will not be deserialized correctly if a non-Serializable object is
+	// stored in this field.
+	// Mika: Maybe you should set it transient?
 	private BufferedImage image = null;
 
 	private UnitLanguage[] unitlanguages = null;
