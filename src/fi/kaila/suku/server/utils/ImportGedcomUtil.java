@@ -1371,7 +1371,6 @@ public class ImportGedcomUtil {
 	String submitter = null;
 
 	private void consumeGedcomHead(GedcomLine record) {
-		boolean submitterDone = false;
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine notice1 = record.lines.get(i);
 			if (notice1.tag.equals("SOUR")) {
