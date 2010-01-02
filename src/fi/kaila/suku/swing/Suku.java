@@ -1874,6 +1874,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			SukuData response = kontroller.getSukuData(request, "cmd=places");
 
+			// FIXME: Method call passes null for nonnull parameter of
+			// SuomiMap.displaySuomiMap(PlaceLocationData[])
 			suomi.displaySuomiMap((response != null) ? response.places : null);
 
 		} catch (SukuException e) {
