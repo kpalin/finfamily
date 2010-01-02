@@ -192,11 +192,11 @@ public class PersonMainPane extends JPanel implements ActionListener {
 								specialName = true;
 							}
 						}
-						// if (!"".equals(pane.prefix.getText())){
+						// if (pane.prefix.getText().length() > 0){
 						// specialName=true;
 						// break;
 						// }
-						// if (!"".equals(pane.postfix.getText())){
+						// if (pane.postfix.getText().length() > 0){
 						// specialName=true;
 						// break;
 						// }

@@ -1489,7 +1489,7 @@ public class Read2004XML extends DefaultHandler {
 		if (this.currentEle.equals(sourceTG)) {
 			this.sourceNoteText = this.currentChars.toString();
 
-			if (this.sourceNoteText != null && !this.sourceNoteText.equals("")) {
+			if (this.sourceNoteText != null && this.sourceNoteText.length() > 0) {
 				try {
 					int sid;
 					try {

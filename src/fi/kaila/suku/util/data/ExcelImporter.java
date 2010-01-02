@@ -110,7 +110,7 @@ public class ExcelImporter {
 					String x1 = null;
 					if (xc1 != null) {
 						x1 = xc1.getContents();
-						if ("".equals(x1)) {
+						if (x1.length() == 0) {
 							x1 = null;
 						}
 					}
@@ -119,7 +119,7 @@ public class ExcelImporter {
 
 						pst.setString(1, a1);
 						pst.setString(2, b1);
-						if ("".equals(c1)) {
+						if (c1.length() == 0) {
 							c1 = null;
 						}
 						pst.setString(3, c1);
@@ -129,7 +129,7 @@ public class ExcelImporter {
 							Cell yc1 = sheet.getCell(text_col[col], rivi);
 							if (yc1 != null) {
 								y1 = yc1.getContents();
-								if ("".equals(y1)) {
+								if (y1.length() == 0) {
 									y1 = null;
 								}
 							}
@@ -189,7 +189,7 @@ public class ExcelImporter {
 			// String x1 = null;
 			// if (xc1 != null) {
 			// x1 = xc1.getContents();
-			// if ("".equals(x1)) {
+			// if (x1.length() == 0) {
 			// x1 = null;
 			// }
 			// }
@@ -302,7 +302,7 @@ public class ExcelImporter {
 			// String x1 = null;
 			// if (xc1 != null) {
 			// x1 = xc1.getContents();
-			// if ("".equals(x1)) {
+			// if (x1.length() == 0) {
 			// x1 = null;
 			// }
 			// }
@@ -311,7 +311,7 @@ public class ExcelImporter {
 			//
 			// pst.setString(1, a1);
 			// pst.setString(2, b1);
-			// if ("".equals(c1)) {
+			// if (c1.length() == 0) {
 			// c1 = null;
 			// }
 			// pst.setString(3, c1);
@@ -321,7 +321,7 @@ public class ExcelImporter {
 			// Cell yc1 = sheet.getCell(text_col[col], rivi);
 			// if (yc1 != null) {
 			// y1 = yc1.getContents();
-			// if ("".equals(y1)) {
+			// if (y1.length() == 0) {
 			// y1 = null;
 			// }
 			// }
@@ -383,7 +383,7 @@ public class ExcelImporter {
 					String x1 = null;
 					if (xc1 != null) {
 						x1 = xc1.getContents();
-						if ("".equals(x1)) {
+						if (x1.length() == 0) {
 							x1 = null;
 						}
 					}

@@ -278,7 +278,7 @@ public class PersonLongData implements Serializable {
 	}
 
 	private String vn(String text) {
-		if ("".equals(text)) {
+		if (text.length() == 0) {
 			text = null;
 		}
 		return text;

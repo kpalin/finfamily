@@ -228,7 +228,7 @@ public class CommonReport {
 			repoWriter.addText(bt);
 		}
 		bt = new MainPersonText();
-		if (!"".equals(genText)) {
+		if (genText.length() > 0) {
 			bt.addText(genText);
 			bt.addText(". ");
 		}
@@ -241,11 +241,11 @@ public class CommonReport {
 		if (ref != null) {
 			fromTable = ref.getReferences(tab.getTableNo(), true, false, false);
 		}
-		if (fromTable.equals("")) {
+		if (fromTable.length() == 0) {
 
 			fromTable = ref.getReferences(tab.getTableNo(), false, false, true);
 		}
-		if (!fromTable.equals("")) {
+		if (fromTable.length() > 0) {
 			bt.addText(caller.getTextValue("ALSO") + " " + fromTable + ". ",
 					true, false);
 		}

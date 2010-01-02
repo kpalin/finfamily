@@ -648,9 +648,9 @@ public class NoticePane extends JPanel implements ActionListener,
 			return false;
 		if (privacy.isSelected())
 			return false;
-		if (!"".equals(noticeType.getText()))
+		if (noticeType.getText().length() > 0)
 			return false;
-		if (!"".equals(description.getText())) {
+		if (description.getText().length() > 0) {
 			if (!notice.getTag().equals("OCCU"))
 				return false;
 		}
@@ -658,46 +658,46 @@ public class NoticePane extends JPanel implements ActionListener,
 			return false;
 		// if (datePref.getSelectedIndex() != 0) return false;
 
-		// if (!"".equals(dateTo.getText())) return false;
+		// if (dateTo.getText().length() > 0) return false;
 		if (notice.getTag().equals("OCCU") || notice.getTag().equals("NOTE")) {
 			try {
 				String tmp = date.getFromDate();
-				if (!"".equals(nv(tmp)))
+				if (nv(tmp).length() > 0)
 					return false;
 			} catch (SukuDateException e) {
 				return false;
 			}
 		}
 
-		if (!"".equals(village.getText()))
+		if (village.getText().length() > 0)
 			return false;
-		if (!"".equals(farm.getText()))
+		if (farm.getText().length() > 0)
 			return false;
-		if (!"".equals(croft.getText()))
+		if (croft.getText().length() > 0)
 			return false;
-		if (!"".equals(address.getText()))
+		if (address.getText().length() > 0)
 			return false;
-		if (!"".equals(postalCode.getText()))
+		if (postalCode.getText().length() > 0)
 			return false;
-		if (!"".equals(postOffice.getText()))
+		if (postOffice.getText().length() > 0)
 			return false;
-		if (!"".equals(state.getText()))
+		if (state.getText().length() > 0)
 			return false;
-		if (!"".equals(country.getText()))
+		if (country.getText().length() > 0)
 			return false;
-		if (!"".equals(email.getText()))
+		if (email.getText().length() > 0)
 			return false;
 		if (!notice.getTag().equals("NOTE")) {
-			if (!"".equals(noteText.getText()))
+			if (noteText.getText().length() > 0)
 				return false;
 		}
-		if (!"".equals(mediaFilename.getText()))
+		if (mediaFilename.getText().length() > 0)
 			return false;
-		if (!"".equals(mediaTitle.getText()))
+		if (mediaTitle.getText().length() > 0)
 			return false;
-		if (!"".equals(source.getText()))
+		if (source.getText().length() > 0)
 			return false;
-		if (!"".equals(privateText.getText()))
+		if (privateText.getText().length() > 0)
 			return false;
 		if (image.img != null)
 			return false;

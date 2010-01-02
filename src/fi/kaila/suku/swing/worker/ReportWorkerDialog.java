@@ -1230,7 +1230,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			v.add("ancFamily=true");
 		}
 		String tmp = ancestorPanel.getShowDescGen();
-		if (tmp != null && !"".equals(tmp)) {
+		if (tmp != null && tmp.length() > 0) {
 			v.add("ancDesc=" + tmp);
 		}
 		model = listaGroup.getSelection();

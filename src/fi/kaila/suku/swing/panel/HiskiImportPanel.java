@@ -477,14 +477,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 				age = pAge[i].getText();
 				text = pReason[i].getText();
-				if (!"".equals(age)) {
+				if (age.length() > 0) {
 					text += ";" + age;
 				}
 
 				village = eventVillage.getText();
 				farm = eventFarm.getText();
 
-				if (!"".equals(kdate)) {
+				if (kdate.length() > 0) {
 
 					notice = new UnitNotice("EMIG");
 					notice.setFromDate(toTextDate(kdate));
@@ -495,14 +495,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notice.setSource(hiskiSource);
 					notices.add(notice);
 				}
-				if (!"".equals(hdate)) {
+				if (hdate.length() > 0) {
 
 					notice = new UnitNotice("IMMI");
 					notice.setFromDate(toTextDate(hdate));
 					notice.setPlace(srk.getText());
 					notice.setVillage(village);
 					notice.setFarm(farm);
-					if ("".equals(kdate)) {
+					if (kdate.length() == 0) {
 						notice.setNoteText(text);
 					}
 					notice.setSource(hiskiSource);
@@ -593,14 +593,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 				age = pAge[i].getText();
 				text = pReason[i].getText();
-				if (!"".equals(age)) {
+				if (age.length() > 0) {
 					text += ";" + age;
 				}
 
 				village = eventVillage.getText();
 				farm = eventFarm.getText();
 
-				if (!"".equals(kdate)) {
+				if (kdate.length() > 0) {
 
 					notice = new UnitNotice("DEAT");
 					notice.setNoticeType(eventRemark.getText());
@@ -612,14 +612,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notice.setSource(hiskiSource);
 					notices.add(notice);
 				}
-				if (!"".equals(hdate)) {
+				if (hdate.length() > 0) {
 
 					notice = new UnitNotice("BURI");
 					notice.setFromDate(toTextDate(hdate));
 					notice.setPlace(srk.getText());
 					notice.setVillage(village);
 					notice.setFarm(farm);
-					if ("".equals(kdate)) {
+					if (kdate.length() == 0) {
 						notice.setNoticeType(eventRemark.getText());
 						notice.setNoteText(text);
 					}
@@ -728,9 +728,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				age = pAge[i].getText();
 				text = pReason[i].getText();
 				// kylä / talo
-				if (!"".equals(eventLastDate.getText())) {
+				if (eventLastDate.getText().length() > 0) {
 					marrDate = toTextDate(eventLastDate.getText());
-				} else if (!"".equals(eventFirstDate.getText())) {
+				} else if (eventFirstDate.getText().length() > 0) {
 					marrDate = toTextDate(eventFirstDate.getText());
 					marrType = eventFirstType.getText();
 				}
