@@ -119,7 +119,7 @@ public class ExcelImporter {
 
 						pst.setString(1, a1);
 						pst.setString(2, b1);
-						if (c1.length() == 0) {
+						if (c1 != null && c1.length() == 0) {
 							c1 = null;
 						}
 						pst.setString(3, c1);
