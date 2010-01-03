@@ -20,7 +20,7 @@ public class SukuData implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8438517229487947671L;
 
 	/**
 	 * The main cmd parameter value
