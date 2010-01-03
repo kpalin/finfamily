@@ -53,6 +53,10 @@ import javax.swing.table.TableModel;
  * both cells and column headers.
  */
 public class TableToolTipsDemo extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private boolean DEBUG = false;
 	protected String[] columnToolTips = { null, null,
 			"The person's favorite sport to participate in",
@@ -63,6 +67,11 @@ public class TableToolTipsDemo extends JPanel {
 		super(new GridLayout(1, 0));
 
 		JTable table = new JTable(new MyTableModel()) {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			// Implement table cell tool tips.
 			public String getToolTipText(MouseEvent e) {
@@ -99,6 +108,11 @@ public class TableToolTipsDemo extends JPanel {
 			// Implement table header tool tips.
 			protected JTableHeader createDefaultTableHeader() {
 				return new JTableHeader(columnModel) {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 					public String getToolTipText(MouseEvent e) {
 						java.awt.Point p = e.getPoint();
 						int index = columnModel.getColumnIndexAtX(p.x);
@@ -121,6 +135,10 @@ public class TableToolTipsDemo extends JPanel {
 	}
 
 	class MyTableModel extends AbstractTableModel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private String[] columnNames = { "First Name", "Last Name", "Sport",
 				"# of Years", "Vegetarian" };
 		private Object[][] data = {

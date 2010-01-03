@@ -35,7 +35,7 @@ public class PersonShortData implements Serializable, Transferable,
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7101500237429825332L;
+	private static final long serialVersionUID = 1L;
 
 	private int pid = 0;
 	private String refn = null;

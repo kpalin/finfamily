@@ -26,7 +26,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8271186622807156305L;
+	private static final long serialVersionUID = 1L;
 	private static final String OK = "OK";
 	private static Logger logger = null;
 	private JTextArea aboutArea;
