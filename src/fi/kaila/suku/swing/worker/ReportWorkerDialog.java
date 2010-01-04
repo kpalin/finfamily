@@ -1019,7 +1019,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							if (vx[1].length() > 4) {
 								newText = vx[1].substring(4);
 							}
-							typesTable.setValueAt(newText, row, 5);
+							// typesTable.setValueAt(newText, row, 5);
 							break;
 						}
 						// StringBuffer sb = new StringBuffer();

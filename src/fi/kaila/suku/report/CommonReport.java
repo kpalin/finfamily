@@ -1136,12 +1136,28 @@ public class CommonReport {
 			if (nn.getTag().equals("NAME")) {
 				if (nn.getPrivacy() == null) {
 					if ((caller.isType("NAME", colType) || nameCount == 0)) {
-
 						if (nameCount > 0) {
-							bt.addText(". ");
+							bt.addText(", ");
 							if (caller.isType("NAME", 1)) {
-								bt.addText(caller.getTypeText("NAME"));
-								bt.addText(" ");
+								String[] parts = caller.getTypeText("NAME")
+										.split(";");
+								String part = null;
+								if (parts != null && parts.length > 1) {
+									if (j < notices.length - 1) {
+										if (notices[j + 1].getTag().equals(
+												"NAME")) {
+											part = parts[0];
+										}
+									}
+									if (part == null) {
+										part = parts[1];
+									}
+									bt.addText(part);
+									bt.addText(" ");
+								} else if (parts.length == 1) {
+									bt.addText(parts[0]);
+									bt.addText(" ");
+								}
 							}
 						}
 						if (!prevGivenname.equals(nv(nn.getGivenname()))) {
