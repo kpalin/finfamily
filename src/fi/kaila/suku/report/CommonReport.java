@@ -1136,7 +1136,8 @@ public class CommonReport {
 			if (nn.getTag().equals("NAME")) {
 				if (nn.getPrivacy() == null) {
 					if ((caller.isType("NAME", colType) || nameCount == 0)) {
-						if (nameCount > 0) {
+
+						if (nameCount > 0 && nn.getNoticeType() == null) {
 							bt.addText(", ");
 							if (caller.isType("NAME", 1)) {
 								String[] parts = caller.getTypeText("NAME")
@@ -1159,6 +1160,12 @@ public class CommonReport {
 									bt.addText(" ");
 								}
 							}
+						} else if (nn.getNoticeType() != null) {
+							if (nameCount > 0) {
+								bt.addText(", ");
+							}
+							bt.addText(nn.getNoticeType());
+							bt.addText(" ");
 						}
 						if (!prevGivenname.equals(nv(nn.getGivenname()))) {
 							prevGivenname = nv(nn.getGivenname());

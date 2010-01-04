@@ -1813,7 +1813,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					typesTags[i] = tag;
 					typesData[i][0] = reposet.vvTypes.get(i)[1];
 					typesData[i][1] = Boolean.valueOf(false);
-					if ("|BIRT|DEAT|CHR|BURI|".indexOf(tag) > 0) {
+					if ("|BIRT|DEAT|CHR|BURI|NAME|".indexOf(tag) > 0) {
 						typesData[i][1] = Boolean.valueOf(true);
 					}
 					typesData[i][2] = Boolean.valueOf(true);
