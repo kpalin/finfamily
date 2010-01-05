@@ -136,7 +136,7 @@ public class SukuTextArea extends JTextArea implements ActionListener {
 
 	}
 
-	private long hiskiNumero = 0;
+	private static long hiskiNumero = 0;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
