@@ -486,12 +486,12 @@ public class SukuServerImpl implements SukuServer {
 				fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
 			}
 			lang = map.get("lang");
-			if (lang==null)  {
-				lang=Resurses.getLanguage();
+			if (lang == null) {
+				lang = Resurses.getLanguage();
 			}
 			SukuData txts = getTexts(lang);
 			ImportGedcomUtil inged = new ImportGedcomUtil(con);
-			fam = inged.importGedcom(file, db,txts.vvTexts);
+			fam = inged.importGedcom(file, db, txts.vvTexts);
 			inged = null;
 
 		} else if (cmd.equals("excel")) {
@@ -736,8 +736,13 @@ public class SukuServerImpl implements SukuServer {
 
 			res.vvTexts.add(vPlaces.toArray(new String[0]));
 
-			sql = "select givenname,count(*) from unitnotice "
-					+ "where givenname is not null group by givenname "
+			// sql = "select givenname,count(*) from unitnotice "
+			// + "where givenname is not null group by givenname "
+			// + "order by 2 desc limit 256";
+
+			sql = "select split_part(givenname,' ',1),count(*) "
+					+ "from unitnotice where givenname is not null "
+					+ "group by split_part(givenname,' ',1)"
 					+ "order by 2 desc limit 256";
 
 			rs = stm.executeQuery(sql);
