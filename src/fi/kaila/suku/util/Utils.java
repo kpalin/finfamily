@@ -3,6 +3,8 @@ package fi.kaila.suku.util;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.report.PersonInTables;
@@ -40,6 +42,8 @@ public class Utils {
 		 */
 		CHILD
 	}
+
+	private static Logger logger = Logger.getLogger(Utils.class.getName());
 
 	/**
 	 * Get boolean preference from local repository
@@ -543,6 +547,25 @@ public class Utils {
 			return null;
 
 		return noticeGivenName;
+	}
+
+	public static void openExternalFile(String url) {
+		try {
+			String[] cmds = { "rundll32", "url.dll,FileProtocolHandler", url };
+			Process p = Runtime.getRuntime().exec(cmds);
+			p.waitFor();
+
+			//
+			// this should work on mac
+			//
+			// String [] macs = {"open",report);
+			// macs[1] = report;
+			// Process p = Runtime.getRuntime().exec(macs);
+
+		} catch (Throwable t) {
+			logger.log(Level.INFO, "rundll32", t);
+
+		}
 	}
 
 }

@@ -33,6 +33,7 @@ import fi.kaila.suku.report.style.ImageText;
 import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 
 /**
  * 
@@ -428,25 +429,7 @@ public class XmlReport implements ReportInterface {
 				fos.write(bout.toByteArray());
 				fos.close();
 				logger.fine(report + " will be opened");
-				try {
-					String[] cmds = { "rundll32",
-							"url.dll,FileProtocolHandler", "" };
-					cmds[2] = report;
-					Process p = Runtime.getRuntime().exec(cmds);
-					p.waitFor();
-
-					//
-					// this should work on mac
-					//
-					// String [] macs = {"open",report);
-					// macs[1] = report;
-					// Process p = Runtime.getRuntime().exec(macs);
-
-				} catch (Throwable t) {
-					logger.log(Level.INFO, "rundll32", t);
-
-				}
-
+				Utils.openExternalFile(report);
 			}
 
 		} catch (Throwable e) {

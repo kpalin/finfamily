@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JTextArea;
@@ -145,23 +144,8 @@ public class SukuTextArea extends JTextArea implements ActionListener {
 			return;
 
 		if (cmd.equals("HISKI_OPEN")) {
-			try {
-				String[] cmds = { "rundll32", "url.dll,FileProtocolHandler", "" };
-				cmds[2] = "http://hiski.genealogia.fi/hiski?fi+t" + hiskiNumero;
-				Process p = Runtime.getRuntime().exec(cmds);
-				p.waitFor();
-
-				//
-				// this should work on mac
-				//
-				// String [] macs = {"open",report);
-				// macs[1] = report;
-				// Process p = Runtime.getRuntime().exec(macs);
-
-			} catch (Throwable t) {
-				logger.log(Level.INFO, "rundll32", t);
-
-			}
+			Utils.openExternalFile("http://hiski.genealogia.fi/hiski?fi+t"
+					+ hiskiNumero);
 
 		} else if (cmd.equals(Resurses.MENU_COPY)) {
 			StringSelection stringSelection = new StringSelection(me

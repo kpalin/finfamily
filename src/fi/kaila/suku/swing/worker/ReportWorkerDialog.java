@@ -2171,18 +2171,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
 			setVisible(false);
-			// this would require local write instead of webstrart write
-			// try {
-			// String[] cmds = { "rundll32",
-			// "url.dll,FileProtocolHandler", "" };
-			// cmds[2] = report;
-			// Process p = Runtime.getRuntime().exec(cmds);
-			// p.waitFor();
-			//
-			// } catch (Throwable t) {
-			// logger.log(Level.INFO, "rundll32", t);
-			//
-			// }
 
 		}
 	}
