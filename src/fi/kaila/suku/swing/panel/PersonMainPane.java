@@ -968,7 +968,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			String names[] = surname.getText().split(";");
 
 			boolean hasName = false;
-			if (names.length > 1) {
+			if (names.length > 1 || !names[0].equals("")) {
 				hasName = true;
 			}
 			if (!givenname.getText().equals("")) {
