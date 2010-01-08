@@ -2,6 +2,7 @@ package fi.kaila.suku.report;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -1131,6 +1132,30 @@ public class CommonReport {
 		int nameCount = 0;
 		String prevGivenname = "";
 
+		boolean isDead = false;
+		for (int j = 0; j < notices.length; j++) {
+			UnitNotice nn = notices[j];
+			if (nn.getTag().equals("DEAT") || nn.getTag().equals("BURI")) {
+				isDead = true;
+			}
+			if (nn.getTag().equals("BIRT")) {
+				String bd = nn.getFromDate();
+				if (bd != null && bd.length() >= 4) {
+
+					try {
+						int by = Integer.parseInt(bd.substring(0, 4));
+						Calendar rightNow = Calendar.getInstance();
+						int cy = rightNow.get(Calendar.YEAR);
+						if (cy > by + 115) {
+							isDead = true;
+						}
+					} catch (NumberFormatException ne) {
+					}
+
+				}
+			}
+		}
+
 		for (int j = 0; j < notices.length; j++) {
 			UnitNotice nn = notices[j];
 			if (nn.getTag().equals("NAME")) {
@@ -1151,7 +1176,11 @@ public class CommonReport {
 										}
 									}
 									if (part == null) {
-										part = parts[1];
+										if (parts.length < 3 || isDead == false) {
+											part = parts[1];
+										} else {
+											part = parts[2];
+										}
 									}
 									bt.addText(part);
 									bt.addText(" ");
