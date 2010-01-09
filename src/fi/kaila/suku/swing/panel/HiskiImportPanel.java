@@ -279,6 +279,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
 
+		y += 20;
 	}
 
 	private void initHiskiPersons(int luku) {
@@ -300,7 +301,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 			pSukuPid[i] = new JLabel();
 			add(pSukuPid[i]);
-			pSukuPid[i].setBounds(40, y + i * 70, 100, 20);
+			pSukuPid[i].setBounds(150, y + i * 70, 100, 20);
 
 			pSukuName[i] = new JLabel();
 			add(pSukuName[i]);
@@ -308,13 +309,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 			pNumero[i] = new JLabel();
 			add(pNumero[i]);
-			pNumero[i].setBounds(40, y + 20 + i * 70, 40, 20);
+			pNumero[i].setBounds(40, y + 0 + i * 70, 40, 20);
 
 			pTypeName[i] = null;
 
 			pType[i] = new JLabel();
 			add(pType[i]);
-			pType[i].setBounds(60, y + 20 + i * 70, 40, 20);
+			pType[i].setBounds(60, y + 0 + i * 70, 40, 20);
 
 			pSex[i] = new JComboBox(sexes);
 			add(pSex[i]);
@@ -1044,7 +1045,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		requri = sb.toString();
 		try {
 
-			logger.fine("URILOG: " + requri);
+			// logger.fine("URILOG: " + requri);
 			URL url = new URL(requri);
 			HttpURLConnection uc = (HttpURLConnection) url.openConnection();
 			// String encoding = uc.getContentEncoding();
@@ -1293,23 +1294,28 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				month = 0;
 				day = 0;
 			}
-			if (month > 0) {
-				try {
-					mm = Integer.parseInt(ageMm);
-				} catch (NumberFormatException ne) {
-					mm = 0;
-				}
-				try {
-					wk = Integer.parseInt(ageWk);
-				} catch (NumberFormatException ne) {
-					wk = 0;
+			try {
+				mm = Integer.parseInt(ageMm);
+			} catch (NumberFormatException ne) {
+				mm = 0;
+			}
+			try {
+				wk = Integer.parseInt(ageWk);
+			} catch (NumberFormatException ne) {
+				wk = 0;
 
-				}
-				try {
-					dy = Integer.parseInt(ageDy);
-				} catch (NumberFormatException ne) {
-					dy = 0;
-				}
+			}
+			try {
+				dy = Integer.parseInt(ageDy);
+			} catch (NumberFormatException ne) {
+				dy = 0;
+			}
+			if (yy == 0 && mm == 0 && wk == 0 && dy == 0) {
+				return "";
+			}
+
+			if (month > 0) {
+
 				if (auxDate.length() > 7) {
 					try {
 						day = Integer.parseInt(auxDate.substring(6, 8));
