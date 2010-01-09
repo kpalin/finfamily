@@ -302,6 +302,8 @@ public class Resurses {
 	/** */
 	public static final String TOOLBAR_SUBJECT_UP_ACTION = "SUBJECTP";
 
+	public static final String HISKI_NORMALIZE = "HISKI_NORMALIZE";
+
 	/** */
 	private static Resurses myself = null;
 	private static ResourceBundle resources = null;

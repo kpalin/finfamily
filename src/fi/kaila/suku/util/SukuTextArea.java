@@ -1,14 +1,14 @@
 package fi.kaila.suku.util;
 
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.logging.Logger;
 
 import javax.swing.JTextArea;
 
@@ -20,21 +20,25 @@ import javax.swing.JTextArea;
  * @author Kaarle Kaila
  * 
  */
-public class SukuTextArea extends JTextArea implements ActionListener {
+public class SukuTextArea extends JTextArea implements ActionListener,
+		ClipboardOwner {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	// private Logger logger = Logger.getLogger(this.getClass().getName());
 	PopupListener popupListener = null;
 
 	private SukuTextArea me = null;
 
+	/**
+	 * Textarea with context sensitive menu
+	 */
 	public SukuTextArea() {
 		me = this;
 		popupListener = new PopupListener();
-		TextPopupMenu pop = TextPopupMenu.getInstance(this);
+		// TextPopupMenu pop = TextPopupMenu.getInstance(this);
 		this.addMouseListener(popupListener);
 	}
 
@@ -42,30 +46,28 @@ public class SukuTextArea extends JTextArea implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
-
+			//
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-
+			//
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-
+			//
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
+			//
 
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
+			// 
 
 		}
 
@@ -124,7 +126,7 @@ public class SukuTextArea extends JTextArea implements ActionListener {
 
 			if (e.isPopupTrigger()) {
 
-				Point clickPoint = e.getPoint();
+				// Point clickPoint = e.getPoint();
 
 				TextPopupMenu pop = TextPopupMenu.getInstance(me);
 				pop.enableHiskiMenu(maybeHiski);
@@ -152,8 +154,14 @@ public class SukuTextArea extends JTextArea implements ActionListener {
 					.getSelectedText());
 			Clipboard clipboard = Toolkit.getDefaultToolkit()
 					.getSystemClipboard();
-			clipboard.setContents(stringSelection, null);
+			clipboard.setContents(stringSelection, this);
 		}
+
+	}
+
+	@Override
+	public void lostOwnership(Clipboard arg0, Transferable arg1) {
+		// do nothing
 
 	}
 

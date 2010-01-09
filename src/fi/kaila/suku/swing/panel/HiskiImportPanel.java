@@ -67,7 +67,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private JButton close;
 	private JButton getHiski;
 	private JTextField hiskiNumber;
-	private JButton testDo;
+	private JButton upload;
+	private JButton normalize;
 
 	private JLabel book;
 	private JTextField srk;
@@ -93,6 +94,12 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private JComboBox[] pSex;
 	private JLabel[] pSukuPid;
 	private JLabel[] pSukuName;
+
+	private JTextField[] rOccu;
+	private JTextField[] rGivenname;
+	private JTextField[] rPatronym;
+	private JTextField[] rSurname;
+
 	private JTextField[] pOccu;
 	private JTextField[] pGivenname;
 	private JTextField[] pPatronym;
@@ -220,12 +227,20 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 		y += 30;
 
-		this.testDo = new JButton(Resurses.getString(Resurses.HISKI_UPLOAD));
+		upload = new JButton(Resurses.getString(Resurses.HISKI_UPLOAD));
 		// this.ok.setDefaultCapable(true);
-		add(this.testDo);
-		this.testDo.setActionCommand(Resurses.HISKI_UPLOAD);
-		this.testDo.addActionListener(this);
-		this.testDo.setBounds(40, y, 150, 24);
+		add(upload);
+		upload.setActionCommand(Resurses.HISKI_UPLOAD);
+		upload.addActionListener(this);
+		upload.setBounds(40, y, 150, 24);
+
+		y += 30;
+		normalize = new JButton(Resurses.getString(Resurses.HISKI_NORMALIZE));
+		// this.ok.setDefaultCapable(true);
+		add(normalize);
+		normalize.setActionCommand(Resurses.HISKI_NORMALIZE);
+		normalize.addActionListener(this);
+		normalize.setBounds(40, y, 150, 24);
 
 		lbl = new JLabel(Resurses.getString("HISKI_MISTAMINNE"));
 		add(lbl);
@@ -289,6 +304,10 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		pTypeName = new String[luku];
 		pType = new JLabel[luku];
 		pSex = new JComboBox[luku];
+		rOccu = new JTextField[luku];
+		rGivenname = new JTextField[luku];
+		rPatronym = new JTextField[luku];
+		rSurname = new JTextField[luku];
 		pOccu = new JTextField[luku];
 		pGivenname = new JTextField[luku];
 		pPatronym = new JTextField[luku];
@@ -296,57 +315,77 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		pAge = new JTextField[luku];
 		pReason = new JTextField[luku];
 		int i = 0;
-
+		int rh = 100;
 		for (i = 0; i < luku; i++) {
 
 			pSukuPid[i] = new JLabel();
 			add(pSukuPid[i]);
-			pSukuPid[i].setBounds(150, y + i * 70, 100, 20);
+			pSukuPid[i].setBounds(150, y + i * rh, 100, 20);
 
 			pSukuName[i] = new JLabel();
 			add(pSukuName[i]);
-			pSukuName[i].setBounds(200, y + i * 70, 200, 20);
+			pSukuName[i].setBounds(200, y + i * rh, 200, 20);
 
 			pNumero[i] = new JLabel();
 			add(pNumero[i]);
-			pNumero[i].setBounds(40, y + 0 + i * 70, 40, 20);
+			pNumero[i].setBounds(40, y + 0 + i * rh, 40, 20);
 
 			pTypeName[i] = null;
 
 			pType[i] = new JLabel();
 			add(pType[i]);
-			pType[i].setBounds(60, y + 0 + i * 70, 40, 20);
+			pType[i].setBounds(60, y + 0 + i * rh, 40, 20);
 
 			pSex[i] = new JComboBox(sexes);
 			add(pSex[i]);
-			pSex[i].setBounds(100, y + 45 + i * 70, 80, 20);
+			pSex[i].setBounds(100, y + 66 + i * rh, 80, 20);
+
+			rOccu[i] = new JTextField();
+			rOccu[i].setEditable(false);
+			add(rOccu[i]);
+			rOccu[i].setBounds(40, y + 22 + i * rh, 150, 20);
+
+			rGivenname[i] = new JTextField();
+			rGivenname[i].setEditable(false);
+			add(rGivenname[i]);
+			rGivenname[i].setBounds(200, y + 22 + i * rh, 150, 20);
+
+			rPatronym[i] = new JTextField();
+			rPatronym[i].setEditable(false);
+			add(rPatronym[i]);
+			rPatronym[i].setBounds(360, y + 22 + i * rh, 150, 20);
+
+			rSurname[i] = new JTextField();
+			rSurname[i].setEditable(false);
+			add(rSurname[i]);
+			rSurname[i].setBounds(520, y + 22 + i * rh, 150, 20);
 
 			pOccu[i] = new JTextField();
 			add(pOccu[i]);
-			pOccu[i].setBounds(40, y + 20 + i * 70, 150, 20);
+			pOccu[i].setBounds(40, y + 44 + i * rh, 150, 20);
 
 			pGivenname[i] = new JTextField();
 			add(pGivenname[i]);
-			pGivenname[i].setBounds(200, y + 20 + i * 70, 150, 20);
+			pGivenname[i].setBounds(200, y + 44 + i * rh, 150, 20);
 
 			pPatronym[i] = new JTextField();
 			add(pPatronym[i]);
-			pPatronym[i].setBounds(360, y + 20 + i * 70, 150, 20);
+			pPatronym[i].setBounds(360, y + 44 + i * rh, 150, 20);
 
 			pSurname[i] = new JTextField();
 			add(pSurname[i]);
-			pSurname[i].setBounds(520, y + 20 + i * 70, 150, 20);
+			pSurname[i].setBounds(520, y + 44 + i * rh, 150, 20);
 
 			pAge[i] = new JTextField();
 			add(pAge[i]);
-			pAge[i].setBounds(200, y + 45 + i * 70, 150, 20);
+			pAge[i].setBounds(200, y + 66 + i * rh, 150, 20);
 
 			pReason[i] = new JTextField();
 			add(pReason[i]);
-			pReason[i].setBounds(360, y + 45 + i * 70, 310, 20);
+			pReason[i].setBounds(360, y + 66 + i * rh, 310, 20);
 
 		}
-		Dimension panelSize = new Dimension(740, y + 45 + i * 70);
+		Dimension panelSize = new Dimension(740, y + 45 + i * rh);
 		this.setPreferredSize(panelSize);
 		updateUI();
 	}
@@ -406,6 +445,28 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			} else if ("umuutt".equals(bookName) || "smuutt".equals(bookName)) {
 				uploadMuuttaneetToDb();
 			}
+		} else if (cmd.equals(Resurses.HISKI_NORMALIZE)) {
+
+			for (int i = 0; i < pNumero.length; i++) {
+
+				// now lets just begin with conversting dr to dotter and s to
+				// son at end of patronym
+
+				String patro = rPatronym[i].getText();
+
+				if (patro.endsWith(".") || patro.endsWith(":")) {
+					patro = patro.substring(0, patro.length() - 1);
+				}
+				if (patro.endsWith("dr")) {
+					patro = patro.substring(0, patro.length() - 1) + "otter";
+				} else if (patro.endsWith("s")) {
+					patro += "on";
+				}
+
+				pPatronym[i].setText(patro);
+
+			}
+
 		}
 
 	}
@@ -988,6 +1049,10 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			remove(pNumero[i]);
 			remove(pType[i]);
 			remove(pSex[i]);
+			remove(rOccu[i]);
+			remove(rGivenname[i]);
+			remove(rPatronym[i]);
+			remove(rSurname[i]);
 			remove(pOccu[i]);
 			remove(pGivenname[i]);
 			remove(pPatronym[i]);
@@ -1134,12 +1199,16 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 						} else if (elpNam.equals("talo")) {
 							pReason[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("ammatti")) {
+							rOccu[pidx].setText(elp.getTextContent());
 							pOccu[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("etunimi")) {
+							rGivenname[pidx].setText(elp.getTextContent());
 							pGivenname[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("patronyymi")) {
+							rPatronym[pidx].setText(elp.getTextContent());
 							pPatronym[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("sukunimi")) {
+							rSurname[pidx].setText(elp.getTextContent());
 							pSurname[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("ika")) {
 							StringBuffer age = new StringBuffer();
