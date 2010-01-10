@@ -73,81 +73,33 @@ public class AncestorReport extends CommonReport {
 					+ " [" + vlist.resu + "]");
 			return;
 		}
-		for (int i = 0; i < vlist.tables.size(); i++) {
-			ReportUnit cu = vlist.tables.get(i);
+		tables = vlist.tables;
+
+		for (int i = 0; i < tables.size(); i++) {
+			ReportUnit cu = tables.get(i);
 			logger.info("anc:" + cu);
 		}
 
-	}
-
-	/**
-	 * execute the report.
-	 * 
-	 * @throws SukuException
-	 */
-	public void executedescendantReport() throws SukuException {
-		SukuData vlist = null;
-
-		if (caller.getDescendantPane().getTableOrder().getSelection() == null) {
-			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT)
-					+ Resurses.getString("REPORT_ERROR_ORDERMISSING"));
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ": " + Resurses.getString("REPORT_ERROR_ORDERMISSING"));
-			return;
-		}
-		String order = caller.getDescendantPane().getTableOrder()
-				.getSelection().getActionCommand();
-
-		try {
-			vlist = caller.getKontroller()
-					.getSukuData(
-							"cmd=" + Resurses.CMD_CREATE_TABLES,
-							"type=" + Resurses.CMD_DESC_TYPE,
-							"order=" + order,
-							"adopted="
-									+ caller.getDescendantPane().getAdopted(),
-							"generations="
-									+ caller.getDescendantPane()
-											.getGenerations(),
-							"spougen="
-									+ caller.getDescendantPane()
-											.getSpouseAncestors(),
-							"chilgen="
-									+ caller.getDescendantPane()
-											.getChildAncestors(),
-							"pid=" + caller.getPid());
-		} catch (SukuException e) {
-			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
-					e);
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ":" + e.getMessage());
-		}
-
-		if (vlist != null) {
-			logger.info("Descendant repo");
-			tables = vlist.tables;
-
+		if (tables.size() > 0) {
 			personReferences = Utils.getDescendantToistot(tables);
 
-			if (tables.size() > 0) {
-
-				repoWriter.createReport();
-				createReport();
-				repoWriter.closeReport();
-
-			}
+			repoWriter.createReport();
+			createReport();
+			repoWriter.closeReport();
 
 		}
+
 	}
 
 	private void createReport() {
 		textReferences = new HashMap<String, PersonInTables>();
+		long tabno = 0;
 		for (int i = 0; i < tables.size(); i++) {
 
 			ReportUnit tab = tables.get(i);
-			createTable(i, tab);
+
+			createTable(i, tab, tabno != tab.getTableNo());
+			tabno = tab.getTableNo();
 		}
 
 		caller.setRunnerValue("100;OK");

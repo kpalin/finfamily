@@ -1125,7 +1125,8 @@ public class Read2004XML extends DefaultHandler {
 
 		if (this.currentEle.equals(relationTG)) {
 			int rid;
-
+			int aid = 0;
+			int bid = 0;
 			try {
 				this.pstm = this.con
 						.prepareStatement("select nextval('relationseq')");
@@ -1147,14 +1148,17 @@ public class Read2004XML extends DefaultHandler {
 					this.pstm.setInt(1, rid);
 					if (this.relationIdA != null) {
 						try {
-							l = Integer.parseInt(this.relationIdA.substring(1));
-							this.pstm.setInt(2, l);
+							aid = Integer.parseInt(this.relationIdA
+									.substring(1));
+
+							this.pstm.setInt(2, aid);
 						} catch (NumberFormatException ne) {
 							throw new SAXException("RelationIdA "
 									+ this.relationIdA + " not numeric");
 						}
 					}
 					this.pstm.setString(3, "FATH");
+					l = 0;
 					if (this.relationRowA != null) {
 						try {
 							l = Integer.parseInt(this.relationRowA);
@@ -1166,13 +1170,19 @@ public class Read2004XML extends DefaultHandler {
 					}
 					this.pstm.setTimestamp(5,
 							toTimestamp(this.relationCreateDate));
-					this.pstm.executeUpdate();
+					if (aid > 0) {
+						this.pstm.executeUpdate();
+					} else {
+						logger.warning("A PID = 0 for RID = " + rid);
+					}
 
 					this.pstm.setInt(1, rid);
 					if (this.relationIdB != null) {
 						try {
-							l = Integer.parseInt(this.relationIdB.substring(1));
-							this.pstm.setInt(2, l);
+							bid = Integer.parseInt(this.relationIdB
+									.substring(1));
+
+							this.pstm.setInt(2, bid);
 						} catch (NumberFormatException ne) {
 							throw new SAXException("RelationIdB "
 									+ this.relationIdB + " not numeric");
@@ -1190,7 +1200,11 @@ public class Read2004XML extends DefaultHandler {
 					}
 					this.pstm.setTimestamp(5,
 							toTimestamp(this.relationCreateDate));
-					this.pstm.executeUpdate();
+					if (bid > 0) {
+						this.pstm.executeUpdate();
+					} else {
+						logger.warning("B PID = 0 for RID = " + rid);
+					}
 
 					if (this.relationDescription != null) {
 

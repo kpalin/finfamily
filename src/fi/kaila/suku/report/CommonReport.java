@@ -141,7 +141,7 @@ public abstract class CommonReport {
 	 * @param idx
 	 * @param tab
 	 */
-	protected void createTable(int idx, ReportUnit tab) {
+	protected void createTable(int idx, ReportUnit tab, boolean printTableNumber) {
 
 		BodyText bt = null;
 		ReportTableMember subjectmember = tab.getParent().get(0);
@@ -209,12 +209,13 @@ public abstract class CommonReport {
 		if (tab.getGen() > 0) {
 			genText = Roman.int2roman(tab.getGen());
 		}
-		bt = new TableHeaderText();
+		if (printTableNumber) {
+			bt = new TableHeaderText();
 
-		bt.addText(caller.getTypeText("TABLE"));
-		bt.addText(" " + tab.getTableNo());
-		repoWriter.addText(bt);
-
+			bt.addText(caller.getTypeText("TABLE"));
+			bt.addText(" " + tab.getTableNo());
+			repoWriter.addText(bt);
+		}
 		bt = new TableSubHeaderText();
 		PersonInTables ref;
 		String fromTable = "";
