@@ -17,6 +17,9 @@ public class ReportUnit implements Serializable {
 
 	private int pid = 0;
 
+	private int fatherPid = 0;
+	private int motherPid = 0;
+
 	private long tableNo = 0;
 
 	private int gen = 0;
@@ -141,19 +144,14 @@ public class ReportUnit implements Serializable {
 	public String toString() {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append("pid=" + pid + "/ tab=" + tableNo);
-		// if (parentTable != 0){
-		// sb.append("\n  paretab=" + parentTable);
-		//			
-		// for (int i = 0; i < parentTables.size(); i++) {
-		// long ll =parentTables.get(i);
-		// if (i == 0){
-		// sb.append("\n  paretab=" + ll);
-		// } else {
-		// sb.append(","+ll);
-		// }
-		// }
-		// }
+		sb.append("pid=" + pid + ",tab=" + tableNo + ",gen=" + gen);
+
+		if (fatherPid > 0) {
+			sb.append(",father=" + fatherPid);
+		}
+		if (motherPid > 0) {
+			sb.append(",mother=" + motherPid);
+		}
 		if (asParent.size() > 0) {
 			for (int i = 0; i < asParent.size(); i++) {
 				ReportTableMember rm = asParent.get(i);
@@ -177,6 +175,36 @@ public class ReportUnit implements Serializable {
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * @param fatherPid
+	 *            the fatherPid to set
+	 */
+	public void setFatherPid(int fatherPid) {
+		this.fatherPid = fatherPid;
+	}
+
+	/**
+	 * @return the fatherPid
+	 */
+	public int getFatherPid() {
+		return fatherPid;
+	}
+
+	/**
+	 * @param motherPid
+	 *            the motherPid to set
+	 */
+	public void setMotherPid(int motherPid) {
+		this.motherPid = motherPid;
+	}
+
+	/**
+	 * @return the motherPid
+	 */
+	public int getMotherPid() {
+		return motherPid;
 	}
 
 }

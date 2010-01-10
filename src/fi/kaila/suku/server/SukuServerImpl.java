@@ -404,6 +404,10 @@ public class SukuServerImpl implements SukuServer {
 						map.get("generations"), map.get("spougen"), map
 								.get("chilgen"), map.get("adopted"), map
 								.get("pid"));
+			} else if ("anc".equals(map.get("type"))) {
+				fam = createAncTables(map.get("order"), map.get("generations"),
+						map.get("pid"));
+
 			} else {
 				fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
 			}
@@ -678,6 +682,21 @@ public class SukuServerImpl implements SukuServer {
 		}
 
 		return fam;
+	}
+
+	private SukuData createAncTables(String order, String generations,
+			String spid) throws SukuException {
+		SukuData dat;
+		try {
+			int geners = Integer.parseInt(generations);
+
+			ReportUtil x = new ReportUtil(con);
+			dat = x.createAncestorStructure(Integer.parseInt(spid), geners,
+					order);
+		} catch (Exception e) {
+			throw new SukuException(e);
+		}
+		return dat;
 	}
 
 	private SukuData getUnitCount() throws SukuException {
@@ -1069,7 +1088,7 @@ public class SukuServerImpl implements SukuServer {
 			}
 
 			ReportUtil x = new ReportUtil(con);
-			dat = x.createTableStructure(Integer.parseInt(spid), geners, spgen,
+			dat = x.createDescendantStructure(Integer.parseInt(spid), geners, spgen,
 					chgen, order, adop);
 		} catch (Exception e) {
 			throw new SukuException(e);

@@ -72,8 +72,9 @@ public class ReportUtil {
 	 * @return result of process
 	 * @throws SQLException
 	 */
-	public SukuData createTableStructure(int pid, int generations, int spouGen,
-			int chilGen, String order, boolean adopted) throws SQLException {
+	public SukuData createDescendantStructure(int pid, int generations,
+			int spouGen, int chilGen, String order, boolean adopted)
+			throws SQLException {
 		SukuData fam = new SukuData();
 		unitMap = new HashMap<Integer, ReportUnit>();
 
@@ -327,7 +328,8 @@ public class ReportUtil {
 			return nexttab;
 		}
 		// create a table for the child
-		ReportUnit unit = createOneTable(nexttab, chi, gen, adopted);
+		ReportUnit unit = createOneTable(nexttab, chi, gen, adopted, true,
+				false);
 
 		if (nexttab == 0 && unit.getChild().size() == 0) {
 			unitMap.put(unit.getPid(), unit);
@@ -444,8 +446,43 @@ public class ReportUtil {
 
 	}
 
+	private int createAncestorTables(int nexttab, ReportTableMember chi,
+			int gen, int generations, String order) throws SQLException {
+
+		ReportUnit pidTable = unitMap.get(chi.getPid());
+
+		if (pidTable != null) {
+			return nexttab;
+		}
+
+		if (gen > generations) {
+			return nexttab;
+		}
+		// create a table for the child
+		ReportUnit unit = createOneTable(nexttab, chi, gen, false, false, true);
+
+		unitMap.put(unit.getPid(), unit);
+
+		if (unit.getFatherPid() > 0) {
+			ReportTableMember chif = new ReportTableMember();
+			chif.setPid(unit.getFatherPid());
+			createAncestorTables(nexttab * 2, chif, gen + 1, generations, order);
+		}
+
+		if (unit.getMotherPid() > 0) {
+			ReportTableMember chim = new ReportTableMember();
+			chim.setPid(unit.getMotherPid());
+			createAncestorTables(nexttab * 2 + 1, chim, gen + 1, generations,
+					order);
+		}
+
+		return 0;
+
+	}
+
 	private ReportUnit createOneTable(int tabno, ReportTableMember chi,
-			int gen, boolean adopted) throws SQLException {
+			int gen, boolean adopted, boolean includeFamily,
+			boolean includeParents) throws SQLException {
 
 		String sql;
 
@@ -477,6 +514,31 @@ public class ReportUtil {
 		member.setSex(sex);
 		unit.addParent(member);
 
+		if (includeParents) {
+			sql = "select bid,p.tag,r.tag from parent as p left join relationnotice as r on p.rid=r.rid where aid=?";
+			stm = con.prepareStatement(sql);
+			stm.setInt(1, pid);
+
+			rs = stm.executeQuery();
+			while (rs.next()) {
+				int parep = rs.getInt(1);
+				String pare = rs.getString(2);
+				String adop = rs.getString(3);
+				if (adop == null) {
+					if ("FATH".equals(pare)) {
+						unit.setFatherPid(parep);
+					} else {
+						unit.setMotherPid(parep);
+					}
+				}
+			}
+			rs.close();
+			stm.close();
+		}
+
+		if (!includeFamily) {
+			return unit;
+		}
 		sql = "select bid,s.tag,u.sex "
 				+ "from spouse as s inner join unit as u on s.bid=u.pid "
 				+ "where s.aid=? order by relationrow";
@@ -713,6 +775,117 @@ public class ReportUtil {
 			}
 		}
 
+	}
+
+	/**
+	 * @param pid
+	 * @param generations
+	 * @param order
+	 * @return ancestor strucure
+	 * @throws SQLException
+	 */
+	public SukuData createAncestorStructure(int pid, int generations,
+			String order) throws SQLException {
+		SukuData fam = new SukuData();
+		unitMap = new HashMap<Integer, ReportUnit>();
+
+		ReportTableMember chi = new ReportTableMember();
+		chi.setPid(pid);
+
+		createAncestorTables(1, chi, 1, generations, order);
+		Vector<ReportUnit> curvec = new Vector<ReportUnit>();
+		Vector<ReportUnit> nxtvec = null;
+		if (order.equals(ReportWorkerDialog.SET_ANC_ESPOLIN)) {
+
+			ReportUnit cu = unitMap.get(pid);
+			cu.setTableNo(0);
+			cu.setGen(0);
+			curvec.add(cu);
+			long epsotab = 0;
+			while (curvec.size() > 0) {
+				nxtvec = new Vector<ReportUnit>();
+				for (int i = 0; i < curvec.size(); i++) {
+					ReportUnit cux = curvec.get(i);
+					if (cux.getTableNo() == 0) {
+						if (cux.getFatherPid() == 0 && cux.getMotherPid() == 0) {
+							continue;
+						}
+						epsotab++;
+						cux.setTableNo(epsotab);
+						tables.add(cux);
+
+						ReportUnit cuxx = cux;
+						ReportUnit moxx;
+						while (cuxx.getFatherPid() > 0) {
+							// int prepid=cuxx.getPid();
+							int pregen = cuxx.getGen();
+							int mopid = cuxx.getMotherPid();
+							int fapid = cuxx.getFatherPid();
+							cuxx = unitMap.get(fapid);
+							if (cuxx.getTableNo() == 0) {
+								cuxx.setTableNo(cux.getTableNo());
+								cuxx.setGen(pregen + 1);
+								cuxx.setTableNo(epsotab);
+								tables.add(cuxx);
+							}
+							if (mopid > 0) {
+								moxx = unitMap.get(mopid);
+								nxtvec.add(moxx);
+							}
+						}
+					}
+				}
+				curvec = nxtvec;
+			}
+
+		} else {
+
+			ReportUnit cu = unitMap.get(pid);
+			cu.setTableNo(1);
+			cu.setGen(0);
+			curvec.add(cu);
+
+			while (curvec.size() > 0) {
+				nxtvec = new Vector<ReportUnit>();
+				for (int i = 0; i < curvec.size(); i++) {
+
+					ReportUnit cux = curvec.get(i);
+
+					tables.add(cux);
+					int fid = cux.getFatherPid();
+					if (fid > 0) {
+						ReportUnit cuf = unitMap.get(fid);
+						if (cuf.getTableNo() == 0) {
+							cuf.setTableNo(cux.getTableNo() * 2);
+							cuf.setGen(cux.getGen() + 1);
+							// tables.add(cuf);
+							nxtvec.add(cuf);
+						}
+
+					}
+
+					int mid = cux.getMotherPid();
+					if (mid > 0) {
+						ReportUnit cum = unitMap.get(mid);
+						if (cum.getTableNo() == 0) {
+							cum.setTableNo(cux.getTableNo() * 2 + 1);
+							cum.setGen(cux.getGen() + 1);
+							// tables.add(cum);
+							nxtvec.add(cum);
+						}
+
+					}
+
+				}
+				curvec = nxtvec;
+
+			}
+
+		}
+
+		fam.reportUnits = unitMap;
+		fam.tables = tables;
+		return fam;
 	}
 
 }

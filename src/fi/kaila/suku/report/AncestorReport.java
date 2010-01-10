@@ -51,7 +51,7 @@ public class AncestorReport extends CommonReport {
 		boolean showFamily = caller.getAncestorPane().getShowfamily();
 		int generations = caller.getAncestorPane().getGenerations();
 		logger.info("Ancestor report for " + caller.getPid() + ", order="
-				+ order + ", inlude family = [" + showFamily + "] with ["
+				+ order + ", include family = [" + showFamily + "] with ["
 				+ generations + "] generations");
 
 		try {
@@ -66,6 +66,16 @@ public class AncestorReport extends CommonReport {
 			JOptionPane.showMessageDialog(caller, Resurses
 					.getString(Resurses.CREATE_REPORT)
 					+ ":" + e.getMessage());
+		}
+		if (vlist.resu != null) {
+			JOptionPane.showMessageDialog(caller, Resurses
+					.getString(Resurses.CREATE_REPORT)
+					+ " [" + vlist.resu + "]");
+			return;
+		}
+		for (int i = 0; i < vlist.tables.size(); i++) {
+			ReportUnit cu = vlist.tables.get(i);
+			logger.info("anc:" + cu);
 		}
 
 	}
