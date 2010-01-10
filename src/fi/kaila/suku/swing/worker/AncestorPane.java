@@ -30,6 +30,7 @@ public class AncestorPane extends JPanel {
 
 	private JCheckBox ancestorShowFamily = null;
 	private JTextField ancestorShowDescGen = null;
+	private JTextField generations = null;
 
 	/**
 	 * Constructor sets up ths fields
@@ -41,6 +42,18 @@ public class AncestorPane extends JPanel {
 
 		setLayout(null);
 
+		JPanel pp = new JPanel();
+		pp.setLayout(null);
+		pp.setBounds(rtypx, rtypy, 200, 20);
+		generations = new JTextField();
+		generations.setText("" + 99);
+		pp.add(generations);
+		generations.setBounds(0, 0, 40, 20);
+		JLabel lb = new JLabel(Resurses.getString("REPORT.DESC.GENERATIONS"));
+		pp.add(lb);
+		lb.setBounds(50, 0, 180, 20);
+		add(pp);
+		rtypy += 24;
 		JPanel pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.ANC.NUMBERING")));
@@ -52,6 +65,7 @@ public class AncestorPane extends JPanel {
 				.getString("REPORT.ANC.NUMBERING.STRADONIZ"));
 		formd.setActionCommand(ReportWorkerDialog.SET_ANC_STRADONIZ);
 		ancestorNumberingFormatGroup.add(formd);
+		formd.setSelected(true);
 		pane.add(formd);
 		formd = new JRadioButton(Resurses
 				.getString("REPORT.ANC.NUMBERING.HAGER"));
@@ -72,20 +86,42 @@ public class AncestorPane extends JPanel {
 		ancestorShowFamily.setBounds(rtypx, rtypy, 280, 20);
 		add(ancestorShowFamily);
 		rtypy += 22;
-
-		JPanel pp = new JPanel();
+		pp = new JPanel();
 		pp.setLayout(null);
 		pp.setBounds(rtypx, rtypy, 300, 50);
 
 		ancestorShowDescGen = new JTextField();// (NumberFormat.getIntegerInstance());
 		ancestorShowDescGen.setText("0");
+		ancestorShowDescGen.setVisible(false);
+		// TODO decide if this will be implemented
 		ancestorShowDescGen.setBounds(0, 0, 40, 20);
 		pp.add(ancestorShowDescGen);
 
-		JLabel lb = new JLabel(Resurses.getString("REPORT.ANC.SHOW.DESC.GEN"));
-		pp.add(lb);
-		lb.setBounds(50, 0, 280, 20);
-		add(pp);
+		// JLabel lb = new
+		// JLabel(Resurses.getString("REPORT.ANC.SHOW.DESC.GEN"));
+		// pp.add(lb);
+		// lb.setBounds(50, 0, 280, 20);
+		// add(pp);
+
+	}
+
+	/**
+	 * @return no of generations
+	 */
+	public int getGenerations() {
+
+		int gen = 0;
+		try {
+			gen = Integer.parseInt(generations.getText());
+		} catch (NumberFormatException ne) {
+			gen = 99;
+			generations.setText("99");
+		}
+		return gen;
+	}
+
+	void setGenerations(String string) {
+		generations.setText(string);
 
 	}
 

@@ -55,6 +55,8 @@ import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
+import fi.kaila.suku.report.AncestorReport;
+import fi.kaila.suku.report.CommonReport;
 import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
 import fi.kaila.suku.report.JavaReport;
@@ -842,8 +844,15 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	/**
 	 * @return descendat panel
 	 */
-	public DescendantPane getDescendantPanel() {
+	public DescendantPane getDescendantPane() {
 		return descendantPanel;
+	}
+
+	/**
+	 * @return ancestor panel
+	 */
+	public AncestorPane getAncestorPane() {
+		return ancestorPanel;
 	}
 
 	/**
@@ -951,6 +960,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					reportTypePane.setSelectedIndex(ii);
 				} else if (vx[0].equals("descgen")) {
 					descendantPanel.setGenerations(vx[1]);
+				} else if (vx[0].equals("ancgen")) {
+					ancestorPanel.setGenerations(vx[1]);
 				} else if (vx[0].equals("descadopted")) {
 					descendantAdopted = true;
 
@@ -1015,10 +1026,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 								b = true;
 							}
 							typesTable.setValueAt(b, row, 4);
-							String newText = "";
-							if (vx[1].length() > 4) {
-								newText = vx[1].substring(4);
-							}
+							// String newText = "";
+							// if (vx[1].length() > 4) {
+							// newText = vx[1].substring(4);
+							// }
 							// typesTable.setValueAt(newText, row, 5);
 							break;
 						}
@@ -1106,6 +1117,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			String listSele = null;
 			switch (i) {
 			case 0:
+			case 1:
 				// we create new instances as needed.
 				task = new Task();
 				task.addPropertyChangeListener(this);
@@ -1206,6 +1218,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		v.add("reportIndex=" + reportTypePane.getSelectedIndex());
 
 		v.add("descgen=" + descendantPanel.getGenerations());
+		v.add("ancgen=" + ancestorPanel.getGenerations());
 		if (descendantPanel.getAdopted()) {
 			v.add("descadopted=true");
 		}
@@ -1280,7 +1293,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		return spouseData;
 	}
 
-	DescendantReport dr = null;
+	CommonReport dr = null;
 
 	class Task extends SwingWorker<Void, Void> {
 
@@ -1315,8 +1328,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				}
 				setProgress(0);
 
-				dr = new DescendantReport(self, repo);
+				if (reportTypePane.getSelectedIndex() == 0) {
 
+					dr = new DescendantReport(self, repo);
+				} else {
+					dr = new AncestorReport(self, repo);
+				}
 				dr.executeReport();
 
 			} catch (Exception e) {

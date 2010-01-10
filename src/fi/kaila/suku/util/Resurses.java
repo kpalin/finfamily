@@ -304,6 +304,8 @@ public class Resurses {
 
 	public static final String HISKI_NORMALIZE = "HISKI_NORMALIZE";
 
+	public static final String CMD_ANC_TYPE = "anc";
+
 	/** */
 	private static Resurses myself = null;
 	private static ResourceBundle resources = null;

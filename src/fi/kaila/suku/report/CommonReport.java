@@ -51,7 +51,7 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  * @author Kalle
  * 
  */
-public class CommonReport {
+public abstract class CommonReport {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -72,6 +72,13 @@ public class CommonReport {
 	public Vector<ReportUnit> getTables() {
 		return tables;
 	}
+
+	/**
+	 * Execute the report Implemented by the derived class
+	 * 
+	 * @throws SukuException
+	 */
+	public abstract void executeReport() throws SukuException;
 
 	/**
 	 * @return hashmap with references
@@ -1321,5 +1328,13 @@ public class CommonReport {
 			return "";
 		return text;
 	}
+
+	/**
+	 * 
+	 * Implemented by derived class
+	 * 
+	 * @param b
+	 */
+	public abstract void setVisible(boolean b);
 
 }

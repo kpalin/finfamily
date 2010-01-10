@@ -15,26 +15,58 @@ import fi.kaila.suku.util.pojo.ReportUnit;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * <h1>Descendant report creator</h1>
+ * <h1>Ancestor report creator</h1>
  * 
  * The descendant report structure is creted here
  * 
  * @author Kalle
  * 
  */
-public class DescendantReport extends CommonReport {
+public class AncestorReport extends CommonReport {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
-	 * Constructor for Descendant report
+	 * Constructor for Ancestor report
 	 * 
 	 * @param caller
 	 * @param repoWriter
 	 */
-	public DescendantReport(ReportWorkerDialog caller,
-			ReportInterface repoWriter) {
+	public AncestorReport(ReportWorkerDialog caller, ReportInterface repoWriter) {
 		super(caller, repoWriter);
+
+	}
+
+	/**
+	 * execute the ancestor report
+	 * 
+	 * @throws SukuException
+	 */
+	@Override
+	public void executeReport() throws SukuException {
+		SukuData vlist = null;
+		String order = caller.getAncestorPane().getNumberingFormat()
+				.getSelection().getActionCommand();
+
+		boolean showFamily = caller.getAncestorPane().getShowfamily();
+		int generations = caller.getAncestorPane().getGenerations();
+		logger.info("Ancestor report for " + caller.getPid() + ", order="
+				+ order + ", inlude family = [" + showFamily + "] with ["
+				+ generations + "] generations");
+
+		try {
+			vlist = caller.getKontroller().getSukuData(
+					"cmd=" + Resurses.CMD_CREATE_TABLES,
+					"type=" + Resurses.CMD_ANC_TYPE,
+					"generations=" + generations, "order=" + order,
+					"pid=" + caller.getPid());
+		} catch (SukuException e) {
+			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
+					e);
+			JOptionPane.showMessageDialog(caller, Resurses
+					.getString(Resurses.CREATE_REPORT)
+					+ ":" + e.getMessage());
+		}
 
 	}
 
@@ -43,8 +75,7 @@ public class DescendantReport extends CommonReport {
 	 * 
 	 * @throws SukuException
 	 */
-	@Override
-	public void executeReport() throws SukuException {
+	public void executedescendantReport() throws SukuException {
 		SukuData vlist = null;
 
 		if (caller.getDescendantPane().getTableOrder().getSelection() == null) {

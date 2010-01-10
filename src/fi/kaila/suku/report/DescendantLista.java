@@ -226,4 +226,10 @@ public class DescendantLista extends CommonReport {
 		//		
 
 	}
+
+	@Override
+	public void setVisible(boolean b) {
+		// not implemented here
+
+	}
 }
