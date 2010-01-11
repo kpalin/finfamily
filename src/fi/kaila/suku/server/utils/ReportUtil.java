@@ -447,7 +447,8 @@ public class ReportUtil {
 	}
 
 	private int createAncestorTables(int nexttab, ReportTableMember chi,
-			int gen, int generations, String order) throws SQLException {
+			int gen, int generations, boolean family, String order)
+			throws SQLException {
 
 		ReportUnit pidTable = unitMap.get(chi.getPid());
 
@@ -459,21 +460,22 @@ public class ReportUtil {
 			return nexttab;
 		}
 		// create a table for the child
-		ReportUnit unit = createOneTable(nexttab, chi, gen, false, false, true);
+		ReportUnit unit = createOneTable(nexttab, chi, gen, false, family, true);
 
 		unitMap.put(unit.getPid(), unit);
 
 		if (unit.getFatherPid() > 0) {
 			ReportTableMember chif = new ReportTableMember();
 			chif.setPid(unit.getFatherPid());
-			createAncestorTables(nexttab * 2, chif, gen + 1, generations, order);
+			createAncestorTables(nexttab * 2, chif, gen + 1, generations,
+					family, order);
 		}
 
 		if (unit.getMotherPid() > 0) {
 			ReportTableMember chim = new ReportTableMember();
 			chim.setPid(unit.getMotherPid());
 			createAncestorTables(nexttab * 2 + 1, chim, gen + 1, generations,
-					order);
+					family, order);
 		}
 
 		return 0;
@@ -781,18 +783,18 @@ public class ReportUtil {
 	 * @param pid
 	 * @param generations
 	 * @param order
-	 * @return ancestor strucure
+	 * @return ancestor structure
 	 * @throws SQLException
 	 */
 	public SukuData createAncestorStructure(int pid, int generations,
-			String order) throws SQLException {
+			boolean family, String order) throws SQLException {
 		SukuData fam = new SukuData();
 		unitMap = new HashMap<Integer, ReportUnit>();
 
 		ReportTableMember chi = new ReportTableMember();
 		chi.setPid(pid);
 
-		createAncestorTables(1, chi, 1, generations, order);
+		createAncestorTables(1, chi, 1, generations, family, order);
 		Vector<ReportUnit> curvec = new Vector<ReportUnit>();
 		Vector<ReportUnit> nxtvec = null;
 		if (order.equals(ReportWorkerDialog.SET_ANC_ESPOLIN)) {

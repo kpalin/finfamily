@@ -59,7 +59,7 @@ public class AncestorReport extends CommonReport {
 					"cmd=" + Resurses.CMD_CREATE_TABLES,
 					"type=" + Resurses.CMD_ANC_TYPE,
 					"generations=" + generations, "order=" + order,
-					"pid=" + caller.getPid());
+					"family=" + showFamily, "pid=" + caller.getPid());
 		} catch (SukuException e) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
 					e);
