@@ -857,20 +857,30 @@ public class ImportGedcomUtil {
 		GedcomFams f = new GedcomFams();
 		f.id = record.id;
 		pers.setUserRefn(record.id);
+		String previousGivenName = null;
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine noti = record.lines.get(i);
 			if (noti.tag.equals("SEX")) {
 				pers.setSex(noti.lineValue);
 			} else if (noti.tag.equals("REFN")) {
 				pers.setUserRefn(noti.lineValue);
+			} else if (noti.tag.equals("ALIA")) {
+				if (sourceSystem != null
+						&& sourceSystem.toLowerCase().indexOf("sukujutut") >= 0) {
+					UnitNotice notice = new UnitNotice("NAME");
+					notices.add(notice);
+					notice.setGivenname(previousGivenName);
+					notice.setSurname(noti.lineValue);
+				}
 			} else if (noti.tag.equals("NAME")) {
 				if (noti.lineValue != null) {
 					UnitNotice notice = new UnitNotice("NAME");
 					notices.add(notice);
+					previousGivenName = null;
 					String parts[] = noti.lineValue.split("/");
 					if (parts.length > 0) {
 						if (parts[0].length() > 0) {
-
+							previousGivenName = parts[0];
 							notice.setGivenname(Utils.extractPatronyme(
 									parts[0], false));
 							notice.setPatronym(Utils.extractPatronyme(parts[0],
@@ -1412,11 +1422,13 @@ public class ImportGedcomUtil {
 	}
 
 	String submitter = null;
+	private String sourceSystem = null;
 
 	private void consumeGedcomHead(GedcomLine record) {
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine notice1 = record.lines.get(i);
 			if (notice1.tag.equals("SOUR")) {
+				sourceSystem = notice1.lineValue;
 				continue;
 			} else if (notice1.tag.equals("DEST")) {
 				continue;
