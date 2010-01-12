@@ -864,14 +864,16 @@ public class ImportGedcomUtil {
 				pers.setSex(noti.lineValue);
 			} else if (noti.tag.equals("REFN")) {
 				pers.setUserRefn(noti.lineValue);
-			} else if (noti.tag.equals("ALIA")) {
-				if (sourceSystem != null
-						&& sourceSystem.toLowerCase().indexOf("sukujutut") >= 0) {
-					UnitNotice notice = new UnitNotice("NAME");
-					notices.add(notice);
-					notice.setGivenname(previousGivenName);
-					notice.setSurname(noti.lineValue);
-				}
+			} else if (noti.tag.equals("ALIA") && sourceSystem != null
+					&& sourceSystem.toLowerCase().indexOf("sukujutut") >= 0
+					&& noti.lineValue != null
+					&& noti.lineValue.indexOf(" ") < 0
+					&& noti.lineValue.indexOf(",") < 0) {
+				UnitNotice notice = new UnitNotice("NAME");
+				notices.add(notice);
+				notice.setGivenname(previousGivenName);
+				notice.setSurname(noti.lineValue);
+
 			} else if (noti.tag.equals("NAME")) {
 				if (noti.lineValue != null) {
 					UnitNotice notice = new UnitNotice("NAME");
