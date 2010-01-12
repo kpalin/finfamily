@@ -903,6 +903,31 @@ public class ImportGedcomUtil {
 							notice.setPostfix(parts[2]);
 						}
 					}
+
+					for (int j = 0; j < noti.lines.size(); j++) {
+						GedcomLine detail = noti.lines.get(j);
+						if (detail.tag.equals("NSFX")
+								&& notice.getPatronym() == null) {
+							notice.setPatronym(detail.lineValue);
+						} else if (detail.tag.equals("SPFX")
+								|| detail.tag.equals("NPFX")) {
+							if (notice.getPrefix() == null) {
+								notice.setPrefix(detail.lineValue);
+							} else {
+								notice.setPrefix(notice.getPrefix() + " "
+										+ detail.lineValue);
+							}
+						} else if (detail.tag.equals("NOTE")) {
+							if (notice.getDescription() == null) {
+								notice.setDescription(detail.lineValue);
+							} else {
+								notice.setDescription(notice.getDescription()
+										+ " " + detail.lineValue);
+							}
+						} else {
+							unknownLine.add(detail.toString());
+						}
+					}
 				}
 			} else if (noti.tag.equals("NOTE")) {
 				if (noti.lineValue != null) {
