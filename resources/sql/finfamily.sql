@@ -146,6 +146,7 @@ CreateDate timestamp not null default now()   -- timestamp created
 ) with oids;
 
 create index RelationIndex on Relation (RID);
+create index RelationPidIndex on Relation (PID);
 
 --
 -- Row number and Language code on notices
@@ -205,6 +206,10 @@ Modified timestamp,                           -- timestamp modified
 CreateDate timestamp not null default now()    --  timestamp created  
 );
 
+create index UnitNoticePidIndex on UnitNotice (PID);
+create index UnitGivennameIndex on UnitNotice (Givenname);
+create index UnitSurnameIndex on UnitNotice (Surname);
+create index UnitPatronymIndex on UnitNotice (Patronym);
 
 create table UnitLanguage (
 PNID integer not null references UnitNotice(PNID), -- Numeric Id that identifies this Notice, supplied by the system  
@@ -219,6 +224,7 @@ MediaTitle varchar,              -- text describing the multimedia file (L)
 Modified timestamp,                           -- timestamp modified
 CreateDate timestamp not null default now()    --  timestamp created  
 ) with oids;
+
 
 
 create unique index UnitLanguageIdx on UnitLanguage (PNID,LangCode);

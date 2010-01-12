@@ -1,7 +1,19 @@
+--
+-- improve speed 
+--
+create index RelationPidIndex on Relation (PID);
+create index UnitNoticePidIndex on UnitNotice (PID);
+
+create index UnitGivennameIndex on UnitNotice (Givenname);
+create index UnitSurnameIndex on UnitNotice (Surname);
+create index UnitPatronymIndex on UnitNotice (Patronym);
+
 
 --
 -- required in version 454 to use older database to manage relation languages
 --
+
+
 
 ALTER TABLE relationlanguage ADD COLUMN rid integer;
 
