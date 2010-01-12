@@ -1004,7 +1004,7 @@ public class ImportGedcomUtil {
 							notice.setToDate(dateParts[2]);
 						}
 						if (dateParts[3] != null) {
-							if (notice.getDescription() != null) {
+							if (notice.getDescription() == null) {
 								notice.setDescription(dateParts[3]);
 							} else {
 								notice.setDescription(notice.getDescription()
@@ -1240,7 +1240,7 @@ public class ImportGedcomUtil {
 	private String toSukuDate(String gedcomDate) {
 		String[] parts = gedcomDate.split(" ");
 		int dl = parts.length - 1;
-		if (dl > 3) {
+		if (dl > 3 || dl < 0) {
 			return null;
 		}
 		StringBuffer sb = new StringBuffer();
