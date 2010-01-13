@@ -866,14 +866,19 @@ public class ImportGedcomUtil {
 				pers.setUserRefn(noti.lineValue);
 			} else if (noti.tag.equals("ALIA") && sourceSystem != null
 					&& sourceSystem.toLowerCase().indexOf("sukujutut") >= 0
-					&& noti.lineValue != null
-					&& noti.lineValue.indexOf(" ") < 0
-					&& noti.lineValue.indexOf(",") < 0) {
-				UnitNotice notice = new UnitNotice("NAME");
-				notices.add(notice);
-				notice.setGivenname(previousGivenName);
-				notice.setSurname(noti.lineValue);
+					&& noti.lineValue != null) {
 
+				if (noti.lineValue.indexOf(" ") < 0
+						&& noti.lineValue.indexOf(",") < 0) {
+					UnitNotice notice = new UnitNotice("NAME");
+					notices.add(notice);
+					notice.setGivenname(previousGivenName);
+					notice.setSurname(noti.lineValue);
+				} else {
+					UnitNotice notice = new UnitNotice("ALIA");
+					notices.add(notice);
+					notice.setDescription(noti.lineValue);
+				}
 			} else if (noti.tag.equals("NAME")) {
 				if (noti.lineValue != null) {
 					UnitNotice notice = new UnitNotice("NAME");
@@ -945,6 +950,10 @@ public class ImportGedcomUtil {
 						notice.setNoteText(noti.lineValue);
 					}
 				}
+			} else if (noti.tag.equals("ADDR")) {
+				UnitNotice notice = new UnitNotice("RESI");
+				notices.add(notice);
+				extractAddressData(notice, noti);
 			} else if (noti.tag.equals("OBJE")) {
 				UnitNotice notice = new UnitNotice("PHOT");
 				notices.add(notice);
@@ -985,12 +994,7 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("PLAC")) {
 						notice.setPlace(detail.lineValue);
 					} else if (detail.tag.equals("ADDR")) {
-						GedcomAddress address = splitAddress(detail.lineValue);
-						notice.setAddress(address.address);
-						notice.setPostalCode(address.postalCode);
-						notice.setPostOffice(address.postOffice);
-						notice.setCountry(address.country);
-						notice.setEmail(address.email);
+						extractAddressData(notice, detail);
 					} else if (detail.tag.equals("EMAIL")) {
 						notice.setEmail(detail.lineValue);
 					} else if (detail.tag.equals("PHON")) {
@@ -1080,6 +1084,56 @@ public class ImportGedcomUtil {
 			gedPid.put(record.id, pide);
 			f.pid = pide.pid;
 			gedFams.put(f.id, f);
+		}
+
+	}
+
+	private void extractAddressData(UnitNotice notice, GedcomLine noti) {
+		GedcomAddress address = splitAddress(noti.lineValue);
+		notice.setAddress(address.address);
+		notice.setPostalCode(address.postalCode);
+		notice.setPostOffice(address.postOffice);
+		notice.setCountry(address.country);
+		notice.setEmail(address.email);
+		String adr1 = null;
+		String adr2 = null;
+		String adr3 = null;
+
+		for (int j = 0; j < noti.lines.size(); j++) {
+			GedcomLine detail = noti.lines.get(j);
+			if (detail.tag.equals("CITY")) {
+				notice.setPostOffice(detail.lineValue);
+			} else if (detail.tag.equals("STAE")) {
+				notice.setState(detail.lineValue);
+			} else if (detail.tag.equals("POST")) {
+				notice.setPostalCode(detail.lineValue);
+			} else if (detail.tag.equals("CTRY")) {
+				notice.setCountry(detail.lineValue);
+			} else if (detail.tag.equals("ADR1")) {
+				adr1 = detail.lineValue;
+			} else if (detail.tag.equals("ADR2")) {
+				adr2 = detail.lineValue;
+			} else if (detail.tag.equals("ADR3")) {
+				adr3 = detail.lineValue;
+
+			} else {
+				unknownLine.add(detail.toString());
+			}
+		}
+		StringBuffer sb = new StringBuffer();
+		if (adr1 != null) {
+			sb.append(adr1);
+		}
+		if (adr2 != null) {
+			sb.append("\n");
+			sb.append(adr2);
+		}
+		if (adr3 != null) {
+			sb.append("\n");
+			sb.append(adr3);
+		}
+		if (sb.length() > 0) {
+			notice.setAddress(sb.toString());
 		}
 
 	}
