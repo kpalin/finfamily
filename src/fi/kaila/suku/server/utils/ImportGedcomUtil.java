@@ -913,9 +913,17 @@ public class ImportGedcomUtil {
 
 					for (int j = 0; j < noti.lines.size(); j++) {
 						GedcomLine detail = noti.lines.get(j);
-						if (detail.tag.equals("NSFX")
-								&& (notice.getPatronym() == null || notice
-										.getPatronym().equals(detail.lineValue))) {
+						if (detail.tag.equals("NSFX")) {
+							if ((notice.getPatronym() != null && !notice
+									.getPatronym().equals(detail.lineValue))) {
+								StringBuffer sb = new StringBuffer();
+								if (notice.getGivenname() != null) {
+									sb.append(notice.getGivenname());
+									sb.append(" ");
+								}
+								sb.append(notice.getPatronym());
+								notice.setGivenname(sb.toString());
+							}
 							notice.setPatronym(detail.lineValue);
 						} else if (detail.tag.equals("SPFX")
 								|| detail.tag.equals("NPFX")) {
