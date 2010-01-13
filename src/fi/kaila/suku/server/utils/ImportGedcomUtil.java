@@ -990,6 +990,8 @@ public class ImportGedcomUtil {
 					GedcomLine detail = noti.lines.get(j);
 					if (detail.tag.equals("TYPE")) {
 						notice.setNoticeType(detail.lineValue);
+					} else if (detail.tag.equals("CAUS")) {
+						notice.setDescription(detail.lineValue);
 					} else if (detail.tag.equals("FAMC")) {
 					} else if (detail.tag.equals("PLAC")) {
 						notice.setPlace(detail.lineValue);
@@ -1020,7 +1022,11 @@ public class ImportGedcomUtil {
 								notice.setNoteText(notirec.lineValue);
 							}
 						} else {
-							notice.setNoteText(detail.lineValue);
+							if (notice.getDescription() == null) {
+								notice.setDescription(detail.lineValue);
+							} else {
+								notice.setNoteText(detail.lineValue);
+							}
 						}
 					} else if (detail.tag.equals("SOUR")) {
 						if (detail.lineValue.startsWith("@")
