@@ -1172,6 +1172,16 @@ public class NoticePane extends JPanel implements ActionListener,
 			// branch will fall through to the next case. Usually you need to
 			// end this case with a break or return.
 		case NAME:
+
+			// place.setVisible(false);
+			village.setVisible(false);
+			farm.setVisible(false);
+			croft.setVisible(false);
+			// placeLbl.setVisible(false);
+			villageLbl.setVisible(false);
+			farmLbl.setVisible(false);
+			croftLbl.setVisible(false);
+			break;
 		case RESI:
 			// place.setVisible(false);
 			village.setVisible(false);
@@ -1181,6 +1191,13 @@ public class NoticePane extends JPanel implements ActionListener,
 			villageLbl.setVisible(false);
 			farmLbl.setVisible(false);
 			croftLbl.setVisible(false);
+			dateLbl.setBounds(10, lrivi, 70, 20);
+			date.setBounds(lcol, lrivi, 283, 20);
+			lrivi += 24;
+			placeLbl.setBounds(10, lrivi, 70, 20);
+			place.setBounds(lcol, lrivi, lwidth, 20);
+
+			lrivi += 24;
 			break;
 		default:
 
