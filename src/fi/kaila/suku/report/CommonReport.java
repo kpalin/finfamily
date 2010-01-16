@@ -763,11 +763,14 @@ public abstract class CommonReport {
 		// }
 		//
 		// repoWriter.addText(bt);
+		ReportUnit tab;
 		UnitNotice[] notices = null;
 		int fid = 0;
 		int mid = 0;
+		PersonInTables ref;
 		if (ftab != null) {
-			fid = ftab.getPid();
+			tab = ftab;
+			fid = tab.getPid();
 			notices = getInternalNotices(pappadata.persLong.getNotices());
 
 			bt = new MainPersonText();
@@ -777,6 +780,8 @@ public abstract class CommonReport {
 			}
 
 			printName(bt, notices, 2);
+
+			bt = addParentReference(tab, bt);
 			printNotices(bt, notices, 2, ftab.getTableNo());
 		}
 		if (bt.getCount() > 0) {
@@ -784,6 +789,7 @@ public abstract class CommonReport {
 
 		}
 		if (mtab != null) {
+			tab = mtab;
 			mid = mtab.getPid();
 			if (ftab != null) {
 				// now let's look for marriage info
@@ -834,6 +840,8 @@ public abstract class CommonReport {
 			}
 
 			printName(bt, notices, 2);
+			bt = addParentReference(tab, bt);
+
 			printNotices(bt, notices, 2, mtab.getTableNo());
 		}
 
@@ -861,7 +869,7 @@ public abstract class CommonReport {
 			// ensin vanhempien yhteiset lapset
 			// tai ainoan vanhemman lapset
 
-			ReportUnit tab = ftab;
+			tab = ftab;
 			if (tab == null) {
 				tab = mtab;
 			}
@@ -934,6 +942,9 @@ public abstract class CommonReport {
 						bt.addText("(" + caller.getTextValue(adopTag) + ") ");
 					}
 					printName(bt, notices, (toTable.equals("") ? 2 : 3));
+
+					bt = addChildReference(ftab, mtab, cdata.persLong.getPid(),
+							bt);
 					printNotices(bt, notices, (toTable.equals("") ? 2 : 3), tab
 							.getTableNo());
 
@@ -1035,6 +1046,7 @@ public abstract class CommonReport {
 										+ ") ");
 							}
 							printName(bt, notices, (toTable.equals("") ? 2 : 3));
+							bt = addChildReference(ftab, mtab, tab.getPid(), bt);
 							printNotices(bt, notices, (toTable.equals("") ? 2
 									: 3), tab.getTableNo());
 
@@ -1060,6 +1072,85 @@ public abstract class CommonReport {
 
 			repoWriter.addText(bt);
 		}
+	}
+
+	/**
+	 * @param ftab
+	 * @param bt
+	 * @return
+	 */
+	private BodyText addParentReference(ReportUnit ftab, BodyText bt) {
+		PersonInTables ref;
+		ref = personReferences.get(ftab.getPid());
+		if (ref != null) {
+			StringBuffer sb = new StringBuffer();
+			int pareCount = 0;
+			if (ref.asChildren.size() > 0) {
+				if (sb.length() > 0) {
+					sb.append(",");
+				}
+
+			}
+			for (int i = 0; i < ref.asChildren.size(); i++) {
+				if (i > 0) {
+					sb.append(",");
+				}
+				pareCount++;
+				sb.append("" + ref.asChildren.get(i));
+			}
+			if (sb.length() > 0) {
+				String partext = caller
+						.getTextValue((pareCount == 1) ? "PARENT" : "PARENTS");
+				bt.addText("(" + partext + " " + sb.toString() + "). ");
+			}
+		}
+		return bt;
+	}
+
+	/**
+	 * @param ftab
+	 * @param bt
+	 * @return
+	 */
+	private BodyText addChildReference(ReportUnit pop, ReportUnit mom, int pid,
+			BodyText bt) {
+		PersonInTables ref;
+		ref = personReferences.get(pid);
+		if (ref == null) {
+			return bt;
+		}
+
+		long tabPop = pop == null ? 0 : pop.getTableNo();
+		long tabMom = mom == null ? 0 : mom.getTableNo();
+		StringBuffer sb = new StringBuffer();
+		long nxtTab = ref.asOwner;
+		if (nxtTab != tabPop && nxtTab != tabMom && nxtTab != 0) {
+			sb.append(caller.getTextValue("TABLE"));
+			sb.append(" ");
+			sb.append("" + nxtTab);
+		}
+
+		// if (ref != null) {
+		// StringBuffer sb = new StringBuffer();
+		//
+		// for (int i = 0; i < ref.asParents.size(); i++) {
+		//
+		// long nxtTab = ref.asParents.get(i);
+		// if (nxtTab != tabPop && nxtTab != tabMom) {
+		// if (sb.length() > 0) {
+		// sb.append(",");
+		// } else {
+		// sb.append("LAPSUKAISINA: ");
+		// }
+		// sb.append("" + ref.asParents.get(i));
+		// }
+		//
+		// }
+		if (sb.length() > 0) {
+			bt.addText("(" + sb.toString() + "). ");
+		}
+
+		return bt;
 	}
 
 	private UnitNotice[] getInternalNotices(UnitNotice[] xnotices) {

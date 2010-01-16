@@ -123,10 +123,10 @@ public class AncestorReport extends CommonReport {
 					mtab = tab;
 				}
 			}
-			// createDescendantTable(i, tab, tabno != tab.getTableNo());
+
 			createAncestorTable(i, ftab, mtab);
-			tabno = tab.getTableNo();
-			System.out.println("TAB: " + tabno);
+			// tabno = tab.getTableNo();
+			// System.out.println("TAB: " + tabno);
 			i++;
 			if (ftab != null && mtab != null) {
 				i++;
