@@ -210,6 +210,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	// private JButton tSubjectName;
 	private JButton tMapButton;
 	private JButton tRemovePerson;
+	private JButton tAddNotice;
 	private JButton tNoteButton;
 	private JButton tAddressButton;
 	private JButton tFarmButton;
@@ -557,6 +558,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.add(tRemovePerson);
 
+			tAddNotice = makeNavigationButton(Resurses.TOOLBAR_ADDNOTICE_IMAGE,
+					Resurses.TOOLBAR_ADDNOTICE_ACTION, Resurses
+							.getString("TOOLBAR.ADDNOTICE.TOOLTIP"), Resurses
+							.getString("TOOLBAR.ADDNOTICE.ALTTEXT"));
+
+			this.toolbar.add(tAddNotice);
 			this.toolbar.addSeparator(new Dimension(20, 30));
 
 			tNoticesButton = makeNavigationButton("Tietojaksot24",

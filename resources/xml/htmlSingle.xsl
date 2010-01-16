@@ -131,10 +131,27 @@ body {
   </strong>
   </xsl:template> 
   
+    <xsl:template match="bui">
+  <strong class="ul"><i>
+  <xsl:apply-templates/>
+  </i></strong>
+  </xsl:template> 
+  
    <xsl:template match="b">
   <strong>
   <xsl:apply-templates/>
   </strong>
+  </xsl:template> 
+  
+    <xsl:template match="i">
+  <i>
+  <xsl:apply-templates/>
+  </i>
+  </xsl:template> 
+     <xsl:template match="bi">
+  <b><i>
+  <xsl:apply-templates/>
+  </i></b>
   </xsl:template> 
   <!--
   <xsl:template 

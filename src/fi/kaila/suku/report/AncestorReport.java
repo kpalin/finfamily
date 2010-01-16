@@ -84,22 +84,65 @@ public class AncestorReport extends CommonReport {
 			personReferences = Utils.getDescendantToistot(tables);
 
 			repoWriter.createReport();
-			createReport();
+			if (order.equals("ESPOLIN")) {
+				createEspolinReport();
+			} else {
+				createStradoReport();
+			}
 			repoWriter.closeReport();
 
 		}
 
 	}
 
-	private void createReport() {
+	private void createStradoReport() {
 		textReferences = new HashMap<String, PersonInTables>();
 		long tabno = 0;
+		ReportUnit ftab;
+		ReportUnit mtab;
+		int i = 0;
+		while (i < tables.size()) {
+
+			ReportUnit tab = tables.get(i);
+			ftab = null;
+			mtab = null;
+
+			if (i == 0) {
+				ftab = tab;
+			} else {
+
+				if (i > 0 && tab.getTableNo() % 2 == 0) {
+					ftab = tab;
+					if (i < tables.size() - 1
+							&& (tab.getTableNo() + 1 == tables.get(i + 1)
+									.getTableNo())) {
+						mtab = tables.get(i + 1);
+					}
+
+				} else {
+					mtab = tab;
+				}
+			}
+			// createDescendantTable(i, tab, tabno != tab.getTableNo());
+			createAncestorTable(i, ftab, mtab);
+			tabno = tab.getTableNo();
+			System.out.println("TAB: " + tabno);
+			i++;
+			if (ftab != null && mtab != null) {
+				i++;
+			}
+		}
+
+		caller.setRunnerValue("100;OK");
+
+	}
+
+	private void createEspolinReport() {
+		textReferences = new HashMap<String, PersonInTables>();
 		for (int i = 0; i < tables.size(); i++) {
 
 			ReportUnit tab = tables.get(i);
-
-			createTable(i, tab, tabno != tab.getTableNo());
-			tabno = tab.getTableNo();
+			createDescendantTable(i, tab);
 		}
 
 		caller.setRunnerValue("100;OK");

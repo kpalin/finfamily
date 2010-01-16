@@ -460,7 +460,7 @@ public class ReportUtil {
 			return nexttab;
 		}
 		// create a table for the child
-		ReportUnit unit = createOneTable(nexttab, chi, gen, false, family, true);
+		ReportUnit unit = createOneTable(nexttab, chi, gen, true, family, true);
 
 		unitMap.put(unit.getPid(), unit);
 

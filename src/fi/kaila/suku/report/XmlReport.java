@@ -336,12 +336,18 @@ public class XmlReport implements ReportInterface {
 			String value = bt.getText(i);
 			String currStyle;
 			if (value != null && value != "") {
-				if (bt.isBold(i) && bt.isUnderline(i)) {
+				if (bt.isBold(i) && bt.isUnderline(i) && bt.isItalic(i)) {
+					currStyle = "bui";
+				} else if (bt.isBold(i) && bt.isUnderline(i)) {
 					currStyle = "bu";
 				} else if (bt.isBold(i)) {
 					currStyle = "b";
 				} else if (bt.isUnderline(i)) {
 					currStyle = "ul";
+				} else if (bt.isBold(i) && bt.isItalic(i)) {
+					currStyle = "bi";
+				} else if (bt.isItalic(i)) {
+					currStyle = "i";
 				} else {
 					currStyle = "n";
 				}

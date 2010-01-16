@@ -85,7 +85,7 @@ public class DescendantLista extends CommonReport {
 			String tag = caller.getTypesTag(i);
 			if (caller.isType(tag, 2)) {
 				ttag.add(tag);
-				tname.add(caller.getTypeText(tag));
+				tname.add(caller.getTagName(tag));
 			}
 		}
 

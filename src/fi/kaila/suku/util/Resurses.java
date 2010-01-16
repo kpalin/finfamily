@@ -280,6 +280,11 @@ public class Resurses {
 	/** */
 	public static final String TOOLBAR_REMPERSON_ACTION = "REMPERSON";
 	/** */
+	public static final String TOOLBAR_ADDNOTICE_IMAGE = "tab_new";
+	/** */
+	public static final String TOOLBAR_ADDNOTICE_ACTION = "ADDNOTICE";
+
+	/** */
 	public static final String TOOLBAR_NOTICES_ACTION = "SHOW_NOTICES";
 	/** */
 	public static final String TOOLBAR_NOTE_ACTION = "SHOW_NOTE";

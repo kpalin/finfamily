@@ -106,7 +106,7 @@ public class DescendantReport extends CommonReport {
 		for (int i = 0; i < tables.size(); i++) {
 
 			ReportUnit tab = tables.get(i);
-			createTable(i, tab, true);
+			createDescendantTable(i, tab);
 		}
 
 		caller.setRunnerValue("100;OK");

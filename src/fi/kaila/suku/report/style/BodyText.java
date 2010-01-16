@@ -148,6 +148,23 @@ public class BodyText {
 	}
 
 	/**
+	 * add text string with formatting options to style element
+	 * 
+	 * @param text
+	 * @param isBold
+	 * @param isUnderline
+	 * @param isItalic
+	 */
+	public void addText(String text, boolean isBold, boolean isUnderline,
+			boolean isItalic) {
+		Text t = new Text(text);
+		t.isBold = isBold;
+		t.isUnderline = isUnderline;
+		t.isItalic = isItalic;
+		txt.add(t);
+	}
+
+	/**
 	 * 
 	 * @return text size in style element
 	 */
@@ -188,10 +205,21 @@ public class BodyText {
 		return t.isUnderline;
 	}
 
+	/**
+	 * 
+	 * @param idx
+	 * @return true if the indexed text elemet is underlined
+	 */
+	public boolean isItalic(int idx) {
+		Text t = txt.get(idx);
+		return t.isItalic;
+	}
+
 	private class Text {
 		String text;
 		boolean isBold = false;
 		boolean isUnderline = false;
+		boolean isItalic = false;
 
 		Text(String text) {
 			if (text == null) {
