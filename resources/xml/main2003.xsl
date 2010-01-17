@@ -158,14 +158,15 @@
   
 
   
-  
 <xsl:template match="n"><w:r><w:t><xsl:value-of select="."/></w:t></w:r></xsl:template>
-  
 <xsl:template match="b"><w:r wsp:rsidRPr="00A01824"><w:rPr><w:b/></w:rPr><w:t><xsl:value-of select="."/></w:t></w:r></xsl:template>
-  
 <xsl:template match="bu"><w:r wsp:rsidRPr="00A01824"><w:rPr><w:b/><w:u w:val="single"/></w:rPr><w:t><xsl:value-of select="."/></w:t></w:r></xsl:template>
-  
 <xsl:template match="u"><w:r wsp:rsidRPr="00A01824"><w:rPr><w:u w:val="single"/></w:rPr><w:t><xsl:value-of select="."/></w:t></w:r></xsl:template>
+<xsl:template match="bui"><w:r wsp:rsidRPr="00A01824"><w:rPr><w:b/><w:i/><w:u w:val="single"/></w:rPr><w:t><xsl:value-of select="."/></w:t></w:r></xsl:template>
+<xsl:template match="bi"><w:r wsp:rsidRPr="00A01824"><w:rPr><w:b/><w:i/></w:rPr><w:t><xsl:value-of select="."/></w:t></w:r></xsl:template>
+<xsl:template match="ui"><w:r wsp:rsidRPr="00A01824"><w:rPr><w:i/><w:u w:val="single"/></w:rPr><w:t><xsl:value-of select="."/></w:t></w:r></xsl:template>
+<xsl:template match="i"><w:r wsp:rsidRPr="00A01824"><w:rPr><w:i/></w:rPr><w:t><xsl:value-of select="."/></w:t></w:r></xsl:template>
+  
   
   <xsl:include href="styles2003.xsl" /> 
   </xsl:stylesheet>

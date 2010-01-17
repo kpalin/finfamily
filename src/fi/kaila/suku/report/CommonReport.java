@@ -943,10 +943,9 @@ public abstract class CommonReport {
 					}
 					printName(bt, notices, (toTable.equals("") ? 2 : 3));
 
-					bt = addChildReference(ftab, mtab, cdata.persLong.getPid(),
-							bt);
-					printNotices(bt, notices, (toTable.equals("") ? 2 : 3), tab
-							.getTableNo());
+					boolean bb = addChildReference(ftab, mtab, cdata.persLong
+							.getPid(), bt);
+					printNotices(bt, notices, (bb ? 3 : 2), tab.getTableNo());
 
 					// else {
 
@@ -1046,9 +1045,10 @@ public abstract class CommonReport {
 										+ ") ");
 							}
 							printName(bt, notices, (toTable.equals("") ? 2 : 3));
-							bt = addChildReference(ftab, mtab, tab.getPid(), bt);
-							printNotices(bt, notices, (toTable.equals("") ? 2
-									: 3), tab.getTableNo());
+							boolean bb = addChildReference(ftab, mtab, tab
+									.getPid(), bt);
+							printNotices(bt, notices, (bb ? 3 : 2), tab
+									.getTableNo());
 
 							// else {
 
@@ -1112,12 +1112,12 @@ public abstract class CommonReport {
 	 * @param bt
 	 * @return
 	 */
-	private BodyText addChildReference(ReportUnit pop, ReportUnit mom, int pid,
+	private boolean addChildReference(ReportUnit pop, ReportUnit mom, int pid,
 			BodyText bt) {
 		PersonInTables ref;
 		ref = personReferences.get(pid);
 		if (ref == null) {
-			return bt;
+			return false;
 		}
 
 		long tabPop = pop == null ? 0 : pop.getTableNo();
@@ -1148,9 +1148,10 @@ public abstract class CommonReport {
 		// }
 		if (sb.length() > 0) {
 			bt.addText("(" + sb.toString() + "). ");
+			return true;
 		}
 
-		return bt;
+		return false;
 	}
 
 	private UnitNotice[] getInternalNotices(UnitNotice[] xnotices) {

@@ -346,6 +346,8 @@ public class XmlReport implements ReportInterface {
 					currStyle = "ul";
 				} else if (bt.isBold(i) && bt.isItalic(i)) {
 					currStyle = "bi";
+				} else if (bt.isBold(i) && bt.isUnderline(i)) {
+					currStyle = "ui";
 				} else if (bt.isItalic(i)) {
 					currStyle = "i";
 				} else {

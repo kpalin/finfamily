@@ -53,10 +53,12 @@
   </div>
   </xsl:template>
   
-  <xsl:template match="bu">
-  <strong class="ul">
+ 
+  
+  <xsl:template match="bui">
+  <strong class="ul"><i>
   <xsl:apply-templates/>
-  </strong>
+  </i></strong>
   </xsl:template> 
   
    <xsl:template match="b">
@@ -64,6 +66,33 @@
   <xsl:apply-templates/>
   </strong>
   </xsl:template> 
+  
+   <xsl:template match="i">
+  <i>
+  <xsl:apply-templates/>
+  </i>
+  </xsl:template> 
+  
+  <xsl:template match="bi">
+  <b><i>
+  <xsl:apply-templates/>
+  </i></b>
+  </xsl:template> 
+  
+  <!--   this should be normal underline -->
+  <xsl:template match="ui">
+  <strong class="ul"><i>
+  <xsl:apply-templates/>
+  </i></strong>
+  </xsl:template> 
+  
+  <xsl:template match="bu">
+  <strong class="ul">
+  <xsl:apply-templates/>
+  </strong>
+  </xsl:template> 
+  
+
   <!--
   <xsl:template 
       match="@*|*|text()|processing-instruction()">

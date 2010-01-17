@@ -558,12 +558,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.add(tRemovePerson);
 
-			tAddNotice = makeNavigationButton(Resurses.TOOLBAR_ADDNOTICE_IMAGE,
-					Resurses.TOOLBAR_ADDNOTICE_ACTION, Resurses
-							.getString("TOOLBAR.ADDNOTICE.TOOLTIP"), Resurses
-							.getString("TOOLBAR.ADDNOTICE.ALTTEXT"));
-
-			this.toolbar.add(tAddNotice);
 			this.toolbar.addSeparator(new Dimension(20, 30));
 
 			tNoticesButton = makeNavigationButton("Tietojaksot24",
@@ -634,6 +628,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				tPrivateButton.setSelected(true);
 			}
 			this.toolbar.add(tPrivateButton);
+			this.toolbar.addSeparator(new Dimension(20, 30));
+			tAddNotice = makeNavigationButton(Resurses.TOOLBAR_ADDNOTICE_IMAGE,
+					Resurses.TOOLBAR_ADDNOTICE_ACTION, Resurses
+							.getString("TOOLBAR.ADDNOTICE.TOOLTIP"), Resurses
+							.getString("TOOLBAR.ADDNOTICE.ALTTEXT"));
+
+			this.toolbar.add(tAddNotice);
 
 		} catch (IOException e2) {
 			throw new SukuException("Failed to create toolbar", e2);
