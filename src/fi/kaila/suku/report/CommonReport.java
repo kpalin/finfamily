@@ -94,7 +94,6 @@ public abstract class CommonReport {
 		while (eex.hasNext()) {
 			Map.Entry<Integer, PersonInTables> entrx = (Map.Entry<Integer, PersonInTables>) eex
 					.next();
-
 			PersonInTables pit = entrx.getValue();
 			vv.add(pit);
 		}
@@ -105,7 +104,6 @@ public abstract class CommonReport {
 		while (eey.hasNext()) {
 			Map.Entry<String, PersonInTables> entry = (Map.Entry<String, PersonInTables>) eey
 					.next();
-
 			PersonInTables pit = entry.getValue();
 			vv.add(pit);
 		}
@@ -730,32 +728,32 @@ public abstract class CommonReport {
 		float prose = (idx * 100f) / tables.size();
 		caller.setRunnerValue("" + (int) prose + ";" + mainTab.getTableNo()
 				+ ":" + tabOwner);
-
+		bt = new TableHeaderText();
 		String genText = "";
 		if (mainTab.getGen() > 0) {
 			genText = Roman.int2roman(mainTab.getGen());
+			bt.addText(genText + ".");
 		}
 
-		bt = new TableHeaderText();
-		int gene = 0;
+		// int gsene = 0;
 		if (mtab != null && ftab != null) {
 			// bt.addText(caller.getTextValue("TABLES") + " ");
-			gene = mtab.getGen();
-			if (gene > 0) {
-				bt.addText(Roman.int2roman(gene) + ". ");
-
-			}
+			// gene = mtab.getGen();
+			// if (gene > 0) {
+			// bt.addText(Roman.int2roman(gene) + ". ");
+			//
+			// }
 			// 
-			bt.addText(" " + ftab.getTableNo());
-			bt.addText(", " + mtab.getTableNo());
+			bt.addText(" " + toPrintTable(ftab.getTableNo()));
+			bt.addText(", " + toPrintTable(mtab.getTableNo()));
 		} else {
 			// bt.addText(caller.getTextValue("TABLE") + " ");
-			gene = mainTab.getGen();
-			if (gene > 0) {
-				bt.addText(Roman.int2roman(gene) + ". ");
-			}
+			// gene = mainTab.getGen();
+			// if (gene > 0) {
+			// bt.addText(Roman.int2roman(gene) + ". ");
+			// }
 
-			bt.addText(" " + mainTab.getTableNo());
+			bt.addText(" " + toPrintTable(mainTab.getTableNo()));
 
 		}
 
@@ -1089,6 +1087,34 @@ public abstract class CommonReport {
 
 			repoWriter.addText(bt);
 		}
+	}
+
+	private String toPrintTable(long tableNo) {
+		String order = caller.getAncestorPane().getNumberingFormat()
+				.getSelection().getActionCommand();
+
+		long hagerSize = 1;
+		int gen = 0;
+		while (tableNo >= hagerSize) {
+			gen++;
+			hagerSize *= 2;
+		}
+		hagerSize /= 2;
+		gen--;
+
+		if (!order.equals("HAGER")) {
+			// if (gen == 0) {
+			return "" + tableNo;
+			// }
+			// return Roman.int2roman(gen) + "." + tableNo;
+		}
+		if (tableNo == 1) {
+			return "1";
+		}
+		return "" + (1 + tableNo - hagerSize);
+
+		// return Roman.int2roman(gen) + "." + (1 + tableNo - hagerSize);
+
 	}
 
 	/**

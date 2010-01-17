@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
@@ -607,7 +608,7 @@ public class ImportGedcomUtil {
 			if (aid != null) {
 				ownerPid = aid.pid;
 			}
-		} else {
+		} else if (lineWife != null) {
 			bid = gedPid.get(lineWife.lineValue);
 			if (bid == null) {
 				ownerPid = bid.pid;
@@ -741,7 +742,7 @@ public class ImportGedcomUtil {
 				husbandNumber = 0;
 			}
 
-		} else if (aid != null) {
+		} else if (aid != null && cid != null) {
 
 			GedcomFams fms = gedFams.get(aid.id);
 			wifeNumber = -1;
@@ -750,7 +751,9 @@ public class ImportGedcomUtil {
 				GedcomLine faw = gedFamMap.get(fam.lineValue);
 				for (int ffj = 0; ffj < faw.lines.size(); ffj++) {
 					GedcomLine fax = faw.lines.get(ffj);
-					if (fax.lineValue != null && fax.lineValue.equals(cid.id)) {
+
+					if (cid != null && fax != null && fax.lineValue != null
+							&& fax.lineValue.equals(cid.id)) {
 						wifeNumber = ffi;
 						break;
 					}
@@ -762,7 +765,7 @@ public class ImportGedcomUtil {
 			if (wifeNumber <= 0) {
 				wifeNumber = 0;
 			}
-		} else if (bid != null) {
+		} else if (bid != null && cid != null) {
 
 			GedcomFams fms = gedFams.get(bid.id);
 			wifeNumber = -1;
@@ -771,7 +774,9 @@ public class ImportGedcomUtil {
 				GedcomLine faw = gedFamMap.get(fam.lineValue);
 				for (int ffj = 0; ffj < faw.lines.size(); ffj++) {
 					GedcomLine fax = faw.lines.get(ffj);
-					if (fax.lineValue != null && fax.lineValue.equals(cid.id)) {
+
+					if (fax != null && cid != null && fax.lineValue != null
+							&& fax.lineValue.equals(cid.id)) {
 						husbandNumber = ffi;
 						break;
 					}
@@ -1353,50 +1358,56 @@ public class ImportGedcomUtil {
 		int year;
 		try {
 			year = Integer.parseInt(parts[dl]);
-		} catch (NumberFormatException ne) {
-			return null;
-		}
-		if (year <= 0 || year >= 3000) {
-			return null;
-		}
-		String aux = "0000" + year;
-		sb.append(aux.substring(aux.length() - 4, aux.length()));
-		dl--;
-		String mm = null;
-		if (dl >= 0) {
 
-			int kk = "|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|"
-					.indexOf(parts[dl].toUpperCase());
-			if (kk > 0) {
-				kk--;
-				kk /= 2;
-				mm = "010203040506070809101112".substring(kk, kk + 2);
-			}
-		}
-		if (mm != null) {
-			sb.append(mm);
-		} else {
-			return sb.toString();
-		}
-		dl--;
-		String dat = null;
-		if (dl >= 0) {
-			int dd = 0;
-			try {
-				dd = Integer.parseInt(parts[dl]);
-			} catch (NumberFormatException ne) {
+			if (year <= 0 || year >= 3000) {
 				return null;
 			}
-			if (dd > 0 && dd <= 31) {
-				dat = "000" + dd;
-				dat = dat.substring(dat.length() - 2, dat.length());
-			}
-		}
-		if (dat != null) {
-			sb.append(dat);
-		}
-		return sb.toString();
+			String aux = "0000" + year;
+			sb.append(aux.substring(aux.length() - 4, aux.length()));
+			dl--;
+			String mm = null;
+			if (dl >= 0) {
 
+				int kk = "|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|"
+						.indexOf(parts[dl].toUpperCase());
+				if (kk > 0) {
+					kk--;
+					kk /= 2;
+					mm = "010203040506070809101112".substring(kk, kk + 2);
+				}
+			}
+			if (mm != null) {
+				sb.append(mm);
+			} else {
+				return sb.toString();
+			}
+			dl--;
+			String dat = null;
+			if (dl >= 0) {
+				int dd = 0;
+
+				dd = Integer.parseInt(parts[dl]);
+
+				if (dd > 0 && dd <= 31) {
+					dat = "000" + dd;
+					dat = dat.substring(dat.length() - 2, dat.length());
+				}
+			}
+			if (dat != null) {
+				sb.append(dat);
+			}
+			return sb.toString();
+		} catch (NumberFormatException ne) {
+			// something was bad. lets try standard date conversion
+
+			try {
+				return Utils.dbDate(gedcomDate);
+
+			} catch (SukuDateException e) {
+				return null;
+			}
+
+		}
 	}
 
 	boolean submitterDone = false;
@@ -1824,7 +1835,7 @@ public class ImportGedcomUtil {
 		int level = -1;
 		String tag = null;
 		String id = null;
-		String lineValue = null;
+		String lineValue = "";
 		GedcomLine parent = null;
 		Vector<GedcomLine> lines = new Vector<GedcomLine>();
 
