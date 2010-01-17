@@ -675,7 +675,7 @@ public abstract class CommonReport {
 		SukuData pappadata = null;
 		SukuData mammadata = null;
 		ReportUnit mainTab = null;
-
+		boolean fams = caller.getAncestorPane().getShowfamily();
 		UnitNotice[] xnotices = null;
 		StringBuffer tabOwner = new StringBuffer();
 		if (ftab != null) {
@@ -748,26 +748,46 @@ public abstract class CommonReport {
 		}
 
 		repoWriter.addText(bt);
-
-		// bt = new TableSubHeaderText();
-		// PersonInTables ref;
-		// String fromTable = "";
-		// String fromSubTable = "";
-		// ref = personReferences.get(tab.getPid());
-		// if (ref != null) {
-		// fromTable = ref.getReferences(tab.getTableNo(), false, true, false);
-		// }
-		//
-		// if (fromTable.length() > 0) {
-		// bt.addText(caller.getTextValue("FROMTABLE") + " " + fromTable);
-		// }
-		//
-		// repoWriter.addText(bt);
 		ReportUnit tab;
+		if (!fams) {
+			// StringBuffer sb = new StringBuffer();
+
+			// LinkedHashMap<Long, Long> chls = new LinkedHashMap<Long, Long>();
+			bt = new TableSubHeaderText();
+			if (ftab != null) {
+				tab = ftab;
+			} else {
+				tab = mtab;
+			}
+
+			for (int j = 0; j < tab.getChild().size(); j++) {
+				ReportTableMember mom = tab.getChild().get(j);
+				addChildReference(ftab, mtab, mom.getPid(), caller
+						.getTextValue("FROMTABLE"), bt);
+
+			}
+
+			// for (int i = 0; i < ftab.getChild().size(); i++) {
+			// ReportTableMember rtm = ftab.getChild().get(i);
+			// System.out.println("rtm:" + rtm);
+			// }
+
+			repoWriter.addText(bt);
+
+			// if (sb.length() > 0) {
+			//
+			// bt = new TableSubHeaderText();
+			//
+			// bt.addText(caller.getTextValue("TABLE"));
+			// bt.addText(" " + sb.toString());
+			// repoWriter.addText(bt);
+			// }
+		}
+
 		UnitNotice[] notices = null;
 		int fid = 0;
 		int mid = 0;
-		PersonInTables ref;
+
 		if (ftab != null) {
 			tab = ftab;
 			fid = tab.getPid();
@@ -845,26 +865,11 @@ public abstract class CommonReport {
 			printNotices(bt, notices, 2, mtab.getTableNo());
 		}
 
-		// fromTable = "";
-		// ref = personReferences.get(tab.getPid());
-		// if (ref != null) {
-		// fromTable = ref.getReferences(tab.getTableNo(), true, false, false);
-		// }
-		// if (fromTable.length() == 0) {
-		//
-		// fromTable = ref.getReferences(tab.getTableNo(), false, false, true);
-		// }
-		// if (fromTable.length() > 0) {
-		// bt.addText(caller.getTextValue("ALSO") + " " + fromTable + ". ",
-		// true, false);
-		// }
-
 		if (bt.getCount() > 0) {
 			repoWriter.addText(bt);
 
 		}
 
-		boolean fams = caller.getAncestorPane().getShowfamily();
 		if (fams) {
 			// ensin vanhempien yhteiset lapset
 			// tai ainoan vanhemman lapset
@@ -944,7 +949,7 @@ public abstract class CommonReport {
 					printName(bt, notices, (toTable.equals("") ? 2 : 3));
 
 					boolean bb = addChildReference(ftab, mtab, cdata.persLong
-							.getPid(), bt);
+							.getPid(), caller.getTextValue("TABLE"), bt);
 					printNotices(bt, notices, (bb ? 3 : 2), tab.getTableNo());
 
 					// else {
@@ -1046,7 +1051,7 @@ public abstract class CommonReport {
 							}
 							printName(bt, notices, (toTable.equals("") ? 2 : 3));
 							boolean bb = addChildReference(ftab, mtab, tab
-									.getPid(), bt);
+									.getPid(), caller.getTextValue("TABLE"), bt);
 							printNotices(bt, notices, (bb ? 3 : 2), tab
 									.getTableNo());
 
@@ -1096,12 +1101,14 @@ public abstract class CommonReport {
 					sb.append(",");
 				}
 				pareCount++;
-				sb.append("" + ref.asChildren.get(i));
+				long pareTab = ref.asChildren.get(i);
+				String partext = caller
+						.getTextValue((pareTab % 2 == 0) ? "Father" : "Mother");
+
+				sb.append(partext + " " + ref.asChildren.get(i));
 			}
 			if (sb.length() > 0) {
-				String partext = caller
-						.getTextValue((pareCount == 1) ? "PARENT" : "PARENTS");
-				bt.addText("(" + partext + " " + sb.toString() + "). ");
+				bt.addText("(" + sb.toString() + "). ");
 			}
 		}
 		return bt;
@@ -1113,7 +1120,7 @@ public abstract class CommonReport {
 	 * @return
 	 */
 	private boolean addChildReference(ReportUnit pop, ReportUnit mom, int pid,
-			BodyText bt) {
+			String text, BodyText bt) {
 		PersonInTables ref;
 		ref = personReferences.get(pid);
 		if (ref == null) {
@@ -1125,27 +1132,11 @@ public abstract class CommonReport {
 		StringBuffer sb = new StringBuffer();
 		long nxtTab = ref.asOwner;
 		if (nxtTab != tabPop && nxtTab != tabMom && nxtTab != 0) {
-			sb.append(caller.getTextValue("TABLE"));
+			sb.append(text);
 			sb.append(" ");
 			sb.append("" + nxtTab);
 		}
 
-		// if (ref != null) {
-		// StringBuffer sb = new StringBuffer();
-		//
-		// for (int i = 0; i < ref.asParents.size(); i++) {
-		//
-		// long nxtTab = ref.asParents.get(i);
-		// if (nxtTab != tabPop && nxtTab != tabMom) {
-		// if (sb.length() > 0) {
-		// sb.append(",");
-		// } else {
-		// sb.append("LAPSUKAISINA: ");
-		// }
-		// sb.append("" + ref.asParents.get(i));
-		// }
-		//
-		// }
 		if (sb.length() > 0) {
 			bt.addText("(" + sb.toString() + "). ");
 			return true;
