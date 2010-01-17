@@ -43,169 +43,171 @@ public class ExcelImporter {
 			Workbook workbook = Workbook.getWorkbook(new File(path), ws);
 
 			Sheet sheet = workbook.getSheet("Types");
-
+			int colCount;
+			int rowCount;
+			String[] header;
 			int rivi;
 			int col;
-			int colCount = sheet.getColumns();
-			int rowCount = sheet.getRows();
-
-			String header[] = new String[colCount];
-			int text_col[] = new int[colCount];
-			for (col = 0; col < colCount; col++) {
-				Cell x0 = sheet.getCell(col, 0);
-				header[col] = null;
-				if (x0 != null) {
-					header[col] = x0.getContents();
-
-				}
-			}
-
-			for (col = 0; col < colCount; col++) {
-				text_col[col] = -1;
-				if (header[col].length() == 2) {
-
-					for (int j = col + 1; j < colCount; j++) {
-						if (header[j] != null
-								&& header[j].equals("text_" + header[col])) {
-							text_col[col] = j;
-							break;
-						}
-					}
-
-				}
-			}
-
-			String INSERT_TYPES = "insert into Types (TagType,Tag,Rule,LangCode,Name,ReportName) "
-					+ " values (?,?,?,?,?,?)";
-
-			String DELETE_TYPES = "delete from Types";
-
 			PreparedStatement pst;
+			if (sheet != null) {
 
-			try {
+				colCount = sheet.getColumns();
+				rowCount = sheet.getRows();
 
-				pst = con.prepareStatement(DELETE_TYPES);
-				pst.executeUpdate();
+				header = new String[colCount];
+				int text_col[] = new int[colCount];
+				for (col = 0; col < colCount; col++) {
+					Cell x0 = sheet.getCell(col, 0);
+					header[col] = null;
+					if (x0 != null) {
+						header[col] = x0.getContents();
 
-				pst = con.prepareStatement(INSERT_TYPES);
-
-			} catch (SQLException e) {
-
-				e.printStackTrace();
-				throw new SukuException(e);
-			}
-
-			for (rivi = 1; rivi < rowCount; rivi++) {
-
-				Cell ac1 = sheet.getCell(0, rivi);
-				Cell bc1 = sheet.getCell(1, rivi);
-				Cell cc1 = sheet.getCell(2, rivi);
-
-				String a1 = ac1.getContents();
-				String b1 = bc1.getContents();
-				String c1 = cc1.getContents();
-
-				for (col = 3; col < colCount; col++) {
-					Cell xc1 = sheet.getCell(col, rivi);
-					String x1 = null;
-					if (xc1 != null) {
-						x1 = xc1.getContents();
-						if (x1.length() == 0) {
-							x1 = null;
-						}
 					}
-					String y1 = null;
+				}
+
+				for (col = 0; col < colCount; col++) {
+					text_col[col] = -1;
 					if (header[col].length() == 2) {
 
-						pst.setString(1, a1);
-						pst.setString(2, b1);
-						if (c1 != null && c1.length() == 0) {
-							c1 = null;
-						}
-						pst.setString(3, c1);
-						pst.setString(4, header[col]);
-						pst.setString(5, x1);
-						if (text_col[col] > 0) {
-							Cell yc1 = sheet.getCell(text_col[col], rivi);
-							if (yc1 != null) {
-								y1 = yc1.getContents();
-								if (y1.length() == 0) {
-									y1 = null;
-								}
+						for (int j = col + 1; j < colCount; j++) {
+							if (header[j] != null
+									&& header[j].equals("text_" + header[col])) {
+								text_col[col] = j;
+								break;
 							}
 						}
-						pst.setString(6, y1);
-						pst.executeUpdate();
+
 					}
-					// }
+				}
+
+				String INSERT_TYPES = "insert into Types (TagType,Tag,Rule,LangCode,Name,ReportName) "
+						+ " values (?,?,?,?,?,?)";
+
+				String DELETE_TYPES = "delete from Types";
+
+				try {
+
+					pst = con.prepareStatement(DELETE_TYPES);
+					pst.executeUpdate();
+
+					pst = con.prepareStatement(INSERT_TYPES);
+
+				} catch (SQLException e) {
+
+					e.printStackTrace();
+					throw new SukuException(e);
+				}
+
+				for (rivi = 1; rivi < rowCount; rivi++) {
+
+					Cell ac1 = sheet.getCell(0, rivi);
+					Cell bc1 = sheet.getCell(1, rivi);
+					Cell cc1 = sheet.getCell(2, rivi);
+
+					String a1 = ac1.getContents();
+					String b1 = bc1.getContents();
+					String c1 = cc1.getContents();
+
+					for (col = 3; col < colCount; col++) {
+						Cell xc1 = sheet.getCell(col, rivi);
+						String x1 = null;
+						if (xc1 != null) {
+							x1 = xc1.getContents();
+							if (x1.length() == 0) {
+								x1 = null;
+							}
+						}
+						String y1 = null;
+						if (header[col].length() == 2) {
+
+							pst.setString(1, a1);
+							pst.setString(2, b1);
+							if (c1 != null && c1.length() == 0) {
+								c1 = null;
+							}
+							pst.setString(3, c1);
+							pst.setString(4, header[col]);
+							pst.setString(5, x1);
+							if (text_col[col] > 0) {
+								Cell yc1 = sheet.getCell(text_col[col], rivi);
+								if (yc1 != null) {
+									y1 = yc1.getContents();
+									if (y1.length() == 0) {
+										y1 = null;
+									}
+								}
+							}
+							pst.setString(6, y1);
+							pst.executeUpdate();
+						}
+						// }
+					}
 				}
 			}
+			sheet = workbook.getSheet("Texts");
+			if (sheet != null) {
+				colCount = sheet.getColumns();
+				rowCount = sheet.getRows();
 
-			// sheet = workbook.getSheet("Texts");
-			//
-			// colCount = sheet.getColumns();
-			// rowCount = sheet.getRows();
-			//
-			// header = new String[colCount];
-			//
-			// for (col = 0; col < colCount; col++) {
-			// Cell x0 = sheet.getCell(col, 0);
-			// header[col] = null;
-			// if (x0 != null) {
-			// header[col] = x0.getContents();
-			//
-			// }
-			// }
-			//
-			// String INSERT_TEXTS =
-			// "insert into Texts (TagType,Tag,LangCode,Name) "
-			// + " values (?,?,?,?)";
-			//
-			// String DELETE_TEXTS = "delete from Texts";
-			//
-			// try {
-			//
-			// pst = con.prepareStatement(DELETE_TEXTS);
-			// pst.executeUpdate();
-			//
-			// pst = con.prepareStatement(INSERT_TEXTS);
-			//
-			// } catch (SQLException e) {
-			//
-			// e.printStackTrace();
-			// throw new SukuException(e);
-			// }
-			//
-			// for (rivi = 1; rivi < rowCount; rivi++) {
-			//
-			// Cell ac1 = sheet.getCell(0, rivi);
-			// Cell bc1 = sheet.getCell(1, rivi);
-			//
-			// String a1 = ac1.getContents();
-			// String b1 = bc1.getContents();
-			//
-			// for (col = 2; col < colCount; col++) {
-			// Cell xc1 = sheet.getCell(col, rivi);
-			// String x1 = null;
-			// if (xc1 != null) {
-			// x1 = xc1.getContents();
-			// if (x1.length() == 0) {
-			// x1 = null;
-			// }
-			// }
-			//
-			// if (header[col].length() == 2) {
-			//
-			// pst.setString(1, a1);
-			// pst.setString(2, b1);
-			// pst.setString(3, header[col]);
-			// pst.setString(4, x1);
-			// pst.executeUpdate();
-			// }
-			// // }
-			// }
-			// }
+				header = new String[colCount];
 
+				for (col = 0; col < colCount; col++) {
+					Cell x0 = sheet.getCell(col, 0);
+					header[col] = null;
+					if (x0 != null) {
+						header[col] = x0.getContents();
+
+					}
+				}
+
+				String INSERT_TEXTS = "insert into Texts (TagType,Tag,LangCode,Name) "
+						+ " values (?,?,?,?)";
+
+				String DELETE_TEXTS = "delete from Texts";
+
+				try {
+
+					pst = con.prepareStatement(DELETE_TEXTS);
+					pst.executeUpdate();
+
+					pst = con.prepareStatement(INSERT_TEXTS);
+
+				} catch (SQLException e) {
+
+					e.printStackTrace();
+					throw new SukuException(e);
+				}
+
+				for (rivi = 1; rivi < rowCount; rivi++) {
+
+					Cell ac1 = sheet.getCell(0, rivi);
+					Cell bc1 = sheet.getCell(1, rivi);
+
+					String a1 = ac1.getContents();
+					String b1 = bc1.getContents();
+
+					for (col = 2; col < colCount; col++) {
+						Cell xc1 = sheet.getCell(col, rivi);
+						String x1 = null;
+						if (xc1 != null) {
+							x1 = xc1.getContents();
+							if (x1.length() == 0) {
+								x1 = null;
+							}
+						}
+
+						if (header[col].length() == 2) {
+
+							pst.setString(1, a1);
+							pst.setString(2, b1);
+							pst.setString(3, header[col]);
+							pst.setString(4, x1);
+							pst.executeUpdate();
+						}
+						// }
+					}
+				}
+			}
 			workbook.close();
 
 		} catch (Throwable e) {
