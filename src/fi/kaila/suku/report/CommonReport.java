@@ -737,12 +737,24 @@ public abstract class CommonReport {
 		}
 
 		bt = new TableHeaderText();
+		int gene = 0;
 		if (mtab != null && ftab != null) {
-			bt.addText(caller.getTextValue("TABLES"));
+			// bt.addText(caller.getTextValue("TABLES") + " ");
+			gene = mtab.getGen();
+			if (gene > 0) {
+				bt.addText(Roman.int2roman(gene) + ". ");
+
+			}
+			// 
 			bt.addText(" " + ftab.getTableNo());
 			bt.addText(", " + mtab.getTableNo());
 		} else {
-			bt.addText(caller.getTextValue("TABLE"));
+			// bt.addText(caller.getTextValue("TABLE") + " ");
+			gene = mainTab.getGen();
+			if (gene > 0) {
+				bt.addText(Roman.int2roman(gene) + ". ");
+			}
+
 			bt.addText(" " + mainTab.getTableNo());
 
 		}

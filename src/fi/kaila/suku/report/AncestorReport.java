@@ -142,7 +142,8 @@ public class AncestorReport extends CommonReport {
 		for (int i = 0; i < tables.size(); i++) {
 
 			ReportUnit tab = tables.get(i);
-			createDescendantTable(i, tab);
+			createAncestorTable(i, tab, null);
+			// createDescendantTable(i, tab);
 		}
 
 		caller.setRunnerValue("100;OK");
