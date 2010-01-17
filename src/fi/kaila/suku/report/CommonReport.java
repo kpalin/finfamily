@@ -1090,6 +1090,10 @@ public abstract class CommonReport {
 	}
 
 	private String toPrintTable(long tableNo) {
+		return toPrintTable(tableNo, false);
+	}
+
+	private String toPrintTable(long tableNo, boolean showGeneration) {
 		String order = caller.getAncestorPane().getNumberingFormat()
 				.getSelection().getActionCommand();
 
@@ -1111,9 +1115,11 @@ public abstract class CommonReport {
 		if (tableNo == 1) {
 			return "1";
 		}
-		return "" + (1 + tableNo - hagerSize);
+		if (!showGeneration) {
+			return "" + (1 + tableNo - hagerSize);
+		}
 
-		// return Roman.int2roman(gen) + "." + (1 + tableNo - hagerSize);
+		return Roman.int2roman(gen) + "." + (1 + tableNo - hagerSize);
 
 	}
 
@@ -1143,7 +1149,8 @@ public abstract class CommonReport {
 				String partext = caller
 						.getTextValue((pareTab % 2 == 0) ? "Father" : "Mother");
 
-				sb.append(partext + " " + ref.asChildren.get(i));
+				sb.append(partext + " "
+						+ toPrintTable(ref.asChildren.get(i), true));
 			}
 			if (sb.length() > 0) {
 				bt.addText("(" + sb.toString() + "). ");
@@ -1172,7 +1179,7 @@ public abstract class CommonReport {
 		if (nxtTab != tabPop && nxtTab != tabMom && nxtTab != 0) {
 			sb.append(text);
 			sb.append(" ");
-			sb.append("" + nxtTab);
+			sb.append("" + toPrintTable(nxtTab, true));
 		}
 
 		if (sb.length() > 0) {
