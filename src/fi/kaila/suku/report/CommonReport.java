@@ -65,6 +65,9 @@ public abstract class CommonReport {
 	protected HashMap<Integer, PersonInTables> personReferences = null;
 
 	protected HashMap<String, PersonInTables> textReferences = null;
+
+	private HashMap<Integer, Integer> mapper = new HashMap<Integer, Integer>();
+
 	private int referencePid = 0;
 
 	/**
@@ -661,6 +664,14 @@ public abstract class CommonReport {
 		}
 	}
 
+	private int getTypeColumn(int pid) {
+		Integer foundMe = mapper.get(pid);
+		if (foundMe != null)
+			return 3;
+		mapper.put(Integer.valueOf(pid), Integer.valueOf(pid));
+		return 2;
+	}
+
 	/**
 	 * Ancestor report family table is created here
 	 * 
@@ -757,24 +768,24 @@ public abstract class CommonReport {
 			repoWriter.addText(bt);
 		}
 		ReportUnit tab;
-		if (!fams) {
+		// if (!fams) {
 
-			bt = new TableSubHeaderText();
-			if (ftab != null) {
-				tab = ftab;
-			} else {
-				tab = mtab;
-			}
-
-			for (int j = 0; j < tab.getChild().size(); j++) {
-				ReportTableMember mom = tab.getChild().get(j);
-				addChildReference(ftab, mtab, mom.getPid(), caller
-						.getTextValue("FROMTABLE"), bt);
-			}
-			if (bt.getCount() > 0) {
-				repoWriter.addText(bt);
-			}
+		bt = new TableSubHeaderText();
+		if (ftab != null) {
+			tab = ftab;
+		} else {
+			tab = mtab;
 		}
+
+		for (int j = 0; j < tab.getChild().size(); j++) {
+			ReportTableMember mom = tab.getChild().get(j);
+			addChildReference(ftab, mtab, mom.getPid(), caller
+					.getTextValue("FROMTABLE"), bt);
+		}
+		if (bt.getCount() > 0) {
+			repoWriter.addText(bt);
+		}
+		// }
 
 		UnitNotice[] notices = null;
 		int fid = 0;
@@ -795,7 +806,7 @@ public abstract class CommonReport {
 			if (!order.equals("ESPOLIN")) {
 				bt = addParentReference(tab, bt);
 			}
-			printNotices(bt, notices, 2, ftab.getTableNo());
+			printNotices(bt, notices, getTypeColumn(fid), ftab.getTableNo());
 		}
 		if (bt.getCount() > 0) {
 			repoWriter.addText(bt);
@@ -856,7 +867,9 @@ public abstract class CommonReport {
 			if (!order.equals("ESPOLIN")) {
 				bt = addParentReference(tab, bt);
 			}
-			printNotices(bt, notices, 2, mtab.getTableNo());
+			printNotices(bt, notices,
+					getTypeColumn(mammadata.persLong.getPid()), mtab
+							.getTableNo());
 		}
 
 		if (bt.getCount() > 0) {
@@ -917,12 +930,12 @@ public abstract class CommonReport {
 					bt.addText(" ");
 
 					fromTable = "";
-					int typesColumn = 2;
+					int typesColumn = getTypeColumn(spouseMember.getPid());
 					ref = personReferences.get(spouseMember.getPid());
-					if (ref != null) {
-						typesColumn = ref.getTypesColumn(tableNum, true, true,
-								false);
-					}
+					// if (ref != null) {
+					// typesColumn = ref.getTypesColumn(tableNum, true, true,
+					// false);
+					// }
 
 					notices = sdata.persLong.getNotices();
 					printName(bt, notices, typesColumn);
@@ -1070,7 +1083,9 @@ public abstract class CommonReport {
 
 					boolean bb = addChildReference(ftab, mtab, cdata.persLong
 							.getPid(), caller.getTextValue("TABLE"), bt);
-					printNotices(bt, notices, (bb ? 3 : 2), tab.getTableNo());
+
+					printNotices(bt, notices, getTypeColumn(cdata.persLong
+							.getPid()), tab.getTableNo());
 
 					// else {
 
@@ -1172,7 +1187,7 @@ public abstract class CommonReport {
 							printName(bt, notices, (toTable.equals("") ? 2 : 3));
 							boolean bb = addChildReference(ftab, mtab, tab
 									.getPid(), caller.getTextValue("TABLE"), bt);
-							printNotices(bt, notices, (bb ? 3 : 2), tab
+							printNotices(bt, notices, tab.getPid(), tab
 									.getTableNo());
 
 							// else {
