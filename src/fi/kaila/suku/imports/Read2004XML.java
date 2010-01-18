@@ -1171,7 +1171,12 @@ public class Read2004XML extends DefaultHandler {
 					this.pstm.setTimestamp(5,
 							toTimestamp(this.relationCreateDate));
 					if (aid > 0) {
-						this.pstm.executeUpdate();
+						try {
+							this.pstm.executeUpdate();
+						} catch (SQLException se) {
+							logger.log(Level.WARNING, "Bad APID = " + aid
+									+ " for RID = " + rid);
+						}
 					} else {
 						logger.warning("A PID = 0 for RID = " + rid);
 					}
@@ -1201,7 +1206,12 @@ public class Read2004XML extends DefaultHandler {
 					this.pstm.setTimestamp(5,
 							toTimestamp(this.relationCreateDate));
 					if (bid > 0) {
-						this.pstm.executeUpdate();
+						try {
+							this.pstm.executeUpdate();
+						} catch (SQLException se) {
+							logger.log(Level.WARNING, "Bad BPID = " + bid
+									+ " for RID = " + rid);
+						}
 					} else {
 						logger.warning("B PID = 0 for RID = " + rid);
 					}
@@ -1238,8 +1248,9 @@ public class Read2004XML extends DefaultHandler {
 					this.pstm.setInt(1, rid);
 					if (this.relationIdA != null) {
 						try {
-							l = Integer.parseInt(this.relationIdA.substring(1));
-							this.pstm.setInt(2, l);
+							aid = Integer.parseInt(this.relationIdA
+									.substring(1));
+							this.pstm.setInt(2, aid);
 						} catch (NumberFormatException ne) {
 							throw new SAXException("RelationIdA "
 									+ this.relationIdA + " not numeric");
@@ -1257,13 +1268,19 @@ public class Read2004XML extends DefaultHandler {
 					}
 					this.pstm.setTimestamp(5,
 							toTimestamp(this.relationCreateDate));
-					this.pstm.executeUpdate();
+					try {
+						this.pstm.executeUpdate();
+					} catch (SQLException se) {
+						logger.log(Level.WARNING, "Bad APID = " + aid
+								+ " for RID = " + rid);
+					}
 
 					this.pstm.setInt(1, rid);
 					if (this.relationIdB != null) {
 						try {
-							l = Integer.parseInt(this.relationIdB.substring(1));
-							this.pstm.setInt(2, l);
+							bid = Integer.parseInt(this.relationIdB
+									.substring(1));
+							this.pstm.setInt(2, bid);
 						} catch (NumberFormatException ne) {
 							throw new SAXException("RelationIdB "
 									+ this.relationIdB + " not numeric");
@@ -1281,8 +1298,12 @@ public class Read2004XML extends DefaultHandler {
 					}
 					this.pstm.setTimestamp(5,
 							toTimestamp(this.relationCreateDate));
-					this.pstm.executeUpdate();
-
+					try {
+						this.pstm.executeUpdate();
+					} catch (SQLException se) {
+						logger.log(Level.WARNING, "Bad BPID = " + bid
+								+ " for RID = " + rid);
+					}
 					if (this.runner != null) {
 						if (this.runner.setRunnerValue("RelationId: " + rid)) {
 							throw new SAXException(Resurses
