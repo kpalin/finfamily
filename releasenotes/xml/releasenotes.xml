@@ -3,7 +3,15 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
-<hdr>Release 298 on 17 jan 2010</hdr>
+
+<hdr>Release 302 on 178jan 2010</hdr>
+<ul>
+<li>Ancestor report improvements. Epsolin numbering added.</li>
+<li>Fixed Suku2004 import for orphan relations.</li>
+</ul>
+
+
+<hdr>Release 298 on 17 jan 2010 (7)</hdr>
 <ul>
 <li>Ancestor report improvements. Hager numbering added.</li>
 <li>Gedcom import to accept also program selected dateformat.</li>
