@@ -75,10 +75,10 @@ public class AncestorReport extends CommonReport {
 		}
 		tables = vlist.tables;
 
-		for (int i = 0; i < tables.size(); i++) {
-			ReportUnit cu = tables.get(i);
-			logger.info("anc:" + cu);
-		}
+		// for (int i = 0; i < tables.size(); i++) {
+		// ReportUnit cu = tables.get(i);
+		// logger.info("anc:" + cu);
+		// }
 
 		if (tables.size() > 0) {
 			personReferences = Utils.getDescendantToistot(tables);
@@ -124,7 +124,8 @@ public class AncestorReport extends CommonReport {
 				}
 			}
 
-			createAncestorTable(i, ftab, mtab);
+			createAncestorTable(i, ftab, mtab, (ftab != null) ? ftab
+					.getTableNo() : mtab.getTableNo());
 			// tabno = tab.getTableNo();
 			// System.out.println("TAB: " + tabno);
 			i++;
@@ -139,11 +140,15 @@ public class AncestorReport extends CommonReport {
 
 	private void createEspolinReport() {
 		textReferences = new HashMap<String, PersonInTables>();
+		long currTab = 0;
 		for (int i = 0; i < tables.size(); i++) {
 
 			ReportUnit tab = tables.get(i);
-			createAncestorTable(i, tab, null);
+
+			createAncestorTable(i, tab, null, (currTab == tab.getTableNo()) ? 0
+					: tab.getTableNo());
 			// createDescendantTable(i, tab);
+			currTab = tab.getTableNo();
 		}
 
 		caller.setRunnerValue("100;OK");

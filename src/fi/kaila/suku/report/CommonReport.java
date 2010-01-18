@@ -82,7 +82,7 @@ public abstract class CommonReport {
 	public abstract void executeReport() throws SukuException;
 
 	/**
-	 * @return hashmap with references
+	 * @return hash map with references
 	 */
 	public Vector<PersonInTables> getPersonReferences() {
 
@@ -126,7 +126,7 @@ public abstract class CommonReport {
 	}
 
 	/**
-	 * create table for descendantreport
+	 * create table for descendant report
 	 * 
 	 * tab sisältää henkilön ReportTableMember[0] puolisoiden
 	 * ReportTableMember[1...n] lasten ReportTableMember[0..n-1]
@@ -662,18 +662,21 @@ public abstract class CommonReport {
 	}
 
 	/**
-	 * Ancestor report famiuly table is created here
+	 * Ancestor report family table is created here
 	 * 
 	 * @param idx
 	 * @param tab
 	 */
-	protected void createAncestorTable(int idx, ReportUnit ftab, ReportUnit mtab) {
+	protected void createAncestorTable(int idx, ReportUnit ftab,
+			ReportUnit mtab, long tableNum) {
 		BodyText bt = null;
 		ReportTableMember subjectmember;
 		SukuData pappadata = null;
 		SukuData mammadata = null;
 		ReportUnit mainTab = null;
 		boolean fams = caller.getAncestorPane().getShowfamily();
+		String order = caller.getAncestorPane().getNumberingFormat()
+				.getSelection().getActionCommand();
 		UnitNotice[] xnotices = null;
 		StringBuffer tabOwner = new StringBuffer();
 		if (ftab != null) {
@@ -692,8 +695,6 @@ public abstract class CommonReport {
 
 			xnotices = pappadata.persLong.getNotices();
 
-			// if (pappadata.persLong == null)
-			// return;
 		}
 		if (mtab != null) {
 			subjectmember = mtab.getParent().get(0);
@@ -726,43 +727,38 @@ public abstract class CommonReport {
 		}
 
 		float prose = (idx * 100f) / tables.size();
-		caller.setRunnerValue("" + (int) prose + ";" + mainTab.getTableNo()
-				+ ":" + tabOwner);
+		caller.setRunnerValue("" + (int) prose + ";" + tableNum + ":"
+				+ tabOwner);
+
 		bt = new TableHeaderText();
 		String genText = "";
 		if (mainTab.getGen() > 0) {
 			genText = Roman.int2roman(mainTab.getGen());
-			bt.addText(genText + ".");
 		}
 
-		// int gsene = 0;
 		if (mtab != null && ftab != null) {
-			// bt.addText(caller.getTextValue("TABLES") + " ");
-			// gene = mtab.getGen();
-			// if (gene > 0) {
-			// bt.addText(Roman.int2roman(gene) + ". ");
-			//
-			// }
-			// 
+			bt.addText(caller.getTextValue("TABLES") + " ");
+			if (!genText.equals("")) {
+				bt.addText(genText + ".");
+			}
+
 			bt.addText(" " + toPrintTable(ftab.getTableNo()));
 			bt.addText(", " + toPrintTable(mtab.getTableNo()));
 		} else {
-			// bt.addText(caller.getTextValue("TABLE") + " ");
-			// gene = mainTab.getGen();
-			// if (gene > 0) {
-			// bt.addText(Roman.int2roman(gene) + ". ");
-			// }
-
-			bt.addText(" " + toPrintTable(mainTab.getTableNo()));
-
+			if (tableNum > 0) {
+				bt.addText(caller.getTextValue("TABLE") + " ");
+				if (!genText.equals("")) {
+					bt.addText(genText + ".");
+				}
+				bt.addText(" " + toPrintTable(tableNum));
+			}
 		}
-
-		repoWriter.addText(bt);
+		if (bt.getCount() > 0) {
+			repoWriter.addText(bt);
+		}
 		ReportUnit tab;
 		if (!fams) {
-			// StringBuffer sb = new StringBuffer();
 
-			// LinkedHashMap<Long, Long> chls = new LinkedHashMap<Long, Long>();
 			bt = new TableSubHeaderText();
 			if (ftab != null) {
 				tab = ftab;
@@ -774,24 +770,10 @@ public abstract class CommonReport {
 				ReportTableMember mom = tab.getChild().get(j);
 				addChildReference(ftab, mtab, mom.getPid(), caller
 						.getTextValue("FROMTABLE"), bt);
-
 			}
-
-			// for (int i = 0; i < ftab.getChild().size(); i++) {
-			// ReportTableMember rtm = ftab.getChild().get(i);
-			// System.out.println("rtm:" + rtm);
-			// }
-
-			repoWriter.addText(bt);
-
-			// if (sb.length() > 0) {
-			//
-			// bt = new TableSubHeaderText();
-			//
-			// bt.addText(caller.getTextValue("TABLE"));
-			// bt.addText(" " + sb.toString());
-			// repoWriter.addText(bt);
-			// }
+			if (bt.getCount() > 0) {
+				repoWriter.addText(bt);
+			}
 		}
 
 		UnitNotice[] notices = null;
@@ -810,8 +792,9 @@ public abstract class CommonReport {
 			}
 
 			printName(bt, notices, 2);
-
-			bt = addParentReference(tab, bt);
+			if (!order.equals("ESPOLIN")) {
+				bt = addParentReference(tab, bt);
+			}
 			printNotices(bt, notices, 2, ftab.getTableNo());
 		}
 		if (bt.getCount() > 0) {
@@ -870,14 +853,141 @@ public abstract class CommonReport {
 			}
 
 			printName(bt, notices, 2);
-			bt = addParentReference(tab, bt);
-
+			if (!order.equals("ESPOLIN")) {
+				bt = addParentReference(tab, bt);
+			}
 			printNotices(bt, notices, 2, mtab.getTableNo());
 		}
 
 		if (bt.getCount() > 0) {
 			repoWriter.addText(bt);
 
+		}
+
+		//
+		// spouse list
+		// 
+		if (order.equals("ESPOLIN")) {
+			SukuData sdata;
+			String fromTable;
+			PersonInTables ref;
+			tab = ftab;
+			ReportTableMember spouseMember;
+			for (int ispou = 1; ispou < tab.getParent().size(); ispou++) {
+				bt = new MainPersonText();
+				spouseMember = tab.getParent().get(ispou);
+				int spouNum = 0;
+				if (tab.getParent().size() > 2) {
+					spouNum = ispou;
+
+				}
+
+				try {
+					sdata = caller.getKontroller().getSukuData("cmd=person",
+							"pid=" + spouseMember.getPid());
+					String tmp;
+					if ("M".equals(sdata.persLong.getSex())) {
+						tmp = "HUSB";
+					} else {
+						tmp = "WIFE";
+					}
+					String spouType = caller.getTextValue(tmp);
+					RelationNotice rnn[] = null;
+					if (sdata.relations != null) {
+
+						for (int i = 0; i < sdata.relations.length; i++) {
+							if (sdata.relations[i].getRelative() == tab
+									.getPid()) {
+								if (sdata.relations[i].getNotices() != null) {
+									rnn = sdata.relations[i].getNotices();
+
+									RelationNotice rn = rnn[0];
+									spouType = printRelationNotice(rn,
+											spouType, spouNum);
+
+								}
+
+							}
+
+						}
+					}
+
+					bt.addText("- ");
+					bt.addText(spouType);
+					bt.addText(" ");
+
+					fromTable = "";
+					int typesColumn = 2;
+					ref = personReferences.get(spouseMember.getPid());
+					if (ref != null) {
+						typesColumn = ref.getTypesColumn(tableNum, true, true,
+								false);
+					}
+
+					notices = sdata.persLong.getNotices();
+					printName(bt, notices, typesColumn);
+					printNotices(bt, notices, typesColumn, tableNum);
+
+					if (rnn != null && rnn.length > 1) {
+						for (int i = 1; i < rnn.length; i++) {
+							RelationNotice rn = rnn[i];
+							spouType = printRelationNotice(rn, null, 0);
+							if (spouType.length() > 0) {
+								bt.addText(" ");
+								bt.addText(spouType);
+								bt.addText(".");
+							}
+						}
+					}
+
+					if (ref != null) {
+						fromTable = "";
+						if (ref.asOwner > 0) {
+							fromTable = "" + ref.asOwner;
+						}
+						// fromTable = ref.getReferences(tab.getTableNo(), true,
+						// true, false);
+						if (fromTable.length() > 0) {
+							bt.addText(caller.getTextValue("TABLE") + " "
+									+ fromTable + ". ", true, false);
+						}
+					}
+
+					if (bt.getCount() > 0) {
+						repoWriter.addText(bt);
+
+					}
+
+					for (int i = 0; i < spouseMember.getSubCount(); i++) {
+						bt = new SubPersonText();
+						bt.addText(spouseMember.getSubDadMom(i) + " ");
+						SukuData sub = caller.getKontroller().getSukuData(
+								"cmd=person",
+								"pid=" + spouseMember.getSubPid(i));
+						notices = sub.persLong.getNotices();
+						printName(bt, notices, 4);
+						printNotices(bt, notices, 4, tableNum);
+
+						fromTable = "";
+						ref = personReferences.get(spouseMember.getSubPid(i));
+						if (ref != null) {
+							fromTable = ref.getReferences(tableNum, true, true,
+									true);
+							if (fromTable.length() > 0) {
+								bt.addText(caller.getTextValue("ALSO") + " "
+										+ fromTable + ". ", true, false);
+							}
+						}
+
+						repoWriter.addText(bt);
+
+					}
+
+				} catch (SukuException e1) {
+					logger.log(Level.WARNING, "background reporting", e1);
+
+				}
+			}
 		}
 
 		if (fams) {

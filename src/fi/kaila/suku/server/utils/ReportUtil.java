@@ -832,6 +832,7 @@ public class ReportUtil {
 							}
 							if (mopid > 0) {
 								moxx = unitMap.get(mopid);
+								moxx.setGen(pregen + 1);
 								nxtvec.add(moxx);
 							}
 						}
