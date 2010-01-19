@@ -2219,8 +2219,24 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			kontroller.getSukuData("cmd=excel",
 					"path=resources/excel/TextsExcel.xls", "page=texts");
 
-			queryDb();
+			String[] failedLines = dlg.getResult();
+			if (failedLines != null) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < failedLines.length; i++) {
+					sb.append(failedLines[i]);
+				}
+				if (sb.length() > 0) {
 
+					java.util.Date d = new java.util.Date();
+					SukuPad pad = new SukuPad(this, kontroller.getFileName()
+							+ "\n" + d.toString() + "\n"
+							+ Resurses.getString("SUKU2004_IMPORT_ERRORS")
+							+ "\n\n" + sb.toString());
+					pad.setVisible(true);
+				}
+			} else {
+				queryDb();
+			}
 		} catch (SukuException e1) {
 			JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
 					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);

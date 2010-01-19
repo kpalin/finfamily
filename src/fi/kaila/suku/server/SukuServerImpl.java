@@ -107,7 +107,7 @@ public class SukuServerImpl implements SukuServer {
 
 	}
 
-	private void import2004Data(String path, String oldCode)
+	private SukuData import2004Data(String path, String oldCode)
 			throws SukuException {
 		SukuUtility data = SukuUtility.instance();
 		data.createSukuDb(this.con, "/sql/finfamily.sql");
@@ -115,7 +115,8 @@ public class SukuServerImpl implements SukuServer {
 		logger.fine("database created for " + path);
 
 		try {
-			data.import2004Data(this.con, path, oldCode);
+			SukuData resp = data.import2004Data(this.con, path, oldCode);
+			return resp;
 		} catch (Exception e) {
 			throw new SukuException(e);
 		}
@@ -477,7 +478,7 @@ public class SukuServerImpl implements SukuServer {
 			if (file != null) {
 				if (file.toLowerCase().endsWith("xml.gz")
 						|| file.toLowerCase().endsWith("xml")) {
-					import2004Data(file, lang);
+					fam = import2004Data(file, lang);
 				}
 			}
 		} else if (cmd.equals("unitCount")) {

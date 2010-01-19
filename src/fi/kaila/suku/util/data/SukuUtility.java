@@ -13,6 +13,7 @@ import javax.xml.transform.TransformerConfigurationException;
 
 import fi.kaila.suku.imports.Read2004XML;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * Utility to manage database
@@ -158,11 +159,11 @@ public class SukuUtility {
 	 * @throws TransformerConfigurationException
 	 * @throws SukuException
 	 */
-	public Read2004XML import2004Data(Connection con, String path,
-			String oldCode) throws SukuException {
+	public SukuData import2004Data(Connection con, String path, String oldCode)
+			throws SukuException {
 		Read2004XML x = new Read2004XML(path, con, oldCode);
-		x.importFile();
-		return x;
+		SukuData resp = x.importFile();
+		return resp;
 	}
 
 }

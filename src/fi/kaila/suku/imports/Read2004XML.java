@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -33,6 +34,7 @@ import fi.kaila.suku.util.NameArray;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * 
@@ -65,7 +67,7 @@ public class Read2004XML extends DefaultHandler {
 	private String urli = null;
 	private String databaseFolder = null;
 	private boolean databaseHasImages = false;
-
+	Vector<String> errorLine = new Vector<String>();
 	private volatile String currentStatus = null;
 
 	SimpleDateFormat cdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -388,7 +390,10 @@ public class Read2004XML extends DefaultHandler {
 	 * @throws SukuException
 	 * 
 	 */
-	public void importFile() throws SukuException {
+	public SukuData importFile() throws SukuException {
+
+		SukuData resp = new SukuData();
+		;
 
 		SAXParser parser = null;
 
@@ -475,8 +480,11 @@ public class Read2004XML extends DefaultHandler {
 			if (gz != null) {
 				gz.close();
 			}
+			resp.generalArray = errorLine.toArray(new String[0]);
+			return resp;
 		} catch (Throwable e) {
-
+			errorLine.add(e.getMessage());
+			resp.generalArray = errorLine.toArray(new String[0]);
 			throw new SukuException(e);
 
 		}
@@ -1174,8 +1182,12 @@ public class Read2004XML extends DefaultHandler {
 						try {
 							this.pstm.executeUpdate();
 						} catch (SQLException se) {
-							logger.log(Level.WARNING, "Bad APID = " + aid
-									+ " for RID = " + rid);
+							String err = "Bad APID = " + aid + " for RID = "
+									+ rid;
+							errorLine.add(err + " [" + se.getMessage() + "]");
+
+							logger.log(Level.WARNING, err, se);
+
 						}
 					} else {
 						logger.warning("A PID = 0 for RID = " + rid);
@@ -1209,8 +1221,11 @@ public class Read2004XML extends DefaultHandler {
 						try {
 							this.pstm.executeUpdate();
 						} catch (SQLException se) {
-							logger.log(Level.WARNING, "Bad BPID = " + bid
-									+ " for RID = " + rid);
+							String err = "Bad BPID = " + bid + " for RID = "
+									+ rid;
+							errorLine.add(err + " [" + se.getMessage() + "]");
+
+							logger.log(Level.WARNING, err, se);
 						}
 					} else {
 						logger.warning("B PID = 0 for RID = " + rid);

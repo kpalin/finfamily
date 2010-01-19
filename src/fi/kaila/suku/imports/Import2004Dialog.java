@@ -63,6 +63,8 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private String oldLangS[];
 	private String selectedOldLang = null;
 
+	private SukuData xmlResult = null;
+
 	private SukuKontroller kontroller = null;
 
 	private JProgressBar progressBar;
@@ -216,7 +218,9 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 			setRunnerValue("Luodaan tietokanta");
 
 			try {
-				kontroller.getSukuData("cmd=import2004", "lang=" + lang);
+				xmlResult = kontroller.getSukuData("cmd=import2004", "lang="
+						+ lang);
+
 			} catch (SukuException e) {
 				errorMessage = e.getMessage();
 				e.printStackTrace();
@@ -243,8 +247,46 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	 * 
 	 * @return error message in case of failure of import. null stands for ok
 	 */
-	public String getResult() {
-		return errorMessage;
+	// public String getResult() {
+	// return errorMessage;
+	// }
+
+	/**
+	 * 
+	 * @return failed gedcom lines
+	 */
+	public String[] getResult() {
+		String[] resu;
+
+		if (xmlResult == null) {
+			if (errorMessage != null) {
+				resu = new String[1];
+				resu[0] = errorMessage;
+			} else {
+				resu = new String[0];
+			}
+			return resu;
+		}
+		if (xmlResult.generalArray == null) {
+			if (errorMessage != null) {
+				resu = new String[1];
+				resu[0] = errorMessage;
+			} else {
+				return null;
+				// resu = new String[0];
+				// resu[0] = "generalArray missing";
+			}
+			return resu;
+		}
+		if (errorMessage != null) {
+			resu = new String[xmlResult.generalArray.length + 1];
+			resu[0] = errorMessage;
+			for (int i = 0; i < xmlResult.generalArray.length; i++) {
+				resu[i + 1] = xmlResult.generalArray[i];
+			}
+			return resu;
+		}
+		return xmlResult.generalArray;
 	}
 
 	private String errorMessage = null;
