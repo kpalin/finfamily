@@ -141,6 +141,7 @@ public class SukuSenser implements MouseListener {
 		rs.height = 100;
 		this.parent = parent;
 		sens.setBounds(rs);
+
 		String txt = parent.getText();
 		if (txt.length() > 0) {
 			model.removeAllElements();
@@ -207,6 +208,7 @@ public class SukuSenser implements MouseListener {
 			listIndex = 0;
 			lista.setSelectedIndex(listIndex);
 			// System.out.println("reset to -1");
+
 			sens.setVisible(model.size() > 0);
 		} else {
 			sens.setVisible(false);

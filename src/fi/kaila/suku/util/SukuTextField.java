@@ -1,11 +1,13 @@
 package fi.kaila.suku.util;
 
+import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JTextField;
+import javax.swing.BorderFactory;
+import javax.swing.JTextArea;
 
 /**
  * @author Kalle
@@ -13,7 +15,7 @@ import javax.swing.JTextField;
  *         This will become a textfield with some intellisens feature
  * 
  */
-public class SukuTextField extends JTextField implements FocusListener,
+public class SukuTextField extends JTextArea implements FocusListener,
 		KeyListener {
 
 	/**
@@ -66,14 +68,17 @@ public class SukuTextField extends JTextField implements FocusListener,
 	SukuSenser senser = null;
 	private String tag = null;
 	private Field type = Field.Fld_Null;
+	static Font f = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
 
 	/**
 	 * @param tag
 	 * @param type
 	 */
 	public SukuTextField(String tag, Field type) {
+		this.setBorder(BorderFactory.createLoweredBevelBorder());
 		addFocusListener(this);
 		addKeyListener(this);
+		setFont(f);
 		this.tag = tag;
 		this.type = type;
 		senser = SukuSenser.getInstance();
