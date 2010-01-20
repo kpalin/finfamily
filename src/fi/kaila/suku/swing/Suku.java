@@ -2223,7 +2223,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (failedLines != null) {
 				StringBuffer sb = new StringBuffer();
 				for (int i = 0; i < failedLines.length; i++) {
-					sb.append(failedLines[i]);
+					sb.append(failedLines[i] + "\n");
 				}
 				if (sb.length() > 0) {
 

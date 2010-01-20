@@ -467,6 +467,24 @@ public class Read2004XML extends DefaultHandler {
 				rs = stm.executeQuery(sql);
 				rs.close();
 			}
+			sql = "select u.pid from unit as u inner join relation as r on u.pid = r.pid "
+					+ "where r.rid in (select rid from relation group by rid having count(*) <> 2)";
+			rs = stm.executeQuery(sql);
+			boolean foundOrphan = false;
+			while (rs.next()) {
+				foundOrphan = true;
+				errorLine.add(Resurses.getString("SUKU2004_FAILED_PID") + "["
+						+ rs.getInt(1) + "]");
+			}
+			rs.close();
+			if (foundOrphan) {
+				sql = "delete from relation where rid in "
+						+ "(select rid from relation group by rid having count(*) <> 2)";
+				int deletedRels = stm.executeUpdate(sql);
+
+				errorLine.add(Resurses.getString("SUKU2004_DELETED_RID") + " ["
+						+ deletedRels + "]");
+			}
 			stm.executeUpdate(VACUUM);
 			long ended = System.currentTimeMillis();
 			logger.info("Backup " + this.urli + " converted in "
@@ -1178,19 +1196,15 @@ public class Read2004XML extends DefaultHandler {
 					}
 					this.pstm.setTimestamp(5,
 							toTimestamp(this.relationCreateDate));
-					if (aid > 0) {
-						try {
-							this.pstm.executeUpdate();
-						} catch (SQLException se) {
-							String err = "Bad APID = " + aid + " for RID = "
-									+ rid;
-							errorLine.add(err + " [" + se.getMessage() + "]");
+					try {
+						this.pstm.executeUpdate();
+					} catch (SQLException se) {
+						String err = "Relative aPID = " + aid
+								+ " fails for RID = " + rid;
+						errorLine.add(err + " [" + se.getMessage() + "]");
 
-							logger.log(Level.WARNING, err, se);
+						logger.log(Level.WARNING, err, se);
 
-						}
-					} else {
-						logger.warning("A PID = 0 for RID = " + rid);
 					}
 
 					this.pstm.setInt(1, rid);
@@ -1217,18 +1231,15 @@ public class Read2004XML extends DefaultHandler {
 					}
 					this.pstm.setTimestamp(5,
 							toTimestamp(this.relationCreateDate));
-					if (bid > 0) {
-						try {
-							this.pstm.executeUpdate();
-						} catch (SQLException se) {
-							String err = "Bad BPID = " + bid + " for RID = "
-									+ rid;
-							errorLine.add(err + " [" + se.getMessage() + "]");
 
-							logger.log(Level.WARNING, err, se);
-						}
-					} else {
-						logger.warning("B PID = 0 for RID = " + rid);
+					try {
+						this.pstm.executeUpdate();
+					} catch (SQLException se) {
+						String err = "Relative bPID = " + bid
+								+ " fails for RID = " + rid;
+						errorLine.add(err + " [" + se.getMessage() + "]");
+
+						logger.log(Level.WARNING, err, se);
 					}
 
 					if (this.relationDescription != null) {
@@ -1286,8 +1297,10 @@ public class Read2004XML extends DefaultHandler {
 					try {
 						this.pstm.executeUpdate();
 					} catch (SQLException se) {
-						logger.log(Level.WARNING, "Bad APID = " + aid
-								+ " for RID = " + rid);
+						String err = "Spouse aPID = " + aid
+								+ " fails for RID = " + rid;
+						errorLine.add(err + " [" + se.getMessage() + "]");
+						logger.log(Level.WARNING, err, se);
 					}
 
 					this.pstm.setInt(1, rid);
@@ -1316,8 +1329,10 @@ public class Read2004XML extends DefaultHandler {
 					try {
 						this.pstm.executeUpdate();
 					} catch (SQLException se) {
-						logger.log(Level.WARNING, "Bad BPID = " + bid
-								+ " for RID = " + rid);
+						String err = "Spouse bPID = " + bid
+								+ " fails for RID = " + rid;
+						errorLine.add(err + " [" + se.getMessage() + "]");
+						logger.log(Level.WARNING, err, se);
 					}
 					if (this.runner != null) {
 						if (this.runner.setRunnerValue("RelationId: " + rid)) {
