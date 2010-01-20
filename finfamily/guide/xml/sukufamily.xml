@@ -1,0 +1,17 @@
+﻿<?xml version="1.0"?> 
+<opas title="Perheikkuna">
+
+<p>Double click on a person name opens the family view with the person as subject. Doubleclik on a person in the familyview makes that person the subject and lets you browse through the families.</p>
+
+<p><image src="sukufamily.jpg" border="0"/></p> 
+
+
+
+<hdr>Database draft</hdr>
+
+<p>Select command database draft by right click on a person in database view will show you the data contents of the person</p>
+
+<p>Note! These commands are still very preliminary.</p>
+
+
+</opas>

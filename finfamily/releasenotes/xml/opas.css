@@ -1,0 +1,54 @@
+
+
+.list {
+	background-color: #ffffc0 ;
+	font:  bold 14pt cursive;
+
+}
+.list H1 { font: 28pt cursive;
+	font-weight:700 }
+
+.bullet{background-color: #ffffc0 ;
+	font: bold 14pt wingdings;
+	color : Blue;
+}
+	
+
+.nimi {
+	background-color: #ccffff ;
+	font: bold 14pt serif;
+	color : Blue;
+}
+
+.header {background-color: #ccffff; }
+.header H1 { font: 24pt cursive;
+	font-weight:700 }
+
+	
+.main {background-color: #ffffc0;
+	  font: 13pt serif }
+	  
+.main TD {font: 13pt serif }
+	  
+.main H1 { font: 28pt cursive;
+	font-weight:700 }
+
+.main H2 { font: 20pt cursive;
+	font-weight:700 }
+	
+	
+.main H3 { font: 14pt cursive;
+	font-weight:700 }
+	
+.main H4 { font: 12pt cursive;
+	font-weight:700 }
+	
+.list LI { margin-left: -2em;
+    padding-left: 0em;
+	text-indent: 0em;
+	}
+	
+.ul {
+	text-decoration : underline;
+}
+	

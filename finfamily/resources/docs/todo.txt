@@ -1,0 +1,25 @@
+net user
+
+net user postgres /delete
+
+notice update (ok)
+Uuden luonti  (ok)
+noticen deletointi (ok)
+noticen järjestäminen (ok)
+Ylläolevat jos tapahtuu main sivun toimesta 
+
+
+Täydellisen henkilöinfon haku (nyt hakee ehkä näkymällä)
+jossa myös kieliversiot mukana
+
+Tietokannan siivous aina aluksi (ok)
+
+Tarkitettava tiedot ennen sivulta siirtymistä (tietokantaa vastaan/päivämäärän oikeellisuus ym)
+
+Ajoparametrit debug tilassa
+
+-Xms64m -Xmx500m -Djava.util.logging.config.file=properties/logging.properties
+
+muut nimet copy constructoriin
+
+poistettava "leikepöydältä" kun ....

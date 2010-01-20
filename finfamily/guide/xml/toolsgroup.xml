@@ -1,0 +1,12 @@
+﻿<?xml version="1.0"?> 
+<opas title="Suku 11 aputoiminnot">
+
+<p>Every person can belong to one and only one group. Group manager manages the setting and removing of groups. Group is a text string with no actual limitation. Every person can belong to the same group 
+or every person can have it's own gruop.</p>
+<p><image src="toolsgroups.jpg" border="0" alt=""/></p> 
+
+<p>Add group to persons with the Adding group commands and remove group info using the remove group commands.</p>
+
+
+
+</opas>

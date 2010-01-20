@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?> 
+<opas title="Suku 11 aputoiminnot">
+
+<p>The tools menu contains following command:</p>
+
+<ul>
+<li><link lref="toolssettings">Settings</link></li>
+<li>Aux tools currently reorders notices.</li>
+<li><link lref="toolsgroup">Manage groups</link></li>
+<li>Reload map coordinates from  resources\excel\PaikatExcel.xls. Contains coordinates of finnish places. </li>
+<li>Reload notice types from resources\excel\TypesExcel.xls </li>
+<li>Stop PostgreSQL and  Start PostgreSQL. These commands work on one of the PostgreSQL distributions only. Same actions can be done from commands provided by PostgreSQL server.</li>
+
+</ul>
+
+
+
+
+</opas>
