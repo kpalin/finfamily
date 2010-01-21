@@ -1407,7 +1407,10 @@ public class SukuServerImpl implements SukuServer {
 			return ex.importTypes(this.con, path);
 		} else if ("texts".equals(page)) {
 			ExcelImporter ex = new ExcelImporter();
-			return ex.importTexts(this.con, path);
+			return ex.importTypes(this.con, path);
+		} else if ("conversions".equals(page)) {
+			ExcelImporter ex = new ExcelImporter();
+			return ex.importTypes(this.con, path);
 		} else {
 			resu.resu = Resurses.getString("UNKNOWN_EXCEL_TYPE");
 		}

@@ -1686,7 +1686,11 @@ public class Read2004XML extends DefaultHandler {
 				try {
 					this.pstm = this.con.prepareStatement(INSERT_CONVERSION);
 					this.pstm.setString(1, this.conversionsFrom);
-					this.pstm.setString(2, this.conversionsLang);
+					String newLang = this.conversionsLang.toLowerCase();
+					if (newLang.equals("se")) {
+						newLang = "sv";
+					}
+					this.pstm.setString(2, newLang);
 					this.pstm.setString(3, this.conversionsRule);
 					this.pstm.setString(4, this.conversionsTo);
 					this.pstm.executeUpdate();

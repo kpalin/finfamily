@@ -1296,7 +1296,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						logger.log(Level.WARNING, e1.getMessage(), e1);
 						e1.printStackTrace();
 					}
-
 				}
 			}
 			if (cmd.equals(Resurses.CONNECT)) {
@@ -1313,13 +1312,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				importDefaultTypes();
 			} else if (cmd.equals(Resurses.IMPORT_GEDCOM)) {
 				importGedcom();
-				// JOptionPane.showMessageDialog(this, "Under construction",
-				// Resurses.getString(Resurses.SUKU),
-				// JOptionPane.INFORMATION_MESSAGE);
-
 			} else if (cmd.equals(Resurses.IMPORT_HISKI)) {
 				importFromHiski();
-
 			} else if (cmd.equals("MENU_TOOLS_GROUP_MGR")) {
 				openGroupWin();
 			} else if (cmd.equals("MENU_TOOLS_VIEW_MGR")) {
