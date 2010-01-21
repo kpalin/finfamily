@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -42,6 +43,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -500,7 +502,28 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		add(lb);
 		lb.setBounds(x1, y1 - 20, 300, 20);
 
-		typesTable = new JTable(new MyTypesModel());
+		typesTable = new JTable(new MyTypesModel()) {
+
+			// Implement table header tool tips.
+			@Override
+			protected JTableHeader createDefaultTableHeader() {
+				return new JTableHeader(this.columnModel) {
+
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public String getToolTipText(MouseEvent e) {
+
+						java.awt.Point p = e.getPoint();
+						int index = this.columnModel.getColumnIndexAtX(p.x);
+						String tip = Resurses
+								.getString("TYPES_COLUMN_" + index);
+						return tip;
+					}
+				};
+			}
+
+		};
 		typesTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		typesTable.setFillsViewportHeight(true);
 

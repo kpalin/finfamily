@@ -233,6 +233,10 @@ public class SukuSenser implements MouseListener {
 		sens.setVisible(false);
 	}
 
+	public boolean isVisible() {
+		return sens.isVisible();
+	}
+
 	private int listIndex = 0;
 
 	/**

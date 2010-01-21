@@ -89,14 +89,19 @@ public class SukuTextField extends JTextField implements FocusListener {
 			if (e.getID() == KeyEvent.KEY_RELEASED) {
 				senser.selectList(cmd);
 			}
-			if (cmd == 10) {
-				senser.hide();
+			if (cmd != 10) {
+				return;
 			}
-			return;
-		}
 
+		}
+		if (cmd == 10) {
+			if (senser.isVisible()) {
+				senser.hide();
+				return;
+			}
+		}
 		super.processKeyEvent(e);
-		if (e.getID() == KeyEvent.KEY_RELEASED) {
+		if (e.getID() == KeyEvent.KEY_RELEASED && cmd != 10) {
 			senser.showSens(this, tag, type);
 		}
 
