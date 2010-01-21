@@ -3,7 +3,6 @@ package fi.kaila.suku.util;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.JTextField;
 
@@ -13,8 +12,7 @@ import javax.swing.JTextField;
  *         This will become a textfield with some intellisens feature
  * 
  */
-public class SukuTextField extends JTextField implements FocusListener,
-		KeyListener {
+public class SukuTextField extends JTextField implements FocusListener {
 
 	/**
 	 * 
@@ -73,7 +71,7 @@ public class SukuTextField extends JTextField implements FocusListener,
 	 */
 	public SukuTextField(String tag, Field type) {
 		addFocusListener(this);
-		addKeyListener(this);
+		// addKeyListener(this);
 		this.tag = tag;
 		this.type = type;
 		senser = SukuSenser.getInstance();
@@ -81,6 +79,28 @@ public class SukuTextField extends JTextField implements FocusListener,
 	}
 
 	boolean hasFocus = false;
+
+	@Override
+	protected void processKeyEvent(KeyEvent e) {
+
+		int cmd = e.getKeyCode();
+		if (cmd == 40 || cmd == 38 || cmd == 10) {
+
+			if (e.getID() == KeyEvent.KEY_RELEASED) {
+				senser.selectList(cmd);
+			}
+			if (cmd == 10) {
+				senser.hide();
+			}
+			return;
+		}
+
+		super.processKeyEvent(e);
+		if (e.getID() == KeyEvent.KEY_RELEASED) {
+			senser.showSens(this, tag, type);
+		}
+
+	}
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
@@ -91,57 +111,6 @@ public class SukuTextField extends JTextField implements FocusListener,
 	public void focusLost(FocusEvent arg0) {
 		hasFocus = false;
 		senser.hide();
-	}
-
-	@Override
-	public void keyPressed(KeyEvent k) {
-		// System.out.println("p:" + k.toString());
-		int cmd = k.getKeyCode();
-		// 40 = down
-		// 38 = up
-		if (cmd == 40 || cmd == 38 || cmd == 10) {
-			senser.selectList(cmd);
-		}
-
-	}
-
-	@Override
-	public void keyReleased(KeyEvent k) {
-		// System.out.println("r:" + k.toString());
-		// char c = k.getKeyChar();
-		int cmd = k.getKeyCode();
-		if (cmd == 40 || cmd == 38) {
-			return;
-		}
-		// if (c == '\n') {
-		// senser.getSens(this);
-		// return;
-		// }
-		senser.showSens(this, tag, type);
-		if (cmd == 10) {
-			senser.hide();
-		}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent k) {
-		// System.out.println("t:" + k.toString());
-		// char c = k.getKeyChar();
-		//
-		// if (c == '\n') {
-		// senser.getSens(this);
-		// return;
-		// }
-
-		// int i = k.getKeyCode();
-		// int m1 = k.getModifiers();
-		// int m2 = k.getModifiersEx();
-		//
-		// int ii = c;
-		// // if (k.getKeyChar() == '\n') {
-		// System.out.println("K:" + ii + "/" + i + "/" + m1 + "/" + m2);
-		// // System.out.println("k:" + k.toString());
-		// // }
 	}
 
 }
