@@ -192,6 +192,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mViewMgr;
 	private JMenuItem mLoadCoordinates;
 	private JMenuItem mLoadTypes;
+	private JMenuItem mLoadConversions;
 	private JMenuItem mDbWork;
 	private JMenuItem mDbUpdate;
 	private JMenuItem mStopPgsql;
@@ -375,6 +376,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mLoadTypes.setActionCommand("MENU_TOOLS_LOAD_TYPES");
 		this.mLoadTypes.addActionListener(this);
 
+		mLoadConversions = new JMenuItem(Resurses
+				.getString("MENU_TOOLS_LOAD_CONVERSIONS"));
+		mFile.add(mLoadConversions);
+		mLoadConversions.setActionCommand("MENU_TOOLS_LOAD_CONVERSIONS");
+		mLoadConversions.addActionListener(this);
+
 		this.mFile.addSeparator();
 
 		this.mQuery = new JMenuItem(Resurses.getString(Resurses.QUERY));
@@ -393,18 +400,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mFile.add(this.mPrintPerson);
 		this.mPrintPerson.setActionCommand(Resurses.PRINT_PERSON);
 		this.mPrintPerson.addActionListener(this);
-
-		// this.mTestOpen = new
-		// JMenuItem(Resurses.getString(Resurses.TEST_OPEN));
-		// this.mFile.add(this.mTestOpen);
-		// this.mTestOpen.setActionCommand(Resurses.TEST_OPEN);
-		// this.mTestOpen.addActionListener(this);
-		//
-		// this.mTestSave = new
-		// JMenuItem(Resurses.getString(Resurses.TEST_SAVE));
-		// this.mFile.add(this.mTestSave);
-		// this.mTestSave.setActionCommand(Resurses.TEST_SAVE);
-		// this.mTestSave.addActionListener(this);
 
 		this.mShowInMap = new JMenuItem(Resurses.getString(Resurses.SHOWINMAP));
 		this.mFile.add(this.mShowInMap);
@@ -1312,6 +1307,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				importSuku2004Backup();
 			} else if (cmd.equals("MENU_TOOLS_LOAD_COORDINATES")) {
 				importDefaultCoordinates();
+			} else if (cmd.equals("MENU_TOOLS_LOAD_CONVERSIONS")) {
+				importConversions();
 			} else if (cmd.equals("MENU_TOOLS_LOAD_TYPES")) {
 				importDefaultTypes();
 			} else if (cmd.equals(Resurses.IMPORT_GEDCOM)) {
@@ -1482,6 +1479,24 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			JOptionPane.showMessageDialog(personView.getSuku(), "Suku action"
 					+ ":" + ex.getMessage());
 
+		}
+	}
+
+	private void importConversions() {
+		try {
+			boolean openedFile = Suku.kontroller.openLocalFile("xls");
+			if (openedFile) {
+				kontroller.getSukuData("cmd=excel", "page=conversions");
+
+				JOptionPane.showMessageDialog(this, Resurses
+						.getString("IMPORTED_CONVERSIONS"), Resurses
+						.getString(Resurses.SUKU),
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		}
 	}
 

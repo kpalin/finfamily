@@ -510,7 +510,7 @@ public class SukuServerImpl implements SukuServer {
 					return fam;
 				}
 			}
-			importExcelData(path, page);
+			fam = importExcelData(path, page);
 
 		} else if (cmd.equals("saverepo")) {
 			fam = saveReportSettings(map);
@@ -682,7 +682,9 @@ public class SukuServerImpl implements SukuServer {
 		if (fam != null) {
 			fam.cmd = map.get("cmd");
 		}
-
+		if (fam.resu != null) {
+			throw new SukuException(fam.resu);
+		}
 		return fam;
 	}
 
@@ -1392,7 +1394,7 @@ public class SukuServerImpl implements SukuServer {
 	 */
 	private SukuData importExcelData(String path, String page)
 			throws SukuException {
-
+		SukuData resu = new SukuData();
 		if ("coordinates".equals(page)) {
 			ExcelImporter ex = new ExcelImporter();
 			return ex.importCoordinates(this.con, path);
@@ -1406,9 +1408,11 @@ public class SukuServerImpl implements SukuServer {
 		} else if ("texts".equals(page)) {
 			ExcelImporter ex = new ExcelImporter();
 			return ex.importTexts(this.con, path);
+		} else {
+			resu.resu = Resurses.getString("UNKNOWN_EXCEL_TYPE");
 		}
 
-		return new SukuData();
+		return resu;
 	}
 
 	/**
