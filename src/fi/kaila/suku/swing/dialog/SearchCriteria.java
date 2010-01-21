@@ -26,7 +26,9 @@ import javax.swing.border.TitledBorder;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTextField;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
@@ -46,17 +48,17 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JTextField surname;
-	private JTextField givenname;
-	private JTextField patronyme;
+	private SukuTextField surname;
+	private SukuTextField givenname;
+	private SukuTextField patronyme;
 
 	private JTextField birtFromDate;
 	private JTextField birtToDate;
-	private JTextField birtPlace;
+	private SukuTextField birtPlace;
 
 	private JTextField deatFromDate;
 	private JTextField deatToDate;
-	private JTextField deatPlace;
+	private SukuTextField deatPlace;
 
 	private JTextField createdFromDate;
 	private JTextField createdToDate;
@@ -267,14 +269,14 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.namePanel.add(lbl);
 
 		// this.surname = new SukuTextField(null, Field.Fld_Surname);
-		this.surname = new JTextField();
+		this.surname = new SukuTextField(null, Field.Fld_Surname);
 		this.namePanel.add(this.surname);
 		// this.givenname = new SukuTextField(null, Field.Fld_Givenname);
-		this.givenname = new JTextField();
+		this.givenname = new SukuTextField(null, Field.Fld_Givenname);
 		this.namePanel.add(this.givenname);
 
 		// this.patronyme = new SukuTextField(null, Field.Fld_Patronyme);
-		this.patronyme = new JTextField();
+		this.patronyme = new SukuTextField(null, Field.Fld_Patronyme);
 		this.namePanel.add(this.patronyme);
 
 		y += 80;
@@ -301,7 +303,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.birtPanel.add(this.birtFromDate);
 		this.birtToDate = new JTextField();
 		this.birtPanel.add(this.birtToDate);
-		this.birtPlace = new JTextField();
+		this.birtPlace = new SukuTextField(null, Field.Fld_Place);
 		this.birtPanel.add(this.birtPlace);
 
 		y += 80;
@@ -327,7 +329,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.deatPanel.add(this.deatFromDate);
 		this.deatToDate = new JTextField();
 		this.deatPanel.add(this.deatToDate);
-		this.deatPlace = new JTextField();
+		this.deatPlace = new SukuTextField(null, Field.Fld_Place);
 		this.deatPanel.add(this.deatPlace);
 
 		y += 80;
