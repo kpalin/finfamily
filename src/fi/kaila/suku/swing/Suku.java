@@ -193,6 +193,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mLoadCoordinates;
 	private JMenuItem mLoadTypes;
 	private JMenuItem mLoadConversions;
+	private JMenuItem mStoreAllConversions;
+	private JMenuItem mStoreConversions;
 	private JMenuItem mDbWork;
 	private JMenuItem mDbUpdate;
 	private JMenuItem mStopPgsql;
@@ -376,12 +378,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mLoadTypes.setActionCommand("MENU_TOOLS_LOAD_TYPES");
 		this.mLoadTypes.addActionListener(this);
 
-		mLoadConversions = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_LOAD_CONVERSIONS"));
-		mFile.add(mLoadConversions);
-		mLoadConversions.setActionCommand("MENU_TOOLS_LOAD_CONVERSIONS");
-		mLoadConversions.addActionListener(this);
-
 		this.mFile.addSeparator();
 
 		this.mQuery = new JMenuItem(Resurses.getString(Resurses.QUERY));
@@ -455,6 +451,27 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mViewMgr.setActionCommand("MENU_TOOLS_VIEW_MGR");
 		this.mViewMgr.addActionListener(this);
 
+		JMenu cnv = new JMenu(Resurses.getString("MENU_TOOLS_CONVERSIONS"));
+		this.mTools.add(cnv);
+
+		mLoadConversions = new JMenuItem(Resurses
+				.getString("MENU_TOOLS_LOAD_CONVERSIONS"));
+		cnv.add(mLoadConversions);
+		mLoadConversions.setActionCommand("MENU_TOOLS_LOAD_CONVERSIONS");
+		mLoadConversions.addActionListener(this);
+
+		mStoreConversions = new JMenuItem(Resurses
+				.getString("MENU_TOOLS_STORE_CONVERSIONS"));
+		cnv.add(mStoreConversions);
+		mStoreConversions.setActionCommand("MENU_TOOLS_STORE_CONVERSIONS");
+		mStoreConversions.addActionListener(this);
+
+		mStoreAllConversions = new JMenuItem(Resurses
+				.getString("MENU_TOOLS_STORE_ALL_CONVERSIONS"));
+		cnv.add(mStoreAllConversions);
+		mStoreAllConversions
+				.setActionCommand("MENU_TOOLS_STORE_ALL_CONVERSIONS");
+		mStoreAllConversions.addActionListener(this);
 		if (System.getProperty("file.separator").charAt(0) == '\\') { // windows
 			// only
 			this.mStopPgsql = new JMenuItem(Resurses
@@ -1308,6 +1325,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				importDefaultCoordinates();
 			} else if (cmd.equals("MENU_TOOLS_LOAD_CONVERSIONS")) {
 				importConversions();
+			} else if (cmd.equals("MENU_TOOLS_STORE_CONVERSIONS")) {
+				exportConversions(false);
+			} else if (cmd.equals("MENU_TOOLS_STORE_ALL_CONVERSIONS")) {
+				exportConversions(true);
 			} else if (cmd.equals("MENU_TOOLS_LOAD_TYPES")) {
 				importDefaultTypes();
 			} else if (cmd.equals(Resurses.IMPORT_GEDCOM)) {
@@ -1318,9 +1339,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				openGroupWin();
 			} else if (cmd.equals("MENU_TOOLS_VIEW_MGR")) {
 				openViewWin();
-			}
-
-			else if (cmd.equals(Resurses.ADMIN)) {
+			} else if (cmd.equals(Resurses.ADMIN)) {
 				adminDb();
 			} else if (cmd.equals(Resurses.EXIT)) {
 				System.exit(0);
@@ -1472,15 +1491,35 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			logger.log(Level.WARNING, "Suku action", ex);
 			JOptionPane.showMessageDialog(personView.getSuku(), "Suku action"
 					+ ":" + ex.getMessage());
-
 		}
+	}
+
+	private void exportConversions(boolean doAll) {
+		if (!kontroller.createLocalFile("xls")) {
+			return;
+		}
+
+		try {
+			kontroller.getSukuData("cmd=excel", "page=conversions",
+					"type=export", "all=" + doAll);
+			JOptionPane.showMessageDialog(this, Resurses
+					.getString("EXPORTED_CONVERSIONS"), Resurses
+					.getString(Resurses.SUKU), JOptionPane.INFORMATION_MESSAGE);
+
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+
 	}
 
 	private void importConversions() {
 		try {
 			boolean openedFile = Suku.kontroller.openLocalFile("xls");
 			if (openedFile) {
-				kontroller.getSukuData("cmd=excel", "page=conversions");
+				kontroller.getSukuData("cmd=excel", "page=conversions",
+						"type=import");
 
 				JOptionPane.showMessageDialog(this, Resurses
 						.getString("IMPORTED_CONVERSIONS"), Resurses

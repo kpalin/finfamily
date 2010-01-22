@@ -503,14 +503,27 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");
 			String path = map.get("path");
+			String type = map.get("type");
+			lang = map.get("lang");
+			String all = map.get("all");
+			if (lang == null) {
+				lang = Resurses.getLanguage();
+			}
 			if (path == null) {
 				path = this.openFile;
 				if (path == null) {
-					fam.resu = Resurses.getString("GETSUKU_BAD_COORDINATES");
+					fam.resu = Resurses.getString("INVALID_FILE");
 					return fam;
 				}
 			}
-			fam = importExcelData(path, page);
+			if (type == null || type.equals("import")) {
+				fam = importExcelData(path, page);
+			} else if (type.equals("export")) {
+				fam = exportExcelData(path, page, lang, (all != null && all
+						.equals("true")) ? true : false);
+			} else {
+				fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
+			}
 
 		} else if (cmd.equals("saverepo")) {
 			fam = saveReportSettings(map);
@@ -686,6 +699,16 @@ public class SukuServerImpl implements SukuServer {
 			throw new SukuException(fam.resu);
 		}
 		return fam;
+	}
+
+	private SukuData exportExcelData(String path, String page, String langCode,
+			boolean doAll) throws SukuException {
+		SukuData resu = new SukuData();
+		if ("conversions".equals(page)) {
+			ExcelImporter ex = new ExcelImporter();
+			return ex.exportCoordinates(this.con, path, langCode, doAll);
+		}
+		return resu;
 	}
 
 	private SukuData createAncTables(String order, String generations,

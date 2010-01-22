@@ -1,9 +1,12 @@
 package fi.kaila.suku.util.data;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,6 +14,12 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -495,17 +504,117 @@ public class ExcelImporter {
 			}
 			logger.info("inserted " + laskuri + " othernames for places");
 
-		} catch (Exception e1) {
-			// FIXME: Spaghetti code. This method uses a try-catch block that
-			// catches Exception objects, but Exception is not thrown within the
-			// try block, and RuntimeException is not explicitly caught. This
-			// construct also accidentally catches RuntimeException as well,
-			// masking potential bugs.
+		} catch (Throwable e1) {
 			suk.resu = e1.getMessage();
 			e1.printStackTrace();
 		}
 
 		return suk;
+	}
+
+	/**
+	 * @param con
+	 * @param path
+	 * @return SukuData for response status
+	 */
+	public SukuData exportCoordinates(Connection con, String path,
+			String langCode, boolean doAll) {
+		SukuData resp = new SukuData();
+		String sql;
+		if (doAll) {
+			sql = "select coalesce(u.place,c.fromtext)as place,c.rule,coalesce(c.totext,'XXX') as totext,count(*) "
+					+ "from unitnotice as u "
+					+ "inner join types as t on u.tag=t.tag and t.rule is not null and t.langcode = '"
+					+ langCode
+					+ "' "
+					+ "right join conversions as c on u.place=c.fromtext and c.rule = t.rule "
+					+ "group by place,c.fromtext,c.rule,c.totext order by place ";
+		} else {
+			sql = "select u.place,t.rule,coalesce(c.totext,'XXX') as totext,count(*) "
+					+ "from unitnotice as u "
+					+ "inner join types as t on u.tag=t.tag and t.rule is not null and t.langcode = '"
+					+ langCode
+					+ "' "
+					+ "left join conversions as c on u.place=c.fromtext and c.rule = t.rule "
+					+ "where u.place is not null group by u.place,t.rule,c.totext order by u.place";
+		}
+
+		try {
+
+			BufferedOutputStream bstr = new BufferedOutputStream(
+					Suku.kontroller.getOutputStream());
+			WritableWorkbook workbook = Workbook.createWorkbook(bstr);
+
+			WritableFont arial10bold = new WritableFont(WritableFont.ARIAL, 10,
+					WritableFont.BOLD, true);
+			WritableFont arial10 = new WritableFont(WritableFont.ARIAL, 10,
+					WritableFont.NO_BOLD, false);
+			WritableCellFormat arial0bold = new WritableCellFormat(arial10bold);
+			WritableCellFormat arial0 = new WritableCellFormat(arial10);
+			WritableSheet sheet = workbook.createSheet(langCode, 0);
+
+			Label label = new Label(0, 0, "Place", arial0bold);
+			sheet.addCell(label);
+			label = new Label(1, 0, "Count", arial0bold);
+			sheet.addCell(label);
+			label = new Label(2, 0, "IN", arial0bold);
+			sheet.addCell(label);
+			label = new Label(3, 0, "TO", arial0bold);
+			sheet.addCell(label);
+			label = new Label(4, 0, "FROM", arial0bold);
+			sheet.addCell(label);
+
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+
+			int row = 1;
+			String currPlace = "";
+			int lukuri = 0;
+			while (rs.next()) {
+				String place = rs.getString(1);
+				String rule = rs.getString(2);
+				String toText = rs.getString(3);
+				int counter = rs.getInt(4);
+				if (!place.equals(currPlace)) {
+					if (!currPlace.equals("")) {
+						label = new Label(1, row, "" + lukuri, arial0);
+						sheet.addCell(label);
+						lukuri = 0;
+					}
+					row++;
+					label = new Label(0, row, place, arial0);
+					sheet.addCell(label);
+					currPlace = place;
+				}
+				lukuri += counter;
+				if ("IN".equals(rule)) {
+					label = new Label(2, row, toText, arial0);
+					sheet.addCell(label);
+				} else if ("TO".equals(rule)) {
+					label = new Label(3, row, toText, arial0);
+					sheet.addCell(label);
+				} else if ("FROM".equals(rule)) {
+					label = new Label(4, row, toText, arial0);
+					sheet.addCell(label);
+				}
+
+			}
+			label = new Label(1, row, "" + lukuri, arial0);
+			sheet.addCell(label);
+			rs.close();
+			stm.close();
+
+			workbook.write();
+			workbook.close();
+			bstr.close();
+
+		} catch (Throwable e) {
+			resp.resu = e.getMessage();
+			logger.log(Level.WARNING, "Exception in background thread", e);
+		}
+
+		// ///////////////////////////////////////////////////////
+		return resp;
 	}
 
 }
