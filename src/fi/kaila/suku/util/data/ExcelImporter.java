@@ -271,12 +271,13 @@ public class ExcelImporter {
 							String INSERT_CONVERSIONS = "insert into Conversions (FromText,LangCode,Rule,ToText) "
 									+ " values (?,?,?,?)";
 
-							String DELETE_CONVERSIONS = "delete from Conversions";
-
+							String DELETE_CONVERSIONS = "delete from Conversions where fromtext = ? ";
+							PreparedStatement pstdel = null;
 							try {
 
-								pst = con.prepareStatement(DELETE_CONVERSIONS);
-								pst.executeUpdate();
+								pstdel = con
+										.prepareStatement(DELETE_CONVERSIONS);
+								// pst.executeUpdate();
 
 								pst = con.prepareStatement(INSERT_CONVERSIONS);
 
@@ -299,7 +300,12 @@ public class ExcelImporter {
 
 								if (a1 != null && !a1.equals("")) {
 
-									if (b1 != null && !b1.equals("")) {
+									pstdel.setString(1, a1);
+									pstdel.executeUpdate();
+
+									if (b1 != null && !b1.equals("")
+											&& !b1.equals("XXX")) {
+
 										pst.setString(1, a1);
 										pst
 												.setString(2, names[i]
@@ -309,7 +315,8 @@ public class ExcelImporter {
 										pst.executeUpdate();
 									}
 
-									if (c1 != null && !c1.equals("")) {
+									if (c1 != null && !c1.equals("")
+											&& !c1.equals("XXX")) {
 										pst.setString(1, a1);
 										pst
 												.setString(2, names[i]
@@ -318,7 +325,8 @@ public class ExcelImporter {
 										pst.setString(4, c1);
 										pst.executeUpdate();
 									}
-									if (d1 != null && !d1.equals("")) {
+									if (d1 != null && !d1.equals("")
+											&& !d1.equals("XXX")) {
 										pst.setString(1, a1);
 										pst
 												.setString(2, names[i]
