@@ -441,10 +441,19 @@ public class SukuServerImpl implements SukuServer {
 
 		} else if (cmd.equals("viewlist")) {
 			fam = getViewList();
-		} else if (cmd.equals("gettypes")) {
-			fam = getTypes(map.get("lang"));
-			SukuData txts = getTexts(map.get("lang"));
-			fam.vvTexts = txts.vvTexts;
+		} else if (cmd.equals("get")) {
+			String type = map.get("type");
+			if (type == null) {
+				fam.resu = Resurses.getString("ERR_TYPE_MISSING");
+			} else if (type.endsWith("types")) {
+				fam = getTypes(map.get("lang"));
+				SukuData txts = getTexts(map.get("lang"));
+				fam.vvTexts = txts.vvTexts;
+			} else if (type.endsWith("conversions")) {
+				fam = getConversions(map.get("lang"));
+			} else {
+				fam.resu = Resurses.getString("ERR_TYPE_INVALID");
+			}
 		} else if (cmd.equals("intelli")) {
 			fam = getIntelliSensData();
 		} else if (cmd.equals("getsettings")) {
@@ -699,6 +708,29 @@ public class SukuServerImpl implements SukuServer {
 			throw new SukuException(fam.resu);
 		}
 		return fam;
+	}
+
+	private SukuData getConversions(String langu) {
+		SukuData res = new SukuData();
+		String vx[];
+		res.vvTexts = new Vector<String[]>();
+		try {
+			String sql = "select fromtext,rule,totext from conversions where langCode = '"
+					+ langu + "' order by fromtext,rule";
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				String[] auxx = new String[3];
+				auxx[0] = rs.getString(1);
+				auxx[1] = rs.getString(2);
+				auxx[2] = rs.getString(3);
+				res.vvTexts.add(auxx);
+			}
+		} catch (SQLException e) {
+			res.resu = e.getMessage();
+			e.printStackTrace();
+		}
+		return res;
 	}
 
 	private SukuData exportExcelData(String path, String page, String langCode,
@@ -1212,17 +1244,18 @@ public class SukuServerImpl implements SukuServer {
 		String vx[];
 		res.vvTypes = new Vector<String[]>();
 		try {
-			String sql = "select tag,name,reportname,tagtype from types where langCode = '"
+			String sql = "select tag,name,reportname,tagtype,rule from types where langCode = '"
 					+ langu + "' order by tagtype,tag";
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 
 			while (rs.next()) {
-				vx = new String[4];
+				vx = new String[5];
 				vx[0] = rs.getString(1);
 				vx[1] = rs.getString(2);
 				vx[2] = rs.getString(3);
 				vx[3] = rs.getString(4);
+				vx[4] = rs.getString(5);
 				res.vvTypes.add(vx);
 			}
 			rs.close();
@@ -1354,8 +1387,6 @@ public class SukuServerImpl implements SukuServer {
 
 			}
 			pstm.close();
-
-			res.resu = Resurses.OK;
 
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "report settings", e);

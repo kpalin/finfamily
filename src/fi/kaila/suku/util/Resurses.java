@@ -307,8 +307,14 @@ public class Resurses {
 	/** */
 	public static final String TOOLBAR_SUBJECT_UP_ACTION = "SUBJECTP";
 
+	/**
+	 * 
+	 */
 	public static final String HISKI_NORMALIZE = "HISKI_NORMALIZE";
 
+	/**
+	 * 
+	 */
 	public static final String CMD_ANC_TYPE = "anc";
 
 	/** */

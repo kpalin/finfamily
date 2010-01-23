@@ -21,6 +21,7 @@ import fi.kaila.suku.report.style.MainPersonText;
 import fi.kaila.suku.report.style.SubPersonText;
 import fi.kaila.suku.report.style.TableHeaderText;
 import fi.kaila.suku.report.style.TableSubHeaderText;
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.Roman;
@@ -1485,7 +1486,7 @@ public abstract class CommonReport {
 						if (nn.getPlace() != null) {
 							if (addSpace)
 								bt.addText(" ");
-							bt.addText(convertPlace(tag, nn.getPlace()));
+							bt.addText(convertPlace(nn));
 							addSpace = true;
 							addDot = true;
 						}
@@ -1718,12 +1719,6 @@ public abstract class CommonReport {
 		}
 
 		return text.length();
-	}
-
-	private String convertPlace(String tag, String place) {
-
-		// TODO convert here
-		return place;
 	}
 
 	private String printDate(String datePrefix, String dateFrom, String dateTo) {
@@ -2001,6 +1996,48 @@ public abstract class CommonReport {
 			}
 			bt.addText(" ", caller.showBoldNames(), false);
 		}
+	}
+
+	private HashMap<String, String> bendMap = null;
+
+	protected String convertPlace(UnitNotice notice) {
+		String place = null;
+		if (notice.getPlace() != null) {
+			place = notice.getPlace();
+		} else if (notice.getTag().equals("RESI")
+				&& notice.getPostOffice() != null) {
+			place = notice.getPostOffice();
+		} else {
+			return null;
+		}
+
+		if (caller.isBendPlaces()) {
+			if (bendMap == null) {
+				bendMap = new HashMap<String, String>();
+				try {
+					SukuData resp = Suku.kontroller.getSukuData("cmd=get",
+							"type=conversions", "lang="
+									+ Resurses.getLanguage());
+					for (int i = 0; i < resp.vvTexts.size(); i++) {
+						String[] cnvx = resp.vvTexts.get(i);
+						String key = cnvx[1] + "|" + cnvx[0];
+						bendMap.put(key.toLowerCase(), cnvx[2]);
+					}
+				} catch (SukuException e) {
+					JOptionPane.showMessageDialog(caller, e.getMessage());
+				}
+			}
+			String tag = notice.getTag();
+			String rule = caller.getTypeRule(tag);
+			if (rule != null) {
+				String key = rule + "|" + place;
+				String tmp = bendMap.get(key.toLowerCase());
+				if (tmp != null) {
+					place = tmp;
+				}
+			}
+		}
+		return place;
 	}
 
 	protected String nv(String text) {

@@ -97,8 +97,8 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	public PersonMainPane(PersonView peronView, int pid) throws SukuException {
 		this.personView = peronView;
 
-		SukuData reposet = Suku.kontroller.getSukuData("cmd=gettypes", "lang="
-				+ Resurses.getLanguage());
+		SukuData reposet = Suku.kontroller.getSukuData("cmd=get", "type=types",
+				"lang=" + Resurses.getLanguage());
 
 		PersonView.types = new String[reposet.vvTypes.size()];
 		PersonView.typesTexts.clear();

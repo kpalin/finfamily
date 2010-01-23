@@ -97,8 +97,8 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		SukuData reposet; // types
 		String[] notorder = null;
 		try {
-			reposet = Suku.kontroller.getSukuData("cmd=gettypes", "lang="
-					+ Resurses.getLanguage());
+			reposet = Suku.kontroller.getSukuData("cmd=get", "type=types",
+					"lang=" + Resurses.getLanguage());
 
 			SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
 					"type=order", "name=notice");

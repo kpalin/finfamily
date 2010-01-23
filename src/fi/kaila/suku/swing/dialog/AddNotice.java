@@ -47,8 +47,8 @@ public class AddNotice extends JDialog implements MouseListener {
 		// setBounds(d.width/2-300,d.height/2-200,300,400);
 		setLayout(null);
 		// setUndecorated(true);
-		SukuData reposet = Suku.kontroller.getSukuData("cmd=gettypes", "lang="
-				+ Resurses.getLanguage());
+		SukuData reposet = Suku.kontroller.getSukuData("cmd=get", "type=types",
+				"lang=" + Resurses.getLanguage());
 
 		for (int i = 0; i < reposet.vvTypes.size(); i++) {
 			String tag = reposet.vvTypes.get(i)[0];

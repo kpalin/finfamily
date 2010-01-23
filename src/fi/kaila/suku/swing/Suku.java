@@ -365,18 +365,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mFile.add(this.mNewDatabase);
 		this.mNewDatabase.setActionCommand(Resurses.NEWDB);
 		this.mNewDatabase.addActionListener(this);
-		this.mFile.addSeparator();
-		this.mLoadCoordinates = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_LOAD_COORDINATES"));
-		this.mFile.add(this.mLoadCoordinates);
-		this.mLoadCoordinates.setActionCommand("MENU_TOOLS_LOAD_COORDINATES");
-		this.mLoadCoordinates.addActionListener(this);
-
-		this.mLoadTypes = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_LOAD_TYPES"));
-		this.mFile.add(this.mLoadTypes);
-		this.mLoadTypes.setActionCommand("MENU_TOOLS_LOAD_TYPES");
-		this.mLoadTypes.addActionListener(this);
 
 		this.mFile.addSeparator();
 
@@ -450,6 +438,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mTools.add(this.mViewMgr);
 		this.mViewMgr.setActionCommand("MENU_TOOLS_VIEW_MGR");
 		this.mViewMgr.addActionListener(this);
+
+		JMenu load = new JMenu(Resurses.getString("MENU_TOOLS_LOAD"));
+		mTools.add(load);
+		mLoadCoordinates = new JMenuItem(Resurses
+				.getString("MENU_TOOLS_LOAD_COORDINATES"));
+		load.add(mLoadCoordinates);
+		mLoadCoordinates.setActionCommand("MENU_TOOLS_LOAD_COORDINATES");
+		mLoadCoordinates.addActionListener(this);
+
+		mLoadTypes = new JMenuItem(Resurses.getString("MENU_TOOLS_LOAD_TYPES"));
+		load.add(mLoadTypes);
+		mLoadTypes.setActionCommand("MENU_TOOLS_LOAD_TYPES");
+		mLoadTypes.addActionListener(this);
 
 		JMenu cnv = new JMenu(Resurses.getString("MENU_TOOLS_CONVERSIONS"));
 		this.mTools.add(cnv);

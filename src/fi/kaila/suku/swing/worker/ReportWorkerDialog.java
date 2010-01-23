@@ -215,7 +215,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private Object[][] typesData = null;
 	private HashMap<String, Integer> typeTexts = new HashMap<String, Integer>();
 	private HashMap<String, String> textTexts = new HashMap<String, String>();
-
+	private HashMap<String, String> typeRule = new HashMap<String, String>();
 	String[] viewnames = null;
 	int[] viewids = null;
 
@@ -315,6 +315,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * @return true if place names are to be bent
+	 */
+	public boolean isBendPlaces() {
+		return commonBendNames.isSelected();
+	}
+
+	/**
 	 * @return subject pid
 	 */
 	public int getPid() {
@@ -359,6 +366,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			return (String) typesValues[idx];
 		}
 		return null;
+	}
+
+	/**
+	 * @param type
+	 * @return rule for requested type
+	 */
+	public String getTypeRule(String type) {
+		String rule = typeRule.get(type);
+		return rule;
+
 	}
 
 	/**
@@ -1834,14 +1851,20 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		MyTypesModel() {
 
 			try {
-				SukuData reposet = Suku.kontroller.getSukuData("cmd=gettypes",
-						"lang=" + Resurses.getLanguage());
+				SukuData reposet = Suku.kontroller.getSukuData("cmd=get",
+						"type=types", "lang=" + Resurses.getLanguage());
 
 				typesValues = new String[reposet.vvTypes.size()];
 				for (int i = 0; i < reposet.vvTypes.size(); i++) {
-					String tag = reposet.vvTypes.get(i)[0];
+					String rrr[] = reposet.vvTypes.get(i);
+					String tag = rrr[0];
 					typeTexts.put(tag, i);
-					typesValues[i] = reposet.vvTypes.get(i)[1];
+
+					typesValues[i] = rrr[1];
+					String rule = rrr[4];
+					if (rule != null) {
+						typeRule.put(tag, rule);
+					}
 
 				}
 
