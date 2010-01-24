@@ -125,7 +125,7 @@ public class ReportUtil {
 		personReferences = Utils.getDescendantToistot(tables);
 		logUnits("laskettu toistot");
 
-		System.out.println("SPOU/CHIL = " + spouGen + "/" + chilGen);
+		// System.out.println("SPOU/CHIL = " + spouGen + "/" + chilGen);
 		if (spouGen > 0) {
 			addSpouseAncestors(spouGen);
 

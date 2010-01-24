@@ -1483,7 +1483,9 @@ public abstract class CommonReport {
 							addSpace = true;
 							addDot = true;
 						}
-						if (nn.getPlace() != null) {
+						if (nn.getPlace() != null
+								|| (nn.getTag().equals("RESI") && nn
+										.getPostOffice() != null)) {
 							if (addSpace)
 								bt.addText(" ");
 							bt.addText(convertPlace(nn));
@@ -2006,7 +2008,7 @@ public abstract class CommonReport {
 			place = notice.getPlace();
 		} else if (notice.getTag().equals("RESI")
 				&& notice.getPostOffice() != null) {
-			place = notice.getPostOffice();
+			place = toProper(notice.getPostOffice());
 		} else {
 			return null;
 		}
@@ -2043,6 +2045,22 @@ public abstract class CommonReport {
 			}
 		}
 		return place;
+	}
+
+	private String toProper(String postOffice) {
+		if (postOffice == null) {
+			return null;
+		}
+		if (postOffice.indexOf(" ") < 0) {
+			String tmp = postOffice.toLowerCase();
+			if (tmp.length() < 2) {
+				return postOffice;
+			}
+			String A = tmp.substring(0, 1).toUpperCase();
+			return A + tmp.substring(1);
+		}
+		return postOffice;
+
 	}
 
 	protected String nv(String text) {
