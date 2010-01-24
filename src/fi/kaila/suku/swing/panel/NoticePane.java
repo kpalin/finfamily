@@ -731,7 +731,9 @@ public class NoticePane extends JPanel implements ActionListener,
 		if (value) {
 
 			toDelete.setText(Resurses.getString("DATA_DELETED"));
-
+			if (notice.getTag().equals("NOTE")) {
+				noteText.setText("");
+			}
 		} else {
 			toDelete.setText(Resurses.getString("DATA_DELETE"));
 		}

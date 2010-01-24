@@ -157,13 +157,11 @@ public class PersonMainPane extends JPanel implements ActionListener {
 								specialFirst = true;
 							}
 						}
-						// prefix.setText(tmp);
+
 						comboname += pane.surname.getText();
 						surname.setText(comboname);
 						tmp = pane.postfix.getText();
-						// if (!tmp.equals("")){
-						// specialFirst=true;
-						// }
+
 						postfix.setText(tmp);
 
 						firstName = false;
@@ -192,15 +190,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 								specialName = true;
 							}
 						}
-						// if (pane.prefix.getText().length() > 0){
-						// specialName=true;
-						// break;
-						// }
-						// if (pane.postfix.getText().length() > 0){
-						// specialName=true;
-						// break;
-						// }
-						// comboname += ";" + nextpre
+
 						comboname += ";" + nextpre + pane.surname.getText();
 					}
 				}
@@ -298,25 +288,20 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 
 			if (pane.notice.getTag().equals("OCCU")) {
-				// if (!pane.notice.isToBeDeleted()) {
+
 				occuVec.add(pane.description.getText());
-				// } else {
-				// occuVec.add("");
-				// }
+
 				occuCount++;
 
-				// occupation.setText(pane.description.getText());
 				if (!pane.isPlain())
 					occuCount += 100;
 			}
 			if (pane.notice.getTag().equals("NOTE")) {
 				noteCount++;
 				if (noteCount == 1) {
-					if (!pane.notice.isToBeDeleted()) {
-						notetext.setText(pane.noteText.getText());
-					} else {
-						notetext.setText("");
-					}
+
+					notetext.setText(pane.noteText.getText());
+
 				}
 				if (!pane.isPlain())
 					noteCount++;
@@ -1137,6 +1122,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		if (notetext.isEnabled()) {
 			if (noteCount == 0 && !notetext.getText().equals("")) {
 				insertNamePane(idx++, "NOTE");
+				noteCount++;
 			}
 		}
 		tabCount = personView.getTabCount();
