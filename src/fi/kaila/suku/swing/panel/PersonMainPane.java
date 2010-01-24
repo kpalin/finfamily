@@ -1206,4 +1206,29 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 	}
 
+	public void updateUnit() {
+
+		if (persLong != null) {
+			String newSex = sexes[sex.getSelectedIndex()];
+			persLong.setSex(newSex);
+
+			String priva = privacy.isSelected() ? "P" : null;
+			persLong.setPrivacy(priva);
+
+			String grp = groupid.getText();
+			persLong.setGroupId(grp);
+
+			String rf = refn.getText();
+			persLong.setUserRefn(rf);
+
+			String sou = source.getText();
+			persLong.setSource(sou);
+
+			String prit = privateText.getText();
+			persLong.setPrivateText(prit);
+
+		}
+
+	}
+
 }

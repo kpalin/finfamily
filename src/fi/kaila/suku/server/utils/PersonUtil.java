@@ -373,6 +373,17 @@ public class PersonUtil {
 
 		}
 		if (req.relations != null) {
+			if (req.persLong.getPid() == 0) {
+				req.persLong.setPid(pid);
+				for (int i = 0; i < req.relations.length; i++) {
+					Relation r = req.relations[i];
+					if (r.getPid() == 0) {
+						r.setPid(pid);
+					}
+				}
+
+			}
+
 			updateRelations(req);
 		}
 		return res;

@@ -862,6 +862,7 @@ public class PersonView extends JPanel implements ChangeListener {
 						main.updateNameNotices();
 						main.updateRestNotices();
 					} else {
+						main.updateUnit();
 						main.updateName();
 						main.updateRest();
 					}
