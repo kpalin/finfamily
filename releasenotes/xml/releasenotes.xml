@@ -3,10 +3,18 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
-<hdr>Release 325 on 24 jan 2010</hdr>
+<hdr>Release 330 on 24 jan 2010</hdr>
+<ul>
+<li>Bugfixes.</li>
+</ul>
+
+<hdr>Release 325 on 24 jan 2010 (3)</hdr>
 <ul>
 <li>Added rule based conversions of placenames.</li>
 </ul>
+
+
+
 
 <hdr>Release 317 on 22 jan 2010 (10)</hdr>
 <ul>
