@@ -2034,6 +2034,11 @@ public abstract class CommonReport {
 				String tmp = bendMap.get(key.toLowerCase());
 				if (tmp != null) {
 					place = tmp;
+				} else {
+					tmp = caller.getTextValue("CNV_" + rule);
+					if (tmp != null) {
+						place = tmp + " " + place;
+					}
 				}
 			}
 		}
