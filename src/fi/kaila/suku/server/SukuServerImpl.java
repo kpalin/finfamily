@@ -789,9 +789,11 @@ public class SukuServerImpl implements SukuServer {
 				rs = stm.executeQuery(sql);
 				while (rs.next()) {
 					Timestamp ts = rs.getTimestamp("maxi");
-					result.add("    "
-							+ Resurses.getString("DB_UNIT_LATESTCHANGE") + " ["
-							+ ts.toString() + "]");
+					if (ts != null) {
+						result.add("    "
+								+ Resurses.getString("DB_UNIT_LATESTCHANGE")
+								+ " [" + ts.toString() + "]");
+					}
 				}
 				rs.close();
 
