@@ -73,6 +73,17 @@ public class Relation implements Serializable {
 		}
 	}
 
+	public String getAdopted() {
+		if (notices != null) {
+			for (int i = 0; i < notices.length; i++) {
+				if (notices[i].getTag().equals("ADOP")) {
+					return "a";
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Set value for relation surety
 	 * 

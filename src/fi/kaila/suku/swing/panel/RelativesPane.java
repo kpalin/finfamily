@@ -152,7 +152,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 			if (r.getTag().equals("FATH") || r.getTag().equals("MOTH")) {
 				PersonShortData pp = me.persMap.get(r.getRelative());
 				r.setShortPerson(pp);
+				pp.setAdopted(r.getAdopted());
 				me.parents.list.add(r);
+
 			}
 		}
 
@@ -172,6 +174,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 				PersonShortData pp = me.persMap.get(r.getRelative());
 				r.setShortPerson(pp);
+				pp.setAdopted(r.getAdopted());
 				me.children.list.add(r);
 
 				int parePid = 0;
@@ -700,14 +703,15 @@ public class RelativesPane extends JPanel implements ActionListener,
 				return unknownIcon;
 			case 1:
 				int num = p.getParentPid();
+				String adop = Utils.nv(p.getAdopted());
 				if (num == 0)
-					return "";
+					return adop;
 				for (int i = 0; i < spouses.list.size(); i++) {
 					if (num == spouses.list.get(i).getRelative()) {
-						return "" + (i + 1);
+						return adop + (i + 1);
 					}
 				}
-				return "";
+				return adop;
 			case 2:
 				return p.getAlfaName();
 			case 3:

@@ -43,13 +43,6 @@ public class PersonShortData implements Serializable, Transferable,
 	private String group = null;
 	private ShortName[] names = null;
 
-	// private String namesTag = null;
-	// private String givenname = null;
-	// private String patronym = null;
-	// private String prefix = null;
-	// private String morenames = null;
-	// private String surname = null;
-	// private String postfix = null;
 	private String bDate = null;
 	private String dDate = null;
 	private String birtTag = null;
@@ -68,18 +61,7 @@ public class PersonShortData implements Serializable, Transferable,
 	private boolean hasTodo = false;
 	private byte[] imageData = null;
 
-	// FIXME: Class fi.kaila.suku.util.pojo.PersonShortData defines
-	// non-transient non-serializable instance field image. This Serializable
-	// class defines a non-primitive instance field
-	// which is neither transient, Serializable, or java.lang.Object, and does
-	// not appear to implement the Externalizable interface or the readObject()
-	// and writeObject() methods. Objects of this class will not be deserialized
-	// correctly if a non-Serializable object is stored in this field.
-
-	// This is not serialized but built from data
-
-	// Mika: Maybe you should set it transient?
-	private BufferedImage image = null;
+	private transient BufferedImage image = null;
 	private String imageName = null;
 	private Utils.PersonSource dragSource = null;
 
@@ -87,7 +69,8 @@ public class PersonShortData implements Serializable, Transferable,
 	/**
 	 * Used by Relatives pane
 	 */
-	private int parentPid = 0;
+	private transient int parentPid = 0;
+	private transient String adopted = null;
 
 	private int x = 0;
 	private int y = 0;
@@ -1120,6 +1103,14 @@ public class PersonShortData implements Serializable, Transferable,
 		}
 		return (nv(getBirtDate()).compareTo(nv(o.getBirtDate())));
 
+	}
+
+	public void setAdopted(String adopted) {
+		this.adopted = adopted;
+	}
+
+	public String getAdopted() {
+		return adopted;
 	}
 
 	private class ShortName implements Serializable {
