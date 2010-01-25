@@ -1047,6 +1047,7 @@ public class ImportGedcomUtil {
 								&& detail.lineValue.indexOf('@', 1) > 1) {
 							GedcomLine dets = gedMap.get(detail.lineValue);
 							notice.setSource(extractSourceText(dets));
+							notice.setSurety(extractGedcomSurety(dets));
 						} else {
 
 							String src = extractGedcomSource(detail);
@@ -1367,13 +1368,21 @@ public class ImportGedcomUtil {
 			dl--;
 			String mm = null;
 			if (dl >= 0) {
-
 				int kk = "|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|"
-						.indexOf(parts[dl].toUpperCase());
+						.indexOf(four(parts[dl].toUpperCase()));
 				if (kk > 0) {
 					kk--;
 					kk /= 2;
 					mm = "010203040506070809101112".substring(kk, kk + 2);
+				} else {
+					kk = "|TAM|HEL|MAA|HUH|TOU|KES|HEI|ELO|SYY|LOK|MAR|JOU|"
+							.indexOf(four(parts[dl].toUpperCase()));
+					if (kk > 0) {
+						kk--;
+						kk /= 2;
+						mm = "010203040506070809101112".substring(kk, kk + 2);
+					}
+
 				}
 			}
 			if (mm != null) {
@@ -1408,6 +1417,15 @@ public class ImportGedcomUtil {
 			}
 
 		}
+	}
+
+	private String four(String text) {
+		if (text == null)
+			return "";
+		if (text.length() < 4) {
+			return text;
+		}
+		return text.substring(0, 3);
 	}
 
 	boolean submitterDone = false;
