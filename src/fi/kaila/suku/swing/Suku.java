@@ -1,6 +1,7 @@
 package fi.kaila.suku.swing;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -1510,6 +1511,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void listDatabaseStatistics() {
+
 		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
 
 		String user = kontroller.getPref(cdlg, "USERID", "");
@@ -1517,6 +1519,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		String host = kontroller.getPref(cdlg, "HOST", "localhost");
 		SukuData resp = null;
 		try {
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			resp = Suku.kontroller.getSukuData("cmd=get", "type=dbstatistics",
 					"user=" + user, "password=" + pass, "host=" + host);
 		} catch (SukuException e) {
@@ -1524,6 +1527,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					.getString(Resurses.SUKU), JOptionPane.INFORMATION_MESSAGE);
 			e.printStackTrace();
 			return;
+
+		} finally {
+			setCursor(Cursor.getDefaultCursor());
 		}
 		// String[] statisticsLines = { "Some lines", "here", "and there" };
 		if (resp != null && resp.generalArray != null) {
