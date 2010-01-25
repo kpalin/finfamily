@@ -783,6 +783,18 @@ public class SukuServerImpl implements SukuServer {
 				}
 				rs.close();
 
+				sql = "select max(coalesce(modified,createdate)) as maxi from unitnotice";
+
+				stm = mycon.createStatement();
+				rs = stm.executeQuery(sql);
+				while (rs.next()) {
+					Timestamp ts = rs.getTimestamp("maxi");
+					result.add("    "
+							+ Resurses.getString("DB_UNIT_LATESTCHANGE") + " ["
+							+ ts.toString() + "]");
+				}
+				rs.close();
+
 				// rs = stm.executeQuery("select count(*) from unitnotice");
 				// while (rs.next()) {
 				// sb.append("unitnotice [");
