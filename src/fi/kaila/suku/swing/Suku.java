@@ -197,6 +197,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mStoreConversions;
 	private JMenuItem mDbWork;
 	private JMenuItem mDbUpdate;
+	private JMenuItem mListDatabases;
 	private JMenuItem mStopPgsql;
 	private JMenuItem mStartPgsql;
 	private JMenu mHiski;
@@ -474,6 +475,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mStoreAllConversions
 				.setActionCommand("MENU_TOOLS_STORE_ALL_CONVERSIONS");
 		mStoreAllConversions.addActionListener(this);
+		mTools.addSeparator();
+		if (!isWebApp) {
+			mListDatabases = new JMenuItem(Resurses
+					.getString("MENU_TOOLS_LIST_DATABASES"));
+			mTools.add(mListDatabases);
+			mListDatabases.setActionCommand("MENU_TOOLS_LIST_DATABASES");
+			mListDatabases.addActionListener(this);
+		}
 		if (System.getProperty("file.separator").charAt(0) == '\\') { // windows
 			// only
 			this.mStopPgsql = new JMenuItem(Resurses
@@ -1066,7 +1075,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void connectDb() {
 		sukuObject = null;
-		ConnectDialog cdlg = new ConnectDialog(this, kontroller, this.isWebApp);
+		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
 
 		cdlg.setVisible(true);
 		if (cdlg.wasOk()) {
@@ -1246,6 +1255,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				executeDbWork();
 			}
+			if (cmd.equals("MENU_TOOLS_LIST_DATABASES")) {
+				listDatabaseStatistics();
+			}
+
 			if (cmd.equals("MENU_COPY")) {
 				System.out.println("EDIT-COPY by ctrl/c");
 			}
@@ -1494,6 +1507,41 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			JOptionPane.showMessageDialog(personView.getSuku(), "Suku action"
 					+ ":" + ex.getMessage());
 		}
+	}
+
+	private void listDatabaseStatistics() {
+		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
+
+		String user = kontroller.getPref(cdlg, "USERID", "");
+		String pass = kontroller.getPref(cdlg, "PASSWORD", "");
+		String host = kontroller.getPref(cdlg, "HOST", "localhost");
+		SukuData resp = null;
+		try {
+			resp = Suku.kontroller.getSukuData("cmd=get", "type=dbstatistics",
+					"user=" + user, "password=" + pass, "host=" + host);
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.INFORMATION_MESSAGE);
+			e.printStackTrace();
+			return;
+		}
+		// String[] statisticsLines = { "Some lines", "here", "and there" };
+		if (resp != null && resp.generalArray != null) {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < resp.generalArray.length; i++) {
+				sb.append(resp.generalArray[i] + "\n");
+			}
+			if (sb.length() > 0) {
+
+				java.util.Date d = new java.util.Date();
+				SukuPad pad = new SukuPad(this, d.toString() + "\n"
+						+ Resurses.getString("MENU_TOOLS_LIST_DATABASES")
+						+ "\n\n" + sb.toString());
+				pad.setVisible(true);
+			}
+
+		}
+
 	}
 
 	private void exportConversions(boolean doAll) {

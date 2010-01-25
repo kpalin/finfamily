@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -451,6 +452,11 @@ public class SukuServerImpl implements SukuServer {
 				fam.vvTexts = txts.vvTexts;
 			} else if (type.endsWith("conversions")) {
 				fam = getConversions(map.get("lang"));
+			} else if (type.endsWith("dbstatistics")) {
+				String user = map.get("user");
+				String password = map.get("password");
+				String host = map.get("host");
+				fam = getDbLista(host, user, password);
 			} else {
 				fam.resu = Resurses.getString("ERR_TYPE_INVALID");
 			}
@@ -708,6 +714,153 @@ public class SukuServerImpl implements SukuServer {
 			throw new SukuException(fam.resu);
 		}
 		return fam;
+	}
+
+	private SukuData getDbLista(String host, String user, String password)
+			throws SukuException {
+		SukuData response = new SukuData();
+		String sql = "select datname from pg_database where datname not in ('postgres','template1','template0') order by datname ";
+
+		Vector<String> lista = new Vector<String>();
+		try {
+			Statement stm = con.createStatement();
+
+			ResultSet rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				lista.add(rs.getString(1));
+			}
+			rs.close();
+
+			// return sb.toString().split(";");
+
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "databasenames list", e);
+
+			throw new SukuException(e);
+		}
+
+		Vector<String> result = new Vector<String>();
+
+		for (int i = 0; i < lista.size(); i++) {
+			result.add(lista.get(i));
+			String constring = "jdbc:postgresql://" + host + "/" + lista.get(i)
+					+ "?user=" + user;
+			logger.fine("Connection: " + constring);
+			if (password != null && !password.equals("")) {
+
+				constring += "&password=" + password;
+			}
+			Connection mycon = null;
+			Statement stm = null;
+			try {
+				mycon = DriverManager.getConnection(constring);
+
+				// /////////////////////
+
+				sql = "select * from sukuvariables";
+
+				stm = mycon.createStatement();
+				ResultSet rs = stm.executeQuery(sql);
+				while (rs.next()) {
+					result.add("    " + Resurses.getString("DB_OWNER") + " ["
+							+ rs.getString("owner_name") + "]");
+
+					Timestamp ts = rs.getTimestamp("createdate");
+
+					result.add("    " + Resurses.getString("DB_CREATED") + " ["
+							+ ts.toString() + "]");
+				}
+				rs.close();
+
+				sql = "select count(*) from unit";
+
+				stm = mycon.createStatement();
+				rs = stm.executeQuery(sql);
+				while (rs.next()) {
+					result.add("    " + Resurses.getString("DB_UNIT_COUNT")
+							+ " [" + rs.getInt(1) + "]");
+				}
+				rs.close();
+
+				// rs = stm.executeQuery("select count(*) from unitnotice");
+				// while (rs.next()) {
+				// sb.append("unitnotice [");
+				// sb.append(rs.getInt(1));
+				// sb.append("]; ");
+				// }
+				// rs.close();
+				//
+				// rs = stm.executeQuery("select count(*) from unitlanguage");
+				// while (rs.next()) {
+				// sb.append("unitlanguage [");
+				// sb.append(rs.getInt(1));
+				// sb.append("]; ");
+				// }
+				// rs.close();
+				//
+				// rs = stm.executeQuery("select count(*) from relation");
+				// while (rs.next()) {
+				// sb.append("relation [");
+				// sb.append(rs.getInt(1));
+				// sb.append("]; ");
+				// }
+				// rs.close();
+				//
+				// rs = stm.executeQuery("select count(*) from relationnotice");
+				// while (rs.next()) {
+				// sb.append("relationnotice [");
+				// sb.append(rs.getInt(1));
+				// sb.append("]; ");
+				// }
+				// rs.close();
+				//
+				// rs =
+				// stm.executeQuery("select count(*) from relationlanguage");
+				// while (rs.next()) {
+				// sb.append("relationlanguage [");
+				// sb.append(rs.getInt(1));
+				// sb.append("]; ");
+				// }
+				// rs.close();
+				//
+				// rs = stm.executeQuery("select count(*) from conversions");
+				// while (rs.next()) {
+				// sb.append("conversions [");
+				// sb.append(rs.getInt(1));
+				// sb.append("]; ");
+				// }
+				// rs.close();
+				//
+				// rs = stm.executeQuery("select count(*) from views");
+				// while (rs.next()) {
+				// sb.append("views [");
+				// sb.append(rs.getInt(1));
+				// sb.append("]; ");
+				// }
+				// rs.close();
+				stm.close();
+
+				// ///////////////////////
+
+			} catch (SQLException e) {
+				result.add(e.getMessage());
+				e.printStackTrace();
+
+			} finally {
+				if (mycon != null) {
+					try {
+						mycon.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}
+		response.generalArray = result.toArray(new String[0]);
+
+		return response;
 	}
 
 	private SukuData getConversions(String langu) {

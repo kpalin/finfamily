@@ -982,7 +982,7 @@ public class ImportGedcomUtil {
 
 					pers.setSource(extractSourceText(dets));
 				} else {
-					String src = extractGedcomSource(record);
+					String src = extractGedcomSource(noti);
 					pers.setSource(src);
 				}
 			} else if (notiTags.indexOf(noti.tag) > 0
@@ -1429,7 +1429,9 @@ public class ImportGedcomUtil {
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine noti = record.lines.get(i);
 			if (noti.tag.equals("NAME")) {
-				name = noti.lineValue;
+				if (noti.lineValue != null) {
+					name = noti.lineValue.trim();
+				}
 			} else if (noti.tag.equals("ADDR")) {
 				address = splitAddress(noti.lineValue);
 			}
@@ -1459,6 +1461,17 @@ public class ImportGedcomUtil {
 				pst.setString(7, null);
 			}
 			lukuri = pst.executeUpdate();
+
+			if (createdDate != null) {
+				String swedate = createdDate.substring(0, 4) + "-"
+						+ createdDate.substring(4, 6) + "-"
+						+ createdDate.substring(6);
+				sql = "update sukuvariables set createdate = '" + swedate + "'";
+				pst = con.prepareStatement(sql);
+				lukuri = pst.executeUpdate();
+				pst.close();
+			}
+
 		} finally {
 			if (pst != null) {
 				try {
@@ -1480,7 +1493,7 @@ public class ImportGedcomUtil {
 			boolean wasPo = false;
 			for (int j = 0; j < parts.length; j++) {
 				if (j == 0) {
-					address.append(parts[j]);
+					address.append(parts[j].trim());
 				} else {
 					if (parts[j].indexOf('@') > 0) { // possibly email
 						addr.email = parts[j];
@@ -1529,6 +1542,7 @@ public class ImportGedcomUtil {
 	}
 
 	String submitter = null;
+	String createdDate = null;
 	private String sourceSystem = null;
 
 	private void consumeGedcomHead(GedcomLine record) {
@@ -1544,6 +1558,13 @@ public class ImportGedcomUtil {
 				continue;
 			} else if (notice1.tag.equals("GEDC")) {
 				continue;
+			} else if (notice1.tag.equals("DATE")) {
+				String[] dateParts = consumeGedcomDate(notice1.lineValue);
+				if (dateParts.length > 1 && dateParts[1].length() == 8) {
+					createdDate = dateParts[1];
+				} else {
+					unknownLine.add(notice1.toString());
+				}
 			} else if (notice1.tag.equals("NOTE")) {
 				ownerInfo = notice1.lineValue;
 			} else {
