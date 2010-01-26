@@ -225,7 +225,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private Vector<String> needle = new Vector<String>();
 	private static final int maxNeedle = 32;
-	private boolean isConnected = false;
+	private int isConnected = 0; // 0 = disconnected, 1 = connect to non suku, 2
+	// = connect to suku
 	boolean isExiting = false;
 	private String databaseName = null;
 	private PopupListener popupListener;
@@ -945,7 +946,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	public void setTitle(String title) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(Resurses.getString(Resurses.SUKU));
-		if (isConnected) {
+		if (isConnected == 2) {
 			sb.append(" [");
 			sb.append(databaseName);
 			sb.append("]");
@@ -1089,7 +1090,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				kontroller.getConnection(name, databaseName, userid, password);
 				// SukuData.instance().connectToDatabase(host, dbname, userid,
 				// password);
-				this.isConnected = true;
+				isConnected = 2;
 				enableCommands();
 				setTitle(null);
 				SukuData serverVersion = kontroller
@@ -1116,6 +1117,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 					kontroller.putPref(cdlg, "DBNAMES", sb.toString());
 				}
+
 				// copy report languages here to static
 				SukuData rlang = kontroller.getSukuData("cmd=repolanguages");
 
@@ -1173,8 +1175,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 		}
-		this.isConnected = false;
+		this.isConnected = 1;
 		enableCommands();
+
 	}
 
 	@Override
@@ -1238,7 +1241,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 								.getString("CREATED_NEWDB"), Resurses
 								.getString(Resurses.SUKU),
 								JOptionPane.INFORMATION_MESSAGE);
-
+						isConnected = 2;
+						enableCommands();
 					} catch (SukuException e1) {
 						JOptionPane.showMessageDialog(this, Resurses
 								.getString(Resurses.NEWDB), Resurses
@@ -1337,6 +1341,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				disconnectDb();
 			} else if (cmd.equals(Resurses.IMPORT_SUKU)) {
 				importSuku2004Backup();
+				isConnected = 2;
+				enableCommands();
 			} else if (cmd.equals("MENU_TOOLS_LOAD_COORDINATES")) {
 				importDefaultCoordinates();
 			} else if (cmd.equals("MENU_TOOLS_LOAD_CONVERSIONS")) {
@@ -1349,6 +1355,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				importDefaultTypes();
 			} else if (cmd.equals(Resurses.IMPORT_GEDCOM)) {
 				importGedcom();
+				isConnected = 2;
+				enableCommands();
 			} else if (cmd.equals(Resurses.IMPORT_HISKI)) {
 				importFromHiski();
 			} else if (cmd.equals("MENU_TOOLS_GROUP_MGR")) {
@@ -2260,7 +2268,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void disconnectDb() {
-		this.isConnected = false;
+		isConnected = 0;
 
 		SukuData request = new SukuData();
 		request.generalArray = needle.toArray(new String[0]);
@@ -2461,24 +2469,25 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void enableCommands() {
-		this.mConnect.setEnabled(!this.isConnected);
-		this.mImport2004.setEnabled(this.isConnected);
-		this.mImportGedcom.setEnabled(this.isConnected);
-		this.mQuery.setEnabled(this.isConnected);
-		this.mSettings.setEnabled(this.isConnected);
-		this.mNewDatabase.setEnabled(this.isConnected);
-		this.mDisconnect.setEnabled(this.isConnected);
-		this.tQueryButton.setEnabled(this.isConnected);
-		this.mImportHiski.setEnabled(this.isConnected);
-		this.mNewPerson.setEnabled(this.isConnected);
-		this.mDbWork.setEnabled(this.isConnected);
-		this.mDbUpdate.setEnabled(this.isConnected);
-		this.tPersonButton.setEnabled(this.isConnected);
-		this.tQueryButton.setEnabled(this.isConnected);
-		this.tMapButton.setEnabled(this.isConnected);
-		this.tRemovePerson.setEnabled(this.isConnected);
-		this.mGroupMgr.setEnabled(this.isConnected);
-		this.tSubjectButton.setEnabled(this.isConnected);
+		mConnect.setEnabled(isConnected == 0);
+		mImport2004.setEnabled(isConnected != 0);
+		mImportGedcom.setEnabled(isConnected != 0);
+		mQuery.setEnabled(isConnected == 2);
+		mSettings.setEnabled(isConnected == 2);
+		mNewDatabase.setEnabled(isConnected != 0);
+		mDisconnect.setEnabled(isConnected != 0);
+		tQueryButton.setEnabled(isConnected == 2);
+		mImportHiski.setEnabled(isConnected == 2);
+		mNewPerson.setEnabled(isConnected == 2);
+		mDbWork.setEnabled(isConnected == 2);
+		mDbUpdate.setEnabled(isConnected == 2);
+		tPersonButton.setEnabled(isConnected == 2);
+		tQueryButton.setEnabled(isConnected == 2);
+		tMapButton.setEnabled(isConnected == 2);
+		tRemovePerson.setEnabled(isConnected == 2);
+		mGroupMgr.setEnabled(isConnected == 2);
+		tSubjectButton.setEnabled(isConnected == 2);
+		tAddNotice.setEnabled(isConnected == 2);
 	}
 
 	/**
