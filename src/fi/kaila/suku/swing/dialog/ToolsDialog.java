@@ -25,6 +25,8 @@ import javax.swing.SwingWorker;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTypesModel;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -94,19 +96,18 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		setLayout(null);
 
 		int y = 10;
-		SukuData reposet; // types
+
 		String[] notorder = null;
 		try {
-			reposet = Suku.kontroller.getSukuData("cmd=get", "type=types",
-					"lang=" + Resurses.getLanguage());
+			SukuTypesModel types = Utils.typeInstance();
 
 			SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
 					"type=order", "name=notice");
 			notorder = resp.generalArray;
 
-			for (int i = 0; i < reposet.vvTypes.size(); i++) {
-				String tag = reposet.vvTypes.get(i)[0];
-				String value = reposet.vvTypes.get(i)[1];
+			for (int i = 0; i < types.getTypesTagsCount(); i++) {
+				String tag = types.getTypesTag(i);
+				String value = (String) types.getTypesData(i, 0);
 				kokoMap.put(tag, value);
 			}
 
@@ -125,18 +126,30 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 			}
 
-			for (int i = 0; i < reposet.vvTypes.size(); i++) {
-
-				String tag = reposet.vvTypes.get(i)[0];
-
+			for (int i = 0; i < types.getTypesTagsCount(); i++) {
+				String tag = types.getTypesTag(i);
 				String value = settiMap.get(tag);
 				if (value == null) {
 					kokoTags.add(tag);
-
-					value = reposet.vvTypes.get(i)[1];
+					value = (String) types.getTypesData(i, 0);
 					kokoLista.add(value);
 				}
+				// String value = (String) types.getTypesData(i, 0);
+				// kokoMap.put(tag, value);
 			}
+
+			// for (int i = 0; i < reposet.vvTypes.size(); i++) {
+			//
+			// String tag = reposet.vvTypes.get(i)[0];
+			//
+			// String value = settiMap.get(tag);
+			// if (value == null) {
+			// kokoTags.add(tag);
+			//
+			// value = reposet.vvTypes.get(i)[1];
+			// kokoLista.add(value);
+			// }
+			// }
 
 			JLabel lbl = new JLabel(Resurses.getString("DIALOG_NONSORT"));
 			getContentPane().add(lbl);

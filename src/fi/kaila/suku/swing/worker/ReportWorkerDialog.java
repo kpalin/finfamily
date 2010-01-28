@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +41,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -69,6 +67,7 @@ import fi.kaila.suku.swing.ISuku;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTypesModel;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
@@ -161,7 +160,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private boolean DEBUG = false;
+	// private boolean DEBUG = false;
 	private static final String EXIT = "EXIT";
 	private static final String START = "START";
 	private static final String LISTA = "REPORT.INDEX";
@@ -210,12 +209,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private JCheckBox commonIndexPlaces = null;
 	private JCheckBox commonIndexYears = null;
 	private JTable typesTable = null;
-	private String[] typesTags = null;
-	private String[] typesValues = null;
-	private Object[][] typesData = null;
-	private HashMap<String, Integer> typeTexts = new HashMap<String, Integer>();
-	private HashMap<String, String> textTexts = new HashMap<String, String>();
-	private HashMap<String, String> typeRule = new HashMap<String, String>();
+	private SukuTypesModel typesModel = null;
 	String[] viewnames = null;
 	int[] viewids = null;
 
@@ -328,14 +322,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		return this.pers.getPid();
 	}
 
-	/**
-	 * get no of tags in use
-	 * 
-	 * @return the no of tags
-	 */
-	public int getTypesTagsCount() {
-		return typesTags.length;
-	}
+	// /**
+	// * get no of tags in use
+	// *
+	// * @return the no of tags
+	// */
+	// public int getTypesTagsCount() {
+	// return typesModel.getTypesTags().length;
+	// }
 
 	/**
 	 * Gets the tag at the indicated index position
@@ -345,7 +339,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * @return the indexed tag
 	 */
 	public String getTypesTag(int idx) {
-		return typesTags[idx];
+		return typesModel.getTypesTags(idx);
 	}
 
 	/**
@@ -355,15 +349,19 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * @return name of type
 	 */
 	public String getTypeText(String tag) {
-		Integer iidx = typeTexts.get(tag);
+		Integer iidx = typesModel.getTypeText(tag);
 		if (iidx == null)
 			return tag;
 		int idx = iidx.intValue();
 		if (idx >= 0) {
-			if (idx < typesData.length) {
-				return (String) typesData[idx][5];
+			String txt = (String) typesModel.getTypesData(idx, 5);
+			if (txt != null) {
+				return txt;
 			}
-			return (String) typesValues[idx];
+			// if (idx < typesModel.getTypesData().length) {
+			// return (String) typesModel.getTypesData()[idx][5];
+			// }
+			return (String) typesModel.getTypesValue(idx);
 		}
 		return null;
 	}
@@ -373,7 +371,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * @return rule for requested type
 	 */
 	public String getTypeRule(String type) {
-		String rule = typeRule.get(type);
+		String rule = typesModel.getTypeRule(type);
 		return rule;
 
 	}
@@ -383,15 +381,19 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * @return name of tag e.g. BIRT tag returns Birth in English
 	 */
 	public String getTagName(String tag) {
-		Integer iidx = typeTexts.get(tag);
+		Integer iidx = typesModel.getTypeText(tag);
 		if (iidx == null)
 			return tag;
 		int idx = iidx.intValue();
 		if (idx >= 0) {
-			if (idx < typesData.length) {
-				return (String) typesData[idx][0];
+			String txt = (String) typesModel.getTypesData(idx, 0);
+			if (txt != null) {
+				return txt;
 			}
-			return (String) typesValues[idx];
+			// if (idx < typesModel.getTypesData().length) {
+			// return (String) typesModel.getTypesData()[idx][0];
+			// }
+			return (String) typesModel.getTypesValues()[idx];
 		}
 		return null;
 	}
@@ -403,7 +405,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * @return value of tag
 	 */
 	public String getTextValue(String tag) {
-		String value = textTexts.get(tag);
+		String value = typesModel.getTextText(tag);
 		if (value == null)
 			return tag;
 		return value;
@@ -420,14 +422,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	public boolean isType(String tag, int col) {
 		if (col < 1 || col > 4)
 			return false;
-		Integer idxInt = typeTexts.get(tag);
+		Integer idxInt = typesModel.getTypeText(tag);
 		if (idxInt == null)
 			return true;
 		int idx = idxInt.intValue();
 		if (idx >= 0) {
-			if (idx < typesData.length) {
-				return (Boolean) typesData[idx][col];
+			Boolean value = (Boolean) typesModel.getTypesData(idx, col);
+			if (value != null) {
+				return value;
 			}
+
 		}
 		return false;
 
@@ -518,8 +522,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		lb = new JLabel(this.pers.getAlfaName(true));
 		add(lb);
 		lb.setBounds(x1, y1 - 20, 300, 20);
+		typesModel = Utils.typeInstance();
+		typesTable = new JTable(typesModel) {
 
-		typesTable = new JTable(new MyTypesModel()) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			// Implement table header tool tips.
 			@Override
@@ -1041,7 +1050,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					int typeCount = typesTable.getRowCount();
 					for (int row = 0; row < typeCount; row++) {
 
-						String tag = typesTags[row];
+						String tag = typesModel.getTypesTags(row);
 
 						if (vx[0].substring(2).equals(tag)
 								&& vx[1].length() > 3) {
@@ -1299,7 +1308,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		for (int row = 0; row < typeCount; row++) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("t:");
-			sb.append(typesTags[row]);
+			sb.append(typesModel.getTypesTags(row));
 			sb.append("=");
 			sb.append(((Boolean) typesTable.getValueAt(row, 1)) ? "X" : "O");
 			sb.append(((Boolean) typesTable.getValueAt(row, 2)) ? "X" : "O");
@@ -1842,172 +1851,172 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
-	class MyTypesModel extends AbstractTableModel {
-		/**
-		 * @throws SukuException
-		 * 
-		 */
+	// class MyTypesModel extends AbstractTableModel {
+	// /**
+	// * @throws SukuException
+	// *
+	// */
+	//
+	// MyTypesModel() {
+	//
+	// try {
+	// SukuData reposet = Suku.kontroller.getSukuData("cmd=get",
+	// "type=types", "lang=" + Resurses.getLanguage());
+	//
+	// typesValues = new String[reposet.vvTypes.size()];
+	// for (int i = 0; i < reposet.vvTypes.size(); i++) {
+	// String rrr[] = reposet.vvTypes.get(i);
+	// String tag = rrr[0];
+	// typeTexts.put(tag, i);
+	//
+	// typesValues[i] = rrr[1];
+	// String rule = rrr[4];
+	// if (rule != null) {
+	// typeRule.put(tag, rule);
+	// }
+	//
+	// }
+	//
+	// typesData = new Object[reposet.vvTypes.size()][6];
+	// typesTags = new String[reposet.vvTypes.size()];
+	//
+	// for (int i = 0; i < typesTags.length; i++) {
+	// String tag = reposet.vvTypes.get(i)[0];
+	// typesTags[i] = tag;
+	// typesData[i][0] = reposet.vvTypes.get(i)[1];
+	// typesData[i][1] = Boolean.valueOf(false);
+	// if ("|BIRT|DEAT|CHR|BURI|NAME|".indexOf(tag) > 0) {
+	// typesData[i][1] = Boolean.valueOf(true);
+	// }
+	// typesData[i][2] = Boolean.valueOf(true);
+	// typesData[i][3] = Boolean.valueOf(false);
+	// typesData[i][4] = Boolean.valueOf(false);
+	// if ("|BIRT|DEAT|OCCU|".indexOf(tag) > 0) {
+	// typesData[i][3] = Boolean.valueOf(true);
+	// typesData[i][4] = Boolean.valueOf(true);
+	// }
+	// typesData[i][5] = reposet.vvTypes.get(i)[2];
+	//
+	// if (typesData[i][5] == null) {
+	// typesData[i][5] = reposet.vvTypes.get(i)[1];
+	// }
+	//
+	// }
+	//
+	// for (int i = 0; i < reposet.vvTexts.size(); i++) {
+	// String tag = reposet.vvTexts.get(i)[0];
+	// String value = reposet.vvTexts.get(i)[1];
+	// if (value == null)
+	// value = "";
+	// textTexts.put(tag, value);
+	// }
+	//
+	// } catch (SukuException e) {
+	// JOptionPane.showMessageDialog(null, e.getMessage(), Resurses
+	// .getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+	//
+	// e.printStackTrace();
+	// }
+	//
+	// }
+	//
+	// private static final long serialVersionUID = 1L;
+	//
+	// private String[] columnNames = { "Tietojakso", "Nimi", "Päähenkilö",
+	// "Lapsi", "Muu", "Teksti" };
+	//
+	// // private Object[][] typesData = {
+	// // {"Syntynyt", new Boolean(true),new Boolean(true), new Boolean(true)},
+	// // {"Kuollut", new Boolean(true),new Boolean(true), new Boolean(true)},
+	// // {"Nimi", new Boolean(false),new Boolean(true), new Boolean(true)},
+	// // {"Kastettu", new Boolean(true),new Boolean(true), new
+	// // Boolean(false)},
+	// // {"Haudattu", new Boolean(true),new Boolean(true), new
+	// // Boolean(false)},
+	// // {"Teksti", new Boolean(false),new Boolean(true), new Boolean(false)},
+	// // {"Ammatti", new Boolean(false),new Boolean(true), new Boolean(true)},
+	// // {"Elää", new Boolean(false),new Boolean(true), new Boolean(true)},
+	// // {"Tullut", new Boolean(false),new Boolean(true), new Boolean(true)},
+	// // {"Muuttanut pois", new Boolean(false),new Boolean(true), new
+	// // Boolean(true)},
+	// // {"Oppiarvo", new Boolean(false),new Boolean(true), new
+	// // Boolean(true)},
+	// // {"Kuva", new Boolean(false),new Boolean(true), new Boolean(true)},
+	// // {"Osoite", new Boolean(false),new Boolean(true), new Boolean(true)},
+	// // };
+	//
+	// public int getColumnCount() {
+	// return columnNames.length;
+	// }
+	//
+	// public int getRowCount() {
+	// return typesData.length;
+	// }
+	//
+	// public String getColumnName(int col) {
+	// return columnNames[col];
+	// }
+	//
+	// public Object getValueAt(int row, int col) {
+	// return typesData[row][col];
+	// }
+	//
+	// /*
+	// * JTable uses this method to determine the default renderer/ editor for
+	// * each cell. If we didn't implement this method, then the last column
+	// * would contain text ("true"/"false"), rather than a check box.
+	// */
+	// public Class<?> getColumnClass(int c) {
+	// return getValueAt(0, c).getClass();
+	// }
+	//
+	// /*
+	// * Don't need to implement this method unless your table's editable.
+	// */
+	// public boolean isCellEditable(int row, int col) {
+	// // Note that the data/cell address is constant,
+	// // no matter where the cell appears onscreen.
+	// if (col < 1) {
+	// return false;
+	// } else {
+	// return true;
+	// }
+	// }
+	//
+	// /*
+	// * Don't need to implement this method unless your table's data can
+	// * change.
+	// */
+	// public void setValueAt(Object value, int row, int col) {
+	// if (DEBUG) {
+	// System.out.println("Setting value at " + row + "," + col
+	// + " to " + value + " (an instance of "
+	// + value.getClass() + ")");
+	// }
+	//
+	// typesData[row][col] = value;
+	// fireTableCellUpdated(row, col);
+	//
+	// if (DEBUG) {
+	// System.out.println("New value of data:");
+	// printDebugData();
+	// }
+	// }
 
-		MyTypesModel() {
-
-			try {
-				SukuData reposet = Suku.kontroller.getSukuData("cmd=get",
-						"type=types", "lang=" + Resurses.getLanguage());
-
-				typesValues = new String[reposet.vvTypes.size()];
-				for (int i = 0; i < reposet.vvTypes.size(); i++) {
-					String rrr[] = reposet.vvTypes.get(i);
-					String tag = rrr[0];
-					typeTexts.put(tag, i);
-
-					typesValues[i] = rrr[1];
-					String rule = rrr[4];
-					if (rule != null) {
-						typeRule.put(tag, rule);
-					}
-
-				}
-
-				typesData = new Object[reposet.vvTypes.size()][6];
-				typesTags = new String[reposet.vvTypes.size()];
-
-				for (int i = 0; i < typesTags.length; i++) {
-					String tag = reposet.vvTypes.get(i)[0];
-					typesTags[i] = tag;
-					typesData[i][0] = reposet.vvTypes.get(i)[1];
-					typesData[i][1] = Boolean.valueOf(false);
-					if ("|BIRT|DEAT|CHR|BURI|NAME|".indexOf(tag) > 0) {
-						typesData[i][1] = Boolean.valueOf(true);
-					}
-					typesData[i][2] = Boolean.valueOf(true);
-					typesData[i][3] = Boolean.valueOf(false);
-					typesData[i][4] = Boolean.valueOf(false);
-					if ("|BIRT|DEAT|OCCU|".indexOf(tag) > 0) {
-						typesData[i][3] = Boolean.valueOf(true);
-						typesData[i][4] = Boolean.valueOf(true);
-					}
-					typesData[i][5] = reposet.vvTypes.get(i)[2];
-
-					if (typesData[i][5] == null) {
-						typesData[i][5] = reposet.vvTypes.get(i)[1];
-					}
-
-				}
-
-				for (int i = 0; i < reposet.vvTexts.size(); i++) {
-					String tag = reposet.vvTexts.get(i)[0];
-					String value = reposet.vvTexts.get(i)[1];
-					if (value == null)
-						value = "";
-					textTexts.put(tag, value);
-				}
-
-			} catch (SukuException e) {
-				JOptionPane.showMessageDialog(null, e.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-
-				e.printStackTrace();
-			}
-
-		}
-
-		private static final long serialVersionUID = 1L;
-
-		private String[] columnNames = { "Tietojakso", "Nimi", "Päähenkilö",
-				"Lapsi", "Muu", "Teksti" };
-
-		// private Object[][] typesData = {
-		// {"Syntynyt", new Boolean(true),new Boolean(true), new Boolean(true)},
-		// {"Kuollut", new Boolean(true),new Boolean(true), new Boolean(true)},
-		// {"Nimi", new Boolean(false),new Boolean(true), new Boolean(true)},
-		// {"Kastettu", new Boolean(true),new Boolean(true), new
-		// Boolean(false)},
-		// {"Haudattu", new Boolean(true),new Boolean(true), new
-		// Boolean(false)},
-		// {"Teksti", new Boolean(false),new Boolean(true), new Boolean(false)},
-		// {"Ammatti", new Boolean(false),new Boolean(true), new Boolean(true)},
-		// {"Elää", new Boolean(false),new Boolean(true), new Boolean(true)},
-		// {"Tullut", new Boolean(false),new Boolean(true), new Boolean(true)},
-		// {"Muuttanut pois", new Boolean(false),new Boolean(true), new
-		// Boolean(true)},
-		// {"Oppiarvo", new Boolean(false),new Boolean(true), new
-		// Boolean(true)},
-		// {"Kuva", new Boolean(false),new Boolean(true), new Boolean(true)},
-		// {"Osoite", new Boolean(false),new Boolean(true), new Boolean(true)},
-		// };
-
-		public int getColumnCount() {
-			return columnNames.length;
-		}
-
-		public int getRowCount() {
-			return typesData.length;
-		}
-
-		public String getColumnName(int col) {
-			return columnNames[col];
-		}
-
-		public Object getValueAt(int row, int col) {
-			return typesData[row][col];
-		}
-
-		/*
-		 * JTable uses this method to determine the default renderer/ editor for
-		 * each cell. If we didn't implement this method, then the last column
-		 * would contain text ("true"/"false"), rather than a check box.
-		 */
-		public Class<?> getColumnClass(int c) {
-			return getValueAt(0, c).getClass();
-		}
-
-		/*
-		 * Don't need to implement this method unless your table's editable.
-		 */
-		public boolean isCellEditable(int row, int col) {
-			// Note that the data/cell address is constant,
-			// no matter where the cell appears onscreen.
-			if (col < 1) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-
-		/*
-		 * Don't need to implement this method unless your table's data can
-		 * change.
-		 */
-		public void setValueAt(Object value, int row, int col) {
-			if (DEBUG) {
-				System.out.println("Setting value at " + row + "," + col
-						+ " to " + value + " (an instance of "
-						+ value.getClass() + ")");
-			}
-
-			typesData[row][col] = value;
-			fireTableCellUpdated(row, col);
-
-			if (DEBUG) {
-				System.out.println("New value of data:");
-				printDebugData();
-			}
-		}
-
-		private void printDebugData() {
-			int numRows = getRowCount();
-			int numCols = getColumnCount();
-
-			for (int i = 0; i < numRows; i++) {
-				System.out.print("    row " + i + ":");
-				for (int j = 0; j < numCols; j++) {
-					System.out.print("  " + typesData[i][j]);
-				}
-				System.out.println();
-			}
-			System.out.println("--------------------------");
-		}
-	}
+	// private void printDebugData() {
+	// int numRows = getRowCount();
+	// int numCols = getColumnCount();
+	//
+	// for (int i = 0; i < numRows; i++) {
+	// System.out.print("    row " + i + ":");
+	// for (int j = 0; j < numCols; j++) {
+	// System.out.print("  " + typesData[i][j]);
+	// }
+	// System.out.println();
+	// }
+	// System.out.println("--------------------------");
+	// }
+	// }
 
 	private void setRadioButton(ButtonGroup g, String name) {
 		Enumeration<AbstractButton> e = g.getElements();

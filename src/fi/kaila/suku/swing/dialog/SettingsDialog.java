@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.Utils;
 
 /**
  * variosu settings will be done here
@@ -165,7 +166,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			Suku.kontroller.putPref(owner, Resurses.DATEFORMAT,
 					dateCodes[newDateIndex]);
 			Resurses.setDateFormat(dateCodes[newDateIndex]);
-
+			Utils.resetSukuModel();
 			setVisible(false);
 		}
 	}

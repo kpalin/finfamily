@@ -549,6 +549,11 @@ public class Utils {
 		return noticeGivenName;
 	}
 
+	/**
+	 * command to start the external application for the file
+	 * 
+	 * @param url
+	 */
 	public static void openExternalFile(String url) {
 		try {
 			String[] cmds = { "rundll32", "url.dll,FileProtocolHandler", url };
@@ -566,6 +571,26 @@ public class Utils {
 			logger.log(Level.INFO, "rundll32", t);
 
 		}
+	}
+
+	private static SukuTypesModel types = null;
+
+	/**
+	 * reset the model so next request reloads it
+	 */
+	public static void resetSukuModel() {
+		types = null;
+	}
+
+	/**
+	 * @return the types model
+	 */
+	public static SukuTypesModel typeInstance() {
+
+		if (types == null) {
+			types = new SukuTypesModel();
+		}
+		return types;
 	}
 
 }

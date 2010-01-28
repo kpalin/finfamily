@@ -21,6 +21,8 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTypesModel;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.SukuData;
 
@@ -76,8 +78,8 @@ public class DescendantLista extends CommonReport {
 					+ ":" + e.getMessage());
 			return;
 		}
-
-		int alltags = caller.getTypesTagsCount();
+		SukuTypesModel types = Utils.typeInstance();
+		int alltags = types.getTypesTagsCount();
 		Vector<String> tname = new Vector<String>();
 		Vector<String> ttag = new Vector<String>();
 

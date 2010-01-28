@@ -12,7 +12,8 @@ import javax.swing.JScrollPane;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
-import fi.kaila.suku.util.pojo.SukuData;
+import fi.kaila.suku.util.SukuTypesModel;
+import fi.kaila.suku.util.Utils;
 
 /**
  * 
@@ -46,23 +47,19 @@ public class AddNotice extends JDialog implements MouseListener {
 		//		
 		// setBounds(d.width/2-300,d.height/2-200,300,400);
 		setLayout(null);
-		// setUndecorated(true);
-		SukuData reposet = Suku.kontroller.getSukuData("cmd=get", "type=types",
-				"lang=" + Resurses.getLanguage());
+		SukuTypesModel types = Utils.typeInstance();
 
-		for (int i = 0; i < reposet.vvTypes.size(); i++) {
-			String tag = reposet.vvTypes.get(i)[0];
-			String value = reposet.vvTypes.get(i)[1];
+		for (int i = 0; i < types.getTypesTagsCount(); i++) {
+			String tag = (String) types.getTypesTags(i);
+			String value = (String) types.getTypesData(i, 0);
 			kokoMap.put(tag, value);
 		}
 
-		for (int i = 0; i < reposet.vvTypes.size(); i++) {
-
-			String tag = reposet.vvTypes.get(i)[0];
-
+		for (int i = 0; i < types.getTypesTagsCount(); i++) {
+			String tag = (String) types.getTypesTags(i);
 			kokoTags.add(tag);
 
-			String value = reposet.vvTypes.get(i)[1];
+			String value = (String) types.getTypesData(i, 0);
 			kokoLista.add(value);
 
 		}

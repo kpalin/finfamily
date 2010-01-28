@@ -24,6 +24,7 @@ import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTextArea;
 import fi.kaila.suku.util.SukuTextField;
+import fi.kaila.suku.util.SukuTypesModel;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.PersonLongData;
@@ -97,17 +98,16 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	public PersonMainPane(PersonView peronView, int pid) throws SukuException {
 		this.personView = peronView;
 
-		SukuData reposet = Suku.kontroller.getSukuData("cmd=get", "type=types",
-				"lang=" + Resurses.getLanguage());
+		SukuTypesModel types = Utils.typeInstance();
 
-		PersonView.types = new String[reposet.vvTypes.size()];
+		PersonView.types = new String[types.getTypesTagsCount()];
 		PersonView.typesTexts.clear();
 
-		for (int i = 0; i < reposet.vvTypes.size(); i++) {
+		for (int i = 0; i < types.getTypesTagsCount(); i++) {
 
-			String tag = reposet.vvTypes.get(i)[0];
+			String tag = types.getTypesTag(i);
 			PersonView.types[i] = tag;
-			String value = reposet.vvTypes.get(i)[1];
+			String value = (String) types.getTypesData(i, 0);
 			PersonView.typesTexts.put(tag, value);
 		}
 
@@ -1206,6 +1206,9 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 	}
 
+	/**
+	 * update unit data from fields to pojo
+	 */
 	public void updateUnit() {
 
 		if (persLong != null) {
