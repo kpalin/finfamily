@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.print.PrinterException;
 import java.util.HashMap;
 import java.util.Vector;
@@ -21,6 +22,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.StyledDocument;
 
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.swing.dialog.AddNotice;
 import fi.kaila.suku.util.FamilyParentRelationIndex;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
@@ -753,6 +755,27 @@ public class PersonView extends JPanel implements ChangeListener {
 	}
 
 	/**
+	 * Add notice to end
+	 * 
+	 * @throws SukuException
+	 */
+	public void addNewNotice() throws SukuException {
+		AddNotice an = new AddNotice(getSuku());
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+
+		an.setBounds(d.width / 2 - 300, d.height / 2 - 200, 200, 400);
+
+		an.setVisible(true);
+		if (an.getSelectedTag() != null) {
+			// System.out.println("Valittiin " + an.getSelectedTag());
+			int nxt = tabbedPane.getTabCount();
+			setSelectedIndex(nxt - 1);
+			addNotice(nxt, an.getSelectedTag());
+
+		}
+	}
+
+	/**
 	 * add a notice
 	 * 
 	 * @param idx
@@ -772,6 +795,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		PersonMainPane main = (PersonMainPane) paneTabs.get(mainIdx).pnl;
 		if (main == null)
 			return;
+
 		main.insertNamePane(isele, tag);
 		setSelectedIndex(isele);
 		updateUI();
@@ -802,6 +826,13 @@ public class PersonView extends JPanel implements ChangeListener {
 
 		}
 
+	}
+
+	/**
+	 * @return selected tab index
+	 */
+	public int getSelectedIndex() {
+		return tabbedPane.getSelectedIndex();
 	}
 
 	@Override
@@ -889,6 +920,7 @@ public class PersonView extends JPanel implements ChangeListener {
 					e1.printStackTrace();
 				}
 			}
+			getSuku().showAddNoticeButton();
 		}
 	}
 

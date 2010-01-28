@@ -1498,9 +1498,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							showPerson(Integer.parseInt(dbl[0]));
 						}
 					}
-					// if (subjectPid > 0) {
-					// showPerson(subjectPid);
-					// }
 				}
 			} else if (cmd.equals(Resurses.TOOLBAR_NOTICES_ACTION)) {
 				boolean notiButt = !tNoticesButton.isSelected();
@@ -1509,7 +1506,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				kontroller
 						.putPref(this, Resurses.NOTICES_BUTTON, "" + notiButt);
 				personView.showNotices(tNoticesButton.isSelected());
+				showAddNoticeButton();
+			} else if (cmd.equals(Resurses.TOOLBAR_ADDNOTICE_ACTION)) {
+				personView.addNewNotice();
 			}
+
 		} catch (Throwable ex) {
 
 			logger.log(Level.WARNING, "Suku action", ex);
@@ -1787,7 +1788,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * @return true if button is depressed
 	 */
 	public boolean isShowNotices() {
+		showAddNoticeButton();
 		return tNoticesButton.isSelected();
+
 	}
 
 	/**
@@ -2487,7 +2490,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		tRemovePerson.setEnabled(isConnected == 2);
 		mGroupMgr.setEnabled(isConnected == 2);
 		tSubjectButton.setEnabled(isConnected == 2);
-		tAddNotice.setEnabled(isConnected == 2);
+		if (isConnected != 2) {
+			tAddNotice.setEnabled(false);
+		}
+
+	}
+
+	/**
+	 * Enables/disables the add notice button
+	 * 
+	 */
+	public void showAddNoticeButton() {
+
+		int isele = personView.getSelectedIndex();
+		int mnotice = personView.getMainPaneIndex();
+		tAddNotice.setEnabled(isConnected == 2 && tNoticesButton.isSelected()
+				&& isele >= mnotice);
+
 	}
 
 	/**
