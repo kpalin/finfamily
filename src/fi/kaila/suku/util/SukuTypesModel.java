@@ -168,7 +168,18 @@ public class SukuTypesModel extends AbstractTableModel {
 	 */
 	public Object getTypesData(int row, int col) {
 		if (row < typesData.length) {
-			return (String) typesData[row][col];
+			return typesData[row][col];
+		}
+		return null;
+	}
+
+	/**
+	 * @param row
+	 * @return name of tag
+	 */
+	public String getTypesName(int row) {
+		if (row < typesData.length) {
+			return (String) typesData[row][0];
 		}
 		return null;
 	}

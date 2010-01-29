@@ -1431,11 +1431,12 @@ public class SukuServerImpl implements SukuServer {
 			rs = stm.executeQuery(sql);
 
 			while (rs.next()) {
-				vx = new String[4];
+				vx = new String[5];
 				vx[0] = rs.getString(1);
 				vx[1] = vx[0];
 				vx[2] = vx[0];
 				vx[3] = "Notices";
+				vx[4] = null;
 				res.vvTypes.add(vx);
 			}
 			stm.close();

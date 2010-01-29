@@ -51,7 +51,7 @@ public class AddNotice extends JDialog implements MouseListener {
 
 		for (int i = 0; i < types.getTypesTagsCount(); i++) {
 			String tag = (String) types.getTypesTags(i);
-			String value = (String) types.getTypesData(i, 0);
+			String value = types.getTypesName(i);
 			kokoMap.put(tag, value);
 		}
 
@@ -59,7 +59,7 @@ public class AddNotice extends JDialog implements MouseListener {
 			String tag = (String) types.getTypesTags(i);
 			kokoTags.add(tag);
 
-			String value = (String) types.getTypesData(i, 0);
+			String value = types.getTypesName(i);
 			kokoLista.add(value);
 
 		}

@@ -107,7 +107,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 			String tag = types.getTypesTag(i);
 			PersonView.types[i] = tag;
-			String value = (String) types.getTypesData(i, 0);
+			String value = types.getTypesName(i);
 			PersonView.typesTexts.put(tag, value);
 		}
 

@@ -107,7 +107,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 			for (int i = 0; i < types.getTypesTagsCount(); i++) {
 				String tag = types.getTypesTag(i);
-				String value = (String) types.getTypesData(i, 0);
+				String value = types.getTypesName(i);
 				kokoMap.put(tag, value);
 			}
 
@@ -131,7 +131,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 				String value = settiMap.get(tag);
 				if (value == null) {
 					kokoTags.add(tag);
-					value = (String) types.getTypesData(i, 0);
+					value = types.getTypesName(i);
 					kokoLista.add(value);
 				}
 				// String value = (String) types.getTypesData(i, 0);

@@ -386,7 +386,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			return tag;
 		int idx = iidx.intValue();
 		if (idx >= 0) {
-			String txt = (String) typesModel.getTypesData(idx, 0);
+			String txt = typesModel.getTypesName(idx);
 			if (txt != null) {
 				return txt;
 			}
@@ -427,6 +427,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			return true;
 		int idx = idxInt.intValue();
 		if (idx >= 0) {
+
 			Boolean value = (Boolean) typesModel.getTypesData(idx, col);
 			if (value != null) {
 				return value;
