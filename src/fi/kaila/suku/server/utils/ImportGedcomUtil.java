@@ -66,7 +66,7 @@ public class ImportGedcomUtil {
 	LinkedHashMap<String, GedcomLine> gedFamMap = null;
 	Vector<String> unknownLine = new Vector<String>();
 	LinkedHashMap<String, GedcomFams> gedFams = null;
-	Vector<GedcomLine> gedAdopt = null;
+	LinkedHashMap<String, GedcomLine> gedAdopt = null;
 	HashMap<String, String> texts = null;
 
 	/**
@@ -84,7 +84,7 @@ public class ImportGedcomUtil {
 		gedFamMap = new LinkedHashMap<String, GedcomLine>();
 		gedPid = new LinkedHashMap<String, GedcomPidEle>();
 		gedFams = new LinkedHashMap<String, GedcomFams>();
-		gedAdopt = new Vector<GedcomLine>();
+		gedAdopt = new LinkedHashMap<String, GedcomLine>();
 		seenTrlr = false;
 		double indiCount = 0;
 		double famCount = 0;
@@ -351,7 +351,7 @@ public class ImportGedcomUtil {
 			gedFamMap.clear();
 			gedPid.clear();
 			gedFams.clear();
-			gedAdopt.removeAllElements();
+			gedAdopt.clear();
 			logger.info("maps cleared");
 		}
 		return resp;
@@ -671,16 +671,70 @@ public class ImportGedcomUtil {
 			} else if (line.tag.equals("CHIL")) {
 				lineChil = record.lines.get(i);
 				cid = gedPid.get(lineChil.lineValue);
+
 				if (cid != null) {
+
+					GedcomLine adopt = gedAdopt.get(lineChil.lineValue);
+
 					if (aid != null) {
 						crel = new Relation(0, cid.pid, aid.pid, "FATH", 100,
 								null, null);
 						rels.add(crel);
+						if (adopt != null) {
+							for (int j = 0; j < adopt.lines.size(); j++) {
+								GedcomLine detail = adopt.lines.get(j);
+								if (detail.lineValue != null
+										&& record.id.equals(detail.lineValue)) {
+									boolean adoptedByFather = true; // as
+									// default
+									for (int k = 0; k < detail.lines.size(); k++) {
+										GedcomLine sub = detail.lines.get(k);
+										if (sub.tag.equals("ADOP")) {
+											if ("MOTH".equals(sub.lineValue)) {
+												adoptedByFather = false;
+											}
+										}
+
+									}
+									if (adoptedByFather) {
+										RelationNotice[] ados = new RelationNotice[1];
+										ados[0] = new RelationNotice("ADOP");
+
+										crel.setNotices(ados);
+
+									}
+								}
+							}
+						}
 					}
 					if (bid != null) {
 						crel = new Relation(0, cid.pid, bid.pid, "MOTH", 100,
 								null, null);
 						rels.add(crel);
+						if (adopt != null) {
+							for (int j = 0; j < adopt.lines.size(); j++) {
+								GedcomLine detail = adopt.lines.get(j);
+								if (detail.lineValue != null
+										&& record.id.equals(detail.lineValue)) {
+									boolean adoptedByMother = true; // as
+									// default
+									for (int k = 0; k < detail.lines.size(); k++) {
+										GedcomLine sub = detail.lines.get(k);
+										if (sub.tag.equals("ADOP")) {
+											if ("FATH".equals(sub.lineValue)) {
+												adoptedByMother = false;
+											}
+										}
+
+									}
+									if (adoptedByMother) {
+										RelationNotice[] ados = new RelationNotice[1];
+										ados[0] = new RelationNotice("ADOP");
+										crel.setNotices(ados);
+									}
+								}
+							}
+						}
 					}
 				}
 			} else {
@@ -853,7 +907,7 @@ public class ImportGedcomUtil {
 	private static final String notiTags = "|OCCU|EDUC|TITL|RESI|PROP|FACT"
 			+ "|BIRT|CHR|DEAT|BURI|EVEN|RESI|EMIG|IMMI|CAST|DSCR|EDUC|IDNO"
 			+ "|NATI|NCHI|NMR|PROP|RELI|SSN|FACT|CREM|BAPM|BASM|BLES|BARM"
-			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|ADOP|";
+			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|";
 
 	private void consumeGedcomIndi(GedcomLine record) throws SukuException {
 		PersonLongData pers = new PersonLongData(0, "INDI", "U");
@@ -984,14 +1038,15 @@ public class ImportGedcomUtil {
 					String src = extractGedcomSource(noti);
 					pers.setSource(src);
 				}
+			} else if (noti.tag.equals("ADOP")) {
+
+				noti.lineValue = record.id;
+				if (noti.lineValue != null) {
+					gedAdopt.put(noti.lineValue, noti);
+				}
 			} else if (notiTags.indexOf(noti.tag) > 0
 
 			|| noti.tag.startsWith("_")) {
-
-				if (noti.tag.equals("ADOP")) {
-					noti.lineValue = record.id;
-					gedAdopt.add(noti);
-				}
 
 				String notiTag = noti.tag;
 				if (notiTag.startsWith("_"))
