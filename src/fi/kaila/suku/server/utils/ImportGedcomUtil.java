@@ -72,6 +72,7 @@ public class ImportGedcomUtil {
 	/**
 	 * @param file
 	 * @param db
+	 * @param vvTexts
 	 * @return result in SukuData
 	 * @throws SukuException
 	 */
@@ -369,7 +370,7 @@ public class ImportGedcomUtil {
 	private void consumeFams() {
 		Set<Map.Entry<String, GedcomFams>> entries = gedFams.entrySet();
 		Iterator<Map.Entry<String, GedcomFams>> ee = entries.iterator();
-		Vector<String> recs = new Vector<String>();
+
 		while (ee.hasNext()) {
 			Map.Entry<String, GedcomFams> entry = (Map.Entry<String, GedcomFams>) ee
 					.next();
@@ -516,7 +517,7 @@ public class ImportGedcomUtil {
 			}
 			// pst = con.prepareStatement(insSql);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} finally {
 			if (stm != null) {
@@ -567,18 +568,16 @@ public class ImportGedcomUtil {
 	}
 
 	private void consumeGedcomFam(GedcomLine record) {
-		SukuData req = new SukuData();
 
 		Vector<Relation> rels = new Vector<Relation>();
 		Relation rel = null;
 		Relation crel;
 		int ownerPid = 0;
-		int pareIdx = 0;
-		int childIdx = 0;
+
 		GedcomLine lineHusb = null;
 		GedcomLine lineWife = null;
 		GedcomLine lineChil = null;
-		Relation famRel = null;
+
 		GedcomPidEle aid = null;
 		GedcomPidEle bid = null;
 		GedcomPidEle cid = null;
@@ -610,7 +609,7 @@ public class ImportGedcomUtil {
 			}
 		} else if (lineWife != null) {
 			bid = gedPid.get(lineWife.lineValue);
-			if (bid == null) {
+			if (bid != null) {
 				ownerPid = bid.pid;
 			}
 		}

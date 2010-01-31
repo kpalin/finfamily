@@ -1105,10 +1105,16 @@ public class PersonShortData implements Serializable, Transferable,
 
 	}
 
+	/**
+	 * @param adopted
+	 */
 	public void setAdopted(String adopted) {
 		this.adopted = adopted;
 	}
 
+	/**
+	 * @return adopted status
+	 */
 	public String getAdopted() {
 		return adopted;
 	}

@@ -782,6 +782,7 @@ public class ReportUtil {
 	/**
 	 * @param pid
 	 * @param generations
+	 * @param family
 	 * @param order
 	 * @return ancestor structure
 	 * @throws SQLException

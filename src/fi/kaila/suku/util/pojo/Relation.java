@@ -73,6 +73,9 @@ public class Relation implements Serializable {
 		}
 	}
 
+	/**
+	 * @return adopted status
+	 */
 	public String getAdopted() {
 		if (notices != null) {
 			for (int i = 0; i < notices.length; i++) {

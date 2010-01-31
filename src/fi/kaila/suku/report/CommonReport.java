@@ -1082,8 +1082,8 @@ public abstract class CommonReport {
 					}
 					printName(bt, notices, (toTable.equals("") ? 2 : 3));
 
-					boolean bb = addChildReference(ftab, mtab, cdata.persLong
-							.getPid(), caller.getTextValue("TABLE"), bt);
+					addChildReference(ftab, mtab, cdata.persLong.getPid(),
+							caller.getTextValue("TABLE"), bt);
 
 					printNotices(bt, notices, getTypeColumn(cdata.persLong
 							.getPid()), tab.getTableNo());
@@ -1186,8 +1186,8 @@ public abstract class CommonReport {
 										+ ") ");
 							}
 							printName(bt, notices, (toTable.equals("") ? 2 : 3));
-							boolean bb = addChildReference(ftab, mtab, tab
-									.getPid(), caller.getTextValue("TABLE"), bt);
+							addChildReference(ftab, mtab, tab.getPid(), caller
+									.getTextValue("TABLE"), bt);
 							printNotices(bt, notices, tab.getPid(), tab
 									.getTableNo());
 

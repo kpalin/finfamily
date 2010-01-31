@@ -44,10 +44,18 @@ public class TextPopupMenu {
 		pMenu.show(e.getComponent(), x, y);
 	}
 
+	/**
+	 * @param value
+	 *            true to enable hiskimenu
+	 */
 	public void enableHiskiMenu(boolean value) {
 		pOpenHiskiPage.setVisible(value);
 	}
 
+	/**
+	 * @param value
+	 *            set true to enable copy menu
+	 */
 	public void enableCopyMenu(boolean value) {
 		pCopy.setEnabled(value);
 	}
@@ -74,6 +82,8 @@ public class TextPopupMenu {
 
 	/**
 	 * This is a singleton class.
+	 * 
+	 * @param l
 	 * 
 	 * @return the menu
 	 */
