@@ -897,8 +897,11 @@ public class Read2004XML extends DefaultHandler {
 				try {
 					rowno = Integer.parseInt(this.noticeRow);
 				} catch (NumberFormatException ne) {
-					throw new SAXException("Rownumber " + this.unitId + "/"
-							+ this.noticeRow + " is not numeric");
+					rowno = 0;
+					errorLine.add(ne.getMessage() + " [Rownumber "
+							+ this.unitId + "/" + this.noticeRow
+							+ " is not numeric" + "]");
+					// throw new SAXException();
 				}
 				this.pstm.setInt(5, rowno);
 				this.pstm.setString(6, langText(this.noticeType, this.oldCode));
