@@ -136,11 +136,15 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		patronym.setText("");
 		surname.setText("");
 		postfix.setText("");
+		int privacyCount = 0;
 		for (int i = noticeFirst; i < noticeCount; i++) {
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 			if (pane.notice.getTag().equals("NAME")) {
 				if (!pane.notice.isToBeDeleted()) {
 
+					if (!pane.isPlain()) {
+						privacyCount++;
+					}
 					prexi = pane.prefix.getText();
 
 					if (firstName) {
@@ -196,12 +200,15 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				}
 			}
 		}
-		givenname.setEnabled(!specialName);
-		patronym.setEnabled(!specialName);
+		if (specialName) {
+			privacyCount++;
+		}
+		givenname.setEnabled(privacyCount == 0);
+		patronym.setEnabled(privacyCount == 0);
 		// prefix.setEnabled(!specialName);
-		surname.setEnabled(!specialName);
-		postfix.setEnabled(!specialName);
-		if (!specialName) {
+		surname.setEnabled(privacyCount == 0);
+		postfix.setEnabled(privacyCount == 0);
+		if (privacyCount == 0) {
 			surname.setText(comboname);
 
 		}
@@ -1165,7 +1172,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 			if (tag.equals("NOTE")) {
 				if (noteCount == 1) {
-					pane.setToBeDeleted(notetext.getText().equals(""));
+					// pane.setToBeDeleted(notetext.getText().equals(""));
 					pane.noteText.setText(notetext.getText());
 				}
 			}

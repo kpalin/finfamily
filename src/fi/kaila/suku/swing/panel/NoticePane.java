@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -65,7 +65,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	JButton update;
 	// JLabel toBeDeleted;
 	SukuSuretyField surety;
-	JCheckBox privacy;
+	JComboBox privacy;
 
 	JLabel suretyLbl;
 	JLabel pricavyLbl;
@@ -251,15 +251,24 @@ public class NoticePane extends JPanel implements ActionListener,
 		if (notice.getModified() != null) {
 			modified.setText(notice.getModified().toString());
 		}
-
-		privacy = new JCheckBox(Resurses.getString("DATA_PRIVACY"));
+		String[] privacies = Resurses.getString("DATA_PRIVACY_LEVEL")
+				.split(";");
+		privacy = new JComboBox(privacies);
+		// privacy = new JCheckBox(Resurses.getString("DATA_PRIVACY"));
 
 		add(privacy);
-
-		if (notice.getPrivacy() != null) {
-			privacy.setSelected(true);
+		int privacyIdx = 0;
+		if (notice.getPrivacy() == null) {
+			privacyIdx = 0;
+			// privacy.setSelected(true);
+		} else if (notice.getPrivacy().equals("T")) {
+			privacyIdx = 1;
+		} else if (notice.getPrivacy().equals("I")) {
+			privacyIdx = 2;
+		} else if (notice.getPrivacy().equals("P")) {
+			privacyIdx = 3;
 		}
-
+		privacy.setSelectedIndex(privacyIdx);
 		image = new MyImage();
 
 		add(image);
@@ -646,7 +655,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		if (surety.getSurety() != 100)
 			return false;
-		if (privacy.isSelected())
+		if (privacy.getSelectedIndex() > 0)
 			return false;
 		if (noticeType.getText().length() > 0)
 			return false;
@@ -794,7 +803,20 @@ public class NoticePane extends JPanel implements ActionListener,
 		String toDate = date.getToDate();
 
 		notice.setSurety(sureIdx);
-		notice.setPrivacy(privacy.isSelected() ? "P" : null);
+		String privacyCode = null;
+		switch (privacy.getSelectedIndex()) {
+		case 1:
+			privacyCode = "T";
+			break;
+		case 2:
+			privacyCode = "I";
+			break;
+		case 3:
+			privacyCode = "P";
+			break;
+		}
+
+		notice.setPrivacy(privacyCode);
 
 		notice.setNoticeType(noticeType.getText());
 
@@ -1148,7 +1170,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		rrivi += 20;
 		modified.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
-		privacy.setBounds(rcol, rrivi, 100, 20);
+		privacy.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
 		rrNameList = rrivi;
 		image.setBounds(rcol, rrivi, 150, 300);
