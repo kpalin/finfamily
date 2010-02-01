@@ -1451,7 +1451,8 @@ public abstract class CommonReport {
 			addDot = false;
 			tag = nn.getTag();
 			if (!tag.equals("NAME")) {
-				if (nn.getPrivacy() == null) {
+				if (nn.getPrivacy() == null
+						|| nn.getPrivacy().equals(Resurses.PRIVACY_TEXT)) {
 					if ((caller.isType(tag, colType))) {
 
 						if (caller.isType(tag, 1)) {
@@ -1843,7 +1844,8 @@ public abstract class CommonReport {
 		for (int j = 0; j < notices.length; j++) {
 			UnitNotice nn = notices[j];
 			if (nn.getTag().equals("NAME")) {
-				if (nn.getPrivacy() == null) {
+				if (nn.getPrivacy() == null
+						|| nn.getPrivacy().equals(Resurses.PRIVACY_TEXT)) {
 					if ((caller.isType("NAME", colType) || nameCount == 0)) {
 
 						if (nameCount > 0 && nn.getNoticeType() == null) {

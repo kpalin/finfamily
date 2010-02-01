@@ -316,6 +316,12 @@ public class Resurses {
 	 * 
 	 */
 	public static final String CMD_ANC_TYPE = "anc";
+	/** */
+	public static final String PRIVACY_TEXT = "T";
+	/** */
+	public static final String PRIVACY_INDEX = "I";
+	/** */
+	public static final String PRIVACY_PRIVACY = "P";
 
 	/** */
 	private static Resurses myself = null;

@@ -261,11 +261,11 @@ public class NoticePane extends JPanel implements ActionListener,
 		if (notice.getPrivacy() == null) {
 			privacyIdx = 0;
 			// privacy.setSelected(true);
-		} else if (notice.getPrivacy().equals("T")) {
+		} else if (notice.getPrivacy().equals(Resurses.PRIVACY_TEXT)) {
 			privacyIdx = 1;
-		} else if (notice.getPrivacy().equals("I")) {
+		} else if (notice.getPrivacy().equals(Resurses.PRIVACY_INDEX)) {
 			privacyIdx = 2;
-		} else if (notice.getPrivacy().equals("P")) {
+		} else if (notice.getPrivacy().equals(Resurses.PRIVACY_PRIVACY)) {
 			privacyIdx = 3;
 		}
 		privacy.setSelectedIndex(privacyIdx);
@@ -806,13 +806,13 @@ public class NoticePane extends JPanel implements ActionListener,
 		String privacyCode = null;
 		switch (privacy.getSelectedIndex()) {
 		case 1:
-			privacyCode = "T";
+			privacyCode = Resurses.PRIVACY_TEXT;
 			break;
 		case 2:
-			privacyCode = "I";
+			privacyCode = Resurses.PRIVACY_INDEX;
 			break;
 		case 3:
-			privacyCode = "P";
+			privacyCode = Resurses.PRIVACY_PRIVACY;
 			break;
 		}
 

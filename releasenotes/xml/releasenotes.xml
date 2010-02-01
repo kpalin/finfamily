@@ -3,7 +3,13 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
-<hdr>Release 342 on 29 jan 2010 </hdr>
+<hdr>Release 347 on 1 feb 2010 </hdr>
+<ul>
+<li>Implemented 4 levels of privacy for notices.</li>
+</ul>
+
+
+<hdr>Release 342 on 29 jan 2010 (20)</hdr>
 <ul>
 <li>Added code to Add new Notice button in toolpanel.</li>
 <li>Refactoring of Types code.</li>

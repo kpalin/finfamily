@@ -297,7 +297,7 @@ public class UnitNotice implements Serializable {
 
 	/**
 	 * @param text
-	 *            = null or "P"
+	 *            = null,"P","T" or "I"
 	 */
 	public void setPrivacy(String text) {
 		if (!nv(this.privacy).equals(nv(text))) {
@@ -882,7 +882,7 @@ public class UnitNotice implements Serializable {
 	}
 
 	private String vn(String text) {
-		if (text.length() == 0) {
+		if (text == null || text.length() == 0) {
 			text = null;
 		}
 		return text;
