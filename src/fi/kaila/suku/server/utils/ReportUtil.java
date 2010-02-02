@@ -165,7 +165,11 @@ public class ReportUtil {
 		String fromTable;
 		for (int i = 0; i < tables.size(); i++) {
 			ReportUnit unit = tables.get(i);
-			for (int j = 1; j < unit.getParent().size(); j++) {
+			int startIdx = 1;
+			if (unit.getGen() == 0) {
+				startIdx = 0;
+			}
+			for (int j = startIdx; j < unit.getParent().size(); j++) {
 				ReportTableMember member = unit.getParent().get(j);
 				// HashMap<Integer,PersonInTables> personReferences
 				PersonInTables ref = personReferences.get(member.getPid());
@@ -178,7 +182,6 @@ public class ReportUtil {
 					addAncestorsToMember(member, 1, gen);
 					// spouse not a relative
 				}
-
 			}
 		}
 		for (int i = 0; i < tables.size(); i++) {
@@ -204,7 +207,6 @@ public class ReportUtil {
 				}
 			}
 		}
-
 	}
 
 	private void addAncestorsToMember(ReportTableMember member, long strado,

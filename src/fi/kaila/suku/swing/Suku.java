@@ -811,12 +811,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 						java.awt.Point p = e.getPoint();
 						int index = this.columnModel.getColumnIndexAtX(p.x);
-						int realIndex = this.columnModel.getColumn(index)
-								.getModelIndex();
-
-						// int fullIdx =
-						// Suku.this.tableModel.getFullIndex(realIndex);
-						return Suku.this.tableModel.getColumnName(realIndex);
+						return Suku.this.tableModel.getColumnName(index);
+						// int realIndex = this.columnModel.getColumn(index)
+						// .getModelIndex();
+						// return Suku.this.tableModel.getColumnName(realIndex);
 					}
 				};
 			}

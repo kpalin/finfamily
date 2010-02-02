@@ -266,6 +266,36 @@ public abstract class CommonReport {
 			repoWriter.addText(bt);
 
 		}
+		try {
+			for (int i = 0; i < subjectmember.getSubCount(); i++) {
+				bt = new SubPersonText();
+				bt.addText(subjectmember.getSubDadMom(i) + " ");
+				SukuData sub = caller.getKontroller().getSukuData("cmd=person",
+						"pid=" + subjectmember.getSubPid(i));
+				notices = sub.persLong.getNotices();
+				printName(bt, notices, 4);
+				printNotices(bt, notices, 4, tab.getTableNo());
+
+				fromTable = "";
+				ref = personReferences.get(subjectmember.getSubPid(i));
+				if (ref != null) {
+					fromTable = ref.getReferences(tab.getTableNo(), true, true,
+							true);
+					if (fromTable.length() > 0) {
+						bt.addText(caller.getTextValue("ALSO") + " "
+								+ fromTable + ". ", true, false);
+					}
+				}
+
+				repoWriter.addText(bt);
+
+			}
+		} catch (SukuException e1) {
+			logger.log(Level.WARNING, "background reporting", e1);
+			JOptionPane.showMessageDialog(caller, e1.getMessage());
+			return;
+		}
+
 		//
 		// spouse list
 		// 
@@ -304,9 +334,7 @@ public abstract class CommonReport {
 										spouNum);
 
 							}
-
 						}
-
 					}
 				}
 
@@ -349,7 +377,6 @@ public abstract class CommonReport {
 
 				if (bt.getCount() > 0) {
 					repoWriter.addText(bt);
-
 				}
 
 				for (int i = 0; i < spouseMember.getSubCount(); i++) {
