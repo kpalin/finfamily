@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -87,7 +86,6 @@ public class AboutDialog extends JDialog implements ActionListener {
 		try {
 			stats = Suku.kontroller.getSukuData("cmd=dbstats");
 		} catch (Exception e) {
-			logger.log(Level.WARNING, "About stats", e);
 			stats = new SukuData();
 			if (e.getMessage() != null) {
 				stats.resu = e.getMessage();
