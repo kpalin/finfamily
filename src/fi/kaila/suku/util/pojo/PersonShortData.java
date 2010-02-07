@@ -444,7 +444,7 @@ public class PersonShortData implements Serializable, Transferable,
 		// this.givenname = this.patronym = this.prefix = this.surname =
 		// this.postfix = null;
 
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("select u.sex,u.userrefn,u.groupid,"
 				+ "u.tag,n.tag,n.givenname,");
 		sql.append("n.patronym,n.prefix,n.surname,n.postfix,");
@@ -711,7 +711,7 @@ public class PersonShortData implements Serializable, Transferable,
 	public String getMorenames() {
 		if (names == null || names.length < 2)
 			return null;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i < names.length; i++) {
 			if (i > 1) {
 				sb.append(";");
@@ -908,7 +908,7 @@ public class PersonShortData implements Serializable, Transferable,
 		// return "id="+this.pid + "/name=" + this.givenname + " " +
 		// this.surname + "/bd=" + this.bDate;
 		// }
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getPid() + "\t" + Resurses.getString("SEX_" + getSex())
 				+ "\t" + nv(getPrefix()) + "\t" + nv(getSurname()) + "\t"
 				+ nv(getMorenames()) + "\t" + nv(getGivenname()) + "\t"
@@ -934,7 +934,7 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @return used for copy to clipbpard
 	 */
 	public String getHeader() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Resurses.getString("T_PID") + "\t"
 				+ Resurses.getString("T_SEX") + "\t"
 				+ Resurses.getString("T_PREFIX") + "\t"

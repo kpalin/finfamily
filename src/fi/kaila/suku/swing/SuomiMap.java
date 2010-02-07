@@ -335,7 +335,7 @@ public class SuomiMap extends JFrame implements ActionListener {
 
 							String[] oldPlaces = olde.split("\n");
 
-							StringBuffer sb = new StringBuffer();
+							StringBuilder sb = new StringBuilder();
 							int rc = 8;
 							if (oldPlaces.length < 8) {
 								rc = oldPlaces.length;

@@ -221,11 +221,11 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	//
 	// int nextByte;
 	//
-	// StringBuffer rivi = new StringBuffer();
+	// StringBuilder rivi = new StringBuilder();
 	// while ((nextByte = iis.read()) >= 0){
 	// if (rivi.length() > 64){
 	// dos.writeBytes(rivi.toString() + lineEnd);
-	// rivi = new StringBuffer();
+	// rivi = new StringBuilder();
 	// }
 	// rivi.append(hexi.charAt((nextByte >> 4 )&0xf));
 	// rivi.append(hexi.charAt((nextByte )&0xf));
@@ -360,7 +360,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 	@Override
 	public SukuData getSukuData(String... params) throws SukuException {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(this.codebase);
 		String requri;
 		int resu;
@@ -487,12 +487,12 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 			int nextByte;
 
-			StringBuffer rivi = new StringBuffer();
+			StringBuilder rivi = new StringBuilder();
 			// FIXME: Potential NPE
 			while ((nextByte = iis.read()) >= 0) {
 				if (rivi.length() > 64) {
 					dos.writeBytes(rivi.toString() + lineEnd);
-					rivi = new StringBuffer();
+					rivi = new StringBuilder();
 				}
 				rivi.append(hexi.charAt((nextByte >> 4) & 0xf));
 				rivi.append(hexi.charAt((nextByte) & 0xf));

@@ -149,7 +149,7 @@ public abstract class CommonReport {
 		BodyText bt = null;
 		ReportTableMember subjectmember = tab.getParent().get(0);
 		SukuData pdata = null;
-		StringBuffer tabOwner = new StringBuffer();
+		StringBuilder tabOwner = new StringBuilder();
 		try {
 			pdata = caller.getKontroller().getSukuData("cmd=person",
 					"pid=" + subjectmember.getPid(),
@@ -717,7 +717,7 @@ public abstract class CommonReport {
 		String order = caller.getAncestorPane().getNumberingFormat()
 				.getSelection().getActionCommand();
 		UnitNotice[] xnotices = null;
-		StringBuffer tabOwner = new StringBuffer();
+		StringBuilder tabOwner = new StringBuilder();
 		if (ftab != null) {
 			mainTab = ftab;
 			subjectmember = ftab.getParent().get(0);
@@ -767,7 +767,7 @@ public abstract class CommonReport {
 
 		float prose = (idx * 100f) / tables.size();
 		caller.setRunnerValue("" + (int) prose + ";" + tableNum + ":"
-				+ tabOwner);
+				+ tabOwner.toString());
 
 		bt = new TableHeaderText();
 		String genText = "";
@@ -861,7 +861,7 @@ public abstract class CommonReport {
 				if (marr != null) {
 					if (marr.getNotices() != null) {
 
-						StringBuffer sb = new StringBuffer();
+						StringBuilder sb = new StringBuilder();
 						for (int i = 0; i < marr.getNotices().length; i++) {
 							RelationNotice rn = marr.getNotices()[i];
 
@@ -1285,7 +1285,7 @@ public abstract class CommonReport {
 		PersonInTables ref;
 		ref = personReferences.get(ftab.getPid());
 		if (ref != null) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			int pareCount = 0;
 			if (ref.asChildren.size() > 0) {
 				if (sb.length() > 0) {
@@ -1327,7 +1327,7 @@ public abstract class CommonReport {
 
 		long tabPop = pop == null ? 0 : pop.getTableNo();
 		long tabMom = mom == null ? 0 : mom.getTableNo();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		long nxtTab = ref.asOwner;
 		if (nxtTab != tabPop && nxtTab != tabMom && nxtTab != 0) {
 			sb.append(text);
@@ -1378,7 +1378,7 @@ public abstract class CommonReport {
 			showType = ReportWorkerDialog.SET_SPOUSE_NONE;
 		}
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		boolean addSpace = false;
 
 		if (rn.getType() != null) {
@@ -1695,7 +1695,7 @@ public abstract class CommonReport {
 		if (text == null)
 			return 0;
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Vector<String> v = new Vector<String>();
 		boolean wasWhite = false;
 		boolean wasNl = false;
@@ -1756,7 +1756,7 @@ public abstract class CommonReport {
 		String framme = "";
 		if (dateFrom == null)
 			return "";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		if (datePrefix != null) {
 			framme = caller.getTextValue(datePrefix);

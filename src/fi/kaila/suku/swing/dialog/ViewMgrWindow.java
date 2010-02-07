@@ -340,7 +340,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 				SukuData resp = Suku.kontroller.getSukuData("cmd=view",
 						"action=get", "pid=" + pp.getPid());
 
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				if (resp.generalArray != null) {
 					for (int i = 0; i < resp.generalArray.length; i++) {
 						if (sb.length() > 0)

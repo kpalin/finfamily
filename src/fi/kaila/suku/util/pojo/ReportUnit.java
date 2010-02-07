@@ -143,7 +143,7 @@ public class ReportUnit implements Serializable {
 
 	public String toString() {
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("pid=" + pid + ",tab=" + tableNo + ",gen=" + gen);
 
 		if (fatherPid > 0) {

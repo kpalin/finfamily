@@ -68,7 +68,7 @@ public class CommandExecuter {
 			//
 		}
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < cmd.length; i++) {
 			if (i > 0)
 				sb.append(" ");

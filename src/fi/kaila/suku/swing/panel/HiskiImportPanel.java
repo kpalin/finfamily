@@ -925,7 +925,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 				if (!age.equals("") || !text.equals("")) {
 					notice = new UnitNotice("SPEC");
-					StringBuffer sb = new StringBuffer();
+					StringBuilder sb = new StringBuilder();
 					sb.append(age);
 					if (sb.length() > 0) {
 						sb.append(";");
@@ -1075,7 +1075,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		pAge = new JTextField[0];
 		pReason = new JTextField[0];
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("http://hiski.genealogia.fi/");
 
 		String requri; // http://hiski.genealogia.fi/hiski?fi+t23806+xml
@@ -1186,7 +1186,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				NodeList nlh = ele.getChildNodes();
 				Element elp;
 
-				StringBuffer muut = new StringBuffer();
+				StringBuilder muut = new StringBuilder();
 				for (int j = 0; j < nlh.getLength(); j++) {
 					if (nlh.item(j).getNodeType() == Node.ELEMENT_NODE) {
 						elp = (Element) nlh.item(j);
@@ -1211,7 +1211,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							rSurname[pidx].setText(elp.getTextContent());
 							pSurname[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("ika")) {
-							StringBuffer age = new StringBuffer();
+							StringBuilder age = new StringBuilder();
 
 							vv = elp.getAttribute("vv");
 							if (!vv.equals("")) {
@@ -1248,7 +1248,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			NodeList taplist = tap.getChildNodes();
 			int pvmno = 0;
 
-			StringBuffer remark = new StringBuffer();
+			StringBuilder remark = new StringBuilder();
 			for (int i = 0; i < taplist.getLength(); i++) {
 				if (taplist.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					ele = (Element) taplist.item(i);
@@ -1443,7 +1443,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			}
 		}
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		String aux = "0000" + year;
 		String tmp = aux.substring(aux.length() - 4);
@@ -1465,7 +1465,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		if (hiskiDate == null || hiskiDate.equals(""))
 			return null;
 		String[] parts = hiskiDate.split("\\.");
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		for (int i = parts.length - 1; i >= 0; i--) {
 			if (sb.length() == 0) { // year

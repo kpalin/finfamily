@@ -136,7 +136,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 */
 	public String getReferences(long table, boolean alsoSpouse,
 			boolean alsoChild, boolean alsoOther) {
-		StringBuffer sx = new StringBuffer();
+		StringBuilder sx = new StringBuilder();
 
 		if (alsoChild) {
 			for (int i = 0; i < asChildren.size(); i++) {
@@ -171,7 +171,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("[" + pid + "]:");
 		sb.append("chils:(");
 		for (int i = 0; i < asChildren.size(); i++) {

@@ -942,7 +942,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	@Override
 	public void setTitle(String title) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Resurses.getString(Resurses.SUKU));
 		if (isConnected == 2) {
 			sb.append(" [");
@@ -1103,7 +1103,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				SukuData dblist = kontroller.getSukuData("cmd=dblista");
 
 				if (dblist.generalArray != null) {
-					StringBuffer sb = new StringBuffer();
+					StringBuilder sb = new StringBuilder();
 					sb.append(databaseName);
 					for (int i = 0; i < dblist.generalArray.length; i++) {
 						if (!dblist.generalArray[i]
@@ -1540,7 +1540,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 		// String[] statisticsLines = { "Some lines", "here", "and there" };
 		if (resp != null && resp.generalArray != null) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < resp.generalArray.length; i++) {
 				sb.append(resp.generalArray[i] + "\n");
 			}
@@ -1619,7 +1619,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			String[] failedLines = dlg.getResult();
 			if (failedLines != null) {
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < failedLines.length; i++) {
 					sb.append(failedLines[i]);
 				}
@@ -2334,7 +2334,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			String[] failedLines = dlg.getResult();
 			if (failedLines != null) {
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < failedLines.length; i++) {
 					sb.append(failedLines[i] + "\n");
 				}
@@ -2761,7 +2761,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					int[] ii = table.getSelectedRows();
 					if (ii.length == 0)
 						return;
-					StringBuffer sb = new StringBuffer();
+					StringBuilder sb = new StringBuilder();
 
 					sb.append(perso.getHeader() + "\n");
 					for (int i = 0; i < ii.length; i++) {

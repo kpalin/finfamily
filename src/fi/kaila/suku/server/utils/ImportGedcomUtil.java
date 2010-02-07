@@ -133,7 +133,7 @@ public class ImportGedcomUtil {
 			int data3 = bis.read();
 
 			// int lineNumber = 0;
-			StringBuffer line = new StringBuffer();
+			StringBuilder line = new StringBuilder();
 			if (data0 == 255 && data1 == 254) {
 				thisSet = GedSet.Set_Utf16le;
 				c = (char) (data3 * 256 + data2);
@@ -214,7 +214,7 @@ public class ImportGedcomUtil {
 								}
 								// consumeGedcomRecord(record);
 								if (this.runner != null) {
-									StringBuffer sb = new StringBuffer();
+									StringBuilder sb = new StringBuilder();
 
 									double dluku = fileIndex;
 
@@ -281,7 +281,7 @@ public class ImportGedcomUtil {
 
 						}
 					}
-					line = new StringBuffer();
+					line = new StringBuilder();
 
 				}
 
@@ -299,7 +299,7 @@ public class ImportGedcomUtil {
 						.next();
 				GedcomLine rec = entry.getValue();
 				consumeGedcomRecord(rec);
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 
 				double prose = (indiIndex * 100) / indiCount;
 				int intprose = (int) prose;
@@ -324,7 +324,7 @@ public class ImportGedcomUtil {
 						.next();
 				GedcomLine rec = entry.getValue();
 				consumeGedcomFam(rec);
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				double prose = (famIndex * 100) / famCount;
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
@@ -659,7 +659,7 @@ public class ImportGedcomUtil {
 			} else if (line.tag.equals("HUSB") || line.tag.equals("WIFE")) {
 			} else if (line.tag.equals("NOTE")) {
 				if (rnmarr != null) {
-					StringBuffer sb = new StringBuffer();
+					StringBuilder sb = new StringBuilder();
 					if (rnmarr.getNoteText() != null) {
 						sb.append(rnmarr.getNoteText());
 						sb.append(" ");
@@ -888,7 +888,7 @@ public class ImportGedcomUtil {
 	}
 
 	private String extractGedcomSource(GedcomLine record) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(record.lineValue);
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine line = record.lines.get(i);
@@ -974,7 +974,7 @@ public class ImportGedcomUtil {
 						if (detail.tag.equals("NSFX")) {
 							if ((notice.getPatronym() != null && !notice
 									.getPatronym().equals(detail.lineValue))) {
-								StringBuffer sb = new StringBuffer();
+								StringBuilder sb = new StringBuilder();
 								if (notice.getGivenname() != null) {
 									sb.append(notice.getGivenname());
 									sb.append(" ");
@@ -1195,7 +1195,7 @@ public class ImportGedcomUtil {
 				unknownLine.add(detail.toString());
 			}
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (adr1 != null) {
 			sb.append(adr1);
 		}
@@ -1409,7 +1409,7 @@ public class ImportGedcomUtil {
 		if (dl > 3 || dl < 0) {
 			return null;
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int year;
 		try {
 			year = Integer.parseInt(parts[dl]);
@@ -1493,7 +1493,7 @@ public class ImportGedcomUtil {
 			return;
 		}
 		submitterDone = true;
-		StringBuffer note = new StringBuffer();
+		StringBuilder note = new StringBuilder();
 		if (ownerInfo != null) {
 			note.append(ownerInfo);
 		}
@@ -1557,8 +1557,8 @@ public class ImportGedcomUtil {
 	}
 
 	private GedcomAddress splitAddress(String lineValue) {
-		StringBuffer address = new StringBuffer();
-		StringBuffer country = new StringBuffer();
+		StringBuilder address = new StringBuilder();
+		StringBuilder country = new StringBuilder();
 		GedcomAddress addr = new GedcomAddress();
 		if (lineValue != null) {
 			String parts[] = lineValue.split("\n");
@@ -1913,7 +1913,7 @@ public class ImportGedcomUtil {
 	// }
 	//
 	// public String toString() {
-	// StringBuffer sb = new StringBuffer();
+	// StringBuilder sb = new StringBuilder();
 	// for (int i = 0; i < lines.size(); i++) {
 	// sb.append(lines.get(i));
 	// sb.append("\n");
@@ -1982,7 +1982,7 @@ public class ImportGedcomUtil {
 		}
 
 		public String toString(boolean withLevels) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			if (level > 0) {
 				Vector<String> stack = new Vector<String>();
 				GedcomLine pareLine = this.parent;

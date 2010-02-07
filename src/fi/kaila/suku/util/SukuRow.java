@@ -127,7 +127,7 @@ public class SukuRow {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getName());
 		sb.append(" (");
 		PersonShortData person = suku.getPerson(pid);
@@ -149,7 +149,7 @@ public class SukuRow {
 	 * @return content on column
 	 */
 	public Object get(int idx) {
-		StringBuffer sb;
+		StringBuilder sb;
 
 		// int fullIdx;
 		SearchCriteria crit;
@@ -176,7 +176,7 @@ public class SukuRow {
 		} else if (idx == crit.getColIndex(Resurses.COLUMN_T_NAME)) {
 
 			// case SukuModel.TNAME_COL:
-			sb = new StringBuffer();
+			sb = new StringBuilder();
 			if (person.getAlfaName(false) != null) {
 				sb.append(person.getAlfaName(false) + " ");
 			}

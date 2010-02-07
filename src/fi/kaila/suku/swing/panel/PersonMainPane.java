@@ -315,7 +315,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 		}
 
-		StringBuffer oc = new StringBuffer();
+		StringBuilder oc = new StringBuilder();
 		for (int i = 0; i < occuVec.size(); i++) {
 			if (oc.length() > 0) {
 				oc.append(";");

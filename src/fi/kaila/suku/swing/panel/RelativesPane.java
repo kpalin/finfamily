@@ -969,7 +969,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 								String[] sures = Resurses.getString(
 										"DATA_SURETY_VALUES").split(";");
-								StringBuffer sb = new StringBuffer();
+								StringBuilder sb = new StringBuilder();
 								sb.append(Resurses
 										.getString("RELA_" + myRelTag));
 								sb.append(" [");
@@ -1155,7 +1155,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 						String[] sures = Resurses.getString(
 								"DATA_SURETY_VALUES").split(";");
-						StringBuffer sb = new StringBuffer();
+						StringBuilder sb = new StringBuilder();
 						sb.append(Resurses.getString("RELA_" + tag));
 						sb.append(" [");
 						sb.append(rowrel.getShortPerson().getAlfaName());

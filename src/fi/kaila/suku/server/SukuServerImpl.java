@@ -308,7 +308,7 @@ public class SukuServerImpl implements SukuServer {
 		String auxes[];
 
 		int j;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (j = 0; j < params.length; j++) {
 			if (j > 0)
 				sb.append(";");
@@ -1109,7 +1109,7 @@ public class SukuServerImpl implements SukuServer {
 		SukuData response = new SukuData();
 		String sql = "select count(*) from unit";
 		Statement stm;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try {
 			stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
@@ -1954,7 +1954,7 @@ public class SukuServerImpl implements SukuServer {
 					// } else if (dbntag.equals("NAME")
 					// && perso.getNameTag() != null) {
 					//
-					// StringBuffer sb = new StringBuffer();
+					// StringBuilder sb = new StringBuilder();
 					// if (perso.getMorenames() != null) {
 					// sb.append(perso.getMorenames());
 					// sb.append(";");

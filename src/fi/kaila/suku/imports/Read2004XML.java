@@ -706,7 +706,7 @@ public class Read2004XML extends DefaultHandler {
 							+ this.unitSurName + "/" + unitPostfix);
 
 					if (this.runner != null) {
-						StringBuffer sb = new StringBuffer();
+						StringBuilder sb = new StringBuilder();
 
 						sb.append(this.unitId + ":  ");
 						sb.append(this.unitGivenName);
@@ -851,7 +851,7 @@ public class Read2004XML extends DefaultHandler {
 
 		if (this.currentEle.equals(noticeTG)) { // end of notice
 
-			StringBuffer allText = new StringBuffer();
+			StringBuilder allText = new StringBuilder();
 			if (this.noticeType != null)
 				allText.append(this.noticeType);
 			if (this.noticeDescription != null)
@@ -953,7 +953,7 @@ public class Read2004XML extends DefaultHandler {
 
 				if (this.placeCollector.size() > 0
 						|| this.nameCollector.size() > 0) {
-					// StringBuffer sn = new StringBuffer();
+					// StringBuilder sn = new StringBuilder();
 					NameArray asn = new NameArray();
 					;
 					Iterator<String> it = this.nameCollector.keySet()
@@ -971,7 +971,7 @@ public class Read2004XML extends DefaultHandler {
 					// sn.append("}");
 					NameArray asp = new NameArray();
 
-					// StringBuffer sp = new StringBuffer();
+					// StringBuilder sp = new StringBuilder();
 					it = this.placeCollector.keySet().iterator();
 					while (it.hasNext()) {
 						// if (sp.length() == 0){
@@ -1350,8 +1350,7 @@ public class Read2004XML extends DefaultHandler {
 							|| this.relationBegType != null
 							|| this.relationDescription != null) {
 
-						StringBuffer allText = new StringBuffer();
-						;
+						StringBuilder allText = new StringBuilder();
 						if (this.relationBegType != null)
 							allText.append(this.relationBegType);
 						if (this.relationDescription != null)
@@ -1858,7 +1857,7 @@ public class Read2004XML extends DefaultHandler {
 		HashMap<String, String> map = new HashMap<String, String>();
 
 		String v;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		int pnt = 0;
 		int nxt = 0;
@@ -1938,7 +1937,7 @@ public class Read2004XML extends DefaultHandler {
 
 		int i1 = 0;
 		int i2 = 0;
-		sb = new StringBuffer();
+		sb = new StringBuilder();
 
 		while (true) {
 			i2 = kieli.indexOf("{", i1);
@@ -1967,9 +1966,9 @@ public class Read2004XML extends DefaultHandler {
 			} else if (kieli.charAt(i1) == 'P') {
 				if (i2 > i1 + 5) {
 					String nimi = kieli.substring(i1 + 1, i2);
-					StringBuffer tnimi = new StringBuffer();
+					StringBuilder tnimi = new StringBuilder();
 					String etu = null, suku = null;
-					StringBuffer tuloste = new StringBuffer();
+					StringBuilder tuloste = new StringBuilder();
 					int n1, n2;
 
 					n1 = nimi.indexOf("<");

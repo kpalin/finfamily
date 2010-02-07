@@ -32,7 +32,7 @@ public class Roman {
 		if (n >= 4000 || n < 1) {
 			throw new NumberFormatException("Numbers must be in range 1-3999");
 		}
-		StringBuffer result = new StringBuffer(10);
+		StringBuilder result = new StringBuilder(10);
 
 		// ... Start with largest value, and work toward smallest.
 		for (RomanValue equiv : ROMAN_VALUE_TABLE) {

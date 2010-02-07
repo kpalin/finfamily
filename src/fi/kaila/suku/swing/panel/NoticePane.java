@@ -626,7 +626,7 @@ public class NoticePane extends JPanel implements ActionListener,
 					etusuku[0] = vahasuku[1];
 					etusuku[1] = vahasuku[0];
 				}
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				if (etusuku.length > 1) {
 					sb.append(etusuku[0]);
 				}

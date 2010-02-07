@@ -29,7 +29,7 @@ public class LocalDatabaseUtility {
 			throws SukuException {
 
 		String sql = "select datname from pg_database where datname not in ('postgres','template1','template0') order by datname ";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try {
 			Statement stm = con.createStatement();
 
@@ -63,7 +63,7 @@ public class LocalDatabaseUtility {
 	public static String[] getListOfUsers(Connection con) throws SukuException {
 
 		String sql = "select rolname from pg_roles where rolname != 'postgres' order by rolname ";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try {
 			Statement stm = con.createStatement();
 

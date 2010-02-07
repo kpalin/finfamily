@@ -164,7 +164,7 @@ public class ReportTableMember implements Serializable {
 		String far = Resurses.getString("REPORT_F");
 		String mor = Resurses.getString("REPORT_M");
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		long jako;
 
@@ -177,7 +177,7 @@ public class ReportTableMember implements Serializable {
 				sb.append(far);
 		}
 		String wrong = sb.toString();
-		sb = new StringBuffer();
+		sb = new StringBuilder();
 		for (int i = wrong.length() - 1; i >= 0; i--) {
 			sb.append(wrong.charAt(i));
 		}
@@ -196,7 +196,7 @@ public class ReportTableMember implements Serializable {
 	 * @return string with tableno, where as child
 	 */
 	public String getChildTables() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < alsoAsChild.size(); i++) {
 			if (sb.length() > 0)
 				sb.append(",");
@@ -339,7 +339,7 @@ public class ReportTableMember implements Serializable {
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("pid[" + pid + "/" + myTable + "]");
 
 		for (int i = 0; i < subs.size(); i++) {

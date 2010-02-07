@@ -103,7 +103,7 @@ public class NameArray implements Array {
 	@Override
 	public String toString() {
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("{");
 		for (int i = 0; i < v.size(); i++) {
 			if (i > 0)
@@ -119,7 +119,7 @@ public class NameArray implements Array {
 	private String toSqlString(String text) {
 		if (text == null)
 			return null;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
 			switch (c) {

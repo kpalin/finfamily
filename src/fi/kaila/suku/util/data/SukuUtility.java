@@ -84,7 +84,7 @@ public class SukuUtility {
 
 			boolean wasDash = false;
 			boolean wasDashDash = false;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 
 			char c;
 			int datal = 0;
@@ -131,7 +131,7 @@ public class SukuUtility {
 				} catch (SQLException se) {
 					logger.info(se.getMessage());
 				}
-				sb = new StringBuffer();
+				sb = new StringBuilder();
 
 			}
 		} catch (Exception e) {

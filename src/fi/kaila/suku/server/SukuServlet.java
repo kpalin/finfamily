@@ -148,7 +148,7 @@ public class SukuServlet extends HttpServlet {
 		int j;
 		int koko = 0;
 		String rivi = "XXX";
-		StringBuffer sb;
+		StringBuilder sb;
 		String filename = null;
 		FileOutputStream fos = null;
 		byte bbb[] = new byte[32 * 1024];
@@ -168,7 +168,7 @@ public class SukuServlet extends HttpServlet {
 			}
 			// System.out.println("leini: " + endi);
 			String tmp;
-			sb = new StringBuffer();
+			sb = new StringBuilder();
 			for (idx = 0; idx < endi; idx++) {
 				if ((bbb[idx] == '\n')) {
 					for (j = 0; j < idx; j++) {
@@ -346,7 +346,7 @@ public class SukuServlet extends HttpServlet {
 
 		Enumeration enu = req.getParameterNames();
 		String key;
-		StringBuffer sbx = new StringBuffer();
+		StringBuilder sbx = new StringBuilder();
 		while (enu.hasMoreElements()) {
 			key = (String) enu.nextElement();
 			vpara.put(key, req.getParameter(key));
@@ -500,7 +500,7 @@ public class SukuServlet extends HttpServlet {
 			sk.getConnection(this.dbServer, this.dbDatabase, this.dbUser,
 					this.dbPassword);
 			// System.out.println("GETx1:");
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("log1");
 			for (int i = 0; i < params.length; i++) {
 				sb.append(";" + params[i]);

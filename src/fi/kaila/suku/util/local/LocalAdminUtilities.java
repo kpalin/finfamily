@@ -373,7 +373,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 	private String toAscii(String text) {
 		if (text == null)
 			return null;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < text.length(); i++) {
 			String c = text.substring(i, i + 1);

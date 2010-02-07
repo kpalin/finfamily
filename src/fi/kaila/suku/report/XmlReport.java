@@ -288,7 +288,7 @@ public class XmlReport implements ReportInterface {
 		String style = bt.getClass().getName();
 		int lastDot = style.lastIndexOf(".");
 		ele.setAttribute("style", style.substring(lastDot + 1));
-		// StringBuffer sb = new StringBuffer();
+		// StringBuilder sb = new StringBuilder();
 		// for (int i = 0; i < text.getCount(); i++) {
 		// String tmp = text.getText(i);
 		// sb.append(tmp);
@@ -331,7 +331,7 @@ public class XmlReport implements ReportInterface {
 			}
 		}
 		String prevStyle = "";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < bt.getCount(); i++) {
 			String value = bt.getText(i);
 			String currStyle;
@@ -359,7 +359,7 @@ public class XmlReport implements ReportInterface {
 						tele.setTextContent(sb.toString());
 						ele.appendChild(tele);
 
-						sb = new StringBuffer();
+						sb = new StringBuilder();
 					}
 					prevStyle = currStyle;
 

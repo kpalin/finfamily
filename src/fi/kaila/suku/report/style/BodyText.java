@@ -234,7 +234,7 @@ public class BodyText {
 				return;
 			}
 			int lfCount = 0;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 
 			for (int j = 0; j < i; j++) {
 				if (text.charAt(j) != '\r') {

@@ -324,7 +324,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			g.drawString(person.getTextName(), p.x + xmargin, y);
 			RelationShortData rr = famMemRel.get(i);
 			int[] rrr = rr.getParentArray();
-			// StringBuffer sb = new StringBuffer();
+			// StringBuilder sb = new StringBuilder();
 			int pareNo = 0;
 			if (rrr != null) {
 				for (int j = 0; j < rrr.length; j++) {
@@ -421,7 +421,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			occuw = fm.stringWidth(xx);
 		}
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("* ");
 		if (person.getBirtDate() != null) {
 			sb.append(" * 13.04.1944 ");
@@ -436,7 +436,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		if (birtw > 0 && birtw < datew + placew) {
 			birtw = datew + placew;
 		}
-		sb = new StringBuffer();
+		sb = new StringBuilder();
 		sb.append("* ");
 		if (person.getDeatDate() != null) {
 			sb.append(" * 13.04.1944 ");
@@ -777,7 +777,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < famMember.size(); i++) {
 			sb.append("Tab:[" + i + "]: " + famMember.get(i).getTextName()
 					+ "\n");

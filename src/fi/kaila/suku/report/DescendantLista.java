@@ -179,7 +179,7 @@ public class DescendantLista extends CommonReport {
 					}
 				}
 
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				sb.append(pp.getAlfaName());
 				if (bdate != null) {
 					sb.append(" ");

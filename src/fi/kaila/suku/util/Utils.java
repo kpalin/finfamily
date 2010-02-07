@@ -180,7 +180,7 @@ public class Utils {
 
 		// String parts[] = textDate.split(separator);
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		sb.append(Resurses.getString("ERROR_WRONGDATE"));
 		sb.append(" ");
@@ -323,7 +323,7 @@ public class Utils {
 		if (text.length() == len) {
 			return text;
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int j = 0; j < len; j++) {
 			sb.append("0");
 		}

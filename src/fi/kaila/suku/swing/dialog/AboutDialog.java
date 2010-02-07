@@ -45,7 +45,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		add(aboutArea);
 		aboutArea.setBounds(20, 20, 560, 200);
 
-		StringBuffer about = new StringBuffer();
+		StringBuilder about = new StringBuilder();
 
 		String aux = "Java Version: " + System.getProperty("java.version")
 				+ " from " + System.getProperty("java.vendor");

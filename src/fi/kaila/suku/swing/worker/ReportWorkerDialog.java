@@ -1083,7 +1083,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							// typesTable.setValueAt(newText, row, 5);
 							break;
 						}
-						// StringBuffer sb = new StringBuffer();
+						// StringBuilder sb = new StringBuilder();
 						// sb.append("t:");
 						// sb.append(typesTags[row]);
 						// sb.append("=");
@@ -1307,7 +1307,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		int typeCount = typesTable.getRowCount();
 
 		for (int row = 0; row < typeCount; row++) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("t:");
 			sb.append(typesModel.getTypesTags(row));
 			sb.append("=");
@@ -1709,7 +1709,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					if (tag.equals("NAME")) {
 						nameFound = true;
-						StringBuffer sb = new StringBuffer();
+						StringBuilder sb = new StringBuilder();
 						if (n.getGivenname() == null) {
 							sb.append("???");
 						} else {

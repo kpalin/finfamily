@@ -50,7 +50,7 @@ public class UserVerifier {
 		md.update(tunnus);
 		byte digest[] = md.digest();
 
-		StringBuffer pw = new StringBuffer();
+		StringBuilder pw = new StringBuilder();
 
 		for (byte b : digest) {
 			String a = "00" + Integer.toHexString(b & 0xff);
