@@ -340,7 +340,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 						.getString("DIALOG_GROUP_SELECTED_GROUP")
 						+ " " + nv(pp.getGroup()));
 
-				if (groupId.getText().equals("")) {
+				if (groupId.getText().isEmpty()) {
 					groupId.setText(nv(pp.getGroup()));
 				}
 			}
@@ -391,7 +391,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 										+ viewids[isele]);
 					} else if (remocmd.equals("GROUP")) {
 						String grp = groupId.getText();
-						if (grp.equals("")) {
+						if (grp.isEmpty()) {
 							JOptionPane.showMessageDialog(parent, Resurses
 									.getString("DIALOG_GROUP_MISSING"));
 							return;
@@ -434,7 +434,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 					if (addcmd == null)
 						return;
 					String grp = groupId.getText();
-					if (grp.equals("")) {
+					if (grp.isEmpty()) {
 						JOptionPane.showMessageDialog(parent, Resurses
 								.getString("DIALOG_GROUP_MISSING"));
 						return;

@@ -401,7 +401,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 			try {
 
 				String viewname = newViewName.getText();
-				if (viewname.equals(""))
+				if (viewname.isEmpty())
 					return;
 				for (int i = 0; i < viewnames.length; i++) {
 					if (viewname.equals(viewnames[i])) {

@@ -519,7 +519,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				kast.persons[i] = new PersonLongData(muuttaja, "INDI", sex);
 				kast.persons[i].setSource(hiskiSource);
 				occu = pOccu[i].getText();
-				if (!occu.equals("")) {
+				if (!occu.isEmpty()) {
 					notice = new UnitNotice("OCCU");
 					notice.setDescription(occu);
 					notice.setSource(hiskiSource);
@@ -529,7 +529,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				patro = pPatronym[i].getText();
 
 				suku = pSurname[i].getText();
-				if (!etu.equals("") || !patro.equals("") || !suku.equals("")) {
+				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					notice = new UnitNotice("NAME");
 					notice.setGivenname(etu);
 					notice.setPatronym(patro);
@@ -635,7 +635,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				kast.persons[i] = new PersonLongData(vainaa, "INDI", sex);
 				kast.persons[i].setSource(hiskiSource);
 				occu = pOccu[i].getText();
-				if (!occu.equals("")) {
+				if (!occu.isEmpty()) {
 					notice = new UnitNotice("OCCU");
 					notice.setDescription(occu);
 					notice.setSource(hiskiSource);
@@ -645,7 +645,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				patro = pPatronym[i].getText();
 
 				suku = pSurname[i].getText();
-				if (!etu.equals("") || !patro.equals("") || !suku.equals("")) {
+				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					notice = new UnitNotice("NAME");
 					notice.setGivenname(etu);
 					notice.setPatronym(patro);
@@ -696,7 +696,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					bdate = null;
 				}
 
-				if (bdate != null && !bdate.equals("")) {
+				if (bdate != null && !bdate.isEmpty()) {
 					notice = new UnitNotice("BIRT");
 					notice.setFromDate(bdate);
 					notice.setDatePrefix(eventExtraDate.getDatePrefTag());
@@ -770,7 +770,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				kast.persons[i] = new PersonLongData(puoliso, "INDI", sex);
 				kast.persons[i].setSource(hiskiSource);
 				occu = pOccu[i].getText();
-				if (!occu.equals("")) {
+				if (!occu.isEmpty()) {
 					notice = new UnitNotice("OCCU");
 					notice.setDescription(occu);
 					notice.setSource(hiskiSource);
@@ -779,7 +779,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				etu = pGivenname[i].getText();
 				patro = pPatronym[i].getText();
 				suku = pSurname[i].getText();
-				if (!etu.equals("") || !patro.equals("") || !suku.equals("")) {
+				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					notice = new UnitNotice("NAME");
 					notice.setGivenname(etu);
 					notice.setPatronym(patro);
@@ -797,7 +797,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					marrType = eventFirstType.getText();
 				}
 
-				if (!age.equals("") || !text.equals("")) {
+				if (!age.isEmpty() || !text.isEmpty()) {
 					notice = new UnitNotice("EVEN");
 
 					notice.setNoticeType(marrType);
@@ -903,7 +903,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				kast.persons[i] = new PersonLongData(vanhempi, "INDI", sex);
 				kast.persons[i].setSource(hiskiSource);
 				occu = pOccu[i].getText();
-				if (!occu.equals("")) {
+				if (!occu.isEmpty()) {
 					notice = new UnitNotice("OCCU");
 					notice.setDescription(occu);
 					notice.setSource(hiskiSource);
@@ -912,7 +912,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				etu = pGivenname[i].getText();
 				patro = pPatronym[i].getText();
 				suku = pSurname[i].getText();
-				if (!etu.equals("") || !patro.equals("") || !suku.equals("")) {
+				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					notice = new UnitNotice("NAME");
 					notice.setGivenname(etu);
 					notice.setPatronym(patro);
@@ -923,7 +923,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				age = pAge[i].getText();
 				text = pReason[i].getText();
 
-				if (!age.equals("") || !text.equals("")) {
+				if (!age.isEmpty() || !text.isEmpty()) {
 					notice = new UnitNotice("SPEC");
 					StringBuilder sb = new StringBuilder();
 					sb.append(age);
@@ -954,7 +954,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				etu = pGivenname[i].getText();
 				patro = pPatronym[i].getText();
 				suku = pSurname[i].getText();
-				if (!etu.equals("") || !patro.equals("") || !suku.equals("")) {
+				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					notice = new UnitNotice("NAME");
 					notice.setGivenname(etu);
 					notice.setPatronym(patro);
@@ -1214,19 +1214,19 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							StringBuilder age = new StringBuilder();
 
 							vv = elp.getAttribute("vv");
-							if (!vv.equals("")) {
+							if (!vv.isEmpty()) {
 								age.append("vv=" + vv + ";");
 							}
 							kk = elp.getAttribute("kk");
-							if (!kk.equals("")) {
+							if (!kk.isEmpty()) {
 								age.append("kk=" + kk + ";");
 							}
 							vk = elp.getAttribute("vk");
-							if (!vk.equals("")) {
+							if (!vk.isEmpty()) {
 								age.append("vk=" + vk + ";");
 							}
 							pv = elp.getAttribute("pv");
-							if (!pv.equals("")) {
+							if (!pv.isEmpty()) {
 								age.append("pv=" + pv);
 							}
 
@@ -1289,7 +1289,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 						if ("haudatut".equals(bookName)
 								&& ((vv + kk + vk + pv).length() > 0)) {
 							String aux = toBirthDate(datex, vv, kk, vk, pv);
-							if (aux != null && !aux.equals("")) {
+							if (aux != null && !aux.isEmpty()) {
 								eventExtraType.setVisible(true);
 								eventExtraDate.setVisible(true);
 								// eventExtraDate.setText(aux);
@@ -1462,7 +1462,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	}
 
 	private String toTextDate(String hiskiDate) {
-		if (hiskiDate == null || hiskiDate.equals(""))
+		if (hiskiDate == null || hiskiDate.isEmpty())
 			return null;
 		String[] parts = hiskiDate.split("\\.");
 		StringBuilder sb = new StringBuilder();

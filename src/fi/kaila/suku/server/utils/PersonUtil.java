@@ -562,7 +562,7 @@ public class PersonUtil {
 									|| newrel.getShortPerson() == null
 									|| newrel.getShortPerson().getBirtDate() == null
 									|| newrel.getShortPerson().getBirtDate()
-											.equals("")) {
+											.isEmpty()) {
 								newrel = null;
 							} else {
 								for (int j = 0; j < ffvec.size(); j++) {
@@ -571,7 +571,7 @@ public class PersonUtil {
 											|| rfm.getShortPerson()
 													.getBirtDate() == null
 											|| rfm.getShortPerson()
-													.getBirtDate().equals("")) {
+													.getBirtDate().isEmpty()) {
 										ffvec.insertElementAt(newrel, j);
 										newrel = null;
 										break;

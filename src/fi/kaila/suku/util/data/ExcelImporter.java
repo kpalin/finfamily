@@ -298,12 +298,12 @@ public class ExcelImporter {
 								String c1 = cc1.getContents();
 								String d1 = dc1.getContents();
 
-								if (a1 != null && !a1.equals("")) {
+								if (a1 != null && !a1.isEmpty()) {
 
 									pstdel.setString(1, a1);
 									pstdel.executeUpdate();
 
-									if (b1 != null && !b1.equals("")
+									if (b1 != null && !b1.isEmpty()
 											&& !b1.equals("XXX")) {
 
 										pst.setString(1, a1);
@@ -315,7 +315,7 @@ public class ExcelImporter {
 										pst.executeUpdate();
 									}
 
-									if (c1 != null && !c1.equals("")
+									if (c1 != null && !c1.isEmpty()
 											&& !c1.equals("XXX")) {
 										pst.setString(1, a1);
 										pst
@@ -325,7 +325,7 @@ public class ExcelImporter {
 										pst.setString(4, c1);
 										pst.executeUpdate();
 									}
-									if (d1 != null && !d1.equals("")
+									if (d1 != null && !d1.isEmpty()
 											&& !d1.equals("XXX")) {
 										pst.setString(1, a1);
 										pst
@@ -584,7 +584,7 @@ public class ExcelImporter {
 				String toText = rs.getString(3);
 				int counter = rs.getInt(4);
 				if (!place.equals(currPlace)) {
-					if (!currPlace.equals("")) {
+					if (!currPlace.isEmpty()) {
 						label = new Label(1, row, "" + lukuri, arial0);
 						sheet.addCell(label);
 						lukuri = 0;

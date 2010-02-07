@@ -154,7 +154,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 						givenname.setText(fgiven);
 						patronym.setText(fpatro);
 						tmp = prexi;
-						if (!tmp.equals("")) {
+						if (!tmp.isEmpty()) {
 							if (Utils.isKnownPrefix(tmp) > 0) {
 								comboname += tmp + " ";
 							} else {
@@ -186,7 +186,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 							break;
 						}
 						String nextpre = "";
-						if (!prexi.equals("")) {
+						if (!prexi.isEmpty()) {
 
 							if (Utils.isKnownPrefix(prexi) > 0) {
 								nextpre = prexi + " ";
@@ -963,13 +963,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			if (names.length > 1 || !names[0].equals("")) {
 				hasName = true;
 			}
-			if (!givenname.getText().equals("")) {
+			if (!givenname.getText().isEmpty()) {
 				hasName = true;
 			}
-			if (!patronym.getText().equals("")) {
+			if (!patronym.getText().isEmpty()) {
 				hasName = true;
 			}
-			if (!postfix.getText().equals("")) {
+			if (!postfix.getText().isEmpty()) {
 				hasName = true;
 			}
 
@@ -1001,8 +1001,8 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 			int namesCount = names.length;
 			if (namesCount == 1 && names[0].equals("")) {
-				if (givenname.getText().equals("")
-						&& patronym.getText().equals("")) {
+				if (givenname.getText().isEmpty()
+						&& patronym.getText().isEmpty()) {
 					namesCount = 0;
 				} else {
 					namesCount = 1;
@@ -1092,42 +1092,42 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 		if (birtDate.isEnabled()) {
 			if (birtCount == 0
-					&& (!birtDate.getText().equals("") || !birtPlace.getText()
-							.equals(""))) {
+					&& (!birtDate.getText().isEmpty() || !birtPlace.getText()
+							.isEmpty())) {
 				insertNamePane(idx++, "BIRT");
 			}
 		}
 		if (chrDate.isEnabled()) {
 			if (chrCount == 0
-					&& (!chrDate.getText().equals("") || !chrPlace.getText()
-							.equals(""))) {
+					&& (!chrDate.getText().isEmpty() || !chrPlace.getText()
+							.isEmpty())) {
 				insertNamePane(idx++, "CHR");
 			}
 		}
 		if (deatDate.isEnabled()) {
 			if (deatCount == 0
-					&& (!deatDate.getText().equals("") || !deatPlace.getText()
-							.equals(""))) {
+					&& (!deatDate.getText().isEmpty() || !deatPlace.getText()
+							.isEmpty())) {
 				insertNamePane(idx++, "DEAT");
 			}
 		}
 		if (buriDate.isEnabled()) {
 			if (buriCount == 0
-					&& (!buriDate.getText().equals("") || !buriPlace.getText()
-							.equals(""))) {
+					&& (!buriDate.getText().isEmpty() || !buriPlace.getText()
+							.isEmpty())) {
 				insertNamePane(idx++, "BURI");
 			}
 		}
 		if (occupation.isEnabled()) {
 
-			if (!occupation.getText().equals("")) {
+			if (!occupation.getText().isEmpty()) {
 				for (int i = occuCount; i < occus.length; i++) {
 					insertNamePane(idx++, "OCCU");
 				}
 			}
 		}
 		if (notetext.isEnabled()) {
-			if (noteCount == 0 && !notetext.getText().equals("")) {
+			if (noteCount == 0 && !notetext.getText().isEmpty()) {
 				insertNamePane(idx++, "NOTE");
 				noteCount++;
 			}
@@ -1138,26 +1138,26 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 			String tag = pane.notice.getTag();
 			if (tag.equals("BIRT")) {
-				pane.setToBeDeleted(birtDate.getText().equals("")
-						&& birtPlace.getText().equals(""));
+				pane.setToBeDeleted(birtDate.getText().isEmpty()
+						&& birtPlace.getText().isEmpty());
 				pane.date.setTextFromDate(birtDate.getText());
 				pane.place.setText(birtPlace.getText());
 			}
 			if (tag.equals("CHR")) {
-				pane.setToBeDeleted(chrDate.getText().equals("")
-						&& chrPlace.getText().equals(""));
+				pane.setToBeDeleted(chrDate.getText().isEmpty()
+						&& chrPlace.getText().isEmpty());
 				pane.date.setTextFromDate(chrDate.getText());
 				pane.place.setText(chrPlace.getText());
 			}
 			if (tag.equals("DEAT")) {
-				pane.setToBeDeleted(deatDate.getText().equals("")
-						&& deatPlace.getText().equals(""));
+				pane.setToBeDeleted(deatDate.getText().isEmpty()
+						&& deatPlace.getText().isEmpty());
 				pane.date.setTextFromDate(deatDate.getText());
 				pane.place.setText(deatPlace.getText());
 			}
 			if (tag.equals("BURI")) {
-				pane.setToBeDeleted(buriDate.getText().equals("")
-						&& buriPlace.getText().equals(""));
+				pane.setToBeDeleted(buriDate.getText().isEmpty()
+						&& buriPlace.getText().isEmpty());
 				pane.date.setTextFromDate(buriDate.getText());
 				pane.place.setText(buriPlace.getText());
 			}
@@ -1172,7 +1172,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 			if (tag.equals("NOTE")) {
 				if (noteCount == 1) {
-					// pane.setToBeDeleted(notetext.getText().equals(""));
+					// pane.setToBeDeleted(notetext.getText().isEmpty());
 					pane.noteText.setText(notetext.getText());
 				}
 			}

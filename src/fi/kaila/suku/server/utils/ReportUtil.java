@@ -178,7 +178,7 @@ public class ReportUtil {
 					fromTable = ref.getReferences(unit.getTableNo(), true,
 							true, false);
 				}
-				if (fromTable.equals("")) {
+				if (fromTable.isEmpty()) {
 					addAncestorsToMember(member, 1, gen);
 					// spouse not a relative
 				}
@@ -199,7 +199,7 @@ public class ReportUtil {
 							fromTable = ref.getReferences(unit.getTableNo(),
 									true, true, false);
 						}
-						if (fromTable.equals("")) {
+						if (fromTable.isEmpty()) {
 							addAncestorsToMember(spouses[k], 1, gen);
 							// spouse not a relative
 						}
@@ -254,7 +254,7 @@ public class ReportUtil {
 			if (ref != null) {
 				fromTable = ref.getReferences(0, true, true, false);
 			}
-			if (fromTable.equals("")) {
+			if (fromTable.isEmpty()) {
 
 			}
 		}

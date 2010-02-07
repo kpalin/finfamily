@@ -960,7 +960,7 @@ public class NoticePane extends JPanel implements ActionListener,
 						+ gv.substring(idt + 1).trim();
 			}
 
-			if (gv.equals("")) {
+			if (gv.isEmpty()) {
 				if (listaSelectedName >= 0) {
 					namesVector.removeElementAt(listaSelectedName);
 				}
@@ -984,7 +984,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			String pl = listaPlace.getText();
 
-			if (pl.equals("")) {
+			if (pl.isEmpty()) {
 				if (listaSelectedPlace >= 0) {
 					placesVector.removeElementAt(listaSelectedPlace);
 				}

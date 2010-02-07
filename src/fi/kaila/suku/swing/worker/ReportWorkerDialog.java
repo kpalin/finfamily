@@ -2163,10 +2163,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 						if (pit.asOwner == 0) {
 
-							if (refe.equals("")) {
+							if (refe.isEmpty()) {
 								refe = cefe;
 							} else {
-								if (!cefe.equals("")) {
+								if (!cefe.isEmpty()) {
 									refe += "," + cefe;
 								}
 							}
@@ -2175,8 +2175,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						// + pit.shortPerson.getAlfaName());
 						String mefe = pit.getReferences(0, false, false, true);
 
-						if (!mefe.equals("")) {
-							if (!refe.equals("")) {
+						if (!mefe.isEmpty()) {
+							if (!refe.isEmpty()) {
 								refe += "," + mefe;
 							} else {
 								refe = mefe;

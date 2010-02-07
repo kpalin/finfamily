@@ -88,7 +88,7 @@ public class SukuServerImpl implements SukuServer {
 		this.dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
 				+ userid;
 		logger.fine("Connection: " + this.dbConne + ";schema: " + this.schema);
-		if (passwd != null && !passwd.equals("")) {
+		if (passwd != null && !passwd.isEmpty()) {
 
 			this.dbConne += "&password=" + passwd;
 		}
@@ -747,7 +747,7 @@ public class SukuServerImpl implements SukuServer {
 			String constring = "jdbc:postgresql://" + host + "/" + lista.get(i)
 					+ "?user=" + user;
 			logger.fine("Connection: " + constring);
-			if (password != null && !password.equals("")) {
+			if (password != null && !password.isEmpty()) {
 
 				constring += "&password=" + password;
 			}

@@ -319,7 +319,7 @@ public class GroupUtil {
 		resp.resuCount = 0;
 		Vector<Integer> pidv = new Vector<Integer>();
 		int gen = 0;
-		if (gent != null && !gent.equals("")) {
+		if (gent != null && !gent.isEmpty()) {
 			gen = Integer.parseInt(gent);
 		}
 
@@ -419,7 +419,7 @@ public class GroupUtil {
 		resp.resuCount = 0;
 		Vector<Integer> pidv = new Vector<Integer>();
 		int gen = 0;
-		if (gent != null && !gent.equals("")) {
+		if (gent != null && !gent.isEmpty()) {
 			gen = Integer.parseInt(gent);
 		}
 

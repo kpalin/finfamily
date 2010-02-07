@@ -2120,7 +2120,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			v.add("cmd=plist");
 			for (i = 0; i < crit.getFieldCount(); i++) {
 				if (crit.getCriteriaField(i) != null
-						&& !crit.getCriteriaField(i).equals("")) {
+						&& !crit.getCriteriaField(i).isEmpty()) {
 					v.add(crit.getFieldName(i)
 							+ "="
 							+ URLEncoder.encode(crit.getCriteriaField(i),

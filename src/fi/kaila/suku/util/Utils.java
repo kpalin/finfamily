@@ -168,7 +168,7 @@ public class Utils {
 	 *             if bad dateformat
 	 */
 	public static String dbDate(String textDate) throws SukuDateException {
-		if (textDate == null || textDate.equals(""))
+		if (textDate == null || textDate.isEmpty())
 			return null;
 		String df = Resurses.getDateFormat();
 		// String separator = "\\.";
@@ -475,7 +475,7 @@ public class Utils {
 	 * @return null if empty string or text
 	 */
 	public static String vn(String text) {
-		if (text == null || text.equals(""))
+		if (text == null || text.isEmpty())
 			return null;
 		return text;
 	}

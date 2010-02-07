@@ -437,7 +437,7 @@ public abstract class CommonReport {
 				hasOwnTable = false;
 				if (ref != null) {
 					toTable = ref.getReferences(0, true, false, false);
-					if (!toTable.equals("") && ref.asOwner > 0) {
+					if (!toTable.isEmpty() && ref.asOwner > 0) {
 						hasOwnTable = true;
 					}
 
@@ -491,14 +491,14 @@ public abstract class CommonReport {
 				}
 
 				notices = cdata.persLong.getNotices();
-				if (!pareTxt.equals("")) {
+				if (!pareTxt.isEmpty()) {
 					bt.addText(pareTxt);
 				}
 				if (adopTag != null) {
 					bt.addText("(" + caller.getTextValue(adopTag) + ") ");
 				}
-				printName(bt, notices, (toTable.equals("") ? 2 : 3));
-				printNotices(bt, notices, (toTable.equals("") ? 2 : 3), tab
+				printName(bt, notices, (toTable.isEmpty() ? 2 : 3));
+				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3), tab
 						.getTableNo());
 
 				if (childMember.getSubCount() > 0) {
@@ -530,7 +530,7 @@ public abstract class CommonReport {
 					}
 				}
 
-				if (!toTable.equals("")) {
+				if (!toTable.isEmpty()) {
 					if (hasOwnTable) {
 						bt.addText(caller.getTextValue("TABLE") + " " + toTable
 								+ ". ", true, false);
@@ -622,11 +622,11 @@ public abstract class CommonReport {
 						if (ref != null) {
 							fromTable = ref.getReferences(tab.getTableNo(),
 									true, false, false);
-							if (fromTable.equals("")) {
+							if (fromTable.isEmpty()) {
 								fromTable = ref.getReferences(tab.getTableNo(),
 										false, true, false);
 							}
-							if (fromTable.equals("")) {
+							if (fromTable.isEmpty()) {
 								fromTable = ref.getReferences(tab.getTableNo(),
 										false, false, true);
 							}
@@ -777,7 +777,7 @@ public abstract class CommonReport {
 
 		if (mtab != null && ftab != null) {
 			bt.addText(caller.getTextValue("TABLES") + " ");
-			if (!genText.equals("")) {
+			if (!genText.isEmpty()) {
 				bt.addText(genText + ".");
 			}
 
@@ -786,7 +786,7 @@ public abstract class CommonReport {
 		} else {
 			if (tableNum > 0) {
 				bt.addText(caller.getTextValue("TABLE") + " ");
-				if (!genText.equals("")) {
+				if (!genText.isEmpty()) {
 					bt.addText(genText + ".");
 				}
 				bt.addText(" " + toPrintTable(tableNum));
@@ -866,7 +866,7 @@ public abstract class CommonReport {
 							RelationNotice rn = marr.getNotices()[i];
 
 							String spouType = printRelationNotice(rn, "", 0);
-							if (!spouType.equals("")) {
+							if (!spouType.isEmpty()) {
 								sb.append(spouType);
 								sb.append(". ");
 							}
@@ -1101,13 +1101,13 @@ public abstract class CommonReport {
 					}
 
 					notices = cdata.persLong.getNotices();
-					// if (!pareTxt.equals("")) {
+					// if (!pareTxt.isEmpty()) {
 					// bt.addText(pareTxt);
 					// }
 					if (adopTag != null) {
 						bt.addText("(" + caller.getTextValue(adopTag) + ") ");
 					}
-					printName(bt, notices, (toTable.equals("") ? 2 : 3));
+					printName(bt, notices, (toTable.isEmpty() ? 2 : 3));
 
 					addChildReference(ftab, mtab, cdata.persLong.getPid(),
 							caller.getTextValue("TABLE"), bt);
@@ -1205,14 +1205,14 @@ public abstract class CommonReport {
 							}
 
 							notices = cdata.persLong.getNotices();
-							// if (!pareTxt.equals("")) {
+							// if (!pareTxt.isEmpty()) {
 							// bt.addText(pareTxt);
 							// }
 							if (adopTag != null) {
 								bt.addText("(" + caller.getTextValue(adopTag)
 										+ ") ");
 							}
-							printName(bt, notices, (toTable.equals("") ? 2 : 3));
+							printName(bt, notices, (toTable.isEmpty() ? 2 : 3));
 							addChildReference(ftab, mtab, tab.getPid(), caller
 									.getTextValue("TABLE"), bt);
 							printNotices(bt, notices, tab.getPid(), tab
@@ -1767,12 +1767,12 @@ public abstract class CommonReport {
 				mellan = caller.getTextValue("AND");
 			}
 		}
-		if (!framme.equals("")) {
+		if (!framme.isEmpty()) {
 			sb.append(framme);
 			sb.append(" ");
 		}
 		sb.append(toRepoDate(dateFrom));
-		if (!mellan.equals("") && dateTo != null) {
+		if (!mellan.isEmpty() && dateTo != null) {
 			sb.append(" ");
 			sb.append(mellan);
 			sb.append(" ");
@@ -1916,34 +1916,34 @@ public abstract class CommonReport {
 
 						}
 						boolean wasName = false;
-						if (!prevGivenname.equals("")
-								&& !nv(nn.getPrefix()).equals("")) {
+						if (!prevGivenname.isEmpty()
+								&& !nv(nn.getPrefix()).isEmpty()) {
 							bt.addText(" ", caller.showBoldNames(), false);
 							bt.addText(nn.getPrefix(), caller.showBoldNames(),
 									false);
 							wasName = true;
 						}
-						if (wasName && !nv(nn.getPatronym()).equals("")) {
+						if (wasName && !nv(nn.getPatronym()).isEmpty()) {
 							bt.addText(" ", caller.showBoldNames(), false);
 						}
 
-						if (!nv(nn.getPatronym()).equals("")) {
+						if (!nv(nn.getPatronym()).isEmpty()) {
 							bt.addText(nn.getPatronym(),
 									caller.showBoldNames(), false);
 							wasName = true;
 						}
-						if (wasName && !nv(nn.getSurname()).equals("")) {
+						if (wasName && !nv(nn.getSurname()).isEmpty()) {
 							bt.addText(" ", caller.showBoldNames(), false);
 						}
-						if (!nv(nn.getSurname()).equals("")) {
+						if (!nv(nn.getSurname()).isEmpty()) {
 							bt.addText(nn.getSurname(), caller.showBoldNames(),
 									false);
 							wasName = true;
 						}
-						if (wasName && !nv(nn.getPostfix()).equals("")) {
+						if (wasName && !nv(nn.getPostfix()).isEmpty()) {
 							bt.addText(" ", caller.showBoldNames(), false);
 						}
-						if (!nv(nn.getPostfix()).equals("")) {
+						if (!nv(nn.getPostfix()).isEmpty()) {
 							bt.addText(nn.getPostfix(), caller.showBoldNames(),
 									false);
 						}
@@ -1976,7 +1976,7 @@ public abstract class CommonReport {
 				namePart = namePart.substring(1, namePart.length() - 1);
 
 			}
-			if (!startChar.equals("")) {
+			if (!startChar.isEmpty()) {
 				bt.addText(startChar, caller.showBoldNames(), false);
 			}
 			String[] subParts = namePart.split("-");
@@ -2022,7 +2022,7 @@ public abstract class CommonReport {
 				}
 			}
 
-			if (!endChar.equals("")) {
+			if (!endChar.isEmpty()) {
 				bt.addText(endChar, caller.showBoldNames(), false);
 			}
 			bt.addText(" ", caller.showBoldNames(), false);

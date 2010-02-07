@@ -360,7 +360,7 @@ public class RelationNotice implements Serializable {
 	}
 
 	private String vn(String text) {
-		if (text == null || text.equals(""))
+		if (text == null || text.isEmpty())
 			return null;
 		return text;
 	}

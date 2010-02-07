@@ -322,7 +322,7 @@ public class PersonTextPane extends JTextPane {
 						.getGivenname(), notice.getPatronym(), notice
 						.getPrefix(), notice.getSurname(), notice.getPostfix());
 
-				if (!bl.equals("")) {
+				if (!bl.isEmpty()) {
 					append(". ", bodyText);
 				}
 				bl = "";

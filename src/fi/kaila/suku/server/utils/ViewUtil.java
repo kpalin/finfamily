@@ -204,7 +204,7 @@ public class ViewUtil {
 		Vector<Integer> pidv = new Vector<Integer>();
 		resp.resuCount = 0;
 		int gen = 0;
-		if (gent != null && !gent.equals("")) {
+		if (gent != null && !gent.isEmpty()) {
 			gen = Integer.parseInt(gent);
 		}
 
@@ -375,7 +375,7 @@ public class ViewUtil {
 		Vector<Integer> pidv = new Vector<Integer>();
 		resp.resuCount = 0;
 		int gen = 0;
-		if (gent != null && !gent.equals("")) {
+		if (gent != null && !gent.isEmpty()) {
 			gen = Integer.parseInt(gent);
 		}
 

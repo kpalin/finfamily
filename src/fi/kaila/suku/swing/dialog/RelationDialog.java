@@ -526,19 +526,19 @@ public class RelationDialog extends JDialog implements ActionListener,
 		String tmp = relationTypeLang.getText();
 		rl.setRelationType(tmp);
 
-		if (!tmp.equals(""))
+		if (!tmp.isEmpty())
 			toBeDeleted = false;
 
 		tmp = descriptionLang.getText();
 		rl.setDescription(tmp);
-		if (!tmp.equals(""))
+		if (!tmp.isEmpty())
 			toBeDeleted = false;
 		rl.setPlace(tmp);
-		if (!tmp.equals(""))
+		if (!tmp.isEmpty())
 			toBeDeleted = false;
 		tmp = noteTextLang.getText();
 		rl.setNoteText(tmp);
-		if (!tmp.equals(""))
+		if (!tmp.isEmpty())
 			toBeDeleted = false;
 		rl.setToBeDeleted(toBeDeleted);
 	}
