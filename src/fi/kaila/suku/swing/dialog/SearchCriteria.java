@@ -458,19 +458,19 @@ public class SearchCriteria extends JDialog implements ActionListener {
 						givenname.setText(parts[1]);
 
 					} else if (parts[0].equals("birtFromDate")) {
-						birtFromDate.setText(parts[1]);
+						birtFromDate.setText(Utils.textDate(parts[1], false));
 
 					} else if (parts[0].equals("birtToDate")) {
-						birtToDate.setText(parts[1]);
+						birtToDate.setText(Utils.textDate(parts[1], false));
 
 					} else if (parts[0].equals("birtPlace")) {
 						birtPlace.setText(parts[1]);
 
 					} else if (parts[0].equals("deatFromDate")) {
-						deatFromDate.setText(parts[1]);
+						deatFromDate.setText(Utils.textDate(parts[1], false));
 
 					} else if (parts[0].equals("deatToDate")) {
-						deatToDate.setText(parts[1]);
+						deatToDate.setText(Utils.textDate(parts[1], false));
 
 					} else if (parts[0].equals("deatPlace")) {
 						deatPlace.setText(parts[1]);
@@ -695,15 +695,15 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		case 2:
 			return this.patronyme.getText();
 		case 3:
-			return this.birtFromDate.getText();
+			return Utils.dbTryDate(birtFromDate.getText());
 		case 4:
-			return this.birtToDate.getText();
+			return Utils.dbTryDate(birtToDate.getText());
 		case 5:
 			return this.birtPlace.getText();
 		case 6:
-			return this.deatFromDate.getText();
+			return Utils.dbTryDate(deatFromDate.getText());
 		case 7:
-			return this.deatToDate.getText();
+			return Utils.dbTryDate(deatToDate.getText());
 		case 8:
 			return this.deatPlace.getText();
 		case 9:
@@ -796,14 +796,28 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			}
 
 			Vector<String> v = new Vector<String>();
+			String tmpDate;
 			v.add("patronyme=" + patronyme.getText());
 			v.add("surname=" + surname.getText());
 			v.add("givenname=" + givenname.getText());
-			v.add("birtFromDate=" + birtFromDate.getText());
-			v.add("birtToDate=" + birtToDate.getText());
+			tmpDate = Utils.dbTryDate(birtFromDate.getText());
+			if (tmpDate != null) {
+				v.add("birtFromDate=" + tmpDate);
+			}
+			tmpDate = Utils.dbTryDate(birtToDate.getText());
+			if (tmpDate != null) {
+				v.add("birtToDate=" + tmpDate);
+			}
 			v.add("birtPlace=" + birtPlace.getText());
-			v.add("deatFromDate=" + deatFromDate.getText());
-			v.add("deatToDate=" + deatToDate.getText());
+
+			tmpDate = Utils.dbTryDate(deatFromDate.getText());
+			if (tmpDate != null) {
+				v.add("deatFromDate=" + tmpDate);
+			}
+			tmpDate = Utils.dbTryDate(deatToDate.getText());
+			if (tmpDate != null) {
+				v.add("deatToDate=" + tmpDate);
+			}
 			v.add("deatPlace=" + deatPlace.getText());
 			v.add("createdFromDate=" + createdFromDate.getText());
 			v.add("createdToDate=" + createdToDate.getText());

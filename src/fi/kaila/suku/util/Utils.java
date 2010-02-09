@@ -160,6 +160,18 @@ public class Utils {
 	}
 
 	/**
+	 * @param textDate
+	 * @return db date or null if wrong date
+	 */
+	public static String dbTryDate(String textDate) {
+		try {
+			return dbDate(textDate);
+		} catch (SukuDateException e) {
+			return null;
+		}
+	}
+
+	/**
 	 * convert viewable textdate to dbformat
 	 * 
 	 * @param textDate
