@@ -1412,7 +1412,7 @@ public class SukuServerImpl implements SukuServer {
 		res.vvTypes = new Vector<String[]>();
 		try {
 			String sql = "select tag,name,reportname,tagtype,rule from types where langCode = '"
-					+ langu + "' order by tagtype,tag";
+					+ langu + "' order by tagtype,typeid";
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 
