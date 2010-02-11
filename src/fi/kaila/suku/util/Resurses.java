@@ -3,7 +3,6 @@ package fi.kaila.suku.util;
 import java.text.Collator;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.util.pojo.PersonShortData;
@@ -325,7 +324,7 @@ public class Resurses {
 
 	/** */
 	private static Resurses myself = null;
-	private static ResourceBundle resources = null;
+	private static ExcelBundle resources = null;
 
 	private static Locale currentLocale = new Locale("en");
 
@@ -338,8 +337,7 @@ public class Resurses {
 	private Resurses() {
 		if (resources == null) {
 			Locale.setDefault(currentLocale);
-			resources = ResourceBundle.getBundle("string/finfamily",
-					currentLocale);
+			resources = ExcelBundle.getBundle("excel/FinFamily", currentLocale);
 		}
 	}
 
@@ -353,7 +351,7 @@ public class Resurses {
 		Locale.setDefault(currentLocale);
 		repoLangu = newLocale;
 		myself = null;
-		resources = ResourceBundle.getBundle("string/finfamily", currentLocale);
+		resources = ExcelBundle.getBundle("excel/FinFamily", currentLocale);
 
 	}
 
