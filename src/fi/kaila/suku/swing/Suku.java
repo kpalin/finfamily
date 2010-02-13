@@ -1203,10 +1203,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							.getSukuData("cmd=excel",
 									"path=resources/excel/TypesExcel.xls",
 									"page=types");
-					kontroller
-							.getSukuData("cmd=excel",
-									"path=resources/excel/TextsExcel.xls",
-									"page=texts");
+
 				}
 				JOptionPane.showMessageDialog(this, resu, Resurses
 						.getString(Resurses.SUKU),
@@ -1232,9 +1229,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						kontroller.getSukuData("cmd=excel",
 								"path=resources/excel/TypesExcel.xls",
 								"page=types");
-						kontroller.getSukuData("cmd=excel",
-								"path=resources/excel/TextsExcel.xls",
-								"page=texts");
+
 						JOptionPane.showMessageDialog(this, Resurses
 								.getString("CREATED_NEWDB"), Resurses
 								.getString(Resurses.SUKU),
@@ -1664,7 +1659,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			boolean openedFile = Suku.kontroller.openLocalFile("xls");
 			if (openedFile) {
 				kontroller.getSukuData("cmd=excel", "page=types");
-				// "path=resources/excel/TypesExcel.xls",);
+
 				JOptionPane.showMessageDialog(this, Resurses
 						.getString("IMPORTED_TYPES"), Resurses
 						.getString(Resurses.SUKU),
@@ -2329,8 +2324,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
 			kontroller.getSukuData("cmd=excel",
 					"path=resources/excel/TypesExcel.xls", "page=types");
-			kontroller.getSukuData("cmd=excel",
-					"path=resources/excel/TextsExcel.xls", "page=texts");
 
 			String[] failedLines = dlg.getResult();
 			if (failedLines != null) {

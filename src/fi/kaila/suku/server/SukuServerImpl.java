@@ -1616,28 +1616,17 @@ public class SukuServerImpl implements SukuServer {
 	 */
 	private SukuData importExcelData(String path, String page)
 			throws SukuException {
-		SukuData resu = new SukuData();
+
 		if ("coordinates".equals(page)) {
 			ExcelImporter ex = new ExcelImporter();
 			return ex.importCoordinates(this.con, path);
-			// ImportExcelData ex = new ImportExcelData(this.con,path);
-			// ex.importCoordinates();
-			// ExcelImporter ex = new ExcelImporter();
-			// return ex.importCoordinates(this.con,path);
-		} else if ("types".equals(page)) {
-			ExcelImporter ex = new ExcelImporter();
-			return ex.importTypes(this.con, path);
-		} else if ("texts".equals(page)) {
-			ExcelImporter ex = new ExcelImporter();
-			return ex.importTypes(this.con, path);
-		} else if ("conversions".equals(page)) {
-			ExcelImporter ex = new ExcelImporter();
-			return ex.importTypes(this.con, path);
+
 		} else {
-			resu.resu = Resurses.getString("UNKNOWN_EXCEL_TYPE");
+			ExcelImporter ex = new ExcelImporter();
+			return ex.importTypes(this.con, path);
+
 		}
 
-		return resu;
 	}
 
 	/**
