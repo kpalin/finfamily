@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
+import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ChildHeaderText;
 import fi.kaila.suku.report.style.ChildListText;
@@ -22,7 +23,6 @@ import fi.kaila.suku.report.style.SubPersonText;
 import fi.kaila.suku.report.style.TableHeaderText;
 import fi.kaila.suku.report.style.TableSubHeaderText;
 import fi.kaila.suku.swing.Suku;
-import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.Roman;
 import fi.kaila.suku.util.SukuException;

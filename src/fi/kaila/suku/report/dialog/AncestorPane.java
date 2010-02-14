@@ -1,4 +1,4 @@
-package fi.kaila.suku.swing.worker;
+package fi.kaila.suku.report.dialog;
 
 import java.awt.GridLayout;
 

@@ -28,9 +28,9 @@ import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ImageText;
-import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;

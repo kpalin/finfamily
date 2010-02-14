@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import fi.kaila.suku.swing.worker.ReportWorkerDialog;
+import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
