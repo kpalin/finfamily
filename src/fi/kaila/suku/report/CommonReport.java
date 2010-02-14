@@ -26,6 +26,7 @@ import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.Roman;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTypesTable;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationNotice;
@@ -58,7 +59,7 @@ public abstract class CommonReport {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	protected ReportWorkerDialog caller;
-
+	protected SukuTypesTable typesTable;
 	protected Vector<ReportUnit> tables = new Vector<ReportUnit>();
 
 	protected ReportInterface repoWriter;
@@ -124,8 +125,10 @@ public abstract class CommonReport {
 		return repoWriter;
 	}
 
-	protected CommonReport(ReportWorkerDialog caller, ReportInterface repoWriter) {
+	protected CommonReport(ReportWorkerDialog caller,
+			SukuTypesTable typesTable, ReportInterface repoWriter) {
 		this.caller = caller;
+		this.typesTable = typesTable;
 		this.repoWriter = repoWriter;
 	}
 
@@ -215,7 +218,7 @@ public abstract class CommonReport {
 
 		bt = new TableHeaderText();
 
-		bt.addText(caller.getTypeText("TABLE"));
+		bt.addText(typesTable.getTypeText("TABLE"));
 		bt.addText(" " + tab.getTableNo());
 		repoWriter.addText(bt);
 
@@ -229,7 +232,7 @@ public abstract class CommonReport {
 		}
 
 		if (fromTable.length() > 0) {
-			bt.addText(caller.getTextValue("FROMTABLE") + " " + fromTable);
+			bt.addText(typesTable.getTextValue("FROMTABLE") + " " + fromTable);
 		}
 
 		repoWriter.addText(bt);
@@ -258,7 +261,8 @@ public abstract class CommonReport {
 			fromTable = ref.getReferences(tab.getTableNo(), false, false, true);
 		}
 		if (fromTable.length() > 0) {
-			bt.addText(caller.getTextValue("ALSO") + " " + fromTable + ". ",
+			bt.addText(
+					typesTable.getTextValue("ALSO") + " " + fromTable + ". ",
 					true, false);
 		}
 
@@ -282,7 +286,7 @@ public abstract class CommonReport {
 					fromTable = ref.getReferences(tab.getTableNo(), true, true,
 							true);
 					if (fromTable.length() > 0) {
-						bt.addText(caller.getTextValue("ALSO") + " "
+						bt.addText(typesTable.getTextValue("ALSO") + " "
 								+ fromTable + ". ", true, false);
 					}
 				}
@@ -320,7 +324,7 @@ public abstract class CommonReport {
 				} else {
 					tmp = "WIFE";
 				}
-				String spouType = caller.getTextValue(tmp);
+				String spouType = typesTable.getTextValue(tmp);
 				RelationNotice rnn[] = null;
 				if (sdata.relations != null) {
 
@@ -370,7 +374,7 @@ public abstract class CommonReport {
 					fromTable = ref.getReferences(tab.getTableNo(), true, true,
 							false);
 					if (fromTable.length() > 0) {
-						bt.addText(caller.getTextValue("ALSO") + " "
+						bt.addText(typesTable.getTextValue("ALSO") + " "
 								+ fromTable + ". ", true, false);
 					}
 				}
@@ -394,7 +398,7 @@ public abstract class CommonReport {
 						fromTable = ref.getReferences(tab.getTableNo(), true,
 								true, true);
 						if (fromTable.length() > 0) {
-							bt.addText(caller.getTextValue("ALSO") + " "
+							bt.addText(typesTable.getTextValue("ALSO") + " "
 									+ fromTable + ". ", true, false);
 						}
 					}
@@ -413,7 +417,7 @@ public abstract class CommonReport {
 			bt = new ChildHeaderText();
 			genText = Roman.int2roman(tab.getGen() + 1);
 			bt.addText(genText + ". ");
-			bt.addText(caller.getTextValue("Chil"));
+			bt.addText(typesTable.getTextValue("Chil"));
 			repoWriter.addText(bt);
 
 		}
@@ -495,7 +499,7 @@ public abstract class CommonReport {
 					bt.addText(pareTxt);
 				}
 				if (adopTag != null) {
-					bt.addText("(" + caller.getTextValue(adopTag) + ") ");
+					bt.addText("(" + typesTable.getTextValue(adopTag) + ") ");
 				}
 				printName(bt, notices, (toTable.isEmpty() ? 2 : 3));
 				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3), tab
@@ -520,8 +524,9 @@ public abstract class CommonReport {
 							fromSubTable = ref.getReferences(tab.getTableNo(),
 									true, true, true);
 							if (fromSubTable.length() > 0) {
-								bt.addText(caller.getTextValue("ALSO") + " "
-										+ fromSubTable + ". ", true, false);
+								bt.addText(typesTable.getTextValue("ALSO")
+										+ " " + fromSubTable + ". ", true,
+										false);
 							}
 						}
 
@@ -532,11 +537,11 @@ public abstract class CommonReport {
 
 				if (!toTable.isEmpty()) {
 					if (hasOwnTable) {
-						bt.addText(caller.getTextValue("TABLE") + " " + toTable
-								+ ". ", true, false);
+						bt.addText(typesTable.getTextValue("TABLE") + " "
+								+ toTable + ". ", true, false);
 					} else {
-						bt.addText(caller.getTextValue("ALSO") + " " + toTable
-								+ ". ", true, false);
+						bt.addText(typesTable.getTextValue("ALSO") + " "
+								+ toTable + ". ", true, false);
 					}
 					repoWriter.addText(bt);
 
@@ -557,7 +562,7 @@ public abstract class CommonReport {
 						} else {
 							tmp = "WIFE";
 						}
-						String spouType = caller.getTextValue(tmp);
+						String spouType = typesTable.getTextValue(tmp);
 
 						int spouNum = 0;
 						if (childMember.getSpouses().length > 1) {
@@ -631,8 +636,8 @@ public abstract class CommonReport {
 										false, false, true);
 							}
 							if (fromTable.length() > 0) {
-								bt.addText(caller.getTextValue("ALSO") + " "
-										+ fromTable + ". ", true, false);
+								bt.addText(typesTable.getTextValue("ALSO")
+										+ " " + fromTable + ". ", true, false);
 							}
 						}
 						if (bt.getCount() > 0) {
@@ -663,7 +668,8 @@ public abstract class CommonReport {
 									fromTable = ref.getReferences(tab
 											.getTableNo(), true, true, true);
 									if (fromTable.length() > 0) {
-										bt.addText(caller.getTextValue("ALSO")
+										bt.addText(typesTable
+												.getTextValue("ALSO")
 												+ " " + fromTable + ". ", true,
 												false);
 									}
@@ -776,7 +782,7 @@ public abstract class CommonReport {
 		}
 
 		if (mtab != null && ftab != null) {
-			bt.addText(caller.getTextValue("TABLES") + " ");
+			bt.addText(typesTable.getTextValue("TABLES") + " ");
 			if (!genText.isEmpty()) {
 				bt.addText(genText + ".");
 			}
@@ -785,7 +791,7 @@ public abstract class CommonReport {
 			bt.addText(", " + toPrintTable(mtab.getTableNo()));
 		} else {
 			if (tableNum > 0) {
-				bt.addText(caller.getTextValue("TABLE") + " ");
+				bt.addText(typesTable.getTextValue("TABLE") + " ");
 				if (!genText.isEmpty()) {
 					bt.addText(genText + ".");
 				}
@@ -807,7 +813,7 @@ public abstract class CommonReport {
 
 		for (int j = 0; j < tab.getChild().size(); j++) {
 			ReportTableMember mom = tab.getChild().get(j);
-			addChildReference(ftab, mtab, mom.getPid(), caller
+			addChildReference(ftab, mtab, mom.getPid(), typesTable
 					.getTextValue("FROMTABLE"), bt);
 		}
 		if (bt.getCount() > 0) {
@@ -932,7 +938,7 @@ public abstract class CommonReport {
 					} else {
 						tmp = "WIFE";
 					}
-					String spouType = caller.getTextValue(tmp);
+					String spouType = typesTable.getTextValue(tmp);
 					RelationNotice rnn[] = null;
 					if (sdata.relations != null) {
 
@@ -989,7 +995,7 @@ public abstract class CommonReport {
 						// fromTable = ref.getReferences(tab.getTableNo(), true,
 						// true, false);
 						if (fromTable.length() > 0) {
-							bt.addText(caller.getTextValue("TABLE") + " "
+							bt.addText(typesTable.getTextValue("TABLE") + " "
 									+ fromTable + ". ", true, false);
 						}
 					}
@@ -1015,8 +1021,8 @@ public abstract class CommonReport {
 							fromTable = ref.getReferences(tableNum, true, true,
 									true);
 							if (fromTable.length() > 0) {
-								bt.addText(caller.getTextValue("ALSO") + " "
-										+ fromTable + ". ", true, false);
+								bt.addText(typesTable.getTextValue("ALSO")
+										+ " " + fromTable + ". ", true, false);
 							}
 						}
 
@@ -1069,9 +1075,9 @@ public abstract class CommonReport {
 				if (ichil == 0) {
 					bt = new ChildHeaderText();
 					if (full.size() > 1) {
-						bt.addText(caller.getTextValue("CHILDREN"));
+						bt.addText(typesTable.getTextValue("CHILDREN"));
 					} else {
-						bt.addText(caller.getTextValue("CHIL"));
+						bt.addText(typesTable.getTextValue("CHIL"));
 					}
 					bt.addText(":");
 					repoWriter.addText(bt);
@@ -1105,12 +1111,13 @@ public abstract class CommonReport {
 					// bt.addText(pareTxt);
 					// }
 					if (adopTag != null) {
-						bt.addText("(" + caller.getTextValue(adopTag) + ") ");
+						bt.addText("(" + typesTable.getTextValue(adopTag)
+								+ ") ");
 					}
 					printName(bt, notices, (toTable.isEmpty() ? 2 : 3));
 
 					addChildReference(ftab, mtab, cdata.persLong.getPid(),
-							caller.getTextValue("TABLE"), bt);
+							typesTable.getTextValue("TABLE"), bt);
 
 					printNotices(bt, notices, getTypeColumn(cdata.persLong
 							.getPid()), tab.getTableNo());
@@ -1135,11 +1142,11 @@ public abstract class CommonReport {
 			if (ftab != null && mtab != null) {
 				while (true) {
 					if (isMale) {
-						parentText = caller.getTextValue("FATHERS");
+						parentText = typesTable.getTextValue("FATHERS");
 						tab = ftab;
 						isMale = false;
 					} else {
-						parentText = caller.getTextValue("MOTHERS");
+						parentText = typesTable.getTextValue("MOTHERS");
 						tab = mtab;
 						isMale = true;
 					}
@@ -1168,10 +1175,10 @@ public abstract class CommonReport {
 							bt.addText(parentText);
 							bt.addText(" ");
 							if (other.size() > 1) {
-								bt.addText(caller.getTextValue("CHILDREN")
+								bt.addText(typesTable.getTextValue("CHILDREN")
 										.toLowerCase());
 							} else {
-								bt.addText(caller.getTextValue("CHIL")
+								bt.addText(typesTable.getTextValue("CHIL")
 										.toLowerCase());
 							}
 							bt.addText(":");
@@ -1209,12 +1216,13 @@ public abstract class CommonReport {
 							// bt.addText(pareTxt);
 							// }
 							if (adopTag != null) {
-								bt.addText("(" + caller.getTextValue(adopTag)
+								bt.addText("("
+										+ typesTable.getTextValue(adopTag)
 										+ ") ");
 							}
 							printName(bt, notices, (toTable.isEmpty() ? 2 : 3));
-							addChildReference(ftab, mtab, tab.getPid(), caller
-									.getTextValue("TABLE"), bt);
+							addChildReference(ftab, mtab, tab.getPid(),
+									typesTable.getTextValue("TABLE"), bt);
 							printNotices(bt, notices, tab.getPid(), tab
 									.getTableNo());
 
@@ -1299,7 +1307,7 @@ public abstract class CommonReport {
 				}
 				pareCount++;
 				long pareTab = ref.asChildren.get(i);
-				String partext = caller
+				String partext = typesTable
 						.getTextValue((pareTab % 2 == 0) ? "Father" : "Mother");
 
 				sb.append(partext + " "
@@ -1387,7 +1395,7 @@ public abstract class CommonReport {
 			sb.append(defType);
 		}
 		if (sb.length() == 0 && rn.getTag() != null) {
-			sb.append(caller.getTextValue(rn.getTag()));
+			sb.append(typesTable.getTextValue(rn.getTag()));
 		}
 
 		if (sb.length() > 0) {
@@ -1480,15 +1488,15 @@ public abstract class CommonReport {
 			if (!tag.equals("NAME")) {
 				if (nn.getPrivacy() == null
 						|| nn.getPrivacy().equals(Resurses.PRIVACY_TEXT)) {
-					if ((caller.isType(tag, colType))) {
+					if ((typesTable.isType(tag, colType))) {
 
-						if (caller.isType(tag, 1)) {
+						if (typesTable.isType(tag, 1)) {
 
 							String noType = nn.getNoticeType();
 							if (noType != null) {
 								bt.addText(noType);
 							} else {
-								bt.addText(caller.getTypeText(tag));
+								bt.addText(typesTable.getTypeText(tag));
 							}
 							addSpace = true;
 							addDot = true;
@@ -1759,12 +1767,12 @@ public abstract class CommonReport {
 		StringBuilder sb = new StringBuilder();
 
 		if (datePrefix != null) {
-			framme = caller.getTextValue(datePrefix);
+			framme = typesTable.getTextValue(datePrefix);
 			if (datePrefix.equals("FROM") && dateTo != null) {
-				mellan = caller.getTextValue("TO");
+				mellan = typesTable.getTextValue("TO");
 			}
 			if (datePrefix.equals("BET") && dateTo != null) {
-				mellan = caller.getTextValue("AND");
+				mellan = typesTable.getTextValue("AND");
 			}
 		}
 		if (!framme.isEmpty()) {
@@ -1873,12 +1881,12 @@ public abstract class CommonReport {
 			if (nn.getTag().equals("NAME")) {
 				if (nn.getPrivacy() == null
 						|| nn.getPrivacy().equals(Resurses.PRIVACY_TEXT)) {
-					if ((caller.isType("NAME", colType) || nameCount == 0)) {
+					if ((typesTable.isType("NAME", colType) || nameCount == 0)) {
 
 						if (nameCount > 0 && nn.getNoticeType() == null) {
 							bt.addText(", ");
-							if (caller.isType("NAME", 1)) {
-								String[] parts = caller.getTypeText("NAME")
+							if (typesTable.isType("NAME", 1)) {
+								String[] parts = typesTable.getTypeText("NAME")
 										.split(";");
 								String part = null;
 								if (parts != null && parts.length > 1) {
@@ -2059,14 +2067,14 @@ public abstract class CommonReport {
 				}
 			}
 			String tag = notice.getTag();
-			String rule = caller.getTypeRule(tag);
+			String rule = typesTable.getTypeRule(tag);
 			if (rule != null) {
 				String key = rule + "|" + place;
 				String tmp = bendMap.get(key.toLowerCase());
 				if (tmp != null) {
 					place = tmp;
 				} else {
-					tmp = caller.getTextValue("CNV_" + rule);
+					tmp = typesTable.getTextValue("CNV_" + rule);
 					if (tmp != null) {
 						place = tmp + " " + place;
 					}

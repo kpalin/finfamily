@@ -540,7 +540,7 @@ public class SukuServerImpl implements SukuServer {
 				fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
 			}
 
-		} else if (cmd.equals("saverepo")) {
+		} else if (cmd.equals("savesettings")) {
 			fam = saveReportSettings(map);
 
 		} else if (cmd.equals("update")) {
@@ -1197,14 +1197,15 @@ public class SukuServerImpl implements SukuServer {
 		SukuData resp = new SukuData();
 
 		try {
-			String sql = "delete from sukusettings where  settingtype = '"
-					+ type + "' " + "and settingname = '" + name + "' ";
+			String sql = "delete from sukusettings where  settingtype = ? and settingname = ? ";
 
 			String insSql = "insert into sukusettings "
 					+ "(settingtype,settingindex,settingname,settingvalue) values (?,?,?,?)";
 			if (name != null) {
 
 				PreparedStatement pst = con.prepareStatement(sql);
+				pst.setString(1, type);
+				pst.setString(2, name);
 				int lukuri = pst.executeUpdate();
 				pst.close();
 
@@ -1343,14 +1344,20 @@ public class SukuServerImpl implements SukuServer {
 				res.generalArray = v.toArray(new String[0]);
 
 			} else if (name == null && index != null) {
+				int settingIndex = 0;
+				try {
+					settingIndex = Integer.parseInt(index);
+				} catch (NumberFormatException ne) {
 
+				}
 				String sql = "select settingindex,settingvalue "
-						+ "from sukusettings where settingtype = 'report' and settingname = 'name' "
+						+ "from sukusettings where settingtype = ? and settingname = 'name' "
 						+ "order by settingindex ";
 				String[] vv = new String[12];
 
-				Statement stm = con.createStatement();
-				ResultSet rs = stm.executeQuery(sql);
+				PreparedStatement pst = con.prepareStatement(sql);
+				pst.setString(1, type);
+				ResultSet rs = pst.executeQuery();
 				while (rs.next()) {
 					int idx = rs.getInt(1);
 					String nam = rs.getString(2);
@@ -1361,15 +1368,17 @@ public class SukuServerImpl implements SukuServer {
 
 				}
 				rs.close();
+				pst.close();
 				res.generalArray = vv;
 				String vx[] = new String[2];
 				res.vvTypes = new Vector<String[]>();
 
 				sql = "select settingname,settingvalue from SukuSettings "
-						+ "where settingtype = 'report' and settingindex = "
-						+ index;
-
-				rs = stm.executeQuery(sql);
+						+ "where settingtype = ? and settingindex = ? ";
+				pst = con.prepareStatement(sql);
+				pst.setString(1, type);
+				pst.setInt(2, settingIndex);
+				rs = pst.executeQuery();
 				while (rs.next()) {
 					vx = new String[2];
 					vx[0] = rs.getString(1);
@@ -1377,7 +1386,7 @@ public class SukuServerImpl implements SukuServer {
 					res.vvTypes.add(vx);
 				}
 				rs.close();
-				stm.close();
+				pst.close();
 
 			} else {
 
@@ -1488,6 +1497,10 @@ public class SukuServerImpl implements SukuServer {
 		if (tmp == null) {
 			throw new SukuException("Setting index missing");
 		}
+		String type = map.get("type");
+		if (type == null) {
+			throw new SukuException("Setting type missing");
+		}
 		try {
 			index = Integer.parseInt(tmp);
 		} catch (NumberFormatException ne) {
@@ -1499,10 +1512,11 @@ public class SukuServerImpl implements SukuServer {
 		int luku = -1;
 		PreparedStatement pstm;
 		ResultSet rs;
-		sql = "select count(*) from SukuSettings where settingIndex = ? ";
+		sql = "select count(*) from SukuSettings where settingIndex = ? and settingtype = ?";
 		try {
 			pstm = con.prepareStatement(sql);
 			pstm.setInt(1, index);
+			pstm.setString(2, type);
 			rs = pstm.executeQuery();
 
 			if (rs.next()) {
@@ -1527,16 +1541,17 @@ public class SukuServerImpl implements SukuServer {
 			// pstm.executeUpdate();
 			//				
 			// } else if (luku > 0) {
-			sql = "delete from SukuSettings where SettingIndex = ?";
+			sql = "delete from SukuSettings where SettingIndex = ? and settingtype = ?";
 			pstm = con.prepareStatement(sql);
 			pstm.setInt(1, index);
+			pstm.setString(2, type);
 			pstm.executeUpdate();
 			pstm.close();
 
 			// }
 
 			sql = "insert into SukuSettings (SettingType,SettingIndex,SettingName,SettingValue) "
-					+ "values ('report'," + index + ",?,?)";
+					+ "values (?,?,?,?)";
 
 			pstm = con.prepareStatement(sql);
 
@@ -1547,9 +1562,12 @@ public class SukuServerImpl implements SukuServer {
 				Map.Entry<String, String> entry = (Map.Entry<String, String>) ee
 						.next();
 				if (!entry.getKey().equals("index")
-						&& !entry.getKey().equals("cmd")) {
-					pstm.setString(1, entry.getKey().toString());
-					pstm.setString(2, entry.getValue().toString());
+						&& !entry.getKey().equals("cmd")
+						&& !entry.getKey().equals("type")) {
+					pstm.setString(1, type);
+					pstm.setInt(2, index);
+					pstm.setString(3, entry.getKey().toString());
+					pstm.setString(4, entry.getValue().toString());
 					pstm.executeUpdate();
 				}
 

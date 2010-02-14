@@ -22,6 +22,7 @@ import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesModel;
+import fi.kaila.suku.util.SukuTypesTable;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -51,11 +52,12 @@ public class DescendantLista extends CommonReport {
 	 * Construcor for Descendant report
 	 * 
 	 * @param caller
+	 * @param typesTable
 	 * @param repoWriter
 	 */
-	public DescendantLista(ReportWorkerDialog caller, ReportInterface repoWriter) {
-		super(caller, repoWriter);
-
+	public DescendantLista(ReportWorkerDialog caller,
+			SukuTypesTable typesTable, ReportInterface repoWriter) {
+		super(caller, typesTable, repoWriter);
 	}
 
 	/**
@@ -84,10 +86,10 @@ public class DescendantLista extends CommonReport {
 		Vector<String> ttag = new Vector<String>();
 
 		for (int i = 0; i < alltags; i++) {
-			String tag = caller.getTypesTag(i);
-			if (caller.isType(tag, 2)) {
+			String tag = typesTable.getTypesTag(i);
+			if (typesTable.isType(tag, 2)) {
 				ttag.add(tag);
-				tname.add(caller.getTagName(tag));
+				tname.add(typesTable.getTagName(tag));
 			}
 		}
 

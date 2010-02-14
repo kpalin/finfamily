@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import fi.kaila.suku.swing.worker.ReportWorkerDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.SukuTypesTable;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.ReportUnit;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -30,10 +31,12 @@ public class AncestorReport extends CommonReport {
 	 * Constructor for Ancestor report
 	 * 
 	 * @param caller
+	 * @param typesTable
 	 * @param repoWriter
 	 */
-	public AncestorReport(ReportWorkerDialog caller, ReportInterface repoWriter) {
-		super(caller, repoWriter);
+	public AncestorReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
+			ReportInterface repoWriter) {
+		super(caller, typesTable, repoWriter);
 
 	}
 

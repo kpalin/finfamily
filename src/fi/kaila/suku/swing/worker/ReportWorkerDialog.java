@@ -6,7 +6,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -37,11 +36,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -67,7 +64,7 @@ import fi.kaila.suku.swing.ISuku;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
-import fi.kaila.suku.util.SukuTypesModel;
+import fi.kaila.suku.util.SukuTypesTable;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
@@ -208,8 +205,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private JCheckBox commonIndexNames = null;
 	private JCheckBox commonIndexPlaces = null;
 	private JCheckBox commonIndexYears = null;
-	private JTable typesTable = null;
-	private SukuTypesModel typesModel = null;
+	private SukuTypesTable typesTable = null;
+
 	String[] viewnames = null;
 	int[] viewids = null;
 
@@ -331,112 +328,112 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	// return typesModel.getTypesTags().length;
 	// }
 
-	/**
-	 * Gets the tag at the indicated index position
-	 * 
-	 * @param idx
-	 * 
-	 * @return the indexed tag
-	 */
-	public String getTypesTag(int idx) {
-		return typesModel.getTypesTags(idx);
-	}
-
-	/**
-	 * Get report value for tag
-	 * 
-	 * @param tag
-	 * @return name of type
-	 */
-	public String getTypeText(String tag) {
-		Integer iidx = typesModel.getTypeText(tag);
-		if (iidx == null)
-			return tag;
-		int idx = iidx.intValue();
-		if (idx >= 0) {
-			String txt = (String) typesModel.getTypesData(idx, 5);
-			if (txt != null) {
-				return txt;
-			}
-			// if (idx < typesModel.getTypesData().length) {
-			// return (String) typesModel.getTypesData()[idx][5];
-			// }
-			return (String) typesModel.getTypesValue(idx);
-		}
-		return null;
-	}
-
-	/**
-	 * @param type
-	 * @return rule for requested type
-	 */
-	public String getTypeRule(String type) {
-		String rule = typesModel.getTypeRule(type);
-		return rule;
-
-	}
-
-	/**
-	 * @param tag
-	 * @return name of tag e.g. BIRT tag returns Birth in English
-	 */
-	public String getTagName(String tag) {
-		Integer iidx = typesModel.getTypeText(tag);
-		if (iidx == null)
-			return tag;
-		int idx = iidx.intValue();
-		if (idx >= 0) {
-			String txt = typesModel.getTypesName(idx);
-			if (txt != null) {
-				return txt;
-			}
-			// if (idx < typesModel.getTypesData().length) {
-			// return (String) typesModel.getTypesData()[idx][0];
-			// }
-			return (String) typesModel.getTypesValues()[idx];
-		}
-		return null;
-	}
-
-	/**
-	 * Get report value for tag
-	 * 
-	 * @param tag
-	 * @return value of tag
-	 */
-	public String getTextValue(String tag) {
-		String value = typesModel.getTextText(tag);
-		if (value == null)
-			return tag;
-		return value;
-	}
-
-	/**
-	 * get state of setting for tag
-	 * 
-	 * @param tag
-	 * @param col
-	 *            column in table. 1 = name, 2 = main, 3 = child, 4 = sub
-	 * @return true if settings is on
-	 */
-	public boolean isType(String tag, int col) {
-		if (col < 1 || col > 4)
-			return false;
-		Integer idxInt = typesModel.getTypeText(tag);
-		if (idxInt == null)
-			return true;
-		int idx = idxInt.intValue();
-		if (idx >= 0) {
-
-			Boolean value = (Boolean) typesModel.getTypesData(idx, col);
-			if (value != null) {
-				return value;
-			}
-
-		}
-		return false;
-
-	}
+	// /**
+	// * Gets the tag at the indicated index position
+	// *
+	// * @param idx
+	// *
+	// * @return the indexed tag
+	// */
+	// public String getTypesTag(int idx) {
+	// return typesModel.getTypesTags(idx);
+	// }
+	//
+	// /**
+	// * Get report value for tag
+	// *
+	// * @param tag
+	// * @return name of type
+	// */
+	// public String getTypeText(String tag) {
+	// Integer iidx = typesModel.getTypeText(tag);
+	// if (iidx == null)
+	// return tag;
+	// int idx = iidx.intValue();
+	// if (idx >= 0) {
+	// String txt = (String) typesModel.getTypesData(idx, 5);
+	// if (txt != null) {
+	// return txt;
+	// }
+	// // if (idx < typesModel.getTypesData().length) {
+	// // return (String) typesModel.getTypesData()[idx][5];
+	// // }
+	// return (String) typesModel.getTypesValue(idx);
+	// }
+	// return null;
+	// }
+	//
+	// /**
+	// * @param type
+	// * @return rule for requested type
+	// */
+	// public String getTypeRule(String type) {
+	// String rule = typesModel.getTypeRule(type);
+	// return rule;
+	//
+	// }
+	//
+	// /**
+	// * @param tag
+	// * @return name of tag e.g. BIRT tag returns Birth in English
+	// */
+	// public String getTagName(String tag) {
+	// Integer iidx = typesModel.getTypeText(tag);
+	// if (iidx == null)
+	// return tag;
+	// int idx = iidx.intValue();
+	// if (idx >= 0) {
+	// String txt = typesModel.getTypesName(idx);
+	// if (txt != null) {
+	// return txt;
+	// }
+	// // if (idx < typesModel.getTypesData().length) {
+	// // return (String) typesModel.getTypesData()[idx][0];
+	// // }
+	// return (String) typesModel.getTypesValues()[idx];
+	// }
+	// return null;
+	// }
+	//
+	// /**
+	// * Get report value for tag
+	// *
+	// * @param tag
+	// * @return value of tag
+	// */
+	// public String getTextValue(String tag) {
+	// String value = typesModel.getTextText(tag);
+	// if (value == null)
+	// return tag;
+	// return value;
+	// }
+	//
+	// /**
+	// * get state of setting for tag
+	// *
+	// * @param tag
+	// * @param col
+	// * column in table. 1 = name, 2 = main, 3 = child, 4 = sub
+	// * @return true if settings is on
+	// */
+	// public boolean isType(String tag, int col) {
+	// if (col < 1 || col > 4)
+	// return false;
+	// Integer idxInt = typesModel.getTypeText(tag);
+	// if (idxInt == null)
+	// return true;
+	// int idx = idxInt.intValue();
+	// if (idx >= 0) {
+	//
+	// Boolean value = (Boolean) typesModel.getTypesData(idx, col);
+	// if (value != null) {
+	// return value;
+	// }
+	//
+	// }
+	// return false;
+	//
+	// }
 
 	/**
 	 * @return true if bold names box is set
@@ -523,37 +520,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		lb = new JLabel(this.pers.getAlfaName(true));
 		add(lb);
 		lb.setBounds(x1, y1 - 20, 300, 20);
-		typesModel = Utils.typeInstance();
-		typesTable = new JTable(typesModel) {
 
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			// Implement table header tool tips.
-			@Override
-			protected JTableHeader createDefaultTableHeader() {
-				return new JTableHeader(this.columnModel) {
-
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public String getToolTipText(MouseEvent e) {
-
-						java.awt.Point p = e.getPoint();
-						int index = this.columnModel.getColumnIndexAtX(p.x);
-						String tip = Resurses
-								.getString("TYPES_COLUMN_" + index);
-						return tip;
-					}
-				};
-			}
-
-		};
-		typesTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
-		typesTable.setFillsViewportHeight(true);
-
+		typesTable = new SukuTypesTable(new Dimension(500, 70));
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(typesTable);
 		scrollPane.setBounds(xtype, y1, tabw, tabh);
@@ -811,6 +779,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		listad.setActionCommand("REPORT.LISTA.PERSONCARDS");
 		listaGroup.add(listad);
 
+		listad = new JRadioButton(Resurses.getString("REPORT.LISTA.SURETIES"));
+		listaPanel.add(listad);
+		listad.setBounds(10, 68, 200, 20);
+		listad.setActionCommand("REPORT.LISTA.SURETIES");
+		listaGroup.add(listad);
+
 		try {
 			SukuData vlist = kontroller.getSukuData("cmd=viewlist");
 			viewnames = new String[vlist.generalArray.length + 1];
@@ -1046,60 +1020,61 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					}
 
 					commonReportFormatList.setSelectedIndex(formIdx);
-				} else if (vx[0].startsWith("t:")) {
-
-					int typeCount = typesTable.getRowCount();
-					for (int row = 0; row < typeCount; row++) {
-
-						String tag = typesModel.getTypesTags(row);
-
-						if (vx[0].substring(2).equals(tag)
-								&& vx[1].length() > 3) {
-							boolean b = false;
-							if (vx[1].substring(0, 1).equals("X")) {
-								b = true;
-							}
-							typesTable.setValueAt(b, row, 1);
-							b = false;
-							if (vx[1].substring(1, 2).equals("X")) {
-								b = true;
-							}
-							typesTable.setValueAt(b, row, 2);
-							b = false;
-							if (vx[1].substring(2, 3).equals("X")) {
-								b = true;
-							}
-							typesTable.setValueAt(b, row, 3);
-
-							b = false;
-							if (vx[1].substring(3, 4).equals("X")) {
-								b = true;
-							}
-							typesTable.setValueAt(b, row, 4);
-							// String newText = "";
-							// if (vx[1].length() > 4) {
-							// newText = vx[1].substring(4);
-							// }
-							// typesTable.setValueAt(newText, row, 5);
-							break;
-						}
-						// StringBuilder sb = new StringBuilder();
-						// sb.append("t:");
-						// sb.append(typesTags[row]);
-						// sb.append("=");
-						// sb.append(((Boolean)typesTable.getValueAt(row,
-						// 1))?"X":"O");
-						// sb.append(((Boolean)typesTable.getValueAt(row,
-						// 2))?"X":"O");
-						// sb.append(((Boolean)typesTable.getValueAt(row,
-						// 3))?"X":"O");
-						// v.add(sb.toString());
-						//						
-					}
-
 				}
 
+				// else if (vx[0].startsWith("t:")) {
+				//
+				// int typeCount = typesTable.getRowCount();
+				// for (int row = 0; row < typeCount; row++) {
+				//
+				// String tag = typesTable.getTypesTag(row);
+				//
+				// if (vx[0].substring(2).equals(tag)
+				// && vx[1].length() > 3) {
+				// boolean b = false;
+				// if (vx[1].substring(0, 1).equals("X")) {
+				// b = true;
+				// }
+				// typesTable.setValueAt(b, row, 1);
+				// b = false;
+				// if (vx[1].substring(1, 2).equals("X")) {
+				// b = true;
+				// }
+				// typesTable.setValueAt(b, row, 2);
+				// b = false;
+				// if (vx[1].substring(2, 3).equals("X")) {
+				// b = true;
+				// }
+				// typesTable.setValueAt(b, row, 3);
+				//
+				// b = false;
+				// if (vx[1].substring(3, 4).equals("X")) {
+				// b = true;
+				// }
+				// typesTable.setValueAt(b, row, 4);
+				// // String newText = "";
+				// // if (vx[1].length() > 4) {
+				// // newText = vx[1].substring(4);
+				// // }
+				// // typesTable.setValueAt(newText, row, 5);
+				// break;
+				// }
+				// StringBuilder sb = new StringBuilder();
+				// sb.append("t:");
+				// sb.append(typesTags[row]);
+				// sb.append("=");
+				// sb.append(((Boolean)typesTable.getValueAt(row,
+				// 1))?"X":"O");
+				// sb.append(((Boolean)typesTable.getValueAt(row,
+				// 2))?"X":"O");
+				// sb.append(((Boolean)typesTable.getValueAt(row,
+				// 3))?"X":"O");
+				// v.add(sb.toString());
+				//						
+				// }
+
 			}
+
 			commonNumberImages.setSelected(numberImages);
 			commonBendNames.setSelected(bendNames);
 			commonWithImages.setSelected(withImages);
@@ -1112,6 +1087,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			commonIndexYears.setSelected(indexYears);
 			descendantPanel.setAdopted(descendantAdopted);
 			ancestorPanel.setShowFamily(ancestorFamily);
+
+			typesTable.loadReportSettings("reporttypes", settingsIndex);
 
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, "error fetching setting "
@@ -1212,7 +1189,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		Vector<String> v = new Vector<String>();
 
-		v.add("cmd=saverepo");
+		v.add("cmd=savesettings");
+		v.add("type=report");
 		v.add("index=" + settingsIndex);
 		v.add("name=" + (String) settingsName.getSelectedItem());
 		if (commonWithImages.getSelectedObjects() != null) {
@@ -1304,29 +1282,32 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		int vidx = viewlist.getSelectedIndex();
 		int viid = viewids[vidx];
 		v.add("viewId=" + viid);
-		int typeCount = typesTable.getRowCount();
 
-		for (int row = 0; row < typeCount; row++) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("t:");
-			sb.append(typesModel.getTypesTags(row));
-			sb.append("=");
-			sb.append(((Boolean) typesTable.getValueAt(row, 1)) ? "X" : "O");
-			sb.append(((Boolean) typesTable.getValueAt(row, 2)) ? "X" : "O");
-			sb.append(((Boolean) typesTable.getValueAt(row, 3)) ? "X" : "O");
-			sb.append(((Boolean) typesTable.getValueAt(row, 4)) ? "X" : "O");
-			sb.append(typesTable.getValueAt(row, 5));
-			v.add(sb.toString());
-
-		}
+		// int typeCount = typesTable.getRowCount();
+		//
+		// for (int row = 0; row < typeCount; row++) {
+		// StringBuilder sb = new StringBuilder();
+		// sb.append("t:");
+		// sb.append(typesTable.getTypesTag(row));
+		// sb.append("=");
+		// sb.append(((Boolean) typesTable.getValueAt(row, 1)) ? "X" : "O");
+		// sb.append(((Boolean) typesTable.getValueAt(row, 2)) ? "X" : "O");
+		// sb.append(((Boolean) typesTable.getValueAt(row, 3)) ? "X" : "O");
+		// sb.append(((Boolean) typesTable.getValueAt(row, 4)) ? "X" : "O");
+		// sb.append(typesTable.getValueAt(row, 5));
+		// v.add(sb.toString());
+		//
+		// }
 
 		try {
 			SukuData reposet = Suku.kontroller.getSukuData(v
 					.toArray(new String[0]));
-			if (reposet.resu != null && reposet.resu != Resurses.OK) {
+			if (reposet.resu != null) {
 				JOptionPane.showMessageDialog(this, reposet.resu, Resurses
 						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+			typesTable.saveReportSettings("reporttypes", settingsIndex);
 
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
@@ -1380,9 +1361,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 				if (reportTypePane.getSelectedIndex() == 0) {
 
-					dr = new DescendantReport(self, repo);
+					dr = new DescendantReport(self, typesTable, repo);
 				} else {
-					dr = new AncestorReport(self, repo);
+					dr = new AncestorReport(self, typesTable, repo);
 				}
 				dr.executeReport();
 
@@ -1434,7 +1415,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 				setProgress(0);
 
-				dlista = new DescendantLista(self, null);
+				dlista = new DescendantLista(self, typesTable, null);
 
 				dlista.executeReport();
 
@@ -1560,8 +1541,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(0, rivi, "" + (personNo++));
 							sheet.addCell(label);
 
-							label = new Label(1, rivi,
-									getTextValue(r.getTag()), arial0bold);
+							label = new Label(1, rivi, typesTable
+									.getTextValue(r.getTag()), arial0bold);
 							sheet.addCell(label);
 							label = new Label(2, rivi, Resurses
 									.getString("CARD_PERSON_DATA"), arial0bold);
@@ -1587,8 +1568,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(0, rivi, "" + (personNo++));
 							sheet.addCell(label);
 
-							label = new Label(1, rivi,
-									getTextValue(r.getTag()), arial0bold);
+							label = new Label(1, rivi, typesTable
+									.getTextValue(r.getTag()), arial0bold);
 							sheet.addCell(label);
 							label = new Label(2, rivi, Resurses
 									.getString("CARD_PERSON_DATA"), arial0bold);
@@ -1613,8 +1594,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(0, rivi, "" + (personNo++));
 							sheet.addCell(label);
 
-							label = new Label(1, rivi,
-									getTextValue(r.getTag()), arial0bold);
+							label = new Label(1, rivi, typesTable
+									.getTextValue(r.getTag()), arial0bold);
 							sheet.addCell(label);
 							label = new Label(2, rivi, Resurses
 									.getString("CARD_PERSON_DATA"), arial0bold);
@@ -1655,7 +1636,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			if (rnn != null) {
 				for (int l = 0; l < rnn.length; l++) {
 					RelationNotice rn = rnn[l];
-					label = new Label(1, ++rivi, getTextValue(rn.getTag()));
+					label = new Label(1, ++rivi, typesTable.getTextValue(rn
+							.getTag()));
 					sheet.addCell(label);
 					if (rn.getFromDate() != null) {
 						label = new Label(2, rivi, Utils.textDate(rn
@@ -1699,11 +1681,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				if (tag.equals("OCCU"))
 					occuFound = true;
 
-				boolean showTag = isType(tag, 2);
+				boolean showTag = typesTable.isType(tag, 2);
 
 				if (showTag) {
 					rivi++;
-					String tagv = getTagName(tag);
+					String tagv = typesTable.getTagName(tag);
 					label = new Label(1, rivi, tagv);
 					sheet.addCell(label);
 
@@ -1756,32 +1738,32 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 			}
 			if (!nameFound) {
-				String tagv = getTagName("NAME");
+				String tagv = typesTable.getTagName("NAME");
 				label = new Label(1, ++rivi, tagv);
 				sheet.addCell(label);
 
 			}
 
 			if (!birtFound) {
-				boolean showTag = isType("BIRT", 2);
+				boolean showTag = typesTable.isType("BIRT", 2);
 				if (showTag) {
-					String tagv = getTagName("BIRT");
+					String tagv = typesTable.getTagName("BIRT");
 					label = new Label(1, ++rivi, tagv);
 					sheet.addCell(label);
 				}
 			}
 			if (!deatFound) {
-				boolean showTag = isType("DEAT", 2);
+				boolean showTag = typesTable.isType("DEAT", 2);
 				if (showTag) {
-					String tagv = getTagName("DEAT");
+					String tagv = typesTable.getTagName("DEAT");
 					label = new Label(1, ++rivi, tagv);
 					sheet.addCell(label);
 				}
 			}
 			if (!occuFound) {
-				boolean showTag = isType("OCCU", 2);
+				boolean showTag = typesTable.isType("OCCU", 2);
 				if (showTag) {
-					String tagv = getTagName("OCCU");
+					String tagv = typesTable.getTagName("OCCU");
 					label = new Label(1, ++rivi, tagv);
 					sheet.addCell(label);
 				}
@@ -1852,173 +1834,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
-	// class MyTypesModel extends AbstractTableModel {
-	// /**
-	// * @throws SukuException
-	// *
-	// */
-	//
-	// MyTypesModel() {
-	//
-	// try {
-	// SukuData reposet = Suku.kontroller.getSukuData("cmd=get",
-	// "type=types", "lang=" + Resurses.getLanguage());
-	//
-	// typesValues = new String[reposet.vvTypes.size()];
-	// for (int i = 0; i < reposet.vvTypes.size(); i++) {
-	// String rrr[] = reposet.vvTypes.get(i);
-	// String tag = rrr[0];
-	// typeTexts.put(tag, i);
-	//
-	// typesValues[i] = rrr[1];
-	// String rule = rrr[4];
-	// if (rule != null) {
-	// typeRule.put(tag, rule);
-	// }
-	//
-	// }
-	//
-	// typesData = new Object[reposet.vvTypes.size()][6];
-	// typesTags = new String[reposet.vvTypes.size()];
-	//
-	// for (int i = 0; i < typesTags.length; i++) {
-	// String tag = reposet.vvTypes.get(i)[0];
-	// typesTags[i] = tag;
-	// typesData[i][0] = reposet.vvTypes.get(i)[1];
-	// typesData[i][1] = Boolean.valueOf(false);
-	// if ("|BIRT|DEAT|CHR|BURI|NAME|".indexOf(tag) > 0) {
-	// typesData[i][1] = Boolean.valueOf(true);
-	// }
-	// typesData[i][2] = Boolean.valueOf(true);
-	// typesData[i][3] = Boolean.valueOf(false);
-	// typesData[i][4] = Boolean.valueOf(false);
-	// if ("|BIRT|DEAT|OCCU|".indexOf(tag) > 0) {
-	// typesData[i][3] = Boolean.valueOf(true);
-	// typesData[i][4] = Boolean.valueOf(true);
-	// }
-	// typesData[i][5] = reposet.vvTypes.get(i)[2];
-	//
-	// if (typesData[i][5] == null) {
-	// typesData[i][5] = reposet.vvTypes.get(i)[1];
-	// }
-	//
-	// }
-	//
-	// for (int i = 0; i < reposet.vvTexts.size(); i++) {
-	// String tag = reposet.vvTexts.get(i)[0];
-	// String value = reposet.vvTexts.get(i)[1];
-	// if (value == null)
-	// value = "";
-	// textTexts.put(tag, value);
-	// }
-	//
-	// } catch (SukuException e) {
-	// JOptionPane.showMessageDialog(null, e.getMessage(), Resurses
-	// .getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-	//
-	// e.printStackTrace();
-	// }
-	//
-	// }
-	//
-	// private static final long serialVersionUID = 1L;
-	//
-	// private String[] columnNames = { "Tietojakso", "Nimi", "Päähenkilö",
-	// "Lapsi", "Muu", "Teksti" };
-	//
-	// // private Object[][] typesData = {
-	// // {"Syntynyt", new Boolean(true),new Boolean(true), new Boolean(true)},
-	// // {"Kuollut", new Boolean(true),new Boolean(true), new Boolean(true)},
-	// // {"Nimi", new Boolean(false),new Boolean(true), new Boolean(true)},
-	// // {"Kastettu", new Boolean(true),new Boolean(true), new
-	// // Boolean(false)},
-	// // {"Haudattu", new Boolean(true),new Boolean(true), new
-	// // Boolean(false)},
-	// // {"Teksti", new Boolean(false),new Boolean(true), new Boolean(false)},
-	// // {"Ammatti", new Boolean(false),new Boolean(true), new Boolean(true)},
-	// // {"Elää", new Boolean(false),new Boolean(true), new Boolean(true)},
-	// // {"Tullut", new Boolean(false),new Boolean(true), new Boolean(true)},
-	// // {"Muuttanut pois", new Boolean(false),new Boolean(true), new
-	// // Boolean(true)},
-	// // {"Oppiarvo", new Boolean(false),new Boolean(true), new
-	// // Boolean(true)},
-	// // {"Kuva", new Boolean(false),new Boolean(true), new Boolean(true)},
-	// // {"Osoite", new Boolean(false),new Boolean(true), new Boolean(true)},
-	// // };
-	//
-	// public int getColumnCount() {
-	// return columnNames.length;
-	// }
-	//
-	// public int getRowCount() {
-	// return typesData.length;
-	// }
-	//
-	// public String getColumnName(int col) {
-	// return columnNames[col];
-	// }
-	//
-	// public Object getValueAt(int row, int col) {
-	// return typesData[row][col];
-	// }
-	//
-	// /*
-	// * JTable uses this method to determine the default renderer/ editor for
-	// * each cell. If we didn't implement this method, then the last column
-	// * would contain text ("true"/"false"), rather than a check box.
-	// */
-	// public Class<?> getColumnClass(int c) {
-	// return getValueAt(0, c).getClass();
-	// }
-	//
-	// /*
-	// * Don't need to implement this method unless your table's editable.
-	// */
-	// public boolean isCellEditable(int row, int col) {
-	// // Note that the data/cell address is constant,
-	// // no matter where the cell appears onscreen.
-	// if (col < 1) {
-	// return false;
-	// } else {
-	// return true;
-	// }
-	// }
-	//
-	// /*
-	// * Don't need to implement this method unless your table's data can
-	// * change.
-	// */
-	// public void setValueAt(Object value, int row, int col) {
-	// if (DEBUG) {
-	// System.out.println("Setting value at " + row + "," + col
-	// + " to " + value + " (an instance of "
-	// + value.getClass() + ")");
-	// }
-	//
-	// typesData[row][col] = value;
-	// fireTableCellUpdated(row, col);
-	//
-	// if (DEBUG) {
-	// System.out.println("New value of data:");
-	// printDebugData();
-	// }
-	// }
-
-	// private void printDebugData() {
-	// int numRows = getRowCount();
-	// int numCols = getColumnCount();
-	//
-	// for (int i = 0; i < numRows; i++) {
-	// System.out.print("    row " + i + ":");
-	// for (int j = 0; j < numCols; j++) {
-	// System.out.print("  " + typesData[i][j]);
-	// }
-	// System.out.println();
-	// }
-	// System.out.println("--------------------------");
-	// }
-	// }
-
 	private void setRadioButton(ButtonGroup g, String name) {
 		Enumeration<AbstractButton> e = g.getElements();
 		while (e.hasMoreElements()) {
@@ -2029,16 +1844,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			}
 		}
 	}
-
-	// protected JComponent makeTextPanel(String text) {
-	// JPanel panel = new JPanel(false);
-	// // JLabel filler = new JLabel(text);
-	// //filler.setHorizontalAlignment(JLabel.CENTER);
-	// panel.setLayout(null);//new GridLayout(1, 1));
-	// // panel.add(filler);
-	// // filler.setBounds(10,10,100,20);
-	// return panel;
-	// }
 
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	protected ImageIcon createImageIcon(String path) {
