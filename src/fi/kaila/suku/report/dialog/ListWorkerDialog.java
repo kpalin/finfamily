@@ -12,7 +12,6 @@ import java.beans.PropertyChangeListener;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -52,12 +51,8 @@ import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
-import fi.kaila.suku.report.AncestorReport;
 import fi.kaila.suku.report.CommonReport;
-import fi.kaila.suku.report.DescendantLista;
-import fi.kaila.suku.report.DescendantReport;
 import fi.kaila.suku.report.JavaReport;
-import fi.kaila.suku.report.PersonInTables;
 import fi.kaila.suku.report.ReportInterface;
 import fi.kaila.suku.report.XmlReport;
 import fi.kaila.suku.swing.ISuku;
@@ -80,8 +75,8 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  * @author Kalle
  * 
  */
-public class ReportWorkerDialog extends JDialog implements
-		WorkerDialogInterface, ActionListener, PropertyChangeListener {
+public class ListWorkerDialog extends JDialog implements WorkerDialogInterface,
+		ActionListener, PropertyChangeListener {
 
 	// dateformats
 	private static final String SET_FI = "FI";
@@ -166,17 +161,17 @@ public class ReportWorkerDialog extends JDialog implements
 	private JButton cancel;
 	private JButton start;
 	private JButton lista;
-	private static Logger logger = Logger.getLogger(ReportWorkerDialog.class
+	private static Logger logger = Logger.getLogger(ListWorkerDialog.class
 			.getName());
 
 	private SukuKontroller kontroller = null;
 
 	private JProgressBar progressBar;
 	private Task task;
-	private TaskLista taskLista;
+
 	private TaskCards taskCards;
-	private TaskIndex taskIndex;
-	private ReportWorkerDialog self;
+
+	private ListWorkerDialog self;
 
 	JTabbedPane reportTypePane = null;
 
@@ -184,7 +179,7 @@ public class ReportWorkerDialog extends JDialog implements
 	 * @return this class instance. Used to show the progressbar in local
 	 *         kontrolelr only
 	 */
-	public static ReportWorkerDialog getRunner() {
+	public static ListWorkerDialog getRunner() {
 		return runner;
 	}
 
@@ -220,12 +215,11 @@ public class ReportWorkerDialog extends JDialog implements
 	// private String[] settingList=null;
 
 	private DefaultComboBoxModel settingModel = null;
-	private DescendantPane descendantPanel;
-	private AncestorPane ancestorPanel;
+
 	private JPanel listaPanel;
 	// private ReportFrame repo;
 	private PersonShortData pers = null;
-	private static ReportWorkerDialog runner = null;
+	private static ListWorkerDialog runner = null;
 
 	private static final int x1 = 10;
 	private static final int x2 = 250;
@@ -248,7 +242,7 @@ public class ReportWorkerDialog extends JDialog implements
 	 * @param kontroller
 	 * @param pers
 	 */
-	public ReportWorkerDialog(Suku owner, SukuKontroller kontroller,
+	public ListWorkerDialog(Suku owner, SukuKontroller kontroller,
 			PersonShortData pers) {
 		super(owner, Resurses.getString("REPORT_CREATING"), true);
 		this.parent = owner;
@@ -319,122 +313,6 @@ public class ReportWorkerDialog extends JDialog implements
 		return this.pers.getPid();
 	}
 
-	// /**
-	// * get no of tags in use
-	// *
-	// * @return the no of tags
-	// */
-	// public int getTypesTagsCount() {
-	// return typesModel.getTypesTags().length;
-	// }
-
-	// /**
-	// * Gets the tag at the indicated index position
-	// *
-	// * @param idx
-	// *
-	// * @return the indexed tag
-	// */
-	// public String getTypesTag(int idx) {
-	// return typesModel.getTypesTags(idx);
-	// }
-	//
-	// /**
-	// * Get report value for tag
-	// *
-	// * @param tag
-	// * @return name of type
-	// */
-	// public String getTypeText(String tag) {
-	// Integer iidx = typesModel.getTypeText(tag);
-	// if (iidx == null)
-	// return tag;
-	// int idx = iidx.intValue();
-	// if (idx >= 0) {
-	// String txt = (String) typesModel.getTypesData(idx, 5);
-	// if (txt != null) {
-	// return txt;
-	// }
-	// // if (idx < typesModel.getTypesData().length) {
-	// // return (String) typesModel.getTypesData()[idx][5];
-	// // }
-	// return (String) typesModel.getTypesValue(idx);
-	// }
-	// return null;
-	// }
-	//
-	// /**
-	// * @param type
-	// * @return rule for requested type
-	// */
-	// public String getTypeRule(String type) {
-	// String rule = typesModel.getTypeRule(type);
-	// return rule;
-	//
-	// }
-	//
-	// /**
-	// * @param tag
-	// * @return name of tag e.g. BIRT tag returns Birth in English
-	// */
-	// public String getTagName(String tag) {
-	// Integer iidx = typesModel.getTypeText(tag);
-	// if (iidx == null)
-	// return tag;
-	// int idx = iidx.intValue();
-	// if (idx >= 0) {
-	// String txt = typesModel.getTypesName(idx);
-	// if (txt != null) {
-	// return txt;
-	// }
-	// // if (idx < typesModel.getTypesData().length) {
-	// // return (String) typesModel.getTypesData()[idx][0];
-	// // }
-	// return (String) typesModel.getTypesValues()[idx];
-	// }
-	// return null;
-	// }
-	//
-	// /**
-	// * Get report value for tag
-	// *
-	// * @param tag
-	// * @return value of tag
-	// */
-	// public String getTextValue(String tag) {
-	// String value = typesModel.getTextText(tag);
-	// if (value == null)
-	// return tag;
-	// return value;
-	// }
-	//
-	// /**
-	// * get state of setting for tag
-	// *
-	// * @param tag
-	// * @param col
-	// * column in table. 1 = name, 2 = main, 3 = child, 4 = sub
-	// * @return true if settings is on
-	// */
-	// public boolean isType(String tag, int col) {
-	// if (col < 1 || col > 4)
-	// return false;
-	// Integer idxInt = typesModel.getTypeText(tag);
-	// if (idxInt == null)
-	// return true;
-	// int idx = idxInt.intValue();
-	// if (idx >= 0) {
-	//
-	// Boolean value = (Boolean) typesModel.getTypesData(idx, col);
-	// if (value != null) {
-	// return value;
-	// }
-	//
-	// }
-	// return false;
-	//
-	// }
-
 	/**
 	 * @return true if bold names box is set
 	 */
@@ -495,10 +373,6 @@ public class ReportWorkerDialog extends JDialog implements
 		return this.progressBar;
 	}
 
-	// public ReportFrame getRepo(){
-	// return repo;
-	// }
-
 	private void initMe() {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension sz = new Dimension(d.width - 200, d.height - 150);
@@ -517,7 +391,7 @@ public class ReportWorkerDialog extends JDialog implements
 			settingsIndex = 0;
 		}
 
-		lb = new JLabel(this.pers.getAlfaName(true));
+		lb = new JLabel("UNDER CONSTRUCTION");
 		add(lb);
 		lb.setBounds(x1, y1 - 20, 300, 20);
 
@@ -608,23 +482,23 @@ public class ReportWorkerDialog extends JDialog implements
 		JRadioButton radio = new JRadioButton(Resurses
 				.getString("REPORT.DESC.SPOUSE.NONE"));
 		spouseData.add(radio);
-		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_NONE);
+		radio.setActionCommand(ListWorkerDialog.SET_SPOUSE_NONE);
 		pane.add(radio);
 
 		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.YEAR"));
 		radio.setSelected(true);
 		spouseData.add(radio);
-		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_YEAR);
+		radio.setActionCommand(ListWorkerDialog.SET_SPOUSE_YEAR);
 		pane.add(radio);
 
 		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.DATE"));
 		spouseData.add(radio);
-		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_DATE);
+		radio.setActionCommand(ListWorkerDialog.SET_SPOUSE_DATE);
 		pane.add(radio);
 
 		radio = new JRadioButton(Resurses.getString("REPORT.DESC.SPOUSE.FULL"));
 		spouseData.add(radio);
-		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_FULL);
+		radio.setActionCommand(ListWorkerDialog.SET_SPOUSE_FULL);
 		pane.add(radio);
 		add(pane);
 
@@ -729,31 +603,13 @@ public class ReportWorkerDialog extends JDialog implements
 
 		reportTypePane = new JTabbedPane();
 
-		descendantPanel = new DescendantPane();
-
-		reportTypePane.addTab(Resurses.getString("REPORT.DESCENDANT"), icon1,
-				descendantPanel, Resurses.getString("REPORT.TIP.DESCENDANT"));
-
-		reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
-
-		ancestorPanel = new AncestorPane();
-
-		reportTypePane.addTab(Resurses.getString("REPORT.ANCESTOR"), icon2,
-				ancestorPanel, Resurses.getString("REPORT.TIP.ANCESTOR"));
-		reportTypePane.setMnemonicAt(1, KeyEvent.VK_2);
-
 		listaPanel = new JPanel();
 		listaPanel.setLayout(null);
 
 		listaPanel.setPreferredSize(new Dimension(410, 50));
 		reportTypePane.addTab(Resurses.getString("REPORT.LISTAT"), icon3,
 				listaPanel, Resurses.getString("REPORT.TIP.LISTAT"));
-		reportTypePane.setMnemonicAt(2, KeyEvent.VK_3);
-
-		//				
-		// reportTypePane.addTab(Resurses.getString("REPORT.LISTAT"), icon3,
-		// listaPanel,
-		// Resurses.getString("REPORT.TIP.LISTAT"));
+		reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
 
 		// Add the tabbed pane to this panel.
 		add(reportTypePane);
@@ -766,22 +622,15 @@ public class ReportWorkerDialog extends JDialog implements
 		listaGroup = new ButtonGroup();
 
 		JRadioButton listad = new JRadioButton(Resurses
-				.getString("REPORT.LISTA.DESCLISTA"));
-		listaPanel.add(listad);
-		listad.setBounds(10, 20, 200, 20);
-		listad.setActionCommand("REPORT.LISTA.DESCLISTA");
-		listaGroup.add(listad);
-
-		listad = new JRadioButton(Resurses
 				.getString("REPORT.LISTA.PERSONCARDS"));
 		listaPanel.add(listad);
-		listad.setBounds(10, 44, 200, 20);
+		listad.setBounds(10, 20, 200, 20);
 		listad.setActionCommand("REPORT.LISTA.PERSONCARDS");
 		listaGroup.add(listad);
 
 		listad = new JRadioButton(Resurses.getString("REPORT.LISTA.SURETIES"));
 		listaPanel.add(listad);
-		listad.setBounds(10, 68, 200, 20);
+		listad.setBounds(10, 44, 200, 20);
 		listad.setActionCommand("REPORT.LISTA.SURETIES");
 		listaGroup.add(listad);
 
@@ -866,20 +715,6 @@ public class ReportWorkerDialog extends JDialog implements
 	}
 
 	/**
-	 * @return descendat panel
-	 */
-	public DescendantPane getDescendantPane() {
-		return descendantPanel;
-	}
-
-	/**
-	 * @return ancestor panel
-	 */
-	public AncestorPane getAncestorPane() {
-		return ancestorPanel;
-	}
-
-	/**
 	 * Debug state is used to get some extra output for debugging such as raw
 	 * xml-file
 	 * 
@@ -898,7 +733,7 @@ public class ReportWorkerDialog extends JDialog implements
 		isLoadingTheSettings = true;
 		try {
 			SukuData sets = Suku.kontroller.getSukuData("cmd=getsettings",
-					"type=report", "index=" + settingsIndex);
+					"type=lista", "index=" + settingsIndex);
 			// settingsList = sets.generalArray;
 			settingModel.removeAllElements();
 
@@ -982,32 +817,17 @@ public class ReportWorkerDialog extends JDialog implements
 						ii = 0;
 					}
 					reportTypePane.setSelectedIndex(ii);
-				} else if (vx[0].equals("descgen")) {
-					descendantPanel.setGenerations(vx[1]);
-				} else if (vx[0].equals("ancgen")) {
-					ancestorPanel.setGenerations(vx[1]);
+
 				} else if (vx[0].equals("descadopted")) {
 					descendantAdopted = true;
 
-				} else if (vx[0].equals("descspanc")) {
-
-					descendantPanel.setSpouseAncestors(vx[1]);
-				} else if (vx[0].equals("descchanc")) {
-
-					descendantPanel.setChildAncestors(vx[1]);
-
-				} else if (vx[0].equals("descTableOrder")) {
-					setRadioButton(descendantPanel.getTableOrder(), vx[1]);
 				} else if (vx[0].equals("descSpouseData")) {
 					setRadioButton(getSpouseData(), vx[1]);
 				} else if (vx[0].equals("listaGroup")) {
 					setRadioButton(listaGroup, vx[1]);
 				} else if (vx[0].equals("ancFamily")) {
 					ancestorFamily = true;
-				} else if (vx[0].equals("ancNumbering")) {
-					setRadioButton(ancestorPanel.getNumberingFormat(), vx[1]);
-				} else if (vx[0].equals("ancDesc")) {
-					ancestorPanel.setDescGen(vx[1]);
+
 				} else if (vx[0].equals("format")) {
 					int formIdx;
 					try {
@@ -1022,57 +842,6 @@ public class ReportWorkerDialog extends JDialog implements
 					commonReportFormatList.setSelectedIndex(formIdx);
 				}
 
-				// else if (vx[0].startsWith("t:")) {
-				//
-				// int typeCount = typesTable.getRowCount();
-				// for (int row = 0; row < typeCount; row++) {
-				//
-				// String tag = typesTable.getTypesTag(row);
-				//
-				// if (vx[0].substring(2).equals(tag)
-				// && vx[1].length() > 3) {
-				// boolean b = false;
-				// if (vx[1].substring(0, 1).equals("X")) {
-				// b = true;
-				// }
-				// typesTable.setValueAt(b, row, 1);
-				// b = false;
-				// if (vx[1].substring(1, 2).equals("X")) {
-				// b = true;
-				// }
-				// typesTable.setValueAt(b, row, 2);
-				// b = false;
-				// if (vx[1].substring(2, 3).equals("X")) {
-				// b = true;
-				// }
-				// typesTable.setValueAt(b, row, 3);
-				//
-				// b = false;
-				// if (vx[1].substring(3, 4).equals("X")) {
-				// b = true;
-				// }
-				// typesTable.setValueAt(b, row, 4);
-				// // String newText = "";
-				// // if (vx[1].length() > 4) {
-				// // newText = vx[1].substring(4);
-				// // }
-				// // typesTable.setValueAt(newText, row, 5);
-				// break;
-				// }
-				// StringBuilder sb = new StringBuilder();
-				// sb.append("t:");
-				// sb.append(typesTags[row]);
-				// sb.append("=");
-				// sb.append(((Boolean)typesTable.getValueAt(row,
-				// 1))?"X":"O");
-				// sb.append(((Boolean)typesTable.getValueAt(row,
-				// 2))?"X":"O");
-				// sb.append(((Boolean)typesTable.getValueAt(row,
-				// 3))?"X":"O");
-				// v.add(sb.toString());
-				//						
-				// }
-
 			}
 
 			commonNumberImages.setSelected(numberImages);
@@ -1085,10 +854,8 @@ public class ReportWorkerDialog extends JDialog implements
 			commonIndexNames.setSelected(indexNames);
 			commonIndexPlaces.setSelected(indexPlaces);
 			commonIndexYears.setSelected(indexYears);
-			descendantPanel.setAdopted(descendantAdopted);
-			ancestorPanel.setShowFamily(ancestorFamily);
 
-			typesTable.loadReportSettings("reporttypes", settingsIndex);
+			typesTable.loadReportSettings("listatypes", settingsIndex);
 
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, "error fetching setting "
@@ -1155,12 +922,7 @@ public class ReportWorkerDialog extends JDialog implements
 				if (listSele == null)
 					return;
 
-				if (listSele.equals("REPORT.LISTA.DESCLISTA")) {
-					taskLista = new TaskLista();
-					taskLista.addPropertyChangeListener(this);
-					taskLista.execute();
-
-				} else if (listSele.equals("REPORT.LISTA.PERSONCARDS")) {
+				if (listSele.equals("REPORT.LISTA.PERSONCARDS")) {
 					taskCards = new TaskCards();
 					taskCards.addPropertyChangeListener(this);
 					taskCards.execute();
@@ -1176,10 +938,6 @@ public class ReportWorkerDialog extends JDialog implements
 						.getString("REPORT.NOTSUPPORTED"));
 				return;
 			}
-		} else if (cmd.equals(LISTA)) {
-			taskIndex = new TaskIndex();
-			taskIndex.addPropertyChangeListener(this);
-			taskIndex.execute();
 		}
 	}
 
@@ -1190,7 +948,7 @@ public class ReportWorkerDialog extends JDialog implements
 		Vector<String> v = new Vector<String>();
 
 		v.add("cmd=savesettings");
-		v.add("type=report");
+		v.add("type=lista");
 		v.add("index=" + settingsIndex);
 		v.add("name=" + (String) settingsName.getSelectedItem());
 		if (commonWithImages.getSelectedObjects() != null) {
@@ -1245,35 +1003,11 @@ public class ReportWorkerDialog extends JDialog implements
 		}
 		v.add("reportIndex=" + reportTypePane.getSelectedIndex());
 
-		v.add("descgen=" + descendantPanel.getGenerations());
-		v.add("ancgen=" + ancestorPanel.getGenerations());
-		if (descendantPanel.getAdopted()) {
-			v.add("descadopted=true");
-		}
-		v.add("descspanc=" + descendantPanel.getSpouseAncestors());
-		v.add("descchanc=" + descendantPanel.getChildAncestors());
-
-		model = descendantPanel.getTableOrder().getSelection();
-		if (model != null) {
-			v.add("descTableOrder=" + model.getActionCommand());
-		}
-
 		model = getSpouseData().getSelection();
 		if (model != null) {
 			v.add("descSpouseData=" + model.getActionCommand());
 		}
 
-		model = ancestorPanel.getNumberingFormat().getSelection();
-		if (model != null) {
-			v.add("ancNumbering=" + model.getActionCommand());
-		}
-		if (ancestorPanel.getShowfamily()) {
-			v.add("ancFamily=true");
-		}
-		String tmp = ancestorPanel.getShowDescGen();
-		if (tmp != null && tmp.length() > 0) {
-			v.add("ancDesc=" + tmp);
-		}
 		model = listaGroup.getSelection();
 		if (model != null) {
 			v.add("listaGroup=" + model.getActionCommand());
@@ -1283,22 +1017,6 @@ public class ReportWorkerDialog extends JDialog implements
 		int viid = viewids[vidx];
 		v.add("viewId=" + viid);
 
-		// int typeCount = typesTable.getRowCount();
-		//
-		// for (int row = 0; row < typeCount; row++) {
-		// StringBuilder sb = new StringBuilder();
-		// sb.append("t:");
-		// sb.append(typesTable.getTypesTag(row));
-		// sb.append("=");
-		// sb.append(((Boolean) typesTable.getValueAt(row, 1)) ? "X" : "O");
-		// sb.append(((Boolean) typesTable.getValueAt(row, 2)) ? "X" : "O");
-		// sb.append(((Boolean) typesTable.getValueAt(row, 3)) ? "X" : "O");
-		// sb.append(((Boolean) typesTable.getValueAt(row, 4)) ? "X" : "O");
-		// sb.append(typesTable.getValueAt(row, 5));
-		// v.add(sb.toString());
-		//
-		// }
-
 		try {
 			SukuData reposet = Suku.kontroller.getSukuData(v
 					.toArray(new String[0]));
@@ -1307,7 +1025,7 @@ public class ReportWorkerDialog extends JDialog implements
 						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			typesTable.saveReportSettings("reporttypes", settingsIndex);
+			typesTable.saveReportSettings("listatypes", settingsIndex);
 
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
@@ -1359,12 +1077,6 @@ public class ReportWorkerDialog extends JDialog implements
 				}
 				setProgress(0);
 
-				if (reportTypePane.getSelectedIndex() == 0) {
-
-					dr = new DescendantReport(self, typesTable, repo);
-				} else {
-					dr = new AncestorReport(self, typesTable, repo);
-				}
 				dr.executeReport();
 
 			} catch (Exception e) {
@@ -1398,45 +1110,6 @@ public class ReportWorkerDialog extends JDialog implements
 				}
 				dr.setVisible(true);
 			}
-		}
-	}
-
-	class TaskLista extends SwingWorker<Void, Void> {
-
-		DescendantLista dlista = null;
-
-		/*
-		 * Main task. Executed in background thread.
-		 */
-		@Override
-		public Void doInBackground() {
-
-			try {
-
-				setProgress(0);
-
-				dlista = new DescendantLista(self, typesTable, null);
-
-				dlista.executeReport();
-
-			} catch (Exception e) {
-				logger.log(Level.WARNING, "Exception in background thread", e);
-			}
-
-			return null;
-		}
-
-		/*
-		 * Executed in event dispatching thread
-		 */
-		@Override
-		public void done() {
-			Toolkit.getDefaultToolkit().beep();
-			setVisible(false);
-			// if (dlista != null) {
-			// dlista.getWriter().closeReport();
-			// // dr.getFrame().setVisible(true);
-			// }
 		}
 	}
 
@@ -1861,202 +1534,9 @@ public class ReportWorkerDialog extends JDialog implements
 
 	}
 
-	/**
-	 * Create index for the report executed
-	 */
-	class TaskIndex extends SwingWorker<Void, Void> {
-
-		@Override
-		protected Void doInBackground() throws Exception {
-			try {
-
-				if (!Suku.kontroller.createLocalFile("xls")) {
-					return null;
-				}
-
-				setProgress(0);
-
-				BufferedOutputStream bstr = new BufferedOutputStream(
-						Suku.kontroller.getOutputStream());
-				WritableWorkbook workbook = Workbook.createWorkbook(bstr);
-
-				WritableFont arial10bold = new WritableFont(WritableFont.ARIAL,
-						10, WritableFont.BOLD, true);
-				WritableFont arial10 = new WritableFont(WritableFont.ARIAL, 10,
-						WritableFont.NO_BOLD, false);
-				WritableCellFormat arial0bold = new WritableCellFormat(
-						arial10bold);
-				WritableCellFormat arial0 = new WritableCellFormat(arial10);
-				WritableSheet sheet = workbook.createSheet("Index", 0);
-
-				Label label = new Label(0, 0, "Nimi", arial0bold);
-				sheet.addCell(label);
-
-				label = new Label(1, 0, "Taulu", arial0bold);
-				sheet.addCell(label);
-
-				int row = 2;
-				if (dr != null) {
-
-					// Set<Map.Entry<Integer, PersonInTables>> entries = dr
-					// .getPersonReferences().entrySet();
-					// Iterator<Map.Entry<Integer, PersonInTables>> ee = entries
-					// .iterator();
-					Vector<PersonInTables> vv = dr.getPersonReferences();
-					// new Vector<PersonInTables>();
-					float runnervalue = 0;
-					float mapsize = dr.getPersonReferences().size();
-					// while (ee.hasNext()) {
-					// Map.Entry<Integer, PersonInTables> entry =
-					// (Map.Entry<Integer, PersonInTables>) ee
-					// .next();
-					//
-					// PersonInTables pit = entry.getValue();
-					for (int j = 0; j < vv.size(); j++) {
-						PersonInTables pit = vv.get(j);
-						// vv.add(pit);
-						if (pit.shortPerson == null) {
-							SukuData resp = Suku.kontroller.getSukuData(
-									"cmd=person", "mode=short", "pid="
-											+ pit.pid);
-
-							if (resp.pers != null) {
-								pit.shortPerson = resp.pers[0];
-
-								for (int i = 1; i < pit.shortPerson
-										.getNameCount(); i++) {
-									PersonInTables pitt = new PersonInTables(
-											pit.shortPerson.getPid());
-									pitt.asChildren = pit.asChildren;
-									pitt.asOwner = pit.asOwner;
-									pitt.asParents = pit.asParents;
-									PersonShortData p = pit.shortPerson;
-									PersonShortData alias = new PersonShortData(
-											p.getPid(), p.getGivenname(i), p
-													.getPatronym(i), p
-													.getPrefix(i), p
-													.getSurname(i), p
-													.getPostfix(i), p
-													.getBirtDate(), p
-													.getDeatDate());
-									pitt.shortPerson = alias;
-									// vv.add(pitt);
-								}
-
-							}
-
-						}
-
-						float prose = (runnervalue * 100f) / mapsize;
-						if (prose > 100)
-							prose = 100;
-						setRunnerValue("" + (int) prose + ";"
-								+ pit.shortPerson.getAlfaName());
-						runnervalue++;
-					}
-					PersonInTables[] pits = vv.toArray(new PersonInTables[0]);
-					Arrays.sort(pits);
-
-					for (int i = 0; i < pits.length; i++) {
-						PersonInTables pit = pits[i];
-						label = new Label(0, row, ""
-								+ pit.shortPerson.getAlfaName(), arial0);
-						sheet.addCell(label);
-						String kefe = pit.getReferences(0, true, false, false);
-						String cefe = pit.getReferences(0, false, true, false);
-						String refe = kefe;
-
-						if (pit.asOwner == 0) {
-
-							if (refe.isEmpty()) {
-								refe = cefe;
-							} else {
-								if (!cefe.isEmpty()) {
-									refe += "," + cefe;
-								}
-							}
-						}
-						// System.out.println("RUN:"
-						// + pit.shortPerson.getAlfaName());
-						String mefe = pit.getReferences(0, false, false, true);
-
-						if (!mefe.isEmpty()) {
-							if (!refe.isEmpty()) {
-								refe += "," + mefe;
-							} else {
-								refe = mefe;
-							}
-						}
-
-						label = new Label(1, row, "" + refe, arial0);
-						sheet.addCell(label);
-
-						if (pit.shortPerson.getBirtDate() != null) {
-							label = new Label(2, row, Utils.nv4(pit.shortPerson
-									.getBirtDate()), arial0);
-							sheet.addCell(label);
-						}
-						if (pit.shortPerson.getDeatDate() != null) {
-							label = new Label(3, row, Utils.nv4(pit.shortPerson
-									.getDeatDate()), arial0);
-							sheet.addCell(label);
-						}
-
-						if (pit.asOwner > 0) {
-							label = new Label(5, row, "" + pit.asOwner, arial0);
-							sheet.addCell(label);
-						}
-
-						label = new Label(6, row, "" + pit.pid, arial0);
-						sheet.addCell(label);
-						label = new Label(7, row, "" + kefe, arial0);
-						sheet.addCell(label);
-						label = new Label(8, row, "" + cefe, arial0);
-						sheet.addCell(label);
-						label = new Label(9, row, "" + mefe, arial0);
-						sheet.addCell(label);
-
-						float prose = (i * 100f) / pits.length;
-						setRunnerValue("" + (int) prose + ";"
-								+ pit.shortPerson.getAlfaName());
-
-						// label = new Label(3, row, ""
-						// + pit.getReferences(0, false, true, false),
-						// arial0);
-						// sheet.addCell(label);
-						// label = new Label(3, row, ""
-						// + pit.getReferences(0, false, false, true),
-						// arial0);
-						// sheet.addCell(label);
-						row++;
-					}
-				}
-				workbook.write();
-				workbook.close();
-				bstr.close();
-
-			} catch (Throwable e) {
-
-				logger.log(Level.WARNING, "Exception in background thread", e);
-			}
-			return null;
-		}
-
-		/*
-		 * Executed in event dispatching thread
-		 */
-		@Override
-		public void done() {
-			Toolkit.getDefaultToolkit().beep();
-			setVisible(false);
-
-		}
-	}
-
 	@Override
 	public JDialog getWorkerDialog() {
 		return this;
-
 	}
 
 }

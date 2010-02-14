@@ -321,6 +321,8 @@ public class Resurses {
 	public static final String PRIVACY_INDEX = "I";
 	/** */
 	public static final String PRIVACY_PRIVACY = "P";
+	/** */
+	public static final String MENU_LISTA = "MENU_LISTA";
 
 	/** */
 	private static Resurses myself = null;

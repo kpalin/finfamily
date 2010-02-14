@@ -28,7 +28,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import fi.kaila.suku.report.dialog.ReportWorkerDialog;
+import fi.kaila.suku.report.dialog.WorkerDialogInterface;
 import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ImageText;
 import fi.kaila.suku.util.Resurses;
@@ -70,7 +70,7 @@ public class XmlReport implements ReportInterface {
 	int imageCounter = 0;
 	private boolean reportClosed = false;
 	private boolean debugState = false;
-	private ReportWorkerDialog parent;
+	private WorkerDialogInterface parent;
 	String title;
 
 	/**
@@ -82,8 +82,8 @@ public class XmlReport implements ReportInterface {
 	 * @param title
 	 * @throws SukuException
 	 */
-	public XmlReport(ReportWorkerDialog parent, int translatorIdx, String title)
-			throws SukuException {
+	public XmlReport(WorkerDialogInterface parent, int translatorIdx,
+			String title) throws SukuException {
 		this.parent = parent;
 		this.title = title;
 		this.translatorIdx = translatorIdx;
@@ -111,7 +111,8 @@ public class XmlReport implements ReportInterface {
 			boolean fileExists = false;
 			if (f.isFile()) {
 				fileExists = true;
-				int resu = JOptionPane.showConfirmDialog(this.parent, Resurses
+				int resu = JOptionPane.showConfirmDialog(parent
+						.getWorkerDialog(), Resurses
 						.getString("CONFIRM_REPLACE_REPORT"), Resurses
 						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
@@ -128,14 +129,12 @@ public class XmlReport implements ReportInterface {
 					File d = new File(folder);
 					if (d.exists()) {
 						if (!fileExists && d.isDirectory()) {
-							int resu = JOptionPane
-									.showConfirmDialog(
-											parent,
-											Resurses
-													.getString("CONFIRM_REPLACE_REPORTDIR"),
-											Resurses.getString(Resurses.SUKU),
-											JOptionPane.YES_NO_OPTION,
-											JOptionPane.QUESTION_MESSAGE);
+							int resu = JOptionPane.showConfirmDialog(parent
+									.getWorkerDialog(), Resurses
+									.getString("CONFIRM_REPLACE_REPORTDIR"),
+									Resurses.getString(Resurses.SUKU),
+									JOptionPane.YES_NO_OPTION,
+									JOptionPane.QUESTION_MESSAGE);
 							if (resu != JOptionPane.YES_OPTION) {
 								throw new SukuException("");
 							}

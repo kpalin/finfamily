@@ -68,6 +68,7 @@ import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
 import fi.kaila.suku.kontroller.SukuKontrollerWebstartImpl;
+import fi.kaila.suku.report.dialog.ListWorkerDialog;
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
@@ -179,6 +180,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mDisconnect;
 	private JMenuItem mPrintPerson;
 	private JMenuItem mNewPerson;
+	private JMenuItem mLista;
 	// private JMenuItem mTestSave;
 	// private JMenuItem mTestOpen;
 	private JMenuItem mShowInMap;
@@ -394,8 +396,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mShowInMap.setActionCommand(Resurses.SHOWINMAP);
 		this.mShowInMap.addActionListener(this);
 
-		this.mFile.addSeparator();
+		mLista = new JMenuItem(Resurses.getString(Resurses.MENU_LISTA));
+		mFile.add(mLista);
+		mLista.setActionCommand(Resurses.MENU_LISTA);
+		mLista.addActionListener(this);
 
+		this.mFile.addSeparator();
 		this.mDisconnect = new JMenuItem(Resurses
 				.getString(Resurses.DISCONNECT));
 		this.mFile.add(this.mDisconnect);
@@ -1395,6 +1401,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				this.personView.testMe();
 
+			} else if (cmd.equals(Resurses.MENU_LISTA)) {
+				ListWorkerDialog dlg = new ListWorkerDialog(this, kontroller,
+						null);
+				dlg.setVisible(true);
 			}
 
 			else if (cmd.equals(Resurses.SHOWINMAP)) {
