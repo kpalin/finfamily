@@ -68,7 +68,6 @@ import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
 import fi.kaila.suku.kontroller.SukuKontrollerWebstartImpl;
-import fi.kaila.suku.report.dialog.ListWorkerDialog;
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
@@ -1402,8 +1401,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				this.personView.testMe();
 
 			} else if (cmd.equals(Resurses.MENU_LISTA)) {
-				ListWorkerDialog dlg = new ListWorkerDialog(this, kontroller,
-						null);
+				// ListWorkerDialog dlg = new ListWorkerDialog(this, kontroller,
+				// null);
+				ReportWorkerDialog dlg = new ReportWorkerDialog(this,
+						kontroller, null);
+
 				dlg.setVisible(true);
 			}
 

@@ -516,8 +516,11 @@ public class ReportWorkerDialog extends JDialog implements
 		} catch (NumberFormatException ne) {
 			settingsIndex = 0;
 		}
-
-		lb = new JLabel(this.pers.getAlfaName(true));
+		if (pers == null) {
+			lb = new JLabel("UNDER CONSTRUCTION");
+		} else {
+			lb = new JLabel(this.pers.getAlfaName(true));
+		}
 		add(lb);
 		lb.setBounds(x1, y1 - 20, 300, 20);
 
@@ -729,27 +732,30 @@ public class ReportWorkerDialog extends JDialog implements
 
 		reportTypePane = new JTabbedPane();
 
-		descendantPanel = new DescendantPane();
+		if (pers != null) {
 
-		reportTypePane.addTab(Resurses.getString("REPORT.DESCENDANT"), icon1,
-				descendantPanel, Resurses.getString("REPORT.TIP.DESCENDANT"));
+			descendantPanel = new DescendantPane();
 
-		reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
+			reportTypePane.addTab(Resurses.getString("REPORT.DESCENDANT"),
+					icon1, descendantPanel, Resurses
+							.getString("REPORT.TIP.DESCENDANT"));
 
-		ancestorPanel = new AncestorPane();
+			reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
 
-		reportTypePane.addTab(Resurses.getString("REPORT.ANCESTOR"), icon2,
-				ancestorPanel, Resurses.getString("REPORT.TIP.ANCESTOR"));
-		reportTypePane.setMnemonicAt(1, KeyEvent.VK_2);
+			ancestorPanel = new AncestorPane();
 
-		listaPanel = new JPanel();
-		listaPanel.setLayout(null);
+			reportTypePane.addTab(Resurses.getString("REPORT.ANCESTOR"), icon2,
+					ancestorPanel, Resurses.getString("REPORT.TIP.ANCESTOR"));
+			reportTypePane.setMnemonicAt(1, KeyEvent.VK_2);
+		} else {
+			listaPanel = new JPanel();
+			listaPanel.setLayout(null);
 
-		listaPanel.setPreferredSize(new Dimension(410, 50));
-		reportTypePane.addTab(Resurses.getString("REPORT.LISTAT"), icon3,
-				listaPanel, Resurses.getString("REPORT.TIP.LISTAT"));
-		reportTypePane.setMnemonicAt(2, KeyEvent.VK_3);
-
+			listaPanel.setPreferredSize(new Dimension(410, 50));
+			reportTypePane.addTab(Resurses.getString("REPORT.LISTAT"), icon3,
+					listaPanel, Resurses.getString("REPORT.TIP.LISTAT"));
+			reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
+		}
 		//				
 		// reportTypePane.addTab(Resurses.getString("REPORT.LISTAT"), icon3,
 		// listaPanel,
@@ -763,49 +769,51 @@ public class ReportWorkerDialog extends JDialog implements
 
 		reportTypePane.setBounds(x1, y1, tabw, tabh);
 
-		listaGroup = new ButtonGroup();
+		if (pers == null) {
+			listaGroup = new ButtonGroup();
 
-		JRadioButton listad = new JRadioButton(Resurses
-				.getString("REPORT.LISTA.DESCLISTA"));
-		listaPanel.add(listad);
-		listad.setBounds(10, 20, 200, 20);
-		listad.setActionCommand("REPORT.LISTA.DESCLISTA");
-		listaGroup.add(listad);
+			JRadioButton listad = new JRadioButton(Resurses
+					.getString("REPORT.LISTA.DESCLISTA"));
+			listaPanel.add(listad);
+			listad.setBounds(10, 20, 200, 20);
+			listad.setActionCommand("REPORT.LISTA.DESCLISTA");
+			listaGroup.add(listad);
 
-		listad = new JRadioButton(Resurses
-				.getString("REPORT.LISTA.PERSONCARDS"));
-		listaPanel.add(listad);
-		listad.setBounds(10, 44, 200, 20);
-		listad.setActionCommand("REPORT.LISTA.PERSONCARDS");
-		listaGroup.add(listad);
+			listad = new JRadioButton(Resurses
+					.getString("REPORT.LISTA.PERSONCARDS"));
+			listaPanel.add(listad);
+			listad.setBounds(10, 44, 200, 20);
+			listad.setActionCommand("REPORT.LISTA.PERSONCARDS");
+			listaGroup.add(listad);
 
-		listad = new JRadioButton(Resurses.getString("REPORT.LISTA.SURETIES"));
-		listaPanel.add(listad);
-		listad.setBounds(10, 68, 200, 20);
-		listad.setActionCommand("REPORT.LISTA.SURETIES");
-		listaGroup.add(listad);
+			listad = new JRadioButton(Resurses
+					.getString("REPORT.LISTA.SURETIES"));
+			listaPanel.add(listad);
+			listad.setBounds(10, 68, 200, 20);
+			listad.setActionCommand("REPORT.LISTA.SURETIES");
+			listaGroup.add(listad);
 
-		try {
-			SukuData vlist = kontroller.getSukuData("cmd=viewlist");
-			viewnames = new String[vlist.generalArray.length + 1];
+			try {
+				SukuData vlist = kontroller.getSukuData("cmd=viewlist");
+				viewnames = new String[vlist.generalArray.length + 1];
 
-			viewids = new int[vlist.generalArray.length + 1];
-			viewnames[0] = "";
-			viewids[0] = 0;
-			for (int i = 0; i < vlist.generalArray.length; i++) {
-				String[] parts = vlist.generalArray[i].split(";");
-				viewnames[i + 1] = parts[1];
-				viewids[i + 1] = Integer.parseInt(parts[0]);
+				viewids = new int[vlist.generalArray.length + 1];
+				viewnames[0] = "";
+				viewids[0] = 0;
+				for (int i = 0; i < vlist.generalArray.length; i++) {
+					String[] parts = vlist.generalArray[i].split(";");
+					viewnames[i + 1] = parts[1];
+					viewids[i + 1] = Integer.parseInt(parts[0]);
+				}
+
+			} catch (SukuException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());
 			}
 
-		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage());
+			viewlist = new JComboBox(viewnames);
+			listaPanel.add(viewlist);
+			viewlist.setBounds(10, tabh - 60, 200, 20);
 		}
-
-		viewlist = new JComboBox(viewnames);
-		listaPanel.add(viewlist);
-		viewlist.setBounds(10, tabh - 60, 200, 20);
-
 		lb = new JLabel(Resurses.getString("REPORT.SETTINGS.NAME"));
 		lb.setBounds(x1 + 20, y3, 100, 20);
 		add(lb);
@@ -897,8 +905,12 @@ public class ReportWorkerDialog extends JDialog implements
 	private void loadReportSettings() {
 		isLoadingTheSettings = true;
 		try {
+			String type = "report";
+			if (pers == null) {
+				type = "lista";
+			}
 			SukuData sets = Suku.kontroller.getSukuData("cmd=getsettings",
-					"type=report", "index=" + settingsIndex);
+					"type=" + type, "index=" + settingsIndex);
 			// settingsList = sets.generalArray;
 			settingModel.removeAllElements();
 
@@ -939,17 +951,7 @@ public class ReportWorkerDialog extends JDialog implements
 					numberImages = true;
 				} else if (vx[0].equals("images")) {
 					withImages = true;
-				} else if (vx[0].equals("viewId")) {
-					try {
-						vid = Integer.parseInt(vx[1]);
-					} catch (NumberFormatException ne) {
-					}
-					for (int j = 0; j < viewids.length; j++) {
-						if (viewids[j] == vid) {
-							viewlist.setSelectedIndex(j);
-							break;
-						}
-					}
+
 				} else if (vx[0].equals("imagewidth")) {
 					commonImageHeight.setText(vx[1]);
 				} else if (vx[0].equals("personimagewidth")) {
@@ -970,10 +972,8 @@ public class ReportWorkerDialog extends JDialog implements
 					indexYears = true;
 				} else if (vx[0].equals("dateformat")) {
 					setRadioButton(commonDateFormatGroup, vx[1]);
-
 				} else if (vx[0].equals("sources")) {
 					setRadioButton(commonSourcesFormatGroup, vx[1]);
-
 				} else if (vx[0].equals("reportIndex")) {
 					int ii;
 					try {
@@ -982,32 +982,44 @@ public class ReportWorkerDialog extends JDialog implements
 						ii = 0;
 					}
 					reportTypePane.setSelectedIndex(ii);
-				} else if (vx[0].equals("descgen")) {
-					descendantPanel.setGenerations(vx[1]);
-				} else if (vx[0].equals("ancgen")) {
-					ancestorPanel.setGenerations(vx[1]);
-				} else if (vx[0].equals("descadopted")) {
-					descendantAdopted = true;
-
-				} else if (vx[0].equals("descspanc")) {
-
-					descendantPanel.setSpouseAncestors(vx[1]);
-				} else if (vx[0].equals("descchanc")) {
-
-					descendantPanel.setChildAncestors(vx[1]);
-
-				} else if (vx[0].equals("descTableOrder")) {
-					setRadioButton(descendantPanel.getTableOrder(), vx[1]);
-				} else if (vx[0].equals("descSpouseData")) {
-					setRadioButton(getSpouseData(), vx[1]);
-				} else if (vx[0].equals("listaGroup")) {
-					setRadioButton(listaGroup, vx[1]);
-				} else if (vx[0].equals("ancFamily")) {
-					ancestorFamily = true;
-				} else if (vx[0].equals("ancNumbering")) {
-					setRadioButton(ancestorPanel.getNumberingFormat(), vx[1]);
-				} else if (vx[0].equals("ancDesc")) {
-					ancestorPanel.setDescGen(vx[1]);
+				} else if (pers != null) {
+					if (vx[0].equals("descgen")) {
+						descendantPanel.setGenerations(vx[1]);
+					} else if (vx[0].equals("ancgen")) {
+						ancestorPanel.setGenerations(vx[1]);
+					} else if (vx[0].equals("descadopted")) {
+						descendantAdopted = true;
+					} else if (vx[0].equals("descspanc")) {
+						descendantPanel.setSpouseAncestors(vx[1]);
+					} else if (vx[0].equals("descchanc")) {
+						descendantPanel.setChildAncestors(vx[1]);
+					} else if (vx[0].equals("descTableOrder")) {
+						setRadioButton(descendantPanel.getTableOrder(), vx[1]);
+					} else if (vx[0].equals("descSpouseData")) {
+						setRadioButton(getSpouseData(), vx[1]);
+					} else if (vx[0].equals("ancNumbering")) {
+						setRadioButton(ancestorPanel.getNumberingFormat(),
+								vx[1]);
+					} else if (vx[0].equals("ancDesc")) {
+						ancestorPanel.setDescGen(vx[1]);
+					} else if (vx[0].equals("ancFamily")) {
+						ancestorFamily = true;
+					}
+				} else if (pers == null) {
+					if (vx[0].equals("viewId")) {
+						try {
+							vid = Integer.parseInt(vx[1]);
+						} catch (NumberFormatException ne) {
+						}
+						for (int j = 0; j < viewids.length; j++) {
+							if (viewids[j] == vid) {
+								viewlist.setSelectedIndex(j);
+								break;
+							}
+						}
+					} else if (vx[0].equals("listaGroup")) {
+						setRadioButton(listaGroup, vx[1]);
+					}
 				} else if (vx[0].equals("format")) {
 					int formIdx;
 					try {
@@ -1022,57 +1034,6 @@ public class ReportWorkerDialog extends JDialog implements
 					commonReportFormatList.setSelectedIndex(formIdx);
 				}
 
-				// else if (vx[0].startsWith("t:")) {
-				//
-				// int typeCount = typesTable.getRowCount();
-				// for (int row = 0; row < typeCount; row++) {
-				//
-				// String tag = typesTable.getTypesTag(row);
-				//
-				// if (vx[0].substring(2).equals(tag)
-				// && vx[1].length() > 3) {
-				// boolean b = false;
-				// if (vx[1].substring(0, 1).equals("X")) {
-				// b = true;
-				// }
-				// typesTable.setValueAt(b, row, 1);
-				// b = false;
-				// if (vx[1].substring(1, 2).equals("X")) {
-				// b = true;
-				// }
-				// typesTable.setValueAt(b, row, 2);
-				// b = false;
-				// if (vx[1].substring(2, 3).equals("X")) {
-				// b = true;
-				// }
-				// typesTable.setValueAt(b, row, 3);
-				//
-				// b = false;
-				// if (vx[1].substring(3, 4).equals("X")) {
-				// b = true;
-				// }
-				// typesTable.setValueAt(b, row, 4);
-				// // String newText = "";
-				// // if (vx[1].length() > 4) {
-				// // newText = vx[1].substring(4);
-				// // }
-				// // typesTable.setValueAt(newText, row, 5);
-				// break;
-				// }
-				// StringBuilder sb = new StringBuilder();
-				// sb.append("t:");
-				// sb.append(typesTags[row]);
-				// sb.append("=");
-				// sb.append(((Boolean)typesTable.getValueAt(row,
-				// 1))?"X":"O");
-				// sb.append(((Boolean)typesTable.getValueAt(row,
-				// 2))?"X":"O");
-				// sb.append(((Boolean)typesTable.getValueAt(row,
-				// 3))?"X":"O");
-				// v.add(sb.toString());
-				//						
-				// }
-
 			}
 
 			commonNumberImages.setSelected(numberImages);
@@ -1085,10 +1046,11 @@ public class ReportWorkerDialog extends JDialog implements
 			commonIndexNames.setSelected(indexNames);
 			commonIndexPlaces.setSelected(indexPlaces);
 			commonIndexYears.setSelected(indexYears);
-			descendantPanel.setAdopted(descendantAdopted);
-			ancestorPanel.setShowFamily(ancestorFamily);
-
-			typesTable.loadReportSettings("reporttypes", settingsIndex);
+			if (pers != null) {
+				descendantPanel.setAdopted(descendantAdopted);
+				ancestorPanel.setShowFamily(ancestorFamily);
+			}
+			typesTable.loadReportSettings(type + "types", settingsIndex);
 
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, "error fetching setting "
@@ -1188,9 +1150,12 @@ public class ReportWorkerDialog extends JDialog implements
 		Suku.kontroller.putPref(this, Resurses.SETTING_IDX, "" + settingsIndex);
 
 		Vector<String> v = new Vector<String>();
-
+		String type = "report";
+		if (pers == null) {
+			type = "lista";
+		}
 		v.add("cmd=savesettings");
-		v.add("type=report");
+		v.add("type=" + type);
 		v.add("index=" + settingsIndex);
 		v.add("name=" + (String) settingsName.getSelectedItem());
 		if (commonWithImages.getSelectedObjects() != null) {
@@ -1244,60 +1209,46 @@ public class ReportWorkerDialog extends JDialog implements
 			v.add("yearsIndex=true");
 		}
 		v.add("reportIndex=" + reportTypePane.getSelectedIndex());
+		if (pers != null) {
+			v.add("descgen=" + descendantPanel.getGenerations());
+			v.add("ancgen=" + ancestorPanel.getGenerations());
+			if (descendantPanel.getAdopted()) {
+				v.add("descadopted=true");
+			}
+			v.add("descspanc=" + descendantPanel.getSpouseAncestors());
+			v.add("descchanc=" + descendantPanel.getChildAncestors());
 
-		v.add("descgen=" + descendantPanel.getGenerations());
-		v.add("ancgen=" + ancestorPanel.getGenerations());
-		if (descendantPanel.getAdopted()) {
-			v.add("descadopted=true");
-		}
-		v.add("descspanc=" + descendantPanel.getSpouseAncestors());
-		v.add("descchanc=" + descendantPanel.getChildAncestors());
+			model = descendantPanel.getTableOrder().getSelection();
+			if (model != null) {
+				v.add("descTableOrder=" + model.getActionCommand());
+			}
 
-		model = descendantPanel.getTableOrder().getSelection();
-		if (model != null) {
-			v.add("descTableOrder=" + model.getActionCommand());
-		}
+			model = getSpouseData().getSelection();
+			if (model != null) {
+				v.add("descSpouseData=" + model.getActionCommand());
+			}
 
-		model = getSpouseData().getSelection();
-		if (model != null) {
-			v.add("descSpouseData=" + model.getActionCommand());
-		}
+			model = ancestorPanel.getNumberingFormat().getSelection();
+			if (model != null) {
+				v.add("ancNumbering=" + model.getActionCommand());
+			}
+			if (ancestorPanel.getShowfamily()) {
+				v.add("ancFamily=true");
+			}
+			String tmp = ancestorPanel.getShowDescGen();
+			if (tmp != null && tmp.length() > 0) {
+				v.add("ancDesc=" + tmp);
+			}
+		} else {
+			model = listaGroup.getSelection();
+			if (model != null) {
+				v.add("listaGroup=" + model.getActionCommand());
+			}
 
-		model = ancestorPanel.getNumberingFormat().getSelection();
-		if (model != null) {
-			v.add("ancNumbering=" + model.getActionCommand());
+			int vidx = viewlist.getSelectedIndex();
+			int viid = viewids[vidx];
+			v.add("viewId=" + viid);
 		}
-		if (ancestorPanel.getShowfamily()) {
-			v.add("ancFamily=true");
-		}
-		String tmp = ancestorPanel.getShowDescGen();
-		if (tmp != null && tmp.length() > 0) {
-			v.add("ancDesc=" + tmp);
-		}
-		model = listaGroup.getSelection();
-		if (model != null) {
-			v.add("listaGroup=" + model.getActionCommand());
-		}
-
-		int vidx = viewlist.getSelectedIndex();
-		int viid = viewids[vidx];
-		v.add("viewId=" + viid);
-
-		// int typeCount = typesTable.getRowCount();
-		//
-		// for (int row = 0; row < typeCount; row++) {
-		// StringBuilder sb = new StringBuilder();
-		// sb.append("t:");
-		// sb.append(typesTable.getTypesTag(row));
-		// sb.append("=");
-		// sb.append(((Boolean) typesTable.getValueAt(row, 1)) ? "X" : "O");
-		// sb.append(((Boolean) typesTable.getValueAt(row, 2)) ? "X" : "O");
-		// sb.append(((Boolean) typesTable.getValueAt(row, 3)) ? "X" : "O");
-		// sb.append(((Boolean) typesTable.getValueAt(row, 4)) ? "X" : "O");
-		// sb.append(typesTable.getValueAt(row, 5));
-		// v.add(sb.toString());
-		//
-		// }
 
 		try {
 			SukuData reposet = Suku.kontroller.getSukuData(v
@@ -1307,7 +1258,7 @@ public class ReportWorkerDialog extends JDialog implements
 						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			typesTable.saveReportSettings("reporttypes", settingsIndex);
+			typesTable.saveReportSettings(type + "types", settingsIndex);
 
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
