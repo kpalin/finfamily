@@ -1808,16 +1808,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void createReport(PersonShortData pers) {
-		// if (this.reportFrame == null){
-		// this.reportFrame = new ReportFrame(this);
-		// }
-		//		
-		// this.reportFrame.createReport();
-		//		
-		//
-		//
-		// this.reportFrame.resetReport();
-
 		ReportWorkerDialog dlg = new ReportWorkerDialog(this, kontroller, pers);
 		dlg.setVisible(true);
 
@@ -1845,7 +1835,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * Whenever a personview is opened this stores the activePerson pid for use
+	 * Whenever a PersonView is opened this stores the activePerson pid for use
 	 * by Subject button
 	 * 
 	 * @param pid

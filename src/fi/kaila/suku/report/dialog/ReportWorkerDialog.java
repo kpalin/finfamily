@@ -319,122 +319,6 @@ public class ReportWorkerDialog extends JDialog implements
 		return this.pers.getPid();
 	}
 
-	// /**
-	// * get no of tags in use
-	// *
-	// * @return the no of tags
-	// */
-	// public int getTypesTagsCount() {
-	// return typesModel.getTypesTags().length;
-	// }
-
-	// /**
-	// * Gets the tag at the indicated index position
-	// *
-	// * @param idx
-	// *
-	// * @return the indexed tag
-	// */
-	// public String getTypesTag(int idx) {
-	// return typesModel.getTypesTags(idx);
-	// }
-	//
-	// /**
-	// * Get report value for tag
-	// *
-	// * @param tag
-	// * @return name of type
-	// */
-	// public String getTypeText(String tag) {
-	// Integer iidx = typesModel.getTypeText(tag);
-	// if (iidx == null)
-	// return tag;
-	// int idx = iidx.intValue();
-	// if (idx >= 0) {
-	// String txt = (String) typesModel.getTypesData(idx, 5);
-	// if (txt != null) {
-	// return txt;
-	// }
-	// // if (idx < typesModel.getTypesData().length) {
-	// // return (String) typesModel.getTypesData()[idx][5];
-	// // }
-	// return (String) typesModel.getTypesValue(idx);
-	// }
-	// return null;
-	// }
-	//
-	// /**
-	// * @param type
-	// * @return rule for requested type
-	// */
-	// public String getTypeRule(String type) {
-	// String rule = typesModel.getTypeRule(type);
-	// return rule;
-	//
-	// }
-	//
-	// /**
-	// * @param tag
-	// * @return name of tag e.g. BIRT tag returns Birth in English
-	// */
-	// public String getTagName(String tag) {
-	// Integer iidx = typesModel.getTypeText(tag);
-	// if (iidx == null)
-	// return tag;
-	// int idx = iidx.intValue();
-	// if (idx >= 0) {
-	// String txt = typesModel.getTypesName(idx);
-	// if (txt != null) {
-	// return txt;
-	// }
-	// // if (idx < typesModel.getTypesData().length) {
-	// // return (String) typesModel.getTypesData()[idx][0];
-	// // }
-	// return (String) typesModel.getTypesValues()[idx];
-	// }
-	// return null;
-	// }
-	//
-	// /**
-	// * Get report value for tag
-	// *
-	// * @param tag
-	// * @return value of tag
-	// */
-	// public String getTextValue(String tag) {
-	// String value = typesModel.getTextText(tag);
-	// if (value == null)
-	// return tag;
-	// return value;
-	// }
-	//
-	// /**
-	// * get state of setting for tag
-	// *
-	// * @param tag
-	// * @param col
-	// * column in table. 1 = name, 2 = main, 3 = child, 4 = sub
-	// * @return true if settings is on
-	// */
-	// public boolean isType(String tag, int col) {
-	// if (col < 1 || col > 4)
-	// return false;
-	// Integer idxInt = typesModel.getTypeText(tag);
-	// if (idxInt == null)
-	// return true;
-	// int idx = idxInt.intValue();
-	// if (idx >= 0) {
-	//
-	// Boolean value = (Boolean) typesModel.getTypesData(idx, col);
-	// if (value != null) {
-	// return value;
-	// }
-	//
-	// }
-	// return false;
-	//
-	// }
-
 	/**
 	 * @return true if bold names box is set
 	 */
@@ -471,7 +355,7 @@ public class ReportWorkerDialog extends JDialog implements
 	}
 
 	/**
-	 * @return dateformat selected
+	 * @return date format selected
 	 */
 	public String getDateFormat() {
 		ButtonModel model = commonDateFormatGroup.getSelection();
@@ -489,15 +373,11 @@ public class ReportWorkerDialog extends JDialog implements
 	}
 
 	/**
-	 * @return progressbar object
+	 * @return progress bar object
 	 */
 	public JProgressBar getProgressBar() {
 		return this.progressBar;
 	}
-
-	// public ReportFrame getRepo(){
-	// return repo;
-	// }
 
 	private void initMe() {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -773,23 +653,16 @@ public class ReportWorkerDialog extends JDialog implements
 			listaGroup = new ButtonGroup();
 
 			JRadioButton listad = new JRadioButton(Resurses
-					.getString("REPORT.LISTA.DESCLISTA"));
-			listaPanel.add(listad);
-			listad.setBounds(10, 20, 200, 20);
-			listad.setActionCommand("REPORT.LISTA.DESCLISTA");
-			listaGroup.add(listad);
-
-			listad = new JRadioButton(Resurses
 					.getString("REPORT.LISTA.PERSONCARDS"));
 			listaPanel.add(listad);
-			listad.setBounds(10, 44, 200, 20);
+			listad.setBounds(10, 20, 200, 20);
 			listad.setActionCommand("REPORT.LISTA.PERSONCARDS");
 			listaGroup.add(listad);
 
 			listad = new JRadioButton(Resurses
 					.getString("REPORT.LISTA.SURETIES"));
 			listaPanel.add(listad);
-			listad.setBounds(10, 68, 200, 20);
+			listad.setBounds(10, 44, 200, 20);
 			listad.setActionCommand("REPORT.LISTA.SURETIES");
 			listaGroup.add(listad);
 
@@ -1072,9 +945,6 @@ public class ReportWorkerDialog extends JDialog implements
 				String tmp = (String) settingsName.getSelectedItem();
 				settingModel.insertElementAt(tmp, settingsIndex);
 				settingModel.removeElementAt(settingsIndex + 1);
-				// int newidx=settingsIndex-1;
-				// if (newidx < 0) newidx=0;
-				// settingModel.insertElementAt((String)settingsName.getSelectedItem(),newidx);
 
 			}
 			saveReportSettings();
@@ -1104,45 +974,43 @@ public class ReportWorkerDialog extends JDialog implements
 			int i = reportTypePane.getSelectedIndex();
 
 			String listSele = null;
-			switch (i) {
-			case 0:
-			case 1:
-				// we create new instances as needed.
-				task = new Task();
-				task.addPropertyChangeListener(this);
-				task.execute();
-				break;
-			case 2:
-				listSele = listaGroup.getSelection().getActionCommand();
-				if (listSele == null)
-					return;
 
-				if (listSele.equals("REPORT.LISTA.DESCLISTA")) {
+			if (pers != null) {
+
+				String order = descendantPanel.getTableOrder().getSelection()
+						.getActionCommand();
+				if (order.equals("REPORT.LISTA.DESCLISTA")) {
 					taskLista = new TaskLista();
 					taskLista.addPropertyChangeListener(this);
 					taskLista.execute();
-
-				} else if (listSele.equals("REPORT.LISTA.PERSONCARDS")) {
-					taskCards = new TaskCards();
-					taskCards.addPropertyChangeListener(this);
-					taskCards.execute();
-					break;
-
 				} else {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("REPORT.LISTA.NOLIST.SELECTED"));
+					// we create new instances as needed.
+					task = new Task();
+					task.addPropertyChangeListener(this);
+					task.execute();
 				}
-				break;
-			default:
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("REPORT.NOTSUPPORTED"));
-				return;
+			} else {
+
+				listSele = listaGroup.getSelection().getActionCommand();
+				if (listSele != null) {
+
+					if (listSele.equals("REPORT.LISTA.PERSONCARDS")) {
+						taskCards = new TaskCards();
+						taskCards.addPropertyChangeListener(this);
+						taskCards.execute();
+
+					} else {
+						JOptionPane.showMessageDialog(this, Resurses
+								.getString("REPORT.LISTA.NOLIST.SELECTED"));
+					}
+				}
 			}
 		} else if (cmd.equals(LISTA)) {
 			taskIndex = new TaskIndex();
 			taskIndex.addPropertyChangeListener(this);
 			taskIndex.execute();
 		}
+
 	}
 
 	private void saveReportSettings() {

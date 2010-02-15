@@ -146,8 +146,14 @@ public class DescendantPane extends JPanel {
 		tableOrder.add(radio);
 		radio.setActionCommand(ReportWorkerDialog.SET_ORDER_REG);
 		pane.add(radio);
-
 		add(pane);
+
+		radio = new JRadioButton(Resurses.getString("REPORT.LISTA.DESCLISTA"));
+		tableOrder.add(radio);
+		rtypy += 150;
+		radio.setBounds(rtypx, rtypy, 200, 20);
+		radio.setActionCommand("REPORT.LISTA.DESCLISTA");
+		add(radio);
 
 	}
 
