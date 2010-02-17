@@ -212,7 +212,10 @@ public class SukuTypesModel extends AbstractTableModel {
 	 * @return the textTexts
 	 */
 	public String getTextText(String tag) {
-		return textTexts.get(tag);
+		String value = textTexts.get(tag);
+		if (value == null)
+			return tag;
+		return value;
 	}
 
 	/**

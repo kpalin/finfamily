@@ -585,4 +585,10 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		return null;
 	}
 
+	@Override
+	public String getFilePath() {
+		// return null in webstart
+		return null;
+	}
+
 }

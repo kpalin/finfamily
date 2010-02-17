@@ -31,7 +31,8 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	private static Logger logger = null;
 
 	private File file = null;
-	private File outFile = null;
+
+	// private File outFile = null;
 
 	/**
 	 * 
@@ -219,7 +220,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 			}
 		}
 
-		outFile = new File(filename);
+		file = new File(filename);
 		this.server.setOpenFile(filename);
 
 		logger.info("Valittiin: " + filename);
@@ -234,9 +235,9 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 
 	@Override
 	public OutputStream getOutputStream() {
-		if (outFile != null) {
+		if (file != null) {
 			try {
-				return new FileOutputStream(outFile);
+				return new FileOutputStream(file);
 			} catch (FileNotFoundException e) {
 				logger.log(Level.WARNING,
 						"Failed to get output stream for file", e);
@@ -269,6 +270,12 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 
 		}
 		return null;
+	}
+
+	@Override
+	public String getFilePath() {
+		String tmp = file.getAbsolutePath().replace("\\", "/");
+		return tmp;
 	}
 
 }

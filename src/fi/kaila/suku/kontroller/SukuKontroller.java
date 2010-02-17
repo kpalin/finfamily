@@ -92,6 +92,13 @@ public interface SukuKontroller {
 	public String getFileName();
 
 	/**
+	 * this returns null for webstart
+	 * 
+	 * @return filepath of opened file
+	 */
+	public String getFilePath();
+
+	/**
 	 * <h1>Local parameter management</h1>
 	 * 
 	 * get stored parameter from user preferences
@@ -132,15 +139,17 @@ public interface SukuKontroller {
 	 * @return created local file as an output stream
 	 */
 	public OutputStream getOutputStream();
+
 	/**
 	 * 
-	 * Opening a named local file 
-	 * In webstart the file is read from a zip-package uploaded before this is done
+	 * Opening a named local file In webstart the file is read from a
+	 * zip-package uploaded before this is done
 	 * 
-	 * @param path of file to open
+	 * @param path
+	 *            of file to open
 	 * 
 	 * @return InputStream to the file
 	 */
 	public InputStream openFile(String path);
-	
+
 }

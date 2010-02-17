@@ -176,6 +176,7 @@ public class ReportWorkerDialog extends JDialog implements
 	private TaskLista taskLista;
 	private TaskCards taskCards;
 	private TaskIndex taskIndex;
+	private TaskSureties taskSureties;
 	private ReportWorkerDialog self;
 
 	JTabbedPane reportTypePane = null;
@@ -971,10 +972,7 @@ public class ReportWorkerDialog extends JDialog implements
 
 		if (cmd.equals(START)) {
 
-			int i = reportTypePane.getSelectedIndex();
-
 			String listSele = null;
-
 			if (pers != null) {
 
 				String order = descendantPanel.getTableOrder().getSelection()
@@ -998,7 +996,10 @@ public class ReportWorkerDialog extends JDialog implements
 						taskCards = new TaskCards();
 						taskCards.addPropertyChangeListener(this);
 						taskCards.execute();
-
+					} else if (listSele.equals("REPORT.LISTA.SURETIES")) {
+						taskSureties = new TaskSureties();
+						taskSureties.addPropertyChangeListener(this);
+						taskSureties.execute();
 					} else {
 						JOptionPane.showMessageDialog(this, Resurses
 								.getString("REPORT.LISTA.NOLIST.SELECTED"));
@@ -1238,7 +1239,7 @@ public class ReportWorkerDialog extends JDialog implements
 
 				dlista.executeReport();
 
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.log(Level.WARNING, "Exception in background thread", e);
 			}
 
@@ -1256,6 +1257,170 @@ public class ReportWorkerDialog extends JDialog implements
 			// dlista.getWriter().closeReport();
 			// // dr.getFrame().setVisible(true);
 			// }
+		}
+	}
+
+	class TaskSureties extends SwingWorker<Void, Void> {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			try {
+
+				if (parent.getDatabaseRowCount() > 60000) {
+					JOptionPane.showMessageDialog(null, Resurses
+							.getString("DBLISTA_TOO_LARGE"), Resurses
+							.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					return null;
+				}
+
+				if (!Suku.kontroller.createLocalFile("xls")) {
+					return null;
+				}
+
+				setProgress(0);
+
+				PersonShortData[] shorts = new PersonShortData[parent
+						.getDatabaseRowCount()];
+				PersonLongData longs = null;
+				Relation[] relas = null;
+				for (int idx = 0; idx < shorts.length; idx++) {
+					shorts[idx] = parent.getDatbasePerson(idx);
+				}
+
+				BufferedOutputStream bstr = new BufferedOutputStream(
+						Suku.kontroller.getOutputStream());
+				WritableWorkbook workbook = Workbook.createWorkbook(bstr);
+
+				WritableFont arial10bold = new WritableFont(WritableFont.ARIAL,
+						10, WritableFont.BOLD, true);
+				WritableCellFormat arial0bold = new WritableCellFormat(
+						arial10bold);
+
+				WritableFont arial10 = new WritableFont(WritableFont.ARIAL, 10,
+						WritableFont.NO_BOLD, false);
+				WritableCellFormat arial0 = new WritableCellFormat(arial10);
+
+				WritableSheet sheet = workbook.createSheet(typesTable
+						.getTextValue("SURETY_LISTA"), 0);
+				int rivi = 0;
+
+				String sureties[] = typesTable.getTextValue("SURETY_VALUES")
+						.split(";");
+
+				jxl.write.Number nume = null;
+				Label label = new Label(0, rivi, typesTable
+						.getTextValue("SURETY_PID"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(1, rivi, typesTable
+						.getTextValue("SURETY_NAME"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(2, rivi, typesTable
+						.getTextValue("SURETY_BIRT"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(3, rivi, typesTable
+						.getTextValue("SURETY_DEAT"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(4, rivi, typesTable
+						.getTextValue("SURETY_TAG"), arial0bold);
+				sheet.addCell(label);
+
+				label = new Label(5, rivi, typesTable
+						.getTextValue("SURETY_SURETY"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(6, rivi, typesTable
+						.getTextValue("SURETY_RELATIVE"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(7, rivi, typesTable
+						.getTextValue("SURETY_BIRT"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(8, rivi, typesTable
+						.getTextValue("SURETY_DEAT"), arial0bold);
+				sheet.addCell(label);
+				rivi++;
+				for (int i = 0; i < shorts.length; i++) {
+
+					SukuData sdata = Suku.getKontroller().getSukuData(
+							"cmd=person", "pid=" + shorts[i].getPid());
+					longs = sdata.persLong;
+					relas = sdata.relations;
+
+					PersonShortData psp = new PersonShortData(longs);
+					// System.out.println("SURETY=" + psp.getAlfaName());
+					float prose = (i * 100f) / shorts.length;
+					setRunnerValue("" + (int) prose + ";" + psp.getAlfaName());
+
+					for (int j = 0; j < relas.length; j++) {
+						Relation rela = relas[j];
+						if (rela.getSurety() < 100) {
+							rivi++;
+							nume = new jxl.write.Number(0, rivi, psp.getPid());
+							sheet.addCell(nume);
+							label = new Label(1, rivi, psp.getAlfaName(),
+									arial0);
+							sheet.addCell(label);
+							label = new Label(2, rivi, psp.getBirtDate(),
+									arial0);
+							sheet.addCell(label);
+							label = new Label(3, rivi, psp.getDeatDate(),
+									arial0);
+							sheet.addCell(label);
+
+							label = new Label(4, rivi, typesTable
+									.getTextValue(rela.getTag()), arial0);
+							sheet.addCell(label);
+
+							int idx = 5 - (rela.getSurety() + 10) / 20;
+							String aux = "";
+							if (idx < sureties.length) {
+								aux = sureties[idx];
+							} else {
+								aux = "" + rela.getSurety();
+							}
+							label = new Label(5, rivi, aux);
+							sheet.addCell(label);
+
+							SukuData rdata = Suku.getKontroller().getSukuData(
+									"cmd=person", "pid=" + rela.getRelative());
+							PersonShortData rsp = new PersonShortData(
+									rdata.persLong);
+							label = new Label(6, rivi, rsp.getAlfaName(),
+									arial0);
+							sheet.addCell(label);
+
+							label = new Label(7, rivi, rsp.getBirtDate(),
+									arial0);
+							sheet.addCell(label);
+							label = new Label(8, rivi, rsp.getDeatDate(),
+									arial0);
+							sheet.addCell(label);
+						}
+					}
+
+				}
+
+				workbook.write();
+				workbook.close();
+				bstr.close();
+				String report = Suku.kontroller.getFilePath();
+
+				Utils.openExternalFile(report);
+
+			} catch (Throwable e) {
+				logger.log(Level.WARNING, "Exception in background thread", e);
+			}
+
+			return null;
+
+		}
+
+		/*
+		 * Executed in event dispatching thread
+		 */
+		@Override
+		public void done() {
+			Toolkit.getDefaultToolkit().beep();
+			setVisible(false);
 		}
 	}
 
@@ -1435,11 +1600,9 @@ public class ReportWorkerDialog extends JDialog implements
 				workbook.write();
 				workbook.close();
 				bstr.close();
-
+				String report = Suku.kontroller.getFilePath();
+				Utils.openExternalFile(report);
 			} catch (Throwable e) {
-				// FIX-ME: Spaghetti code. Could be.
-				// Changed to Throwable. I assume that should catch anything
-				// Withaout a catch here We wouöld not get anything into the log
 				logger.log(Level.WARNING, "Exception in background thread", e);
 			}
 
@@ -1853,9 +2016,9 @@ public class ReportWorkerDialog extends JDialog implements
 				workbook.write();
 				workbook.close();
 				bstr.close();
-
+				String report = Suku.kontroller.getFilePath();
+				Utils.openExternalFile(report);
 			} catch (Throwable e) {
-
 				logger.log(Level.WARNING, "Exception in background thread", e);
 			}
 			return null;

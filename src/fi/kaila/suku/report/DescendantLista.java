@@ -212,6 +212,9 @@ public class DescendantLista extends CommonReport {
 			workbook.write();
 			workbook.close();
 			bstr.close();
+
+			String report = Suku.kontroller.getFilePath();
+			Utils.openExternalFile(report);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
