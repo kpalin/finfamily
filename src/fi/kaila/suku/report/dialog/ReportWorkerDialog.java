@@ -1312,14 +1312,14 @@ public class ReportWorkerDialog extends JDialog implements
 				Label label = new Label(0, rivi, typesTable
 						.getTextValue("SURETY_PID"), arial0bold);
 				sheet.addCell(label);
-				label = new Label(1, rivi, typesTable
-						.getTextValue("SURETY_NAME"), arial0bold);
+				label = new Label(1, rivi, typesTable.getTagName("NAME"),
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(2, rivi, typesTable
-						.getTextValue("SURETY_BIRT"), arial0bold);
+				label = new Label(2, rivi, typesTable.getTagName("BIRT"),
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(3, rivi, typesTable
-						.getTextValue("SURETY_DEAT"), arial0bold);
+				label = new Label(3, rivi, typesTable.getTagName("DEAT"),
+						arial0bold);
 				sheet.addCell(label);
 				label = new Label(4, rivi, typesTable
 						.getTextValue("SURETY_TAG"), arial0bold);
@@ -1331,11 +1331,11 @@ public class ReportWorkerDialog extends JDialog implements
 				label = new Label(6, rivi, typesTable
 						.getTextValue("SURETY_RELATIVE"), arial0bold);
 				sheet.addCell(label);
-				label = new Label(7, rivi, typesTable
-						.getTextValue("SURETY_BIRT"), arial0bold);
+				label = new Label(7, rivi, typesTable.getTagName("BIRT"),
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(8, rivi, typesTable
-						.getTextValue("SURETY_DEAT"), arial0bold);
+				label = new Label(8, rivi, typesTable.getTagName("DEAT"),
+						arial0bold);
 				sheet.addCell(label);
 				rivi++;
 				for (int i = 0; i < shorts.length; i++) {
@@ -1359,11 +1359,11 @@ public class ReportWorkerDialog extends JDialog implements
 							label = new Label(1, rivi, psp.getAlfaName(),
 									arial0);
 							sheet.addCell(label);
-							label = new Label(2, rivi, psp.getBirtDate(),
-									arial0);
+							label = new Label(2, rivi, Utils.textDate(psp
+									.getBirtDate(), false), arial0);
 							sheet.addCell(label);
-							label = new Label(3, rivi, psp.getDeatDate(),
-									arial0);
+							label = new Label(3, rivi, Utils.textDate(psp
+									.getDeatDate(), false), arial0);
 							sheet.addCell(label);
 
 							label = new Label(4, rivi, typesTable
@@ -1388,11 +1388,11 @@ public class ReportWorkerDialog extends JDialog implements
 									arial0);
 							sheet.addCell(label);
 
-							label = new Label(7, rivi, rsp.getBirtDate(),
-									arial0);
+							label = new Label(7, rivi, Utils.textDate(rsp
+									.getBirtDate(), false), arial0);
 							sheet.addCell(label);
-							label = new Label(8, rivi, rsp.getDeatDate(),
-									arial0);
+							label = new Label(8, rivi, Utils.textDate(rsp
+									.getDeatDate(), false), arial0);
 							sheet.addCell(label);
 						}
 					}

@@ -29,7 +29,7 @@ public interface WorkerDialogInterface {
 	public JDialog getWorkerDialog();
 
 	/**
-	 * @return
+	 * @return true if images are to numbered
 	 */
 	public boolean isNumberingImages();
 
