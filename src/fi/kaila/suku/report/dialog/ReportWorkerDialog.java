@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1266,6 +1267,7 @@ public class ReportWorkerDialog extends JDialog implements
 		protected Void doInBackground() throws Exception {
 			try {
 
+				HashMap<String, String> relaMap = new HashMap<String, String>();
 				if (parent.getDatabaseRowCount() > 60000) {
 					JOptionPane.showMessageDialog(null, Resurses
 							.getString("DBLISTA_TOO_LARGE"), Resurses
@@ -1345,6 +1347,9 @@ public class ReportWorkerDialog extends JDialog implements
 				sheet.addCell(label);
 				label = new Label(11, rivi, typesTable
 						.getTextValue("SURETY_PLACE"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(12, rivi, typesTable
+						.getTextValue("SURETY_PRIVATE_TEXT"), arial0bold);
 				sheet.addCell(label);
 
 				rivi++;
@@ -1428,53 +1433,147 @@ public class ReportWorkerDialog extends JDialog implements
 							label = new Label(11, rivi, notice.getPlace(),
 									arial0);
 							sheet.addCell(label);
+							label = new Label(12, rivi,
+									notice.getPrivateText(), arial0);
+							sheet.addCell(label);
 						}
 
 					}
 					for (int j = 0; j < relas.length; j++) {
 						Relation rela = relas[j];
 						if (rela.getSurety() < 100) {
-							rivi++;
-							nume = new jxl.write.Number(0, rivi, psp.getPid());
-							sheet.addCell(nume);
-							label = new Label(1, rivi, psp.getAlfaName(),
-									arial0);
-							sheet.addCell(label);
-							label = new Label(2, rivi, Utils.textDate(psp
-									.getBirtDate(), false), arial0);
-							sheet.addCell(label);
-							label = new Label(3, rivi, Utils.textDate(psp
-									.getDeatDate(), false), arial0);
-							sheet.addCell(label);
+							String thisRela = "" + rela.getPid() + "_"
+									+ rela.getRelative();
+							String otherRela = "" + rela.getRelative() + "_"
+									+ rela.getPid();
+							if (relaMap.get(otherRela) == null) {
+								relaMap.put(thisRela, "OK");
 
-							label = new Label(4, rivi, typesTable
-									.getTextValue(rela.getTag()), arial0);
-							sheet.addCell(label);
+								rivi++;
+								nume = new jxl.write.Number(0, rivi, psp
+										.getPid());
+								sheet.addCell(nume);
+								label = new Label(1, rivi, psp.getAlfaName(),
+										arial0);
+								sheet.addCell(label);
+								label = new Label(2, rivi, Utils.textDate(psp
+										.getBirtDate(), false), arial0);
+								sheet.addCell(label);
+								label = new Label(3, rivi, Utils.textDate(psp
+										.getDeatDate(), false), arial0);
+								sheet.addCell(label);
 
-							int idx = 5 - (rela.getSurety() + 10) / 20;
-							String aux = "";
-							if (idx < sureties.length) {
-								aux = sureties[idx];
-							} else {
-								aux = "" + rela.getSurety();
+								label = new Label(4, rivi, typesTable
+										.getTextValue(rela.getTag()), arial0);
+								sheet.addCell(label);
+
+								int idx = 5 - (rela.getSurety() + 10) / 20;
+								String aux = "";
+								if (idx < sureties.length) {
+									aux = sureties[idx];
+								} else {
+									aux = "" + rela.getSurety();
+								}
+								label = new Label(5, rivi, aux);
+								sheet.addCell(label);
+
+								SukuData rdata = Suku.getKontroller()
+										.getSukuData("cmd=person",
+												"pid=" + rela.getRelative());
+								PersonShortData rsp = new PersonShortData(
+										rdata.persLong);
+								label = new Label(6, rivi, rsp.getAlfaName(),
+										arial0);
+								sheet.addCell(label);
+
+								label = new Label(7, rivi, Utils.textDate(rsp
+										.getBirtDate(), false), arial0);
+								sheet.addCell(label);
+								label = new Label(8, rivi, Utils.textDate(rsp
+										.getDeatDate(), false), arial0);
+								sheet.addCell(label);
 							}
-							label = new Label(5, rivi, aux);
-							sheet.addCell(label);
+							if (rela.getNotices() != null) {
+								for (int k = 0; k < rela.getNotices().length; k++) {
+									RelationNotice relnoti = rela.getNotices()[k];
+									if (relnoti.getSurety() < 100) {
 
-							SukuData rdata = Suku.getKontroller().getSukuData(
-									"cmd=person", "pid=" + rela.getRelative());
-							PersonShortData rsp = new PersonShortData(
-									rdata.persLong);
-							label = new Label(6, rivi, rsp.getAlfaName(),
-									arial0);
-							sheet.addCell(label);
+										thisRela = "" + rela.getPid() + "_"
+												+ rela.getRelative();
+										otherRela = "" + rela.getRelative()
+												+ "_" + rela.getPid();
+										if (relaMap.get(otherRela) == null) {
+											relaMap.put(thisRela, "OK");
 
-							label = new Label(7, rivi, Utils.textDate(rsp
-									.getBirtDate(), false), arial0);
-							sheet.addCell(label);
-							label = new Label(8, rivi, Utils.textDate(rsp
-									.getDeatDate(), false), arial0);
-							sheet.addCell(label);
+											rivi++;
+											nume = new jxl.write.Number(0,
+													rivi, psp.getPid());
+											sheet.addCell(nume);
+											label = new Label(1, rivi, psp
+													.getAlfaName(), arial0);
+											sheet.addCell(label);
+											label = new Label(2, rivi, Utils
+													.textDate(
+															psp.getBirtDate(),
+															false), arial0);
+											sheet.addCell(label);
+											label = new Label(3, rivi, Utils
+													.textDate(
+															psp.getDeatDate(),
+															false), arial0);
+											sheet.addCell(label);
+
+											label = new Label(
+													4,
+													rivi,
+													typesTable
+															.getTextValue(relnoti
+																	.getTag()),
+													arial0);
+											sheet.addCell(label);
+
+											int idx = 5 - (relnoti.getSurety() + 10) / 20;
+											String aux = "";
+											if (idx < sureties.length) {
+												aux = sureties[idx];
+											} else {
+												aux = "" + relnoti.getSurety();
+											}
+											label = new Label(5, rivi, aux);
+											sheet.addCell(label);
+
+											SukuData rdata = Suku
+													.getKontroller()
+													.getSukuData(
+															"cmd=person",
+															"pid="
+																	+ rela
+																			.getRelative());
+											PersonShortData rsp = new PersonShortData(
+													rdata.persLong);
+											label = new Label(6, rivi, rsp
+													.getAlfaName(), arial0);
+											sheet.addCell(label);
+
+											label = new Label(7, rivi, Utils
+													.textDate(
+															rsp.getBirtDate(),
+															false), arial0);
+											sheet.addCell(label);
+											label = new Label(8, rivi, Utils
+													.textDate(
+															rsp.getDeatDate(),
+															false), arial0);
+											sheet.addCell(label);
+
+											label = new Label(12, rivi, relnoti
+													.getPrivateText(), arial0);
+											sheet.addCell(label);
+
+										}
+									}
+								}
+							}
 						}
 					}
 
