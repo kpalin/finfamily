@@ -1328,8 +1328,8 @@ public class ReportWorkerDialog extends JDialog implements
 				label = new Label(5, rivi, typesTable
 						.getTextValue("SURETY_SURETY"), arial0bold);
 				sheet.addCell(label);
-				label = new Label(6, rivi, typesTable
-						.getTextValue("SURETY_RELATIVE"), arial0bold);
+				label = new Label(6, rivi, typesTable.getTagName("NAME"),
+						arial0bold);
 				sheet.addCell(label);
 				label = new Label(7, rivi, typesTable.getTagName("BIRT"),
 						arial0bold);
@@ -1337,6 +1337,16 @@ public class ReportWorkerDialog extends JDialog implements
 				label = new Label(8, rivi, typesTable.getTagName("DEAT"),
 						arial0bold);
 				sheet.addCell(label);
+				label = new Label(9, rivi, typesTable
+						.getTextValue("SURETY_DESCRIPTION"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(10, rivi, typesTable
+						.getTextValue("SURETY_DATE"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(11, rivi, typesTable
+						.getTextValue("SURETY_PLACE"), arial0bold);
+				sheet.addCell(label);
+
 				rivi++;
 				for (int i = 0; i < shorts.length; i++) {
 
@@ -1349,7 +1359,78 @@ public class ReportWorkerDialog extends JDialog implements
 					// System.out.println("SURETY=" + psp.getAlfaName());
 					float prose = (i * 100f) / shorts.length;
 					setRunnerValue("" + (int) prose + ";" + psp.getAlfaName());
+					for (int j = 0; j < longs.getNotices().length; j++) {
+						UnitNotice notice = longs.getNotices()[j];
+						if (notice.getSurety() < 100) {
+							rivi++;
+							nume = new jxl.write.Number(0, rivi, psp.getPid());
+							sheet.addCell(nume);
+							label = new Label(1, rivi, psp.getAlfaName(),
+									arial0);
+							sheet.addCell(label);
+							label = new Label(2, rivi, Utils.textDate(psp
+									.getBirtDate(), false), arial0);
+							sheet.addCell(label);
+							label = new Label(3, rivi, Utils.textDate(psp
+									.getDeatDate(), false), arial0);
+							sheet.addCell(label);
+							label = new Label(4, rivi, typesTable
+									.getTextValue(typesTable.getTagName(notice
+											.getTag())), arial0);
+							sheet.addCell(label);
 
+							int idx = 5 - (notice.getSurety() + 10) / 20;
+							String aux = "";
+							if (idx < sureties.length) {
+								aux = sureties[idx];
+							} else {
+								aux = "" + notice.getSurety();
+							}
+							label = new Label(5, rivi, aux);
+							sheet.addCell(label);
+
+							StringBuilder sb = new StringBuilder();
+							if (notice.getGivenname() != null) {
+								sb.append(notice.getGivenname());
+							}
+							if (notice.getPrefix() != null) {
+								if (sb.length() > 0) {
+									sb.append(" ");
+								}
+								sb.append(notice.getPrefix());
+							}
+							if (notice.getSurname() != null) {
+								if (sb.length() > 0) {
+									sb.append(" ");
+								}
+								sb.append(notice.getSurname());
+							}
+							if (notice.getPostfix() != null) {
+								if (sb.length() > 0) {
+									sb.append(" ");
+								}
+								sb.append(notice.getPostfix());
+							}
+							if (sb.length() > 0) {
+								label = new Label(6, rivi, sb.toString(),
+										arial0);
+								sheet.addCell(label);
+							}
+
+							label = new Label(9, rivi, notice.getDescription(),
+									arial0);
+							sheet.addCell(label);
+
+							label = new Label(10, rivi, Utils.textDate(notice
+									.getFromDate(), false), arial0);
+							sheet.addCell(label);
+
+							label = new Label(11, rivi, notice.getPlace(),
+									arial0);
+							sheet.addCell(label);
+						}
+
+					}
 					for (int j = 0; j < relas.length; j++) {
 						Relation rela = relas[j];
 						if (rela.getSurety() < 100) {
@@ -1398,7 +1479,7 @@ public class ReportWorkerDialog extends JDialog implements
 					}
 
 				}
-
+				setRunnerValue("100;OK");
 				workbook.write();
 				workbook.close();
 				bstr.close();
