@@ -179,6 +179,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mDisconnect;
 	private JMenuItem mPrintPerson;
 	private JMenuItem mNewPerson;
+	private JMenuItem mOpenPerson;
 	private JMenuItem mLista;
 	// private JMenuItem mTestSave;
 	// private JMenuItem mTestOpen;
@@ -383,6 +384,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mFile.add(this.mNewPerson);
 		this.mNewPerson.setActionCommand(Resurses.TOOLBAR_NEWPERSON_ACTION);
 		this.mNewPerson.addActionListener(this);
+
+		this.mOpenPerson = new JMenuItem(Resurses.getString("MENU_OPEN_PERSON"));
+		this.mFile.add(this.mOpenPerson);
+		this.mOpenPerson.setActionCommand(Resurses.MENU_OPEN_PERSON);
+		this.mOpenPerson.addActionListener(this);
 
 		this.mPrintPerson = new JMenuItem(Resurses
 				.getString(Resurses.PRINT_PERSON));
@@ -1265,6 +1271,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (cmd.equals("MENU_COPY")) {
 				System.out.println("EDIT-COPY by ctrl/c");
 			}
+
 			if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
 
 				int isele = table.getSelectedRow();
@@ -1341,6 +1348,30 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				importSuku2004Backup();
 				isConnected = 2;
 				enableCommands();
+			} else if (cmd.equals(Resurses.MENU_OPEN_PERSON)) {
+				String textPid = JOptionPane.showInputDialog(this, Resurses
+						.getString("DIALOG_GIVE_PID"));
+				// .showMessageDialog(this, Resurses
+				// .getString(Resurses.PGSQL_STOP)
+				// + ":" + "OK");
+				if (textPid != null) {
+					try {
+						int pid = Integer.parseInt(textPid);
+
+						SukuData res = Suku.kontroller.getSukuData(
+								"cmd=person", "pid=" + pid);
+						if (res.pers != null) {
+							showPerson(pid);
+						} else {
+							JOptionPane.showMessageDialog(this, Resurses
+									.getString("DIALOG_PID_NOT_EXISTS"));
+						}
+					} catch (NumberFormatException ne) {
+						JOptionPane.showMessageDialog(this, Resurses
+								.getString("DIALOG_BAD_PID"));
+					}
+
+				}
 			} else if (cmd.equals("MENU_TOOLS_LOAD_COORDINATES")) {
 				importDefaultCoordinates();
 			} else if (cmd.equals("MENU_TOOLS_LOAD_CONVERSIONS")) {

@@ -324,6 +324,8 @@ public class Resurses {
 	/** */
 	public static final String MENU_LISTA = "MENU_LISTA";
 
+	public static final String MENU_OPEN_PERSON = "MENU_OPEN_PERSON";
+
 	/** */
 	private static Resurses myself = null;
 	private static ExcelBundle resources = null;
