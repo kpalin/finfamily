@@ -81,7 +81,6 @@ import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.panel.PersonView;
 import fi.kaila.suku.swing.panel.SukuTabPane;
 import fi.kaila.suku.swing.util.SukuPopupMenu;
-import fi.kaila.suku.util.CommandExecuter;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateComparator;
 import fi.kaila.suku.util.SukuException;
@@ -161,7 +160,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	/**
 	 * Application version
 	 */
-	public static final String sukuVersion = "11.-3.0367";
+	public static final String sukuVersion = "11.-3.0369";
 	/**
 	 * Server version
 	 */
@@ -201,8 +200,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mDbWork;
 	private JMenuItem mDbUpdate;
 	private JMenuItem mListDatabases;
-	private JMenuItem mStopPgsql;
-	private JMenuItem mStartPgsql;
+	// private JMenuItem mStopPgsql;
+	// private JMenuItem mStartPgsql;
 	private JMenu mHiski;
 	private JMenuItem mImportHiski;
 	private JMenu mHelp;
@@ -496,20 +495,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			mListDatabases.setActionCommand("MENU_TOOLS_LIST_DATABASES");
 			mListDatabases.addActionListener(this);
 		}
-		if (System.getProperty("file.separator").charAt(0) == '\\') { // windows
-			// only
-			this.mStopPgsql = new JMenuItem(Resurses
-					.getString(Resurses.PGSQL_STOP));
-			this.mTools.add(this.mStopPgsql);
-			this.mStopPgsql.setActionCommand(Resurses.PGSQL_STOP);
-			this.mStopPgsql.addActionListener(this);
-
-			this.mStartPgsql = new JMenuItem(Resurses
-					.getString(Resurses.PGSQL_START));
-			this.mTools.add(this.mStartPgsql);
-			this.mStartPgsql.setActionCommand(Resurses.PGSQL_START);
-			this.mStartPgsql.addActionListener(this);
-		}
+		// if (System.getProperty("file.separator").charAt(0) == '\\') { //
+		// windows
+		// // only
+		// this.mStopPgsql = new JMenuItem(Resurses
+		// .getString(Resurses.PGSQL_STOP));
+		// this.mTools.add(this.mStopPgsql);
+		// this.mStopPgsql.setActionCommand(Resurses.PGSQL_STOP);
+		// this.mStopPgsql.addActionListener(this);
+		//
+		// this.mStartPgsql = new JMenuItem(Resurses
+		// .getString(Resurses.PGSQL_START));
+		// this.mTools.add(this.mStartPgsql);
+		// this.mStartPgsql.setActionCommand(Resurses.PGSQL_START);
+		// this.mStartPgsql.addActionListener(this);
+		// }
 
 		this.mHelp = new JMenu(Resurses.getString(Resurses.HELP));
 		this.menubar.add(this.mHelp);
@@ -1399,34 +1399,34 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			} else if (cmd.equals(Resurses.SETTINGS)) {
 				SettingsDialog sets = new SettingsDialog(this);
 				sets.setVisible(true);
-			} else if (cmd.equals(Resurses.PGSQL_STOP)) {
-				String[] netcmd = { "net", "stop", "pgsql-8.3" };
-				try {
-					CommandExecuter.executeTheCommnad(netcmd);
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString(Resurses.PGSQL_STOP)
-							+ ":" + "OK");
-
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString(Resurses.PGSQL_STOP)
-							+ ":" + e1.getMessage());
-					e1.printStackTrace();
-				}
-			} else if (cmd.equals(Resurses.PGSQL_START)) {
-				String[] netcmd = { "net", "start", "pgsql-8.3" };
-				try {
-					CommandExecuter.executeTheCommnad(netcmd);
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString(Resurses.PGSQL_START)
-							+ ":" + "OK");
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString(Resurses.PGSQL_START)
-							+ ":" + e1.getMessage());
-
-					e1.printStackTrace();
-				}
+				// } else if (cmd.equals(Resurses.PGSQL_STOP)) {
+				// String[] netcmd = { "net", "stop", "pgsql-8.3" };
+				// try {
+				// CommandExecuter.executeTheCommnad(netcmd);
+				// JOptionPane.showMessageDialog(this, Resurses
+				// .getString(Resurses.PGSQL_STOP)
+				// + ":" + "OK");
+				//
+				// } catch (Exception e1) {
+				// JOptionPane.showMessageDialog(this, Resurses
+				// .getString(Resurses.PGSQL_STOP)
+				// + ":" + e1.getMessage());
+				// e1.printStackTrace();
+				// }
+				// } else if (cmd.equals(Resurses.PGSQL_START)) {
+				// String[] netcmd = { "net", "start", "pgsql-8.3" };
+				// try {
+				// CommandExecuter.executeTheCommnad(netcmd);
+				// JOptionPane.showMessageDialog(this, Resurses
+				// .getString(Resurses.PGSQL_START)
+				// + ":" + "OK");
+				// } catch (Exception e1) {
+				// JOptionPane.showMessageDialog(this, Resurses
+				// .getString(Resurses.PGSQL_START)
+				// + ":" + e1.getMessage());
+				//
+				// e1.printStackTrace();
+				// }
 			} else if (cmd.equals(Resurses.PRINT_PERSON)) {
 
 				this.personView.testMe();
