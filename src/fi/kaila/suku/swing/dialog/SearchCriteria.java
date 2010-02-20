@@ -27,6 +27,7 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTextField;
+import fi.kaila.suku.util.SukuTypesModel;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -67,6 +68,13 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	private String[] viewArray = null;
 	private JTextField viewGroup;
 	private String preferredView = null;
+
+	private JTextField place;
+	private JComboBox noticeList;
+	private JCheckBox noticeExist;
+	private JComboBox sex;
+	private JTextField fullText;
+
 	JPanel colpanel;
 
 	JPanel namePanel;
@@ -74,6 +82,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	JPanel deatPanel;
 	JPanel createdPanel;
 	JPanel viewPanel;
+	JPanel placePanel;
+	JPanel sexPanel;
+	JPanel textPanel;
 
 	private JButton ok;
 	private JButton reset;
@@ -367,6 +378,62 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		viewGroup = new JTextField();
 		this.viewPanel.add(viewGroup);
 
+		y += 80;
+
+		tit = BorderFactory.createTitledBorder(bvl, Resurses
+				.getString("CRITERIA_PLACE_NOTICE"));
+
+		placePanel = new JPanel(new GridLayout(2, 3, 10, 10));
+		getContentPane().add(this.placePanel);
+		placePanel.setBounds(20, y, 400, 80);
+		placePanel.setBorder(tit);
+
+		lbl = new JLabel(Resurses.getString("CRITERIA_PLACE"));
+		placePanel.add(lbl);
+
+		noticeExist = new JCheckBox(Resurses
+				.getString("CRITERIA_NOTICE_MISSING"));
+		placePanel.add(noticeExist);
+
+		place = new JTextField();
+		placePanel.add(place);
+
+		noticeList = new JComboBox();
+		placePanel.add(noticeList);
+
+		tit = BorderFactory.createTitledBorder(bvl, Resurses
+				.getString("CRITERIA_SEX"));
+
+		sexPanel = new JPanel(new GridLayout(2, 0, 10, 10));
+		getContentPane().add(sexPanel);
+		sexPanel.setBounds(420, y, 200, 80);
+		sexPanel.setBorder(tit);
+		lbl = new JLabel("");
+		sexPanel.add(lbl);
+		String sexes[] = new String[4];
+		sexes[0] = "";
+		sexes[1] = Resurses.getString("SEX_M");
+		sexes[2] = Resurses.getString("SEX_F");
+		sexes[3] = Resurses.getString("SEX_U");
+		sex = new JComboBox(sexes);
+		sexPanel.add(sex);
+
+		y += 80;
+
+		tit = BorderFactory.createTitledBorder(bvl, Resurses
+				.getString("CRITERIA_FULL_TEXT"));
+
+		textPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+		getContentPane().add(textPanel);
+		textPanel.setBounds(20, y, 400, 80);
+		textPanel.setBorder(tit);
+
+		lbl = new JLabel(Resurses.getString("CRITERIA_FILL_TEXT_DESCRIPTION"));
+		textPanel.add(lbl);
+
+		fullText = new JTextField();
+		textPanel.add(fullText);
+
 		// String [] auxes = {"cmd=viewlist"};
 		// SukuData fam = kontroller.getSukuData(auxes);
 		//		
@@ -396,7 +463,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		//
 		// preferredView = Suku.kontroller.getPref(this, "viewId", "0");
 
-		y = 380;
+		y = 460;
 
 		this.ok = new JButton(Resurses.OK);
 		// this.ok.setDefaultCapable(true);
@@ -430,6 +497,20 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 */
 	public int getColTableCount() {
 		return this.coltables.length;
+	}
+
+	/**
+	 * populate notices list
+	 */
+	public void populateNotices() {
+		SukuTypesModel typesModel = Utils.typeInstance();
+		noticeList.removeAllItems();
+		// String[] names = new String[typesModel.getTypesTagsCount()];
+		noticeList.addItem("");
+		for (int i = 0; i < typesModel.getTypesTagsCount(); i++) {
+			noticeList.addItem(typesModel.getTypesName(i));
+		}
+
 	}
 
 	/**
