@@ -24,6 +24,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTextField;
@@ -73,6 +74,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	private JComboBox noticeList;
 	private JCheckBox noticeExist;
 	private JComboBox sex;
+	private SukuSuretyField surety;
 	private JTextField fullText;
 
 	JPanel colpanel;
@@ -402,14 +404,16 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		placePanel.add(noticeList);
 
 		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString("CRITERIA_SEX"));
+				.getString("CRITERIA_SEX_SURETY"));
 
 		sexPanel = new JPanel(new GridLayout(2, 0, 10, 10));
 		getContentPane().add(sexPanel);
 		sexPanel.setBounds(420, y, 200, 80);
 		sexPanel.setBorder(tit);
-		lbl = new JLabel("");
-		sexPanel.add(lbl);
+
+		surety = new SukuSuretyField();
+		sexPanel.add(surety);
+
 		String sexes[] = new String[4];
 		sexes[0] = "";
 		sexes[1] = Resurses.getString("SEX_M");
@@ -500,28 +504,21 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * populate notices list
-	 */
-	public void populateNotices() {
-		SukuTypesModel typesModel = Utils.typeInstance();
-		noticeList.removeAllItems();
-		// String[] names = new String[typesModel.getTypesTagsCount()];
-		noticeList.addItem("");
-		for (int i = 0; i < typesModel.getTypesTagsCount(); i++) {
-			noticeList.addItem(typesModel.getTypesName(i));
-		}
-
-	}
-
-	/**
 	 * populate combobox for views
 	 * 
 	 * @param lista
 	 */
-	public void populateFields(String[] lista) {
+	public void populateFields() {
 
 		try {
-			viewArray = lista;
+			SukuTypesModel typesModel = Utils.typeInstance();
+			noticeList.removeAllItems();
+			// String[] names = new String[typesModel.getTypesTagsCount()];
+			noticeList.addItem("");
+			for (int i = 0; i < typesModel.getTypesTagsCount(); i++) {
+				noticeList.addItem(typesModel.getTypesName(i));
+			}
+
 			SukuData sets = Suku.kontroller.getSukuData("cmd=getsettings",
 					"type=query");
 			resetArguments();
@@ -575,12 +572,57 @@ public class SearchCriteria extends JDialog implements ActionListener {
 							}
 						}
 
+					} else if (parts[0].equals("place")) {
+						place.setText(parts[1]);
+					} else if (parts[0].equals("notice")) {
+						SukuTypesModel model = Utils.typeInstance();
+						int indx = 0;
+						for (int j = 0; j < model.getTypesTagsCount(); j++) {
+							if (parts[1].equals(model.getTypesTag(j))) {
+								indx = j + 1;
+							}
+						}
+						if (indx < noticeList.getItemCount()) {
+							noticeList.setSelectedIndex(indx);
+						}
+
+					} else if (parts[0].equals("noticeExists")) {
+						noticeExist.setSelected(true);
+					} else if (parts[0].equals("surety")) {
+						int suretyValue = 100;
+						try {
+							suretyValue = Integer.parseInt(parts[1]);
+						} catch (NumberFormatException ne) {
+						}
+						surety.setSurety(suretyValue);
+
+					} else if (parts[0].equals("sex")) {
+						int sexIndex = 0;
+						char s = parts[1].charAt(0);
+						switch (s) {
+						case 'M':
+							sexIndex = 1;
+							break;
+						case 'F':
+							sexIndex = 2;
+							break;
+						case 'U':
+							sexIndex = 2;
+
+						}
+						sex.setSelectedIndex(sexIndex);
+					} else if (parts[0].equals("fullText")) {
+						fullText.setText(parts[1]);
 					}
 
 				}
 
 			}
 
+			SukuData vlist = Suku.kontroller.getSukuData("cmd=viewlist");
+			String[] lista = vlist.generalArray;
+
+			viewArray = lista;
 			viewList.addItem("");
 			for (int i = 0; i < viewArray.length; i++) {
 				String[] pp = viewArray[i].split(";");
@@ -602,6 +644,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			if (preferredIndex > 0) {
 				viewList.setSelectedIndex(preferredIndex + 1);
 			}
+
 		} catch (SukuException e) {
 			//
 		}
@@ -928,6 +971,44 @@ public class SearchCriteria extends JDialog implements ActionListener {
 				}
 			}
 			v.add("viewGroup=" + viewGroup.getText());
+			v.add("place=" + place.getText());
+
+			int noticeIdx = noticeList.getSelectedIndex();
+			if (noticeIdx > 0) {
+				SukuTypesModel model = Utils.typeInstance();
+				String tag = model.getTypesTag(noticeIdx - 1);
+				if (tag != null) {
+					v.add("notice=" + tag);
+				}
+
+			}
+			if (noticeExist.isSelected()) {
+				v.add("noticeExists=false");
+			}
+			int suretyValue = surety.getSurety();
+			if (suretyValue < 100) {
+				v.add("surety=" + suretyValue);
+			}
+			int sexIndex = sex.getSelectedIndex();
+			if (sexIndex > 0) {
+				String sexValue = null;
+				switch (sexIndex) {
+				case 1:
+					sexValue = "M";
+					break;
+				case 2:
+					sexValue = "F";
+					break;
+				case 3:
+					sexValue = "U";
+					break;
+
+				}
+				if (sexValue != null) {
+					v.add("sex=" + sexValue);
+				}
+			}
+			v.add("fullText=" + fullText.getText());
 			SukuData request = new SukuData();
 			request.generalArray = v.toArray(new String[0]);
 			try {
@@ -968,6 +1049,17 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		}
 		viewGroup.setText("");
 		preferredView = "";
+		place.setText("");
+		if (noticeList.getItemCount() > 0) {
+			noticeList.setSelectedIndex(0);
+		}
+		if (sex.getItemCount() > 0) {
+			sex.setSelectedIndex(0);
+		}
+		surety.setSurety(100);
+		noticeExist.setSelected(false);
+		fullText.setText("");
+
 	}
 
 }
