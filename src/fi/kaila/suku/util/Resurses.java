@@ -172,10 +172,7 @@ public class Resurses {
 	 * Show buried as death if death is missing
 	 */
 	public static final String COLUMN_T_DEAT_BURI = "T_DEAT_BURI";
-
-	/**
-	 * OK
-	 */
+	/** */
 	public static final String OK = "OK";
 	/** */
 	public static final String RESET = "RESET";
@@ -232,10 +229,7 @@ public class Resurses {
 	public static final String REPOLANG = "REPOLANG";
 	/** */
 	public static final String DATEFORMAT = "DATEFORMAT";
-	// /** */
-	// public static final String PGSQL_STOP = "PGSQL_STOP";
-	// /** */
-	// public static final String PGSQL_START = "PGSQL_START";
+
 	/** */
 	public static final String HISKI_UPLOAD = "HISKI_UPLOAD";
 	/** */
@@ -282,7 +276,6 @@ public class Resurses {
 	public static final String TOOLBAR_ADDNOTICE_IMAGE = "tab_new";
 	/** */
 	public static final String TOOLBAR_ADDNOTICE_ACTION = "ADDNOTICE";
-
 	/** */
 	public static final String TOOLBAR_NOTICES_ACTION = "SHOW_NOTICES";
 	/** */
@@ -305,15 +298,9 @@ public class Resurses {
 	public static final String TOOLBAR_SUBJECT_DOWN_ACTION = "SUBJECTC";
 	/** */
 	public static final String TOOLBAR_SUBJECT_UP_ACTION = "SUBJECTP";
-
-	/**
-	 * 
-	 */
+	/** */
 	public static final String HISKI_NORMALIZE = "HISKI_NORMALIZE";
-
-	/**
-	 * 
-	 */
+	/** */
 	public static final String CMD_ANC_TYPE = "anc";
 	/** */
 	public static final String PRIVACY_TEXT = "T";
@@ -323,10 +310,23 @@ public class Resurses {
 	public static final String PRIVACY_PRIVACY = "P";
 	/** */
 	public static final String MENU_LISTA = "MENU_LISTA";
-
+	/** */
 	public static final String MENU_OPEN_PERSON = "MENU_OPEN_PERSON";
 
-	/** */
+	public static final String CRITERIA_PLACE = "CRITERIA_PLACE";
+
+	public static final String CRITERIA_NOTICE_MISSING = "CRITERIA_NOTICE_MISSING";
+
+	public static final String CRITERIA_FULL_TEXT = "CRITERIA_FULL_TEXT";
+
+	public static final String CRITERIA_NOTICE = "CRITERIA_NOTICE";
+
+	public static final String CRITERIA_NOTICE_EXISTS = "CRITERIA_NOTICE_EXISTS";
+
+	public static final String CRITERIA_SURETY = "CRITERIA_SURETY";
+
+	public static final String CRITERIA_SEX = "CRITERIA_SEX";
+
 	private static Resurses myself = null;
 	private static ExcelBundle resources = null;
 

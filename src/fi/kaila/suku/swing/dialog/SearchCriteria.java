@@ -91,6 +91,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	private JButton ok;
 	private JButton reset;
 
+	private char[] sexcodes = { 0, 'M', 'F', 'U' };
+
 	private ColTable[] coltables = { new ColTable(Resurses.COLUMN_T_SEX, true),
 			new ColTable(Resurses.COLUMN_T_ISMARR, true),
 			new ColTable(Resurses.COLUMN_T_ISCHILD, true),
@@ -390,11 +392,11 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		placePanel.setBounds(20, y, 400, 80);
 		placePanel.setBorder(tit);
 
-		lbl = new JLabel(Resurses.getString("CRITERIA_PLACE"));
+		lbl = new JLabel(Resurses.getString(Resurses.CRITERIA_PLACE));
 		placePanel.add(lbl);
 
 		noticeExist = new JCheckBox(Resurses
-				.getString("CRITERIA_NOTICE_MISSING"));
+				.getString(Resurses.CRITERIA_NOTICE_MISSING));
 		placePanel.add(noticeExist);
 
 		place = new JTextField();
@@ -416,16 +418,16 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		String sexes[] = new String[4];
 		sexes[0] = "";
-		sexes[1] = Resurses.getString("SEX_M");
-		sexes[2] = Resurses.getString("SEX_F");
-		sexes[3] = Resurses.getString("SEX_U");
+		sexes[1] = Resurses.getString("SEX_" + sexcodes[1]);
+		sexes[2] = Resurses.getString("SEX_" + sexcodes[2]);
+		sexes[3] = Resurses.getString("SEX_" + sexcodes[3]);
 		sex = new JComboBox(sexes);
 		sexPanel.add(sex);
 
 		y += 80;
 
 		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString("CRITERIA_FULL_TEXT"));
+				.getString(Resurses.CRITERIA_FULL_TEXT));
 
 		textPanel = new JPanel(new GridLayout(2, 1, 10, 10));
 		getContentPane().add(textPanel);
@@ -599,17 +601,13 @@ public class SearchCriteria extends JDialog implements ActionListener {
 					} else if (parts[0].equals("sex")) {
 						int sexIndex = 0;
 						char s = parts[1].charAt(0);
-						switch (s) {
-						case 'M':
-							sexIndex = 1;
-							break;
-						case 'F':
-							sexIndex = 2;
-							break;
-						case 'U':
-							sexIndex = 2;
-
+						for (int j = 0; j < sexcodes.length; j++) {
+							if (s == sexcodes[j]) {
+								sexIndex = j;
+								break;
+							}
 						}
+
 						sex.setSelectedIndex(sexIndex);
 					} else if (parts[0].equals("fullText")) {
 						fullText.setText(parts[1]);
@@ -802,7 +800,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 				break;
 			}
 		}
-		return 13 + addCol;
+		return 19 + addCol;
 	}
 
 	/**
@@ -844,6 +842,30 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			return this.viewGroup.getText();
 		case 13:
 			return "yes";
+		case 14:
+			return place.getText();
+		case 15:
+			int noticeIdx = noticeList.getSelectedIndex();
+			if (noticeIdx > 0) {
+				SukuTypesModel model = Utils.typeInstance();
+				return model.getTypesTag(noticeIdx - 1);
+			}
+			return null;
+		case 16:
+			return (noticeExist.isSelected()) ? "true" : null;
+
+		case 17:
+			return "" + surety.getSurety();
+		case 18:
+			int sexIdx = sex.getSelectedIndex();
+			if (sexIdx > 0) {
+				return "" + sexcodes[sexIdx];
+			}
+			return null;
+
+		case 19:
+			return fullText.getText();
+
 		default:
 			return null;
 		}
@@ -883,6 +905,18 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			return Resurses.CRITERIA_GROUP;
 		case 13:
 			return Resurses.CRITERIA_RELATIVE_INFO;
+		case 14:
+			return Resurses.CRITERIA_PLACE;
+		case 15:
+			return Resurses.CRITERIA_NOTICE;
+		case 16:
+			return Resurses.CRITERIA_NOTICE_EXISTS;
+		case 17:
+			return Resurses.CRITERIA_SURETY;
+		case 18:
+			return Resurses.CRITERIA_SEX;
+		case 19:
+			return Resurses.CRITERIA_FULL_TEXT;
 		default:
 			return null;
 		}
@@ -990,21 +1024,11 @@ public class SearchCriteria extends JDialog implements ActionListener {
 				v.add("surety=" + suretyValue);
 			}
 			int sexIndex = sex.getSelectedIndex();
-			if (sexIndex > 0) {
-				String sexValue = null;
-				switch (sexIndex) {
-				case 1:
-					sexValue = "M";
-					break;
-				case 2:
-					sexValue = "F";
-					break;
-				case 3:
-					sexValue = "U";
-					break;
+			if (sexIndex > 0 && sexIndex < sexcodes.length) {
 
-				}
-				if (sexValue != null) {
+				char sexValue = sexcodes[sexIndex];
+
+				if (sexValue != 0) {
 					v.add("sex=" + sexValue);
 				}
 			}

@@ -442,7 +442,14 @@ inner join Relation as g2 on g1.RID = g2.RID and g1.surety >=80 and g2.surety >=
 inner join Unit as p2 on g2.pid = p2.pid and g2.tag = 'WIFE')
 where p1.pid <> p2.pid;
 
-
+create view fullUnitNotice as
+select pid,pnid,coalesce(NoticeType,'') || coalesce(Description,'') ||coalesce(Place,'') ||
+coalesce(Village,'') ||coalesce(Farm,'') ||coalesce(Croft,'') ||coalesce(Address,'') ||
+coalesce(PostOffice,'') ||coalesce(PostalCode,'') ||coalesce(State,'') ||coalesce(Country,'') ||
+coalesce(NoteText,'') ||coalesce(MediaFilename,'') ||coalesce(MediaTitle,'') ||
+coalesce(Prefix,'') ||coalesce(Surname,'') ||coalesce(Givenname,'') ||coalesce(Patronym,'') ||
+coalesce(PostFix,'') ||coalesce(SourceText,'') ||coalesce(PrivateText,'') as fulltext
+from unitnotice 
 
 
 create view unitNotice_fi as
@@ -493,6 +500,8 @@ u1.Prefix,u1.Surname,u1.Givenname,u1.Patronym,u1.PostFix,
 u1.RefNames,u1.RefPlaces,u1.SourceText,u1.PrivateText,u1.modified,u1.CreateDate
 from unitNotice as u1 left join unitLanguage as u2 
 on u1.pnid = u2.pnid and u2.langcode = 'en';
+
+
 
 insert into sukusettings (settingtype,settingindex,settingname,settingvalue) values ('order',1,'notice','BIRT');
 insert into sukusettings (settingtype,settingindex,settingname,settingvalue) values ('order',2,'notice','CHR');
