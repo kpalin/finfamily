@@ -12,6 +12,7 @@ drop view if exists parent;
 drop view if exists wife;
 drop view if exists husband;
 drop view if exists child;
+drop view if exists fullTextView;
 
 drop view if exists unitNotice_fi;
 drop view if exists unitNotice_sv;
@@ -441,15 +442,28 @@ on p1.pid = g1.pid and g1.tag = 'HUSB')
 inner join Relation as g2 on g1.RID = g2.RID and g1.surety >=80 and g2.surety >= 80)
 inner join Unit as p2 on g2.pid = p2.pid and g2.tag = 'WIFE')
 where p1.pid <> p2.pid;
-
-create view fullUnitNotice as
-select pid,pnid,coalesce(NoticeType,'') || coalesce(Description,'') ||coalesce(Place,'') ||
-coalesce(Village,'') ||coalesce(Farm,'') ||coalesce(Croft,'') ||coalesce(Address,'') ||
-coalesce(PostOffice,'') ||coalesce(PostalCode,'') ||coalesce(State,'') ||coalesce(Country,'') ||
-coalesce(NoteText,'') ||coalesce(MediaFilename,'') ||coalesce(MediaTitle,'') ||
-coalesce(Prefix,'') ||coalesce(Surname,'') ||coalesce(Givenname,'') ||coalesce(Patronym,'') ||
-coalesce(PostFix,'') ||coalesce(SourceText,'') ||coalesce(PrivateText,'') as fulltext
+create view fullTextView as
+select pid,coalesce(NoticeType,'') || ' ' || coalesce(Description,'') || ' ' ||coalesce(Place,'') || ' ' ||
+coalesce(Village,'') || ' ' ||coalesce(Farm,'') || ' ' ||coalesce(Croft,'') || ' ' ||coalesce(Address,'') || ' ' ||
+coalesce(PostOffice,'') || ' ' ||coalesce(PostalCode,'') || ' ' ||coalesce(State,'') || ' ' ||coalesce(Country,'') || ' ' ||
+coalesce(NoteText,'') || ' ' ||coalesce(MediaFilename,'') || ' ' ||coalesce(MediaTitle,'') || ' ' ||
+coalesce(Prefix,'') || ' ' ||coalesce(Surname,'') || ' ' ||coalesce(Givenname,'') || ' ' ||coalesce(Patronym,'') || ' ' ||
+coalesce(PostFix,'') || ' ' ||coalesce(SourceText,'') || ' ' ||coalesce(PrivateText,'') as fulltext
 from unitnotice 
+union 
+select pid,coalesce(NoticeType,'') || ' ' || coalesce(Description,'') || ' ' ||coalesce(Place,'') || ' ' ||
+coalesce(NoteText,'') || ' '  ||coalesce(MediaTitle,'') as fulltext
+from unitlanguage
+union 
+select u.pid,coalesce(RelationType,'') || ' ' || coalesce(Description,'') || ' ' ||coalesce(Place,'') || ' ' ||
+coalesce(NoteText,'') || ' ' ||coalesce(n.SourceText,'') || ' ' ||coalesce(n.PrivateText,'') as fulltext
+from unit as u inner join relation as r on u.pid=r.pid inner join relationnotice as n on r.rid=n.rid
+union 
+select u.pid,coalesce(RelationType,'') || ' ' || coalesce(Description,'') || ' ' ||coalesce(Place,'') || ' ' ||
+coalesce(NoteText,'')  as fulltext
+from unit as u inner join relation as r on u.pid=r.pid inner join relationlanguage as n on r.rid=n.rid;
+
+
 
 
 create view unitNotice_fi as

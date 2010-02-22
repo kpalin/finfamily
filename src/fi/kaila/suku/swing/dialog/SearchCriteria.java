@@ -506,9 +506,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * populate combobox for views
+	 * populate combobox lists
 	 * 
-	 * @param lista
 	 */
 	public void populateFields() {
 

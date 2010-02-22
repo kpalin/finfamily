@@ -356,9 +356,18 @@ public class QueryUtil {
 					}
 					isFirstCriteria = false;
 
-					fromSQL
-							.append("u.pid in (select pid from fullUnitNotice where fulltext ilike '%"
-									+ toQuery(searchFullText) + "%') ");
+					String[] parts = searchFullText.split(";");
+					fromSQL.append("(");
+					for (int i = 0; i < parts.length; i++) {
+
+						if (i > 0) {
+							fromSQL.append("or ");
+						}
+						fromSQL
+								.append("u.pid in (select pid from fullTextView where fulltext ilike '%"
+										+ toQuery(parts[i]) + "%') ");
+					}
+					fromSQL.append(")");
 
 				}
 

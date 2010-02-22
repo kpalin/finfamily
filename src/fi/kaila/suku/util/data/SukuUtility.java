@@ -119,9 +119,7 @@ public class SukuUtility {
 						}
 						wasDash = false;
 						sb.append(c);
-
 					}
-
 				}
 
 				String sql = sb.toString();
