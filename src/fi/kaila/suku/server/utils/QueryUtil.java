@@ -360,15 +360,15 @@ public class QueryUtil {
 					for (int i = 0; i < parts.length; i++) {
 
 						if (i > 0) {
-							if (parts[i].equals(Resurses
+							if (parts[i].equalsIgnoreCase(Resurses
 									.getString("CRITERIA_AND"))) {
 								valueAndOrNot = 0;
 								continue;
-							} else if (parts[i].equals(Resurses
+							} else if (parts[i].equalsIgnoreCase(Resurses
 									.getString("CRITERIA_OR"))) {
 								valueAndOrNot = 1;
 								continue;
-							} else if (parts[i].equals(Resurses
+							} else if (parts[i].equalsIgnoreCase(Resurses
 									.getString("CRITERIA_NOT"))) {
 								valueAndOrNot = 2;
 								continue;
