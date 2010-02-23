@@ -1,5 +1,6 @@
 package fi.kaila.suku.report;
 
+import java.awt.Dimension;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,7 +29,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import fi.kaila.suku.report.dialog.WorkerDialogInterface;
+import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ImageText;
 import fi.kaila.suku.util.Resurses;
@@ -62,15 +63,15 @@ public class XmlReport implements ReportInterface {
 	private String translator = null;
 	private String report = null;
 	private String folder = null;
-	private int maxImageHeight = 0;
-	private int maxPersonImageHeight = 0;
+	private Dimension maxImageSize = new Dimension(0, 0);
+	private Dimension maxPersonImageSize = new Dimension(0, 0);
 	private int translatorIdx;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	int imageCounter = 0;
 	private boolean reportClosed = false;
 	private boolean debugState = false;
-	private WorkerDialogInterface parent;
+	private ReportWorkerDialog parent;
 	String title;
 
 	/**
@@ -82,13 +83,13 @@ public class XmlReport implements ReportInterface {
 	 * @param title
 	 * @throws SukuException
 	 */
-	public XmlReport(WorkerDialogInterface parent, int translatorIdx,
-			String title) throws SukuException {
+	public XmlReport(ReportWorkerDialog parent, int translatorIdx, String title)
+			throws SukuException {
 		this.parent = parent;
 		this.title = title;
 		this.translatorIdx = translatorIdx;
-		maxImageHeight = parent.getImageMaxHeight();
-		maxPersonImageHeight = parent.getPersonImageMaxHeight();
+		maxImageSize = parent.getImageMaxSize();
+		maxPersonImageSize = parent.getPersonImageMaxSize();
 		debugState = parent.getDebugState();
 		switch (translatorIdx) {
 		case 1:
@@ -111,8 +112,7 @@ public class XmlReport implements ReportInterface {
 			boolean fileExists = false;
 			if (f.isFile()) {
 				fileExists = true;
-				int resu = JOptionPane.showConfirmDialog(parent
-						.getWorkerDialog(), Resurses
+				int resu = JOptionPane.showConfirmDialog(parent, Resurses
 						.getString("CONFIRM_REPLACE_REPORT"), Resurses
 						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
@@ -129,12 +129,14 @@ public class XmlReport implements ReportInterface {
 					File d = new File(folder);
 					if (d.exists()) {
 						if (!fileExists && d.isDirectory()) {
-							int resu = JOptionPane.showConfirmDialog(parent
-									.getWorkerDialog(), Resurses
-									.getString("CONFIRM_REPLACE_REPORTDIR"),
-									Resurses.getString(Resurses.SUKU),
-									JOptionPane.YES_NO_OPTION,
-									JOptionPane.QUESTION_MESSAGE);
+							int resu = JOptionPane
+									.showConfirmDialog(
+											parent,
+											Resurses
+													.getString("CONFIRM_REPLACE_REPORTDIR"),
+											Resurses.getString(Resurses.SUKU),
+											JOptionPane.YES_NO_OPTION,
+											JOptionPane.QUESTION_MESSAGE);
 							if (resu != JOptionPane.YES_OPTION) {
 								throw new SukuException("");
 							}
@@ -300,28 +302,75 @@ public class XmlReport implements ReportInterface {
 				ele.setAttribute("imageNo", "" + imageCounter);
 			}
 			ele.setAttribute("imageName", Resurses.getString("REPORT.IMAGE"));
-			int maxHeight = maxImageHeight;
+
+			Dimension maxSize = maxImageSize;
 			if (isPersonImage) {
-				maxHeight = maxPersonImageHeight;
+				maxSize = maxPersonImageSize;
 			}
-
-			if (imgHeight > maxHeight) {
-
-				float mh = maxHeight;
-
-				float multip = mh / imgHeight;
-				float w = imgWidth * multip;
-				float h = imgHeight * multip;
-
-				if (h > 10) {
-					ele.setAttribute("width", "" + w);
-					ele.setAttribute("height", "" + h);
+			float w;
+			float h;
+			if (maxSize.width == 0 && maxSize.height == 0) {
+				w = imgWidth;
+				h = imgHeight;
+			} else if (maxSize.height == 0) {
+				if (imgWidth > maxSize.width) {
+					float mw = maxSize.width;
+					float multip = mw / imgWidth;
+					w = imgWidth * multip;
+					h = imgHeight * multip;
+				} else {
+					w = imgWidth;
+					h = imgHeight;
 				}
-
+			} else if (maxSize.width == 0) {
+				if (imgHeight > maxSize.height) {
+					float mh = maxSize.height;
+					float multip = mh / imgHeight;
+					w = imgWidth * multip;
+					h = imgHeight * multip;
+				} else {
+					w = imgWidth;
+					h = imgHeight;
+				}
+			} else {
+				float mw = maxSize.width;
+				float mh = maxSize.height;
+				float multiw = mw / imgWidth;
+				float multih = mh / imgHeight;
+				float multip = (multiw < multih) ? multiw : multih;
+				if (multip < 1) {
+					w = imgWidth * multip;
+					h = imgHeight * multip;
+				} else {
+					w = imgWidth;
+					h = imgHeight;
+				}
+			}
+			if (h > 10) {
+				ele.setAttribute("width", "" + w);
+				ele.setAttribute("height", "" + h);
 			} else {
 				ele.setAttribute("width", "" + imgWidth);
 				ele.setAttribute("height", "" + imgHeight);
 			}
+
+			// if (imgHeight > maxHeight) {
+			//
+			// float mh = maxHeight;
+			//
+			// float multip = mh / imgHeight;
+			// float w = imgWidth * multip;
+			// float h = imgHeight * multip;
+			//
+			// if (h > 10) {
+			// ele.setAttribute("width", "" + w);
+			// ele.setAttribute("height", "" + h);
+			// }
+			//
+			// } else {
+			// ele.setAttribute("width", "" + imgWidth);
+			// ele.setAttribute("height", "" + imgHeight);
+			// }
 
 			if (img != null) {
 				iii = doc.createElement("media");

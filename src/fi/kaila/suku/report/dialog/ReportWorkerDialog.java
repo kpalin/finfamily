@@ -81,15 +81,15 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  * @author Kalle
  * 
  */
-public class ReportWorkerDialog extends JDialog implements
-		WorkerDialogInterface, ActionListener, PropertyChangeListener {
+public class ReportWorkerDialog extends JDialog implements ActionListener,
+		PropertyChangeListener {
 
-	// dateformats
+	// date formats
 	private static final String SET_FI = "FI";
 	private static final String SET_SE = "SE";
 	private static final String SET_UK = "UK";
 	private static final String SET_US = "US";
-	// sourceformat
+	// source format
 	private static final String SET_NO = "NO";
 	private static final String SET_TX1 = "TX1";
 	private static final String SET_TX2 = "TX2";
@@ -191,8 +191,8 @@ public class ReportWorkerDialog extends JDialog implements
 	}
 
 	private JCheckBox commonWithImages = null;
-	private JTextField commonImageHeight = null;
-	private JTextField commonPersonImageHeight = null;
+	private JTextField commonImageSize = null;
+	private JTextField commonPersonImageSize = null;
 	private JCheckBox commonNumberImages = null;
 	private JCheckBox commonBendNames = null;
 	private JCheckBox commonSeparateNotices = null;
@@ -281,23 +281,48 @@ public class ReportWorkerDialog extends JDialog implements
 	/**
 	 * @return max height of image (in pixels)
 	 */
-	public int getImageMaxHeight() {
-		try {
-			return Integer.parseInt(commonImageHeight.getText());
-		} catch (NumberFormatException ne) {
-			return 0;
+	public Dimension getImageMaxSize() {
+		String aux = commonImageSize.getText();
+		return toImageDimension(aux);
+	}
+
+	private Dimension toImageDimension(String aux) {
+		if (aux.isEmpty()) {
+			return new Dimension(0, 0);
 		}
+
+		String[] parts = aux.split("x");
+		int[] parties = new int[parts.length];
+		for (int i = 0; i < parts.length; i++) {
+			try {
+				parties[i] = Integer.parseInt(parts[i]);
+			} catch (NumberFormatException ne) {
+				parties[i] = 0;
+			}
+
+		}
+
+		if (parts.length == 1) {
+			if (aux.charAt(0) == 'x') {
+				return new Dimension(0, parties[0]);
+			} else {
+				return new Dimension(parties[0], 0);
+			}
+		}
+
+		if (parts.length == 2) {
+			return new Dimension(parties[0], parties[1]);
+		}
+		return new Dimension(0, 0);
 	}
 
 	/**
-	 * @return max height of pewrsonimage (in pixels)
+	 * @return max height of person image (in pixels)
 	 */
-	public int getPersonImageMaxHeight() {
-		try {
-			return Integer.parseInt(commonPersonImageHeight.getText());
-		} catch (NumberFormatException ne) {
-			return 0;
-		}
+	public Dimension getPersonImageMaxSize() {
+
+		String aux = commonPersonImageSize.getText();
+		return toImageDimension(aux);
 	}
 
 	/**
@@ -433,17 +458,17 @@ public class ReportWorkerDialog extends JDialog implements
 		commonWithImages.setBounds(x4, y1, 160, 20);
 		add(commonWithImages);
 
-		commonImageHeight = new JTextField();
-		commonImageHeight.setBounds(x4, y1 + 22, 60, 20);
-		add(commonImageHeight);
+		commonImageSize = new JTextField();
+		commonImageSize.setBounds(x4, y1 + 22, 60, 20);
+		add(commonImageSize);
 
 		lb = new JLabel(Resurses.getString("REPORT.IMAGE.HEIGHT"));
 		add(lb);
 		lb.setBounds(x4 + 64, y1 + 22, 100, 20);
 
-		commonPersonImageHeight = new JTextField();
-		commonPersonImageHeight.setBounds(x4, y1 + 44, 60, 20);
-		add(commonPersonImageHeight);
+		commonPersonImageSize = new JTextField();
+		commonPersonImageSize.setBounds(x4, y1 + 44, 60, 20);
+		add(commonPersonImageSize);
 
 		lb = new JLabel(Resurses.getString("REPORT.PERSONIMAGE.HEIGHT"));
 		add(lb);
@@ -827,10 +852,10 @@ public class ReportWorkerDialog extends JDialog implements
 				} else if (vx[0].equals("images")) {
 					withImages = true;
 
-				} else if (vx[0].equals("imagewidth")) {
-					commonImageHeight.setText(vx[1]);
-				} else if (vx[0].equals("personimagewidth")) {
-					commonPersonImageHeight.setText(vx[1]);
+				} else if (vx[0].equals("imagesize")) {
+					commonImageSize.setText(vx[1]);
+				} else if (vx[0].equals("personimagesize")) {
+					commonPersonImageSize.setText(vx[1]);
 				} else if (vx[0].equals("separate")) {
 					separateNotices = true;
 				} else if (vx[0].equals("bold")) {
@@ -857,6 +882,18 @@ public class ReportWorkerDialog extends JDialog implements
 						ii = 0;
 					}
 					reportTypePane.setSelectedIndex(ii);
+
+				} else if (vx[0].equals("format")) {
+					int formIdx;
+					try {
+						formIdx = Integer.parseInt(vx[1]);
+						if (formIdx >= commonReportFormatList.getItemCount()) {
+							formIdx = 0;
+						}
+					} catch (NumberFormatException ne) {
+						formIdx = 0;
+					}
+					commonReportFormatList.setSelectedIndex(formIdx);
 				} else if (pers != null) {
 					if (vx[0].equals("descgen")) {
 						descendantPanel.setGenerations(vx[1]);
@@ -895,18 +932,6 @@ public class ReportWorkerDialog extends JDialog implements
 					} else if (vx[0].equals("listaGroup")) {
 						setRadioButton(listaGroup, vx[1]);
 					}
-				} else if (vx[0].equals("format")) {
-					int formIdx;
-					try {
-						formIdx = Integer.parseInt(vx[1]);
-						if (formIdx >= commonReportFormatList.getItemCount()) {
-							formIdx = 0;
-						}
-					} catch (NumberFormatException ne) {
-						formIdx = 0;
-					}
-
-					commonReportFormatList.setSelectedIndex(formIdx);
 				}
 
 			}
@@ -1032,13 +1057,11 @@ public class ReportWorkerDialog extends JDialog implements
 			v.add("images=true");
 		}
 		try {
-			int ww = Integer.parseInt(commonImageHeight.getText());
-			v.add("imagewidth=" + ww);
+			v.add("imagesize=" + commonImageSize.getText());
 		} catch (NumberFormatException ne) {
 		}
 		try {
-			int ww = Integer.parseInt(commonPersonImageHeight.getText());
-			v.add("personimagewidth=" + ww);
+			v.add("personimagesize=" + commonPersonImageSize.getText());
 		} catch (NumberFormatException ne) {
 		}
 		v.add("format=" + "" + commonReportFormatList.getSelectedIndex());
@@ -1164,7 +1187,7 @@ public class ReportWorkerDialog extends JDialog implements
 				reportFormatidx = commonReportFormatList.getSelectedIndex();
 
 				if (reportFormatidx == 0) {
-					repo = new JavaReport();
+					repo = new JavaReport(runner);
 				} else {
 					try {
 						repo = new XmlReport(runner, reportFormatidx, self.pers
@@ -2213,12 +2236,6 @@ public class ReportWorkerDialog extends JDialog implements
 			setVisible(false);
 
 		}
-	}
-
-	@Override
-	public JDialog getWorkerDialog() {
-		return this;
-
 	}
 
 }
