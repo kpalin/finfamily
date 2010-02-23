@@ -24,7 +24,8 @@ public class QueryUtil {
 	private static Logger logger = Logger.getLogger(QueryUtil.class.getName());
 
 	private Connection con = null;
-	private String toDoTagName = null;
+
+	// private String toDoTagName = null;
 
 	/**
 	 * Initlaize with database conmnection
@@ -33,7 +34,7 @@ public class QueryUtil {
 	 */
 	public QueryUtil(Connection con) {
 		this.con = con;
-		this.toDoTagName = Resurses.getString(Resurses.COLUMN_T_TODO);
+		// this.toDoTagName = Resurses.getString(Resurses.COLUMN_T_TODO);
 
 	}
 
@@ -62,16 +63,10 @@ public class QueryUtil {
 					+ "n.pnid,n.mediafilename,n.mediatitle ");
 			seleSQL.append("from unit as u left join unitnotice "
 					+ "as n on u.pid = n.pid ");
-			// seleSQL.append("and n.tag in ('BIRT','DEAT','CHR',"
-			// + "'BURI','NAME','PHOT','OCCU'");
-			// if (this.toDoTagName != null) {
-			// seleSQL.append(",'TODO'");
-			// }
-			// seleSQL.append(") ");
-			// seleSQL.append(") and n.surety >= 80 ");
 
 			StringBuilder fromSQL = new StringBuilder();
 			StringBuilder sbn = new StringBuilder();
+			StringBuilder free = new StringBuilder();
 
 			String searchPlace = null;
 			String searchNoticeTag = null;
@@ -352,26 +347,45 @@ public class QueryUtil {
 				}
 				if (searchFullText != null) {
 					if (isFirstCriteria) {
-						fromSQL.append("where ");
+						free.append("where ");
 					} else {
-						fromSQL.append("and ");
+						free.append("and ");
 					}
 					isFirstCriteria = false;
 
-					String[] parts = searchFullText.split(";");
-					fromSQL.append("(");
+					String[] parts = searchFullText.split(" ");
+
+					free.append("(");
+					int valueAndOrNot = 0;
 					for (int i = 0; i < parts.length; i++) {
 
 						if (i > 0) {
-							fromSQL.append("or ");
+							if (parts[i].equals(Resurses
+									.getString("CRITERIA_AND"))) {
+								valueAndOrNot = 0;
+								continue;
+							} else if (parts[i].equals(Resurses
+									.getString("CRITERIA_OR"))) {
+								valueAndOrNot = 1;
+								continue;
+							} else if (parts[i].equals(Resurses
+									.getString("CRITERIA_NOT"))) {
+								valueAndOrNot = 2;
+								continue;
+							}
+
+							free.append(valueAndOrNot == 1 ? "or " : "and ");
 						}
-						fromSQL
-								.append("u.pid in (select pid from fullTextView where fulltext ilike '%"
+						free
+								.append("u.pid "
+										+ ((valueAndOrNot == 2) ? "not " : "")
+										+ "in (select pid from fullTextView where fulltext ilike '%"
 										+ toQuery(parts[i]) + "%') ");
 					}
-					fromSQL.append(")");
+					free.append(")");
 
 				}
+				fromSQL.append(free.toString());
 
 			}
 
