@@ -58,7 +58,7 @@ public class PersonUtil {
 				+ "sourcetext,privatetext,userrefn) "
 				+ "values (?,?,?,?,?,?,?,?)";
 
-		String updPers = "update unit set privacy=?,sex=?,"
+		String updPers = "update unit set privacy=?,groupid=?,sex=?,"
 				+ "sourcetext=?,privatetext=?,userrefn=?,Modified=now() where pid = ?";
 
 		String updSql = "update unitnotice set "
@@ -116,11 +116,12 @@ public class PersonUtil {
 					pst = con.prepareStatement(updPers);
 
 					pst.setString(1, req.persLong.getPrivacy());
-					pst.setString(2, req.persLong.getSex());
-					pst.setString(3, req.persLong.getSource());
-					pst.setString(4, req.persLong.getPrivateText());
-					pst.setString(5, req.persLong.getRefn());
-					pst.setInt(6, req.persLong.getPid());
+					pst.setString(2, req.persLong.getGroupId());
+					pst.setString(3, req.persLong.getSex());
+					pst.setString(4, req.persLong.getSource());
+					pst.setString(5, req.persLong.getPrivateText());
+					pst.setString(6, req.persLong.getRefn());
+					pst.setInt(7, req.persLong.getPid());
 					int lukuri = pst.executeUpdate();
 					if (lukuri != 1) {
 						logger.warning("Person updated for pid " + pid

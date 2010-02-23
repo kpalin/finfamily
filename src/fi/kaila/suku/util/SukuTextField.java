@@ -55,6 +55,11 @@ public class SukuTextField extends JTextField implements FocusListener {
 		 * Field type description
 		 */
 		Fld_Description,
+
+		/**
+		 * Field group
+		 */
+		Fld_Group,
 		/**
 		 * No field
 		 */

@@ -161,7 +161,9 @@ public class QueryUtil {
 						fromSQL.append("and ");
 					}
 					isFirstCriteria = false;
-					fromSQL.append("u.groupid = '" + toQuery(group) + "' ");
+					fromSQL
+							.append("u.groupid ilike '" + toQuery(group)
+									+ "%' ");
 				}
 
 				for (idx = 1; idx < params.length; idx++) {

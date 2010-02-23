@@ -67,7 +67,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 	private JComboBox viewList;
 	private String[] viewArray = null;
-	private JTextField viewGroup;
+	private SukuTextField viewGroup;
 	private String preferredView = null;
 
 	private JTextField place;
@@ -379,7 +379,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.viewList = new JComboBox();
 		this.viewPanel.add(this.viewList);
 
-		viewGroup = new JTextField();
+		viewGroup = new SukuTextField(null, Field.Fld_Group);
 		this.viewPanel.add(viewGroup);
 
 		y += 80;

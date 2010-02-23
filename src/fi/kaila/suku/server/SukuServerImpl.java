@@ -965,6 +965,7 @@ public class SukuServerImpl implements SukuServer {
 		Vector<String> vSurnames = new Vector<String>();
 		Vector<String> vDescriptions = new Vector<String>();
 		Vector<String> vTypes = new Vector<String>();
+		Vector<String> vGroupd = new Vector<String>();
 		try {
 			String sql = "select place,count(*) from unitnotice "
 					+ "where place is not null group by place  "
@@ -1045,7 +1046,17 @@ public class SukuServerImpl implements SukuServer {
 			}
 			rs.close();
 			res.vvTexts.add(vTypes.toArray(new String[0]));
+			sql = "select groupid,count(*) from unit "
+					+ "where groupid is not null group by groupid "
+					+ "order by 2 desc limit 256";
 
+			rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				vTypes.add(rs.getString(1));
+			}
+			rs.close();
+			res.vvTexts.add(vTypes.toArray(new String[0]));
 			stm.close();
 
 		} catch (SQLException e) {

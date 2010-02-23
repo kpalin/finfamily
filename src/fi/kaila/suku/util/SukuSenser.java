@@ -51,6 +51,7 @@ public class SukuSenser implements MouseListener {
 	private String[] surnames = null;
 	private String[] descriptions = null;
 	private String[] noticeTypes = null;
+	private String[] groups = null;
 
 	/**
 	 * Initialize the places
@@ -87,6 +88,16 @@ public class SukuSenser implements MouseListener {
 	 */
 	public void setSurnames(String[] surnames) {
 		this.surnames = surnames;
+	}
+
+	/**
+	 * 
+	 * Initialize the groups
+	 * 
+	 * @param groups
+	 */
+	public void setGroups(String[] groups) {
+		this.groups = groups;
 	}
 
 	/**
@@ -201,7 +212,13 @@ public class SukuSenser implements MouseListener {
 					}
 				}
 				break;
-
+			case Fld_Group:
+				for (int i = 0; i < groups.length; i++) {
+					if (groups[i].toLowerCase().startsWith(txt.toLowerCase())) {
+						model.add(groups[i]);
+					}
+				}
+				break;
 			}
 			lista.updateUI();
 			listIndex = 0;

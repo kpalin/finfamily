@@ -57,7 +57,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	private String[] sextexts = { "Mies", "Nainen", "Tuntematon" };
 	private String[] sexes = { "M", "F", "U" };
 	private JComboBox sex;
-	private JTextField groupid;
+	private SukuTextField groupid;
 	private JTextField refn;
 
 	private JTextField created;
@@ -369,7 +369,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		add(lbl);
 		lbl.setBounds(rcol, rrivi, 100, 20);
 		rrivi += 20;
-		groupid = new JTextField();
+		groupid = new SukuTextField(null, Field.Fld_Group);
 		add(groupid);
 		groupid.setBounds(rcol, rrivi, rwidth * 2, 20);
 		// groupid.setEditable(false);
@@ -642,7 +642,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 		groupid.setText(persLong.getGroupId());
 
-		groupid.setEditable(persLong.getPid() == 0);
+		// groupid.setEditable(persLong.getPid() == 0);
 		refn.setText(persLong.getRefn());
 
 		String tmp;
@@ -755,10 +755,10 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			String priva = privacy.isSelected() ? "P" : null;
 			persLong.setPrivacy(priva);
 
-			if (persLong.getPid() == 0) {
-				String grp = groupid.getText();
-				persLong.setGroupId(grp);
-			}
+			// if (persLong.getPid() == 0) {
+			String grp = groupid.getText();
+			persLong.setGroupId(grp);
+			// }
 
 			String rf = refn.getText();
 			persLong.setUserRefn(rf);

@@ -1151,13 +1151,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				SukuSenser sens = SukuSenser.getInstance();
 
 				if (dat != null && dat.vvTexts != null
-						&& dat.vvTexts.size() > 5) {
+						&& dat.vvTexts.size() > 6) {
 					sens.setPlaces(dat.vvTexts.get(0));
 					sens.setGivennames(dat.vvTexts.get(1));
 					sens.setPatronymes(dat.vvTexts.get(2));
 					sens.setSurnames(dat.vvTexts.get(3));
 					sens.setDescriptions(dat.vvTexts.get(4));
 					sens.setNoticeTypes(dat.vvTexts.get(5));
+					sens.setGroups(dat.vvTexts.get(6));
+
 				}
 				long endOfIntelli = System.currentTimeMillis();
 				long timeOfIntelli = (endOfIntelli - startOfIntelli) / 1000;
