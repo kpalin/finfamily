@@ -34,7 +34,7 @@ public class SukuTypesTable extends JTable {
 
 	/**
 	 * @param dim
-	 *            dimension of Preferred Scriollable Viewport Size
+	 *            dimension of Preferred Scrollable Viewport Size
 	 * 
 	 */
 	public SukuTypesTable(Dimension dim) {
@@ -91,7 +91,7 @@ public class SukuTypesTable extends JTable {
 			return tag;
 		int idx = iidx.intValue();
 		if (idx >= 0) {
-			String txt = (String) model.getTypesData(idx, 5);
+			String txt = (String) model.getTypesData(idx, 6);
 			if (txt != null) {
 				return txt;
 			}
@@ -127,9 +127,7 @@ public class SukuTypesTable extends JTable {
 			if (txt != null) {
 				return txt;
 			}
-			// if (idx < typesModel.getTypesData().length) {
-			// return (String) typesModel.getTypesData()[idx][0];
-			// }
+
 			return (String) model.getTypesValues()[idx];
 		}
 		return null;
@@ -177,7 +175,7 @@ public class SukuTypesTable extends JTable {
 
 	/**
 	 * @param type
-	 *            name of settingtype (e.g. reporttypes)
+	 *            name of setting type (e.g. report types)
 	 * @param settingsIndex
 	 *            the settings index should be between 0-10
 	 */
@@ -200,7 +198,8 @@ public class SukuTypesTable extends JTable {
 			sb.append(((Boolean) getValueAt(row, 2)) ? "X" : "O");
 			sb.append(((Boolean) getValueAt(row, 3)) ? "X" : "O");
 			sb.append(((Boolean) getValueAt(row, 4)) ? "X" : "O");
-			sb.append(getValueAt(row, 5));
+			sb.append(((Boolean) getValueAt(row, 5)) ? "X" : "O");
+			sb.append(getValueAt(row, 6));
 			v.add(sb.toString());
 
 		}
@@ -225,7 +224,7 @@ public class SukuTypesTable extends JTable {
 	 * @param type
 	 *            of setting
 	 * @param settingsIndex
-	 *            index betrween 0-10
+	 *            index between 0-10
 	 */
 	public void loadReportSettings(String type, int settingsIndex) {
 
@@ -243,35 +242,42 @@ public class SukuTypesTable extends JTable {
 
 					String tag = getTypesTag(row);
 
-					if (vx[0].equals(tag) && vx[1].length() > 3) {
-						boolean b = false;
-						if (vx[1].substring(0, 1).equals("X")) {
-							b = true;
-						}
-						setValueAt(b, row, 1);
-						b = false;
-						if (vx[1].substring(1, 2).equals("X")) {
-							b = true;
-						}
-						setValueAt(b, row, 2);
-						b = false;
-						if (vx[1].substring(2, 3).equals("X")) {
-							b = true;
-						}
-						setValueAt(b, row, 3);
+					if (vx[0].equals(tag)) {
+						if (vx[1].length() > 4) {
+							boolean b = false;
+							if (vx[1].substring(0, 1).equals("X")) {
+								b = true;
+							}
+							setValueAt(b, row, 1);
+							b = false;
+							if (vx[1].substring(1, 2).equals("X")) {
+								b = true;
+							}
+							setValueAt(b, row, 2);
+							b = false;
+							if (vx[1].substring(2, 3).equals("X")) {
+								b = true;
+							}
+							setValueAt(b, row, 3);
 
-						b = false;
-						if (vx[1].substring(3, 4).equals("X")) {
-							b = true;
+							b = false;
+							if (vx[1].substring(3, 4).equals("X")) {
+								b = true;
+							}
+							setValueAt(b, row, 4);
+							b = false;
+							if (vx[1].substring(4, 5).equals("X")) {
+								b = true;
+							}
+							setValueAt(b, row, 5);
 						}
-						setValueAt(b, row, 4);
-						// String newText = "";
-						// if (vx[1].length() > 4) {
-						// newText = vx[1].substring(4);
-						// }
-						// typesTable.setValueAt(newText, row, 5);
+						if (vx[1].length() > 5) {
+							setValueAt(vx[1].substring(5), row, 6);
+						}
+
 						break;
 					}
+
 				}
 			}
 

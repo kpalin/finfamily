@@ -42,7 +42,7 @@ public class SukuTypesModel extends AbstractTableModel {
 
 			}
 
-			typesData = new Object[reposet.vvTypes.size()][6];
+			typesData = new Object[reposet.vvTypes.size()][7];
 			typesTags = new String[reposet.vvTypes.size()];
 
 			for (int i = 0; i < typesTags.length; i++) {
@@ -60,10 +60,10 @@ public class SukuTypesModel extends AbstractTableModel {
 					typesData[i][3] = Boolean.valueOf(true);
 					typesData[i][4] = Boolean.valueOf(true);
 				}
-				typesData[i][5] = reposet.vvTypes.get(i)[2];
-
-				if (typesData[i][5] == null) {
-					typesData[i][5] = reposet.vvTypes.get(i)[1];
+				typesData[i][5] = Boolean.valueOf(false);
+				typesData[i][6] = reposet.vvTypes.get(i)[2];
+				if (typesData[i][6] == null) {
+					typesData[i][6] = reposet.vvTypes.get(i)[1];
 				}
 			}
 
@@ -87,7 +87,7 @@ public class SukuTypesModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 
 	private String[] columnNames = { "Tietojakso", "Nimi", "Päähenkilö",
-			"Lapsi", "Muu", "Teksti" };
+			"Lapsi", "Muu", "Paikkahakemisto", "Teksti" };
 
 	public int getColumnCount() {
 		return columnNames.length;
@@ -119,7 +119,7 @@ public class SukuTypesModel extends AbstractTableModel {
 	 */
 	public boolean isCellEditable(int row, int col) {
 		// Note that the data/cell address is constant,
-		// no matter where the cell appears onscreen.
+		// no matter where the cell appears on screen.
 		if (col < 1) {
 			return false;
 		} else {
@@ -201,7 +201,7 @@ public class SukuTypesModel extends AbstractTableModel {
 
 	/**
 	 * @param idx
-	 * @return theg text portion
+	 * @return the text portion
 	 */
 	public String getTypesValue(int idx) {
 		return typesValues[idx];

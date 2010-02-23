@@ -233,14 +233,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private static final int x2 = 250;
 	private static final int x3 = 440;
 	private static final int x4 = 620;
-	private static final int xtype = 320;
+	private static final int xtype = 310;
 	private static final int y1 = 20;
 	// private static final int y2 = 250;
 	private static final int y3 = 390;
 	// private static final int y4 = 420;
 
 	private static final int tabh = 360;
-	private static final int tabw = 280;
+	private static final int tabw = 300;
 	private Suku parent;
 
 	/**
@@ -447,6 +447,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		c = modl.getColumn(3);
 		c.setMaxWidth(checkWidth);
 		c = modl.getColumn(4);
+		c.setMaxWidth(checkWidth);
+		c = modl.getColumn(5);
 		c.setMaxWidth(checkWidth);
 
 		ImageIcon icon1 = createImageIcon("/images/jalkipolvi.gif");
