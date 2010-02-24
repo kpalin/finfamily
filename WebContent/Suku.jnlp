@@ -2,14 +2,14 @@
 <!-- JNLP File for ComboBoxDemo -->
 <jnlp
   spec="1.0+"
-  codebase="http://localhost/suku"
+  codebase="http://localhost:8080/suku11"
   href="Suku.jnlp">
   <information>
-    <title>Sukuohjelmisto</title>
+    <title>Sukuohjelmisto 11</title>
     <vendor> KK-Software</vendor>
-    <homepage href="http://localhost/suku/index.html"/>
+    <homepage href="http://localhost:8080/suku11/index.html"/>
     <description>Sukuohjelmisto</description>
-    <description kind="short">Demonstrates how to use suku</description>
+    <description kind="short">Demonstrates how to use suku 11</description>
     <offline-allowed/>
   </information>
   <resources>
