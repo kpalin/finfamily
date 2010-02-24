@@ -14,18 +14,18 @@
 <li>Reworked the query database page.</li>
 </ul>
 
-<hdr>Release 369 on 20 feb 2010 (8)</hdr>
+<hdr>Release 369 on 20 feb 2010 (10)</hdr>
 <ul>
 <li>Removed PostgreSQL server commands. They no longer were copmpatible with PostgreSQL 4.x</li>
 <li>Added Open person command to File menu.</li>
 </ul>
 
-<hdr>Release 367 on 18 feb 2010 (9)</hdr>
+<hdr>Release 367 on 18 feb 2010 (7)</hdr>
 <ul>
 <li>Improvements to Excel listreport for relatives with surety values &lt; 100</li>
 </ul>
 
-<hdr>Release 365 on 17 feb 2010 (7)</hdr>
+<hdr>Release 365 on 17 feb 2010 (12)</hdr>
 <ul>
 <li>Added Excel listreport for relatives with surety values &lt; 100</li>
 <li>Combined TextsExcel file as sheet in TypesExcel.xls</li>
