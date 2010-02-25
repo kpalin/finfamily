@@ -94,7 +94,7 @@ public class XmlReport implements ReportInterface {
 		switch (translatorIdx) {
 		case 1:
 			translator = "resources/xml/docSingle.xsl";
-			report = createFile("xml");
+			report = createFile("doc");
 			break;
 		case 2:
 			translator = "resources/xml/htmlSingle.xsl";
@@ -102,7 +102,7 @@ public class XmlReport implements ReportInterface {
 			break;
 		default:
 			translator = null;
-			report = createFile("xml");
+			report = createFile("doc");
 			break;
 
 		}
