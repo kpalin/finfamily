@@ -317,15 +317,16 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			arg1 = args[0];
 
 		}
+
 		if ("web".equals(arg1)) {
 			this.isWebApp = true;
 			kontroller = new SukuKontrollerWebstartImpl();
 		} else {
 			kontroller = new SukuKontrollerLocalImpl();
+			String loca = kontroller.getPref(this, Resurses.LOCALE, "en");
+			Resurses.setLocale(loca);
 		}
 
-		String loca = kontroller.getPref(this, Resurses.LOCALE, "en");
-		Resurses.setLocale(loca);
 		String langu = kontroller.getPref(this, Resurses.REPOLANG, "fi");
 		Resurses.setLanguage(langu);
 		String datfo = kontroller.getPref(this, Resurses.DATEFORMAT, "FI");

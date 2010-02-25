@@ -352,6 +352,7 @@ public class Resurses {
 	 */
 	public static synchronized void setLocale(String newLocale) {
 		currentLocale = new Locale(newLocale);
+		// FIXME this to be usefull also for webstart
 		Locale.setDefault(currentLocale);
 		repoLangu = newLocale;
 		myself = null;

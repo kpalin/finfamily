@@ -279,11 +279,11 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 	@Override
 	public String getPref(Object o, String key, String def) {
-
+		// System.out.println("K1:" + key);
 		if (!this.isWebStart) {
 			return sr.get(o.getClass().getName() + "." + key, def);
 		}
-
+		// System.out.println("K2:" + o.toString());
 		// java.net.URL url = javax.jnlp.BasicService
 
 		// for (int i = 0;i < nimet.length;i++) {
@@ -298,7 +298,9 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			BasicService bs = (BasicService) ServiceManager
 					.lookup("javax.jnlp.BasicService");
 			URL baseURL = bs.getCodeBase();
+			// System.out.println("K3:" + baseURL);
 			URL editorURL = new URL(baseURL, key);
+			// System.out.println("K3:" + editorURL);
 			FileContents fc = ps.get(editorURL);
 			DataInputStream is = new DataInputStream(fc.getInputStream());
 			aux = is.readUTF();
@@ -307,7 +309,9 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			return aux;
 		} catch (FileNotFoundException fe) {
 			// System.out.println("NOT FOUND: key=" + key);
+			return def;
 		} catch (Exception e) {
+			System.out.println("Kaatui: e=" + e);
 			e.printStackTrace();
 		}
 
