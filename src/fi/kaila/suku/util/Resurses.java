@@ -340,7 +340,7 @@ public class Resurses {
 
 	private Resurses() {
 		if (resources == null) {
-			Locale.setDefault(currentLocale);
+			// Locale.setDefault(currentLocale);
 			resources = ExcelBundle.getBundle("excel/FinFamily", currentLocale);
 		}
 	}

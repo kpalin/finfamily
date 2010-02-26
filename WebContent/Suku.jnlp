@@ -14,7 +14,8 @@
   </information>
   <resources>
     <j2se version="1.6+"/>
-    <jar href="Suku.jar"/>
+    <jar href="suku.jar"/>
+	<jar href="jxl.jar"/>
   </resources>
   <application-desc main-class="fi.kaila.suku.webstart.Suku"/>
 </jnlp> 

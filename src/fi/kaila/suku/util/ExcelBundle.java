@@ -1,6 +1,6 @@
 package fi.kaila.suku.util;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -13,7 +13,7 @@ import jxl.WorkbookSettings;
 
 /**
  * 
- * A FinFamily specific resourcebundle class using Excel file for input
+ * A FinFamily specific resource bundle class using Excel file for input
  * 
  * @author Kalle
  * 
@@ -57,16 +57,25 @@ public class ExcelBundle {
 
 	private void importBundle(String path, Locale locale) {
 		WorkbookSettings ws = new WorkbookSettings();
+		ws.setCharacterSet(0);
 		ws.setEncoding("ISO-8859-1");
+		// ws.setEncoding("UTF-8");
+
 		ws.setCharacterSet(0);
 		String myLocale = null;
 		bundle = new HashMap<String, String>();
 		if (locale != null) {
 			myLocale = locale.getLanguage();
 		}
+		InputStream in = null;
+
 		try {
-			Workbook workbook = Workbook.getWorkbook(new File("resources/"
-					+ path + ".xls"), ws);
+
+			in = this.getClass().getResourceAsStream("/" + path + ".xls");
+
+			Workbook workbook = Workbook.getWorkbook(in, ws);
+			// Workbook workbook = Workbook.getWorkbook(new File("resources/"
+			// + path + ".xls"), ws);
 
 			Sheet sheet = workbook.getSheet("FinFamily");
 			int colCount;
