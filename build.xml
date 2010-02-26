@@ -62,7 +62,11 @@
     <mkdir dir="${dist.home}"/>
     <jar destfile="${dist.home}/suku.jar" basedir="${build.home}/classes">
 
-	<fileset dir="${basedir}/resources"   />
+	<fileset dir="${basedir}/resources"   >	
+		 <include name="**/FinFamily.xls"/>
+		 <include name="/images/**"/>
+		 <include name="/xml/**"/>
+	</fileset>
 
 	
 	<manifest >
@@ -141,9 +145,11 @@
    <copy file="${resources.home}/excel/PaikatExcel.xls" todir="${dist.home}/resources/excel"/>
    <copy file="${resources.home}/excel/TypesExcel.xls" todir="${dist.home}/resources/excel"/>
    <copy file="${resources.home}/excel/Taivut_fi.xls" todir="${dist.home}/resources/excel"/>
+
    <copy file="${resources.home}/excel/FinFamily.xls" todir="${dist.home}/resources/excel"/>
+
    <copy file="${resources.home}/images/suomikartta.jpg" todir="${dist.home}/resources/images"/>  
- 
+
     <copy todir="${dist.home}/resources/xml">
      <fileset dir="${resources.home}/xml" includes="*.xsl"/>
    </copy>
