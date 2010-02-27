@@ -3,8 +3,18 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
-<hdr>Release 380 on 23 feb 2010</hdr>
+
+<hdr>Release 402 on 27 feb 2010</hdr>
 <ul>
+<li>WebStart version tested. Only GUI part for now.</li>
+<li>changed word report type to .doc</li>
+<li>Added separate windows installer to install into Program Files directory</li>
+</ul>
+
+
+<hdr>Release 380 on 23 feb 2010 (30)</hdr>
+<ul>
+<li>Group fields to use intellisens feature.</li>
 <li>Image scaling implemented with both height and width</li>
 <li>Testsearch now with keywords "and" "or" "not"</li>
 </ul>

@@ -93,11 +93,11 @@ public class XmlReport implements ReportInterface {
 		debugState = parent.getDebugState();
 		switch (translatorIdx) {
 		case 1:
-			translator = "resources/xml/docSingle.xsl";
+			translator = "resources/xml/docx.xsl";
 			report = createFile("doc");
 			break;
 		case 2:
-			translator = "resources/xml/htmlSingle.xsl";
+			translator = "resources/xml/html.xsl";
 			report = createFile("html");
 			break;
 		default:
