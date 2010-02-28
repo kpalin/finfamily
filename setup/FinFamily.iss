@@ -15,7 +15,7 @@ AppUpdatesURL=http://www.sukuohjelmisto.fi
 DefaultDirName={pf}\FinFamily
 DefaultGroupName=FinFamily
 OutputDir=C:\Users\Kalle\apualue\finfamily\swing
-OutputBaseFilename=FinFamily402
+OutputBaseFilename=FinFamily402test
 SetupIconFile=C:\Users\Kalle\apualue\finfamily\resources\images\Genealogia.ico
 Compression=lzma
 SolidCompression=yes
@@ -29,7 +29,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Kalle\apualue\finfamily\dist\Suku.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Kalle\apualue\finfamily\devc\Suku.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Kalle\apualue\finfamily\dist\suku.jar"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Kalle\apualue\finfamily\dist\suku.sh"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Kalle\apualue\finfamily\dist\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -45,6 +45,7 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\FinFamily"; Filena
 
 [Run]
 Filename: "{app}\Suku.exe"; Description: "{cm:LaunchProgram,FinFamily}"; Flags: nowait postinstall skipifsilent
+
 
 
 

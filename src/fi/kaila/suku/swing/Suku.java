@@ -63,6 +63,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
+import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.imports.Import2004Dialog;
 import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.kontroller.SukuKontroller;
@@ -158,9 +159,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Application version
+	 * Application version moved to class fi.kaila.suku.ant.AntVersion
 	 */
-	public static final String sukuVersion = "11.-3.0380";
+	// public static final String sukuVersion = "11.-3.0380";
 	/**
 	 * Server version
 	 */
@@ -722,7 +723,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			e1.printStackTrace();
 		}
 		logger.info("FinFamily [" + Resurses.getLanguage() + "] Version "
-				+ sukuVersion + " - Java Version: "
+				+ AntVersion.antVersion + " - Java Version: "
 				+ System.getProperty("java.version") + " from "
 				+ System.getProperty("java.vendor"));
 		// if (!this.isWebApp){

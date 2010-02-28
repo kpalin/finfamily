@@ -11,6 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
+import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -55,7 +56,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		about.append("\n");
 
 		aux = Resurses.getString(Resurses.ABOUT_SUKU_VERSION) + " = "
-				+ Suku.sukuVersion;
+				+ AntVersion.antVersion;
 		logger.info(aux);
 		about.append("- " + aux);
 		about.append("\n");

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
@@ -403,7 +403,7 @@ public class SukuServlet extends HttpServlet {
 			this.usermap.put("" + userno, ui);
 			PrintWriter out = resp.getWriter();
 			resp.setHeader("Content-Type", "text/html");
-			out.println("" + userno + "/" + Suku.sukuVersion);
+			out.println("" + userno + "/" + AntVersion.antVersion);
 
 			Cookie cok = new Cookie("userid", "" + userno);
 			cok.setMaxAge(1800);
