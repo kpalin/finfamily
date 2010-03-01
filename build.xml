@@ -179,7 +179,7 @@ public class AntVersion {
   		
 </echo> 
   
-  	<!-- A script file for innosetup to create teh windows installer
+  	<!-- A script file for innosetup to create the windows installer
   	Innosetup is found at http://www.jrsoftware.org/
   	-->
   	<echo file="setup/antsetup.iss">
@@ -200,7 +200,7 @@ AppUpdatesURL=http://www.sukuohjelmisto.fi
 DefaultDirName={pf}\FinFamily
 DefaultGroupName=FinFamily
 OutputDir=..\swing
-OutputBaseFilename=FinFamily402test
+OutputBaseFilename=FinFamily${app.version}
 SetupIconFile=..\resources\images\Genealogia.ico
 Compression=lzma
 SolidCompression=yes
