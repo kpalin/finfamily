@@ -60,6 +60,7 @@
 		 <include name="**/FinFamily.xls"/>
 		 <include name="/images/**"/>
 		 <include name="/xml/**"/>
+		<include name="/sql/**"/>
 	</fileset>
 
 	
