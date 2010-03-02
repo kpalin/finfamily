@@ -1464,4 +1464,9 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	}
 
+	@Override
+	public String toString() {
+		return notice.getTag();
+	}
+
 }

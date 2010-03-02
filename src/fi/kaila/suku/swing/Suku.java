@@ -266,7 +266,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * A "clipboard" location where a person can be copied to
 	 */
 	public static Object sukuObject = null;
-
+	private static SearchCriteria crit = null;
 	private int activePersonPid = 0;
 	private boolean isWebApp = false;
 
@@ -524,7 +524,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		SukuPopupMenu pop = SukuPopupMenu.getInstance();
 		pop.addActionListener(popupListener);
 
-		SearchCriteria crit = SearchCriteria.getCriteria(this);
+		crit = SearchCriteria.getCriteria(this);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		if (d.width > 1024)
 			d.width = 1024;
@@ -824,7 +824,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 						java.awt.Point p = e.getPoint();
 						int index = this.columnModel.getColumnIndexAtX(p.x);
-						return Suku.this.tableModel.getColumnName(index);
+						// System.out.print("COLUMNINDEX: [" + index);
+						int realIndex = this.columnModel.getColumn(index)
+								.getModelIndex();
+						// System.out.print(":" + realIndex + ":");
+						int someIndex = Suku.crit.getColAbsIndex(realIndex);
+						// System.out.println(":" + someIndex + "]");
+						return Suku.this.tableModel.getColumnName(someIndex);
 						// int realIndex = this.columnModel.getColumn(index)
 						// .getModelIndex();
 						// return Suku.this.tableModel.getColumnName(realIndex);

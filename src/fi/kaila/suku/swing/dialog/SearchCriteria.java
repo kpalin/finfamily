@@ -177,6 +177,27 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * 
+	 * @param idx
+	 * @return absolute SukuModel column index
+	 */
+	public int getColAbsIndex(int idx) {
+		int index = 0;
+
+		for (int i = 0; i < this.coltables.length; i++) {
+			if (this.coltables[i].currState) {
+
+				if (i >= idx) {
+					return index;
+				}
+				index++;
+			}
+		}
+
+		return index;
+	}
+
+	/**
 	 * @param prop
 	 *            property name
 	 * @return true if all names is set for pro
