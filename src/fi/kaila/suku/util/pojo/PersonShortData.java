@@ -737,12 +737,22 @@ public class PersonShortData implements Serializable, Transferable,
 
 	/**
 	 * 
-	 * @return birth uear as int
+	 * @return birth year as int
 	 */
 	public int getBirtYear() {
 		if (bDate == null)
 			return 0;
 		return Integer.parseInt(bDate.substring(0, 4));
+	}
+
+	/**
+	 * 
+	 * @return death year as int
+	 */
+	public int getDeatYear() {
+		if (dDate == null)
+			return 0;
+		return Integer.parseInt(dDate.substring(0, 4));
 	}
 
 	/**

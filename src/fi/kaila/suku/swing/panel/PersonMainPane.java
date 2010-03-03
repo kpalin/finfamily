@@ -742,45 +742,47 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	}
 
 	SukuData updatePerson() throws SukuDateException {
+
+		if (persLong == null)
+			return null;
 		SukuData resp = null;
 		personView.updateNotices();
 		int noticeFirst = personView.getFirstNoticeIndex();
 		int tabCount = personView.getTabCount();
 
 		boolean foundModification = false;
-		if (persLong != null) {
-			String newSex = sexes[sex.getSelectedIndex()];
-			persLong.setSex(newSex);
 
-			String priva = privacy.isSelected() ? "P" : null;
-			persLong.setPrivacy(priva);
+		String newSex = sexes[sex.getSelectedIndex()];
+		persLong.setSex(newSex);
 
-			// if (persLong.getPid() == 0) {
-			String grp = groupid.getText();
-			persLong.setGroupId(grp);
-			// }
+		String priva = privacy.isSelected() ? "P" : null;
+		persLong.setPrivacy(priva);
 
-			String rf = refn.getText();
-			persLong.setUserRefn(rf);
+		// if (persLong.getPid() == 0) {
+		String grp = groupid.getText();
+		persLong.setGroupId(grp);
+		// }
 
-			String sou = source.getText();
-			persLong.setSource(sou);
+		String rf = refn.getText();
+		persLong.setUserRefn(rf);
 
-			String prit = privateText.getText();
-			persLong.setPrivateText(prit);
+		String sou = source.getText();
+		persLong.setSource(sou);
 
-			if (persLong.getNotices().length != tabCount - noticeFirst) {
-				persLong.setOrderModified();
-				foundModification = true;
-			} else {
-				for (int i = noticeFirst; i < tabCount; i++) {
-					NoticePane npane = (NoticePane) personView.getPane(i).pnl;
-					if (persLong.getNotices()[i - noticeFirst].getPnid() != npane.notice
-							.getPnid()) {
-						persLong.setOrderModified();
-						foundModification = true;
-						break;
-					}
+		String prit = privateText.getText();
+		persLong.setPrivateText(prit);
+
+		if (persLong.getNotices().length != tabCount - noticeFirst) {
+			persLong.setOrderModified();
+			foundModification = true;
+		} else {
+			for (int i = noticeFirst; i < tabCount; i++) {
+				NoticePane npane = (NoticePane) personView.getPane(i).pnl;
+				if (persLong.getNotices()[i - noticeFirst].getPnid() != npane.notice
+						.getPnid()) {
+					persLong.setOrderModified();
+					foundModification = true;
+					break;
 				}
 			}
 		}
@@ -807,7 +809,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			un.add(pane.notice);
 
 		}
-
+		verifyLocalPersonDates();
 		SukuData req = new SukuData();
 
 		if (relas != null) {
@@ -839,106 +841,101 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 		}
 
-		if (persLong != null) {
-			String[] notorder = null;
+		String[] notorder = null;
+		try {
+			resp = Suku.kontroller.getSukuData("cmd=getsettings", "type=order",
+					"name=notice");
+			notorder = resp.generalArray;
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			logger.log(Level.WARNING, "get settings", e);
+			return null;
+
+		}
+
+		String[] wn = new String[notorder.length + 1];
+		wn[0] = "NAME";
+		for (int i = 0; i < notorder.length; i++) {
+			wn[i + 1] = notorder[i];
+		}
+
+		if (reorderNotices(un, wn)) {
+			foundModification = true;
+		}
+		if (persLong.getPid() == 0) {
+			foundModification = false;
+			for (int i = noticeFirst; i < tabCount; i++) {
+				NoticePane pane = (NoticePane) personView.getPane(i).pnl;
+				if (pane.notice.isToBeUpdated()) {
+					if (pane.notice.isToBeDeleted() == false) {
+						foundModification = true;
+					}
+				}
+			}
+		}
+		if (foundModification) {
+			req.persLong = persLong;
+
+			req.persLong.setNotices(un.toArray(new UnitNotice[0]));
+
 			try {
-				resp = Suku.kontroller.getSukuData("cmd=getsettings",
-						"type=order", "name=notice");
-				notorder = resp.generalArray;
+				resp = Suku.kontroller.getSukuData(req, "cmd=update",
+						"type=person");
+				if (resp.pers != null && resp.pers.length > 0) {
+
+					PersonShortData shh = resp.pers[0];
+					personPid = shh.getPid();
+
+					personView.getSuku().updatePerson(shh);
+
+					//
+					// now reset the toBeUpdate value
+					//
+					persLong.resetModified();
+
+					UnitNotice[] unn = persLong.getNotices();
+
+					if (unn != null) {
+
+						for (int i = 0; i < unn.length; i++) {
+							unn[i].resetModified();
+							UnitLanguage[] ull = unn[i].getLanguages();
+							if (ull != null) {
+								for (int j = 0; j < ull.length; j++) {
+									ull[j].resetModified();
+								}
+							}
+						}
+					}
+				}
+
+				Relation[] rr = req.relations;
+				if (rr != null) {
+					for (int i = 0; i < rr.length; i++) {
+						rr[i].resetModified();
+						RelationNotice[] rnn = rr[i].getNotices();
+						if (rnn != null) {
+							for (int j = 0; j < rnn.length; j++) {
+								rnn[j].resetModified();
+								RelationLanguage[] rll = rnn[j].getLanguages();
+								if (rll != null) {
+									for (int k = 0; k < rll.length; k++) {
+										rll[k].resetModified();
+									}
+								}
+							}
+						}
+					}
+				}
+
+				return resp;
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
 						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-				logger.log(Level.WARNING, "get settings", e);
-				return null;
 
+				e.printStackTrace();
 			}
-
-			String[] wn = new String[notorder.length + 1];
-			wn[0] = "NAME";
-			for (int i = 0; i < notorder.length; i++) {
-				wn[i + 1] = notorder[i];
-			}
-
-			if (reorderNotices(un, wn)) {
-				foundModification = true;
-			}
-			if (persLong.getPid() == 0) {
-				foundModification = false;
-				for (int i = noticeFirst; i < tabCount; i++) {
-					NoticePane pane = (NoticePane) personView.getPane(i).pnl;
-					if (pane.notice.isToBeUpdated()) {
-						if (pane.notice.isToBeDeleted() == false) {
-							foundModification = true;
-						}
-					}
-				}
-			}
-			if (foundModification) {
-				req.persLong = persLong;
-
-				req.persLong.setNotices(un.toArray(new UnitNotice[0]));
-
-				try {
-					resp = Suku.kontroller.getSukuData(req, "cmd=update",
-							"type=person");
-					if (resp.pers != null && resp.pers.length > 0) {
-
-						PersonShortData shh = resp.pers[0];
-						personPid = shh.getPid();
-
-						personView.getSuku().updatePerson(shh);
-
-						//
-						// now reset the toBeUpdate value
-						//
-						persLong.resetModified();
-
-						UnitNotice[] unn = persLong.getNotices();
-
-						if (unn != null) {
-
-							for (int i = 0; i < unn.length; i++) {
-								unn[i].resetModified();
-								UnitLanguage[] ull = unn[i].getLanguages();
-								if (ull != null) {
-									for (int j = 0; j < ull.length; j++) {
-										ull[j].resetModified();
-									}
-								}
-							}
-						}
-					}
-
-					Relation[] rr = req.relations;
-					if (rr != null) {
-						for (int i = 0; i < rr.length; i++) {
-							rr[i].resetModified();
-							RelationNotice[] rnn = rr[i].getNotices();
-							if (rnn != null) {
-								for (int j = 0; j < rnn.length; j++) {
-									rnn[j].resetModified();
-									RelationLanguage[] rll = rnn[j]
-											.getLanguages();
-									if (rll != null) {
-										for (int k = 0; k < rll.length; k++) {
-											rll[k].resetModified();
-										}
-									}
-								}
-							}
-						}
-					}
-
-					return resp;
-				} catch (SukuException e) {
-					JOptionPane.showMessageDialog(this, e.getMessage(),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.ERROR_MESSAGE);
-
-					e.printStackTrace();
-				}
-			}
-
 		}
 
 		return resp;
@@ -1241,4 +1238,24 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 	}
 
+	void verifyLocalPersonDates() throws SukuDateException {
+		if (persLong != null) {
+			PersonShortData shortie = new PersonShortData(persLong);
+
+			int birthYear = shortie.getBirtYear();
+			int deathYear = shortie.getDeatYear();
+			if (birthYear > 0 && deathYear > 0) {
+				if (birthYear > deathYear) {
+					throw new SukuDateException(Resurses
+							.getString("ERROR_DEAT_BEF_BIRT"));
+				}
+				if (deathYear > birthYear + 150) {
+					throw new SukuDateException(Resurses
+							.getString("ERROR_TOO_OLD"));
+				}
+
+			}
+
+		}
+	}
 }
