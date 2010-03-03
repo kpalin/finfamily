@@ -229,7 +229,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	/**
 	 * resize all notice panes. resize forces the panels also to display fields
-	 * as defined by toolbox buttons
+	 * as defined by tool box buttons
 	 */
 	public void resizeNoticePanes() {
 
@@ -303,8 +303,8 @@ public class PersonView extends JPanel implements ChangeListener {
 					JOptionPane.showMessageDialog(this, e1.getMessage(),
 							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
-
-					e1.printStackTrace();
+					logger.warning("SukuDate exception: " + e1.getMessage());
+					// e1.printStackTrace();
 					return;
 				}
 				closeMainPane(false);
@@ -851,22 +851,28 @@ public class PersonView extends JPanel implements ChangeListener {
 				Component pan = paneTabs.get(previousNoticeIndex).pnl;
 				if (pan instanceof NoticePane) {
 					pane = (NoticePane) paneTabs.get(previousNoticeIndex).pnl;
+
 					resu = pane.getUnitNoticeError();
+					// skipNextState = false;
 				}
 
 				if (resu != null) {
-					if (skipNextState) {
-						skipNextState = false;
-						return;
-					}
-					skipNextState = true;
-					// TO-DO tarkista vieläkö tämä on tarpeen. Näyttäisi olevan
-					// 14.9.09
+					// if (skipNextState) {
+					// skipNextState = false;
+					// return;
+					// }
+					// skipNextState = true;
+					// // TO-DO tarkista vieläkö tämä on tarpeen. Näyttäisi
+					// olevan
+					// // 14.9.09
 					setSelectedIndex(previousNoticeIndex);
-					JOptionPane.showMessageDialog(this, resu, Resurses
-							.getString(Resurses.SUKU),
-							JOptionPane.ERROR_MESSAGE);
 
+					if (isele == previousNoticeIndex) {
+
+						JOptionPane.showMessageDialog(this, resu, Resurses
+								.getString(Resurses.SUKU),
+								JOptionPane.ERROR_MESSAGE);
+					}
 					return;
 				}
 			}
@@ -901,7 +907,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 					// } else {
 					// // the idea with forced update was to aide in comparing
-					// // dates for corrctness
+					// // dates for correctness
 					// main.updatePerson();
 					// }
 				} catch (SukuDateException e1) {
@@ -912,15 +918,15 @@ public class PersonView extends JPanel implements ChangeListener {
 					JOptionPane.showMessageDialog(this, e1.getMessage(),
 							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
-
-					e1.printStackTrace();
+					logger.warning("Date exception: " + e1.getMessage());
+					// e1.printStackTrace();
 				}
 			}
 			getSuku().showAddNoticeButton();
 		}
 	}
 
-	boolean skipNextState = false;
+	// boolean skipNextState = false;
 
 	/**
 	 * Select a pane to show
@@ -928,7 +934,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 * @param tabIndex
 	 */
 	public void setSelectedIndex(int tabIndex) {
-		skipNextState = true;
+		// skipNextState = true;
 		tabbedPane.setSelectedIndex(tabIndex);
 	}
 

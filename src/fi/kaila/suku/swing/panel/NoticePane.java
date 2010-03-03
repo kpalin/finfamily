@@ -783,8 +783,8 @@ public class NoticePane extends JPanel implements ActionListener,
 			date.getToDate();
 			return null;
 		} catch (SukuDateException e) {
-			e.printStackTrace();
-			return e.getMessage() + " " + theDate;
+			// e.printStackTrace();
+			return e.getMessage();
 
 		}
 
@@ -1018,6 +1018,15 @@ public class NoticePane extends JPanel implements ActionListener,
 			if (cmd.equals(Resurses.CLOSE)) {
 				reOpen = false;
 			}
+
+			try {
+				verifyUnitNotice();
+			} catch (SukuDateException se) {
+				JOptionPane.showMessageDialog(this, se.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 			try {
 				personView.displayPersonPane(personPid);
 				personView.closeMainPane(reOpen);
@@ -1027,7 +1036,7 @@ public class NoticePane extends JPanel implements ActionListener,
 						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 				logger.log(Level.WARNING, "Closing notice", e1);
 
-				e1.printStackTrace();
+				// e1.printStackTrace();
 			}
 
 			// } catch (SukuDateException e1) {

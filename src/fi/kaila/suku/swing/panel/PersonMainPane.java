@@ -721,7 +721,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 					JOptionPane.showMessageDialog(this, e1.getMessage(),
 							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.WARNING, "CLOSE", e1);
+					logger.log(Level.WARNING, "CLOSE:" + e1.getMessage());
 					return;
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(this, e1.toString(), Resurses
