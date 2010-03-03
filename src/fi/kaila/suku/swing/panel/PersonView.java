@@ -248,7 +248,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	}
 
 	/**
-	 * Display anothet person than current resets selected index
+	 * Display another person than current resets selected index
 	 * 
 	 * @param pid
 	 * @throws SukuException
@@ -280,15 +280,12 @@ public class PersonView extends JPanel implements ChangeListener {
 
 			PersonMainPane main = (PersonMainPane) paneTabs.get(midx).pnl;
 
-			// int isele = tabbedPane.getSelectedIndex();
-			// int fnotice = getFirstNoticeIndex();
-			// int mnotice = getMainPaneIndex();
 			if (main != null) {
 				try {
 					//
-					// if previous was the mainpane
+					// if previous was the main pane
 					// then update notices
-					// else update mainpane
+					// else update main pane
 					//
 					if (previousNoticeIndex == midx) {
 						main.updateNameNotices();
@@ -375,7 +372,6 @@ public class PersonView extends JPanel implements ChangeListener {
 		SukuTabPane pan = paneTabs.get(midx);
 		PersonMainPane main = (PersonMainPane) pan.pnl;
 		int personPid = main.getPersonPid();
-		// System.out.println("Talletetaan henkilö: " +personPid);
 
 		main.closeNotices();
 
@@ -842,11 +838,11 @@ public class PersonView extends JPanel implements ChangeListener {
 		if (midx < 0)
 			return;
 		PersonMainPane main = (PersonMainPane) paneTabs.get(midx).pnl;
-
-		int isele = tabbedPane.getSelectedIndex();
-		int fnotice = getFirstNoticeIndex();
-		int mnotice = getMainPaneIndex();
 		if (main != null) {
+			int isele = tabbedPane.getSelectedIndex();
+			int fnotice = getFirstNoticeIndex();
+			int mnotice = getMainPaneIndex();
+
 			if (previousNoticeIndex >= fnotice
 					&& previousNoticeIndex < getTabCount()) { // greater than
 				// sukulaiset
