@@ -44,7 +44,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private JButton ok;
 	private JButton cancel;
 	private JTextField fileName;
-
+	private JLabel timeEstimate;
 	private String selectedOldLang = null;
 
 	private SukuKontroller kontroller = null;
@@ -142,6 +142,11 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 		this.progressBar.setBounds(30, y, 340, 20);
 		getContentPane().add(this.progressBar);
 
+		y += 20;
+		timeEstimate = new JLabel("");
+		getContentPane().add(timeEstimate);
+		timeEstimate.setBounds(30, y, 340, 20);
+
 		y += 40;
 		this.ok = new JButton(Resurses.getString(OK));
 		getContentPane().add(this.ok);
@@ -198,8 +203,11 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			// setVisible(false);
 		}
 		if (cmd.equals(CANCEL)) {
-
-			this.cancel.setEnabled(false);
+			if (task != null) {
+				this.cancel.setEnabled(false);
+			} else {
+				setVisible(false);
+			}
 			isCancelled = true;
 
 		}
@@ -269,6 +277,9 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 	private String errorMessage = null;
 	private boolean isCancelled = false;
+	private long startTime = 0;
+	private String timerText = null;
+	private int showCounter = 0;
 
 	/**
 	 * The runner is the progress bar on the import dialog. Set new values to
@@ -290,21 +301,48 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			int progress = 0;
 			try {
 				progress = Integer.parseInt(kaksi[0]);
+
+				if (progress == 0) {
+					startTime = System.currentTimeMillis();
+					timerText = Resurses.getString("IMPORT_TIME_LEFT");
+					showCounter = 10;
+				}
+
 			} catch (NumberFormatException ne) {
 				textContent.setText(juttu);
 				progressBar.setIndeterminate(true);
 				progressBar.setValue(0);
+				timeEstimate.setText("Cancelled");
 				return isCancelled;
 			}
 			progressBar.setIndeterminate(false);
 			progressBar.setValue(progress);
 			textContent.setText(kaksi[1]);
-
+			showCounter--;
+			if (progress > 0 && showCounter < 0 && timerText != null) {
+				showCounter = 10;
+				long nowTime = System.currentTimeMillis();
+				long usedTime = nowTime - startTime;
+				long estimatedDuration = (usedTime / progress) * 100;
+				long restShow = estimatedDuration - usedTime;
+				// long restShow = usedTime * (100 - progress);
+				restShow = restShow / 1000;
+				String timeType = " s";
+				if (restShow > 180) {
+					timeType = " min";
+					restShow = restShow / 60;
+				}
+				String showTime = timerText + " :" + restShow + timeType;
+				if (!timeEstimate.getText().equals(showTime)) {
+					timeEstimate.setText(showTime);
+				}
+			}
 		} else {
 			textContent.setText(juttu);
 
 			progressBar.setIndeterminate(true);
 			progressBar.setValue(0);
+			timeEstimate.setText("");
 		}
 		return isCancelled;
 	}

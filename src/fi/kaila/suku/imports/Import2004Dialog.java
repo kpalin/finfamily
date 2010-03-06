@@ -68,7 +68,9 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private SukuKontroller kontroller = null;
 
 	private JProgressBar progressBar;
-	private Task task;
+
+	private JLabel timeEstimate;
+	private Task task = null;
 
 	/**
 	 * @return the dialog handle used for the progresBar
@@ -99,7 +101,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, 200);
+		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, 230);
 		setLayout(null);
 		int y = 20;
 
@@ -140,6 +142,11 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		progressBar.setStringPainted(true);
 		this.progressBar.setBounds(30, y, 340, 20);
 		getContentPane().add(this.progressBar);
+
+		y += 20;
+		timeEstimate = new JLabel("");
+		getContentPane().add(timeEstimate);
+		timeEstimate.setBounds(30, y, 340, 20);
 
 		y += 40;
 		this.ok = new JButton(Resurses.getString(OK));
@@ -197,8 +204,11 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		}
 		if (cmd.equals(CANCEL)) {
 			isCancelled = true;
-			this.cancel.setEnabled(false);
-
+			if (task != null) {
+				this.cancel.setEnabled(false);
+			} else {
+				setVisible(false);
+			}
 		}
 
 	}
@@ -292,6 +302,10 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private String errorMessage = null;
 	private boolean isCancelled = false;
 
+	private long startTime = 0;
+	private String timerText = null;
+	private int showCounter = 0;
+
 	/**
 	 * The runner is the progressbar on the import dialog. Set new values to the
 	 * progress bar using this command
@@ -312,6 +326,11 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 			int progress = 0;
 			try {
 				progress = Integer.parseInt(kaksi[0]);
+				if (progress == 0) {
+					startTime = System.currentTimeMillis();
+					timerText = Resurses.getString("IMPORT_TIME_LEFT");
+					showCounter = 10;
+				}
 			} catch (NumberFormatException ne) {
 				textContent.setText(juttu);
 				progressBar.setIndeterminate(true);
@@ -321,12 +340,31 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 			progressBar.setValue(progress);
 			textContent.setText(kaksi[1]);
-
+			showCounter--;
+			if (progress > 0 && showCounter < 0 && timerText != null) {
+				showCounter = 10;
+				long nowTime = System.currentTimeMillis();
+				long usedTime = nowTime - startTime;
+				long estimatedDuration = (usedTime / progress) * 100;
+				long restShow = estimatedDuration - usedTime;
+				// long restShow = usedTime * (100 - progress);
+				restShow = restShow / 1000;
+				String timeType = " s";
+				if (restShow > 180) {
+					timeType = " min";
+					restShow = restShow / 60;
+				}
+				String showTime = timerText + " :" + restShow + timeType;
+				if (!timeEstimate.getText().equals(showTime)) {
+					timeEstimate.setText(showTime);
+				}
+			}
 		} else {
 			textContent.setText(juttu);
 
 			progressBar.setIndeterminate(true);
 			progressBar.setValue(0);
+			timeEstimate.setText("");
 		}
 		return isCancelled;
 	}
