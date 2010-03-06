@@ -22,6 +22,7 @@ import fi.kaila.suku.report.style.MainPersonText;
 import fi.kaila.suku.report.style.SubPersonText;
 import fi.kaila.suku.report.style.TableHeaderText;
 import fi.kaila.suku.report.style.TableSubHeaderText;
+import fi.kaila.suku.report.style.TableText;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.Roman;
@@ -211,6 +212,12 @@ public abstract class CommonReport {
 		caller.setRunnerValue("" + (int) prose + ";" + tab.getTableNo() + ":"
 				+ tabOwner);
 
+		if (tableNotices.length > 0) {
+			bt = new TableText();
+			printNotices(bt, tableNotices, 2, tab.getTableNo());
+			repoWriter.addText(bt);
+		}
+
 		String genText = "";
 		if (tab.getGen() > 0) {
 			genText = Roman.int2roman(tab.getGen());
@@ -237,11 +244,6 @@ public abstract class CommonReport {
 
 		repoWriter.addText(bt);
 
-		if (tableNotices.length > 0) {
-			bt = new BodyText();
-			printNotices(bt, tableNotices, 2, tab.getTableNo());
-			repoWriter.addText(bt);
-		}
 		bt = new MainPersonText();
 		if (genText.length() > 0) {
 			bt.addText(genText);
@@ -692,7 +694,7 @@ public abstract class CommonReport {
 			}
 		}
 		if (famtNotices.length > 0) {
-			bt = new BodyText();
+			bt = new TableText();
 			printNotices(bt, famtNotices, 2, tab.getTableNo());
 			repoWriter.addText(bt);
 		}

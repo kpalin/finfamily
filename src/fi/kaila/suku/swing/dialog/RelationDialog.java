@@ -332,6 +332,15 @@ public class RelationDialog extends JDialog implements ActionListener,
 			noteLbl.setVisible(true);
 			placeLangLbl.setVisible(true);
 			noteLangLbl.setVisible(true);
+		} else if (rela.getTag().equals("NOTE")) {
+			date.setVisible(false);
+			place.setVisible(false);
+			scrollNoteLang.setVisible(true);
+			dateLbl.setVisible(false);
+			placeLbl.setVisible(false);
+			noteLbl.setVisible(true);
+			placeLangLbl.setVisible(true);
+			noteLangLbl.setVisible(true);
 		} else {
 			date.setVisible(false);
 			place.setVisible(false);
@@ -591,6 +600,11 @@ public class RelationDialog extends JDialog implements ActionListener,
 			scrollNote.setBounds(80, ly, leftWidth, 60);
 			noteLbl.setBounds(10, ly, 70, 20);
 			ly += 64;
+		} else if (rela.getTag().equals("NOTE")) {
+			scrollNote.setBounds(80, ly, leftWidth, 120);
+			noteLbl.setBounds(10, ly, 70, 20);
+			ly += 124;
+
 		}
 		scrollSource.setBounds(80, ly, leftWidth, 60);
 		sourceLbl.setBounds(10, ly, 70, 20);
