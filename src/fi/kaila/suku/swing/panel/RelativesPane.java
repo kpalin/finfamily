@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.table.AbstractTableModel;
@@ -638,6 +639,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		c.setMaxWidth(checkWidth);
 		c = modl.getColumn(4);
 		c.setMaxWidth(checkWidth);
+		tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		return tab;
 	}
 
