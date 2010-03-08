@@ -98,11 +98,14 @@ public class ExcelImporter {
 
 				String DELETE_TYPES = "delete from Types";
 
+				String UPDATE_SETTINGS = "update SukuSettings set settingvalue = substring(settingvalue for 5)  where settingtype = 'reporttypes' ";
+
 				try {
 
 					pst = con.prepareStatement(DELETE_TYPES);
 					pst.executeUpdate();
-
+					pst = con.prepareStatement(UPDATE_SETTINGS);
+					pst.executeUpdate();
 					pst = con.prepareStatement(INSERT_TYPES);
 
 				} catch (SQLException e) {
