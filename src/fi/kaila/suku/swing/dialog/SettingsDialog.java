@@ -13,11 +13,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.util.ExcelBundle;
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * variosu settings will be done here
+ * various settings will be done here
  * 
  * @author Kalle
  * 
@@ -36,10 +39,6 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JComboBox dateFormat = null;
 	private JButton ok;
 
-	// private static final String []locatexts =
-	// {"Suomi - Finnish","Svenska - Swedish","English"};
-	// private static final String []locas = {"fi","sv","en"};
-
 	private String[] locatexts = null;
 	private String[] locas = null;
 	private String[] dateFormats = null;
@@ -50,14 +49,21 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 	/**
 	 * @param owner
+	 * @throws SukuException
 	 */
-	public SettingsDialog(JFrame owner) {
+	public SettingsDialog(JFrame owner) throws SukuException {
 		this.owner = owner;
 		setLayout(null);
 		int x = 20;
 		int y = 20;
-		locatexts = Resurses.getString("LOCALIZAT_TEXTS").split(";");
-		locas = Resurses.getString("LOCALIZAT_CODES").split(";");
+
+		SukuData exresp = Suku.kontroller.getSukuData("cmd=excel",
+				"page=languages");
+
+		locatexts = ExcelBundle.getLangNames();
+		locas = ExcelBundle.getLangCodes();
+		// Resurses.getString("LOCALIZAT_TEXTS").split(";");
+		// locas = Resurses.getString("LOCALIZAT_CODES").split(";");
 		dateFormats = Resurses.getString("LOCALIZAT_DATEFORMATS").split(";");
 		dateCodes = Resurses.getString("LOCALIZAT_DATECODES").split(";");
 

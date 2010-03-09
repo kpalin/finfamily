@@ -55,6 +55,17 @@ public class ExcelBundle {
 		return value;
 	}
 
+	private static String[] langCodes = null;
+	private static String[] langNames = null;
+
+	public static String[] getLangCodes() {
+		return langCodes;
+	}
+
+	public static String[] getLangNames() {
+		return langNames;
+	}
+
 	private void importBundle(String path, Locale locale) {
 		WorkbookSettings ws = new WorkbookSettings();
 		ws.setCharacterSet(0);
@@ -86,6 +97,9 @@ public class ExcelBundle {
 			int defCol = 1;
 			if (sheet != null) {
 				colCount = sheet.getColumns();
+				langCodes = new String[colCount - 1];
+				langNames = new String[colCount - 1];
+
 				rowCount = sheet.getRows();
 				header = new String[colCount];
 				for (col = 0; col < colCount; col++) {
@@ -97,6 +111,7 @@ public class ExcelBundle {
 							defCol = col;
 						}
 					}
+
 				}
 
 				for (rivi = 0; rivi < rowCount; rivi++) {
@@ -114,9 +129,28 @@ public class ExcelBundle {
 						}
 
 						bundle.put(a1, x1);
-					}
-				}
 
+					}
+					if (a1.equals("LANCODE")) {
+						for (int i = 1; i < colCount; i++) {
+							Cell acx = sheet.getCell(i, rivi);
+
+							String ax = acx.getContents();
+							langCodes[i - 1] = ax;
+
+						}
+					}
+					if (a1.equals("LANGUAGE")) {
+						for (int i = 1; i < colCount; i++) {
+							Cell acx = sheet.getCell(i, rivi);
+
+							String ax = acx.getContents();
+							langNames[i - 1] = ax;
+
+						}
+					}
+
+				}
 			}
 
 			workbook.close();
