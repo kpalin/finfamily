@@ -123,13 +123,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 		boolean firstName = true;
 		boolean specialName = false;
-		boolean specialFirst = false;
+
 		String fgiven = "";
 		String fpatro = "";
+		String fsurname = "";
 		String prexi = "";
-		String posti = "";
-		String comboname = "";
-		String tmp;
+		String fposti = "";
+
 		int noticeFirst = personView.getFirstNoticeIndex();
 		int noticeCount = personView.getTabCount();
 		givenname.setText("");
@@ -137,6 +137,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		surname.setText("");
 		postfix.setText("");
 		int privacyCount = 0;
+		StringBuilder comboname = new StringBuilder();
 		for (int i = noticeFirst; i < noticeCount; i++) {
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 			if (pane.notice.getTag().equals("NAME")) {
@@ -145,36 +146,36 @@ public class PersonMainPane extends JPanel implements ActionListener {
 					if (!pane.isPlain()) {
 						privacyCount++;
 					}
+
 					prexi = pane.prefix.getText();
 
 					if (firstName) {
 						fgiven = pane.givenname.getText();
 						fpatro = pane.patronym.getText();
-						posti = pane.postfix.getText();
+						fposti = pane.postfix.getText();
+						fsurname = toFullSurname(pane.prefix.getText(),
+								pane.surname.getText());
 						givenname.setText(fgiven);
 						patronym.setText(fpatro);
-						tmp = prexi;
-						if (!tmp.isEmpty()) {
-							if (Utils.isKnownPrefix(tmp) > 0) {
-								comboname += tmp + " ";
-							} else {
-								specialFirst = true;
+						surname.setText(fsurname);
+
+						if (!prexi.isEmpty()) {
+							if (Utils.isKnownPrefix(prexi) == 0) {
+								specialName = true;
 							}
 						}
 
-						comboname += pane.surname.getText();
-						surname.setText(comboname);
-						tmp = pane.postfix.getText();
+						comboname.append(fsurname);
 
-						postfix.setText(tmp);
+						postfix.setText(pane.postfix.getText());
 
 						firstName = false;
 					} else {
-						if (!posti.equals(pane.postfix.getText())) {
+						if (!fposti.equals(pane.postfix.getText())) {
 							specialName = true;
 						}
-						if (specialFirst) {
-							specialName = true;
+						if (specialName) {
+
 							break;
 						}
 						if (!fgiven.equals(pane.givenname.getText())) {
@@ -185,17 +186,17 @@ public class PersonMainPane extends JPanel implements ActionListener {
 							specialName = true;
 							break;
 						}
-						String nextpre = "";
+
 						if (!prexi.isEmpty()) {
 
-							if (Utils.isKnownPrefix(prexi) > 0) {
-								nextpre = prexi + " ";
-							} else {
+							if (Utils.isKnownPrefix(prexi) == 0) {
 								specialName = true;
 							}
 						}
+						String xsurname = toFullSurname(pane.prefix.getText(),
+								pane.surname.getText());
 
-						comboname += ";" + nextpre + pane.surname.getText();
+						comboname.append(";" + xsurname);
 					}
 				}
 			}
@@ -206,13 +207,29 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		givenname.setEnabled(privacyCount == 0);
 		patronym.setEnabled(privacyCount == 0);
 		// prefix.setEnabled(!specialName);
-		surname.setEnabled(privacyCount == 0);
+		surname.setEnabled(specialName == false || privacyCount == 0);
 		postfix.setEnabled(privacyCount == 0);
 		if (privacyCount == 0) {
-			surname.setText(comboname);
+			String tmp = comboname.toString();
+			surname.setText(tmp);
 
 		}
 
+	}
+
+	private String toFullSurname(String prefix, String surname) {
+		if (prefix == null)
+			return surname;
+		if (prefix.isEmpty()) {
+			return surname.trim();
+		} else {
+
+			if (surname.isEmpty()) {
+				return prefix.trim();
+			} else {
+				return prefix.trim() + " " + surname.trim();
+			}
+		}
 	}
 
 	void updateRest() {
@@ -1016,18 +1033,22 @@ public class PersonMainPane extends JPanel implements ActionListener {
 					&& i < noticeFirst + names.length; i++) {
 				NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 				if (pane.notice.getTag().equals("NAME")) {
-					pane.givenname.setText(givenname.getText());
-					pane.patronym.setText(patronym.getText());
+					pane.givenname.setText(Utils.toProper(givenname.getText()));
+					pane.patronym.setText(Utils.toProper(patronym.getText()));
+
 					String name = names[i - noticeFirst];
 
 					int vonIndex = Utils.isKnownPrefix(name);
 					if (vonIndex > 0) {
 						pane.prefix.setText(name.substring(0, vonIndex));
 						name = name.substring(vonIndex + 1);
+					} else {
+						pane.prefix.setText("");
 					}
 
 					// pane.prefix.setText(name);
-					pane.surname.setText(name);
+					String tmp = Utils.toProper(name);
+					pane.surname.setText(tmp);
 					pane.postfix.setText(postfix.getText());
 				}
 			}

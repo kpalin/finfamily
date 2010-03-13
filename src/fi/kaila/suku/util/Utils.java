@@ -198,7 +198,7 @@ public class Utils {
 		sb.append(" ");
 		sb.append(textDate);
 
-		String parts[] = textDate.split("\\.|/|-");
+		String parts[] = textDate.split("\\.|,|/|-");
 		int parti[] = { -1, -1, -1 };
 		if (parts.length > 3) {
 			throw new SukuDateException(sb.toString());
@@ -206,7 +206,7 @@ public class Utils {
 		for (int i = 0; i < parts.length; i++) {
 			try {
 
-				parti[i] = Integer.parseInt(parts[i]);
+				parti[i] = Integer.parseInt(parts[i].trim());
 			} catch (NumberFormatException ne) {
 				throw new SukuDateException(sb.toString());
 			}
@@ -326,6 +326,37 @@ public class Utils {
 
 		}
 		throw new SukuDateException(sb.toString());
+
+	}
+
+	/**
+	 * Modify name to Proper name using capital latters as first character
+	 * 
+	 * @param names
+	 * @return the proper name
+	 */
+	public static String toProper(String names) {
+		if (names == null)
+			return null;
+		if (names.isEmpty())
+			return "";
+		String name[] = names.split(" ");
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < name.length; i++) {
+			if (!name[i].isEmpty()) {
+				if (sb.length() > 0) {
+					sb.append(" ");
+				}
+				if (name[i].length() == 1) {
+					sb.append(name[i].toUpperCase());
+				} else {
+					sb.append(name[i].substring(0, 1).toUpperCase());
+					sb.append(name[i].substring(1));
+				}
+			}
+		}
+		return sb.toString();
 
 	}
 
@@ -514,9 +545,27 @@ public class Utils {
 	 * @return parts
 	 */
 	public static int isKnownPrefix(String name) {
-		String[] prexes = Resurses.getString("NAME_VON").split(";");
+		String[] prexesu = Resurses.getString("NAME_VON").split(";");
+		String[] prexes = new String[prexesu.length];
+		int ii = prexes.length;
+		int len = 0;
+		// lets put them in order so that longest strings comes first
+		while (ii > 0) {
+
+			len++;
+			for (int j = 0; j < prexesu.length; j++) {
+				if (prexesu[j].length() == len) {
+					ii--;
+					prexes[ii] = prexesu[j];
+				}
+			}
+		}
+
 		for (int i = 0; i < prexes.length; i++) {
-			if (name.toLowerCase().startsWith(prexes[i])) {
+			if (name.equalsIgnoreCase(prexes[i])) {
+				return prexes[i].length();
+			}
+			if (name.toLowerCase().startsWith(prexes[i] + " ")) {
 				return prexes[i].length();
 			}
 		}
