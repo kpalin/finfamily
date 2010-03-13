@@ -985,14 +985,18 @@ public class RelativesPane extends JPanel implements ActionListener,
 								sb.append(Resurses.getString("PARE_DOUBT"));
 								sb.append(" [");
 								sb.append(sures[3]);
-								sb.append("]");
+								sb.append("]?");
 
-								JOptionPane.showMessageDialog(personView, sb
-										.toString(), Resurses
-										.getString(Resurses.SUKU),
-										JOptionPane.WARNING_MESSAGE);
-
-								break;
+								int resu = JOptionPane.showConfirmDialog(
+										personView, sb.toString(), Resurses
+												.getString(Resurses.SUKU),
+										JOptionPane.YES_NO_OPTION,
+										JOptionPane.QUESTION_MESSAGE);
+								if (resu == JOptionPane.YES_OPTION) {
+									break;
+								} else {
+									return;
+								}
 							}
 						}
 					}
