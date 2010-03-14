@@ -292,6 +292,21 @@ public class RelativesPane extends JPanel implements ActionListener,
 					return false;
 				}
 
+				Transferable t = info.getTransferable();
+				PersonShortData dd;
+
+				try {
+					dd = (PersonShortData) t.getTransferData(PersonShortData
+							.getPersonShortDataFlavour());
+				} catch (Exception e) {
+					return false;
+				}
+				if (dd.getDragSource() == Utils.PersonSource.SPOUSE
+						|| dd.getDragSource() == Utils.PersonSource.CHILD
+						|| dd.getDragSource() == Utils.PersonSource.PARENT) {
+					return false;
+				}
+
 				JTable.DropLocation dl = (JTable.DropLocation) info
 						.getDropLocation();
 				if (dl.getRow() == -1) {
@@ -357,6 +372,20 @@ public class RelativesPane extends JPanel implements ActionListener,
 					return false;
 				}
 
+				Transferable t = info.getTransferable();
+				PersonShortData dd;
+
+				try {
+					dd = (PersonShortData) t.getTransferData(PersonShortData
+							.getPersonShortDataFlavour());
+				} catch (Exception e) {
+					return false;
+				}
+				if (dd.getDragSource() == Utils.PersonSource.CHILD
+						|| dd.getDragSource() == Utils.PersonSource.PARENT) {
+					return false;
+				}
+
 				JTable.DropLocation dl = (JTable.DropLocation) info
 						.getDropLocation();
 				if (dl.getRow() == -1) {
@@ -384,10 +413,11 @@ public class RelativesPane extends JPanel implements ActionListener,
 				} catch (Exception e) {
 					return false;
 				}
-				if (dd.getDragSource() == Utils.PersonSource.CHILD) {
-					JOptionPane.showMessageDialog(null, "on lapselta");
-					return false;
-				} else if (dd.getDragSource() == Utils.PersonSource.SPOUSE) {
+				// if (dd.getDragSource() != Utils.PersonSource.CHILD) {
+				// // JOptionPane.showMessageDialog(null, "on lapselta");
+				// return false;
+				// } else
+				if (dd.getDragSource() == Utils.PersonSource.SPOUSE) {
 
 					for (int i = 0; i < spouses.list.size(); i++) {
 						Relation rl = spouses.list.get(i);
@@ -456,6 +486,20 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 				if (!info.isDataFlavorSupported(PersonShortData
 						.getPersonShortDataFlavour())) {
+					return false;
+				}
+
+				Transferable t = info.getTransferable();
+				PersonShortData dd;
+
+				try {
+					dd = (PersonShortData) t.getTransferData(PersonShortData
+							.getPersonShortDataFlavour());
+				} catch (Exception e) {
+					return false;
+				}
+				if (dd.getDragSource() == Utils.PersonSource.SPOUSE
+						|| dd.getDragSource() == Utils.PersonSource.PARENT) {
 					return false;
 				}
 
@@ -901,6 +945,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		String pareTag = Resurses.getString("AS_" + tag);
 
 		boolean hasParent = false;
+		int parentSurety = 100;
 		try {
 			SukuData pareDat = Suku.kontroller.getSukuData("cmd=relatives",
 					"pid=" + persShort.getPid(), "tag=" + tag);
@@ -959,7 +1004,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 						if (chrel.getNotices() == null
 								|| chrel.getNotices().length == 0) {
 							if (chrel.getSurety() > 50) {
-								rel.setSurety(40);
+								parentSurety = 40;
+								rel.setSurety(parentSurety);
 
 								for (int j = 0; j < chilDat.pers.length; j++) {
 									PersonShortData pps = chilDat.pers[j];
@@ -993,6 +1039,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 										JOptionPane.YES_NO_OPTION,
 										JOptionPane.QUESTION_MESSAGE);
 								if (resu == JOptionPane.YES_OPTION) {
+									hasParent = false;
+
 									break;
 								} else {
 									return;
@@ -1043,7 +1091,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 					logger.info("Adding " + pare.getAlfaName() + " as "
 							+ pareTag);
 					Relation rpare = new Relation(0, persShort.getPid(), pare
-							.getPid(), tag, 100, null, null);
+							.getPid(), tag, parentSurety, null, null);
 					persShort.setParentPid(pare.getPid());
 					rpare.setShortPerson(pare);
 					pare.setParentPid(pare.getPid());
