@@ -491,7 +491,11 @@ public abstract class CommonReport {
 					if (ownerTag.equals(cdata.relations[i].getTag())) {
 						if (cdata.relations[i].getNotices() != null) {
 							adopTag = cdata.relations[i].getNotices()[0]
-									.getTag();
+									.getType();
+							if (adopTag == null) {
+								adopTag = cdata.relations[i].getNotices()[0]
+										.getTag();
+							}
 
 						}
 						break;

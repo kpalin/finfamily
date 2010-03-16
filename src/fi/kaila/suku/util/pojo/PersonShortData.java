@@ -742,7 +742,7 @@ public class PersonShortData implements Serializable, Transferable,
 	public int getBirtYear() {
 		if (bDate == null)
 			return 0;
-		return Integer.parseInt(bDate.substring(0, 4));
+		return Integer.parseInt(bDate.substring(0, 4).trim());
 	}
 
 	/**
@@ -752,7 +752,7 @@ public class PersonShortData implements Serializable, Transferable,
 	public int getDeatYear() {
 		if (dDate == null)
 			return 0;
-		return Integer.parseInt(dDate.substring(0, 4));
+		return Integer.parseInt(dDate.substring(0, 4).trim());
 	}
 
 	/**
