@@ -57,6 +57,7 @@ import fi.kaila.suku.report.AncestorReport;
 import fi.kaila.suku.report.CommonReport;
 import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
+import fi.kaila.suku.report.GenGraphReport;
 import fi.kaila.suku.report.JavaReport;
 import fi.kaila.suku.report.PersonInTables;
 import fi.kaila.suku.report.ReportInterface;
@@ -224,6 +225,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private DefaultComboBoxModel settingModel = null;
 	private DescendantPane descendantPanel;
 	private AncestorPane ancestorPanel;
+	private OtherReportsPane otherPane;
 	private JPanel listaPanel;
 	// private ReportFrame repo;
 	private PersonShortData pers = null;
@@ -656,6 +658,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			reportTypePane.addTab(Resurses.getString("REPORT.ANCESTOR"), icon2,
 					ancestorPanel, Resurses.getString("REPORT.TIP.ANCESTOR"));
 			reportTypePane.setMnemonicAt(1, KeyEvent.VK_2);
+
+			otherPane = new OtherReportsPane();
+			reportTypePane.addTab(Resurses.getString("REPORT.OTHER"), icon2,
+					otherPane, Resurses.getString("REPORT.TIP.OTHER"));
+			reportTypePane.setMnemonicAt(2, KeyEvent.VK_3);
 		} else {
 			listaPanel = new JPanel();
 			listaPanel.setLayout(null);
@@ -1208,8 +1215,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				if (reportTypePane.getSelectedIndex() == 0) {
 
 					dr = new DescendantReport(self, typesTable, repo);
-				} else {
+				} else if (reportTypePane.getSelectedIndex() == 1) {
 					dr = new AncestorReport(self, typesTable, repo);
+				} else {
+					dr = new GenGraphReport(self, typesTable, repo);
 				}
 				dr.executeReport();
 

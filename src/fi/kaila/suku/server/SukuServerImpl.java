@@ -15,6 +15,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fi.kaila.suku.server.utils.GenGraphUtil;
 import fi.kaila.suku.server.utils.GroupUtil;
 import fi.kaila.suku.server.utils.ImportGedcomUtil;
 import fi.kaila.suku.server.utils.PersonUtil;
@@ -538,7 +539,15 @@ public class SukuServerImpl implements SukuServer {
 			} else {
 				fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
 			}
+		} else if (cmd.equals("gengraph")) {
+			String type = map.get("type");
+			tmp = map.get("pid");
+			if (tmp != null) {
+				pid = Integer.parseInt(tmp);
 
+				GenGraphUtil gutil = new GenGraphUtil(con);
+				fam = gutil.getGengraphData(pid);
+			}
 		} else if (cmd.equals("savesettings")) {
 			fam = saveReportSettings(map);
 
