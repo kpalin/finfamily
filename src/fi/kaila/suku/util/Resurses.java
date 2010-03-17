@@ -327,6 +327,10 @@ public class Resurses {
 
 	public static final String CRITERIA_SEX = "CRITERIA_SEX";
 
+	public static final String SW_UPDATE = "SW_UPDATE";
+
+	public static final String LICENSE = "LICENSE";
+
 	private static Resurses myself = null;
 	private static ExcelBundle resources = null;
 

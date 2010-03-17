@@ -207,7 +207,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mImportHiski;
 	private JMenu mHelp;
 	private JMenuItem mAbout;
-
+	private JMenuItem mSwUpdate;;
 	private JToolBar toolbar;
 
 	private JButton tQueryButton;
@@ -515,6 +515,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		this.mHelp = new JMenu(Resurses.getString(Resurses.HELP));
 		this.menubar.add(this.mHelp);
+		this.mSwUpdate = new JMenuItem(Resurses.getString(Resurses.SW_UPDATE));
+		this.mHelp.add(this.mSwUpdate);
+		this.mSwUpdate.setActionCommand(Resurses.SW_UPDATE);
+		this.mSwUpdate.addActionListener(this);
+		JMenuItem lic = new JMenuItem(Resurses.getString(Resurses.LICENSE));
+		this.mHelp.add(lic);
+		lic.setActionCommand(Resurses.LICENSE);
+		lic.addActionListener(this);
+		this.mHelp.addSeparator();
 		this.mAbout = new JMenuItem(Resurses.getString(Resurses.ABOUT));
 		this.mHelp.add(this.mAbout);
 		this.mAbout.setActionCommand(Resurses.ABOUT);
@@ -1208,7 +1217,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				AboutDialog about = new AboutDialog(this);
 				about.setVisible(true);
-
+				return;
+			}
+			if (cmd.equals(Resurses.SW_UPDATE)) {
+				String updateSite = "https://sourceforge.net/projects/finfamily/";
+				Utils.openExternalFile(updateSite);
+				return;
+			}
+			if (cmd.equals(Resurses.LICENSE)) {
+				String updateSite = "http://en.wikipedia.org/wiki/BSD_licenses";
+				Utils.openExternalFile(updateSite);
+				return;
 			}
 			if (cmd.equals(Resurses.UPDATEDB)) {
 				SukuData resp = kontroller.getSukuData("cmd=initdb",
