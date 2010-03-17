@@ -92,7 +92,7 @@ public class GenGraphReport extends CommonReport {
 
 			Label label = new Label(0, 0, "Tulos");
 			sheet.addCell(label);
-
+			int row = 2;
 			Number number;
 			for (int i = 0; i < vlist.pers.length; i++) {
 				PersonShortData pp = vlist.pers[i];
@@ -112,7 +112,8 @@ public class GenGraphReport extends CommonReport {
 					sb.append("-");
 					sb.append(ddate);
 				}
-				label = new Label(1, 1, sb.toString());
+				row++;
+				label = new Label(1, row, sb.toString());
 
 				sheet.addCell(label);
 			}
