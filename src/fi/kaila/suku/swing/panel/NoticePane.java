@@ -1005,7 +1005,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			notice.setRefPlaces(placesVector.toArray(new String[0]));
 
 		}
-		if (cmd.equals(Resurses.CLOSE) || cmd.equals(Resurses.UPDATE)) {
+		if (cmd.equals(Resurses.UPDATE)) {
 
 			int midx = personView.getMainPaneIndex();
 			if (midx < 0)
@@ -1013,11 +1013,6 @@ public class NoticePane extends JPanel implements ActionListener,
 			SukuTabPane pan = personView.getPane(midx);
 			PersonMainPane main = (PersonMainPane) pan.pnl;
 			int personPid = main.getPersonPid();
-
-			boolean reOpen = true;
-			if (cmd.equals(Resurses.CLOSE)) {
-				reOpen = false;
-			}
 
 			try {
 				verifyUnitNotice();
@@ -1028,8 +1023,37 @@ public class NoticePane extends JPanel implements ActionListener,
 			}
 
 			try {
+				personView.closePersonPane(false);
 				personView.displayPersonPane(personPid);
-				personView.closeMainPane(reOpen);
+				personView.closeMainPane(true);
+
+			} catch (SukuException e1) {
+				JOptionPane.showMessageDialog(this, e1.toString(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				logger.log(Level.WARNING, "Closing notice", e1);
+
+				// e1.printStackTrace();
+			}
+		} else if (cmd.equals(Resurses.CLOSE)) {
+
+			int midx = personView.getMainPaneIndex();
+			if (midx < 0)
+				return;
+			SukuTabPane pan = personView.getPane(midx);
+			PersonMainPane main = (PersonMainPane) pan.pnl;
+			int personPid = main.getPersonPid();
+
+			try {
+				verifyUnitNotice();
+			} catch (SukuDateException se) {
+				JOptionPane.showMessageDialog(this, se.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			try {
+				personView.closePersonPane(true);
+				personView.closeMainPane(false);
 
 			} catch (SukuException e1) {
 				JOptionPane.showMessageDialog(this, e1.toString(), Resurses

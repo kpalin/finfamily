@@ -717,14 +717,44 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		if (cmd == null)
 			return;
 		try {
-
-			if (cmd.equals(Resurses.CLOSE) || cmd.equals(Resurses.UPDATE)) {
+			if (cmd.equals(Resurses.CLOSE)) {
 				try {
-					boolean reOpen = true;
-					if (cmd.equals(Resurses.CLOSE))
-						reOpen = false;
+					boolean hasChanged = hasPersonChanged();
+					if (hasChanged) {
+
+						int askresu = JOptionPane.showConfirmDialog(this,
+								Resurses.getString("ASK_SAVE_PERSON"), Resurses
+										.getString(Resurses.SUKU),
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
+						if (askresu == JOptionPane.YES_OPTION) {
+							SukuData resp = updatePerson();
+							logger.fine("Close response:" + resp.resu);
+						}
+					}
+
+					personView.closeMainPane(false);
+
+				} catch (SukuDateException e1) {
+					JOptionPane.showMessageDialog(this, e1.getMessage(),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					logger.log(Level.WARNING, "CLOSE:" + e1.getMessage());
+					return;
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(this, e1.toString(), Resurses
+							.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					logger.log(Level.WARNING, "Closing person", e1);
+
+					personView.closeMainPane(false);
+					return;
+				}
+			} else if (cmd.equals(Resurses.UPDATE)) {
+				try {
+
 					SukuData resp = updatePerson();
-					personView.closeMainPane(reOpen);
+					personView.closeMainPane(true);
 					logger.fine("Close response:" + resp.resu);
 
 					// if (cmd.equals(Resurses.UPDATE)){
@@ -758,8 +788,27 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		}
 	}
 
-	SukuData updatePerson() throws SukuDateException {
+	boolean hasPersonChanged() {
+		if (persLong == null)
+			return false;
+		SukuData resp;
+		try {
+			resp = updatePersonStructure();
+		} catch (SukuDateException e) {
+			return true;
+		}
+		if (resp == null)
+			return false;
+		return resp.resu == null ? false : true;
+	}
 
+	/**
+	 * Update person data structure from pane fields and check if it has changed
+	 * 
+	 * @return true is person data has changed
+	 * @throws SukuDateException
+	 */
+	private SukuData updatePersonStructure() throws SukuDateException {
 		if (persLong == null)
 			return null;
 		SukuData resp = null;
@@ -854,7 +903,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 			if (rel.size() > 0) {
 				req.relations = rel.toArray(new Relation[0]);
-				foundModification = true;
+
 			}
 		}
 
@@ -891,10 +940,153 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				}
 			}
 		}
-		if (foundModification) {
-			req.persLong = persLong;
 
-			req.persLong.setNotices(un.toArray(new UnitNotice[0]));
+		req.persLong = persLong;
+
+		req.persLong.setNotices(un.toArray(new UnitNotice[0]));
+		req.resu = foundModification ? "modified" : null;
+		return req;
+	}
+
+	SukuData updatePerson() throws SukuDateException {
+
+		SukuData req = updatePersonStructure();
+		SukuData resp = null;
+		// if (persLong == null)
+		// return null;
+		// SukuData resp = null;
+		// personView.updateNotices();
+		// int noticeFirst = personView.getFirstNoticeIndex();
+		// int tabCount = personView.getTabCount();
+		//
+		// boolean foundModification = false;
+		//
+		// String newSex = sexes[sex.getSelectedIndex()];
+		// persLong.setSex(newSex);
+		//
+		// String priva = privacy.isSelected() ? "P" : null;
+		// persLong.setPrivacy(priva);
+		//
+		// // if (persLong.getPid() == 0) {
+		// String grp = groupid.getText();
+		// persLong.setGroupId(grp);
+		// // }
+		//
+		// String rf = refn.getText();
+		// persLong.setUserRefn(rf);
+		//
+		// String sou = source.getText();
+		// persLong.setSource(sou);
+		//
+		// String prit = privateText.getText();
+		// persLong.setPrivateText(prit);
+		//
+		// if (persLong.getNotices().length != tabCount - noticeFirst) {
+		// persLong.setOrderModified();
+		// foundModification = true;
+		// } else {
+		// for (int i = noticeFirst; i < tabCount; i++) {
+		// NoticePane npane = (NoticePane) personView.getPane(i).pnl;
+		// if (persLong.getNotices()[i - noticeFirst].getPnid() != npane.notice
+		// .getPnid()) {
+		// persLong.setOrderModified();
+		// foundModification = true;
+		// break;
+		// }
+		// }
+		// }
+		//
+		// for (int i = noticeFirst; i < tabCount; i++) {
+		// NoticePane pane = (NoticePane) personView.getPane(i).pnl;
+		// pane.verifyUnitNotice();
+		// }
+		//
+		// Vector<UnitNotice> un = new Vector<UnitNotice>();
+		//
+		// for (int i = noticeFirst; i < tabCount; i++) {
+		// NoticePane pane = (NoticePane) personView.getPane(i).pnl;
+		//
+		// if (pane.notice.isToBeDeleted()) {
+		// foundModification = true;
+		// } else {
+		// pane.copyToUnitNotice();
+		//
+		// if (pane.notice.isToBeUpdated()) {
+		// foundModification = true;
+		// }
+		// }
+		// un.add(pane.notice);
+		//
+		// }
+		// verifyLocalPersonDates();
+		// SukuData req = new SukuData();
+		//
+		// if (relas != null) {
+		// Vector<Relation> rel = new Vector<Relation>();
+		// for (int i = 0; i < relas.parents.list.size(); i++) {
+		// Relation r = relas.parents.list.get(i);
+		//
+		// rel.add(r);
+		// }
+		// for (int i = 0; i < relas.spouses.list.size(); i++) {
+		// Relation r = relas.spouses.list.get(i);
+		//
+		// rel.add(r);
+		// }
+		// for (int i = 0; i < relas.children.list.size(); i++) {
+		// Relation r = relas.children.list.get(i);
+		//
+		// rel.add(r);
+		// }
+		// for (int i = 0; i < relas.otherRelations.size(); i++) {
+		// Relation r = relas.otherRelations.get(i);
+		//
+		// rel.add(r);
+		// }
+		//
+		// if (rel.size() > 0) {
+		// req.relations = rel.toArray(new Relation[0]);
+		// foundModification = true;
+		// }
+		// }
+		//
+		// String[] notorder = null;
+		// try {
+		// resp = Suku.kontroller.getSukuData("cmd=getsettings", "type=order",
+		// "name=notice");
+		// notorder = resp.generalArray;
+		// } catch (SukuException e) {
+		// JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
+		// .getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+		// logger.log(Level.WARNING, "get settings", e);
+		// return null;
+		//
+		// }
+		//
+		// String[] wn = new String[notorder.length + 1];
+		// wn[0] = "NAME";
+		// for (int i = 0; i < notorder.length; i++) {
+		// wn[i + 1] = notorder[i];
+		// }
+		//
+		// if (reorderNotices(un, wn)) {
+		// foundModification = true;
+		// }
+		// if (persLong.getPid() == 0) {
+		// foundModification = false;
+		// for (int i = noticeFirst; i < tabCount; i++) {
+		// NoticePane pane = (NoticePane) personView.getPane(i).pnl;
+		// if (pane.notice.isToBeUpdated()) {
+		// if (pane.notice.isToBeDeleted() == false) {
+		// foundModification = true;
+		// }
+		// }
+		// }
+		// }
+		if (req != null && req.resu != null) {
+			// req.persLong = persLong;
+			//
+			// req.persLong.setNotices(un.toArray(new UnitNotice[0]));
 
 			try {
 				resp = Suku.kontroller.getSukuData(req, "cmd=update",
@@ -1220,7 +1412,9 @@ public class PersonMainPane extends JPanel implements ActionListener {
 						lastCheckedIndex++;
 						UnitNotice t = unotices.remove(i);
 						unotices.insertElementAt(t, lastCheckedIndex);
-						hasSorted = true;
+						if (!tag.equals(t.getTag())) {
+							hasSorted = true;
+						}
 					} else {
 						lastCheckedIndex = i;
 					}

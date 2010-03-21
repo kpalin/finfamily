@@ -319,26 +319,25 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		}
 
-		
-		
 		if ("web".equals(arg1)) {
 			this.isWebApp = true;
 			kontroller = new SukuKontrollerWebstartImpl();
 		} else {
 			kontroller = new SukuKontrollerLocalImpl();
-			
-			String loca = kontroller.getPref(this, Resurses.LOCALE, "xx");
-			if (loca==null || loca.equals("xx")){
-				String languas[] = {"English","Suomi","Svenska"};
-				String langabr[] = {"en","fi","sv"};
-				int locaresu = JOptionPane.showOptionDialog(this,"Select language / valitse kieli / välj språket","FinFamily",
-                       JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,languas,"en");
-                 loca = langabr[locaresu];
-            
-			}
-			
-			Resurses.setLocale(loca);
 		}
+		String loca = kontroller.getPref(this, Resurses.LOCALE, "xx");
+		if (loca == null || loca.equals("xx")) {
+			String languas[] = { "English", "Suomi", "Svenska" };
+			String langabr[] = { "en", "fi", "sv" };
+			int locaresu = JOptionPane.showOptionDialog(this,
+					"Select language / valitse kieli / välj språket",
+					"FinFamily", JOptionPane.DEFAULT_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, languas, "en");
+			loca = langabr[locaresu];
+
+		}
+
+		Resurses.setLocale(loca);
 
 		String langu = kontroller.getPref(this, Resurses.REPOLANG, "fi");
 		Resurses.setLanguage(langu);
@@ -754,6 +753,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			@Override
 			public void windowClosing(WindowEvent e) {
 				e.getClass();
+				personView.askAndClosePerson();
+
 				System.exit(0);
 			}
 
@@ -2351,9 +2352,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 
 		try {
-			kontroller.getSukuData("cmd=logout");
+
 			this.tableModel.resetModel(); // clear contents of table first
 			this.personView.reset();
+			kontroller.getSukuData("cmd=logout");
 			this.databaseWindowPersons = null;
 			this.table.updateUI();
 			this.scrollPane.updateUI();

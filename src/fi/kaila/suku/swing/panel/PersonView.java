@@ -202,6 +202,18 @@ public class PersonView extends JPanel implements ChangeListener {
 	}
 
 	/**
+	 * Close the person window. ask if save
+	 */
+	public void askAndClosePerson() {
+		try {
+			closePersonPane(true);
+		} catch (SukuException e) {
+			logger.warning("Ask and close failed: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * display the hiskipanel
 	 */
 	public void displayHiskiPane() {
@@ -255,17 +267,17 @@ public class PersonView extends JPanel implements ChangeListener {
 	 */
 	public void displayNewPersonPane(int pid) throws SukuException {
 		reOpenIndex = -1;
+		closePersonPane(true);
 		displayPersonPane(pid);
 	}
 
 	/**
-	 * Display person pane. Close previous person first
 	 * 
-	 * @param pid
+	 * @param askChanges
+	 *            is true if person need to ask if cancel updates
 	 * @throws SukuException
 	 */
-	protected void displayPersonPane(int pid) throws SukuException {
-
+	protected void closePersonPane(boolean askChanges) throws SukuException {
 		int midx = getMainPaneIndex();
 		if (midx > 0) {
 			reOpenIndex = getFirstNoticeIndex();
@@ -294,7 +306,22 @@ public class PersonView extends JPanel implements ChangeListener {
 						main.updateName();
 						main.updateRest();
 					}
-					main.updatePerson();
+					if (main.hasPersonChanged()) {
+						if (askChanges) {
+							int askresu = JOptionPane.showConfirmDialog(this,
+									Resurses.getString("ASK_SAVE_PERSON"),
+									Resurses.getString(Resurses.SUKU),
+									JOptionPane.YES_NO_OPTION,
+									JOptionPane.QUESTION_MESSAGE);
+							if (askresu == JOptionPane.YES_OPTION) {
+								SukuData resp = main.updatePerson();
+								logger.fine("Close response:" + resp.resu);
+							}
+						} else {
+							main.updatePerson();
+						}
+					}
+
 				} catch (SukuDateException e1) {
 					if (previousNoticeIndex <= midx + 1) {
 						previousNoticeIndex = midx;
@@ -310,6 +337,18 @@ public class PersonView extends JPanel implements ChangeListener {
 				closeMainPane(false);
 			}
 		}
+
+	}
+
+	/**
+	 * Display person pane. Close previous person first
+	 * 
+	 * display PersonPane. The previous person must be closed prior to this
+	 * 
+	 * @param pid
+	 * @throws SukuException
+	 */
+	protected void displayPersonPane(int pid) throws SukuException {
 
 		previousNoticeIndex = -1;
 		PersonMainPane personMain = new PersonMainPane(this, pid);
@@ -379,6 +418,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		paneTabs.remove(pan);
 
 		if (reOpen && personPid > 0) {
+			closePersonPane(true);
 			displayPersonPane(personPid);
 
 			if (reOpenIndex > previousNoticeIndex
@@ -579,7 +619,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 */
 	public void reset() {
 		try {
-
+			closePersonPane(true);
 			closeMainPane(false);
 		} catch (SukuException e) {
 			logger.log(Level.WARNING, "closing main pane", e);

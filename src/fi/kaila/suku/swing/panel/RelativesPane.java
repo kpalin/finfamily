@@ -919,6 +919,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		int personPid = main.getPersonPid();
 
 		try {
+			personView.closePersonPane(true);
 			personView.displayPersonPane(personPid);
 			personView.closeMainPane(reOpen);
 			if (reOpen) {

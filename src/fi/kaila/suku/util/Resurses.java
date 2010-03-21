@@ -350,14 +350,12 @@ public class Resurses {
 	}
 
 	/**
-	 * Change locale for Resource Bundle
+	 * Change locale for Excel bundle
 	 * 
 	 * @param newLocale
 	 */
 	public static synchronized void setLocale(String newLocale) {
 		currentLocale = new Locale(newLocale);
-		// FIXME this to be usefull also for webstart
-		// Locale.setDefault(currentLocale);
 		repoLangu = newLocale;
 		myself = null;
 		resources = ExcelBundle.getBundle("excel/FinFamily", currentLocale);

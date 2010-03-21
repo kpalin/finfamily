@@ -117,6 +117,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 
 	private void doTabPerson() throws SukuException {
 		if (this.relativesPane.pop.getMousePerson() != null) {
+			this.relativesPane.personView.closePersonPane(true);
 			this.relativesPane.personView.displayPersonPane(relativesPane.pop
 					.getMousePerson().getPid());
 		}
