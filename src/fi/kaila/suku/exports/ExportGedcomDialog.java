@@ -1,4 +1,4 @@
-package fi.kaila.suku.imports;
+package fi.kaila.suku.exports;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -6,8 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -15,28 +19,25 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
-import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * 
- * <h1>Import gedcom-file</h1>
- * 
+ * Export as a Gedcom file
  * 
  * @author Kalle
  * 
  */
-
-public class ImportGedcomDialog extends JDialog implements ActionListener,
+public class ExportGedcomDialog extends JDialog implements ActionListener,
 		PropertyChangeListener {
 
 	/**
-		 * 
-		 */
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
+
 	private static final String OK = "OK";
 	private static final String CANCEL = "CANCEL";
 
@@ -46,8 +47,11 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private JTextField fileName;
 	private JLabel timeEstimate;
 	private String selectedOldLang = null;
+	private JComboBox viewList;
+	private String[] viewArray = null;
+	private JComboBox langList;
 
-	private SukuKontroller kontroller = null;
+	private String[] langcodes = null;
 
 	private JProgressBar progressBar;
 	private Task task = null;
@@ -55,14 +59,111 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	/**
 	 * @return the dialog handle used for the progresBar
 	 */
-	public static ImportGedcomDialog getRunner() {
+	public static ExportGedcomDialog getRunner() {
 		return runner;
 	}
 
 	private Suku owner = null;
-	private static ImportGedcomDialog runner = null;
-
+	private static ExportGedcomDialog runner = null;
 	private SukuData gedcomResult = null;
+
+	/**
+	 * 
+	 * Constructor takes {@link fi.kaila.suku.swing.Suku main program} and
+	 * 
+	 * @param owner
+	 * @param dbName
+	 * @throws SukuException
+	 */
+	public ExportGedcomDialog(Suku owner, String dbName) throws SukuException {
+		super(owner, Resurses.getString("EXPORT"), true);
+		this.owner = owner;
+		runner = this;
+
+		setLayout(null);
+		int y = 20;
+
+		JLabel lbl = new JLabel(Resurses.getString("GEDCOM_FILE"));
+
+		getContentPane().add(lbl);
+		lbl.setBounds(30, y, 340, 20);
+		y += 20;
+
+		fileName = new JTextField(dbName);
+		fileName.setEditable(false);
+		getContentPane().add(fileName);
+		fileName.setBounds(30, y, 340, 20);
+		y += 20;
+		lbl = new JLabel(Resurses.getString("EXPORT_VIEW"));
+		getContentPane().add(lbl);
+		lbl.setBounds(30, y, 340, 20);
+		y += 20;
+		SukuData vlist = Suku.kontroller.getSukuData("cmd=viewlist");
+		String[] lista = vlist.generalArray;
+		this.viewList = new JComboBox();
+		getContentPane().add(this.viewList);
+		this.viewList.setBounds(30, y, 340, 20);
+		y += 20;
+		viewArray = lista;
+		viewList.addItem(Resurses.getString("EXPORT_ALL"));
+		for (int i = 0; i < viewArray.length; i++) {
+			String[] pp = viewArray[i].split(";");
+			if (pp.length > 1) {
+				viewList.addItem(pp[1]);
+			}
+		}
+
+		lbl = new JLabel(Resurses.getString("EXPORT_LANG"));
+		getContentPane().add(lbl);
+		lbl.setBounds(30, y, 340, 20);
+		y += 20;
+		String[] langnames = new String[Suku.getRepoLanguageCount() + 1];
+		langcodes = new String[Suku.getRepoLanguageCount()];
+		langnames[0] = Resurses.getString("EXPORT_DEFAULT");
+		for (int i = 0; i < langcodes.length; i++) {
+			langnames[i + 1] = Suku.getRepoLanguage(i, false);
+
+		}
+
+		langList = new JComboBox(langnames);
+		getContentPane().add(langList);
+		langList.setBounds(30, y, 340, 20);
+		y += 30;
+		textContent = new JLabel("");
+		getContentPane().add(textContent);
+		this.textContent.setBounds(30, y, 340, 20);
+
+		y += 30;
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		this.progressBar.setBounds(30, y, 340, 20);
+		getContentPane().add(this.progressBar);
+
+		y += 20;
+		timeEstimate = new JLabel("");
+		getContentPane().add(timeEstimate);
+		timeEstimate.setBounds(30, y, 340, 20);
+
+		y += 40;
+		this.ok = new JButton(Resurses.getString(OK));
+		getContentPane().add(this.ok);
+		this.ok.setBounds(80, y, 100, 24);
+		this.ok.setActionCommand(OK);
+		this.ok.addActionListener(this);
+		this.ok.setDefaultCapable(true);
+		getRootPane().setDefaultButton(this.ok);
+
+		this.cancel = new JButton(Resurses.getString(CANCEL));
+		getContentPane().add(this.cancel);
+		this.cancel.setBounds(200, y, 100, 24);
+		this.cancel.setActionCommand(CANCEL);
+		this.cancel.addActionListener(this);
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+
+		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, y + 100);
+
+	}
 
 	/**
 	 * 
@@ -99,92 +200,6 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			return resu;
 		}
 		return gedcomResult.generalArray;
-	}
-
-	/**
-	 * 
-	 * Constructor takes {@link fi.kaila.suku.swing.Suku main program} and
-	 * 
-	 * @param owner
-	 * @param dbName
-	 * @throws SukuException
-	 */
-	public ImportGedcomDialog(Suku owner, String dbName) throws SukuException {
-		super(owner, Resurses.getString("IMPORT"), true);
-		this.owner = owner;
-		runner = this;
-		this.kontroller = Suku.kontroller;
-
-		setLayout(null);
-		int y = 20;
-
-		JLabel lbl = new JLabel(Resurses.getString("GEDCOM_FILE"));
-		getContentPane().add(lbl);
-		lbl.setBounds(30, y, 340, 20);
-
-		y += 20;
-
-		fileName = new JTextField(dbName);
-		fileName.setEditable(false);
-		getContentPane().add(fileName);
-		fileName.setBounds(30, y, 340, 20);
-		y += 30;
-
-		textContent = new JLabel("");
-		getContentPane().add(textContent);
-		this.textContent.setBounds(30, y, 340, 20);
-
-		y += 30;
-
-		progressBar = new JProgressBar(0, 100);
-		progressBar.setValue(0);
-		progressBar.setStringPainted(true);
-		this.progressBar.setBounds(30, y, 340, 20);
-		getContentPane().add(this.progressBar);
-
-		y += 20;
-		timeEstimate = new JLabel("");
-		getContentPane().add(timeEstimate);
-		timeEstimate.setBounds(30, y, 340, 20);
-
-		y += 40;
-		this.ok = new JButton(Resurses.getString(OK));
-		getContentPane().add(this.ok);
-		this.ok.setBounds(80, y, 100, 24);
-		this.ok.setActionCommand(OK);
-		this.ok.addActionListener(this);
-		this.ok.setDefaultCapable(true);
-		getRootPane().setDefaultButton(this.ok);
-
-		this.cancel = new JButton(Resurses.getString(CANCEL));
-		getContentPane().add(this.cancel);
-		this.cancel.setBounds(200, y, 100, 24);
-		this.cancel.setActionCommand(CANCEL);
-		this.cancel.addActionListener(this);
-		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-
-		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, y + 100);
-
-		SukuData resp;
-
-		resp = Suku.kontroller.getSukuData("cmd=unitCount");
-
-		if (resp.resuCount > 0) {
-
-			int answer = JOptionPane.showConfirmDialog(this, Resurses
-					.getString("DATABASE_NOT_EMPTY")
-					+ " "
-					+ resp.resuCount
-					+ " "
-					+ Resurses.getString("DELETE_DATA_OK"), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-			if (answer == 1) {
-				throw new SukuException(Resurses
-						.getString("DATABASE_NOT_EMPTY"));
-
-			}
-		}
-
 	}
 
 	@Override
@@ -226,29 +241,42 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 			// Initialize progress property.
 			setProgress(0);
-			setRunnerValue("Luodaan tietokanta");
+			setRunnerValue("Luetaan tietokanta");
 
 			try {
 
-				kontroller.getSukuData("cmd=initdb");
-
-				setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
-				kontroller.getSukuData("cmd=excel",
-						"path=resources/excel/PaikatExcel.xls",
-						"page=coordinates");
-				setRunnerValue(Resurses.getString("IMPORT_TYPES"));
-				kontroller.getSukuData("cmd=excel",
-						"path=resources/excel/TypesExcel.xls", "page=types");
-				// kontroller.getSukuData("cmd=excel",
-				// "path=resources/excel/TextsExcel.xls", "page=texts");
-
 				if (fileName.getText().length() > 0) {
-					SukuData resp = kontroller.getSukuData("cmd=importGedcom",
-							"db=" + fileName.getText());
-					gedcomResult = resp;
+					Vector<String> v = new Vector<String>();
+					v.add("cmd=exportGedcom");
+					v.add("db=" + fileName.getText());
+					int listIdx = viewList.getSelectedIndex();
+
+					if (listIdx > 0) {
+						String parts[] = viewArray[listIdx - 1].split(";");
+						int viewId = Integer.parseInt(parts[0]);
+						v.add("viewId=" + viewId);
+					}
+
+					String[] auxes = v.toArray(new String[0]);
+					SukuData resp = Suku.kontroller.getSukuData(auxes);
+
+					OutputStream fos = Suku.kontroller.getOutputStream();
+
+					String tekst = "GEDCOM EXPORT UNDER CONSTRUCTION";
+
+					byte[] buffi = tekst.getBytes();
+					try {
+						fos.write(buffi);
+						fos.close();
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(null, Resurses
+								.getString("EXPORT_GEDCOM")
+								+ ":" + e.getMessage());
+					}
+
 					if (resp.resu != null) {
 						JOptionPane.showMessageDialog(owner, Resurses
-								.getString("IMPORT_GEDCOM")
+								.getString("EXPORT_GEDCOM")
 								+ ":" + resp.resu);
 					}
 				}
@@ -267,19 +295,9 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
-			// setVisible(false);
 
-			// startButton.setEnabled(true);
-			// setCursor(null); //turn off the wait cursor
-			// taskOutput.append("Done!\n");
 		}
 	}
-
-	private String errorMessage = null;
-	private boolean isCancelled = false;
-	private long startTime = 0;
-	private String timerText = null;
-	private int showCounter = 0;
 
 	/**
 	 * The runner is the progress bar on the import dialog. Set new values to
@@ -304,7 +322,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 				if (progress == 0) {
 					startTime = System.currentTimeMillis();
-					timerText = Resurses.getString("IMPORT_TIME_LEFT");
+					timerText = Resurses.getString("EXPORT_TIME_LEFT");
 					showCounter = 10;
 				}
 
@@ -347,6 +365,12 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 		return isCancelled;
 	}
 
+	private String errorMessage = null;
+	private boolean isCancelled = false;
+	private long startTime = 0;
+	private String timerText = null;
+	private int showCounter = 0;
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress" == evt.getPropertyName()) {
@@ -372,4 +396,5 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			}
 		}
 	}
+
 }

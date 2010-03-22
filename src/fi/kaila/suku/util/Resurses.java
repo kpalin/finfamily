@@ -330,6 +330,8 @@ public class Resurses {
 	public static final String SW_UPDATE = "SW_UPDATE";
 
 	public static final String LICENSE = "LICENSE";
+	/** */
+	public static final String EXPORT_GEDCOM = "EXPORT_GEDCOM";
 
 	private static Resurses myself = null;
 	private static ExcelBundle resources = null;

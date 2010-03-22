@@ -712,7 +712,8 @@ public class SukuServerImpl implements SukuServer {
 		}
 
 		else {
-			logger.warning("unknown server request, cmd = " + cmd);
+			fam.resu = "Unknown server request, cmd = " + cmd;
+			logger.warning(fam.resu);
 		}
 
 		if (fam != null) {

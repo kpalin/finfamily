@@ -64,6 +64,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 import fi.kaila.suku.ant.AntVersion;
+import fi.kaila.suku.exports.ExportGedcomDialog;
 import fi.kaila.suku.imports.Import2004Dialog;
 import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.kontroller.SukuKontroller;
@@ -173,6 +174,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenu mFile;
 	private JMenuItem mImport2004;
 	private JMenuItem mImportGedcom;
+	private JMenuItem mExportGedcom;
 	private JMenuItem mQuery;
 	private JMenuItem mConnect;
 	private JMenuItem mNewDatabase;
@@ -378,6 +380,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		imp.add(this.mImportGedcom);
 		this.mImportGedcom.setActionCommand(Resurses.IMPORT_GEDCOM);
 		this.mImportGedcom.addActionListener(this);
+
+		JMenu exp = new JMenu(Resurses.getString("EXPORT"));
+		this.mFile.add(exp);
+		this.mExportGedcom = new JMenuItem(Resurses
+				.getString(Resurses.EXPORT_GEDCOM));
+		exp.add(this.mExportGedcom);
+		this.mExportGedcom.setActionCommand(Resurses.EXPORT_GEDCOM);
+		this.mExportGedcom.addActionListener(this);
 
 		this.mNewDatabase = new JMenuItem(Resurses.getString(Resurses.NEWDB));
 		this.mFile.add(this.mNewDatabase);
@@ -1428,6 +1438,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				importGedcom();
 				isConnected = 2;
 				enableCommands();
+			} else if (cmd.equals(Resurses.EXPORT_GEDCOM)) {
+				exportGedcom();
 			} else if (cmd.equals(Resurses.IMPORT_HISKI)) {
 				importFromHiski();
 			} else if (cmd.equals("MENU_TOOLS_GROUP_MGR")) {
@@ -1441,41 +1453,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			} else if (cmd.equals(Resurses.SETTINGS)) {
 				SettingsDialog sets = new SettingsDialog(this);
 				sets.setVisible(true);
-				// } else if (cmd.equals(Resurses.PGSQL_STOP)) {
-				// String[] netcmd = { "net", "stop", "pgsql-8.3" };
-				// try {
-				// CommandExecuter.executeTheCommnad(netcmd);
-				// JOptionPane.showMessageDialog(this, Resurses
-				// .getString(Resurses.PGSQL_STOP)
-				// + ":" + "OK");
-				//
-				// } catch (Exception e1) {
-				// JOptionPane.showMessageDialog(this, Resurses
-				// .getString(Resurses.PGSQL_STOP)
-				// + ":" + e1.getMessage());
-				// e1.printStackTrace();
-				// }
-				// } else if (cmd.equals(Resurses.PGSQL_START)) {
-				// String[] netcmd = { "net", "start", "pgsql-8.3" };
-				// try {
-				// CommandExecuter.executeTheCommnad(netcmd);
-				// JOptionPane.showMessageDialog(this, Resurses
-				// .getString(Resurses.PGSQL_START)
-				// + ":" + "OK");
-				// } catch (Exception e1) {
-				// JOptionPane.showMessageDialog(this, Resurses
-				// .getString(Resurses.PGSQL_START)
-				// + ":" + e1.getMessage());
-				//
-				// e1.printStackTrace();
-				// }
+
 			} else if (cmd.equals(Resurses.PRINT_PERSON)) {
 
 				this.personView.testMe();
 
 			} else if (cmd.equals(Resurses.MENU_LISTA)) {
-				// ListWorkerDialog dlg = new ListWorkerDialog(this, kontroller,
-				// null);
+
 				ReportWorkerDialog dlg = new ReportWorkerDialog(this,
 						kontroller, null);
 
@@ -1594,6 +1578,41 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			logger.log(Level.WARNING, "Suku action", ex);
 			JOptionPane.showMessageDialog(personView.getSuku(), "Suku action"
 					+ ":" + ex.getMessage());
+		}
+	}
+
+	private void exportGedcom() {
+
+		boolean isCreated = kontroller.createLocalFile("ged");
+		String dbname = kontroller.getFileName();
+		logger.finest("Opened GEDCOM FILE status " + isCreated);
+		if (isCreated) {
+
+			ExportGedcomDialog dlg;
+			try {
+				dlg = new ExportGedcomDialog(this, dbname);
+			} catch (SukuException e) {
+				return;
+			}
+			dlg.setVisible(true);
+
+			String[] failedLines = dlg.getResult();
+			if (failedLines != null) {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < failedLines.length; i++) {
+					sb.append(failedLines[i]);
+				}
+				if (sb.length() > 0) {
+
+					java.util.Date d = new java.util.Date();
+					SukuPad pad = new SukuPad(this, kontroller.getFileName()
+							+ "\n" + d.toString() + "\n\n" + sb.toString()
+							+ "\n\n" + "GEDCOM EXPORT IS UNDER CONSTRUCTION");
+					pad.setVisible(true);
+				}
+
+			}
+
 		}
 	}
 
@@ -2539,6 +2558,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mConnect.setEnabled(isConnected == 0);
 		mImport2004.setEnabled(isConnected != 0);
 		mImportGedcom.setEnabled(isConnected != 0);
+		mExportGedcom.setEnabled(isConnected != 0);
 		mQuery.setEnabled(isConnected == 2);
 		mSettings.setEnabled(isConnected == 2);
 		mNewDatabase.setEnabled(isConnected != 0);
