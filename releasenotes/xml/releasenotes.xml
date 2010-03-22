@@ -8,7 +8,7 @@
 <li>Fixed problem with bad year on main page.</li>
 <li>Added skeleton for report.</li>
 <li>Added links to license and main download site.</li>
-<li>Refactored top ask if person data is to be updated.</li>
+<li>Refactored to ask if person data is to be updated.</li>
 <li>Added address report.</li>
 </ul>
 
