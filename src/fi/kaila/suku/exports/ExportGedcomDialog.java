@@ -49,10 +49,12 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private String selectedOldLang = null;
 	private JComboBox viewList;
 	private String[] viewArray = null;
+	private String viewName = null;
 	private JComboBox langList;
-
-	private String[] langcodes = null;
-
+	private String langCode = null;
+	private String langName = null;
+	private String[] langCodes = null;
+	private String[] langNames = null;
 	private JProgressBar progressBar;
 	private Task task = null;
 
@@ -117,15 +119,16 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		getContentPane().add(lbl);
 		lbl.setBounds(30, y, 340, 20);
 		y += 20;
-		String[] langnames = new String[Suku.getRepoLanguageCount() + 1];
-		langcodes = new String[Suku.getRepoLanguageCount()];
-		langnames[0] = Resurses.getString("EXPORT_DEFAULT");
-		for (int i = 0; i < langcodes.length; i++) {
-			langnames[i + 1] = Suku.getRepoLanguage(i, false);
+		langNames = new String[Suku.getRepoLanguageCount() + 1];
+		langCodes = new String[Suku.getRepoLanguageCount() + 1];
+		langNames[0] = Resurses.getString("EXPORT_DEFAULT");
+		for (int i = 1; i < langCodes.length; i++) {
+			langCodes[i] = Suku.getRepoLanguage(i - 1, true);
+			langNames[i] = Suku.getRepoLanguage(i - 1, false);
 
 		}
 
-		langList = new JComboBox(langnames);
+		langList = new JComboBox(langNames);
 		getContentPane().add(langList);
 		langList.setBounds(30, y, 340, 20);
 		y += 30;
@@ -254,7 +257,18 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 					if (listIdx > 0) {
 						String parts[] = viewArray[listIdx - 1].split(";");
 						int viewId = Integer.parseInt(parts[0]);
+						if (parts.length > 1) {
+							viewName = parts[1];
+						}
 						v.add("viewId=" + viewId);
+					}
+
+					if (langList.getSelectedIndex() > 0) {
+						langCode = langCodes[langList.getSelectedIndex()];
+						langName = langNames[langList.getSelectedIndex()];
+					}
+					if (langCode != null) {
+						v.add("lang=" + langCode);
 					}
 
 					String[] auxes = v.toArray(new String[0]);
@@ -273,7 +287,6 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 								.getString("EXPORT_GEDCOM")
 								+ ":" + e.getMessage());
 					}
-
 					if (resp.resu != null) {
 						JOptionPane.showMessageDialog(owner, Resurses
 								.getString("EXPORT_GEDCOM")
@@ -283,7 +296,6 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 			} catch (SukuException e) {
 				e.printStackTrace();
 				errorMessage = e.getMessage();
-
 			}
 			setVisible(false);
 			return null;
@@ -395,6 +407,27 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 				progressBar.setValue(progre);
 			}
 		}
+	}
+
+	/**
+	 * @param asCode
+	 *            to return language code. false = language name
+	 * @return the langCode
+	 */
+	public String getLang(boolean asCode) {
+		if (asCode) {
+			return langCode;
+		}
+		return langName;
+
+	}
+
+	/**
+	 * @return the selected view name
+	 */
+	public String getViewName() {
+		return viewName;
+
 	}
 
 }

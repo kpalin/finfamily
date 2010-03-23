@@ -1604,10 +1604,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				}
 				if (sb.length() > 0) {
 
+					if (dlg.getLang(true) != null) {
+						sb.append("\n");
+						sb.append(Resurses.getString("EXPORT_LANG"));
+						sb.append(" ");
+						sb.append(dlg.getLang(false));
+					}
+					if (dlg.getViewName() != null) {
+						sb.append("\n");
+						sb.append(Resurses.getString("EXPORTED_VIEW"));
+						sb.append(" ");
+						sb.append(dlg.getViewName());
+
+					}
+					sb.append("\n\nGEDCOM EXPORT IS UNDER CONSTRUCTION");
 					java.util.Date d = new java.util.Date();
 					SukuPad pad = new SukuPad(this, kontroller.getFileName()
-							+ "\n" + d.toString() + "\n\n" + sb.toString()
-							+ "\n\n" + "GEDCOM EXPORT IS UNDER CONSTRUCTION");
+							+ "\n" + d.toString() + "\n\n" + sb.toString());
 					pad.setVisible(true);
 				}
 
