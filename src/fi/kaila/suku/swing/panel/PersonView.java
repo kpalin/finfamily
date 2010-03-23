@@ -857,7 +857,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		SukuTabPane relp = getPane(midx + 1);
 		try {
 			RelativesPane rel = (RelativesPane) relp.pnl;
-			rel.refreshRelativesPane(true);
+			rel.refreshRelativesPane(true, true);
 		} catch (ClassCastException cce) {
 
 		}

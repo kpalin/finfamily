@@ -882,10 +882,6 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			}
 
-			// } else if (cmd.equals("DEL")){
-			// System.out.println("Poistetaan " + activeRelation);
-			// activeRelation.setToBeDeleted(true);
-
 		} else if (cmd.equals("DEL") || cmd.equals(Resurses.CLOSE)
 				|| cmd.equals(Resurses.UPDATE)) {
 			relaPane.setVisible(false);
@@ -898,8 +894,13 @@ public class RelativesPane extends JPanel implements ActionListener,
 			if (cmd.equals(Resurses.CLOSE)) {
 				reOpen = false;
 			}
+
+			boolean askChanges = true;
+			if (cmd.equals(Resurses.UPDATE) || cmd.equals("DEL")) {
+				askChanges = false;
+			}
 			checkActiveRelationSurety();
-			refreshRelativesPane(reOpen);
+			refreshRelativesPane(reOpen, askChanges);
 
 		}
 
@@ -910,7 +911,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	 * 
 	 * @param reOpen
 	 */
-	public void refreshRelativesPane(boolean reOpen) {
+	public void refreshRelativesPane(boolean reOpen, boolean askChanges) {
 		int midx = personView.getMainPaneIndex();
 		if (midx < 0)
 			return;
@@ -919,7 +920,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		int personPid = main.getPersonPid();
 
 		try {
-			personView.closePersonPane(true);
+			personView.closePersonPane(askChanges);
 			personView.displayPersonPane(personPid);
 			personView.closeMainPane(reOpen);
 			if (reOpen) {

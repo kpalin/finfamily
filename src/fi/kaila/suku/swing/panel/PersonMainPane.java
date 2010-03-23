@@ -882,22 +882,30 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			Vector<Relation> rel = new Vector<Relation>();
 			for (int i = 0; i < relas.parents.list.size(); i++) {
 				Relation r = relas.parents.list.get(i);
-
+				if (r.isToBeDeleted() || r.isToBeUpdated()) {
+					foundModification = true;
+				}
 				rel.add(r);
 			}
 			for (int i = 0; i < relas.spouses.list.size(); i++) {
 				Relation r = relas.spouses.list.get(i);
-
+				if (r.isToBeDeleted() || r.isToBeUpdated()) {
+					foundModification = true;
+				}
 				rel.add(r);
 			}
 			for (int i = 0; i < relas.children.list.size(); i++) {
 				Relation r = relas.children.list.get(i);
-
+				if (r.isToBeDeleted() || r.isToBeUpdated()) {
+					foundModification = true;
+				}
 				rel.add(r);
 			}
 			for (int i = 0; i < relas.otherRelations.size(); i++) {
 				Relation r = relas.otherRelations.get(i);
-
+				if (r.isToBeDeleted() || r.isToBeUpdated()) {
+					foundModification = true;
+				}
 				rel.add(r);
 			}
 
