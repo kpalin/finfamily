@@ -51,10 +51,12 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private String[] viewArray = null;
 	private String viewName = null;
 	private JComboBox langList;
+	private JComboBox charsetList;
 	private String langCode = null;
 	private String langName = null;
 	private String[] langCodes = null;
 	private String[] langNames = null;
+	private String[] charsetNames = { "Ansi", "Ansel", "UTF-8", "UTF-16" };
 	private JProgressBar progressBar;
 	private Task task = null;
 
@@ -117,7 +119,11 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		lbl = new JLabel(Resurses.getString("EXPORT_LANG"));
 		getContentPane().add(lbl);
-		lbl.setBounds(30, y, 340, 20);
+		lbl.setBounds(30, y, 160, 20);
+		lbl = new JLabel(Resurses.getString("EXPORT_CHARSET"));
+		getContentPane().add(lbl);
+		lbl.setBounds(200, y, 170, 20);
+
 		y += 20;
 		langNames = new String[Suku.getRepoLanguageCount() + 1];
 		langCodes = new String[Suku.getRepoLanguageCount() + 1];
@@ -130,7 +136,12 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		langList = new JComboBox(langNames);
 		getContentPane().add(langList);
-		langList.setBounds(30, y, 340, 20);
+		langList.setBounds(30, y, 160, 20);
+
+		charsetList = new JComboBox(charsetNames);
+		getContentPane().add(charsetList);
+		charsetList.setBounds(200, y, 170, 20);
+
 		y += 30;
 		textContent = new JLabel("");
 		getContentPane().add(textContent);
