@@ -70,14 +70,11 @@ public class ImportGedcomUtil {
 	HashMap<String, String> texts = null;
 
 	/**
-	 * @param file
-	 * @param db
 	 * @param vvTexts
 	 * @return result in SukuData
 	 * @throws SukuException
 	 */
-	public SukuData importGedcom(String file, String db,
-			Vector<String[]> vvTexts) throws SukuException {
+	public SukuData importGedcom(Vector<String[]> vvTexts) throws SukuException {
 		SukuData resp = new SukuData();
 		gedMap = new LinkedHashMap<String, GedcomLine>();
 		gedSource = new LinkedHashMap<String, GedcomLine>();

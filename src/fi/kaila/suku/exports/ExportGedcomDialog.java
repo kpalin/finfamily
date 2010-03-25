@@ -95,7 +95,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		lbl.setBounds(30, y, 340, 20);
 		lbl = new JLabel(Resurses.getString("EXPORT_LANG"));
 		getContentPane().add(lbl);
-		lbl.setBounds(410, y, 160, 20);
+		lbl.setBounds(400, y, 160, 20);
 		y += 20;
 
 		fileName = new JTextField(dbName);
@@ -114,7 +114,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		langList = new JComboBox(langNames);
 		getContentPane().add(langList);
-		langList.setBounds(410, y, 160, 20);
+		langList.setBounds(400, y, 160, 20);
 
 		y += 20;
 		lbl = new JLabel(Resurses.getString("EXPORT_VIEW"));
@@ -123,7 +123,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		lbl = new JLabel(Resurses.getString("EXPORT_CHARSET"));
 		getContentPane().add(lbl);
-		lbl.setBounds(410, y, 160, 20);
+		lbl.setBounds(400, y, 160, 20);
 
 		y += 20;
 		SukuData vlist = Suku.kontroller.getSukuData("cmd=viewlist");
@@ -134,7 +134,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		charsetList = new JComboBox(charsetNames);
 		getContentPane().add(charsetList);
-		charsetList.setBounds(410, y, 160, 20);
+		charsetList.setBounds(400, y, 160, 20);
 
 		viewArray = lista;
 		viewList.addItem(Resurses.getString("EXPORT_ALL"));
@@ -151,7 +151,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		this.textContent.setBounds(30, y, 340, 20);
 		lbl = new JLabel(Resurses.getString("EXPORT_SURETY"));
 		getContentPane().add(lbl);
-		lbl.setBounds(410, y, 340, 20);
+		lbl.setBounds(400, y, 340, 20);
 
 		y += 20;
 		progressBar = new JProgressBar(0, 100);
@@ -161,7 +161,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		getContentPane().add(this.progressBar);
 
 		surety = new SukuSuretyField();
-		this.surety.setBounds(410, y, 160, 20);
+		this.surety.setBounds(400, y, 160, 20);
 		getContentPane().add(this.surety);
 
 		y += 20;
@@ -291,6 +291,9 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 					if (langCode != null) {
 						v.add("lang=" + langCode);
 					}
+
+					int suretylevel = surety.getSurety();
+					v.add("surety=" + suretylevel);
 
 					String[] auxes = v.toArray(new String[0]);
 					SukuData resp = Suku.kontroller.getSukuData(auxes);

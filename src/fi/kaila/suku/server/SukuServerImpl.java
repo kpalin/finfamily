@@ -499,20 +499,20 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("unitCount")) {
 			fam = getUnitCount();
 		} else if (cmd.equals("importGedcom")) {
-			String db = map.get("db");
-			file = this.openFile;
-			if (file == null) {
-				file = map.get("filename"); // probably not used
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
-			}
+			// String db = map.get("db");
+			// file = this.openFile;
+			// if (file == null) {
+			// file = map.get("filename"); // probably not used
+			// } else {
+			// fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
+			// }
 			lang = map.get("lang");
 			if (lang == null) {
 				lang = Resurses.getLanguage();
 			}
 			SukuData txts = getTexts(lang);
 			ImportGedcomUtil inged = new ImportGedcomUtil(con);
-			fam = inged.importGedcom(file, db, txts.vvTexts);
+			fam = inged.importGedcom(txts.vvTexts);
 			inged = null;
 
 		} else if (cmd.equals("excel")) {
