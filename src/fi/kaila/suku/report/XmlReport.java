@@ -94,7 +94,7 @@ public class XmlReport implements ReportInterface {
 		switch (translatorIdx) {
 		case 1:
 			translator = "resources/xml/docx.xsl";
-			report = createFile("doc");
+			report = createFile("xml");
 			break;
 		case 2:
 			translator = "resources/xml/html.xsl";
@@ -431,7 +431,7 @@ public class XmlReport implements ReportInterface {
 	 * <ul>
 	 * <li>delete empty folder</li>
 	 * <li>Translate to final format or store as raw xml as requested</li>
-	 * <li>Start applictaion to open the report if supported</li>
+	 * <li>Start application to open the report if supported</li>
 	 * </ul>
 	 */
 	@Override

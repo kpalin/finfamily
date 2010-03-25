@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -52,6 +53,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private String viewName = null;
 	private JComboBox langList;
 	private JComboBox charsetList;
+	private SukuSuretyField surety;
 	private String langCode = null;
 	private String langName = null;
 	private String[] langCodes = null;
@@ -91,40 +93,16 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		getContentPane().add(lbl);
 		lbl.setBounds(30, y, 340, 20);
+		lbl = new JLabel(Resurses.getString("EXPORT_LANG"));
+		getContentPane().add(lbl);
+		lbl.setBounds(410, y, 160, 20);
 		y += 20;
 
 		fileName = new JTextField(dbName);
 		fileName.setEditable(false);
 		getContentPane().add(fileName);
 		fileName.setBounds(30, y, 340, 20);
-		y += 20;
-		lbl = new JLabel(Resurses.getString("EXPORT_VIEW"));
-		getContentPane().add(lbl);
-		lbl.setBounds(30, y, 340, 20);
-		y += 20;
-		SukuData vlist = Suku.kontroller.getSukuData("cmd=viewlist");
-		String[] lista = vlist.generalArray;
-		this.viewList = new JComboBox();
-		getContentPane().add(this.viewList);
-		this.viewList.setBounds(30, y, 340, 20);
-		y += 20;
-		viewArray = lista;
-		viewList.addItem(Resurses.getString("EXPORT_ALL"));
-		for (int i = 0; i < viewArray.length; i++) {
-			String[] pp = viewArray[i].split(";");
-			if (pp.length > 1) {
-				viewList.addItem(pp[1]);
-			}
-		}
 
-		lbl = new JLabel(Resurses.getString("EXPORT_LANG"));
-		getContentPane().add(lbl);
-		lbl.setBounds(30, y, 160, 20);
-		lbl = new JLabel(Resurses.getString("EXPORT_CHARSET"));
-		getContentPane().add(lbl);
-		lbl.setBounds(200, y, 170, 20);
-
-		y += 20;
 		langNames = new String[Suku.getRepoLanguageCount() + 1];
 		langCodes = new String[Suku.getRepoLanguageCount() + 1];
 		langNames[0] = Resurses.getString("EXPORT_DEFAULT");
@@ -136,23 +114,55 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		langList = new JComboBox(langNames);
 		getContentPane().add(langList);
-		langList.setBounds(30, y, 160, 20);
+		langList.setBounds(410, y, 160, 20);
+
+		y += 20;
+		lbl = new JLabel(Resurses.getString("EXPORT_VIEW"));
+		getContentPane().add(lbl);
+		lbl.setBounds(30, y, 340, 20);
+
+		lbl = new JLabel(Resurses.getString("EXPORT_CHARSET"));
+		getContentPane().add(lbl);
+		lbl.setBounds(410, y, 160, 20);
+
+		y += 20;
+		SukuData vlist = Suku.kontroller.getSukuData("cmd=viewlist");
+		String[] lista = vlist.generalArray;
+		this.viewList = new JComboBox();
+		getContentPane().add(this.viewList);
+		this.viewList.setBounds(30, y, 340, 20);
 
 		charsetList = new JComboBox(charsetNames);
 		getContentPane().add(charsetList);
-		charsetList.setBounds(200, y, 170, 20);
+		charsetList.setBounds(410, y, 160, 20);
 
+		viewArray = lista;
+		viewList.addItem(Resurses.getString("EXPORT_ALL"));
+		for (int i = 0; i < viewArray.length; i++) {
+			String[] pp = viewArray[i].split(";");
+			if (pp.length > 1) {
+				viewList.addItem(pp[1]);
+			}
+		}
 		y += 30;
+
 		textContent = new JLabel("");
 		getContentPane().add(textContent);
 		this.textContent.setBounds(30, y, 340, 20);
+		lbl = new JLabel(Resurses.getString("EXPORT_SURETY"));
+		getContentPane().add(lbl);
+		lbl.setBounds(410, y, 340, 20);
 
-		y += 30;
+		y += 20;
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
 		this.progressBar.setBounds(30, y, 340, 20);
 		getContentPane().add(this.progressBar);
+
+		surety = new SukuSuretyField();
+		this.surety.setBounds(410, y, 160, 20);
+		getContentPane().add(this.surety);
 
 		y += 20;
 		timeEstimate = new JLabel("");
@@ -162,7 +172,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		y += 40;
 		this.ok = new JButton(Resurses.getString(OK));
 		getContentPane().add(this.ok);
-		this.ok.setBounds(80, y, 100, 24);
+		this.ok.setBounds(120, y, 100, 24);
 		this.ok.setActionCommand(OK);
 		this.ok.addActionListener(this);
 		this.ok.setDefaultCapable(true);
@@ -170,12 +180,12 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		this.cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(this.cancel);
-		this.cancel.setBounds(200, y, 100, 24);
+		this.cancel.setBounds(240, y, 100, 24);
 		this.cancel.setActionCommand(CANCEL);
 		this.cancel.addActionListener(this);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, y + 100);
+		setBounds(d.width / 2 - 300, d.height / 2 - 100, 600, y + 100);
 
 	}
 
