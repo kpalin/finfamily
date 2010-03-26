@@ -15,6 +15,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fi.kaila.suku.server.utils.ExportGedcomUtil;
 import fi.kaila.suku.server.utils.GenGraphUtil;
 import fi.kaila.suku.server.utils.GroupUtil;
 import fi.kaila.suku.server.utils.ImportGedcomUtil;
@@ -514,6 +515,10 @@ public class SukuServerImpl implements SukuServer {
 			ImportGedcomUtil inged = new ImportGedcomUtil(con);
 			fam = inged.importGedcom(txts.vvTexts);
 			inged = null;
+		} else if (cmd.equals("exportGedcom")) {
+			lang = map.get("lang");
+			ExportGedcomUtil exgen = new ExportGedcomUtil(con);
+			fam = exgen.exportGedcom();
 
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");

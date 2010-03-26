@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -53,6 +54,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private String viewName = null;
 	private JComboBox langList;
 	private JComboBox charsetList;
+	private JCheckBox includeImages;
 	private SukuSuretyField surety;
 	private String langCode = null;
 	private String langName = null;
@@ -144,7 +146,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 				viewList.addItem(pp[1]);
 			}
 		}
-		y += 30;
+		y += 20;
 
 		textContent = new JLabel("");
 		getContentPane().add(textContent);
@@ -164,10 +166,14 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		this.surety.setBounds(400, y, 160, 20);
 		getContentPane().add(this.surety);
 
-		y += 20;
+		y += 30;
 		timeEstimate = new JLabel("");
 		getContentPane().add(timeEstimate);
 		timeEstimate.setBounds(30, y, 340, 20);
+
+		includeImages = new JCheckBox(Resurses.getString("EXPORT_IMAGES"));
+		getContentPane().add(includeImages);
+		includeImages.setBounds(400, y, 340, 20);
 
 		y += 40;
 		this.ok = new JButton(Resurses.getString(OK));

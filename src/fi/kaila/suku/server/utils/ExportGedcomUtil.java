@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.exports.ExportGedcomDialog;
+import fi.kaila.suku.util.pojo.SukuData;
 
 public class ExportGedcomUtil {
 
@@ -26,6 +27,12 @@ public class ExportGedcomUtil {
 	public ExportGedcomUtil(Connection con) {
 		this.con = con;
 		this.runner = ExportGedcomDialog.getRunner();
+	}
+
+	public SukuData exportGedcom() {
+		SukuData result = new SukuData();
+		result.resu = "This is not yet ready";
+		return result;
 	}
 
 }
