@@ -91,7 +91,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		setLayout(null);
 		int y = 20;
 
-		JLabel lbl = new JLabel(Resurses.getString("GEDCOM_FILE"));
+		JLabel lbl = new JLabel(Resurses.getString("EXPORT_ZIPFILE"));
 
 		getContentPane().add(lbl);
 		lbl.setBounds(30, y, 340, 20);
