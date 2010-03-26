@@ -517,8 +517,9 @@ public class SukuServerImpl implements SukuServer {
 			inged = null;
 		} else if (cmd.equals("exportGedcom")) {
 			lang = map.get("lang");
+			String path = map.get("file");
 			ExportGedcomUtil exgen = new ExportGedcomUtil(con);
-			fam = exgen.exportGedcom();
+			fam = exgen.exportGedcom(path);
 
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");

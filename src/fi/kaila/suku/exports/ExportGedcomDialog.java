@@ -74,6 +74,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private Suku owner = null;
 	private static ExportGedcomDialog runner = null;
 	private SukuData gedcomResult = null;
+	private String dbName = null;
 
 	/**
 	 * 
@@ -87,7 +88,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		super(owner, Resurses.getString("EXPORT"), true);
 		this.owner = owner;
 		runner = this;
-
+		this.dbName = dbName;
 		setLayout(null);
 		int y = 20;
 
@@ -278,7 +279,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 				if (fileName.getText().length() > 0) {
 					Vector<String> v = new Vector<String>();
 					v.add("cmd=exportGedcom");
-					v.add("db=" + fileName.getText());
+					v.add("file=" + fileName.getText());
 					int listIdx = viewList.getSelectedIndex();
 
 					if (listIdx > 0) {

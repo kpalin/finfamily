@@ -33,14 +33,18 @@ public class ExportGedcomUtil {
 		this.runner = ExportGedcomDialog.getRunner();
 	}
 
-	public SukuData exportGedcom() {
+	public SukuData exportGedcom(String path) {
 		SukuData result = new SukuData();
-
+		if (path == null || path.lastIndexOf(".") < 1) {
+			result.resu = "output filename missing";
+		}
+		String simple = path.substring(0, path.lastIndexOf("."));
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
 		ZipOutputStream zip = new ZipOutputStream(bos);
+		String fileName = simple + "/" + simple + ".ged";
 
-		ZipEntry entry = new ZipEntry("testi.ged");
+		ZipEntry entry = new ZipEntry(fileName);
 		try {
 			zip.putNextEntry(entry);
 			zip.write("This is not yet ready\r\nbut it will be later"
