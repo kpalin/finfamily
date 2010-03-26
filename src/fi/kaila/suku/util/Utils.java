@@ -617,16 +617,33 @@ public class Utils {
 	 */
 	public static void openExternalFile(String url) {
 		try {
-			String[] cmds = { "rundll32", "url.dll,FileProtocolHandler", url };
-			Process p = Runtime.getRuntime().exec(cmds);
-			p.waitFor();
 
+			String os = System.getProperties().getProperty("os.name");
+			if (os.toLowerCase().indexOf("windows") >= 0) {
+
+				String[] cmds = { "rundll32", "url.dll,FileProtocolHandler",
+						url };
+				Process p = Runtime.getRuntime().exec(cmds);
+				p.waitFor();
+			} else {
+
+				// this should work on mac
+
+				String[] macs = { "open", "" };
+				macs[1] = url;
+				Process p = Runtime.getRuntime().exec(macs);
+			}
+
+			// Properties props = System.getProperties();
+			// Enumeration e = props.keys();
 			//
-			// this should work on mac
+			// while (e.hasMoreElements()) {
+			// String key = (String) e.nextElement();
+			// String value = props.getProperty(key);
 			//
-			// String [] macs = {"open",report);
-			// macs[1] = report;
-			// Process p = Runtime.getRuntime().exec(macs);
+			// System.out.println(key + ":" + value);
+			//
+			// }
 
 		} catch (Throwable t) {
 			logger.log(Level.INFO, "rundll32", t);
