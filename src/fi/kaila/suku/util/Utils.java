@@ -619,13 +619,14 @@ public class Utils {
 		try {
 
 			String os = System.getProperties().getProperty("os.name");
+			System.out.println("OS:" + os);
 			if (os.toLowerCase().indexOf("windows") >= 0) {
 
 				String[] cmds = { "rundll32", "url.dll,FileProtocolHandler",
 						url };
 				Process p = Runtime.getRuntime().exec(cmds);
 				p.waitFor();
-			} else {
+			} else if (os.toLowerCase().indexOf("mac") >= 0) {
 
 				// this should work on mac
 
