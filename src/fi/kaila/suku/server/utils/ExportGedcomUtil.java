@@ -1,7 +1,11 @@
 package fi.kaila.suku.server.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import fi.kaila.suku.exports.ExportGedcomDialog;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -32,7 +36,27 @@ public class ExportGedcomUtil {
 	public SukuData exportGedcom() {
 		SukuData result = new SukuData();
 
-		result.buffer = "This is not yet ready but it will be later".getBytes();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+		ZipOutputStream zip = new ZipOutputStream(bos);
+
+		ZipEntry entry = new ZipEntry("testi.ged");
+		try {
+			zip.putNextEntry(entry);
+			zip.write("This is not yet ready\r\nbut it will be later"
+					.getBytes());
+			zip.closeEntry();
+			zip.close();
+
+			result.buffer = bos.toByteArray();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// result.buffer =
+		// "This is not yet ready but it will be later".getBytes();
 
 		return result;
 	}
