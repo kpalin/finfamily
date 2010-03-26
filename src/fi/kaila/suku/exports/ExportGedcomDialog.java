@@ -308,7 +308,13 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 					String tekst = "GEDCOM EXPORT UNDER CONSTRUCTION";
 
-					byte[] buffi = tekst.getBytes();
+					byte[] buffi = null;
+					if (resp.buffer != null) {
+						buffi = resp.buffer;
+					} else {
+						buffi = tekst.getBytes();
+					}
+
 					try {
 						fos.write(buffi);
 						fos.close();

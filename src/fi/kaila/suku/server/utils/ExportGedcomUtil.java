@@ -31,7 +31,9 @@ public class ExportGedcomUtil {
 
 	public SukuData exportGedcom() {
 		SukuData result = new SukuData();
-		result.resu = "This is not yet ready";
+
+		result.buffer = "This is not yet ready but it will be later".getBytes();
+
 		return result;
 	}
 

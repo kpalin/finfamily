@@ -37,6 +37,11 @@ public class SukuData implements Serializable {
 	 * array of pids fromn relative fect e.g.
 	 */
 	public int[] pidArray = null;
+
+	/**
+	 * Transfer of general binary object
+	 */
+	public byte[] buffer = null;
 	/**
 	 * e.g. settings result
 	 */
