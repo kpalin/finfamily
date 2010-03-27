@@ -590,8 +590,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 							vnum = parts[1].split(";");
 							try {
 								preferredVid = Integer.parseInt(vnum[0]);
+
 							} catch (NumberFormatException ne) {
 							}
+
 						}
 
 					} else if (parts[0].equals("place")) {
@@ -659,7 +661,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 			}
 
-			if (preferredIndex > 0) {
+			if (preferredIndex >= 0) {
 				viewList.setSelectedIndex(preferredIndex + 1);
 			}
 
@@ -1002,7 +1004,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			v.add("viewGroup=" + viewGroup.getText());
 
 			int vid = this.getViewId();
-			preferredView = "";
+			preferredView = null;
 			if (vid > 0 && vid <= viewArray.length) {
 
 				int ppnum = 0;
@@ -1024,7 +1026,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 				}
 			}
-			v.add("viewGroup=" + viewGroup.getText());
+			if (preferredView != null) {
+				v.add("viewId=" + preferredView);
+			}
 			v.add("place=" + place.getText());
 
 			int noticeIdx = noticeList.getSelectedIndex();
