@@ -16,7 +16,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import fi.kaila.suku.exports.ExportGedcomDialog;
+import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.SukuData;
+import fi.kaila.suku.util.pojo.UnitNotice;
 
 public class ExportGedcomUtil {
 
@@ -80,7 +83,8 @@ public class ExportGedcomUtil {
 
 			// insert first the gedcom file here
 			writeHead(zip);
-
+			int allCount = units.size();
+			int curreCount = 0;
 			Set<Map.Entry<Integer, MinimumIndividual>> unitss = units
 					.entrySet();
 			Iterator<Map.Entry<Integer, MinimumIndividual>> eex = unitss
@@ -89,8 +93,12 @@ public class ExportGedcomUtil {
 				Map.Entry<Integer, MinimumIndividual> unitx = (Map.Entry<Integer, MinimumIndividual>) eex
 						.next();
 				MinimumIndividual pit = unitx.getValue();
+				curreCount++;
 
-				writeIndi(zip, pit.pid);
+				PersonUtil u = new PersonUtil(con);
+				SukuData fam = u.getFullPerson(pit.pid, langCode);
+
+				writeIndi(zip, fam.persLong);
 
 			}
 
@@ -119,9 +127,56 @@ public class ExportGedcomUtil {
 		} catch (SQLException e) {
 			result.resu = e.getMessage();
 			e.printStackTrace();
+		} catch (SukuException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return result;
+	}
+
+	private void writeIndi(ZipOutputStream zip, PersonLongData persLong)
+			throws IOException {
+		MinimumIndividual indi = units.get(persLong.getPid());
+		StringBuilder sb = new StringBuilder();
+		sb.append("0 @I" + indi.gid + "@ INDI\r\n");
+		sb.append("1 SEX " + indi.sex + "\r\n");
+		UnitNotice[] notices = persLong.getNotices();
+		for (int i = 0; i < notices.length; i++) {
+			if (notices[i].getTag().equals("NAME")) {
+				StringBuilder nm = new StringBuilder();
+				if (notices[i].getGivenname() != null) {
+					nm.append(notices[i].getGivenname());
+				}
+				if (notices[i].getPatronym() != null) {
+					if (nm.length() > 0) {
+						nm.append(" ");
+					}
+					nm.append(notices[i].getPatronym());
+				}
+				nm.append("/");
+				if (notices[i].getPrefix() != null) {
+					nm.append(notices[i].getPrefix());
+					nm.append(" ");
+				}
+				if (notices[i].getSurname() != null) {
+					nm.append(notices[i].getSurname());
+				}
+				if (notices[i].getPostfix() != null) {
+					nm.append("/");
+					nm.append(notices[i].getPostfix());
+				}
+
+				sb.append("1 NAME " + nm.toString() + "\r\n");
+			}
+		}
+		for (int i = 0; i < indi.fams.size(); i++) {
+			sb.append("1 FAMS F" + indi.fams.get(i) + "\r\n");
+		}
+		for (int i = 0; i < indi.famc.size(); i++) {
+			sb.append("1 FAMC F" + indi.famc.get(i) + "\r\n");
+		}
+		zip.write(sb.toString().getBytes());
 	}
 
 	private void writeIndi(ZipOutputStream zip, int pid) throws IOException {
