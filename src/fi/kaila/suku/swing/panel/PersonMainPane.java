@@ -950,9 +950,12 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		}
 
 		req.persLong = persLong;
-
+		if (req.persLong.isMainModified()) {
+			foundModification = true;
+		}
 		req.persLong.setNotices(un.toArray(new UnitNotice[0]));
 		req.resu = foundModification ? "modified" : null;
+
 		return req;
 	}
 
@@ -1155,7 +1158,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 		}
 
-		return resp;
+		return req;
 
 	}
 
