@@ -293,22 +293,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		try {
 
-			if (java.io.File.pathSeparatorChar == ';') {
-				// use Windows lookandfeel if Windows
-				UIManager.setLookAndFeel(UIManager
-						.getSystemLookAndFeelClassName());
-			} else {
-				// else use Metal
-
-				UIManager.setLookAndFeel(UIManager
-						.getCrossPlatformLookAndFeelClassName());
-			}
+			// if (java.io.File.pathSeparatorChar == ';') {
+			// use Windows lookandfeel if Windows
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			// } else {
+			// // else use Metal
+			//
+			// UIManager.setLookAndFeel(UIManager
+			// .getCrossPlatformLookAndFeelClassName());
+			// }
 			// UIManager.LookAndFeelInfo[] liz = UIManager
 			// .getInstalledLookAndFeels();
-			//						
-			// for (int i = 0;i < liz.length;i++) {
+			//
+			// for (int i = 0; i < liz.length; i++) {
 			// logger.info("lndfeel " + liz[i].getClassName());
-			//							
+			//
 			// }
 			// UIManager.setLookAndFeel(liz[0].getClassName());
 		} catch (Exception e) {
