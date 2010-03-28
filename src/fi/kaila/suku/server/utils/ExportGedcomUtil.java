@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.exports.ExportGedcomDialog;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonLongData;
@@ -226,13 +227,13 @@ public class ExportGedcomUtil {
 		StringBuilder sb = new StringBuilder();
 		sb.append("0 @F" + fam.id + "@ FAM\r\n");
 		if (fam.dad > 0) {
-			sb.append("1 HUSB I" + fam.getDada() + "\r\n");
+			sb.append("1 HUSB @I" + fam.getDada() + "@\r\n");
 		}
 		if (fam.mom > 0) {
-			sb.append("1 WIFE I" + fam.getMama() + "\r\n");
+			sb.append("1 WIFE @I" + fam.getMama() + "@\r\n");
 		}
 		for (int i = 0; i < fam.chils.size(); i++) {
-			sb.append("1 CHIL I" + fam.chils.get(i) + "\r\n");
+			sb.append("1 CHIL @I" + fam.getChild(i) + "@\r\n");
 		}
 
 		zip.write(gedBytes(sb.toString()));
@@ -240,10 +241,42 @@ public class ExportGedcomUtil {
 	}
 
 	private void writeHead(ZipOutputStream zip) throws IOException {
-		zip.write(gedBytes("0 HEAD\r\n"));
-		zip
-				.write(gedBytes("1 NOTE FinFamily Gedcom Export is under construction\r\n"));
 
+		StringBuilder sb = new StringBuilder();
+		sb.append("0 HEAD\r\n");
+		sb.append("1 SOUR FinFamily\r\n");
+		sb.append("2 VERS " + AntVersion.antVersion + "\r\n");
+		sb.append("2 NAME FinFamily\r\n");
+		sb.append("2 CORP KK-Software\r\n");
+		sb.append("3 ADDR http://www.sukuohjelmisto.fi\r\n");
+		sb.append("1 SUBM @U1@\r\n");
+		sb.append("1 GEDC\r\n");
+		sb.append("2 VERS 5.5\r\n");
+		sb.append("2 FORM LINEAGE-LINKED\r\n");
+
+		switch (thisSet) {
+		case Set_Ascii:
+			sb.append("1 CHAR ASCII\r\n");
+			break;
+		case Set_Ansel:
+			sb.append("1 CHAR ANSEL\r\n");
+			break;
+		case Set_Utf8:
+		case Set_Utf16:
+			sb.append("1 CHAR UNICODE\r\n");
+			break;
+		default:
+			sb.append("1 CHAR ANSI\r\n");
+		}
+
+		sb.append("0 @U1@ SUBM\r\n");
+		sb.append("1 NAME Test user\r\n"); // TODO add user data
+
+		// zip.write(gedBytes("0 HEAD\r\n"));
+		//		
+		// zip
+		// .write(gedBytes("1 NOTE FinFamily Gedcom Export is under construction\r\n"));
+		zip.write(gedBytes(sb.toString()));
 	}
 
 	private void collectIndividuals() throws SQLException {
@@ -615,6 +648,15 @@ public class ExportGedcomUtil {
 
 		void addChil(int chi) {
 			chils.add(chi);
+		}
+
+		int getChild(int idx) {
+			int cid = chils.get(idx);
+			MinimumIndividual mm = units.get(cid);
+			if (mm == null) {
+				logger.warning("child for " + cid + "does not exist");
+			}
+			return mm.gid;
 		}
 	}
 
