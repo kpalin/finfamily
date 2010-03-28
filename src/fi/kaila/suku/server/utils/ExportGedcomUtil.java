@@ -2,6 +2,7 @@ package fi.kaila.suku.server.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,13 +33,17 @@ public class ExportGedcomUtil {
 	private String langCode = null;
 	private int viewId = 0;
 	private int surety = 100;
+
+	// private String[] charsetNames = { "","Ascii", "Ansel", "UTF-8", "UTF-16"
+	// };
+
 	private boolean includeImages = true;
 
 	private LinkedHashMap<Integer, MinimumIndividual> units = null;
 	private LinkedHashMap<String, MinimumFamily> families = null;
 
 	private enum GedSet {
-		Set_None, Set_Ascii, Set_Ansel, Set_Utf8, Set_Utf16le, Set_Utf16be
+		Set_None, Set_Ascii, Set_Ansel, Set_Utf8, Set_Utf16
 	}
 
 	private GedSet thisSet = GedSet.Set_None;
@@ -54,11 +59,28 @@ public class ExportGedcomUtil {
 	}
 
 	public SukuData exportGedcom(String path, String langCode, int viewId,
-			int surety, boolean includeImages) {
+			int surety, int charsetId, boolean includeImages) {
 		this.path = path;
 		this.langCode = langCode;
 		this.viewId = viewId;
 		this.surety = surety;
+		switch (charsetId) {
+		case 1:
+			thisSet = GedSet.Set_Ascii;
+			break;
+		case 2:
+			thisSet = GedSet.Set_Ansel;
+			break;
+		case 3:
+			thisSet = GedSet.Set_Utf8;
+			break;
+		case 4:
+			thisSet = GedSet.Set_Utf16;
+			break;
+		default:
+			thisSet = GedSet.Set_None;
+		}
+
 		this.includeImages = includeImages;
 
 		SukuData result = new SukuData();
@@ -80,7 +102,7 @@ public class ExportGedcomUtil {
 			ZipEntry entry = new ZipEntry(fileName);
 
 			zip.putNextEntry(entry);
-
+			writeBom(zip);
 			// insert first the gedcom file here
 			writeHead(zip);
 			int allCount = units.size();
@@ -115,7 +137,7 @@ public class ExportGedcomUtil {
 
 			}
 
-			zip.write("0 TRLR\r\n".getBytes());
+			zip.write(gedBytes("0 TRLR\r\n"));
 			zip.closeEntry();
 			zip.close();
 
@@ -133,6 +155,25 @@ public class ExportGedcomUtil {
 		}
 
 		return result;
+	}
+
+	private void writeBom(ZipOutputStream zip) {
+		byte[] bom8 = { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF };
+		byte[] bom16 = { (byte) 0xFE, (byte) 0xFF };
+		try {
+			switch (thisSet) {
+			case Set_Utf8:
+				zip.write(bom8);
+				return;
+			case Set_Utf16:
+				zip.write(bom16);
+				return;
+			}
+		} catch (IOException e) {
+			logger.warning("Wrining bom: " + e.getMessage());
+			e.printStackTrace();
+		}
+
 	}
 
 	private void writeIndi(ZipOutputStream zip, PersonLongData persLong)
@@ -176,24 +217,7 @@ public class ExportGedcomUtil {
 		for (int i = 0; i < indi.famc.size(); i++) {
 			sb.append("1 FAMC F" + indi.famc.get(i) + "\r\n");
 		}
-		zip.write(sb.toString().getBytes());
-	}
-
-	private void writeIndi(ZipOutputStream zip, int pid) throws IOException {
-		MinimumIndividual indi = units.get(pid);
-		StringBuilder sb = new StringBuilder();
-		sb.append("0 @I" + indi.gid + "@ INDI\r\n");
-		sb.append("1 SEX " + indi.sex + "\r\n");
-		sb.append("1 NAME " + indi.pid + "\r\n");
-
-		for (int i = 0; i < indi.fams.size(); i++) {
-			sb.append("1 FAMS F" + indi.fams.get(i) + "\r\n");
-		}
-		for (int i = 0; i < indi.famc.size(); i++) {
-			sb.append("1 FAMC F" + indi.famc.get(i) + "\r\n");
-		}
-		zip.write(sb.toString().getBytes());
-
+		zip.write(gedBytes(sb.toString()));
 	}
 
 	private void writeFam(ZipOutputStream zip, MinimumFamily fam)
@@ -211,14 +235,14 @@ public class ExportGedcomUtil {
 			sb.append("1 CHIL I" + fam.chils.get(i) + "\r\n");
 		}
 
-		zip.write(sb.toString().getBytes());
+		zip.write(gedBytes(sb.toString()));
 
 	}
 
 	private void writeHead(ZipOutputStream zip) throws IOException {
-		zip.write("0 HEAD\r\n".getBytes());
-		zip.write("1 NOTE FinFamily Gedcom Export is under construction\r\n"
-				.getBytes());
+		zip.write(gedBytes("0 HEAD\r\n"));
+		zip
+				.write(gedBytes("1 NOTE FinFamily Gedcom Export is under construction\r\n"));
 
 	}
 
@@ -398,6 +422,113 @@ public class ExportGedcomUtil {
 			previd = chil;
 
 		}
+
+	}
+
+	private byte[] gedBytes(String text) {
+		if (text == null)
+			return null;
+		try {
+			switch (thisSet) {
+			case Set_Ascii:
+				return text.getBytes("US_ASCII");
+			case Set_None:
+				return text.getBytes("ISO-8859-1");
+			case Set_Utf8:
+				return text.getBytes("UTF-8");
+			case Set_Utf16:
+				return text.getBytes("UTF-16");
+			case Set_Ansel:
+				return toAnsel(text);
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			logger.warning("Writing " + thisSet.name() + ": " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return text.getBytes();
+	}
+
+	private byte[] toAnsel(String text) {
+
+		char toAnsel[] = {
+
+		225, 'A', 226, 'A', 227, 'A', 228, 'A', 232, 'A', 234, 'A', 165, 0,
+				240, 'C', 225, 'E', 226, 'E', 227, 'E', 232, 'E', 225, 'I',
+				226, 'I', 227, 'I', 232, 'I', 163, 0, 228, 'N', 225, 'O', 226,
+				'O', 227, 'O', 228, 'O', 232, 'O', 0, 0, 162, 0, 225, 'U', 226,
+				'U', 227, 'U', 232, 'U', 226, 'Y', 164, 0, 207, 0,
+
+				225, 'a', 226, 'a', 227, 'a', 228, 'a', 232, 'a', 234, 'a',
+				182, 0, 240, 'c', 225, 'e', 226, 'e', 227, 'e', 232, 'e', 225,
+				'i', 226, 'i', 227, 'i', 232, 'i', 186, 0, 228, 'n', 225, 'o',
+				226, 'o', 227, 'o', 228, 'o', 232, 'o', 0, 0, 178, 0, 225, 'u',
+				226, 'u', 227, 'u', 232, 'u', 226, 'y', 180, 0, 232, 'y' };
+
+		StringBuilder st = new StringBuilder();
+
+		int iInLen = text.length();
+		int iNow = 0;
+
+		int iIndex;
+		// TCHAR uCurr,u0,u1;
+		char uCurr, u0, u1;
+		// LPTSTR ps = sTemp.GetBuffer(iInLen*2);
+		while (iNow < iInLen) {
+			// uCurr = sIn.GetAt(iNow);
+			uCurr = text.charAt(iNow);
+			iNow++;
+			if ((uCurr & 0x80) == 0) {
+				st.append(uCurr);
+				// ps[iNew++]=uCurr;
+			} else {
+				if ((uCurr & 0xc0) != 0xc0) {
+					switch (uCurr) {
+
+					case 0x8c:
+						st.append((char) 166);
+						break;
+					case 0x9c:
+						st.append((char) 182);
+						break;
+					case 0xa1:
+						st.append((char) 198);
+						break;
+					case 0xa3:
+						st.append((char) 185);
+						break;
+					case 0xa9:
+						st.append((char) 195);
+						break;
+					case 0xbf:
+						st.append((char) 207);
+						break;
+					default:
+						st.append('?');
+						break;
+					}
+				} else {
+					iIndex = uCurr - 0xc0;
+					u0 = toAnsel[iIndex * 2];
+					u1 = toAnsel[iIndex * 2 + 1];
+					if (u0 == 0)
+						st.append('?');
+					else
+						st.append(u0);
+					if (u1 != 0)
+						st.append(u1);
+				}
+			}
+		}
+
+		try {
+			return st.toString().getBytes("ISO-8859-1");
+		} catch (UnsupportedEncodingException e) {
+			logger.warning("Writing ansel: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return text.getBytes();
 
 	}
 

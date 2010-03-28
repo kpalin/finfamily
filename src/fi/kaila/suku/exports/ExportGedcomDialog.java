@@ -60,7 +60,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private String langName = null;
 	private String[] langCodes = null;
 	private String[] langNames = null;
-	private String[] charsetNames = { "Ansi", "Ansel", "UTF-8", "UTF-16" };
+	private String[] charsetNames = { "", "Ascii", "Ansel", "UTF-8", "UTF-16" };
 	private JProgressBar progressBar;
 	private Task task = null;
 
@@ -301,7 +301,13 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 					int suretylevel = surety.getSurety();
 					v.add("surety=" + suretylevel);
+					int charidx = charsetList.getSelectedIndex();
 
+					if (charidx < 0) {
+						charidx = 0;
+					}
+
+					v.add("charid=" + charidx);
 					String[] auxes = v.toArray(new String[0]);
 					SukuData resp = Suku.kontroller.getSukuData(auxes);
 
