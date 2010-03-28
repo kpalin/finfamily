@@ -18,8 +18,10 @@ import java.util.zip.ZipOutputStream;
 
 import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.exports.ExportGedcomDialog;
+import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonLongData;
+import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
@@ -30,8 +32,6 @@ public class ExportGedcomUtil {
 	private ExportGedcomDialog runner = null;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
-	private String path = null;
-	private String langCode = null;
 	private int viewId = 0;
 	private int surety = 100;
 
@@ -61,8 +61,7 @@ public class ExportGedcomUtil {
 
 	public SukuData exportGedcom(String path, String langCode, int viewId,
 			int surety, int charsetId, boolean includeImages) {
-		this.path = path;
-		this.langCode = langCode;
+
 		this.viewId = viewId;
 		this.surety = surety;
 		switch (charsetId) {
@@ -120,8 +119,17 @@ public class ExportGedcomUtil {
 
 				PersonUtil u = new PersonUtil(con);
 				SukuData fam = u.getFullPerson(pit.pid, langCode);
-
+				PersonShortData shortie = new PersonShortData(fam.persLong);
 				writeIndi(zip, fam.persLong);
+
+				double prose = (curreCount * 100) / allCount;
+				int intprose = (int) prose;
+				StringBuilder sbb = new StringBuilder();
+				sbb.append("" + intprose + ";" + shortie.getAlfaName());
+				if (this.runner.setRunnerValue(sbb.toString())) {
+					throw new SukuException(Resurses
+							.getString("GEDCOM_CANCELLED"));
+				}
 
 			}
 
@@ -210,6 +218,19 @@ public class ExportGedcomUtil {
 				}
 
 				sb.append("1 NAME " + nm.toString() + "\r\n");
+				if (notices[i].getSource() != null) {
+					sb.append(getNoteStructure(2, "SOUR", notices[i]
+							.getSource()));
+
+				}
+				if (notices[i].getNoticeType() != null) {
+					sb.append("2 TYPE " + notices[i].getNoticeType() + "\r\n");
+				}
+				if (notices[i].getDescription() != null) {
+					sb.append(getNoteStructure(2, "NOTE", notices[i]
+							.getDescription()));
+
+				}
 			}
 		}
 		for (int i = 0; i < indi.fams.size(); i++) {
@@ -219,6 +240,71 @@ public class ExportGedcomUtil {
 			sb.append("1 FAMC F" + indi.famc.get(i) + "\r\n");
 		}
 		zip.write(gedBytes(sb.toString()));
+	}
+
+	private String getNoteStructure(int level, String tag, String text) {
+		Vector<String> ss = new Vector<String>();
+
+		int linelen = 73;
+
+		if (text == null)
+			return null;
+		StringBuilder sb = new StringBuilder();
+		char prevc = 0;
+		int emptyCount = 0;
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			switch (c) {
+			case '\r':
+				break;
+			case '\n':
+				emptyCount++;
+				sb.append(" ");
+				break;
+			default:
+				if (emptyCount > 1) {
+					if (sb.length() > 0) {
+						ss.add(sb.toString());
+						sb = new StringBuilder();
+					}
+				} else if (emptyCount == 1) {
+					if (prevc != ' ') {
+						sb.append(" ");
+					}
+				}
+				emptyCount = 0;
+				sb.append(c);
+
+			}
+			prevc = c;
+		}
+		ss.add(sb.toString());
+		sb = new StringBuilder();
+		String currTag = tag;
+		int currLevel = level;
+
+		for (int i = 0; i < ss.size(); i++) {
+			String chap = ss.get(i);
+			if (i > 0) {
+				currTag = "CONT";
+			}
+			while (chap.length() > 0) {
+				if (chap.length() < linelen) {
+					sb.append("" + currLevel + " " + currTag + " " + chap
+							+ "\r\n");
+					chap = "";
+				} else {
+					sb.append("" + currLevel + " " + currTag + " "
+							+ chap.substring(0, linelen) + "\r\n");
+					chap = chap.substring(linelen);
+					currLevel = level + 1;
+					currTag = "CONC";
+				}
+			}
+		}
+
+		return sb.toString();
+
 	}
 
 	private void writeFam(ZipOutputStream zip, MinimumFamily fam)
@@ -245,7 +331,9 @@ public class ExportGedcomUtil {
 		StringBuilder sb = new StringBuilder();
 		sb.append("0 HEAD\r\n");
 		sb.append("1 SOUR FinFamily\r\n");
-		sb.append("2 VERS " + AntVersion.antVersion + "\r\n");
+		sb
+				.append("2 VERS " + AntVersion.antVersion
+						+ " UNDER CONSTRUCTION\r\n");
 		sb.append("2 NAME FinFamily\r\n");
 		sb.append("2 CORP KK-Software\r\n");
 		sb.append("3 ADDR http://www.sukuohjelmisto.fi\r\n");
