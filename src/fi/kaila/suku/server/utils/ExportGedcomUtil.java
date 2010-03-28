@@ -193,7 +193,8 @@ public class ExportGedcomUtil {
 		sb.append("1 SEX " + indi.sex + "\r\n");
 		UnitNotice[] notices = persLong.getNotices();
 		for (int i = 0; i < notices.length; i++) {
-			if (notices[i].getTag().equals("NAME")) {
+			if (notices[i].getTag().equals("NAME")
+					&& surety >= notices[i].getSurety()) {
 				StringBuilder nm = new StringBuilder();
 				if (notices[i].getGivenname() != null) {
 					nm.append(notices[i].getGivenname());
@@ -233,6 +234,78 @@ public class ExportGedcomUtil {
 				}
 			}
 		}
+
+		for (int i = 0; i < notices.length; i++) {
+			if (!notices[i].getTag().equals("NAME")
+					&& surety >= notices[i].getSurety()) {
+				UnitNotice notice = notices[i];
+				StringBuilder nm = new StringBuilder();
+				String gedTag = notice.getTag();
+				nm.append("1 " + gedTag + "\r\n");
+				if (notice.getNoticeType() != null) {
+					nm.append("2 TYPE " + notice.getNoticeType() + "\r\n");
+				}
+				if (notice.getDescription() != null) {
+					nm.append("2 NOTE " + notice.getDescription() + "\r\n");
+				}
+				if (notice.getFromDate() != null) {
+					nm.append("2 DATE ");
+					if (notice.getDatePrefix() != null) {
+						nm.append(notice.getDatePrefix() + " ");
+					}
+					nm.append(gedDate(notice.getFromDate()));
+					if (notice.getDatePrefix() != null
+							&& notice.getToDate() != null) {
+						if (notice.getDatePrefix().equals("BET")) {
+							nm.append(" AND ");
+							nm.append(gedDate(notice.getToDate()));
+						} else if (notice.getDatePrefix().equals("FROM")) {
+							nm.append(" TO ");
+							nm.append(gedDate(notice.getToDate()));
+						}
+					}
+					nm.append("\r\n");
+
+				}
+				if (notice.getPlace() != null) {
+					nm.append("2 PLAC " + notice.getPlace() + "\r\n");
+				}
+				if (notice.getAddress() != null) {
+					nm.append(getNoteStructure(2, "ADDR", notice.getAddress())
+							+ "\r\n");
+					if (notice.getPostalCode() != null
+							|| notice.getPostOffice() != null) {
+						if (notice.getPostalCode() != null
+								&& notice.getPostOffice() != null) {
+							nm.append("3 CONT " + notice.getPostalCode() + " "
+									+ notice.getPostOffice() + "\r\n");
+						} else if (notice.getPostOffice() != null) {
+							nm.append("3 CONT " + notice.getPostOffice()
+									+ "\r\n");
+						} else {
+							nm.append("3 CONT " + notice.getPostalCode()
+									+ "\r\n");
+						}
+
+					}
+					if (notice.getState() != null) {
+						nm.append("3 CONT " + notice.getState() + "\r\n");
+					}
+					if (notice.getCountry() != null) {
+						nm.append("3 CONT " + notice.getCountry() + "\r\n");
+					}
+				}
+
+				if (notice.getSource() != null) {
+					nm.append(getNoteStructure(2, "SOUR", notice.getSource())
+							+ "\r\n");
+				}
+
+				sb.append(nm.toString());
+
+			}
+		}
+
 		for (int i = 0; i < indi.fams.size(); i++) {
 			sb.append("1 FAMS F" + indi.fams.get(i) + "\r\n");
 		}
@@ -240,6 +313,28 @@ public class ExportGedcomUtil {
 			sb.append("1 FAMC F" + indi.famc.get(i) + "\r\n");
 		}
 		zip.write(gedBytes(sb.toString()));
+	}
+
+	private Object gedDate(String dbDate) {
+		String[] months = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL",
+				"AUG", "SEP", "OCT", "NOV", "DEC" };
+		String mon = "";
+		if (dbDate.length() >= 6) {
+
+			try {
+				int m = Integer.parseInt(dbDate.substring(4, 6));
+				if (m > 0 && m <= 12) {
+					mon = months[m - 1] + " ";
+				}
+			} catch (NumberFormatException ne) {
+
+			}
+		}
+		if (dbDate.length() == 8) {
+			return dbDate.substring(6) + " " + mon + dbDate.substring(0, 4);
+		}
+		return mon + dbDate.substring(0, 4);
+
 	}
 
 	private String getNoteStructure(int level, String tag, String text) {
