@@ -661,7 +661,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 			}
 
-			if (preferredIndex >= 0) {
+			if (preferredIndex >= 0
+					&& preferredIndex + 1 < viewList.getItemCount()) {
 				viewList.setSelectedIndex(preferredIndex + 1);
 			}
 

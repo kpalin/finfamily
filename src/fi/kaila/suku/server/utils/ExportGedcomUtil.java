@@ -43,11 +43,15 @@ public class ExportGedcomUtil {
 	private LinkedHashMap<Integer, MinimumIndividual> units = null;
 	private LinkedHashMap<String, MinimumFamily> families = null;
 
+	private Vector<MinimumImage> images = null;
+	private String zipPath = "nemo";
+
 	private enum GedSet {
 		Set_None, Set_Ascii, Set_Ansel, Set_Utf8, Set_Utf16
 	}
 
 	private GedSet thisSet = GedSet.Set_None;
+	private int imageCounter = 0;
 
 	/**
 	 * Constructor with connection
@@ -82,7 +86,7 @@ public class ExportGedcomUtil {
 		}
 
 		this.includeImages = includeImages;
-
+		images = new Vector<MinimumImage>();
 		SukuData result = new SukuData();
 		if (path == null || path.lastIndexOf(".") < 1) {
 			result.resu = "output filename missing";
@@ -93,11 +97,11 @@ public class ExportGedcomUtil {
 
 			collectFamilies();
 
-			String simple = path.substring(0, path.lastIndexOf("."));
+			zipPath = path.substring(0, path.lastIndexOf("."));
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
 			ZipOutputStream zip = new ZipOutputStream(bos);
-			String fileName = simple + "/" + db + ".ged";
+			String fileName = zipPath + "/" + db + ".ged";
 
 			ZipEntry entry = new ZipEntry(fileName);
 
@@ -148,6 +152,14 @@ public class ExportGedcomUtil {
 
 			zip.write(gedBytes("0 TRLR\r\n"));
 			zip.closeEntry();
+
+			for (int i = 0; i < images.size(); i++) {
+				entry = new ZipEntry(images.get(i).getPath());
+				zip.putNextEntry(entry);
+				zip.write(images.get(i).imageData);
+				zip.closeEntry();
+			}
+
 			zip.close();
 
 			result.buffer = bos.toByteArray();
@@ -334,6 +346,25 @@ public class ExportGedcomUtil {
 					nm.append(getNoteStructure(2, "SOUR", notice.getSource()));
 				}
 
+				if (includeImages) {
+					if (notice.getMediaFilename() != null
+							&& notice.getMediaData() != null) {
+						MinimumImage minimg = new MinimumImage(indi.gid, notice
+								.getMediaFilename(), notice.getMediaData());
+						nm.append("2 OBJE\r\n");
+						if (notice.getMediaFilename().toLowerCase().endsWith(
+								".jpg")) {
+							nm.append("3 FORM jpeg\r\n");
+						}
+						if (notice.getMediaTitle() != null) {
+							nm.append("3 TITL " + notice.getMediaTitle()
+									+ "\r\n");
+						}
+						nm.append("3 FILE " + minimg.getPath() + "\r\n");
+
+						images.add(minimg);
+					}
+				}
 				sb.append(nm.toString());
 
 			}
@@ -874,6 +905,28 @@ public class ExportGedcomUtil {
 			}
 			return mm.gid;
 		}
+	}
+
+	class MinimumImage {
+		int indiGid = 0;
+		String imgName = null;
+		int counter = 0;
+		byte[] imageData = null;
+
+		MinimumImage(int gid, String name, byte[] data) {
+			this.indiGid = gid;
+			this.imgName = name;
+			this.imageData = data;
+			this.counter = ++imageCounter;
+		}
+
+		String getPath() {
+			StringBuilder sb = new StringBuilder();
+			sb.append(zipPath);
+			sb.append("/images/" + counter + "_" + imgName);
+			return sb.toString();
+		}
+
 	}
 
 }

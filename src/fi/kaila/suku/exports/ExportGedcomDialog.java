@@ -139,6 +139,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		this.viewList.setBounds(30, y, 340, 20);
 
 		charsetList = new JComboBox(charsetNames);
+		charsetList.setSelectedIndex(3);
 		getContentPane().add(charsetList);
 		charsetList.setBounds(400, y, 160, 20);
 
@@ -310,7 +311,9 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 					if (charidx < 0) {
 						charidx = 0;
 					}
-
+					if (includeImages.isSelected()) {
+						v.add("images=true");
+					}
 					v.add("charid=" + charidx);
 					String[] auxes = v.toArray(new String[0]);
 					SukuData resp = Suku.kontroller.getSukuData(auxes);

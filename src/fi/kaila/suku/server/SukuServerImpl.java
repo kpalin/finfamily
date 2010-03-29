@@ -532,10 +532,11 @@ public class SukuServerImpl implements SukuServer {
 			}
 			tmp = map.get("charid");
 			int charid = Integer.parseInt(tmp);
-
+			boolean incImages = map.get("images") != null ? true : false;
+			;
 			ExportGedcomUtil exgen = new ExportGedcomUtil(con);
 			fam = exgen.exportGedcom(db, path, lang, viewId, surety, charid,
-					false);
+					incImages);
 
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");
