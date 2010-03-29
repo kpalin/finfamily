@@ -901,11 +901,6 @@ public class ImportGedcomUtil {
 		return sb.toString();
 	}
 
-	private static final String notiTags = "|OCCU|EDUC|TITL|RESI|PROP|FACT"
-			+ "|BIRT|CHR|DEAT|BURI|EVEN|RESI|EMIG|IMMI|CAST|DSCR|EDUC|IDNO"
-			+ "|NATI|NCHI|NMR|PROP|RELI|SSN|FACT|CREM|BAPM|BASM|BLES|BARM"
-			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|";
-
 	private void consumeGedcomIndi(GedcomLine record) throws SukuException {
 		PersonLongData pers = new PersonLongData(0, "INDI", "U");
 		Vector<UnitNotice> notices = new Vector<UnitNotice>();
@@ -1041,7 +1036,7 @@ public class ImportGedcomUtil {
 				if (noti.lineValue != null) {
 					gedAdopt.put(noti.lineValue, noti);
 				}
-			} else if (notiTags.indexOf(noti.tag) > 0
+			} else if (Resurses.gedcomTags.indexOf(noti.tag) > 0
 
 			|| noti.tag.startsWith("_")) {
 

@@ -255,9 +255,8 @@ public class ExportGedcomUtil {
 				UnitNotice notice = notices[i];
 				StringBuilder nm = new StringBuilder();
 				String gedTag = notice.getTag();
-				if (gedTag.startsWith("PHOT") || gedTag.startsWith("EXTR")
-						|| gedTag.startsWith("SPEC")) {
-					gedTag = "_" + gedTag; // TODO this correctly
+				if (Resurses.gedcomTags.indexOf(gedTag) < 0) {
+					gedTag = "_" + gedTag;
 				}
 				if (notice.getTag().equals("NOTE")) {
 					if (notice.getNoteText() != null) {
@@ -385,6 +384,14 @@ public class ExportGedcomUtil {
 				}
 				if (notice.getSource() != null) {
 					nm.append(getNoteStructure(2, "SOUR", notice.getSource()));
+					if (notice.getSurety() < 100) {
+						nm.append("3 QUAY " + suretyToQuay(notice.getSurety())
+								+ "\r\n");
+					}
+				} else if (notice.getSurety() < 100) {
+					nm.append("2 SOUR\r\n");
+					nm.append("3 QUAY " + suretyToQuay(notice.getSurety())
+							+ "\r\n");
 				}
 				sb.append(nm.toString());
 
@@ -398,6 +405,17 @@ public class ExportGedcomUtil {
 			sb.append("1 FAMC F" + indi.famc.get(i) + "\r\n");
 		}
 		zip.write(gedBytes(sb.toString()));
+	}
+
+	private int suretyToQuay(int surety) {
+		if (surety >= 100)
+			return 100;
+		if (surety < 100 && surety >= 80)
+			return 2;
+		if (surety < 80 && surety >= 60)
+			return 1;
+		return 0;
+
 	}
 
 	private Object gedDate(String dbDate) {
@@ -475,14 +493,22 @@ public class ExportGedcomUtil {
 				currLevel = level + 1;
 			}
 			while (chap.length() > 0) {
-				if (chap.length() < linelen) {
+				if (chap.length() <= linelen) {
 					sb.append("" + currLevel + " " + currTag + " " + chap
 							+ "\r\n");
 					chap = "";
 				} else {
+
+					int last = chap.substring(0, linelen).lastIndexOf(" ");
+					if (chap.substring(linelen - 1, linelen).equals(" ")) {
+						last = linelen;
+					}
+					if (last < linelen / 2)
+						last = linelen;
+
 					sb.append("" + currLevel + " " + currTag + " "
-							+ chap.substring(0, linelen) + "\r\n");
-					chap = chap.substring(linelen);
+							+ chap.substring(0, last + 1) + "\r\n");
+					chap = chap.substring(last + 1);
 					currLevel = level + 1;
 					currTag = "CONC";
 				}

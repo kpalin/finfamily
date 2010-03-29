@@ -344,6 +344,12 @@ public class Resurses {
 	/** */
 	public static String UPDATEDB = "MENU_UPDATEDB";
 
+	/** recognized gedcom events/attributes */
+	public static String gedcomTags = "|OCCU|EDUC|TITL|RESI|PROP|FACT"
+			+ "|BIRT|CHR|DEAT|BURI|EVEN|RESI|EMIG|IMMI|CAST|DSCR|EDUC|IDNO"
+			+ "|NATI|NCHI|NMR|PROP|RELI|SSN|FACT|CREM|BAPM|BASM|BLES|BARM"
+			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|";
+
 	private Resurses() {
 		if (resources == null) {
 			// Locale.setDefault(currentLocale);
