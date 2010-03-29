@@ -45,6 +45,7 @@ public class ExportGedcomUtil {
 
 	private Vector<MinimumImage> images = null;
 	private String zipPath = "nemo";
+	private String dbName = "me";
 
 	private enum GedSet {
 		Set_None, Set_Ascii, Set_Ansel, Set_Utf8, Set_Utf16
@@ -86,6 +87,7 @@ public class ExportGedcomUtil {
 		}
 
 		this.includeImages = includeImages;
+		dbName = db;
 		images = new Vector<MinimumImage>();
 		SukuData result = new SukuData();
 		if (path == null || path.lastIndexOf(".") < 1) {
@@ -101,7 +103,7 @@ public class ExportGedcomUtil {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
 			ZipOutputStream zip = new ZipOutputStream(bos);
-			String fileName = zipPath + "/" + db + ".ged";
+			String fileName = zipPath + "/" + dbName + ".ged";
 
 			ZipEntry entry = new ZipEntry(fileName);
 
@@ -253,8 +255,9 @@ public class ExportGedcomUtil {
 				UnitNotice notice = notices[i];
 				StringBuilder nm = new StringBuilder();
 				String gedTag = notice.getTag();
-				if (gedTag.startsWith("PHOT")) {
-					gedTag = "_" + gedTag;
+				if (gedTag.startsWith("PHOT") || gedTag.startsWith("EXTR")
+						|| gedTag.startsWith("SPEC")) {
+					gedTag = "_" + gedTag; // TODO this correctly
 				}
 				if (notice.getTag().equals("NOTE")) {
 					if (notice.getNoteText() != null) {
@@ -941,7 +944,7 @@ public class ExportGedcomUtil {
 
 		String getPath() {
 			StringBuilder sb = new StringBuilder();
-			sb.append("images/" + counter + "_" + imgName);
+			sb.append(dbName + "_files/" + counter + "_" + imgName);
 			return sb.toString();
 		}
 
