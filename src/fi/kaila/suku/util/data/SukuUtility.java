@@ -127,7 +127,7 @@ public class SukuUtility {
 				try {
 					stm.executeUpdate(sql);
 				} catch (SQLException se) {
-					logger.info(se.getMessage());
+					logger.severe(se.getMessage());
 				}
 				sb = new StringBuilder();
 

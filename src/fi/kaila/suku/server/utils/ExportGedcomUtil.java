@@ -148,7 +148,7 @@ public class ExportGedcomUtil {
 						.next();
 				MinimumFamily fix = fx.getValue();
 
-				writeFam(zip, fix);
+				writeFam(zip, fix, langCode);
 
 			}
 
@@ -399,10 +399,10 @@ public class ExportGedcomUtil {
 		}
 
 		for (int i = 0; i < indi.fams.size(); i++) {
-			sb.append("1 FAMS F" + indi.fams.get(i) + "\r\n");
+			sb.append("1 FAMS @F" + indi.fams.get(i) + "@\r\n");
 		}
 		for (int i = 0; i < indi.famc.size(); i++) {
-			sb.append("1 FAMC F" + indi.famc.get(i) + "\r\n");
+			sb.append("1 FAMC @F" + indi.famc.get(i) + "@\r\n");
 		}
 		zip.write(gedBytes(sb.toString()));
 	}
@@ -502,12 +502,16 @@ public class ExportGedcomUtil {
 					int last = chap.substring(0, linelen).lastIndexOf(" ");
 					if (chap.substring(linelen - 1, linelen).equals(" ")) {
 						last = linelen;
+						last--;
+					} else {
+						if (last < linelen / 2) {
+							last = linelen;
+						}
 					}
-					if (last < linelen / 2)
-						last = linelen;
 
 					sb.append("" + currLevel + " " + currTag + " "
 							+ chap.substring(0, last + 1) + "\r\n");
+
 					chap = chap.substring(last + 1);
 					currLevel = level + 1;
 					currTag = "CONC";
@@ -519,8 +523,8 @@ public class ExportGedcomUtil {
 
 	}
 
-	private void writeFam(ZipOutputStream zip, MinimumFamily fam)
-			throws IOException {
+	private void writeFam(ZipOutputStream zip, MinimumFamily fam,
+			String langCode) throws IOException, SQLException {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("0 @F" + fam.id + "@ FAM\r\n");
@@ -533,6 +537,86 @@ public class ExportGedcomUtil {
 		for (int i = 0; i < fam.chils.size(); i++) {
 			sb.append("1 CHIL @I" + fam.getChild(i) + "@\r\n");
 		}
+
+		PreparedStatement pst;
+		String sql;
+		if (langCode != null) {
+			sql = "select surety,tag,"
+					+ "coalesce(l.description,r.description) as description,"
+					+ "coalesce(l.relationtype,r.relationtype) as relationtype,"
+					+ "dateprefix,fromdate,todate,coalesce(l.place,r.place) as place,"
+					+ "coalesce(l.notetext,r.notetext) as notetext,sourcetext "
+					+ "from relationnotice as r left join relationlanguage as l "
+					+ "on r.rnid = l.rnid and l.langcode = '?' where r.rid=? "
+					+ "order by noticerow ";
+
+			pst = con.prepareStatement(sql);
+			pst.setString(1, langCode);
+			pst.setInt(2, fam.rid);
+
+		} else {
+			sql = "select surety,tag,description,relationtype,"
+					+ "dateprefix,fromdate,todate,place,notetext,sourcetext "
+					+ "from relationnotice where rid=? "
+					+ "order by noticerow ";
+			pst = con.prepareStatement(sql);
+			pst.setInt(1, fam.rid);
+		}
+
+		ResultSet rs = pst.executeQuery();
+		while (rs.next()) {
+			int surety = rs.getInt(1);
+			String tag = rs.getString(2);
+			String desc = rs.getString(3);
+			String type = rs.getString(4);
+			String pre = rs.getString(5);
+			String fromdate = rs.getString(6);
+			String todate = rs.getString(7);
+			String notetext = rs.getString(8);
+			String sourcetext = rs.getString(9);
+
+			sb.append("1 " + tag + "\r\n");
+			if (type != null) {
+				sb.append("2 TYPE " + type + "\r\n");
+			}
+			if (fromdate != null) {
+				sb.append("2 DATE ");
+				if (pre != null) {
+					sb.append(pre + " ");
+				}
+				sb.append(gedDate(fromdate));
+				if (todate != null && pre != null) {
+					if (pre.equals("BET")) {
+						sb.append("AND ");
+
+					}
+					if (pre.equals("FROM")) {
+						sb.append("TO ");
+					}
+					sb.append(gedDate(todate));
+				}
+				sb.append("\r\n");
+
+			}
+			if (desc != null) {
+				sb.append("2 CAUS " + desc + "\r\n");
+			}
+			if (notetext != null) {
+				sb.append(getNoteStructure(2, "NOTE", notetext));
+			}
+			if (sourcetext != null) {
+				sb.append(getNoteStructure(2, "SOUR", sourcetext));
+				if (surety < 100) {
+					sb.append("3 QUAY " + suretyToQuay(surety) + "\r\n");
+				}
+			} else if (surety < 100) {
+				sb.append("2 SOUR\r\n");
+				sb.append("3 QUAY " + suretyToQuay(surety) + "\r\n");
+			}
+
+		}
+		rs.close();
+		pst.close();
 
 		zip.write(gedBytes(sb.toString()));
 
@@ -551,7 +635,7 @@ public class ExportGedcomUtil {
 		sb.append("3 ADDR http://www.sukuohjelmisto.fi\r\n");
 		sb.append("1 SUBM @U1@\r\n");
 		sb.append("1 GEDC\r\n");
-		sb.append("2 VERS 5.5\r\n");
+		sb.append("2 VERS 5.5.1\r\n");
 		sb.append("2 FORM LINEAGE-LINKED\r\n");
 
 		switch (thisSet) {
@@ -616,7 +700,7 @@ public class ExportGedcomUtil {
 		PreparedStatement pst;
 
 		sql
-				.append("select a.pid,a.tag,a.relationrow,b.pid,b.tag,b.relationrow "
+				.append("select a.pid,a.tag,a.relationrow,b.pid,b.tag,b.relationrow,a.rid "
 						+ "from relation as a inner join relation as b on a.rid=b.rid ");
 		if (viewId > 0) {
 			sql.append("and a.pid in (select pid from viewunits where vid="
@@ -637,10 +721,10 @@ public class ExportGedcomUtil {
 		while (rs.next()) {
 			int dada = rs.getInt(1);
 			int mama = rs.getInt(4);
-
+			int rid = rs.getInt(7);
 			ParentPair pp = new ParentPair(dada, mama);
 
-			MinimumFamily mf = new MinimumFamily(dada, mama);
+			MinimumFamily mf = new MinimumFamily(dada, mama, rid);
 			families.put(pp.toString(), mf);
 
 			MinimumIndividual mi = units.get(dada);
@@ -651,14 +735,6 @@ public class ExportGedcomUtil {
 		rs.close();
 
 		sql = new StringBuilder();
-		// select a.pid,b.pid,b.tag
-		// from relation as a inner join relation as b on a.rid=b.rid and
-		// a.tag='CHIL' and b.tag != 'CHIL'
-
-		// select a.pid,a.tag,a.relationrow,b.pid,b.tag,b.relationrow
-		// from relation as a inner join relation as b on a.rid=b.rid and
-		// a.tag='CHIL' and b.tag != 'CHIL'
-		// order by b.pid,a.relationrow
 
 		sql.append("select a.pid,b.pid,b.tag from ");
 		sql.append("relation as a inner join relation as b on a.rid=b.rid ");
@@ -672,7 +748,7 @@ public class ExportGedcomUtil {
 		if (surety != 100) {
 			sql.append("and a.surety >= " + surety + " ");
 		}
-
+		// TODO adoptions etc is also needed
 		sql.append("order by b.pid,a.relationrow ");
 
 		pst = con.prepareStatement(sql.toString());
@@ -731,9 +807,9 @@ public class ExportGedcomUtil {
 							fm.addChil(previd);
 						} else {
 							if (pi.sex.equals("M")) {
-								fm = new MinimumFamily(pi.pid, 0);
+								fm = new MinimumFamily(pi.pid, 0, 0);
 							} else {
-								fm = new MinimumFamily(0, pi.pid);
+								fm = new MinimumFamily(0, pi.pid, 0);
 							}
 							families.put(pp.toString(), fm);
 							fm.addChil(previd);
@@ -911,12 +987,14 @@ public class ExportGedcomUtil {
 	private class MinimumFamily {
 		int dad = 0;
 		int mom = 0;
+		int rid = 0;
 		int id = 0;
 		Vector<Integer> chils = new Vector<Integer>();
 
-		MinimumFamily(int dad, int mom) {
+		MinimumFamily(int dad, int mom, int rid) {
 			this.dad = dad;
 			this.mom = mom;
+			this.rid = rid;
 			id = ++nextFamilyId;
 
 		}
