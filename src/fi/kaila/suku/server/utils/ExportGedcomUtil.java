@@ -253,117 +253,135 @@ public class ExportGedcomUtil {
 				UnitNotice notice = notices[i];
 				StringBuilder nm = new StringBuilder();
 				String gedTag = notice.getTag();
-				nm.append("1 " + gedTag + "\r\n");
-				if (notice.getNoticeType() != null) {
-					nm.append("2 TYPE " + notice.getNoticeType() + "\r\n");
+				if (gedTag.startsWith("PHOT")) {
+					gedTag = "_" + gedTag;
 				}
-				if (notice.getDescription() != null) {
-					nm.append("2 NOTE " + notice.getDescription() + "\r\n");
-				}
-				if (notice.getFromDate() != null) {
-					nm.append("2 DATE ");
-					if (notice.getDatePrefix() != null) {
-						nm.append(notice.getDatePrefix() + " ");
+				if (notice.getTag().equals("NOTE")) {
+					if (notice.getNoteText() != null) {
+						nm.append(getNoteStructure(1, "NOTE", notice
+								.getNoteText()));
 					}
-					nm.append(gedDate(notice.getFromDate()));
-					if (notice.getDatePrefix() != null
-							&& notice.getToDate() != null) {
-						if (notice.getDatePrefix().equals("BET")) {
-							nm.append(" AND ");
-							nm.append(gedDate(notice.getToDate()));
-						} else if (notice.getDatePrefix().equals("FROM")) {
-							nm.append(" TO ");
-							nm.append(gedDate(notice.getToDate()));
+				} else {
+
+					nm.append("1 " + gedTag);
+					if (notice.getDescription() != null) {
+						nm.append(" " + notice.getDescription() + "\r\n");
+					} else {
+						nm.append("\r\n");
+					}
+					if (notice.getNoticeType() != null) {
+						nm.append("2 TYPE " + notice.getNoticeType() + "\r\n");
+					}
+
+					if (notice.getFromDate() != null) {
+						nm.append("2 DATE ");
+						if (notice.getDatePrefix() != null) {
+							nm.append(notice.getDatePrefix() + " ");
 						}
+						nm.append(gedDate(notice.getFromDate()));
+						if (notice.getDatePrefix() != null
+								&& notice.getToDate() != null) {
+							if (notice.getDatePrefix().equals("BET")) {
+								nm.append(" AND ");
+								nm.append(gedDate(notice.getToDate()));
+							} else if (notice.getDatePrefix().equals("FROM")) {
+								nm.append(" TO ");
+								nm.append(gedDate(notice.getToDate()));
+							}
+						}
+						nm.append("\r\n");
+
 					}
-					nm.append("\r\n");
+					if (notice.getPlace() != null) {
+						nm.append("2 PLAC " + notice.getPlace() + "\r\n");
+					}
+					if (notice.getNoteText() != null) {
+						nm.append(getNoteStructure(2, "NOTE", notice
+								.getNoteText()));
+					}
 
-				}
-				if (notice.getPlace() != null) {
-					nm.append("2 PLAC " + notice.getPlace() + "\r\n");
-				}
-				if (notice.getNoteText() != null) {
-					nm
-							.append(getNoteStructure(2, "NOTE", notice
-									.getNoteText()));
-				}
+					if (notice.getAddress() != null
+							|| notice.getPostOffice() != null) {
+						if (notice.getAddress() != null) {
+							if (notice.getState() == null) {
 
-				if (notice.getAddress() != null
-						|| notice.getPostOffice() != null) {
-					if (notice.getAddress() != null) {
-						if (notice.getState() == null) {
+								nm.append(getNoteStructure(2, "ADDR", notice
+										.getAddress(), 1));
+								if (notice.getPostOffice() != null) {
+									if (notice.getPostalCode() != null
+											&& notice.getPostOffice() != null) {
+										nm.append("3 CONT "
+												+ notice.getPostalCode() + " "
+												+ notice.getPostOffice()
+												+ "\r\n");
+									} else {
+										nm.append("3 CONT "
+												+ notice.getPostOffice()
+												+ "\r\n");
+									}
 
-							nm.append(getNoteStructure(2, "ADDR", notice
-									.getAddress(), 1));
-							if (notice.getPostOffice() != null) {
-								if (notice.getPostalCode() != null
-										&& notice.getPostOffice() != null) {
-									nm.append("3 CONT "
-											+ notice.getPostalCode() + " "
-											+ notice.getPostOffice() + "\r\n");
-								} else {
+								}
+							} else {
+								nm.append(getNoteStructure(2, "ADDR", notice
+										.getAddress(), 1));
+								if (notice.getPostOffice() != null) {
 									nm.append("3 CONT "
 											+ notice.getPostOffice() + "\r\n");
 								}
+								if (notice.getPostalCode() != null) {
+									nm.append("3 CONT " + notice.getState()
+											+ " " + notice.getPostOffice()
+											+ "\r\n");
+								} else {
+									nm.append("3 CONT " + notice.getState()
+											+ "\r\n");
+								}
 
-							}
-						} else {
-							nm.append(getNoteStructure(2, "ADDR", notice
-									.getAddress(), 1));
-							if (notice.getPostOffice() != null) {
-								nm.append("3 CONT " + notice.getPostOffice()
-										+ "\r\n");
-							}
-							if (notice.getPostalCode() != null) {
-								nm.append("3 CONT " + notice.getState() + " "
-										+ notice.getPostOffice() + "\r\n");
-							} else {
-								nm.append("3 CONT " + notice.getState()
-										+ "\r\n");
 							}
 
 						}
-
-					}
-					if (notice.getCountry() != null) {
-						nm.append("3 CONT " + notice.getCountry() + "\r\n");
-					}
-				} else if (notice.getCountry() != null
-						|| notice.getState() != null) {
-					if (notice.getState() != null) {
-						nm.append("2 ADDR " + notice.getState() + "\r\n");
 						if (notice.getCountry() != null) {
 							nm.append("3 CONT " + notice.getCountry() + "\r\n");
 						}
-					} else {
-						nm.append("2 ADDR " + notice.getCountry() + "\r\n");
+					} else if (notice.getCountry() != null
+							|| notice.getState() != null) {
+						if (notice.getState() != null) {
+							nm.append("2 ADDR " + notice.getState() + "\r\n");
+							if (notice.getCountry() != null) {
+								nm.append("3 CONT " + notice.getCountry()
+										+ "\r\n");
+							}
+						} else {
+							nm.append("2 ADDR " + notice.getCountry() + "\r\n");
+						}
 					}
-				}
-				if (notice.getEmail() != null) {
-					nm.append("2 EMAIL " + notice.getEmail() + "\r\n");
+					if (notice.getEmail() != null) {
+						nm.append("2 EMAIL " + notice.getEmail() + "\r\n");
+					}
+
+					if (includeImages) {
+						if (notice.getMediaFilename() != null
+								&& notice.getMediaData() != null) {
+							MinimumImage minimg = new MinimumImage(indi.gid,
+									notice.getMediaFilename(), notice
+											.getMediaData());
+							nm.append("2 OBJE\r\n");
+							if (notice.getMediaFilename().toLowerCase()
+									.endsWith(".jpg")) {
+								nm.append("3 FORM jpeg\r\n");
+							}
+							if (notice.getMediaTitle() != null) {
+								nm.append("3 TITL " + notice.getMediaTitle()
+										+ "\r\n");
+							}
+							nm.append("3 FILE " + minimg.getPath() + "\r\n");
+
+							images.add(minimg);
+						}
+					}
 				}
 				if (notice.getSource() != null) {
 					nm.append(getNoteStructure(2, "SOUR", notice.getSource()));
-				}
-
-				if (includeImages) {
-					if (notice.getMediaFilename() != null
-							&& notice.getMediaData() != null) {
-						MinimumImage minimg = new MinimumImage(indi.gid, notice
-								.getMediaFilename(), notice.getMediaData());
-						nm.append("2 OBJE\r\n");
-						if (notice.getMediaFilename().toLowerCase().endsWith(
-								".jpg")) {
-							nm.append("3 FORM jpeg\r\n");
-						}
-						if (notice.getMediaTitle() != null) {
-							nm.append("3 TITL " + notice.getMediaTitle()
-									+ "\r\n");
-						}
-						nm.append("3 FILE " + minimg.getPath() + "\r\n");
-
-						images.add(minimg);
-					}
 				}
 				sb.append(nm.toString());
 
@@ -451,6 +469,7 @@ public class ExportGedcomUtil {
 			String chap = ss.get(i);
 			if (i > 0) {
 				currTag = "CONT";
+				currLevel = level + 1;
 			}
 			while (chap.length() > 0) {
 				if (chap.length() < linelen) {
