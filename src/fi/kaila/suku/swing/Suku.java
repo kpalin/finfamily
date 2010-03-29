@@ -1583,13 +1583,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void exportGedcom() {
 
 		boolean isCreated = kontroller.createLocalFile("zip");
-		String dbname = kontroller.getFileName();
+		String zipName = kontroller.getFileName();
 		logger.finest("Opened GEDCOM FILE status " + isCreated);
 		if (isCreated) {
 
 			ExportGedcomDialog dlg;
 			try {
-				dlg = new ExportGedcomDialog(this, dbname);
+				dlg = new ExportGedcomDialog(this, databaseName, zipName);
 			} catch (SukuException e) {
 				return;
 			}

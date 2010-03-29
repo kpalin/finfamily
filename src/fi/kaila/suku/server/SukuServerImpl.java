@@ -518,6 +518,7 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("exportGedcom")) {
 			lang = map.get("lang");
 			String path = map.get("file");
+			String db = map.get("db");
 			tmp = map.get("viewId");
 			int viewId = 0;
 			if (tmp != null) {
@@ -533,7 +534,8 @@ public class SukuServerImpl implements SukuServer {
 			int charid = Integer.parseInt(tmp);
 
 			ExportGedcomUtil exgen = new ExportGedcomUtil(con);
-			fam = exgen.exportGedcom(path, lang, viewId, surety, charid, false);
+			fam = exgen.exportGedcom(db, path, lang, viewId, surety, charid,
+					false);
 
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");

@@ -59,8 +59,8 @@ public class ExportGedcomUtil {
 		this.runner = ExportGedcomDialog.getRunner();
 	}
 
-	public SukuData exportGedcom(String path, String langCode, int viewId,
-			int surety, int charsetId, boolean includeImages) {
+	public SukuData exportGedcom(String db, String path, String langCode,
+			int viewId, int surety, int charsetId, boolean includeImages) {
 
 		this.viewId = viewId;
 		this.surety = surety;
@@ -97,7 +97,7 @@ public class ExportGedcomUtil {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
 			ZipOutputStream zip = new ZipOutputStream(bos);
-			String fileName = simple + "/" + simple + ".ged";
+			String fileName = simple + "/" + db + ".ged";
 
 			ZipEntry entry = new ZipEntry(fileName);
 
@@ -270,35 +270,68 @@ public class ExportGedcomUtil {
 				if (notice.getPlace() != null) {
 					nm.append("2 PLAC " + notice.getPlace() + "\r\n");
 				}
-				if (notice.getAddress() != null) {
-					nm.append(getNoteStructure(2, "ADDR", notice.getAddress())
-							+ "\r\n");
-					if (notice.getPostalCode() != null
-							|| notice.getPostOffice() != null) {
-						if (notice.getPostalCode() != null
-								&& notice.getPostOffice() != null) {
-							nm.append("3 CONT " + notice.getPostalCode() + " "
-									+ notice.getPostOffice() + "\r\n");
-						} else if (notice.getPostOffice() != null) {
-							nm.append("3 CONT " + notice.getPostOffice()
-									+ "\r\n");
+				if (notice.getNoteText() != null) {
+					nm
+							.append(getNoteStructure(2, "NOTE", notice
+									.getNoteText()));
+				}
+
+				if (notice.getAddress() != null
+						|| notice.getPostOffice() != null) {
+					if (notice.getAddress() != null) {
+						if (notice.getState() == null) {
+
+							nm.append(getNoteStructure(2, "ADDR", notice
+									.getAddress(), 1));
+							if (notice.getPostOffice() != null) {
+								if (notice.getPostalCode() != null
+										&& notice.getPostOffice() != null) {
+									nm.append("3 CONT "
+											+ notice.getPostalCode() + " "
+											+ notice.getPostOffice() + "\r\n");
+								} else {
+									nm.append("3 CONT "
+											+ notice.getPostOffice() + "\r\n");
+								}
+
+							}
 						} else {
-							nm.append("3 CONT " + notice.getPostalCode()
-									+ "\r\n");
+							nm.append(getNoteStructure(2, "ADDR", notice
+									.getAddress(), 1));
+							if (notice.getPostOffice() != null) {
+								nm.append("3 CONT " + notice.getPostOffice()
+										+ "\r\n");
+							}
+							if (notice.getPostalCode() != null) {
+								nm.append("3 CONT " + notice.getState() + " "
+										+ notice.getPostOffice() + "\r\n");
+							} else {
+								nm.append("3 CONT " + notice.getState()
+										+ "\r\n");
+							}
+
 						}
 
-					}
-					if (notice.getState() != null) {
-						nm.append("3 CONT " + notice.getState() + "\r\n");
 					}
 					if (notice.getCountry() != null) {
 						nm.append("3 CONT " + notice.getCountry() + "\r\n");
 					}
+				} else if (notice.getCountry() != null
+						|| notice.getState() != null) {
+					if (notice.getState() != null) {
+						nm.append("2 ADDR " + notice.getState() + "\r\n");
+						if (notice.getCountry() != null) {
+							nm.append("3 CONT " + notice.getCountry() + "\r\n");
+						}
+					} else {
+						nm.append("2 ADDR " + notice.getCountry() + "\r\n");
+					}
 				}
-
+				if (notice.getEmail() != null) {
+					nm.append("2 EMAIL " + notice.getEmail() + "\r\n");
+				}
 				if (notice.getSource() != null) {
-					nm.append(getNoteStructure(2, "SOUR", notice.getSource())
-							+ "\r\n");
+					nm.append(getNoteStructure(2, "SOUR", notice.getSource()));
 				}
 
 				sb.append(nm.toString());
@@ -338,6 +371,11 @@ public class ExportGedcomUtil {
 	}
 
 	private String getNoteStructure(int level, String tag, String text) {
+		return getNoteStructure(level, tag, text, 2);
+	}
+
+	private String getNoteStructure(int level, String tag, String text,
+			int emptyMax) {
 		Vector<String> ss = new Vector<String>();
 
 		int linelen = 73;
@@ -357,7 +395,7 @@ public class ExportGedcomUtil {
 				sb.append(" ");
 				break;
 			default:
-				if (emptyCount > 1) {
+				if (emptyCount >= emptyMax) {
 					if (sb.length() > 0) {
 						ss.add(sb.toString());
 						sb = new StringBuilder();
@@ -530,7 +568,6 @@ public class ExportGedcomUtil {
 			mi.addFams(mf.id);
 			mi = units.get(mama);
 			mi.addFams(mf.id);
-
 		}
 		rs.close();
 
@@ -623,13 +660,9 @@ public class ExportGedcomUtil {
 							fm.addChil(previd);
 							pi = units.get(previd);
 							pi.addFamc(fm.id);
-
 						}
-
 					}
-
 				}
-
 				p = new Vector<MinimumIndividual>();
 
 			}

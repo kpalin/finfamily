@@ -56,6 +56,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private JComboBox charsetList;
 	private JCheckBox includeImages;
 	private SukuSuretyField surety;
+	private String zipName = "nemo";
 	private String langCode = null;
 	private String langName = null;
 	private String[] langCodes = null;
@@ -84,11 +85,13 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	 * @param dbName
 	 * @throws SukuException
 	 */
-	public ExportGedcomDialog(Suku owner, String dbName) throws SukuException {
+	public ExportGedcomDialog(Suku owner, String dbName, String zipName)
+			throws SukuException {
 		super(owner, Resurses.getString("EXPORT"), true);
 		this.owner = owner;
 		runner = this;
 		this.dbName = dbName;
+		this.zipName = zipName;
 		setLayout(null);
 		int y = 20;
 
@@ -101,7 +104,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		lbl.setBounds(400, y, 160, 20);
 		y += 20;
 
-		fileName = new JTextField(dbName);
+		fileName = new JTextField(zipName);
 		fileName.setEditable(false);
 		getContentPane().add(fileName);
 		fileName.setBounds(30, y, 340, 20);
@@ -279,7 +282,8 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 				if (fileName.getText().length() > 0) {
 					Vector<String> v = new Vector<String>();
 					v.add("cmd=exportGedcom");
-					v.add("file=" + fileName.getText());
+					v.add("file=" + zipName);
+					v.add("db=" + dbName);
 					int listIdx = viewList.getSelectedIndex();
 
 					if (listIdx > 0) {
