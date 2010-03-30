@@ -744,7 +744,7 @@ public class ExportGedcomUtil {
 
 		sql = new StringBuilder();
 
-		sql.append("select a.pid,b.pid,b.tag from ");
+		sql.append("select a.pid,b.pid,b.tag,a.rid from ");
 		sql.append("relation as a inner join relation as b on a.rid=b.rid ");
 		sql.append("and a.tag='CHIL' and b.tag != 'CHIL' ");
 		if (viewId > 0) {
@@ -762,70 +762,18 @@ public class ExportGedcomUtil {
 		pst = con.prepareStatement(sql.toString());
 		Vector<MinimumIndividual> p = new Vector<MinimumIndividual>();
 		int previd = 0;
+		int rid = 0;
 		rs = pst.executeQuery();
 		while (rs.next()) {
 			int pare = rs.getInt(1);
 			int chil = rs.getInt(2);
 			String tag = rs.getString(3);
-
+			rid = rs.getInt(4);
 			if (chil != previd) {
 				//
 				// now let's find correct family
 				//
-				MinimumFamily fm;
-				boolean foundFam = false;
-				for (int i = 0; i < p.size() - 1; i++) {
-					for (int j = i + 1; j < p.size(); j++) {
-						MinimumIndividual pi = p.get(i);
-						MinimumIndividual pj = p.get(j);
-
-						int dada = pi.pid;
-						int mama = pj.pid;
-
-						ParentPair pp = new ParentPair(dada, mama);
-						fm = families.get(pp.toString());
-						if (fm == null) {
-							pp = new ParentPair(mama, dada);
-							fm = families.get(pp.toString());
-						}
-						if (fm != null) {
-
-							fm.addChil(previd);
-							pi = units.get(previd);
-							pi.addFamc(fm.id);
-
-							foundFam = true;
-							break;
-						}
-					}
-					if (foundFam)
-						break;
-				}
-				if (!foundFam && previd > 0) { // this means single parent
-					for (int i = 0; i < p.size(); i++) {
-						MinimumIndividual pi = p.get(i);
-						ParentPair pp;
-						if (pi.sex.equals("M")) {
-							pp = new ParentPair(pi.pid, 0);
-						} else {
-							pp = new ParentPair(0, pi.pid);
-						}
-						fm = families.get(pp.toString());
-						if (fm != null) {
-							fm.addChil(previd);
-						} else {
-							if (pi.sex.equals("M")) {
-								fm = new MinimumFamily(pi.pid, 0, 0);
-							} else {
-								fm = new MinimumFamily(0, pi.pid, 0);
-							}
-							families.put(pp.toString(), fm);
-							fm.addChil(previd);
-							pi = units.get(previd);
-							pi.addFamc(fm.id);
-						}
-					}
-				}
+				addChildToFamilies(p, previd, rid);
 				p = new Vector<MinimumIndividual>();
 
 			}
@@ -834,7 +782,72 @@ public class ExportGedcomUtil {
 			previd = chil;
 
 		}
+		if (previd > 0) { // add last child too
+			addChildToFamilies(p, previd, rid);
+		}
 
+	}
+
+	private void addChildToFamilies(Vector<MinimumIndividual> p, int childId,
+			int chilrid) {
+		MinimumFamily fm;
+		MinimumIndividual mini = new MinimumIndividual(0, "U", 0);
+		//
+		// first try to find family with mama and papa for child
+		//
+		for (int i = 0; i < p.size() - 1; i++) {
+			for (int j = i + 1; j < p.size(); j++) {
+				MinimumIndividual pi = p.get(i);
+				MinimumIndividual pj = p.get(j);
+
+				int dada = pi.pid;
+				int mama = pj.pid;
+				if (mama > 0 && dada > 0) {
+					ParentPair pp = new ParentPair(dada, mama);
+					fm = families.get(pp.toString());
+					if (fm == null) {
+						pp = new ParentPair(mama, dada);
+						fm = families.get(pp.toString());
+					}
+					if (fm != null) {
+
+						fm.addChil(childId, chilrid);
+						pi = units.get(childId);
+						pi.addFamc(fm.id);
+						p.set(i, mini);
+						p.set(j, mini);
+					}
+				}
+			}
+		}
+		if (childId > 0) { // Still let's find single parents
+			for (int i = 0; i < p.size(); i++) {
+				MinimumIndividual pi = p.get(i);
+				if (pi.pid > 0) {
+					ParentPair pp;
+					if (pi.sex.equals("M")) {
+						pp = new ParentPair(pi.pid, 0);
+					} else {
+						pp = new ParentPair(0, pi.pid);
+					}
+					fm = families.get(pp.toString());
+					if (fm != null) {
+						fm.addChil(childId, chilrid);
+					} else {
+						if (pi.sex.equals("M")) {
+							fm = new MinimumFamily(pi.pid, 0, 0);
+						} else {
+							fm = new MinimumFamily(0, pi.pid, 0);
+						}
+						families.put(pp.toString(), fm);
+						fm.addChil(childId, chilrid);
+						pi = units.get(childId);
+						pi.addFamc(fm.id);
+						p.set(i, mini);
+					}
+				}
+			}
+		}
 	}
 
 	private byte[] gedBytes(String text) {
@@ -998,6 +1011,7 @@ public class ExportGedcomUtil {
 		int rid = 0;
 		int id = 0;
 		Vector<Integer> chils = new Vector<Integer>();
+		Vector<Integer> chilrids = new Vector<Integer>();
 
 		MinimumFamily(int dad, int mom, int rid) {
 			this.dad = dad;
@@ -1027,8 +1041,9 @@ public class ExportGedcomUtil {
 			return mm.gid;
 		}
 
-		void addChil(int chi) {
+		void addChil(int chi, int rid) {
 			chils.add(chi);
+			chilrids.add(rid);
 		}
 
 		int getChild(int idx) {
