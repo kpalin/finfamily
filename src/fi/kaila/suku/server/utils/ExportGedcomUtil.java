@@ -478,43 +478,49 @@ public class ExportGedcomUtil {
 		RelationNotice notice = null;
 		for (int i = 0; i < relNotices.size(); i++) {
 			notice = relNotices.get(i);
-
-			for (int j = 0; j < asChild.length; j++) {
-				if (asChild[j] != 0) {
-					MinimumFamily mfam = famById.get(asChild[j]);
-					if (mfam.dad == notice.getRnid()
-							|| mfam.mom == notice.getRnid()) {
-						if (mfam.dad == notice.getRnid()) {
-							dadFam = mfam.id;
-						} else {
-							momFam = mfam.id;
-						}
-					}
-					relNotices.set(i, minimot);
-
-				}
-			}
-			if (dadFam != 0 || momFam != 0) {
-
-				for (int ii = i + 1; ii < relNotices.size(); ii++) {
-					RelationNotice nnnoo = relNotices.get(ii);
-
-					for (int jj = 0; jj < asChild.length; jj++) {
-						if (asChild[jj] != 0) {
-							MinimumFamily mfam = famById.get(asChild[jj]);
-							if (dadFam != 0) {
-								if (mfam.mom == nnnoo.getRnid()) {
-									momFam = mfam.id;
-								}
+			if (notice.getRnid() != 0) {
+				for (int j = 0; j < asChild.length; j++) {
+					if (asChild[j] != 0) {
+						MinimumFamily mfam = famById.get(asChild[j]);
+						if (mfam.dad == notice.getRnid()
+								|| mfam.mom == notice.getRnid()) {
+							if (mfam.dad == notice.getRnid()) {
+								dadFam = mfam.id;
+								relNotices.set(i, minimot);
 							} else {
-								if (mfam.mom == nnnoo.getRnid()) {
-									dadFam = mfam.id;
-								}
+								momFam = mfam.id;
+								relNotices.set(i, minimot);
 							}
-							relNotices.set(jj, minimot);
 						}
+
 					}
 				}
+				// if (dadFam != 0 || momFam != 0) {
+				//
+				// for (int ii = i + 1; ii < relNotices.size(); ii++) {
+				// RelationNotice nnnoo = relNotices.get(ii);
+				// if (nnnoo.getRnid() != 0) {
+				// for (int jj = 0; jj < asChild.length; jj++) {
+				// if (asChild[jj] != 0) {
+				// MinimumFamily mfam = famById
+				// .get(asChild[jj]);
+				// if (dadFam != 0) {
+				// if (mfam.mom == nnnoo.getRnid()) {
+				// momFam = mfam.id;
+				// relNotices.set(ii, minimot);
+				// }
+				// } else {
+				// if (mfam.mom == nnnoo.getRnid()) {
+				// dadFam = mfam.id;
+				// relNotices.set(ii, minimot);
+				// }
+				// }
+				//
+				// }
+				// }
+				// }
+				// }
+				// }
 			}
 
 			if (dadFam != 0 || momFam != 0) {
