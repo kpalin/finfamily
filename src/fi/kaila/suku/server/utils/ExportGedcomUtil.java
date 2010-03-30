@@ -24,6 +24,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
+import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
@@ -44,6 +45,7 @@ public class ExportGedcomUtil {
 
 	private LinkedHashMap<Integer, MinimumIndividual> units = null;
 	private LinkedHashMap<String, MinimumFamily> families = null;
+	private HashMap<Integer, MinimumFamily> famById = null;
 	private HashMap<Integer, Integer> childRids = null;
 	private Vector<MinimumImage> images = null;
 	private String zipPath = "nemo";
@@ -90,7 +92,10 @@ public class ExportGedcomUtil {
 
 		this.includeImages = includeImages;
 		dbName = db;
+		units = new LinkedHashMap<Integer, MinimumIndividual>();
 		images = new Vector<MinimumImage>();
+		families = new LinkedHashMap<String, MinimumFamily>();
+		famById = new HashMap<Integer, MinimumFamily>();
 		SukuData result = new SukuData();
 		if (path == null || path.lastIndexOf(".") < 1) {
 			result.resu = "output filename missing";
@@ -102,13 +107,13 @@ public class ExportGedcomUtil {
 			collectFamilies();
 			childRids = new HashMap<Integer, Integer>();
 
-			String sql = "select r.rid,n.tag,r.surety from relationnotice as n inner join relation  as r on n.rid=r.rid where r.tag='CHIL'";
+			String sql = "select r.pid,n.tag,r.tag,r.surety from relationnotice as n inner join relation  as r on n.rid=r.rid where r.tag in ('FATH','MOTH')";
 
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
 				int rid = rs.getInt(1);
-				childRids.put(new Integer(rid), new Integer(rid));
+				childRids.put(rid, rid);
 			}
 			rs.close();
 			stm.close();
@@ -214,7 +219,7 @@ public class ExportGedcomUtil {
 	}
 
 	private void writeIndi(ZipOutputStream zip, PersonLongData persLong)
-			throws IOException {
+			throws IOException, SQLException {
 		MinimumIndividual indi = units.get(persLong.getPid());
 		StringBuilder sb = new StringBuilder();
 		sb.append("0 @I" + indi.gid + "@ INDI\r\n");
@@ -421,9 +426,9 @@ public class ExportGedcomUtil {
 			}
 		}
 
-		Integer ado = childRids.get(new Integer(persLong.getPid()));
+		Integer ado = childRids.get(persLong.getPid());
 		if (ado != null) {
-			sb.append("1 ADOP \r\n");
+			sb.append(addAdoptionEvents(persLong.getPid()));
 		}
 
 		for (int i = 0; i < indi.fams.size(); i++) {
@@ -435,6 +440,112 @@ public class ExportGedcomUtil {
 
 		}
 		zip.write(gedBytes(sb.toString()));
+	}
+
+	private String addAdoptionEvents(int pid) throws SQLException {
+		StringBuilder sb = new StringBuilder();
+		String sql = "select p.pid as rpid,n.rid,n.surety,n.tag,n.relationtype,n.description,"
+				+ "n.dateprefix,n.fromdate,n.todate,n.place,n.notetext,n.sourcetext "
+				+ "from relationnotice as n "
+				+ "inner join relation as r on r.rid=n.rid and r.tag in ('MOTH','FATH') "
+				+ "inner join relation as p on r.rid=p.rid and p.tag ='CHIL' "
+				+ "where r.pid=?";
+
+		PreparedStatement pst = con.prepareStatement(sql);
+		pst.setInt(1, pid);
+		ResultSet rs = pst.executeQuery();
+		Vector<RelationNotice> relNotices = new Vector<RelationNotice>();
+
+		while (rs.next()) {
+			RelationNotice rnote = new RelationNotice(rs.getInt("rpid"), rs
+					.getInt("rid"), rs.getInt("surety"), rs.getString("tag"),
+					rs.getString("relationtype"), rs.getString("description"),
+					rs.getString("dateprefix"), rs.getString("fromdate"), rs
+							.getString("todate"), rs.getString("place"), rs
+							.getString("notetext"), rs.getString("sourcetext"),
+					null, null, null);
+			relNotices.add(rnote);
+		}
+		rs.close();
+		pst.close();
+		MinimumIndividual indi = units.get(pid);
+
+		Integer[] asChild = indi.famc.toArray(new Integer[0]);
+
+		int dadFam = 0;
+		int momFam = 0;
+		RelationNotice minimot = new RelationNotice("");
+		RelationNotice notice = null;
+		for (int i = 0; i < relNotices.size(); i++) {
+			notice = relNotices.get(i);
+
+			for (int j = 0; j < asChild.length; j++) {
+				if (asChild[j] != 0) {
+					MinimumFamily mfam = famById.get(asChild[j]);
+					if (mfam.dad == notice.getRnid()
+							|| mfam.mom == notice.getRnid()) {
+						if (mfam.dad == notice.getRnid()) {
+							dadFam = mfam.id;
+						} else {
+							momFam = mfam.id;
+						}
+					}
+					relNotices.set(i, minimot);
+
+				}
+			}
+			if (dadFam != 0 || momFam != 0) {
+
+				for (int ii = i + 1; ii < relNotices.size(); ii++) {
+					RelationNotice nnnoo = relNotices.get(ii);
+
+					for (int jj = 0; jj < asChild.length; jj++) {
+						if (asChild[jj] != 0) {
+							MinimumFamily mfam = famById.get(asChild[jj]);
+							if (dadFam != 0) {
+								if (mfam.mom == nnnoo.getRnid()) {
+									momFam = mfam.id;
+								}
+							} else {
+								if (mfam.mom == nnnoo.getRnid()) {
+									dadFam = mfam.id;
+								}
+							}
+							relNotices.set(jj, minimot);
+						}
+					}
+				}
+			}
+
+			if (dadFam != 0 || momFam != 0) {
+				int childFam = (dadFam != 0) ? dadFam : momFam;
+				sb.append("1 ADOP\r\n");
+				if (notice.getTag().equals("ADOP")) {
+					if (notice.getType() != null) {
+						sb.append("2 TYPE " + notice.getType() + "\r\n");
+					}
+				}
+				sb.append("2 FAMC @F" + childFam + "@\r\n");
+				if (dadFam == 0 || momFam == 0) {
+
+					if (dadFam != 0) {
+
+						sb.append("3 ADOP " + "FATH" + "\r\n");
+					} else {
+						sb.append("3 ADOP " + "MOTH" + "\r\n");
+					}
+
+				} else {
+					sb.append("3 ADOP " + "BOTH" + "\r\n");
+				}
+				dadFam = 0;
+				momFam = 0;
+
+			}
+		}
+
+		return sb.toString();
+
 	}
 
 	private int suretyToQuay(int surety) {
@@ -694,7 +805,7 @@ public class ExportGedcomUtil {
 	}
 
 	private void collectIndividuals() throws SQLException {
-		units = new LinkedHashMap<Integer, MinimumIndividual>();
+
 		String sql = null;
 		PreparedStatement pst;
 
@@ -723,7 +834,6 @@ public class ExportGedcomUtil {
 	}
 
 	private void collectFamilies() throws SQLException {
-		families = new LinkedHashMap<String, MinimumFamily>();
 
 		StringBuilder sql = new StringBuilder();
 		;
@@ -756,7 +866,7 @@ public class ExportGedcomUtil {
 
 			MinimumFamily mf = new MinimumFamily(dada, mama, rid);
 			families.put(pp.toString(), mf);
-
+			famById.put(mf.id, mf);
 			MinimumIndividual mi = units.get(dada);
 			mi.addFams(mf.id);
 			mi = units.get(mama);
@@ -869,6 +979,7 @@ public class ExportGedcomUtil {
 							fm = new MinimumFamily(0, pi.pid, 0);
 						}
 						families.put(pp.toString(), fm);
+						famById.put(fm.id, fm);
 						fm.addChil(childId);
 						pi = units.get(childId);
 						pi.addFamc(fm.id);
