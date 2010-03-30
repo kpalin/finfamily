@@ -346,9 +346,12 @@ public class Resurses {
 
 	/** recognized gedcom events/attributes */
 	public static String gedcomTags = "|OCCU|EDUC|TITL|RESI|PROP|FACT"
-			+ "|BIRT|CHR|DEAT|BURI|EVEN|RESI|EMIG|IMMI|CAST|DSCR|EDUC|IDNO"
-			+ "|NATI|NCHI|NMR|PROP|RELI|SSN|FACT|CREM|BAPM|BASM|BLES|BARM"
+			+ "|BIRT|CHR|DEAT|BURI|EVEN|EMIG|IMMI|CAST|DSCR|EDUC|IDNO"
+			+ "|NATI|NCHI|NMR|RELI|SSN|CREM|BAPM|BASM|BLES|BARM"
 			+ "|CHRA|CONF|FCOM|ORND|NATU|CENS|PROB|WILL|GRAD|RETI|";
+
+	public static String gedcomAttributes = "|OCCU|EDUC|TITL|PROP|FACT"
+			+ "|CAST|DSCR|EDUC|IDNO|NATI|RELI";
 
 	private Resurses() {
 		if (resources == null) {

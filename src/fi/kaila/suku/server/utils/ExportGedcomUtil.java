@@ -264,17 +264,25 @@ public class ExportGedcomUtil {
 								.getNoteText()));
 					}
 				} else {
-
+					String caus = null;
 					nm.append("1 " + gedTag);
+
 					if (notice.getDescription() != null) {
-						nm.append(" " + notice.getDescription() + "\r\n");
+						if (Resurses.gedcomAttributes.indexOf(gedTag) < 0) {
+							caus = notice.getDescription();
+							nm.append("\r\n");
+						} else {
+							nm.append(" " + notice.getDescription() + "\r\n");
+						}
 					} else {
 						nm.append("\r\n");
 					}
 					if (notice.getNoticeType() != null) {
 						nm.append("2 TYPE " + notice.getNoticeType() + "\r\n");
 					}
-
+					if (caus != null) {
+						nm.append("2 CAUS " + caus + "\r\n");
+					}
 					if (notice.getFromDate() != null) {
 						nm.append("2 DATE ");
 						if (notice.getDatePrefix() != null) {
