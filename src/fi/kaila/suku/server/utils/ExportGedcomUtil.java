@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class ExportGedcomUtil {
 
 	private LinkedHashMap<Integer, MinimumIndividual> units = null;
 	private LinkedHashMap<String, MinimumFamily> families = null;
-
+	private HashMap<Integer, Integer> childRids = null;
 	private Vector<MinimumImage> images = null;
 	private String zipPath = "nemo";
 	private String dbName = "me";
@@ -98,6 +100,18 @@ public class ExportGedcomUtil {
 			collectIndividuals();
 
 			collectFamilies();
+			childRids = new HashMap<Integer, Integer>();
+
+			String sql = "select r.rid,n.tag,r.surety from relationnotice as n inner join relation  as r on n.rid=r.rid where r.tag='CHIL'";
+
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				int rid = rs.getInt(1);
+				childRids.put(new Integer(rid), new Integer(rid));
+			}
+			rs.close();
+			stm.close();
 
 			zipPath = path.substring(0, path.lastIndexOf("."));
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -250,6 +264,7 @@ public class ExportGedcomUtil {
 		}
 
 		for (int i = 0; i < notices.length; i++) {
+
 			if (!notices[i].getTag().equals("NAME")
 					&& surety >= notices[i].getSurety()) {
 				UnitNotice notice = notices[i];
@@ -406,11 +421,18 @@ public class ExportGedcomUtil {
 			}
 		}
 
+		Integer ado = childRids.get(new Integer(persLong.getPid()));
+		if (ado != null) {
+			sb.append("1 ADOP \r\n");
+		}
+
 		for (int i = 0; i < indi.fams.size(); i++) {
 			sb.append("1 FAMS @F" + indi.fams.get(i) + "@\r\n");
+
 		}
 		for (int i = 0; i < indi.famc.size(); i++) {
 			sb.append("1 FAMC @F" + indi.famc.get(i) + "@\r\n");
+
 		}
 		zip.write(gedBytes(sb.toString()));
 	}
@@ -790,8 +812,15 @@ public class ExportGedcomUtil {
 
 	private void addChildToFamilies(Vector<MinimumIndividual> p, int childId,
 			int chilrid) {
+
 		MinimumFamily fm;
 		MinimumIndividual mini = new MinimumIndividual(0, "U", 0);
+
+		MinimumIndividual child = units.get(childId);
+		if (child == null)
+			return;
+		child.addChildRid(chilrid);
+
 		//
 		// first try to find family with mama and papa for child
 		//
@@ -811,7 +840,7 @@ public class ExportGedcomUtil {
 					}
 					if (fm != null) {
 
-						fm.addChil(childId, chilrid);
+						fm.addChil(childId);
 						pi = units.get(childId);
 						pi.addFamc(fm.id);
 						p.set(i, mini);
@@ -832,7 +861,7 @@ public class ExportGedcomUtil {
 					}
 					fm = families.get(pp.toString());
 					if (fm != null) {
-						fm.addChil(childId, chilrid);
+						fm.addChil(childId);
 					} else {
 						if (pi.sex.equals("M")) {
 							fm = new MinimumFamily(pi.pid, 0, 0);
@@ -840,7 +869,7 @@ public class ExportGedcomUtil {
 							fm = new MinimumFamily(0, pi.pid, 0);
 						}
 						families.put(pp.toString(), fm);
-						fm.addChil(childId, chilrid);
+						fm.addChil(childId);
 						pi = units.get(childId);
 						pi.addFamc(fm.id);
 						p.set(i, mini);
@@ -963,6 +992,7 @@ public class ExportGedcomUtil {
 		String sex = null;
 		Vector<Integer> fams = new Vector<Integer>();
 		Vector<Integer> famc = new Vector<Integer>();
+		Vector<Integer> chilrids = new Vector<Integer>();
 
 		MinimumIndividual(int pid, String sex, int gid) {
 
@@ -970,6 +1000,10 @@ public class ExportGedcomUtil {
 			this.gid = gid;
 			this.sex = sex;
 
+		}
+
+		void addChildRid(int rid) {
+			chilrids.add(rid);
 		}
 
 		void addFams(int id) {
@@ -1011,7 +1045,6 @@ public class ExportGedcomUtil {
 		int rid = 0;
 		int id = 0;
 		Vector<Integer> chils = new Vector<Integer>();
-		Vector<Integer> chilrids = new Vector<Integer>();
 
 		MinimumFamily(int dad, int mom, int rid) {
 			this.dad = dad;
@@ -1041,9 +1074,9 @@ public class ExportGedcomUtil {
 			return mm.gid;
 		}
 
-		void addChil(int chi, int rid) {
+		void addChil(int chi) {
 			chils.add(chi);
-			chilrids.add(rid);
+
 		}
 
 		int getChild(int idx) {
