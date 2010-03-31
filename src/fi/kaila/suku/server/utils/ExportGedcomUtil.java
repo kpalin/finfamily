@@ -22,6 +22,7 @@ import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.exports.ExportGedcomDialog;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.RelationNotice;
@@ -444,6 +445,7 @@ public class ExportGedcomUtil {
 
 	private String addAdoptionEvents(int pid) throws SQLException {
 		StringBuilder sb = new StringBuilder();
+		Vector<AdoptionElement> adops = new Vector<AdoptionElement>();
 		String sql = "select p.pid as rpid,n.rid,n.surety,n.tag,n.relationtype,n.description,"
 				+ "n.dateprefix,n.fromdate,n.todate,n.place,n.notetext,n.sourcetext "
 				+ "from relationnotice as n "
@@ -495,59 +497,69 @@ public class ExportGedcomUtil {
 
 					}
 				}
-				// if (dadFam != 0 || momFam != 0) {
-				//
-				// for (int ii = i + 1; ii < relNotices.size(); ii++) {
-				// RelationNotice nnnoo = relNotices.get(ii);
-				// if (nnnoo.getRnid() != 0) {
-				// for (int jj = 0; jj < asChild.length; jj++) {
-				// if (asChild[jj] != 0) {
-				// MinimumFamily mfam = famById
-				// .get(asChild[jj]);
-				// if (dadFam != 0) {
-				// if (mfam.mom == nnnoo.getRnid()) {
-				// momFam = mfam.id;
-				// relNotices.set(ii, minimot);
-				// }
-				// } else {
-				// if (mfam.mom == nnnoo.getRnid()) {
-				// dadFam = mfam.id;
-				// relNotices.set(ii, minimot);
-				// }
-				// }
-				//
-				// }
-				// }
-				// }
-				// }
-				// }
+
 			}
 
 			if (dadFam != 0 || momFam != 0) {
+				String who = null;
+				String fam = null;
+				String other = null;
 				int childFam = (dadFam != 0) ? dadFam : momFam;
-				sb.append("1 ADOP\r\n");
+				// sb.append("1 ADOP\r\n");
 				if (notice.getTag().equals("ADOP")) {
 					if (notice.getType() != null) {
-						sb.append("2 TYPE " + notice.getType() + "\r\n");
+						other = notice.getType();
+						// sb.append("2 TYPE " + notice.getType() + "\r\n");
 					}
 				}
-				sb.append("2 FAMC @F" + childFam + "@\r\n");
+				// sb.append("2 FAMC @F" + childFam + "@\r\n");
+				fam = "@F" + childFam + "@";
 				if (dadFam == 0 || momFam == 0) {
 
 					if (dadFam != 0) {
-
-						sb.append("3 ADOP " + "FATH" + "\r\n");
+						who = "FATH";
+						// sb.append("3 ADOP " + "FATH" + "\r\n");
 					} else {
-						sb.append("3 ADOP " + "MOTH" + "\r\n");
+						who = "MOTH";
+						// sb.append("3 ADOP " + "MOTH" + "\r\n");
 					}
 
-				} else {
-					sb.append("3 ADOP " + "BOTH" + "\r\n");
+					// } else {
+					// sb.append("3 ADOP " + "BOTH" + "\r\n");
 				}
+				AdoptionElement adop = new AdoptionElement(who, fam, other);
+				adops.add(adop);
 				dadFam = 0;
 				momFam = 0;
 
 			}
+		}
+
+		for (int i = 0; i < adops.size(); i++) {
+			AdoptionElement adop = adops.get(i);
+			if (adop.who != null) {
+
+				for (int j = i + 1; j < adops.size(); j++) {
+					AdoptionElement adop2 = adops.get(j);
+					if (adop2.who != null) {
+						if (adop2.fam.equals(adop.fam)
+								&& Utils.nv(adop2.other).equals(
+										Utils.nv(adop.other))) {
+							adop.who = "BOTH";
+							adop2.who = null;
+						}
+					}
+				}
+
+				sb.append("1 ADOP\r\n");
+				if (adop.other != null) {
+					sb.append("2 TYPE " + adop.other + "\r\n");
+				}
+				sb.append("2 FAMC " + adop.fam + "\r\n");
+				sb.append("3 ADOP " + adop.who + "\r\n");
+
+			}
+
 		}
 
 		return sb.toString();
@@ -1223,6 +1235,19 @@ public class ExportGedcomUtil {
 			StringBuilder sb = new StringBuilder();
 			sb.append(dbName + "_files/" + counter + "_" + imgName);
 			return sb.toString();
+		}
+
+	}
+
+	class AdoptionElement {
+		String who = null;
+		String fam = null;
+		String other = null;
+
+		AdoptionElement(String who, String fam, String other) {
+			this.who = who;
+			this.fam = fam;
+			this.other = other;
 		}
 
 	}
