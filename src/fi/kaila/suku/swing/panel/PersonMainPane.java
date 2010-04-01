@@ -719,8 +719,21 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		try {
 			if (cmd.equals(Resurses.CLOSE)) {
 				try {
-					boolean hasChanged = hasPersonChanged();
-					if (hasChanged) {
+					if (persLong == null)
+						return;
+					SukuData chnged = null;
+					try {
+						chnged = updatePersonStructure();
+						if (chnged == null)
+							return;
+					} catch (SukuDateException ee) {
+						return;
+					}
+
+					// return resp.resu == null ? false : true;
+
+					// boolean hasChanged = hasPersonChanged();
+					if (chnged.resu != null) {
 
 						int askresu = JOptionPane.showConfirmDialog(this,
 								Resurses.getString("ASK_SAVE_PERSON"), Resurses
@@ -728,9 +741,12 @@ public class PersonMainPane extends JPanel implements ActionListener {
 								JOptionPane.YES_NO_OPTION,
 								JOptionPane.QUESTION_MESSAGE);
 						if (askresu == JOptionPane.YES_OPTION) {
-							SukuData resp = updatePerson();
+							SukuData resp = updatePerson(false);
 							logger.fine("Close response:" + resp.resu);
 						}
+					} else if (chnged.resuCount > 0) {
+						SukuData resp = updatePerson(true);
+						logger.fine("Order response:" + resp.resu);
 					}
 
 					personView.closeMainPane(false);
@@ -753,7 +769,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			} else if (cmd.equals(Resurses.UPDATE)) {
 				try {
 
-					SukuData resp = updatePerson();
+					SukuData resp = updatePerson(false);
 					personView.closeMainPane(true);
 					logger.fine("Close response:" + resp.resu);
 
@@ -788,27 +804,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		}
 	}
 
-	boolean hasPersonChanged() {
-		if (persLong == null)
-			return false;
-		SukuData resp;
-		try {
-			resp = updatePersonStructure();
-		} catch (SukuDateException e) {
-			return true;
-		}
-		if (resp == null)
-			return false;
-		return resp.resu == null ? false : true;
-	}
-
 	/**
 	 * Update person data structure from pane fields and check if it has changed
 	 * 
 	 * @return true is person data has changed
 	 * @throws SukuDateException
 	 */
-	private SukuData updatePersonStructure() throws SukuDateException {
+	SukuData updatePersonStructure() throws SukuDateException {
 		if (persLong == null)
 			return null;
 		SukuData resp = null;
@@ -817,7 +819,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		int tabCount = personView.getTabCount();
 
 		boolean foundModification = false;
-
+		boolean orderModification = false;
 		String newSex = sexes[sex.getSelectedIndex()];
 		persLong.setSex(newSex);
 
@@ -847,7 +849,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 				if (persLong.getNotices()[i - noticeFirst].getPnid() != npane.notice
 						.getPnid()) {
 					persLong.setOrderModified();
-					foundModification = true;
+					orderModification = true;
 					break;
 				}
 			}
@@ -935,7 +937,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		}
 
 		if (reorderNotices(un, wn)) {
-			foundModification = true;
+			orderModification = true;
 		}
 		if (persLong.getPid() == 0) {
 			foundModification = false;
@@ -955,16 +957,18 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		}
 		req.persLong.setNotices(un.toArray(new UnitNotice[0]));
 		req.resu = foundModification ? "modified" : null;
-
+		if (orderModification) {
+			req.resuCount = 1; // this returns >0 if order has been modified
+		}
 		return req;
 	}
 
-	SukuData updatePerson() throws SukuDateException {
+	SukuData updatePerson(boolean force) throws SukuDateException {
 
 		SukuData req = updatePersonStructure();
 		SukuData resp = null;
 
-		if (req != null && req.resu != null) {
+		if (req != null && (req.resu != null || force)) {
 			// req.persLong = persLong;
 			//
 			// req.persLong.setNotices(un.toArray(new UnitNotice[0]));

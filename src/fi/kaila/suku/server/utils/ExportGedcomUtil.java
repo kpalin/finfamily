@@ -376,6 +376,15 @@ public class ExportGedcomUtil {
 					if (notice.getEmail() != null) {
 						nm.append("2 EMAIL " + notice.getEmail() + "\r\n");
 					}
+					if (notice.getVillage() != null) {
+						nm.append("2 _VILLAGE " + notice.getVillage() + "\r\n");
+					}
+					if (notice.getFarm() != null) {
+						nm.append("2 _FARM " + notice.getFarm() + "\r\n");
+					}
+					if (notice.getCroft() != null) {
+						nm.append("2 _CROFT " + notice.getCroft() + "\r\n");
+					}
 
 					if (includeImages) {
 						if (notice.getMediaFilename() != null

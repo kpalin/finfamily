@@ -306,7 +306,17 @@ public class PersonView extends JPanel implements ChangeListener {
 						main.updateName();
 						main.updateRest();
 					}
-					if (main.hasPersonChanged()) {
+
+					SukuData chnged = null;
+					try {
+						chnged = main.updatePersonStructure();
+						if (chnged == null)
+							return;
+					} catch (SukuDateException ee) {
+						return;
+					}
+
+					if (chnged.resu != null) {
 						if (askChanges) {
 							int askresu = JOptionPane.showConfirmDialog(this,
 									Resurses.getString("ASK_SAVE_PERSON"),
@@ -314,12 +324,15 @@ public class PersonView extends JPanel implements ChangeListener {
 									JOptionPane.YES_NO_OPTION,
 									JOptionPane.QUESTION_MESSAGE);
 							if (askresu == JOptionPane.YES_OPTION) {
-								SukuData resp = main.updatePerson();
+								SukuData resp = main.updatePerson(false);
 								logger.fine("Close response:" + resp.resu);
 							}
 						} else {
-							main.updatePerson();
+							main.updatePerson(false);
 						}
+					} else if (chnged.resuCount > 0) {
+						SukuData resp = main.updatePerson(true);
+						logger.fine("Reorder response:" + resp.resu);
 					}
 
 				} catch (SukuDateException e1) {
