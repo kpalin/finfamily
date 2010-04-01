@@ -1352,11 +1352,10 @@ public class RelativesPane extends JPanel implements ActionListener,
 		else if (e.getSource() == noticeTab && activeRelation != null) {
 			int ii = noticeTab.getSelectedRow();
 			// System.out.println("Avataan tietojakso " + ii);
-			// boolean bb =
-			openRelaNotice(ii);
-			// if (bb) {
-			// activeRelation.setToBeUpdated();
-			// }
+			boolean bb = openRelaNotice(ii);
+			if (bb) {
+				activeRelation.setToBeUpdated(true);
+			}
 
 		}
 		// System.out.println("mc:" + e);

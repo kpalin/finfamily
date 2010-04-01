@@ -38,7 +38,7 @@ import fi.kaila.suku.util.pojo.RelationLanguage;
 import fi.kaila.suku.util.pojo.RelationNotice;
 
 /**
- * relation dialog shows and updates details of a relaition
+ * relation dialog shows and updates details of a relation
  * 
  * @author Kalle
  * 
@@ -85,12 +85,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	private static int ytype = 10;
 	private static int ydesc = 34;
 	private static int ydate = 58;
-	// private static int yplace = 80;
-	//
-	// private static int ynote = 102;
-	// private static int ysource = 164;
-	// private static int yprivate = 226;
-	// private static int langselect = 290;
+
 	private static int ytypeLang = 24;
 	private static int ydescLang = 48;
 	private static int yplaceLang = 72;
@@ -106,6 +101,8 @@ public class RelationDialog extends JDialog implements ActionListener,
 	// elements are non-volatile. To get volatile array elements, you will need
 	// to use one of the atomic array classes in java.util.concurrent (provided
 	// in Java 5.0).
+
+	// Jos tulet tänne taas niin selitä hieman
 	volatile JRadioButton[] langxx;
 
 	SukuSuretyField surety;
@@ -193,7 +190,6 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 		noteLbl = new JLabel(Resurses.getString("DATA_NOTE"));
 		add(noteLbl);
-		// lbl.setBounds(10, ynote, 80, 20);
 
 		noteText = new JTextArea();
 		noteText.setLineWrap(true);
@@ -242,13 +238,12 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 		placeLangLbl = new JLabel(Resurses.getString("DATA_PLACE"));
 		langPanel.add(placeLangLbl);
-		// placeLangLbl.setBounds(5, yplaceLang, 80, 20);
+
 		placeLang = new JTextField();
 		langPanel.add(placeLang);
 
 		noteLangLbl = new JLabel(Resurses.getString("DATA_NOTE"));
 		langPanel.add(noteLangLbl);
-		// noteLangLbl.setBounds(5, ynoteLang, 80, 20);
 
 		noteTextLang = new JTextArea();
 		noteTextLang.setLineWrap(true);
@@ -323,7 +318,8 @@ public class RelationDialog extends JDialog implements ActionListener,
 		}
 		relationType.setText(rela.getType());
 		description.setText(rela.getDescription());
-		if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")) {
+		if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")
+				|| rela.getTag().equals("ADOP")) {
 			date.setVisible(true);
 			place.setVisible(true);
 			scrollNoteLang.setVisible(true);
@@ -370,10 +366,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 			showLanguage(Suku.getRepoLanguage(firstIdx, true));
 		} else {
 			langPanel.setVisible(false);
-			// relationTypeLang.setVisible(false);
-			// descriptionLang.setVisible(false);
-			// placeLang.setVisible(false);
-			// scrollNoteLang.setVisible(false);
+
 		}
 
 	}
@@ -505,7 +498,8 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 			this.placeLang.setText(rl.getPlace());
 			this.noteTextLang.setText(rl.getNoteText());
-			if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")) {
+			if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")
+					|| rela.getTag().equals("ADOP")) {
 				placeLang.setVisible(true);
 				scrollNoteLang.setVisible(true);
 			} else {
@@ -588,7 +582,8 @@ public class RelationDialog extends JDialog implements ActionListener,
 		relationType.setBounds(80, ytype, leftWidth, 20);
 		description.setBounds(80, ydesc, leftWidth, 20);
 		int ly = ydate;
-		if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")) {
+		if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")
+				|| rela.getTag().equals("ADOP")) {
 
 			date.setBounds(80, ly, 360, 20);
 			dateLbl.setBounds(10, ly, 70, 20);
