@@ -306,22 +306,9 @@ public class ExportGedcomUtil {
 					}
 					if (notice.getFromDate() != null) {
 						nm.append("2 DATE ");
-						if (notice.getDatePrefix() != null) {
-							nm.append(notice.getDatePrefix() + " ");
-						}
-						nm.append(gedDate(notice.getFromDate()));
-						if (notice.getDatePrefix() != null
-								&& notice.getToDate() != null) {
-							if (notice.getDatePrefix().equals("BET")) {
-								nm.append(" AND ");
-								nm.append(gedDate(notice.getToDate()));
-							} else if (notice.getDatePrefix().equals("FROM")) {
-								nm.append(" TO ");
-								nm.append(gedDate(notice.getToDate()));
-							}
-						}
+						nm.append(toFullDate(notice.getDatePrefix(), notice
+								.getFromDate(), notice.getToDate()));
 						nm.append("\r\n");
-
 					}
 					if (notice.getPlace() != null) {
 						nm.append("2 PLAC " + notice.getPlace() + "\r\n");
@@ -443,6 +430,27 @@ public class ExportGedcomUtil {
 		zip.write(gedBytes(sb.toString()));
 	}
 
+	private String toFullDate(String prefix, String fromdate, String todate) {
+		StringBuilder nm = new StringBuilder();
+		if (prefix != null) {
+			nm.append(prefix + " ");
+		}
+		if (fromdate != null) {
+			nm.append(gedDate(fromdate));
+		}
+		if (prefix != null && todate != null) {
+			if (prefix.equals("BET")) {
+				nm.append(" AND ");
+				nm.append(gedDate(todate));
+			} else if (prefix.equals("FROM")) {
+				nm.append(" TO ");
+				nm.append(gedDate(todate));
+			}
+		}
+		return nm.toString();
+
+	}
+
 	private String addAdoptionEvents(int pid) throws SQLException {
 		StringBuilder sb = new StringBuilder();
 		Vector<AdoptionElement> adops = new Vector<AdoptionElement>();
@@ -494,10 +502,8 @@ public class ExportGedcomUtil {
 								relNotices.set(i, minimot);
 							}
 						}
-
 					}
 				}
-
 			}
 
 			if (dadFam != 0 || momFam != 0) {
@@ -505,27 +511,63 @@ public class ExportGedcomUtil {
 				String fam = null;
 				String other = null;
 				int childFam = (dadFam != 0) ? dadFam : momFam;
-				// sb.append("1 ADOP\r\n");
+
 				if (notice.getTag().equals("ADOP")) {
+					StringBuilder adb = new StringBuilder();
+
 					if (notice.getType() != null) {
-						other = notice.getType();
-						// sb.append("2 TYPE " + notice.getType() + "\r\n");
+						adb.append("2 TYPE " + notice.getType() + "\r\n");
+
+					}
+					if (notice.getFromDate() != null) {
+						sb.append(toFullDate(notice.getDatePrefix(), notice
+								.getFromDate(), notice.getToDate()));
+					}
+					if (notice.getPlace() != null) {
+						adb.append("2 PLAC " + notice.getPlace() + "\r\n");
+					}
+					if (notice.getDescription() != null) {
+						adb
+								.append("2 CAUS " + notice.getDescription()
+										+ "\r\n");
+					}
+					if (notice.getNoteText() != null) {
+						adb.append(getNoteStructure(2, "NOTE", notice
+								.getNoteText())
+								+ "\r\n");
+					}
+					if (notice.getSource() != null) {
+						adb.append(getNoteStructure(2, "SOUR", notice
+								.getSource()));
+						if (notice.getSurety() < 100) {
+
+							adb
+									.append("3 QUAY "
+											+ suretyToQuay(notice.getSurety())
+											+ "\r\n");
+						}
+					} else if (notice.getSurety() < 100) {
+						adb.append("2 SOUR\r\n");
+						adb.append("3 QUAY " + suretyToQuay(notice.getSurety())
+								+ "\r\n");
+
+					}
+					if (adb.length() > 0) {
+						other = adb.toString();
 					}
 				}
-				// sb.append("2 FAMC @F" + childFam + "@\r\n");
+
 				fam = "@F" + childFam + "@";
 				if (dadFam == 0 || momFam == 0) {
 
 					if (dadFam != 0) {
 						who = "FATH";
-						// sb.append("3 ADOP " + "FATH" + "\r\n");
+
 					} else {
 						who = "MOTH";
-						// sb.append("3 ADOP " + "MOTH" + "\r\n");
+
 					}
 
-					// } else {
-					// sb.append("3 ADOP " + "BOTH" + "\r\n");
 				}
 				AdoptionElement adop = new AdoptionElement(who, fam, other);
 				adops.add(adop);
@@ -553,7 +595,7 @@ public class ExportGedcomUtil {
 
 				sb.append("1 ADOP\r\n");
 				if (adop.other != null) {
-					sb.append("2 TYPE " + adop.other + "\r\n");
+					sb.append(adop.other);
 				}
 				sb.append("2 FAMC " + adop.fam + "\r\n");
 				sb.append("3 ADOP " + adop.who + "\r\n");
@@ -740,20 +782,7 @@ public class ExportGedcomUtil {
 			}
 			if (fromdate != null) {
 				sb.append("2 DATE ");
-				if (pre != null) {
-					sb.append(pre + " ");
-				}
-				sb.append(gedDate(fromdate));
-				if (todate != null && pre != null) {
-					if (pre.equals("BET")) {
-						sb.append("AND ");
-
-					}
-					if (pre.equals("FROM")) {
-						sb.append("TO ");
-					}
-					sb.append(gedDate(todate));
-				}
+				sb.append(toFullDate(pre, fromdate, todate));
 				sb.append("\r\n");
 
 			}
@@ -786,10 +815,8 @@ public class ExportGedcomUtil {
 		StringBuilder sb = new StringBuilder();
 		sb.append("0 HEAD\r\n");
 		sb.append("1 SOUR FinFamily\r\n");
-		sb
-				.append("2 VERS " + AntVersion.antVersion
-						+ " UNDER CONSTRUCTION\r\n");
-		sb.append("2 NAME FinFamily\r\n");
+		sb.append("2 VERS " + AntVersion.antVersion + "\r\n");
+		sb.append("2 NAME Kaarle Kaila\r\n");
 		sb.append("2 CORP KK-Software\r\n");
 		sb.append("3 ADDR http://www.sukuohjelmisto.fi\r\n");
 		sb.append("1 SUBM @U1@\r\n");
@@ -906,7 +933,7 @@ public class ExportGedcomUtil {
 		if (surety != 100) {
 			sql.append("and a.surety >= " + surety + " ");
 		}
-		// TODO adoptions etc is also needed
+
 		sql.append("order by b.pid,a.relationrow ");
 
 		pst = con.prepareStatement(sql.toString());
@@ -917,7 +944,7 @@ public class ExportGedcomUtil {
 		while (rs.next()) {
 			int pare = rs.getInt(1);
 			int chil = rs.getInt(2);
-			String tag = rs.getString(3);
+
 			rid = rs.getInt(4);
 			if (chil != previd) {
 				//
