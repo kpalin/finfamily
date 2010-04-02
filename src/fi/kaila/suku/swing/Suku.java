@@ -1720,7 +1720,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		boolean isOpened;
 
-		isOpened = kontroller.openLocalFile("ged");
+		isOpened = kontroller.openLocalFile("ged;zip");
 		String dbname = kontroller.getFileName();
 		logger.finest("Opened GEDCOM FILE status " + isOpened);
 		if (isOpened) {

@@ -2,6 +2,10 @@ package fi.kaila.suku.server.utils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -17,6 +21,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.swing.Suku;
@@ -68,6 +74,9 @@ public class ImportGedcomUtil {
 	LinkedHashMap<String, GedcomFams> gedFams = null;
 	LinkedHashMap<String, GedcomLine> gedAdopt = null;
 	HashMap<String, String> texts = null;
+	LinkedHashMap<String, String> images = null;
+	boolean isZipFile = false;
+	String baseFolder = "";
 
 	/**
 	 * @param vvTexts
@@ -82,6 +91,7 @@ public class ImportGedcomUtil {
 		gedPid = new LinkedHashMap<String, GedcomPidEle>();
 		gedFams = new LinkedHashMap<String, GedcomFams>();
 		gedAdopt = new LinkedHashMap<String, GedcomLine>();
+		images = new LinkedHashMap<String, String>();
 		seenTrlr = false;
 		double indiCount = 0;
 		double famCount = 0;
@@ -112,9 +122,33 @@ public class ImportGedcomUtil {
 				return resp;
 			}
 
-			BufferedInputStream bis = new BufferedInputStream(Suku.kontroller
-					.getInputStream());
+			String fileName = Suku.kontroller.getFileName();
+			System.out.println("FromFile:" + fileName);
+			ZipInputStream zipIn = null;
+			ZipEntry zipEntry = null;
+			String entryName = null;
+			BufferedInputStream bis;
+			if (fileName.toLowerCase().endsWith(".zip")) {
+				isZipFile = true;
+				// this is a zip-file. let's first find the gedcom file from
+				// there
 
+				zipIn = new ZipInputStream(Suku.kontroller.getInputStream());
+				bis = new BufferedInputStream(zipIn);
+				while (true) {
+					zipEntry = zipIn.getNextEntry();
+					entryName = zipEntry.getName();
+					if (entryName.toLowerCase().endsWith(".ged")) {
+						int li = entryName.replace('\\', '/').lastIndexOf('/');
+						if (li > 0) {
+							baseFolder = entryName.substring(0, li + 1);
+						}
+						break;
+					}
+				}
+			} else {
+				bis = new BufferedInputStream(Suku.kontroller.getInputStream());
+			}
 			long dataLen = Suku.kontroller.getFileLength();
 			double dLen = dataLen;
 			int data = 0;
@@ -286,6 +320,43 @@ public class ImportGedcomUtil {
 
 			String key = record.getKey();
 			gedMap.put(key, record);
+
+			if (isZipFile) {
+				zipIn.closeEntry();
+				int dd = 0;
+				ZipEntry entry = null;
+				while ((entry = zipIn.getNextEntry()) != null) {
+
+					String imgName = entry.getName();
+					int ldot = imgName.lastIndexOf(".");
+					String imgSuffix = null;
+					if (ldot > imgName.length() - 6) {
+						imgSuffix = imgName.substring(ldot - 1);
+					}
+
+					if (baseFolder.length() > 0) {
+						if (imgName.substring(0, baseFolder.length())
+								.equalsIgnoreCase(baseFolder)) {
+							imgName = imgName.substring(baseFolder.length());
+						}
+					}
+
+					File tf = File.createTempFile("finFam", imgSuffix);
+					FileOutputStream fos = new FileOutputStream(tf);
+					while ((dd = zipIn.read()) >= 0) {
+						fos.write(dd);
+					}
+					tf.deleteOnExit();
+					fos.close();
+
+					images.put(imgName, tf.getPath());
+					zipIn.closeEntry();
+
+				}
+				zipIn.close();
+
+			}
+
 			logger.info("Starting to do INDI");
 			// consumeGedcomRecord(record);
 			Set<Map.Entry<String, GedcomLine>> lineSet = gedMap.entrySet();
@@ -335,6 +406,22 @@ public class ImportGedcomUtil {
 			// this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
 			// consumeFams();
 			// resp.generalArray = recs.toArray(new String[0]);
+
+			Set<Map.Entry<String, String>> imgSet = images.entrySet();
+			Iterator<Map.Entry<String, String>> iti = imgSet.iterator();
+
+			while (iti.hasNext()) {
+				Map.Entry<String, String> entryi = (Map.Entry<String, String>) iti
+						.next();
+				String fn = entryi.getKey();
+				String fv = entryi.getValue();
+				unknownLine.add("Image missing: " + fn + "/" + fv + "\r\n");
+			}
+
+			// for (int i = 0; i < images.size(); i++) {
+			// unknownLine
+			// .add("Image missing: " + images.get(i) + "\r\n");
+			// }
 
 			resp.generalArray = unknownLine.toArray(new String[0]);
 			bis.close();
@@ -632,6 +719,8 @@ public class ImportGedcomUtil {
 
 					if (detail.tag.equals("TYPE")) {
 						rn.setType(detail.lineValue);
+					} else if (detail.tag.equals("CAUS")) {
+						rn.setDescription(detail.lineValue);
 					} else if (detail.tag.equals("NOTE")) {
 						rn.setNoteText(detail.lineValue);
 					} else if (detail.tag.equals("PLAC")) {
@@ -644,7 +733,8 @@ public class ImportGedcomUtil {
 							rn.setDatePrefix(dparts[0]);
 							rn.setFromDate(dparts[1]);
 							rn.setToDate(dparts[2]);
-							rn.setDescription(dparts[3]);
+							rn.setDescription(Utils.nv(rn.getDescription())
+									+ dparts[3]);
 						}
 
 					} else {
@@ -990,6 +1080,8 @@ public class ImportGedcomUtil {
 								notice.setDescription(notice.getDescription()
 										+ " " + detail.lineValue);
 							}
+						} else if (detail.tag.equals("TYPE")) {
+							notice.setNoticeType(detail.lineValue);
 						} else {
 							unknownLine.add(detail.toString());
 						}
@@ -1059,6 +1151,12 @@ public class ImportGedcomUtil {
 						extractAddressData(notice, detail);
 					} else if (detail.tag.equals("EMAIL")) {
 						notice.setEmail(detail.lineValue);
+					} else if (detail.tag.equals("_VILLAGE")) {
+						notice.setVillage(detail.lineValue);
+					} else if (detail.tag.equals("_FARM")) {
+						notice.setFarm(detail.lineValue);
+					} else if (detail.tag.equals("_CROFT")) {
+						notice.setCroft(detail.lineValue);
 					} else if (detail.tag.equals("PHON")) {
 						notice
 								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
@@ -1240,9 +1338,33 @@ public class ImportGedcomUtil {
 		for (int k = 0; k < detail.lines.size(); k++) {
 			GedcomLine item = detail.lines.get(k);
 
-			if (item.tag.equals("FILE")) {
+			if (item.tag.equals("FILE") && item.lineValue != null) {
+				InputStream ins = null;
+				String mediaFileName = null;
+				int ldir = item.lineValue.replace('\\', '/').lastIndexOf('/');
+				if (ldir > 0) {
+					mediaFileName = item.lineValue.substring(ldir + 1);
+				} else {
+					mediaFileName = item.lineValue;
+				}
 
-				InputStream ins = Suku.kontroller.openFile(item.lineValue);
+				if (this.isZipFile) {
+					String tempFile = images.get(item.lineValue);
+					if (tempFile != null) {
+
+						try {
+							ins = new FileInputStream(tempFile);
+						} catch (FileNotFoundException e) {
+							ins = null;
+							e.printStackTrace();
+						}
+						if (ins != null) {
+							images.remove(item.lineValue);
+						}
+					}
+				} else {
+					ins = Suku.kontroller.openFile(item.lineValue);
+				}
 				if (ins != null) {
 					BufferedInputStream bstr = null;
 					// System.out.println("OPEN: " +
@@ -1289,6 +1411,19 @@ public class ImportGedcomUtil {
 				} else {
 					unknownLine.add(item.toString());
 				}
+
+				// else {
+				//
+				// if (item.lineValue != null) {
+				//
+				// notice.setMediaFilename(item.lineValue);
+				// // MinimumImage image = new MinimumImage(item.lineValue,
+				// // null);
+				// // images.add(image);
+				// } else {
+				// unknownLine.add(item.toString());
+				// }
+				// }
 				// try {
 				// int luettu = bstr.read(buffer);
 				// if (luettu == filesize) {
