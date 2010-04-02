@@ -209,7 +209,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mImportHiski;
 	private JMenu mHelp;
 	private JMenuItem mAbout;
-	private JMenuItem mSwUpdate;;
 	private JToolBar toolbar;
 
 	private JButton tQueryButton;
@@ -535,14 +534,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		this.mHelp = new JMenu(Resurses.getString(Resurses.HELP));
 		this.menubar.add(this.mHelp);
-		this.mSwUpdate = new JMenuItem(Resurses.getString(Resurses.SW_UPDATE));
-		this.mHelp.add(this.mSwUpdate);
-		this.mSwUpdate.setActionCommand(Resurses.SW_UPDATE);
-		this.mSwUpdate.addActionListener(this);
+		JMenuItem swUpdate = new JMenuItem(Resurses
+				.getString(Resurses.SW_UPDATE));
+		this.mHelp.add(swUpdate);
+		swUpdate.setActionCommand(Resurses.SW_UPDATE);
+		swUpdate.addActionListener(this);
 		JMenuItem lic = new JMenuItem(Resurses.getString(Resurses.LICENSE));
 		this.mHelp.add(lic);
 		lic.setActionCommand(Resurses.LICENSE);
 		lic.addActionListener(this);
+		JMenuItem wiki = new JMenuItem(Resurses.getString(Resurses.WIKI));
+		this.mHelp.add(wiki);
+		wiki.setActionCommand(Resurses.WIKI);
+		wiki.addActionListener(this);
 		this.mHelp.addSeparator();
 		this.mAbout = new JMenuItem(Resurses.getString(Resurses.ABOUT));
 		this.mHelp.add(this.mAbout);
@@ -1248,6 +1252,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 			if (cmd.equals(Resurses.LICENSE)) {
 				String updateSite = "http://en.wikipedia.org/wiki/BSD_licenses";
+				Utils.openExternalFile(updateSite);
+				return;
+			}
+			if (cmd.equals(Resurses.WIKI)) {
+				String updateSite = "http://www.sukuohjelmisto.fi";
 				Utils.openExternalFile(updateSite);
 				return;
 			}

@@ -51,10 +51,9 @@ public class AboutDialog extends JDialog implements ActionListener {
 		String aux = "Java Version: " + System.getProperty("java.version")
 				+ " from " + System.getProperty("java.vendor");
 		logger.info(aux);
-
-		about.append("- " + aux);
-		about.append("\n");
-
+		about.append("- " + aux + "\n");
+		about.append("- os.name: "
+				+ System.getProperties().getProperty("os.name") + "\n");
 		aux = Resurses.getString(Resurses.ABOUT_SUKU_VERSION) + " = "
 				+ AntVersion.antVersion;
 		logger.info(aux);

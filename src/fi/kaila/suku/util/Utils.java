@@ -619,7 +619,7 @@ public class Utils {
 		try {
 
 			String os = System.getProperties().getProperty("os.name");
-			System.out.println("OS:" + os);
+			// System.out.println("OS:" + os);
 			if (os.toLowerCase().indexOf("windows") >= 0) {
 
 				String[] cmds = { "rundll32", "url.dll,FileProtocolHandler",

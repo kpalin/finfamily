@@ -333,6 +333,8 @@ public class Resurses {
 	/** */
 	public static final String EXPORT_GEDCOM = "EXPORT_GEDCOM";
 
+	public static final String WIKI = "WIKI";
+
 	private static Resurses myself = null;
 	private static ExcelBundle resources = null;
 
