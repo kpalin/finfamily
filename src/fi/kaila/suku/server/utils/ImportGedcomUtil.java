@@ -397,8 +397,9 @@ public class ImportGedcomUtil {
 				Map.Entry<String, String> entryi = (Map.Entry<String, String>) iti
 						.next();
 				String fn = entryi.getKey();
-				String fv = entryi.getValue();
-				unknownLine.add("Image missing: " + fn + "/" + fv + "\r\n");
+				// String fv = entryi.getValue();
+				unknownLine.add(Resurses.getString("IMPORT_ZIP_NOT_USED")
+						+ ": " + fn + "\r\n");
 			}
 
 			// for (int i = 0; i < images.size(); i++) {
@@ -455,7 +456,7 @@ public class ImportGedcomUtil {
 		tf.deleteOnExit();
 		fos.close();
 
-		images.put(imgName, tf.getPath());
+		images.put(imgName.replace('\\', '/'), tf.getPath());
 		zipIn.closeEntry();
 	}
 
@@ -1356,7 +1357,8 @@ public class ImportGedcomUtil {
 			if (item.tag.equals("FILE") && item.lineValue != null) {
 				InputStream ins = null;
 				if (this.isZipFile) {
-					String tempFile = images.get(item.lineValue);
+					String tempFile = images.get(item.lineValue.replace('\\',
+							'/'));
 					if (tempFile != null) {
 
 						try {
@@ -1366,7 +1368,7 @@ public class ImportGedcomUtil {
 							e.printStackTrace();
 						}
 						if (ins != null) {
-							images.remove(item.lineValue);
+							images.remove(item.lineValue.replace('\\', '/'));
 						}
 					}
 				} else {
