@@ -322,7 +322,9 @@ public class ImportGedcomUtil {
 				}
 
 			}
-
+			if (record == null) {
+				throw new SukuException(Resurses.getString("GEDCOM_MISSING"));
+			}
 			String key = record.getKey();
 			gedMap.put(key, record);
 
@@ -397,15 +399,10 @@ public class ImportGedcomUtil {
 				Map.Entry<String, String> entryi = (Map.Entry<String, String>) iti
 						.next();
 				String fn = entryi.getKey();
-				// String fv = entryi.getValue();
+
 				unknownLine.add(Resurses.getString("IMPORT_ZIP_NOT_USED")
 						+ ": " + fn + "\r\n");
 			}
-
-			// for (int i = 0; i < images.size(); i++) {
-			// unknownLine
-			// .add("Image missing: " + images.get(i) + "\r\n");
-			// }
 
 			resp.generalArray = unknownLine.toArray(new String[0]);
 			bis.close();
@@ -434,8 +431,8 @@ public class ImportGedcomUtil {
 			throws IOException, FileNotFoundException, SukuException {
 		int ldot = imgName.lastIndexOf(".");
 		String imgSuffix = null;
-		if (ldot > imgName.length() - 6) {
-			imgSuffix = imgName.substring(ldot - 1);
+		if (ldot > 0 && ldot > (imgName.length() - 6)) {
+			imgSuffix = imgName.substring(ldot);
 		}
 
 		if (baseFolder.length() > 0) {
