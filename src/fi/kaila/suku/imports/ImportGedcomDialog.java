@@ -255,6 +255,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				}
 			} catch (SukuException e) {
 				e.printStackTrace();
+
 				errorMessage = e.getMessage();
 
 			}

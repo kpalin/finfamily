@@ -1,6 +1,7 @@
 package fi.kaila.suku.server.utils;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -392,6 +393,11 @@ public class ImportGedcomUtil {
 			// consumeFams();
 			// resp.generalArray = recs.toArray(new String[0]);
 
+			bis.close();
+		} catch (Exception e) {
+			unknownLine.add(e.getMessage() + "\r\n");
+			// throw new SukuException(e);
+		} finally {
 			Set<Map.Entry<String, String>> imgSet = images.entrySet();
 			Iterator<Map.Entry<String, String>> iti = imgSet.iterator();
 
@@ -405,12 +411,6 @@ public class ImportGedcomUtil {
 			}
 
 			resp.generalArray = unknownLine.toArray(new String[0]);
-			bis.close();
-		} catch (Exception e) {
-			unknownLine.add(e.getMessage());
-			resp.generalArray = unknownLine.toArray(new String[0]);
-			throw new SukuException(e);
-		} finally {
 			gedMap.clear();
 			gedSource.clear();
 			gedFamMap.clear();
@@ -445,7 +445,8 @@ public class ImportGedcomUtil {
 			throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
 		}
 		File tf = File.createTempFile("finFam", imgSuffix);
-		FileOutputStream fos = new FileOutputStream(tf);
+		BufferedOutputStream fos = new BufferedOutputStream(
+				new FileOutputStream(tf));
 		int dd = 0;
 		while ((dd = zipIn.read()) >= 0) {
 			fos.write(dd);
