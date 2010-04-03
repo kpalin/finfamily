@@ -529,8 +529,10 @@ public class ExportGedcomUtil {
 
 					}
 					if (notice.getFromDate() != null) {
-						sb.append(toFullDate(notice.getDatePrefix(), notice
-								.getFromDate(), notice.getToDate()));
+						adb.append("2 DATE "
+								+ toFullDate(notice.getDatePrefix(), notice
+										.getFromDate(), notice.getToDate())
+								+ "\r\n");
 					}
 					if (notice.getPlace() != null) {
 						adb.append("2 PLAC " + notice.getPlace() + "\r\n");
@@ -594,9 +596,12 @@ public class ExportGedcomUtil {
 					AdoptionElement adop2 = adops.get(j);
 					if (adop2.who != null) {
 						if (adop2.fam.equals(adop.fam)
-								&& Utils.nv(adop2.other).equals(
-										Utils.nv(adop.other))) {
+								&& (Utils.nv(adop2.other).equals(
+										Utils.nv(adop.other)) || (adop.other == null || adop2.other == null))) {
 							adop.who = "BOTH";
+							if (adop.other == null) {
+								adop.other = adop2.other;
+							}
 							adop2.who = null;
 						}
 					}

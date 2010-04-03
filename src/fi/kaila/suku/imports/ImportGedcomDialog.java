@@ -48,7 +48,8 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private String selectedOldLang = null;
 
 	private SukuKontroller kontroller = null;
-
+	private String fileNameDescription = "";
+	private String importFileName = null;
 	private JProgressBar progressBar;
 	private Task task = null;
 
@@ -114,7 +115,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 		this.owner = owner;
 		runner = this;
 		this.kontroller = Suku.kontroller;
-
+		this.importFileName = dbName;
 		setLayout(null);
 		int y = 20;
 
@@ -124,7 +125,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 		y += 20;
 
-		fileName = new JTextField(dbName);
+		fileName = new JTextField(importFileName);
 		fileName.setEditable(false);
 		getContentPane().add(fileName);
 		fileName.setBounds(30, y, 340, 20);
@@ -338,11 +339,21 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				}
 			}
 		} else {
-			textContent.setText(juttu);
+			if (juttu.startsWith("+")) {
+				if (juttu.equals("+")) {
+					this.fileNameDescription = "";
+				} else {
+					this.fileNameDescription = "!" + juttu.substring(1);
+				}
+				this.fileName.setText(this.importFileName
+						+ this.fileNameDescription);
+			} else {
+				textContent.setText(juttu);
 
-			progressBar.setIndeterminate(true);
-			progressBar.setValue(0);
-			timeEstimate.setText("");
+				progressBar.setIndeterminate(true);
+				progressBar.setValue(0);
+				timeEstimate.setText("");
+			}
 		}
 		return isCancelled;
 	}

@@ -142,6 +142,10 @@ public class ImportGedcomUtil {
 						if (li > 0) {
 							baseFolder = entryName.substring(0, li + 1);
 						}
+						if (this.runner.setRunnerValue("+" + entryName)) {
+							throw new SukuException(Resurses
+									.getString("GEDCOM_CANCELLED"));
+						}
 						break;
 					} else {
 						copyImageToTempfile(zipIn, entryName);
@@ -426,7 +430,7 @@ public class ImportGedcomUtil {
 	}
 
 	private void copyImageToTempfile(ZipInputStream zipIn, String imgName)
-			throws IOException, FileNotFoundException {
+			throws IOException, FileNotFoundException, SukuException {
 		int ldot = imgName.lastIndexOf(".");
 		String imgSuffix = null;
 		if (ldot > imgName.length() - 6) {
@@ -439,7 +443,9 @@ public class ImportGedcomUtil {
 				imgName = imgName.substring(baseFolder.length());
 			}
 		}
-
+		if (this.runner.setRunnerValue(imgName)) {
+			throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+		}
 		File tf = File.createTempFile("finFam", imgSuffix);
 		FileOutputStream fos = new FileOutputStream(tf);
 		int dd = 0;
@@ -457,8 +463,10 @@ public class ImportGedcomUtil {
 	 * The FAMS lines from INDI records have been stored in the gedFams map We
 	 * use those to put spouses in correct order
 	 * 
+	 * 
 	 */
 	private void consumeFams() {
+		// TODO could this still be used or should it be deleted
 		Set<Map.Entry<String, GedcomFams>> entries = gedFams.entrySet();
 		Iterator<Map.Entry<String, GedcomFams>> ee = entries.iterator();
 
