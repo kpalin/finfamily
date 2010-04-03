@@ -135,8 +135,7 @@ public class ImportGedcomUtil {
 
 				zipIn = new ZipInputStream(Suku.kontroller.getInputStream());
 				bis = new BufferedInputStream(zipIn);
-				while (true) {
-					zipEntry = zipIn.getNextEntry();
+				while ((zipEntry = zipIn.getNextEntry()) != null) {
 					entryName = zipEntry.getName();
 					if (entryName.toLowerCase().endsWith(".ged")) {
 						int li = entryName.replace('\\', '/').lastIndexOf('/');
@@ -144,6 +143,8 @@ public class ImportGedcomUtil {
 							baseFolder = entryName.substring(0, li + 1);
 						}
 						break;
+					} else {
+						copyImageToTempfile(zipIn, entryName);
 					}
 				}
 			} else {
@@ -323,34 +324,12 @@ public class ImportGedcomUtil {
 
 			if (isZipFile) {
 				zipIn.closeEntry();
-				int dd = 0;
+
 				ZipEntry entry = null;
 				while ((entry = zipIn.getNextEntry()) != null) {
 
 					String imgName = entry.getName();
-					int ldot = imgName.lastIndexOf(".");
-					String imgSuffix = null;
-					if (ldot > imgName.length() - 6) {
-						imgSuffix = imgName.substring(ldot - 1);
-					}
-
-					if (baseFolder.length() > 0) {
-						if (imgName.substring(0, baseFolder.length())
-								.equalsIgnoreCase(baseFolder)) {
-							imgName = imgName.substring(baseFolder.length());
-						}
-					}
-
-					File tf = File.createTempFile("finFam", imgSuffix);
-					FileOutputStream fos = new FileOutputStream(tf);
-					while ((dd = zipIn.read()) >= 0) {
-						fos.write(dd);
-					}
-					tf.deleteOnExit();
-					fos.close();
-
-					images.put(imgName, tf.getPath());
-					zipIn.closeEntry();
+					copyImageToTempfile(zipIn, imgName);
 
 				}
 				zipIn.close();
@@ -444,6 +423,34 @@ public class ImportGedcomUtil {
 
 		// logger.fine("database created for " + path);
 
+	}
+
+	private void copyImageToTempfile(ZipInputStream zipIn, String imgName)
+			throws IOException, FileNotFoundException {
+		int ldot = imgName.lastIndexOf(".");
+		String imgSuffix = null;
+		if (ldot > imgName.length() - 6) {
+			imgSuffix = imgName.substring(ldot - 1);
+		}
+
+		if (baseFolder.length() > 0) {
+			if (imgName.substring(0, baseFolder.length()).equalsIgnoreCase(
+					baseFolder)) {
+				imgName = imgName.substring(baseFolder.length());
+			}
+		}
+
+		File tf = File.createTempFile("finFam", imgSuffix);
+		FileOutputStream fos = new FileOutputStream(tf);
+		int dd = 0;
+		while ((dd = zipIn.read()) >= 0) {
+			fos.write(dd);
+		}
+		tf.deleteOnExit();
+		fos.close();
+
+		images.put(imgName, tf.getPath());
+		zipIn.closeEntry();
 	}
 
 	/**
@@ -1340,14 +1347,6 @@ public class ImportGedcomUtil {
 
 			if (item.tag.equals("FILE") && item.lineValue != null) {
 				InputStream ins = null;
-				String mediaFileName = null;
-				int ldir = item.lineValue.replace('\\', '/').lastIndexOf('/');
-				if (ldir > 0) {
-					mediaFileName = item.lineValue.substring(ldir + 1);
-				} else {
-					mediaFileName = item.lineValue;
-				}
-
 				if (this.isZipFile) {
 					String tempFile = images.get(item.lineValue);
 					if (tempFile != null) {
