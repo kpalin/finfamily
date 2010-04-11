@@ -278,6 +278,17 @@ public class PersonView extends JPanel implements ChangeListener {
 	 * @throws SukuException
 	 */
 	protected void closePersonPane(boolean askChanges) throws SukuException {
+
+		// FIXME There are 3 methods that need to be looked into
+		// closePersonPane
+		// displayPersonPane(personPid);
+		// closeMainPane(reOpen);
+		// and perhaps
+		// selectRelativesPane();
+		// at least method names may be misleading, maybe also functionality
+		// all of these need to be called in above order in class RelativesPane
+		//
+
 		int midx = getMainPaneIndex();
 		if (midx > 0) {
 			reOpenIndex = getFirstNoticeIndex();
@@ -537,6 +548,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			int x = 0;
 			int pareWidth = 0;
 			PersonShortData pers;
+
 			for (int i = 0; i < fcount + mcount; i++) {
 				if (i < fcount) {
 					pers = table.getFather(i);

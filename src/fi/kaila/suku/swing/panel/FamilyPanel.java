@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,13 +28,13 @@ import fi.kaila.suku.util.pojo.TableShortData;
  * @author Kalle
  * 
  */
-public class FamilyPanel extends JPanel implements MouseListener {
+public class FamilyPanel extends JPanel implements MouseListener,
+		MouseMotionListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// private TableShortData subjectTable=null;
 	private Vector<TableShortData> tabs = new Vector<TableShortData>();
 
 	private Vector<FamilyParentRelationIndex> pareRels = new Vector<FamilyParentRelationIndex>();
@@ -47,13 +48,14 @@ public class FamilyPanel extends JPanel implements MouseListener {
 	public FamilyPanel(PersonView parent) {
 		this.parent = parent;
 		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 	}
 
-	public void paint(Graphics g) {
+	@Override
+	public void paintComponent(Graphics g) {
 
-		// for (int i = 0; i < tabs.size(); i++) {
-		// logger.fine("BEG[" + i + "]=" + tabs.get(i));
 		// }
+		// public void paint(Graphics g) {
 
 		Rectangle d = this.getBounds();
 		g.setColor(Color.white);
@@ -63,15 +65,12 @@ public class FamilyPanel extends JPanel implements MouseListener {
 
 		for (int i = 0; i < tabs.size(); i++) {
 			TableShortData t = tabs.get(i);
-			t.DrawMe(g);
+			t.drawMe(g);
 		}
 
 		for (int i = 0; i < pareRels.size(); i++) {
 
 			FamilyParentRelationIndex rel = pareRels.get(i);
-
-			// System.out.println("rel:" + rel.getChildIdx() + "/" +
-			// rel.getParentIdx());
 
 			TableShortData child = tabs.get(rel.getChildIdx());
 			TableShortData parent = tabs.get(rel.getParentIdx());
@@ -80,16 +79,11 @@ public class FamilyPanel extends JPanel implements MouseListener {
 			Point pp = parent.getLocation();
 			Dimension dd = child.getSize(g);
 			Dimension dp = parent.getSize(g);
-			// cp.x += dd.width/2;
 
 			g.drawLine(cp.x + dd.width / 2, cp.y, pp.x + dp.width / 2, pp.y
 					+ dp.height);
 
 		}
-
-		// if (subjectTable != null) {
-		// subjectTable.DrawMe(g);
-		// }
 
 		for (int x = 0; x < d.width; x += 100) {
 			g.drawLine(x, 0, x, 20);
@@ -116,7 +110,7 @@ public class FamilyPanel extends JPanel implements MouseListener {
 	}
 
 	/**
-	 * empty the grapf
+	 * empty the graph
 	 */
 	public void resetTable() {
 		tabs.removeAllElements();
@@ -124,7 +118,7 @@ public class FamilyPanel extends JPanel implements MouseListener {
 	}
 
 	/**
-	 * add a table to the grapf
+	 * add a table to the graph
 	 * 
 	 * @param data
 	 */
@@ -136,7 +130,7 @@ public class FamilyPanel extends JPanel implements MouseListener {
 	}
 
 	/**
-	 * @return table size = num of tables in list
+	 * @return table size = number of tables in list
 	 */
 	public int getTabSize() {
 		return this.tabs.size();
@@ -186,22 +180,53 @@ public class FamilyPanel extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-
+		presTab = null;
+		// System.out.println("ENT: " + e.toString());
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 
+		if (e.getButton() == 1 && presTab != null) {
+			// System.out.println("EXT: " + e.toString());
+			presTab = null;
+		}
 	}
+
+	TableShortData presTab = null;
+	Point presFrom = null;
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-
+		presTab = null;
+		if (e.getButton() == 1) {
+			Point presPoint = e.getPoint();
+			for (int i = 0; i < tabs.size(); i++) {
+				TableShortData t = tabs.get(i);
+				Rectangle rec = t.getArea();
+				if (rec.contains(presPoint)) {
+					presTab = t;
+					presFrom = new Point(presPoint.x - t.getArea().x,
+							presPoint.y - t.getArea().y);
+					System.out.println("PRS: " + t.toString());
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
+		if (e.getButton() == 1 && presTab != null) {
+			// System.out.println("DROP IT HERE: " + e.toString());
+			Point p = e.getPoint();
+			p.x -= presFrom.x;
+			p.y -= presFrom.y;
+			presTab.setLocation(p);
+			this.updateUI();
+			presTab = null;
+			presFrom = null;
+		}
 		if (e.getButton() == MouseEvent.BUTTON3 && e.getClickCount() == 1) {
 
 			Point pp = e.getPoint();
@@ -239,6 +264,24 @@ public class FamilyPanel extends JPanel implements MouseListener {
 			}
 
 		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if (presTab != null) {
+			Point p = e.getPoint();
+			p.x -= presFrom.x;
+			p.y -= presFrom.y;
+			presTab.setLocation(p);
+			this.updateUI();
+			// System.out.println("DRG: " + e.toString());
+		}
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// System.out.println("MOV: " + e.toString());
+
 	}
 
 }

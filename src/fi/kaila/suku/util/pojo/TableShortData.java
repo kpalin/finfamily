@@ -77,15 +77,15 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	/**
 	 * @param g
 	 */
-	public void DrawMe(Graphics g) {
+	public void drawMe(Graphics g) {
 		if (famMember.size() == 1) {
-			DrawSubject(g);
+			drawSubject(g);
 		} else {
-			DrawTable(g);
+			drawTable(g);
 		}
 	}
 
-	private void DrawSubject(Graphics g) {
+	private void drawSubject(Graphics g) {
 		g.setFont(textFont);
 		personAreas.removeAllElements();
 
@@ -168,7 +168,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	}
 
-	private void DrawTable(Graphics g) {
+	private void drawTable(Graphics g) {
 
 		if (famMember.size() == 0)
 			return;
