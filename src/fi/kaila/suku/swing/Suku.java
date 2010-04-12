@@ -83,6 +83,7 @@ import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.panel.PersonView;
 import fi.kaila.suku.swing.panel.SukuTabPane;
 import fi.kaila.suku.swing.util.SukuPopupMenu;
+import fi.kaila.suku.swing.util.SukuPopupMenu.MenuSource;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateComparator;
 import fi.kaila.suku.util.SukuException;
@@ -2800,16 +2801,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				SukuPopupMenu pop = SukuPopupMenu.getInstance();
 				pop.setPerson(activeRow.getPerson());
-				pop.show(e, e.getX(), e.getY());
+				pop.show(e, e.getX(), e.getY(), MenuSource.dbView);
 			}
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
-			if (cmd == null || activeRow == null)
+			if (cmd == null)// || activeRow == null)
 				return;
 			SukuPopupMenu pop = SukuPopupMenu.getInstance();
+			if (pop.getSource() == MenuSource.familyView) {
+
+			} else if (activeRow == null) {
+				return;
+			}
 			if (pop.getPerson() != null) {
 				if (cmd.equals(Resurses.TAB_PERSON_TEXT)) {
 
@@ -2821,9 +2827,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 								+ e1.getMessage());
 						e1.printStackTrace();
 					}
-
-					// JOptionPane.showMessageDialog(null, "SHOW PERSON: " +
-					// pop.getPerson().getAlfaName());
 
 				} else if (cmd.equals(Resurses.TAB_FAMILY)) {
 					try {
@@ -2852,42 +2855,43 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				}
 				if (cmd.equals(Resurses.MENU_COPY)) {
-					// copyPerson(pop.getPerson().getPid());
-
-					// System.out.println("taulussa " + table.getRowCount());
-
-					PersonShortData perso = pop.getPerson();
-					if (perso != null) {
-						Suku.sukuObject = perso;
-						logger.fine("Copied to clipboard [" + perso.getPid()
-								+ "]: " + perso.getAlfaName());
+					if (pop.getSource() == MenuSource.familyView) {
+						personView.copyFamilyToClipboardAsImage();
 					} else {
-						return;
+
+						PersonShortData perso = pop.getPerson();
+						if (perso != null) {
+							Suku.sukuObject = perso;
+							logger.fine("Copied to clipboard ["
+									+ perso.getPid() + "]: "
+									+ perso.getAlfaName());
+						} else {
+							return;
+						}
+
+						int[] ii = table.getSelectedRows();
+						if (ii.length == 0)
+							return;
+						StringBuilder sb = new StringBuilder();
+
+						sb.append(perso.getHeader() + "\n");
+						for (int i = 0; i < ii.length; i++) {
+							SukuRow rivi = (SukuRow) table.getValueAt(ii[i],
+									SukuModel.SUKU_ROW);
+							PersonShortData pers = rivi.getPerson();
+
+							sb.append(pers.toString() + "\n");
+
+						}
+						sb.append(Resurses.getString("TEXT_COPIED"));
+						sb.append(" ");
+						sb.append(Resurses.getString("SUKUOHJELMISTO"));
+						sb.append(" ");
+						java.util.Date now = new java.util.Date();
+						sb.append(now.toString());
+
+						copyToClip(sb.toString());
 					}
-
-					int[] ii = table.getSelectedRows();
-					if (ii.length == 0)
-						return;
-					StringBuilder sb = new StringBuilder();
-
-					sb.append(perso.getHeader() + "\n");
-					for (int i = 0; i < ii.length; i++) {
-						SukuRow rivi = (SukuRow) table.getValueAt(ii[i],
-								SukuModel.SUKU_ROW);
-						PersonShortData pers = rivi.getPerson();
-
-						sb.append(pers.toString() + "\n");
-
-					}
-					sb.append(Resurses.getString("TEXT_COPIED"));
-					sb.append(" ");
-					sb.append(Resurses.getString("SUKUOHJELMISTO"));
-					sb.append(" ");
-					java.util.Date now = new java.util.Date();
-					sb.append(now.toString());
-
-					copyToClip(sb.toString());
-
 				}
 				if (cmd.equals(Resurses.MENU_NEEDLE)) {
 					PersonShortData pp = pop.getPerson();

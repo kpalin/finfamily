@@ -639,6 +639,11 @@ public class PersonView extends JPanel implements ChangeListener {
 		setSelectedIndex(0);
 	}
 
+	public void copyFamilyToClipboardAsImage() {
+		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
+		famPanel.copyToClipAsImage();
+	}
+
 	/**
 	 * remove all objects
 	 */

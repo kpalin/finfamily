@@ -35,6 +35,12 @@ public class SukuPopupMenu {
 	private JMenuItem pReport = null;
 	private PersonShortData currentPerson = null;
 
+	private MenuSource callerType;
+
+	public enum MenuSource {
+		dbView, familyView
+	}
+
 	/**
 	 * enables the hiskpperson menu
 	 * 
@@ -45,6 +51,10 @@ public class SukuPopupMenu {
 		if (idx >= 0 && idx < pHiskiPerson.length) {
 			pHiskiPerson[idx].setVisible(b);
 		}
+	}
+
+	public MenuSource getSource() {
+		return callerType;
 	}
 
 	/**
@@ -91,7 +101,8 @@ public class SukuPopupMenu {
 	 * @param x
 	 * @param y
 	 */
-	public void show(MouseEvent e, int x, int y) {
+	public void show(MouseEvent e, int x, int y, MenuSource callerType) {
+		this.callerType = callerType;
 		pMenu.show(e.getComponent(), x, y);
 	}
 
@@ -163,7 +174,6 @@ public class SukuPopupMenu {
 			me = new SukuPopupMenu();
 		}
 		return me;
-
 	}
 
 }

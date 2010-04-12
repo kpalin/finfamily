@@ -3,19 +3,27 @@ package fi.kaila.suku.swing.panel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import fi.kaila.suku.swing.util.SukuPopupMenu;
+import fi.kaila.suku.swing.util.SukuPopupMenu.MenuSource;
 import fi.kaila.suku.util.FamilyParentRelationIndex;
+import fi.kaila.suku.util.ImageSelection;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.TableShortData;
@@ -49,6 +57,32 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		this.parent = parent;
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
+	}
+
+	public void copyToClipAsImage() {
+		// Create a BufferedImage
+
+		Dimension dd = getPreferredSize();
+
+		BufferedImage image = new BufferedImage(dd.width, dd.height,
+				BufferedImage.TYPE_INT_RGB);
+		Graphics g = image.getGraphics();
+		Graphics2D graphics = (Graphics2D) g;
+		this.paint(graphics);
+		ImageSelection imgSel = new ImageSelection(image);
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(imgSel,
+				null);
+
+		try {
+			ImageIO.write(image, "jpg", new File("component.jpg"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// JAI allows Bitmap,
+		// others only GIF,PNG,JSPEG - JPEG:correction
+
 	}
 
 	@Override
@@ -245,7 +279,7 @@ public class FamilyPanel extends JPanel implements MouseListener,
 					if (person != null) {
 						SukuPopupMenu pop = SukuPopupMenu.getInstance();
 						pop.setPerson(person);
-						pop.show(e, pp.x, pp.y);
+						pop.show(e, pp.x, pp.y, MenuSource.familyView);
 						//					
 						// parent.getSuku().pShowPerson.setText(person.getAlfaName());
 						// parent.getSuku().pMenu.show(e.getComponent(),pp.x,pp.y);
@@ -284,4 +318,5 @@ public class FamilyPanel extends JPanel implements MouseListener,
 
 	}
 
+	// 
 }
