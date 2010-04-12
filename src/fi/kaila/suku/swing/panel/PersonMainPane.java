@@ -3,6 +3,8 @@ package fi.kaila.suku.swing.panel;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +45,8 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  * @author Kalle
  * 
  */
-public class PersonMainPane extends JPanel implements ActionListener {
+public class PersonMainPane extends JPanel implements ActionListener,
+		ComponentListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -84,6 +87,15 @@ public class PersonMainPane extends JPanel implements ActionListener {
 	private SukuTextArea source;
 	private JTextArea privateText;
 
+	private JScrollPane scrollNote;
+	private JScrollPane scrollSource;
+	private JScrollPane scrollPrivate;
+
+	private JLabel groupLbl;
+	private JLabel refnLbl;
+	private JLabel createdLbl;
+	private JLabel modifiedLbl;
+
 	private int personPid = 0;
 
 	PersonLongData persLong = null;
@@ -102,7 +114,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 		PersonView.types = new String[types.getTypesTagsCount()];
 		PersonView.typesTexts.clear();
-
+		addComponentListener(this);
 		for (int i = 0; i < types.getTypesTagsCount(); i++) {
 
 			String tag = types.getTypesTag(i);
@@ -369,7 +381,6 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 	private void initMe() {
 
-		JScrollPane scrollPane;
 		setLayout(null);
 
 		JLabel lbl;
@@ -382,9 +393,9 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 		rrivi += 24;
 
-		lbl = new JLabel(Resurses.getString("DATA_GROUP"));
-		add(lbl);
-		lbl.setBounds(rcol, rrivi, 100, 20);
+		groupLbl = new JLabel(Resurses.getString("DATA_GROUP"));
+		add(groupLbl);
+		groupLbl.setBounds(rcol, rrivi, 100, 20);
 		rrivi += 20;
 		groupid = new SukuTextField(null, Field.Fld_Group);
 		add(groupid);
@@ -393,18 +404,18 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 		rrivi += 24;
 
-		lbl = new JLabel(Resurses.getString("DATA_REFN"));
-		add(lbl);
-		lbl.setBounds(rcol, rrivi, 100, 20);
+		refnLbl = new JLabel(Resurses.getString("DATA_REFN"));
+		add(refnLbl);
+		refnLbl.setBounds(rcol, rrivi, 100, 20);
 		rrivi += 20;
 		refn = new JTextField();
 		add(refn);
 		refn.setBounds(rcol, rrivi, rwidth * 2, 20);
 
 		rrivi += 20;
-		lbl = new JLabel(Resurses.getString("DATA_PERSON_CREATED"));
-		lbl.setBounds(rcol, rrivi, 200, 20);
-		add(lbl);
+		createdLbl = new JLabel(Resurses.getString("DATA_PERSON_CREATED"));
+		createdLbl.setBounds(rcol, rrivi, 200, 20);
+		add(createdLbl);
 		rrivi += 20;
 		created = new JTextField();
 		created.setBounds(rcol, rrivi, rwidth * 2, 20);
@@ -412,9 +423,9 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		add(created);
 
 		rrivi += 28;
-		lbl = new JLabel(Resurses.getString("DATA_PERSON_MODIFIED"));
-		lbl.setBounds(rcol, rrivi, 200, 20);
-		add(lbl);
+		modifiedLbl = new JLabel(Resurses.getString("DATA_PERSON_MODIFIED"));
+		modifiedLbl.setBounds(rcol, rrivi, 200, 20);
+		add(modifiedLbl);
 		rrivi += 20;
 		modified = new JTextField();
 		modified.setBounds(rcol, rrivi, rwidth * 2, 20);
@@ -566,12 +577,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		lbl.setBounds(10, rivi, 100, 20);
 		notetext = new JTextArea();
 		notetext.setLineWrap(true);
-		scrollPane = new JScrollPane(notetext,
+		notetext.setWrapStyleWord(true);
+		scrollNote = new JScrollPane(notetext,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		add(scrollPane);
-		scrollPane.setBounds(lcol, rivi, biglen, 80);
+		add(scrollNote);
+		scrollNote.setBounds(lcol, rivi, biglen, 80);
 
 		rivi += 85;
 
@@ -581,12 +593,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		source = new SukuTextArea();
 
 		source.setLineWrap(true);
-		scrollPane = new JScrollPane(source,
+		source.setWrapStyleWord(true);
+		scrollSource = new JScrollPane(source,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		add(scrollPane);
-		scrollPane.setBounds(lcol, rivi, biglen, 80);
+		add(scrollSource);
+		scrollSource.setBounds(lcol, rivi, biglen, 80);
 
 		rivi += 85;
 
@@ -596,12 +609,13 @@ public class PersonMainPane extends JPanel implements ActionListener {
 		privateText = new JTextArea();
 
 		privateText.setLineWrap(true);
-		scrollPane = new JScrollPane(privateText,
+		privateText.setWrapStyleWord(true);
+		scrollPrivate = new JScrollPane(privateText,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		add(scrollPane);
-		scrollPane.setBounds(lcol, rivi, biglen, 80);
+		add(scrollPrivate);
+		scrollPrivate.setBounds(lcol, rivi, biglen, 80);
 
 		rivi += 100;
 
@@ -1357,5 +1371,163 @@ public class PersonMainPane extends JPanel implements ActionListener {
 			}
 
 		}
+	}
+
+	// private int lcol = 75;
+	//
+	// private int rwidth = 70;
+	// // private int rcol = lwidth+lcol+10;
+	//
+	// private int gnlen = 150;
+	// private int postlen = 60;
+	// private int surlen = 240;
+	// private int datelen = 80;
+	// private int colbet = 2;
+	// private int placlen = 213;
+	// private int rcol = lcol + datelen + placlen + colbet * 2; // 460; //
+	// private int biglen = datelen + placlen + colbet * 2 + rwidth * 2;
+
+	public void resizeMainPane() {
+		Dimension currSize = getSize();
+		int lwidth = 0;
+		int rwidth = 70;
+		int rcol = 0;
+		int lcol = 75;
+		int gnlen = 0;
+		int postlen = 60;
+		int surlen = 240;
+		int placlen = 213;
+		// System.out.println("LEVEYS: "+currSize.width);
+		if (currSize.width > 525) {
+
+			rwidth = currSize.width / 8;
+			lwidth = currSize.width - lcol - colbet - rwidth * 2;
+			gnlen = lwidth / 2 - colbet;
+			surlen = lwidth - postlen - colbet;
+			placlen = lwidth - datelen - colbet;
+		} else {
+			gnlen = 150;
+			placlen = 213;
+			rwidth = 70;
+			lwidth = 525 - lcol - 10 - rwidth * 2;
+
+		}
+		rcol = lwidth + lcol + 5;
+		int rivi = 10;
+		int rrivi = 30;
+
+		privacy.setBounds(rcol, rrivi, 100, 20);
+
+		rrivi += 24;
+		groupLbl.setBounds(rcol, rrivi, 100, 20);
+		rrivi += 20;
+
+		groupid.setBounds(rcol, rrivi, rwidth * 2, 20);
+		// groupid.setEditable(false);
+
+		rrivi += 24;
+		refnLbl.setBounds(rcol, rrivi, 100, 20);
+		rrivi += 20;
+
+		refn.setBounds(rcol, rrivi, rwidth * 2, 20);
+
+		rrivi += 20;
+		createdLbl.setBounds(rcol, rrivi, 200, 20);
+		rrivi += 20;
+
+		created.setBounds(rcol, rrivi, rwidth * 2, 20);
+
+		rrivi += 28;
+		modifiedLbl.setBounds(rcol, rrivi, 200, 20);
+		rrivi += 20;
+
+		modified.setBounds(rcol, rrivi, rwidth * 2, 20);
+
+		rrivi += 22;
+
+		close.setBounds(rcol, rrivi, rwidth, 24);
+		update.setBounds(rcol + rwidth, rrivi, rwidth, 24);
+
+		rivi += 24;
+		givenname.setBounds(lcol, rivi, gnlen, 20);
+
+		patronym.setBounds(lcol + gnlen + colbet, rivi, gnlen - 5, 20);
+
+		rivi += 20;
+
+		rivi += 20;
+		surname.setBounds(lcol, rivi, lwidth - postlen - 10, 20);
+
+		postfix.setBounds(lcol + surlen + colbet, rivi, postlen - 10, 20);
+
+		rivi += 20;
+		rivi += 24;
+		sex.setBounds(lcol, rivi, 80, 20);
+		rivi += 20;
+		rivi += 24;
+		birtDate.setBounds(lcol, rivi, datelen, 20);
+
+		birtPlace.setBounds(lcol + datelen + colbet, rivi, placlen, 20);
+
+		rivi += 24;
+
+		chrDate.setBounds(lcol, rivi, datelen, 20);
+
+		chrPlace.setBounds(lcol + datelen + colbet, rivi, placlen, 20);
+
+		rivi += 24;
+
+		deatDate.setBounds(lcol, rivi, datelen, 20);
+
+		deatPlace.setBounds(lcol + datelen + colbet, rivi, placlen, 20);
+
+		rivi += 24;
+
+		buriDate.setBounds(lcol, rivi, datelen, 20);
+
+		buriPlace.setBounds(lcol + datelen + colbet, rivi, placlen, 20);
+
+		rivi += 24;
+
+		rivi += 20;
+
+		occupation.setBounds(lcol, rivi, datelen + placlen + colbet, 20);
+
+		rivi += 24;
+
+		scrollNote.setBounds(lcol, rivi, lwidth + rwidth * 2, 80);
+
+		rivi += 85;
+
+		scrollSource.setBounds(lcol, rivi, lwidth + rwidth * 2, 80);
+
+		rivi += 85;
+
+		scrollPrivate.setBounds(lcol, rivi, lwidth + rwidth * 2, 80);
+
+		rivi += 100;
+
+		setPreferredSize(new Dimension(lcol + biglen + colbet, rivi + 30));
+		// updateUI();
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		resizeMainPane();
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+
 	}
 }
