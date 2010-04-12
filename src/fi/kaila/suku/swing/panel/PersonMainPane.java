@@ -592,7 +592,7 @@ public class PersonMainPane extends JPanel implements ActionListener {
 
 		lbl = new JLabel(Resurses.getString("DATA_PRIVATETEXT"));
 		add(lbl);
-		lbl.setBounds(10, rivi, 100, 20);
+		lbl.setBounds(10, rivi, 100, 40);
 		privateText = new JTextArea();
 
 		privateText.setLineWrap(true);
