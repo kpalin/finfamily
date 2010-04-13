@@ -97,10 +97,7 @@ public class FamilyPanel extends JPanel implements MouseListener,
 
 		g.setColor(Color.black);
 
-		for (int i = 0; i < tabs.size(); i++) {
-			TableShortData t = tabs.get(i);
-			t.drawMe(g);
-		}
+		// for (int i = 0; i < tabs.size(); i++) {
 
 		for (int i = 0; i < pareRels.size(); i++) {
 
@@ -119,6 +116,11 @@ public class FamilyPanel extends JPanel implements MouseListener,
 
 		}
 
+		for (int i = tabs.size() - 1; i >= 0; i--) {
+			TableShortData t = tabs.get(i);
+			t.drawMe(g);
+		}
+		g.setColor(Color.blue);
 		for (int x = 0; x < d.width; x += 100) {
 			g.drawLine(x, 0, x, 20);
 			g.drawString("" + x, x, 10);

@@ -95,6 +95,12 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		int xmargin = 10;
 		int y = p.y;
 		PersonShortData person = famMember.get(0);
+
+		g.setColor(Color.white);
+
+		g.fillRect(p.x, p.y, d.width + xmargin, d.height);
+		g.setColor(Color.black);
+
 		g.drawRect(p.x, p.y, d.width + xmargin, d.height);
 		y += headerHeight;
 		g.drawLine(p.x, y, p.x + d.width, y);
@@ -182,7 +188,12 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		int xmargin = 10;
 		int y = p.y;
 		PersonShortData person;
+		g.setColor(Color.white);
+
+		g.fillRect(p.x, p.y, d.width + xmargin, d.height);
+		g.setColor(Color.black);
 		g.drawRect(p.x, p.y, d.width + xmargin, d.height);
+
 		y += headerHeight;
 		g.drawLine(p.x, y, p.x + d.width, y);
 		y += headerHeight;
@@ -226,6 +237,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			}
 			y += imageSize.height;
 			y += headerHeight;
+
 			g.drawLine(p.x, y, p.x + d.width, y);
 			y += rowHeight;
 		}
