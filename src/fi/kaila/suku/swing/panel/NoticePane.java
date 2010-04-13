@@ -723,7 +723,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			double imh = img.getHeight();
 			double imw = img.getWidth();
 			imageSize = new Dimension((int) imw, (int) imh);
-			double neww = 150;
+			double neww = getRColWidth() * 2;
 			double newh = imh / imw * neww;
 
 			Image imgs = img.getScaledInstance((int) neww, (int) newh,
@@ -1114,7 +1114,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	private int lcol = 75;
 	private int lwidth = 300;
-	private int rwidth = 70;
+	// private int rwidth = 70;
 	private int rcol = lwidth + lcol + 5;
 	private int lbuttoncol = 240;
 
@@ -1123,12 +1123,22 @@ public class NoticePane extends JPanel implements ActionListener,
 		resizeNoticePane();
 	}
 
+	private int getRColWidth() {
+
+		Dimension currSize = getSize();
+
+		if (currSize.width > 525) {
+			return currSize.width / 8;
+		}
+		return 70;
+	}
+
 	/**
 	 * resize the pane and check what is to be shown
 	 */
 	public void resizeNoticePane() {
 		Dimension currSize = getSize();
-
+		int rwidth = 70;
 		if (currSize.width > 525) {
 			rwidth = currSize.width / 8;
 			lwidth = currSize.width - lcol - 10 - rwidth * 2;
@@ -1138,6 +1148,8 @@ public class NoticePane extends JPanel implements ActionListener,
 			rwidth = 70;
 			lwidth = 525 - lcol - 10 - rwidth * 2;
 		}
+
+		getImage();
 		rcol = lwidth + lcol + 5;
 		int listY1 = 10;
 		int listY2 = 34;
