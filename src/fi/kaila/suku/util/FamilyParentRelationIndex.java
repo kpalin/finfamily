@@ -1,7 +1,7 @@
 package fi.kaila.suku.util;
 
 /**
- * TODO This will most probably be replaced with something more sphisticated
+ * TODO This will most probably be replaced with something more sophisticated
  * 
  * @author FIKAAKAIL
  * 

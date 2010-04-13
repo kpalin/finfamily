@@ -1,5 +1,6 @@
 package fi.kaila.suku.swing.panel;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -98,7 +99,8 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		g.setColor(Color.black);
 
 		// for (int i = 0; i < tabs.size(); i++) {
-
+		Graphics2D gg = (Graphics2D) g;
+		gg.setStroke(new BasicStroke(3));
 		for (int i = 0; i < pareRels.size(); i++) {
 
 			FamilyParentRelationIndex rel = pareRels.get(i);
@@ -111,15 +113,42 @@ public class FamilyPanel extends JPanel implements MouseListener,
 			Dimension dd = child.getSize(g);
 			Dimension dp = parent.getSize(g);
 
-			g.drawLine(cp.x + dd.width / 2, cp.y, pp.x + dp.width / 2, pp.y
-					+ dp.height);
+			if (parent.getSubject().getSex().equals("M")) {
+				gg.setColor(Color.blue);
+			} else if (parent.getSubject().getSex().equals("F")) {
+				gg.setColor(Color.red);
+			} else {
+				gg.setColor(Color.black);
+			}
+
+			int nearpp = pp.x > cp.x ? -10 : 10;
+			gg.drawLine(cp.x + dd.width / 2, cp.y,
+					pp.x + dp.width / 2 + nearpp, cp.y - 10);
+
+			gg.drawLine(pp.x + dp.width / 2 + nearpp, cp.y - 10, pp.x
+					+ dp.width / 2, pp.y + dp.height);
+
+			// g.drawLine(cp.x + dd.width / 2, cp.y, pp.x + dp.width / 2, pp.y
+			// + dp.height);
 
 		}
 
+		gg.setColor(Color.black);
+		gg.setStroke(new BasicStroke(2));
 		for (int i = tabs.size() - 1; i >= 0; i--) {
 			TableShortData t = tabs.get(i);
-			t.drawMe(g);
+			Color color = null;
+			if (t.getSubject().getSex().equals("M")) {
+				color = Color.blue;
+			} else if (t.getSubject().getSex().equals("F")) {
+				color = Color.red;
+			} else {
+				color = Color.black;
+			}
+
+			t.drawMe(gg, color);
 		}
+		gg.setStroke(new BasicStroke());
 		g.setColor(Color.blue);
 		for (int x = 0; x < d.width; x += 100) {
 			g.drawLine(x, 0, x, 20);
@@ -244,7 +273,7 @@ public class FamilyPanel extends JPanel implements MouseListener,
 					presTab = t;
 					presFrom = new Point(presPoint.x - t.getArea().x,
 							presPoint.y - t.getArea().y);
-					System.out.println("PRS: " + t.toString());
+					// System.out.println("PRS: " + t.toString());
 					break;
 				}
 			}

@@ -77,15 +77,15 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	/**
 	 * @param g
 	 */
-	public void drawMe(Graphics g) {
+	public void drawMe(Graphics g, Color color) {
 		if (famMember.size() == 1) {
-			drawSubject(g);
+			drawSubject(g, color);
 		} else {
-			drawTable(g);
+			drawTable(g, color);
 		}
 	}
 
-	private void drawSubject(Graphics g) {
+	private void drawSubject(Graphics g, Color color) {
 		g.setFont(textFont);
 		personAreas.removeAllElements();
 
@@ -99,9 +99,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		g.setColor(Color.white);
 
 		g.fillRect(p.x, p.y, d.width + xmargin, d.height);
+		g.setColor(color);
+		g.drawRect(p.x, p.y, d.width + xmargin, d.height);
 		g.setColor(Color.black);
 
-		g.drawRect(p.x, p.y, d.width + xmargin, d.height);
 		y += headerHeight;
 		g.drawLine(p.x, y, p.x + d.width, y);
 		BufferedImage img;
@@ -174,7 +175,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	}
 
-	private void drawTable(Graphics g) {
+	private void drawTable(Graphics g, Color color) {
 
 		if (famMember.size() == 0)
 			return;
@@ -188,11 +189,13 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		int xmargin = 10;
 		int y = p.y;
 		PersonShortData person;
+
 		g.setColor(Color.white);
 
 		g.fillRect(p.x, p.y, d.width + xmargin, d.height);
-		g.setColor(Color.black);
+		g.setColor(color);
 		g.drawRect(p.x, p.y, d.width + xmargin, d.height);
+		g.setColor(Color.black);
 
 		y += headerHeight;
 		g.drawLine(p.x, y, p.x + d.width, y);

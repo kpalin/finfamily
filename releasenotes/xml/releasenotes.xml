@@ -3,8 +3,14 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
+<hdr>Release 493 on 13 apr 2010</hdr>
+<ul>
+<li>Family view improvements. Copy command to copy view to clipboard</li>
+<li>Rescaling of Person View windows improved.</li>
+<li>Some improvements to look and feel.</li>
+</ul>
 
-<hdr>Release 482 on 3 apr 2010</hdr>
+<hdr>Release 482 on 3 apr 2010 (52)</hdr>
 <ul>
 <li>Gedcom export ready.</li>
 <li>Gedcom import to read also directly from zip-file with images.</li>
