@@ -1128,12 +1128,17 @@ public class NoticePane extends JPanel implements ActionListener,
 	 */
 	public void resizeNoticePane() {
 		Dimension currSize = getSize();
-		// System.out.println("LEVEYS: "+currSize.width);
+
 		if (currSize.width > 525) {
+			rwidth = currSize.width / 8;
 			lwidth = currSize.width - lcol - 10 - rwidth * 2;
-			rcol = lwidth + lcol + 5;
+
 			// setPreferredSize(new Dimension(rcol+rwidth*2, lrivi));
+		} else {
+			rwidth = 70;
+			lwidth = 525 - lcol - 10 - rwidth * 2;
 		}
+		rcol = lwidth + lcol + 5;
 		int listY1 = 10;
 		int listY2 = 34;
 		TagType showType;
@@ -1206,7 +1211,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		privacy.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
 		rrNameList = rrivi;
-		image.setBounds(rcol, rrivi, 150, 300);
+		image.setBounds(rcol, rrivi, rwidth * 2, 400);
 
 		int lrivi = 10;
 		typeLbl.setBounds(10, lrivi, 70, 20);
