@@ -725,11 +725,12 @@ public class NoticePane extends JPanel implements ActionListener,
 			imageSize = new Dimension((int) imw, (int) imh);
 			double neww = getRColWidth() * 2;
 			double newh = imh / imw * neww;
+			if (image.isVisible()) {
+				Image imgs = img.getScaledInstance((int) neww, (int) newh,
+						Image.SCALE_DEFAULT);
 
-			Image imgs = img.getScaledInstance((int) neww, (int) newh,
-					Image.SCALE_DEFAULT);
-
-			image.img = imgs;
+				image.img = imgs;
+			}
 		} else {
 			image.img = null;
 		}
