@@ -22,19 +22,22 @@ public class RelationShortData implements Serializable {
 	int parentArray[] = null;
 	int order = 0;
 	int auxIndex = 0;
+	int surety = 0;
 
 	/**
 	 * @param pid
 	 * @param relationPid
 	 * @param order
 	 * @param tag
+	 * @param surety
 	 */
-	public RelationShortData(int pid, int relationPid, int order, String tag) {
+	public RelationShortData(int pid, int relationPid, int order, String tag,
+			int surety) {
 		this.pid = pid;
 		this.relationPid = relationPid;
 		this.tag = tag;
 		this.order = order;
-
+		this.surety = surety;
 	}
 
 	/**
@@ -70,6 +73,14 @@ public class RelationShortData implements Serializable {
 	 */
 	public int getPid() {
 		return this.pid;
+	}
+
+	/**
+	 * 
+	 * @return surety of relation
+	 */
+	public int getSurety() {
+		return surety;
 	}
 
 	/**

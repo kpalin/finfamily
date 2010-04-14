@@ -607,7 +607,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		famMember.removeAllElements();
 		famMemRel.removeAllElements();
 		famMember.add(subject);
-		famMemRel.add(new RelationShortData(0, 0, 0, null));
+		famMemRel.add(new RelationShortData(0, 0, 0, null, 0));
 		spouseIdx = 1;
 		spouseCount = 0;
 		childIdx = 1;

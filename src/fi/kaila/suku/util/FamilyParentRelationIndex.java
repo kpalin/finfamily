@@ -1,5 +1,7 @@
 package fi.kaila.suku.util;
 
+import fi.kaila.suku.util.pojo.RelationShortData;
+
 /**
  * TODO This will most probably be replaced with something more sophisticated
  * 
@@ -9,14 +11,17 @@ package fi.kaila.suku.util;
 public class FamilyParentRelationIndex {
 	private int childIdx = 0;
 	private int parentIdx = 0;
+	private RelationShortData rela = null;
 
 	/**
 	 * @param childIdx
 	 * @param parentIdx
 	 */
-	public FamilyParentRelationIndex(int childIdx, int parentIdx) {
+	public FamilyParentRelationIndex(int childIdx, int parentIdx,
+			RelationShortData rela) {
 		this.childIdx = childIdx;
 		this.parentIdx = parentIdx;
+		this.rela = rela;
 	}
 
 	/**
@@ -31,6 +36,13 @@ public class FamilyParentRelationIndex {
 	 */
 	public int getParentIdx() {
 		return parentIdx;
+	}
+
+	public int getSurety() {
+		if (rela != null) {
+			return rela.getSurety();
+		}
+		return 0;
 	}
 
 }

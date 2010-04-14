@@ -572,8 +572,23 @@ public class PersonView extends JPanel implements ChangeListener {
 				ftab.setLocation(new Point(x + 10, y));
 				parents.add(ftab);
 				famPanel.addTable(ftab);
+
+				RelationShortData myrel = null;
+				int parePid = ftab.getSubject().getPid();
+				int myPid = table.getSubject().getPid();
+				for (int j = 0; j < family.rels.length; j++) {
+					RelationShortData trel = family.rels[j];
+					if ((myPid == trel.getPid() && parePid == trel
+							.getRelationPid())
+							|| (parePid == trel.getPid() && myPid == trel
+									.getRelationPid())) {
+						myrel = trel;
+						break;
+					}
+				}
+
 				famPanel.addRels(new FamilyParentRelationIndex(0, parents
-						.size()));
+						.size(), myrel));
 
 				Dimension dd = ftab.getSize(gg);
 
@@ -600,8 +615,23 @@ public class PersonView extends JPanel implements ChangeListener {
 				// ftab.initRelatives(family.pers, family.rels);
 				ftab.setLocation(new Point(x + 10, y));
 				famPanel.addTable(ftab);
+
+				RelationShortData myrel = null;
+				int parePid = ftab.getSubject().getPid();
+				int myPid = rel.getPid();
+				for (int j = 0; j < family.rels.length; j++) {
+					RelationShortData trel = family.rels[j];
+					if ((myPid == trel.getPid() && parePid == trel
+							.getRelationPid())
+							|| (parePid == trel.getPid() && myPid == trel
+									.getRelationPid())) {
+						myrel = trel;
+						break;
+					}
+				}
+
 				famPanel.addRels(new FamilyParentRelationIndex(rel.getAux(),
-						famPanel.getTabSize() - 1));
+						famPanel.getTabSize() - 1, myrel));
 
 				Dimension dd = ftab.getSize(gg);
 

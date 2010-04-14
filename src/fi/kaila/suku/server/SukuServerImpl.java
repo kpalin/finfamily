@@ -168,7 +168,7 @@ public class SukuServerImpl implements SukuServer {
 
 		SukuData fam = new SukuData();
 
-		String sql = "select s.bid,r.relationrow,r.tag,rn.fromdate,rd.fromdate "
+		String sql = "select s.bid,r.relationrow,r.tag,rn.fromdate,rd.fromdate,r.surety "
 				+ "from ((spouse as s inner join relation as r on s.rid = r.rid "
 				+ "and s.tag=r.tag) left join relationNotice as rn on r.rid = rn.rid  "
 				+ "and rn.tag='MARR') left join relationNotice as rd on r.rid = rd.rid  "
@@ -187,11 +187,12 @@ public class SukuServerImpl implements SukuServer {
 				int relOrder = rs.getInt(2);
 				String aux = rs.getString(4);
 				String div = rs.getString(5);
+				int surety = rs.getInt(6);
 				// System.out.println("XX: " + tag + "/" + relPid + "/" +
 				// relOrder + "/" + aux + "/" + div);
 
 				RelationShortData rel = new RelationShortData(pid, relPid,
-						relOrder, tag);
+						relOrder, tag, surety);
 
 				if (aux != null) {
 					rel.setMarrDate(aux);
@@ -208,7 +209,7 @@ public class SukuServerImpl implements SukuServer {
 
 			int begChil = v.size();
 
-			sql = "select c.bid,r.relationrow,r.tag "
+			sql = "select c.bid,r.relationrow,r.tag,r.surety "
 					+ "from (child as c inner join relation as r on c.rid = r.rid and c.tag=r.tag) "
 					+ "where c.aid=? " + "order by r.relationrow";
 
@@ -219,7 +220,8 @@ public class SukuServerImpl implements SukuServer {
 			rs = pstm.executeQuery();
 			while (rs.next()) {
 				RelationShortData rel = new RelationShortData(pid,
-						rs.getInt(1), rs.getInt(2), rs.getString(3));
+						rs.getInt(1), rs.getInt(2), rs.getString(3), rs
+								.getInt(4));
 				// String aux = rs.getString(4);
 				// if (aux != null) {
 				// rel.setMarrDate(aux);
@@ -255,7 +257,7 @@ public class SukuServerImpl implements SukuServer {
 				}
 			}
 
-			sql = "select c.bid,r.relationrow,r.tag "
+			sql = "select c.bid,r.relationrow,r.tag,r.surety "
 					+ "from (parent as c inner join relation as r on c.rid = r.rid "
 					+ "and c.tag=r.tag) where c.aid=?  order by r.relationrow";
 
@@ -266,7 +268,8 @@ public class SukuServerImpl implements SukuServer {
 			rs = pstm.executeQuery();
 			while (rs.next()) {
 				RelationShortData rel = new RelationShortData(pid,
-						rs.getInt(1), rs.getInt(2), rs.getString(3));
+						rs.getInt(1), rs.getInt(2), rs.getString(3), rs
+								.getInt(4));
 				v.add(rel);
 
 			}

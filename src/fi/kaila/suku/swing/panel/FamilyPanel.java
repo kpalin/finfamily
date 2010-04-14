@@ -120,7 +120,13 @@ public class FamilyPanel extends JPanel implements MouseListener,
 			} else {
 				gg.setColor(Color.black);
 			}
-
+			if (rel.getSurety() == 100) {
+				gg.setStroke(new BasicStroke(3));
+			} else if (rel.getSurety() >= 80) {
+				gg.setStroke(new BasicStroke(2));
+			} else {
+				gg.setStroke(new BasicStroke(1));
+			}
 			int nearpp = pp.x > cp.x ? -10 : 10;
 			gg.drawLine(cp.x + dd.width / 2, cp.y,
 					pp.x + dp.width / 2 + nearpp, cp.y - 10);

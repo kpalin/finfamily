@@ -95,3 +95,65 @@ select u.pid,coalesce(RelationType,'') || ' ' || coalesce(Description,'') || ' '
 coalesce(NoteText,'')  as fulltext
 from unit as u inner join relation as r on u.pid=r.pid inner join relationlanguage as n on r.rid=n.rid;
 
+drop view if exists father;
+create view father as
+select p1.pid as aid,p2.pid as bid,g1.rid ,g1.tag,g1.RelationRow
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('FATH'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('CHIL'))
+where p1.pid <> p2.pid;
+
+drop view if exists mother;
+create view mother as
+select p1.pid as aid,p2.pid as bid,g1.RID ,g1.tag,g1.RelationRow
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('MOTH'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('CHIL'))
+where p1.pid <> p2.pid;
+
+drop view if exists parent;
+create view parent as
+select p1.pid as aid,p2.pid as bid,g1.RID  ,g1.tag,g1.RelationRow
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('FATH','MOTH'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('CHIL'))
+where p1.pid <> p2.pid;
+
+drop view if exists child;
+create view child as
+select p1.pid as aid,p2.pid as bid,g1.RID ,g1.tag,g1.RelationRow
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('CHIL'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('FATH','MOTH'))
+where p1.pid <> p2.pid;
+
+drop view if exists spouse;
+create view spouse as
+select p1.pid as aid,p2.pid as bid,g1.RID  ,g1.tag,g1.RelationRow
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('HUSB','WIFE'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('HUSB','WIFE'))
+where p1.pid <> p2.pid;
+
+drop view if exists wife;
+create view wife as
+select p1.pid as aid,p2.pid as bid,g1.RID  ,g1.tag,g1.RelationRow
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag = 'WIFE')
+inner join Relation as g2 on g1.RID = g2.RID)
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag = 'HUSB')
+where p1.pid <> p2.pid;
+
+drop view if exists husband;
+create view husband as
+select p1.pid as aid,p2.pid as bid,g1.RID ,g1.tag,g1.RelationRow
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag = 'HUSB')
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag = 'WIFE')
+where p1.pid <> p2.pid;

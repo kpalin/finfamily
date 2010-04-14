@@ -737,25 +737,25 @@ public class ReportUtil {
 		PreparedStatement stm;
 		ResultSet rs;
 
-		sql = "select bid,relationrow,tag from spouse where aid=? order by relationrow";
+		sql = "select bid,relationrow,tag,r.surety from spouse where aid=? order by relationrow";
 		stm = con.prepareStatement(sql);
 		stm.setInt(1, pid);
 		rs = stm.executeQuery();
 		while (rs.next()) {
 			RelationShortData rel = new RelationShortData(pid, rs.getInt(1), rs
-					.getInt(2), rs.getString(3));
+					.getInt(2), rs.getString(3), rs.getInt(4));
 			rr.add(rel);
 		}
 		rs.close();
 		stm.close();
 
-		sql = "select bid,relationrow,tag from child where aid=? order by relationrow";
+		sql = "select bid,relationrow,tag,r.surety from child where aid=? order by relationrow";
 		stm = con.prepareStatement(sql);
 		stm.setInt(1, pid);
 		rs = stm.executeQuery();
 		while (rs.next()) {
 			RelationShortData rel = new RelationShortData(pid, rs.getInt(1), rs
-					.getInt(2), rs.getString(3));
+					.getInt(2), rs.getString(3), rs.getInt(4));
 			rr.add(rel);
 		}
 		stm.close();
