@@ -173,8 +173,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private JMenuBar menubar;
 	private JMenu mFile;
+	private JMenu mImport;
 	private JMenuItem mImport2004;
 	private JMenuItem mImportGedcom;
+	private JMenu mExport;
 	private JMenuItem mExportGedcom;
 	private JMenuItem mQuery;
 	private JMenuItem mConnect;
@@ -365,26 +367,26 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.mAdmin.setActionCommand(Resurses.ADMIN);
 			this.mAdmin.addActionListener(this);
 		}
-		JMenu imp = new JMenu(Resurses.getString("IMPORT"));
-		this.mFile.add(imp);
+		mImport = new JMenu(Resurses.getString("IMPORT"));
+		this.mFile.add(mImport);
 
 		this.mImport2004 = new JMenuItem(Resurses
 				.getString(Resurses.IMPORT_SUKU));
-		imp.add(this.mImport2004);
+		mImport.add(this.mImport2004);
 		this.mImport2004.setActionCommand(Resurses.IMPORT_SUKU);
 		this.mImport2004.addActionListener(this);
 
 		this.mImportGedcom = new JMenuItem(Resurses
 				.getString(Resurses.IMPORT_GEDCOM));
-		imp.add(this.mImportGedcom);
+		mImport.add(this.mImportGedcom);
 		this.mImportGedcom.setActionCommand(Resurses.IMPORT_GEDCOM);
 		this.mImportGedcom.addActionListener(this);
 
-		JMenu exp = new JMenu(Resurses.getString("EXPORT"));
-		this.mFile.add(exp);
+		mExport = new JMenu(Resurses.getString("EXPORT"));
+		this.mFile.add(mExport);
 		this.mExportGedcom = new JMenuItem(Resurses
 				.getString(Resurses.EXPORT_GEDCOM));
-		exp.add(this.mExportGedcom);
+		mExport.add(this.mExportGedcom);
 		this.mExportGedcom.setActionCommand(Resurses.EXPORT_GEDCOM);
 		this.mExportGedcom.addActionListener(this);
 
@@ -1131,7 +1133,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void connectDb() {
 		sukuObject = null;
 		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
-
+		this.isConnected = 0;
 		cdlg.setVisible(true);
 		if (cdlg.wasOk()) {
 			String name = cdlg.getHost();
@@ -1230,7 +1232,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 		}
-		this.isConnected = 1;
+		this.isConnected = 0;
 		enableCommands();
 
 	}
@@ -2578,12 +2580,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void enableCommands() {
 		mConnect.setEnabled(isConnected == 0);
+		mImport.setEnabled(isConnected != 0);
 		mImport2004.setEnabled(isConnected != 0);
 		mImportGedcom.setEnabled(isConnected != 0);
-		mExportGedcom.setEnabled(isConnected != 0);
+		mExport.setEnabled(isConnected == 2);
+		mExportGedcom.setEnabled(isConnected == 2);
 		mQuery.setEnabled(isConnected == 2);
 		mSettings.setEnabled(isConnected == 2);
 		mNewDatabase.setEnabled(isConnected != 0);
+		mOpenPerson.setEnabled(isConnected == 2);
+		mPrintPerson.setEnabled(isConnected == 2);
+		mShowInMap.setEnabled(isConnected == 2);
+		mLista.setEnabled(isConnected == 2);
 		mDisconnect.setEnabled(isConnected != 0);
 		tQueryButton.setEnabled(isConnected == 2);
 		mImportHiski.setEnabled(isConnected == 2);
