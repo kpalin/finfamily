@@ -295,23 +295,33 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		try {
 
-			// if (java.io.File.pathSeparatorChar == ';') {
-			// use Windows lookandfeel if Windows
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			// } else {
-			// // else use Metal
-			//
-			// UIManager.setLookAndFeel(UIManager
-			// .getCrossPlatformLookAndFeelClassName());
-			// }
-			// UIManager.LookAndFeelInfo[] liz = UIManager
-			// .getInstalledLookAndFeels();
-			//
-			// for (int i = 0; i < liz.length; i++) {
-			// logger.info("lndfeel " + liz[i].getClassName());
-			//
-			// }
-			// UIManager.setLookAndFeel(liz[0].getClassName());
+			if (args.length > 0 && !args[0].equals("web")) {
+				// if you want to experiment with another look and feel you can
+				// write
+				// its class name as argument to the program
+				UIManager.setLookAndFeel(args[0]);
+			} else {
+
+				String os = System.getProperties().getProperty("os.name");
+				if (os.toLowerCase().indexOf("windows") >= 0
+						|| os.toLowerCase().indexOf("mac") >= 0) {
+
+					UIManager.setLookAndFeel(UIManager
+							.getSystemLookAndFeelClassName());
+				} else if (os.toLowerCase().indexOf("linux") >= 0) {
+					UIManager
+							.setLookAndFeel("com.jgoodies.looks.plastic.PlasticLookAndFeel");
+				} else {
+					UIManager.setLookAndFeel(UIManager
+							.getCrossPlatformLookAndFeelClassName());
+				}
+			}
+
+			// * com.jgoodies.looks.windows.WindowsLookAndFeel
+			// * com.jgoodies.looks.plastic.PlasticLookAndFeel
+			// * com.jgoodies.looks.plastic.Plastic3DLookAndFeel
+			// * com.jgoodies.looks.plastic.PlasticXPLookAndFeel
+
 		} catch (Exception e) {
 			logger.log(Level.INFO, "look-and-feel virhe", e);
 
@@ -330,6 +340,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 		String loca = kontroller.getPref(this, Resurses.LOCALE, "xx");
 		if (loca == null || loca.equals("xx")) {
+			logger.info("Locale " + loca + " encountered.");
 			String languas[] = { "English", "Suomi", "Svenska" };
 			String langabr[] = { "en", "fi", "sv" };
 			int locaresu = JOptionPane.showOptionDialog(this,
@@ -337,7 +348,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					"FinFamily", JOptionPane.DEFAULT_OPTION,
 					JOptionPane.QUESTION_MESSAGE, null, languas, "en");
 			loca = langabr[locaresu];
-
+			kontroller.putPref(this, Resurses.LOCALE, loca);
 		}
 
 		Resurses.setLocale(loca);
@@ -569,8 +580,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		setLayout(null);
 		setLocation(0, 0);
 		setSize(d);
-		setExtendedState(MAXIMIZED_BOTH);
-
+		String os = System.getProperties().getProperty("os.name");
+		if (os.toLowerCase().indexOf("windows") >= 0) {
+			setExtendedState(MAXIMIZED_BOTH);
+		} else {
+			setExtendedState(NORMAL);
+		}
 		this.toolbar = new JToolBar("FinFamily tools");
 		this.getContentPane().add(this.toolbar);
 		this.toolbar.setBounds(0, 0, getWidth(), 50);
@@ -1232,7 +1247,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 		}
-		this.isConnected = 0;
+		this.isConnected = 1;
 		enableCommands();
 
 	}

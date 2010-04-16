@@ -67,7 +67,7 @@
 	<manifest >
     <attribute name="Built-By" value="${user.name}"/>
 	<attribute name="Main-Class" value="fi.kaila.suku.swing.Suku"/>
-	<attribute name="Class-Path" value="lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar resources/"/>
+	<attribute name="Class-Path" value="lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/looks-2.3.1.jar resources/"/>
     <section name="common">
       <attribute name="Specification-Title" value="Example"/>
       <attribute name="Specification-Version" value="${app.version}"/>
@@ -93,6 +93,7 @@
 	    
 	  	<copy file="${dist.home}/suku.jar" tofile="${web.home}/suku.jar" />
 	 	<copy file="${lib.home}/jxl.jar" tofile="${web.home}/jxl.jar" />
+		
 	 	<war destfile="${dist.home}/finfamily.war" basedir="${basedir}/WebContent">
 	 		
 	 	</war>
@@ -128,7 +129,7 @@
  -->
    <copy file="${devc.home}/suku.sh" todir="${dist.home}"/>
    
-   
+   <copy file="${devc.home}/SukuMac" todir="${dist.home}"/>
 
 	
 	 <copy todir="${dist.home}/lib">
@@ -137,7 +138,7 @@
 	</copy>
 	
 	<zip destfile="${swing.home}/finfamily${app.version}.zip" basedir="${dist.home}"
-	  includes="suku.jar suku.sh lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar properties/* 
+	  includes="suku.jar suku.sh SukuMac lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/looks-2.3.1.jar properties/* 
 	  resources/excel/PaikatExcel.xls resources/excel/TypesExcel.xls 
 	  resources/excel/FinFamily.xls resources/excel/Taivut_fi.xls resources/images/suomikartta.jpg 
 	  resources/xml/*">
