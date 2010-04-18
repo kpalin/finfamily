@@ -8,8 +8,13 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Vector;
+
+import javax.imageio.ImageIO;
 
 import fi.kaila.suku.swing.util.ISukuGraphicalItem;
 import fi.kaila.suku.util.Utils;
@@ -276,7 +281,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			person = famMember.get(i);
 			g.drawString("" + i, p.x, y);
 			if (person.getSurety() < 100) {
-				g.drawString("?", p.x + 10, y);
+				drawSurety(g, "S", p.x + 10, y);
+				// g.drawString("?", p.x + 10, y);
 			}
 			g.drawString(person.getTextName(), p.x + xmargin, y);
 			pr = new PersonRectangle();
@@ -363,14 +369,16 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			pr = new PersonRectangle();
 			pr.person = person;
 			String extra = "";
-			if (pr.person.getSurety() < 100) {
-				extra = "?";
-			}
 			if (pr.person.getAdopted() != null) {
-				extra += "a";
+				extra += "A";
 			}
+			if (pr.person.getSurety() < 100) {
+				extra += "S";
+			}
+
 			if (!extra.isEmpty()) {
-				g.drawString(extra, p.x + 10, y);
+				drawSurety(g, extra, p.x + 10, y);
+				// g.drawString(extra, p.x + 10, y);
 			}
 			pr.rectangle = new Rectangle(0, y - p.y - rowHeight, d.width,
 					person.getGraphRowCount() * rowHeight);
@@ -394,6 +402,39 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			y += person.getGraphRowCount() * rowHeight;
 		}
 
+	}
+
+	private void drawSurety(Graphics g, String suretyCode, int x, int y) {
+		if (suretyCode != null) {
+			String imgLocation = "/images/rela" + suretyCode + ".jpg";
+			InputStream in = null;
+			int imsize;
+			byte imbytes[] = new byte[2048];
+			BufferedImage img = null;
+			try {
+				in = this.getClass().getResourceAsStream(imgLocation);
+				if (in != null) {
+					imsize = in.read(imbytes);
+					ByteArrayInputStream bb = new ByteArrayInputStream(imbytes);
+					if (bb != null) {
+						img = ImageIO.read(bb);
+						g.drawImage(img, x, y - img.getHeight(), null);
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException ignored) {
+					}
+				}
+
+			}
+
+		}
 	}
 
 	/**

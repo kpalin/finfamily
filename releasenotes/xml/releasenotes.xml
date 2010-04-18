@@ -3,7 +3,14 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
-<hdr>Release 493 on 13 apr 2010</hdr>
+<hdr>Release 500 on 18 apr 2010</hdr>
+<ul>
+<li>Family tree improvements. Family Tree requires update of database. Tools - Update database</li>
+<li>File menu fixes.</li>
+<li>Mac and Linux GUI improvements. Check Wiki-page</li>
+</ul>
+
+<hdr>Release 493 on 13 apr 2010 (24)</hdr>
 <ul>
 <li>Family view improvements. Copy command to copy view to clipboard</li>
 <li>Rescaling of Person View windows improved.</li>
