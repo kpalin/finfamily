@@ -168,11 +168,10 @@ public class SukuServerImpl implements SukuServer {
 
 		SukuData fam = new SukuData();
 
-		String sql = "select s.bid,r.relationrow,r.tag,rn.fromdate,rd.fromdate,r.surety "
-				+ "from ((spouse as s inner join relation as r on s.rid = r.rid "
-				+ "and s.tag=r.tag) left join relationNotice as rn on r.rid = rn.rid  "
-				+ "and rn.tag='MARR') left join relationNotice as rd on r.rid = rd.rid  "
-				+ "and rd.tag='DIV' where s.aid = ? order by r.relationrow ";
+		String sql = "select s.bid,s.relationrow,s.tag,rn.fromdate,rd.fromdate,rn.tag,s.surety "
+				+ "from (spouse_all as s left join relationNotice as rn on s.rid = rn.rid  "
+				+ "and rn.tag='MARR') left join relationNotice as rd on s.rid = rd.rid  "
+				+ "and rd.tag='DIV' where s.aid = ? order by s.relationrow ";
 
 		Vector<RelationShortData> v = new Vector<RelationShortData>();
 		try {
@@ -187,7 +186,8 @@ public class SukuServerImpl implements SukuServer {
 				int relOrder = rs.getInt(2);
 				String aux = rs.getString(4);
 				String div = rs.getString(5);
-				int surety = rs.getInt(6);
+				String stag = rs.getString(6);
+				int surety = rs.getInt(7);
 				// System.out.println("XX: " + tag + "/" + relPid + "/" +
 				// relOrder + "/" + aux + "/" + div);
 
@@ -209,9 +209,13 @@ public class SukuServerImpl implements SukuServer {
 
 			int begChil = v.size();
 
-			sql = "select c.bid,r.relationrow,r.tag,r.surety "
-					+ "from (child as c inner join relation as r on c.rid = r.rid and c.tag=r.tag) "
-					+ "where c.aid=? " + "order by r.relationrow";
+			sql = "select c.bid,c.relationrow,c.tag,rn.tag,c.surety "
+					+ "from child_all as c left join relationNotice as rn on c.rid = rn.rid  "
+					+ "and rn.tag='ADOP' where c.aid = ? order by c.relationrow ";
+
+			// sql = "select c.bid,c.relationrow,c.tag,c.surety "
+			// + "from child_all as c  "
+			// + "where c.aid=? order by c.relationrow";
 
 			pstm = this.con.prepareStatement(sql);
 
@@ -221,7 +225,12 @@ public class SukuServerImpl implements SukuServer {
 			while (rs.next()) {
 				RelationShortData rel = new RelationShortData(pid,
 						rs.getInt(1), rs.getInt(2), rs.getString(3), rs
-								.getInt(4));
+								.getInt(5));
+				String adop = rs.getString(4);
+				if (adop != null) {
+					rel.setAdopted(adop);
+				}
+
 				// String aux = rs.getString(4);
 				// if (aux != null) {
 				// rel.setMarrDate(aux);
@@ -235,7 +244,7 @@ public class SukuServerImpl implements SukuServer {
 				int endChil = v.size();
 
 				for (int i = begChil; i < endChil; i++) {
-					sql = "select bid,tag from parent where aid =? ";
+					sql = "select bid,tag from parent_all where aid =? ";
 					Vector<Integer> parents = new Vector<Integer>();
 					pstm = this.con.prepareStatement(sql);
 					RelationShortData relsho = v.get(i);
@@ -257,9 +266,12 @@ public class SukuServerImpl implements SukuServer {
 				}
 			}
 
-			sql = "select c.bid,r.relationrow,r.tag,r.surety "
-					+ "from (parent as c inner join relation as r on c.rid = r.rid "
-					+ "and c.tag=r.tag) where c.aid=?  order by r.relationrow";
+			sql = "select p.bid,p.relationrow,p.tag,rn.tag,p.surety "
+					+ "from parent_all as p left join relationNotice as rn on p.rid = rn.rid  "
+					+ "and rn.tag='ADOP' where p.aid = ? order by p.relationrow ";
+
+			// sql = "select p.bid,p.relationrow,p.tag,p.surety "
+			// + "from parent_all as p  where p.aid=?  order by p.relationrow";
 
 			pstm = this.con.prepareStatement(sql);
 
@@ -269,7 +281,11 @@ public class SukuServerImpl implements SukuServer {
 			while (rs.next()) {
 				RelationShortData rel = new RelationShortData(pid,
 						rs.getInt(1), rs.getInt(2), rs.getString(3), rs
-								.getInt(4));
+								.getInt(5));
+				String adop = rs.getString(4);
+				if (adop != null) {
+					rel.setAdopted(adop);
+				}
 				v.add(rel);
 
 			}

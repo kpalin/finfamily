@@ -71,6 +71,10 @@ public class PersonShortData implements Serializable, Transferable,
 	 */
 	private transient int parentPid = 0;
 	private transient String adopted = null;
+	/**
+	 * used by FamilyTree
+	 */
+	private transient int surety = 100;
 
 	private int x = 0;
 	private int y = 0;
@@ -1127,6 +1131,14 @@ public class PersonShortData implements Serializable, Transferable,
 	 */
 	public String getAdopted() {
 		return adopted;
+	}
+
+	public void setSurety(int surety) {
+		this.surety = surety;
+	}
+
+	public int getSurety() {
+		return surety;
 	}
 
 	private class ShortName implements Serializable {

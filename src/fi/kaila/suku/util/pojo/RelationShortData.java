@@ -17,8 +17,9 @@ public class RelationShortData implements Serializable {
 	int pid = 0;
 	int relationPid = 0;
 	String tag = null;
-	String marrDate = null;
-	String divDate = null;
+	private String marrDate = null;
+	private String divDate = null;
+	private String adopted = null;
 	int parentArray[] = null;
 	int order = 0;
 	int auxIndex = 0;
@@ -130,5 +131,13 @@ public class RelationShortData implements Serializable {
 	 */
 	public String getDivDate() {
 		return this.divDate;
+	}
+
+	public void setAdopted(String adopted) {
+		this.adopted = adopted;
+	}
+
+	public String getAdopted() {
+		return adopted;
 	}
 }

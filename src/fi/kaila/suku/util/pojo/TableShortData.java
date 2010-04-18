@@ -186,7 +186,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		int sujet = 0;
 
 		currentArea = new Rectangle(p.x, p.y, d.width, d.height);
-		int xmargin = 10;
+		int xmargin = 25;
 		int y = p.y;
 		PersonShortData person;
 
@@ -275,6 +275,9 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		for (int i = spouseIdx; i < spouseIdx + spouseCount; i++) {
 			person = famMember.get(i);
 			g.drawString("" + i, p.x, y);
+			if (person.getSurety() < 100) {
+				g.drawString("?", p.x + 10, y);
+			}
 			g.drawString(person.getTextName(), p.x + xmargin, y);
 			pr = new PersonRectangle();
 			pr.person = person;
@@ -359,6 +362,16 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 			pr = new PersonRectangle();
 			pr.person = person;
+			String extra = "";
+			if (pr.person.getSurety() < 100) {
+				extra = "?";
+			}
+			if (pr.person.getAdopted() != null) {
+				extra += "a";
+			}
+			if (!extra.isEmpty()) {
+				g.drawString(extra, p.x + 10, y);
+			}
 			pr.rectangle = new Rectangle(0, y - p.y - rowHeight, d.width,
 					person.getGraphRowCount() * rowHeight);
 			personAreas.add(pr);
@@ -370,7 +383,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
 						+ xdate + xmargin, y + rowHeight);
 			}
-
+			// if (person.getSurety() != 100) {
+			// g.drawString("SU:" + person.getSurety(), p.x + xmargin, y
+			// + rowHeight);
+			// } else
 			if (person.getOccupation() != null) {
 				g.drawString(person.getOccupation(), p.x + xmargin, y
 						+ rowHeight);
@@ -732,6 +748,9 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				for (int j = 0; j < pers.length; j++) {
 					perd = pers[j];
 					if (relid == perd.getPid()) {
+						perd.setSurety(reld.surety);
+						perd.setAdopted(reld.getAdopted());
+
 						spouVec.add(perd);
 						spouRelVec.add(reld);
 						break;
@@ -742,6 +761,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				for (int j = 0; j < pers.length; j++) {
 					perd = pers[j];
 					if (relid == perd.getPid()) {
+						perd.setSurety(reld.surety);
+						perd.setAdopted(reld.getAdopted());
 						chilVec.add(perd);
 						chilRelVec.add(reld);
 						break;
@@ -752,6 +773,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				for (int j = 0; j < pers.length; j++) {
 					perd = pers[j];
 					if (relid == perd.getPid()) {
+						perd.setSurety(reld.surety);
+						perd.setAdopted(reld.getAdopted());
 						fathVec.add(perd);
 						fathRelVec.add(reld);
 						break;
@@ -762,13 +785,14 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				for (int j = 0; j < pers.length; j++) {
 					perd = pers[j];
 					if (relid == perd.getPid()) {
+						perd.setSurety(reld.surety);
+						perd.setAdopted(reld.getAdopted());
 						mothVec.add(perd);
 						mothRelVec.add(reld);
 						break;
 					}
 				}
 			}
-
 		}
 
 		famMember.addAll(spouVec);

@@ -442,6 +442,73 @@ on p1.pid = g1.pid and g1.tag = 'HUSB')
 inner join Relation as g2 on g1.RID = g2.RID and g1.surety >=80 and g2.surety >= 80)
 inner join Unit as p2 on g2.pid = p2.pid and g2.tag = 'WIFE')
 where p1.pid <> p2.pid;
+ 
+-- added 18.4.2010 views for relatives with all sureties
+-- at least used in family tree 
+
+
+create view father_all as
+select p1.pid as aid,p2.pid as bid,g1.rid ,g1.tag,g1.RelationRow,g1.surety
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('FATH'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('CHIL'))
+where p1.pid <> p2.pid;
+
+create view mother_all as
+select p1.pid as aid,p2.pid as bid,g1.RID ,g1.tag,g1.RelationRow,g1.surety
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('MOTH'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('CHIL'))
+where p1.pid <> p2.pid;
+
+create view parent_all as
+select p1.pid as aid,p2.pid as bid,g1.RID  ,g1.tag,g1.RelationRow,g1.surety
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('FATH','MOTH'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('CHIL'))
+where p1.pid <> p2.pid;
+
+
+create view child_all as
+select p1.pid as aid,p2.pid as bid,g1.RID ,g1.tag,g1.RelationRow,g1.surety
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('CHIL'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('FATH','MOTH'))
+where p1.pid <> p2.pid;
+
+
+create view spouse_all as
+select p1.pid as aid,p2.pid as bid,g1.RID  ,g1.tag,g1.RelationRow,g1.surety
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag in ('HUSB','WIFE'))
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag  in ('HUSB','WIFE'))
+where p1.pid <> p2.pid;
+
+create view wife_all as
+select p1.pid as aid,p2.pid as bid,g1.RID  ,g1.tag,g1.RelationRow,g1.surety
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag = 'WIFE')
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag = 'HUSB')
+where p1.pid <> p2.pid;
+
+create view husband_all as
+select p1.pid as aid,p2.pid as bid,g1.RID ,g1.tag,g1.RelationRow,g1.surety
+from (((Unit as p1 inner join Relation as g1 
+on p1.pid = g1.pid and g1.tag = 'HUSB')
+inner join Relation as g2 on g1.RID = g2.RID )
+inner join Unit as p2 on g2.pid = p2.pid and g2.tag = 'WIFE')
+where p1.pid <> p2.pid;
+
+--
+-- fullTextView is used for search with "fill text"
+--
+
 create view fullTextView as
 select pid,coalesce(NoticeType,'') || ' ' || coalesce(Description,'') || ' ' ||coalesce(Place,'') || ' ' ||
 coalesce(Village,'') || ' ' ||coalesce(Farm,'') || ' ' ||coalesce(Croft,'') || ' ' ||coalesce(Address,'') || ' ' ||
