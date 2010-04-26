@@ -54,6 +54,7 @@ import jxl.write.biff.RowsExceededException;
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
 import fi.kaila.suku.report.AncestorReport;
+import fi.kaila.suku.report.AncestorTableReport;
 import fi.kaila.suku.report.CommonReport;
 import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
@@ -154,7 +155,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	public static final String SET_SPOUSE_FULL = "FULL";
 
 	private static final String ACTION_INDEX = "ACTION_INDEX";
-
+	/** */
+	public static final String SET_ANC_TABLES = "SET_ANC_TABLES";
 	/**
 	 * 
 	 */
@@ -244,6 +246,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	private static final int tabh = 360;
 	private static final int tabw = 300;
+
 	private Suku parent;
 
 	/**
@@ -1232,7 +1235,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					dr = new DescendantReport(self, typesTable, repo);
 				} else if (reportTypePane.getSelectedIndex() == 1) {
-					dr = new AncestorReport(self, typesTable, repo);
+					String order = getAncestorPane().getNumberingFormat()
+							.getSelection().getActionCommand();
+					if (SET_ANC_TABLES.equals(order)) {
+						dr = new AncestorTableReport(self, typesTable, repo);
+					} else {
+						dr = new AncestorReport(self, typesTable, repo);
+					}
 				} else {
 					dr = new GenGraphReport(self, typesTable, repo);
 				}

@@ -96,6 +96,12 @@ public class AncestorPane extends JPanel {
 		// TODO decide if this will be implemented
 		ancestorShowDescGen.setBounds(0, 0, 40, 20);
 		pp.add(ancestorShowDescGen);
+		rtypy += 22;
+		formd = new JRadioButton(Resurses.getString("REPORT.ANCESTOR.TABLES"));
+		formd.setActionCommand(ReportWorkerDialog.SET_ANC_TABLES);
+		formd.setBounds(10, rtypy, 200, 20);
+		ancestorNumberingFormatGroup.add(formd);
+		add(formd);
 
 		// JLabel lb = new
 		// JLabel(Resurses.getString("REPORT.ANC.SHOW.DESC.GEN"));
