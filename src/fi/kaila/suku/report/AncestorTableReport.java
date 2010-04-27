@@ -8,10 +8,11 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 import jxl.Workbook;
+import jxl.format.Border;
+import jxl.format.BorderLineStyle;
+import jxl.format.VerticalAlignment;
 import jxl.write.Label;
-import jxl.write.Number;
 import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
@@ -37,7 +38,7 @@ public class AncestorTableReport extends CommonReport {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
-	 * Constructor for GenGraphReport
+	 * Constructor for AncestorTableReport
 	 * 
 	 * @param caller
 	 * @param typesTable
@@ -89,147 +90,218 @@ public class AncestorTableReport extends CommonReport {
 			BufferedOutputStream bstr = new BufferedOutputStream(
 					Suku.kontroller.getOutputStream());
 			WritableWorkbook workbook = Workbook.createWorkbook(bstr);
-			// WritableWorkbook workbook = Workbook.createWorkbook(new
-			// File("output.xls"));
 
-			WritableSheet sheet = workbook.createSheet("Table 1", 0);
+			ReportUnit[] page = new ReportUnit[31];
 
-			// Create a cell format for Times 16, bold and italic
-			WritableFont arial10italic = new WritableFont(WritableFont.ARIAL,
-					10, WritableFont.NO_BOLD, true);
-			WritableCellFormat italic10format = new WritableCellFormat(
-					arial10italic);
+			WritableCellFormat wrall = new WritableCellFormat();
+			wrall.setBorder(Border.ALL, BorderLineStyle.MEDIUM);
+			wrall.setVerticalAlignment(VerticalAlignment.TOP);
+			wrall.setWrap(true);
 
-			WritableFont arial10bold = new WritableFont(WritableFont.ARIAL, 10,
-					WritableFont.BOLD, false);
-			WritableCellFormat italic10bold = new WritableCellFormat(
-					arial10bold);
-
-			Label label = new Label(0, 0, "Table 1");
-			sheet.addCell(label);
-
-			Number number;
 			int col = 0;
 			int row = 0;
-			for (int i = 0; i < tables.size(); i++) {
+			int lrow = 0;
+			int lcol = 0;
+			int idx = 0;
+			int xpage = 0;
+			while (idx < tables.size()) {
+				long tabIdx = 0;
 
-				ReportUnit uu = tables.get(i);
+				ReportUnit uu = tables.get(idx);
 				long tabno = uu.getTableNo();
 
-				ReportTableMember rtu = uu.getMember(0);
-				int pid = rtu.getPid();
-				SukuData pappadata = null;
-
-				try {
-					pappadata = caller.getKontroller().getSukuData(
-							"cmd=person", "pid=" + pid,
-							"lang=" + Resurses.getLanguage());
-				} catch (SukuException e1) {
-					logger.log(Level.WARNING, "background reporting", e1);
-					JOptionPane.showMessageDialog(caller, e1.getMessage());
-					return;
+				tabIdx = ((tabno - 1) & 0xffffffffffffffc0L);
+				for (int j = 0; j < 31; j++) {
+					page[j] = null;
 				}
-
-				PersonShortData pp = new PersonShortData(pappadata.persLong);
-
-				String bdate = pp.getBirtDate() == null ? null : pp
-						.getBirtDate();
-				String ddate = pp.getDeatDate() == null ? null : pp
-						.getDeatDate();
-
-				String pname = pp.getAlfaName();
-				String occu = pp.getOccupation();
-
-				String who = null;
-				int tabcol = 1;
-				int ax;
-				switch ((int) tabno) {
-				case 1:
-					row = 22;
-					col = 0;
-					tabcol = 2;
-					who = typesTable.getTextValue("ANC_SUBJECT");
-					break;
-				case 2:
-					row = 10;
-					col = 1;
-					tabcol = 2;
-					who = typesTable.getTextValue("ANC_FATHER");
-					break;
-				case 3:
-					row = 33;
-					col = 1;
-					tabcol = 2;
-					who = typesTable.getTextValue("ANC_MOTHER");
-					break;
-				case 4:
-					row = 4;
-					col = 2;
-					tabcol = 2;
-					who = typesTable.getTextValue("ANC_FF");
-					break;
-				case 5:
-					row = 16;
-					col = 2;
-					tabcol = 2;
-					who = typesTable.getTextValue("ANC_FM");
-					break;
-				case 6:
-					row = 28;
-					col = 2;
-					tabcol = 2;
-					who = typesTable.getTextValue("ANC_MF");
-					break;
-				case 7:
-					row = 39;
-					col = 2;
-					tabcol = 2;
-					who = typesTable.getTextValue("ANC_MM");
-					break;
-				default:
-					if (tabno < 16) {
-						ax = (int) (tabno - 8);
-						col = 5;
-						row = 1 + (ax * 7);
+				page[(int) (tabno - tabIdx - 1)] = uu;
+				idx++;
+				uu = tables.get(idx);
+				long curtab = uu.getTableNo();
+				while (curtab <= tabIdx + 31) {
+					page[(int) (curtab - tabIdx - 1)] = uu;
+					idx++;
+					if (idx < tables.size()) {
+						uu = tables.get(idx);
+						curtab = uu.getTableNo();
 					} else {
-						col = 7;
-						ax = (int) (tabno - 16);
-						if ((ax & 1) == 0) {
-							row = 1 + ((ax / 2) * 7);
-						} else {
-							row = 1 + ((ax / 2) * 7) + 4;
+						break;
+					}
+				}
+				xpage++;
+
+				WritableSheet sheet = workbook.createSheet("P " + xpage, 0);
+
+				WritableSheet wsh = (WritableSheet) sheet;
+
+				wsh.setColumnView(0, 2);
+				wsh.setColumnView(1, 4);
+				wsh.setColumnView(2, 25);
+				wsh.setColumnView(3, 2);
+				wsh.setColumnView(4, 2);
+				wsh.setColumnView(5, 25);
+				wsh.setColumnView(6, 2);
+				wsh.setColumnView(7, 25);
+				wsh.setColumnView(8, 4);
+				wsh.setColumnView(9, 4);
+
+				wsh.setColumnView(10, 1);
+				Label label = new Label(0, 0, "P " + xpage);
+				sheet.addCell(label);
+				for (int i = 0; i < 31; i++) {
+
+					StringBuilder sb = new StringBuilder();
+					uu = page[i];
+
+					tabno = tabIdx + i + 1;
+
+					SukuData pappadata = null;
+					String bdate = null;
+					String ddate = null;
+
+					String pname = null;
+					String occu = null;
+					if (uu != null) {
+						ReportTableMember rtu = uu.getMember(0);
+						int pid = rtu.getPid();
+
+						try {
+							pappadata = caller.getKontroller().getSukuData(
+									"cmd=person", "pid=" + pid,
+									"lang=" + Resurses.getLanguage());
+						} catch (SukuException e1) {
+							logger.log(Level.WARNING, "background reporting",
+									e1);
+							JOptionPane.showMessageDialog(caller, e1
+									.getMessage());
+							return;
 						}
+
+						PersonShortData pp = new PersonShortData(
+								pappadata.persLong);
+
+						bdate = pp.getBirtDate() == null ? null : pp
+								.getBirtDate();
+						ddate = pp.getDeatDate() == null ? null : pp
+								.getDeatDate();
+
+						pname = pp.getAlfaName();
+						occu = pp.getOccupation();
+					}
+					String who = null;
+
+					int ax;
+					int bh = 5;
+					switch ((int) tabno) {
+					case 1:
+						row = 22;
+						lrow = row + bh;
+						col = 0;
+						lcol = col + 2;
+						who = typesTable.getTextValue("ANC_SUBJECT");
+						break;
+					case 2:
+						row = 10;
+						lrow = row + bh;
+						col = 1;
+						lcol = col + 2;
+						who = typesTable.getTextValue("ANC_FATHER");
+						break;
+					case 3:
+						row = 34;
+						lrow = row + bh;
+						col = 1;
+						lcol = col + 2;
+						who = typesTable.getTextValue("ANC_MOTHER");
+						break;
+					case 4:
+						row = 4;
+						lrow = row + bh;
+						col = 2;
+						lcol = col + 2;
+						who = typesTable.getTextValue("ANC_FF");
+						break;
+					case 5:
+						row = 16;
+						lrow = row + bh;
+						col = 2;
+						lcol = col + 2;
+						who = typesTable.getTextValue("ANC_FM");
+						break;
+					case 6:
+						row = 28;
+						lrow = row + bh;
+						col = 2;
+						lcol = col + 2;
+						who = typesTable.getTextValue("ANC_MF");
+						break;
+					case 7:
+						row = 40;
+						lrow = row + bh;
+						col = 2;
+						lcol = col + 2;
+						who = typesTable.getTextValue("ANC_MM");
+						break;
+					default:
+						if (tabno < 16) {
+							ax = (int) (tabno - 8);
+							col = 5;
+							lcol = col + 1;
+							row = 1 + (ax * 7);
+							lrow = row + bh;
+						} else {
+							col = 7;
+							lcol = col + 1;
+							ax = (int) (tabno - 16);
+							if ((ax & 1) == 0) {
+								row = 1 + ((ax / 2) * 7);
+								lrow = row + 3;
+							} else {
+								row = 1 + ((ax / 2) * 7) + 4;
+								lrow = row + 2;
+							}
+						}
+
 					}
 
-				}
-				int lrow = row;
-				if (who != null) {
+					if (who != null) {
+						sb.append(who + "\n");
 
-					label = new Label(col, lrow++, who);
-					sheet.addCell(label);
-				}
-				label = new Label(col, lrow++, pname);
-				sheet.addCell(label);
-				if (bdate != null) {
-					label = new Label(col, lrow, bdate);
-					sheet.addCell(label);
-				}
-				lrow++;
-				if (ddate != null) {
-					label = new Label(col, lrow, ddate);
-					sheet.addCell(label);
-				}
-				lrow++;
-				if (occu != null) {
-					label = new Label(col, lrow, occu);
-					sheet.addCell(label);
-				}
-				number = new Number(col + tabcol, row, tabno);
-				sheet.addCell(number);
+					}
+					if (pname != null) {
+						sb.append(pname);
+					}
+					sb.append(" (" + tabno + ")");
+					sb.append("\n");
 
+					if (bdate != null) {
+						sb.append(bdate);
+
+					}
+
+					sb.append("\n");
+					if (ddate != null) {
+						sb.append(bdate);
+
+					}
+
+					sb.append("\n");
+					if (occu != null) {
+						sb.append(occu);
+
+					}
+
+					label = new Label(col, row, sb.toString());
+					sheet.addCell(label);
+
+					// Range rng =
+					wsh.mergeCells(col, row, lcol, lrow);
+					wsh.getWritableCell(col, row).setCellFormat(wrall);
+
+				}
+				break;
 			}
 
-			// All sheets and cells added. Now write out the workbook
 			workbook.write();
 			workbook.close();
 			bstr.close();
