@@ -856,32 +856,32 @@ public class ReportUtil {
 				for (int i = 0; i < curvec.size(); i++) {
 
 					ReportUnit cux = curvec.get(i);
+					if (cux != null) {
+						tables.add(cux);
+						int fid = cux.getFatherPid();
+						if (fid > 0) {
+							ReportUnit cuf = unitMap.get(fid);
+							if (cuf != null && cuf.getTableNo() == 0) {
+								cuf.setTableNo(cux.getTableNo() * 2);
+								cuf.setGen(cux.getGen() + 1);
+								// tables.add(cuf);
+								nxtvec.add(cuf);
+							}
 
-					tables.add(cux);
-					int fid = cux.getFatherPid();
-					if (fid > 0) {
-						ReportUnit cuf = unitMap.get(fid);
-						if (cuf.getTableNo() == 0) {
-							cuf.setTableNo(cux.getTableNo() * 2);
-							cuf.setGen(cux.getGen() + 1);
-							// tables.add(cuf);
-							nxtvec.add(cuf);
 						}
 
-					}
+						int mid = cux.getMotherPid();
+						if (mid > 0) {
+							ReportUnit cum = unitMap.get(mid);
+							if (cum != null && cum.getTableNo() == 0) {
+								cum.setTableNo(cux.getTableNo() * 2 + 1);
+								cum.setGen(cux.getGen() + 1);
+								// tables.add(cum);
+								nxtvec.add(cum);
+							}
 
-					int mid = cux.getMotherPid();
-					if (mid > 0) {
-						ReportUnit cum = unitMap.get(mid);
-						if (cum.getTableNo() == 0) {
-							cum.setTableNo(cux.getTableNo() * 2 + 1);
-							cum.setGen(cux.getGen() + 1);
-							// tables.add(cum);
-							nxtvec.add(cum);
 						}
-
 					}
-
 				}
 				curvec = nxtvec;
 

@@ -2,6 +2,8 @@ package fi.kaila.suku.report;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,6 +86,13 @@ public class AncestorTableReport extends CommonReport {
 		tables = vlist.tables;
 
 		logger.info("AncestorTableReport");
+		HashMap<Long, ReportUnit> tabMap = new HashMap<Long, ReportUnit>();
+
+		for (int j = 0; j < tables.size(); j++) {
+			ReportUnit ru = tables.get(j);
+			tabMap.put(ru.getTableNo(), ru);
+		}
+		Vector<ReportUnit> tabNext = new Vector<ReportUnit>();
 
 		try {
 
@@ -91,7 +100,7 @@ public class AncestorTableReport extends CommonReport {
 					Suku.kontroller.getOutputStream());
 			WritableWorkbook workbook = Workbook.createWorkbook(bstr);
 
-			ReportUnit[] page = new ReportUnit[31];
+			ReportUnit[] page = new ReportUnit[32];
 
 			WritableCellFormat wrall = new WritableCellFormat();
 			wrall.setBorder(Border.ALL, BorderLineStyle.MEDIUM);
@@ -102,35 +111,60 @@ public class AncestorTableReport extends CommonReport {
 			int row = 0;
 			int lrow = 0;
 			int lcol = 0;
-			int idx = 0;
+
 			int xpage = 0;
-			while (idx < tables.size()) {
-				long tabIdx = 0;
 
-				ReportUnit uu = tables.get(idx);
-				long tabno = uu.getTableNo();
+			ReportUnit rpux = tabMap.get(1L);
+			tabNext.add(rpux);
 
-				tabIdx = ((tabno - 1) & 0xffffffffffffffc0L);
-				for (int j = 0; j < 31; j++) {
+			while (tabNext.size() > 0) {
+				rpux = tabNext.remove(0);
+				long currTab = rpux.getTableNo();
+
+				for (int j = 0; j < 32; j++) {
 					page[j] = null;
 				}
-				page[(int) (tabno - tabIdx - 1)] = uu;
-				idx++;
-				uu = tables.get(idx);
-				long curtab = uu.getTableNo();
-				while (curtab <= tabIdx + 31) {
-					page[(int) (curtab - tabIdx - 1)] = uu;
-					idx++;
-					if (idx < tables.size()) {
-						uu = tables.get(idx);
-						curtab = uu.getTableNo();
-					} else {
-						break;
+
+				ReportUnit rpu = tabMap.get(currTab);
+
+				page[1] = rpu;
+
+				for (int i = 1; i <= 15; i++) {
+					rpu = page[i];
+					if (rpu != null) {
+						currTab = rpu.getTableNo();
+						if (rpu.getFatherPid() > 0) {
+							rpux = tabMap.get(currTab * 2);
+							page[i * 2] = rpux;
+							if (i > 7
+									&& rpux != null
+									&& rpux.getFatherPid()
+											+ rpux.getMotherPid() > 0) {
+								tabNext.add(rpux);
+							}
+						}
+
+						if (rpu.getMotherPid() > 0) {
+							rpux = tabMap.get(currTab * 2 + 1);
+							page[i * 2 + 1] = rpux;
+							if (i > 7
+									&& rpux != null
+									&& rpux.getFatherPid()
+											+ rpux.getMotherPid() > 0) {
+								tabNext.add(rpux);
+							}
+						}
 					}
 				}
-				xpage++;
 
-				WritableSheet sheet = workbook.createSheet("P " + xpage, 0);
+				ReportUnit uu;
+				long tabIdx = 0;
+				long tabno;
+
+				xpage++;
+				int sheetCount = workbook.getNumberOfSheets();
+				WritableSheet sheet = workbook.createSheet("P " + xpage,
+						sheetCount + 1);
 
 				WritableSheet wsh = (WritableSheet) sheet;
 
@@ -148,17 +182,17 @@ public class AncestorTableReport extends CommonReport {
 				wsh.setColumnView(10, 1);
 				Label label = new Label(0, 0, "P " + xpage);
 				sheet.addCell(label);
-				for (int i = 0; i < 31; i++) {
+				for (int i = 1; i < 32; i++) {
 
 					StringBuilder sb = new StringBuilder();
 					uu = page[i];
 
-					tabno = tabIdx + i + 1;
+					tabno = tabIdx + i;
 
 					SukuData pappadata = null;
 					String bdate = null;
 					String ddate = null;
-
+					long tableNumber = 0;
 					String pname = null;
 					String occu = null;
 					if (uu != null) {
@@ -179,13 +213,22 @@ public class AncestorTableReport extends CommonReport {
 
 						PersonShortData pp = new PersonShortData(
 								pappadata.persLong);
-
-						bdate = pp.getBirtDate() == null ? null : pp
-								.getBirtDate();
-						ddate = pp.getDeatDate() == null ? null : pp
-								.getDeatDate();
-
-						pname = pp.getAlfaName();
+						tableNumber = uu.getTableNo();
+						bdate = pp.getBirtDate() == null ? null : Utils
+								.textDate(pp.getBirtDate(), false);
+						if (bdate != null && pp.getBirtPlace() != null) {
+							bdate += " " + pp.getBirtPlace();
+						} else if (pp.getBirtPlace() != null) {
+							bdate = pp.getBirtPlace();
+						}
+						ddate = pp.getDeatDate() == null ? null : Utils
+								.textDate(pp.getDeatDate(), false);
+						if (ddate != null && pp.getDeatPlace() != null) {
+							ddate += " " + pp.getDeatPlace();
+						} else if (pp.getDeatPlace() != null) {
+							ddate = pp.getDeatPlace();
+						}
+						pname = pp.getAlfaName(true);
 						occu = pp.getOccupation();
 					}
 					String who = null;
@@ -271,17 +314,22 @@ public class AncestorTableReport extends CommonReport {
 					if (pname != null) {
 						sb.append(pname);
 					}
-					sb.append(" (" + tabno + ")");
-					sb.append("\n");
+					sb.append(" ");
+					if (tableNumber > 0) {
+						sb.append("(" + tableNumber + ")");
+						sb.append("\n");
+					}
 
 					if (bdate != null) {
+						sb.append(typesTable.getTextValue("ANC_BORN") + " ");
 						sb.append(bdate);
 
 					}
 
 					sb.append("\n");
 					if (ddate != null) {
-						sb.append(bdate);
+						sb.append(typesTable.getTextValue("ANC_DIED") + " ");
+						sb.append(ddate);
 
 					}
 
@@ -299,9 +347,11 @@ public class AncestorTableReport extends CommonReport {
 					wsh.getWritableCell(col, row).setCellFormat(wrall);
 
 				}
-				break;
+				// break;
 			}
-
+			// for (int i = 0; i < tabNext.size(); i++) {
+			// System.out.println("TN:" + tabNext.get(i).getTableNo());
+			// }
 			workbook.write();
 			workbook.close();
 			bstr.close();
