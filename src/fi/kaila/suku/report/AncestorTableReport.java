@@ -15,6 +15,7 @@ import jxl.format.BorderLineStyle;
 import jxl.format.VerticalAlignment;
 import jxl.write.Label;
 import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
@@ -22,6 +23,7 @@ import jxl.write.biff.RowsExceededException;
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.Roman;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
 import fi.kaila.suku.util.Utils;
@@ -96,6 +98,9 @@ public class AncestorTableReport extends CommonReport {
 
 		try {
 
+			WritableFont arial10bold = new WritableFont(WritableFont.ARIAL, 10,
+					WritableFont.BOLD, false);
+			WritableCellFormat bold10 = new WritableCellFormat(arial10bold);
 			BufferedOutputStream bstr = new BufferedOutputStream(
 					Suku.kontroller.getOutputStream());
 			WritableWorkbook workbook = Workbook.createWorkbook(bstr);
@@ -111,7 +116,7 @@ public class AncestorTableReport extends CommonReport {
 			int row = 0;
 			int lrow = 0;
 			int lcol = 0;
-
+			int generation = 0;
 			int xpage = 0;
 
 			ReportUnit rpux = tabMap.get(1L);
@@ -180,7 +185,7 @@ public class AncestorTableReport extends CommonReport {
 				wsh.setColumnView(9, 4);
 
 				wsh.setColumnView(10, 1);
-				Label label = new Label(0, 0, "P " + xpage);
+				Label label = new Label(0, 1, "P " + xpage);
 				sheet.addCell(label);
 				for (int i = 1; i < 32; i++) {
 
@@ -195,6 +200,7 @@ public class AncestorTableReport extends CommonReport {
 					long tableNumber = 0;
 					String pname = null;
 					String occu = null;
+					int curgen = 0;
 					if (uu != null) {
 						ReportTableMember rtu = uu.getMember(0);
 						int pid = rtu.getPid();
@@ -214,6 +220,7 @@ public class AncestorTableReport extends CommonReport {
 						PersonShortData pp = new PersonShortData(
 								pappadata.persLong);
 						tableNumber = uu.getTableNo();
+						curgen = uu.getGen();
 						bdate = pp.getBirtDate() == null ? null : Utils
 								.textDate(pp.getBirtDate(), false);
 						if (bdate != null && pp.getBirtPlace() != null) {
@@ -237,6 +244,7 @@ public class AncestorTableReport extends CommonReport {
 					int bh = 5;
 					switch ((int) tabno) {
 					case 1:
+						generation = curgen;
 						row = 22;
 						lrow = row + bh;
 						col = 0;
@@ -347,6 +355,18 @@ public class AncestorTableReport extends CommonReport {
 					wsh.getWritableCell(col, row).setCellFormat(wrall);
 
 				}
+				label = new Label(1, 0, Roman.int2roman(generation + 1), bold10);
+				sheet.addCell(label);
+
+				label = new Label(2, 0, Roman.int2roman(generation + 2), bold10);
+				sheet.addCell(label);
+
+				label = new Label(5, 0, Roman.int2roman(generation + 3), bold10);
+				sheet.addCell(label);
+
+				label = new Label(7, 0, Roman.int2roman(generation + 4), bold10);
+				sheet.addCell(label);
+
 				// break;
 			}
 			// for (int i = 0; i < tabNext.size(); i++) {
