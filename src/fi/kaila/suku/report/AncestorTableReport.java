@@ -2,6 +2,7 @@ package fi.kaila.suku.report;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -96,6 +97,8 @@ public class AncestorTableReport extends CommonReport {
 		}
 		Vector<ReportUnit> tabNext = new Vector<ReportUnit>();
 
+		Vector<IndexPerson> ipers = new Vector<IndexPerson>();
+		String proband = "ANC_SUBJECT";
 		try {
 
 			WritableFont arial10bold = new WritableFont(WritableFont.ARIAL, 10,
@@ -129,7 +132,7 @@ public class AncestorTableReport extends CommonReport {
 				for (int j = 0; j < 32; j++) {
 					page[j] = null;
 				}
-
+				int mySize = tabNext.size();
 				ReportUnit rpu = tabMap.get(currTab);
 
 				page[1] = rpu;
@@ -140,30 +143,37 @@ public class AncestorTableReport extends CommonReport {
 						currTab = rpu.getTableNo();
 						if (rpu.getFatherPid() > 0) {
 							rpux = tabMap.get(currTab * 2);
-							page[i * 2] = rpux;
-							if (i > 7
-									&& rpux != null
-									&& rpux.getFatherPid()
-											+ rpux.getMotherPid() > 0) {
-								tabNext.add(rpux);
+							if (rpux != null) {
+								page[i * 2] = rpux;
+
+								if (i > 7
+										&& rpux.getFatherPid()
+												+ rpux.getMotherPid() > 0) {
+									tabNext.add(rpux);
+								}
+							} else {
+								page[i * 2] = new ReportUnit();
 							}
 						}
-
 						if (rpu.getMotherPid() > 0) {
 							rpux = tabMap.get(currTab * 2 + 1);
-							page[i * 2 + 1] = rpux;
-							if (i > 7
-									&& rpux != null
-									&& rpux.getFatherPid()
-											+ rpux.getMotherPid() > 0) {
-								tabNext.add(rpux);
+							if (rpux != null) {
+								page[i * 2 + 1] = rpux;
+								if (i > 7
+										&& rpux != null
+										&& rpux.getFatherPid()
+												+ rpux.getMotherPid() > 0) {
+									tabNext.add(rpux);
+								}
+							} else {
+								page[i * 2 + 1] = new ReportUnit();
 							}
 						}
 					}
 				}
 
 				ReportUnit uu;
-				long tabIdx = 0;
+
 				long tabno;
 
 				xpage++;
@@ -187,12 +197,13 @@ public class AncestorTableReport extends CommonReport {
 				wsh.setColumnView(10, 1);
 				Label label = new Label(0, 1, "P " + xpage);
 				sheet.addCell(label);
+				int addTable = 0;
 				for (int i = 1; i < 32; i++) {
 
 					StringBuilder sb = new StringBuilder();
 					uu = page[i];
 
-					tabno = tabIdx + i;
+					tabno = i;
 
 					SukuData pappadata = null;
 					String bdate = null;
@@ -200,43 +211,69 @@ public class AncestorTableReport extends CommonReport {
 					long tableNumber = 0;
 					String pname = null;
 					String occu = null;
+					String contPage = null;
 					int curgen = 0;
+					String nemo = null;
 					if (uu != null) {
-						ReportTableMember rtu = uu.getMember(0);
-						int pid = rtu.getPid();
+						if (uu.getMemberCount() == 0) {
+							nemo = "###";
+						} else {
+							ReportTableMember rtu = uu.getMember(0);
+							int pid = rtu.getPid();
 
-						try {
-							pappadata = caller.getKontroller().getSukuData(
-									"cmd=person", "pid=" + pid,
-									"lang=" + Resurses.getLanguage());
-						} catch (SukuException e1) {
-							logger.log(Level.WARNING, "background reporting",
-									e1);
-							JOptionPane.showMessageDialog(caller, e1
-									.getMessage());
-							return;
-						}
+							try {
+								pappadata = caller.getKontroller().getSukuData(
+										"cmd=person", "pid=" + pid,
+										"lang=" + Resurses.getLanguage());
+							} catch (SukuException e1) {
+								logger.log(Level.WARNING,
+										"background reporting", e1);
+								JOptionPane.showMessageDialog(caller, e1
+										.getMessage());
+								return;
+							}
 
-						PersonShortData pp = new PersonShortData(
-								pappadata.persLong);
-						tableNumber = uu.getTableNo();
-						curgen = uu.getGen();
-						bdate = pp.getBirtDate() == null ? null : Utils
-								.textDate(pp.getBirtDate(), false);
-						if (bdate != null && pp.getBirtPlace() != null) {
-							bdate += " " + pp.getBirtPlace();
-						} else if (pp.getBirtPlace() != null) {
-							bdate = pp.getBirtPlace();
+							PersonShortData pp = new PersonShortData(
+									pappadata.persLong);
+							tableNumber = uu.getTableNo();
+							curgen = uu.getGen();
+							bdate = pp.getBirtDate() == null ? null : Utils
+									.textDate(pp.getBirtDate(), false);
+							if (bdate != null && pp.getBirtPlace() != null) {
+								bdate += " " + pp.getBirtPlace();
+							} else if (pp.getBirtPlace() != null) {
+								bdate = pp.getBirtPlace();
+							}
+							ddate = pp.getDeatDate() == null ? null : Utils
+									.textDate(pp.getDeatDate(), false);
+							if (ddate != null && pp.getDeatPlace() != null) {
+								ddate += " " + pp.getDeatPlace();
+							} else if (pp.getDeatPlace() != null) {
+								ddate = pp.getDeatPlace();
+							}
+							pname = pp.getAlfaName(true);
+							occu = pp.getOccupation();
+							IndexPerson ixp = new IndexPerson(tableNumber,
+									xpage, pp);
+							ipers.add(ixp);
+
+							caller.setRunnerValue("" + xpage);
+							if (i > 15) {
+
+								// lets check if we continue
+								if (uu.getFatherPid() + uu.getMotherPid() > 0) {
+									// yes we do
+									addTable++;
+									int qsize = mySize;
+									qsize += addTable;
+									qsize += xpage;
+									contPage = "P " + qsize;
+
+								}
+
+							}
+
 						}
-						ddate = pp.getDeatDate() == null ? null : Utils
-								.textDate(pp.getDeatDate(), false);
-						if (ddate != null && pp.getDeatPlace() != null) {
-							ddate += " " + pp.getDeatPlace();
-						} else if (pp.getDeatPlace() != null) {
-							ddate = pp.getDeatPlace();
-						}
-						pname = pp.getAlfaName(true);
-						occu = pp.getOccupation();
 					}
 					String who = null;
 
@@ -245,21 +282,22 @@ public class AncestorTableReport extends CommonReport {
 					switch ((int) tabno) {
 					case 1:
 						generation = curgen;
-						row = 22;
+						row = 25;
 						lrow = row + bh;
 						col = 0;
 						lcol = col + 2;
-						who = typesTable.getTextValue("ANC_SUBJECT");
+						who = typesTable.getTextValue(proband);
+						proband = "ANC_NEXT";
 						break;
 					case 2:
-						row = 10;
+						row = 11;
 						lrow = row + bh;
 						col = 1;
 						lcol = col + 2;
 						who = typesTable.getTextValue("ANC_FATHER");
 						break;
 					case 3:
-						row = 34;
+						row = 39;
 						lrow = row + bh;
 						col = 1;
 						lcol = col + 2;
@@ -273,21 +311,21 @@ public class AncestorTableReport extends CommonReport {
 						who = typesTable.getTextValue("ANC_FF");
 						break;
 					case 5:
-						row = 16;
+						row = 18;
 						lrow = row + bh;
 						col = 2;
 						lcol = col + 2;
 						who = typesTable.getTextValue("ANC_FM");
 						break;
 					case 6:
-						row = 28;
+						row = 32;
 						lrow = row + bh;
 						col = 2;
 						lcol = col + 2;
 						who = typesTable.getTextValue("ANC_MF");
 						break;
 					case 7:
-						row = 40;
+						row = 46;
 						lrow = row + bh;
 						col = 2;
 						lcol = col + 2;
@@ -321,6 +359,8 @@ public class AncestorTableReport extends CommonReport {
 					}
 					if (pname != null) {
 						sb.append(pname);
+					} else if (nemo != null) {
+						sb.append(nemo);
 					}
 					sb.append(" ");
 					if (tableNumber > 0) {
@@ -349,6 +389,10 @@ public class AncestorTableReport extends CommonReport {
 
 					label = new Label(col, row, sb.toString());
 					sheet.addCell(label);
+					if (contPage != null) {
+						label = new Label(col + 2, row, contPage);
+						sheet.addCell(label);
+					}
 
 					// Range rng =
 					wsh.mergeCells(col, row, lcol, lrow);
@@ -372,6 +416,89 @@ public class AncestorTableReport extends CommonReport {
 			// for (int i = 0; i < tabNext.size(); i++) {
 			// System.out.println("TN:" + tabNext.get(i).getTableNo());
 			// }
+			int sheetCount = workbook.getNumberOfSheets();
+			WritableSheet sheet = workbook.createSheet("Index", sheetCount + 1);
+
+			IndexPerson[] ipx = ipers.toArray(new IndexPerson[0]);
+			Arrays.sort(ipx);
+			col = 0;
+
+			Label lab = new Label(col++, 0, typesTable.getTextValue("ANC_PAGE"));
+			sheet.addCell(lab);
+			lab = new Label(col++, 0, "Pid");
+			sheet.addCell(lab);
+			lab = new Label(col++, 0, typesTable.getTextValue("ANC_SURNAME"));
+			sheet.addCell(lab);
+			lab = new Label(col++, 0, typesTable.getTextValue("ANC_GIVENNAME"));
+			sheet.addCell(lab);
+			lab = new Label(col++, 0, typesTable.getTextValue("ANC_PATRONYM"));
+			sheet.addCell(lab);
+			lab = new Label(col++, 0, typesTable.getTextValue("ANC_BIRT"));
+			sheet.addCell(lab);
+			lab = new Label(col++, 0, typesTable.getTextValue("ANC_DEAT"));
+			sheet.addCell(lab);
+			StringBuilder tabpage = new StringBuilder();
+			IndexPerson ipprevious = new IndexPerson(0, 0,
+					new PersonShortData());
+			int rowx = 1;
+			for (int i = 1; i < ipx.length; i++) {
+				IndexPerson ipp = ipx[i];
+
+				if (ipprevious.pu.getPid() > 0) {
+					if (i == ipx.length - 1
+							|| ipp.pu.getPid() != ipprevious.pu.getPid()) {
+						if (i == ipx.length - 1) {
+							ipprevious = ipp;
+						}
+
+						col = 0;
+
+						lab = new Label(col++, rowx, tabpage.toString());
+						sheet.addCell(lab);
+						tabpage = new StringBuilder();
+
+						jxl.write.Number nume = new jxl.write.Number(col++,
+								rowx, ipprevious.pu.getPid());
+						sheet.addCell(nume);
+
+						StringBuilder sb = new StringBuilder();
+						if (ipprevious.pu.getPrefix() != null) {
+							sb.append(ipprevious.pu.getPrefix());
+							sb.append(" ");
+						}
+						sb.append(Utils.nv(ipprevious.pu.getSurname()));
+						lab = new Label(col++, rowx, sb.toString());
+						sheet.addCell(lab);
+						sb = new StringBuilder();
+						sb.append(Utils.nv(ipprevious.pu.getGivenname()));
+						if (ipprevious.pu.getPostfix() != null) {
+							sb.append(" ");
+							sb.append(ipprevious.pu.getPostfix());
+						}
+						lab = new Label(col++, rowx, Utils.nv(sb.toString()));
+						sheet.addCell(lab);
+						lab = new Label(col++, rowx, Utils.nv(ipprevious.pu
+								.getPatronym()));
+						sheet.addCell(lab);
+						lab = new Label(col++, rowx, Utils.textDate(
+								ipprevious.pu.getBirtDate(), true));
+						sheet.addCell(lab);
+						lab = new Label(col++, rowx, Utils.textDate(
+								ipprevious.pu.getDeatDate(), true));
+						sheet.addCell(lab);
+						rowx++;
+					}
+					if (ipp.pu.getPid() == ipprevious.pu.getPid()) {
+						if (tabpage.length() > 0) {
+							tabpage.append(";");
+
+						}
+					}
+
+				}
+				tabpage.append("" + ipp.page);
+				ipprevious = ipp;
+			}
 			workbook.write();
 			workbook.close();
 			bstr.close();
@@ -396,4 +523,25 @@ public class AncestorTableReport extends CommonReport {
 		// not implemented here
 
 	}
+
+	class IndexPerson implements Comparable<IndexPerson> {
+		long tableNo = 0;
+		PersonShortData pu = null;
+		int page = 0;
+
+		IndexPerson(long tableNo, int page, PersonShortData pp) {
+			this.tableNo = tableNo;
+			this.page = page;
+			this.pu = pp;
+
+		}
+
+		@Override
+		public int compareTo(IndexPerson o) {
+			return pu.getAlfaName(true).compareToIgnoreCase(
+					o.pu.getAlfaName(true));
+		}
+
+	}
+
 }
