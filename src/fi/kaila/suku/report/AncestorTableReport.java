@@ -153,6 +153,8 @@ public class AncestorTableReport extends CommonReport {
 								}
 							} else {
 								page[i * 2] = new ReportUnit();
+								page[i * 2].setPid(rpu.getFatherPid());
+
 							}
 						}
 						if (rpu.getMotherPid() > 0) {
@@ -167,6 +169,8 @@ public class AncestorTableReport extends CommonReport {
 								}
 							} else {
 								page[i * 2 + 1] = new ReportUnit();
+								page[i * 2 + 1].setPid(rpu.getMotherPid());
+
 							}
 						}
 					}
@@ -215,65 +219,72 @@ public class AncestorTableReport extends CommonReport {
 					int curgen = 0;
 					String nemo = null;
 					if (uu != null) {
+						int pid = 0;
 						if (uu.getMemberCount() == 0) {
-							nemo = "###";
+							nemo = typesTable.getTextValue("ANC_SEEALSO");
+
+							pid = uu.getPid();
+							ReportUnit rru = vlist.reportUnits.get(pid);
+							if (rru != null) {
+								nemo += " " + rru.getTableNo();
+							}
+
 						} else {
 							ReportTableMember rtu = uu.getMember(0);
-							int pid = rtu.getPid();
+							pid = rtu.getPid();
+						}
+						try {
+							pappadata = caller.getKontroller().getSukuData(
+									"cmd=person", "pid=" + pid,
+									"lang=" + Resurses.getLanguage());
+						} catch (SukuException e1) {
+							logger.log(Level.WARNING, "background reporting",
+									e1);
+							JOptionPane.showMessageDialog(caller, e1
+									.getMessage());
+							return;
+						}
 
-							try {
-								pappadata = caller.getKontroller().getSukuData(
-										"cmd=person", "pid=" + pid,
-										"lang=" + Resurses.getLanguage());
-							} catch (SukuException e1) {
-								logger.log(Level.WARNING,
-										"background reporting", e1);
-								JOptionPane.showMessageDialog(caller, e1
-										.getMessage());
-								return;
-							}
+						PersonShortData pp = new PersonShortData(
+								pappadata.persLong);
+						tableNumber = uu.getTableNo();
+						curgen = uu.getGen();
+						bdate = pp.getBirtDate() == null ? null : Utils
+								.textDate(pp.getBirtDate(), false);
+						if (bdate != null && pp.getBirtPlace() != null) {
+							bdate += " " + pp.getBirtPlace();
+						} else if (pp.getBirtPlace() != null) {
+							bdate = pp.getBirtPlace();
+						}
+						ddate = pp.getDeatDate() == null ? null : Utils
+								.textDate(pp.getDeatDate(), false);
+						if (ddate != null && pp.getDeatPlace() != null) {
+							ddate += " " + pp.getDeatPlace();
+						} else if (pp.getDeatPlace() != null) {
+							ddate = pp.getDeatPlace();
+						}
+						pname = pp.getAlfaName(true);
+						occu = pp.getOccupation();
+						IndexPerson ixp = new IndexPerson(tableNumber, xpage,
+								pp);
+						ipers.add(ixp);
 
-							PersonShortData pp = new PersonShortData(
-									pappadata.persLong);
-							tableNumber = uu.getTableNo();
-							curgen = uu.getGen();
-							bdate = pp.getBirtDate() == null ? null : Utils
-									.textDate(pp.getBirtDate(), false);
-							if (bdate != null && pp.getBirtPlace() != null) {
-								bdate += " " + pp.getBirtPlace();
-							} else if (pp.getBirtPlace() != null) {
-								bdate = pp.getBirtPlace();
-							}
-							ddate = pp.getDeatDate() == null ? null : Utils
-									.textDate(pp.getDeatDate(), false);
-							if (ddate != null && pp.getDeatPlace() != null) {
-								ddate += " " + pp.getDeatPlace();
-							} else if (pp.getDeatPlace() != null) {
-								ddate = pp.getDeatPlace();
-							}
-							pname = pp.getAlfaName(true);
-							occu = pp.getOccupation();
-							IndexPerson ixp = new IndexPerson(tableNumber,
-									xpage, pp);
-							ipers.add(ixp);
+						caller.setRunnerValue("" + xpage);
+						if (i > 15) {
 
-							caller.setRunnerValue("" + xpage);
-							if (i > 15) {
-
-								// lets check if we continue
-								if (uu.getFatherPid() + uu.getMotherPid() > 0) {
-									// yes we do
-									addTable++;
-									int qsize = mySize;
-									qsize += addTable;
-									qsize += xpage;
-									contPage = "P " + qsize;
-
-								}
+							// lets check if we continue
+							if (uu.getFatherPid() + uu.getMotherPid() > 0) {
+								// yes we do
+								addTable++;
+								int qsize = mySize;
+								qsize += addTable;
+								qsize += xpage;
+								contPage = "P " + qsize;
 
 							}
 
 						}
+
 					}
 					String who = null;
 
@@ -359,8 +370,11 @@ public class AncestorTableReport extends CommonReport {
 					}
 					if (pname != null) {
 						sb.append(pname);
-					} else if (nemo != null) {
+					}
+					if (nemo != null) {
+						sb.append(" [");
 						sb.append(nemo);
+						sb.append("]");
 					}
 					sb.append(" ");
 					if (tableNumber > 0) {
@@ -538,8 +552,17 @@ public class AncestorTableReport extends CommonReport {
 
 		@Override
 		public int compareTo(IndexPerson o) {
-			return pu.getAlfaName(true).compareToIgnoreCase(
-					o.pu.getAlfaName(true));
+			int resu = Utils.nv(pu.getSurname()).compareToIgnoreCase(
+					Utils.nv(o.pu.getSurname()));
+			if (resu != 0)
+				return resu;
+			resu = Utils.nv(pu.getGivenname()).compareToIgnoreCase(
+					Utils.nv(o.pu.getGivenname()));
+			if (resu != 0)
+				return resu;
+			return Utils.nv(pu.getPatronym()).compareToIgnoreCase(
+					Utils.nv(o.pu.getPatronym()));
+
 		}
 
 	}
