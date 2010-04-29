@@ -212,6 +212,7 @@ public class AncestorTableReport extends CommonReport {
 					SukuData pappadata = null;
 					String bdate = null;
 					String ddate = null;
+					int pid = 0;
 					long tableNumber = 0;
 					String pname = null;
 					String occu = null;
@@ -219,7 +220,7 @@ public class AncestorTableReport extends CommonReport {
 					int curgen = 0;
 					String nemo = null;
 					if (uu != null) {
-						int pid = 0;
+
 						if (uu.getMemberCount() == 0) {
 							nemo = typesTable.getTextValue("ANC_SEEALSO");
 
@@ -413,8 +414,18 @@ public class AncestorTableReport extends CommonReport {
 					// Range rng =
 					wsh.mergeCells(col, row, lcol, lrow);
 					wsh.getWritableCell(col, row).setCellFormat(wrall);
+					if (tabno == 1) {
+						ReportUnit rru = vlist.reportUnits.get(pid);
+						if (rru != null && rru.getPageNo() > 0 && xpage > 1) {
 
+							label = new Label(0, 2, typesTable
+									.getTextValue("ANC_FROM")
+									+ " " + rru.getPageNo());
+							sheet.addCell(label);
+						}
+					}
 				}
+
 				label = new Label(1, 0, Roman.int2roman(generation + 1), bold10);
 				sheet.addCell(label);
 
