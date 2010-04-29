@@ -50,30 +50,31 @@ public class Upload {
 			for (int i = 0; i < families.persons.length; i++) {
 
 				PersonLongData pers = families.persons[i];
-				int curPid = pers.getPid();
+				if (pers != null) {
+					int curPid = pers.getPid();
 
-				if (curPid > 0) {
-					newPids[i] = curPid;
-				} else {
-					newPids[i] = nextSeq(con, "unitseq");
-				}
+					if (curPid > 0) {
+						newPids[i] = curPid;
+					} else {
+						newPids[i] = nextSeq(con, "unitseq");
+					}
 
-				if (curPid < 0) {
+					if (curPid < 0) {
 
-					for (int j = 0; j < families.relations.length; j++) {
-						Relation rel = families.relations[j];
+						for (int j = 0; j < families.relations.length; j++) {
+							Relation rel = families.relations[j];
 
-						if (rel.getPid() == curPid) {
-							rel.setPid(newPids[i]);
-						}
-						if (rel.getRelative() == curPid) {
-							rel.setRelative(newPids[i]);
+							if (rel.getPid() == curPid) {
+								rel.setPid(newPids[i]);
+							}
+							if (rel.getRelative() == curPid) {
+								rel.setRelative(newPids[i]);
+							}
 						}
 					}
 				}
 			}
 		}
-
 		for (int i = 0; i < newPids.length; i++) {
 			if (newPids[i] <= 0) {
 				newPids[i] = nextSeq(con, "unitseq");
@@ -92,55 +93,58 @@ public class Upload {
 		for (int i = 0; i < families.persons.length; i++) {
 
 			PersonLongData person = families.persons[i];
-			if (person.getPid() <= 0) {
+			if (person != null) {
+				if (person.getPid() <= 0) {
 
-				person.setPid(newPids[i]);
-				pstm.setInt(1, person.getPid());
-				pstm.setString(2, person.getTag());
-				pstm.setString(3, person.getPrivacy());
-				pstm.setString(4, person.getGroupId());
-				pstm.setString(5, person.getSex());
-				pstm.setString(6, person.getSource());
-				pstm.setString(7, person.getPrivateText());
-				pstm.setString(8, person.getRefn());
+					person.setPid(newPids[i]);
+					pstm.setInt(1, person.getPid());
+					pstm.setString(2, person.getTag());
+					pstm.setString(3, person.getPrivacy());
+					pstm.setString(4, person.getGroupId());
+					pstm.setString(5, person.getSex());
+					pstm.setString(6, person.getSource());
+					pstm.setString(7, person.getPrivateText());
+					pstm.setString(8, person.getRefn());
 
-				int lukuri = pstm.executeUpdate();
-				if (lukuri != 1) {
-					logger.warning("Update of Unit " + person.getPid()
-							+ " result " + lukuri + " rows");
-				}
-			}
-
-			UnitNotice[] nots = person.getNotices();
-
-			for (int j = 0; j < nots.length; j++) {
-				UnitNotice n = nots[j];
-
-				pstmn.setInt(1, person.getPid());
-
-				pstmn.setInt(2, nextSeq(con, "unitnoticeseq"));
-				pstmn.setInt(3, j + 1);
-				pstmn.setString(4, n.getTag());
-				pstmn.setString(5, n.getNoticeType());
-				pstmn.setString(6, n.getDescription());
-				pstmn.setString(7, n.getFromDate());
-				pstmn.setString(8, n.getPlace());
-				pstmn.setString(9, n.getVillage());
-				pstmn.setString(10, n.getFarm());
-				pstmn.setString(11, n.getNoteText());
-				pstmn.setString(12, n.getPrefix());
-				pstmn.setString(13, n.getSurname());
-				pstmn.setString(14, n.getGivenname());
-				pstmn.setString(15, n.getPatronym());
-				pstmn.setString(16, n.getPostfix());
-				pstmn.setString(17, n.getSource());
-
-				int lukuri = pstmn.executeUpdate();
-				if (lukuri != 1) {
-					logger.warning("Update of UnitNotice " + person.getPid()
-							+ " result " + lukuri + " rows");
+					int lukuri = pstm.executeUpdate();
+					if (lukuri != 1) {
+						logger.warning("Update of Unit " + person.getPid()
+								+ " result " + lukuri + " rows");
+					}
 				}
 
+				UnitNotice[] nots = person.getNotices();
+
+				for (int j = 0; j < nots.length; j++) {
+					UnitNotice n = nots[j];
+
+					pstmn.setInt(1, person.getPid());
+
+					pstmn.setInt(2, nextSeq(con, "unitnoticeseq"));
+					pstmn.setInt(3, j + 1);
+					pstmn.setString(4, n.getTag());
+					pstmn.setString(5, n.getNoticeType());
+					pstmn.setString(6, n.getDescription());
+					pstmn.setString(7, n.getFromDate());
+					pstmn.setString(8, n.getPlace());
+					pstmn.setString(9, n.getVillage());
+					pstmn.setString(10, n.getFarm());
+					pstmn.setString(11, n.getNoteText());
+					pstmn.setString(12, n.getPrefix());
+					pstmn.setString(13, n.getSurname());
+					pstmn.setString(14, n.getGivenname());
+					pstmn.setString(15, n.getPatronym());
+					pstmn.setString(16, n.getPostfix());
+					pstmn.setString(17, n.getSource());
+
+					int lukuri = pstmn.executeUpdate();
+					if (lukuri != 1) {
+						logger.warning("Update of UnitNotice "
+								+ person.getPid() + " result " + lukuri
+								+ " rows");
+					}
+
+				}
 			}
 
 		}
