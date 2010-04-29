@@ -629,9 +629,11 @@ public class NoticePane extends JPanel implements ActionListener,
 				StringBuilder sb = new StringBuilder();
 				if (etusuku.length > 1) {
 					sb.append(etusuku[0]);
+					sb.append(",");
+					sb.append(etusuku[1]);
+				} else {
+					sb.append(etusuku[0]);
 				}
-				sb.append(",");
-				sb.append(etusuku[1]);
 				namesVector.add(sb.toString());
 			}
 		}

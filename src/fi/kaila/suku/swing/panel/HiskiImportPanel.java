@@ -37,6 +37,7 @@ import fi.kaila.suku.swing.util.SukuPopupMenu;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationNotice;
@@ -314,6 +315,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		pSurname = new JTextField[luku];
 		pAge = new JTextField[luku];
 		pReason = new JTextField[luku];
+
 		int i = 0;
 		int rh = 100;
 		for (i = 0; i < luku; i++) {
@@ -592,48 +594,54 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		String hiskiSource = "Hiski haudatut [" + eventId + "]";
 		kast.persons = new PersonLongData[personCount];
 		Vector<UnitNotice> notices = null;
-		// String ktype = eventFirstType.getText();
+
 		String kdate = eventFirstDate.getText();
-		// String htype = eventLastType.getText();
+
 		String hdate = eventLastDate.getText();
 
+		notices = new Vector<UnitNotice>();
+		Vector<String> refs = new Vector<String>();
+		StringBuilder noteBuf = new StringBuilder();
 		for (int i = 0; i < personCount; i++) {
 			String aux = pType[i].getText();
-			notices = new Vector<UnitNotice>();
 			String occu;
 			String etu;
 			String patro;
 			String suku;
 			String age;
 			String text;
+
 			String village;
 			String farm = null;
 			UnitNotice notice;
 			String sex = null;
-			switch (pSex[i].getSelectedIndex()) {
-			case 1:
-				sex = "M";
-				break;
-			case 2:
-				sex = "F";
-				break;
-			case 3:
-				sex = "U";
-				break;
-			default:
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("ERROR_MISSINGSEX"));
-				return;
-			}
 
 			if ("vainaja".equals(aux)) {
+
+				switch (pSex[i].getSelectedIndex()) {
+				case 1:
+					sex = "M";
+					break;
+				case 2:
+					sex = "F";
+					break;
+				case 3:
+					sex = "U";
+					break;
+				default:
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString("ERROR_MISSINGSEX"));
+					return;
+				}
 
 				int vainaa = -1 - i;
 				if (hiskiPid[0] > 0)
 					vainaa = hiskiPid[0];
 
 				kast.persons[i] = new PersonLongData(vainaa, "INDI", sex);
+
 				kast.persons[i].setSource(hiskiSource);
+
 				occu = pOccu[i].getText();
 				if (!occu.isEmpty()) {
 					notice = new UnitNotice("OCCU");
@@ -658,6 +666,12 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (age.length() > 0) {
 					text += ";" + age;
 				}
+				if (!eventRemark.getText().isEmpty()) {
+					if (!text.isEmpty()) {
+						text += ". ";
+					}
+					text += eventRemark.getText();
+				}
 
 				village = eventVillage.getText();
 				farm = eventFarm.getText();
@@ -665,7 +679,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (kdate.length() > 0) {
 
 					notice = new UnitNotice("DEAT");
-					notice.setNoticeType(eventRemark.getText());
+					// notice.setNoticeType(eventRemark.getText());
 					notice.setFromDate(toTextDate(kdate));
 					notice.setPlace(srk.getText());
 					notice.setVillage(village);
@@ -682,7 +696,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notice.setVillage(village);
 					notice.setFarm(farm);
 					if (kdate.length() == 0) {
-						notice.setNoticeType(eventRemark.getText());
+						// notice.setNoticeType(eventRemark.getText());
 						notice.setNoteText(text);
 					}
 					notice.setSource(hiskiSource);
@@ -704,11 +718,70 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notices.add(notice);
 				}
 
-				if (notices.size() > 0) {
-					kast.persons[i].setNotices(notices
-							.toArray(new UnitNotice[0]));
+			} else {
+
+				occu = pOccu[i].getText();
+				etu = pGivenname[i].getText();
+				patro = pPatronym[i].getText();
+
+				suku = pSurname[i].getText();
+				text = pReason[i].getText();
+				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
+
+					noteBuf.append(aux);
+					noteBuf.append(": ");
+					StringBuilder refName = new StringBuilder();
+					if (!Utils.nv(occu).isEmpty()) {
+						noteBuf.append(occu);
+						noteBuf.append(" ");
+					}
+
+					if (!Utils.nv(etu).isEmpty()) {
+						noteBuf.append(etu);
+						noteBuf.append(" ");
+					}
+					if (!Utils.nv(patro).isEmpty()) {
+						noteBuf.append(patro);
+						noteBuf.append(" ");
+					}
+					if (!Utils.nv(suku).isEmpty()) {
+						noteBuf.append(suku);
+						noteBuf.append(" ");
+						refName.append(suku);
+
+					}
+					if (!Utils.nv(text).isEmpty()) {
+						noteBuf.append(text);
+					}
+					if (!Utils.nv(etu).isEmpty()) {
+						if (refName.length() > 0) {
+							refName.append(",");
+						}
+						refName.append(etu);
+						if (!Utils.nv(patro).isEmpty()) {
+							refName.append(" ");
+						}
+
+					}
+					if (!Utils.nv(patro).isEmpty()) {
+						refName.append(patro);
+					}
+					refs.add(refName.toString());
+
 				}
+
 			}
+		}
+		if (noteBuf.length() > 0) {
+			UnitNotice note = new UnitNotice("NOTE");
+			note.setNoteText(noteBuf.toString());
+			if (refs.size() > 0) {
+				note.setRefNames(refs.toArray(new String[0]));
+			}
+			notices.add(note);
+		}
+		if (notices.size() > 0) {
+			kast.persons[0].setNotices(notices.toArray(new UnitNotice[0]));
 		}
 
 		try {
@@ -1198,6 +1271,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							pAge[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("talo")) {
 							pReason[pidx].setText(elp.getTextContent());
+						} else if (elpNam.equals("lisat")) {
+							String aux = pReason[pidx].getText();
+							String tmp = elp.getTextContent();
+							if (!aux.isEmpty()) {
+								pReason[pidx].setText(aux + " " + tmp);
+							} else {
+								pReason[pidx].setText(tmp);
+							}
 						} else if (elpNam.equals("ammatti")) {
 							rOccu[pidx].setText(elp.getTextContent());
 							pOccu[pidx].setText(elp.getTextContent());
@@ -1253,6 +1334,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (taplist.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					ele = (Element) taplist.item(i);
 					String eleName = ele.getNodeName();
+					String tmpx = ele.getTextContent();
 					if (eleName == null) {
 
 					} else if (eleName.equals("srk")) {

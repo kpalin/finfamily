@@ -1,10 +1,12 @@
 package fi.kaila.suku.server.utils;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -84,8 +86,8 @@ public class Upload {
 		String sql = "insert into Unit (pid,tag,privacy,groupid,sex,sourcetext,privatetext,userrefn) "
 				+ "values (?,?,?,?, ?,?,?,?)";
 		String sqlnotice = "insert into unitnotice (pid,pnid,surety,noticerow,tag,noticetype,description,fromdate,"
-				+ "place,village,farm,notetext,prefix,surname,givenname,patronym,postfix,sourcetext) "
-				+ "values (?,?,80,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?,?) ";
+				+ "place,village,farm,notetext,prefix,surname,givenname,patronym,postfix,sourcetext,RefNames) "
+				+ "values (?,?,80,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?,?,?) ";
 
 		PreparedStatement pstm = con.prepareStatement(sql);
 		PreparedStatement pstmn = con.prepareStatement(sqlnotice);
@@ -136,6 +138,16 @@ public class Upload {
 					pstmn.setString(15, n.getPatronym());
 					pstmn.setString(16, n.getPostfix());
 					pstmn.setString(17, n.getSource());
+
+					if (n.getRefNames() == null) {
+						pstmn.setNull(18, Types.ARRAY);
+					} else {
+
+						Array xx = con
+								.createArrayOf("varchar", n.getRefNames());
+						pstmn.setArray(18, xx);
+
+					}
 
 					int lukuri = pstmn.executeUpdate();
 					if (lukuri != 1) {
