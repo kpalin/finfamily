@@ -21,7 +21,7 @@ public class ReportUnit implements Serializable {
 	private int motherPid = 0;
 
 	private long tableNo = 0;
-
+	private int pageNo = 0;
 	private int gen = 0;
 
 	private Vector<ReportTableMember> asParent = new Vector<ReportTableMember>();
@@ -205,6 +205,23 @@ public class ReportUnit implements Serializable {
 	 */
 	public int getMotherPid() {
 		return motherPid;
+	}
+
+	/**
+	 * @param pageNo
+	 *            the pageNo to set
+	 */
+	public void setPageNo(int pageNo) {
+		if (this.pageNo == 0) {
+			this.pageNo = pageNo;
+		}
+	}
+
+	/**
+	 * @return the pageNo
+	 */
+	public int getPageNo() {
+		return pageNo;
 	}
 
 }

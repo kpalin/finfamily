@@ -226,7 +226,8 @@ public class AncestorTableReport extends CommonReport {
 							pid = uu.getPid();
 							ReportUnit rru = vlist.reportUnits.get(pid);
 							if (rru != null) {
-								nemo += " " + rru.getTableNo();
+								nemo += " (" + rru.getPageNo() + ","
+										+ rru.getTableNo() + ")";
 							}
 
 						} else {
@@ -265,6 +266,7 @@ public class AncestorTableReport extends CommonReport {
 						}
 						pname = pp.getAlfaName(true);
 						occu = pp.getOccupation();
+						uu.setPageNo(xpage);
 						IndexPerson ixp = new IndexPerson(tableNumber, xpage,
 								pp);
 						ipers.add(ixp);
