@@ -242,11 +242,11 @@ public class Utils {
 				m = parti[0];
 				d = parti[1];
 
+			} else {
+				y = parti[2];
+				m = parti[1];
+				d = parti[0];
 			}
-			y = parti[2];
-			m = parti[1];
-			d = parti[0];
-
 		}
 
 		int leap = y % 4;
