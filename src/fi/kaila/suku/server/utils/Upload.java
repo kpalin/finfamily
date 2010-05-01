@@ -34,17 +34,18 @@ public class Upload {
 	 * @return null
 	 * @throws SQLException
 	 */
-	public static String uploadFamilies(Connection con, SukuData families)
+	public static SukuData uploadFamilies(Connection con, SukuData families)
 			throws SQLException {
 
+		SukuData respons = new SukuData();
 		// first update pid values in LongPerson and Relation
 		// if pid = 0 => get next pid. no relations
 		// if pid < 0 => get next pid and use same pid both for unit and
 		// relation
 
-		int newPids[] = new int[families.persons.length];
-		for (int i = 0; i < newPids.length; i++) {
-			newPids[i] = 0;
+		respons.pidArray = new int[families.persons.length];
+		for (int i = 0; i < respons.pidArray.length; i++) {
+			respons.pidArray[i] = 0;
 		}
 
 		if (families.relations != null) {
@@ -56,9 +57,9 @@ public class Upload {
 					int curPid = pers.getPid();
 
 					if (curPid > 0) {
-						newPids[i] = curPid;
+						respons.pidArray[i] = curPid;
 					} else {
-						newPids[i] = nextSeq(con, "unitseq");
+						respons.pidArray[i] = nextSeq(con, "unitseq");
 					}
 
 					if (curPid < 0) {
@@ -67,19 +68,19 @@ public class Upload {
 							Relation rel = families.relations[j];
 
 							if (rel.getPid() == curPid) {
-								rel.setPid(newPids[i]);
+								rel.setPid(respons.pidArray[i]);
 							}
 							if (rel.getRelative() == curPid) {
-								rel.setRelative(newPids[i]);
+								rel.setRelative(respons.pidArray[i]);
 							}
 						}
 					}
 				}
 			}
 		}
-		for (int i = 0; i < newPids.length; i++) {
-			if (newPids[i] <= 0) {
-				newPids[i] = nextSeq(con, "unitseq");
+		for (int i = 0; i < respons.pidArray.length; i++) {
+			if (respons.pidArray[i] <= 0) {
+				respons.pidArray[i] = nextSeq(con, "unitseq");
 			}
 		}
 
@@ -98,7 +99,7 @@ public class Upload {
 			if (person != null) {
 				if (person.getPid() <= 0) {
 
-					person.setPid(newPids[i]);
+					person.setPid(respons.pidArray[i]);
 					pstm.setInt(1, person.getPid());
 					pstm.setString(2, person.getTag());
 					pstm.setString(3, person.getPrivacy());
@@ -162,7 +163,7 @@ public class Upload {
 		}
 
 		if (families.relations == null)
-			return null;
+			return respons;
 		// create table Relation (
 		// RID integer not null, -- Relation Id
 		// PID integer not null references Unit(PID), -- Unit/Person Id
@@ -246,7 +247,7 @@ public class Upload {
 
 		}
 
-		return null;
+		return respons;
 
 	}
 

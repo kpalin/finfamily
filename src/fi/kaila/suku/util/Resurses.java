@@ -335,6 +335,8 @@ public class Resurses {
 
 	public static final String WIKI = "WIKI";
 
+	public static final String HISKI_BROWSER = "HISKI_BROWSER";
+
 	private static Resurses myself = null;
 	private static ExcelBundle resources = null;
 

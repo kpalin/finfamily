@@ -1668,20 +1668,26 @@ public class SukuServerImpl implements SukuServer {
 		return resdat;
 	}
 
-	private SukuData uploadFamily(SukuData family) {
+	private SukuData uploadFamily(SukuData family) throws SukuException {
 
 		SukuData resdat = new SukuData();
 
-		String resu = null;
 		try {
-			resu = Upload.uploadFamilies(con, family);
+			resdat = Upload.uploadFamilies(con, family);
+			resdat.pers = new PersonShortData[resdat.pidArray.length];
+			for (int i = 0; i < resdat.pers.length; i++) {
+
+				resdat.pers[i] = new PersonShortData(this.con,
+						resdat.pidArray[i]);
+
+			}
 		} catch (SQLException e) {
-			resu = e.getMessage();
-			logger.log(Level.WARNING, "uplaoding family", e);
+			resdat.resu = e.getMessage();
+			logger.log(Level.WARNING, "uploading family", e);
 
 		}
 
-		resdat.resu = resu;
+		// resdat.resu = resda;
 
 		return resdat;
 	}
