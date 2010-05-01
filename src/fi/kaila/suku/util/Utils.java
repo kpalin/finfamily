@@ -183,14 +183,6 @@ public class Utils {
 		if (textDate == null || textDate.isEmpty())
 			return null;
 		String df = Resurses.getDateFormat();
-		// String separator = "\\.";
-		// if (df.equals("SE")){
-		// separator = "-";
-		// } else if (df.equals("GB") || df.equals("US")) {
-		// separator = "/";
-		// }
-
-		// String parts[] = textDate.split(separator);
 
 		StringBuilder sb = new StringBuilder();
 
