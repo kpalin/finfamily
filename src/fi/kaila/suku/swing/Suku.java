@@ -255,12 +255,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	// private HiskiImporter hiski=null;
 	private LocalAdminUtilities adminUtilities = null;
 	/**
-	 * A static variable thst contains the Suku kontroller in use
+	 * A static variable that contains the Suku kontroller in use
 	 */
 	public static SukuKontroller kontroller = null;
 
 	/**
-	 * During connect to dabatase the database version is stored here
+	 * During connect to database the database version is stored here
 	 */
 	public static String postServerVersion = null;
 
@@ -341,8 +341,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		String loca = kontroller.getPref(this, Resurses.LOCALE, "xx");
 		if (loca == null || loca.equals("xx")) {
 			logger.info("Locale " + loca + " encountered.");
-			String languas[] = { "English", "Suomi", "Svenska" };
-			String langabr[] = { "en", "fi", "sv" };
+			String languas[] = { "English", "Suomi", "Svenska", "Deutsch" };
+			String langabr[] = { "en", "fi", "sv", "de" };
 			int locaresu = JOptionPane.showOptionDialog(this,
 					"Select language / valitse kieli / välj språket",
 					"FinFamily", JOptionPane.DEFAULT_OPTION,
@@ -778,6 +778,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				+ System.getProperty("java.version") + " from "
 				+ System.getProperty("java.vendor"));
 		// if (!this.isWebApp){
+
 		connectDb();
 		// }
 		addWindowListener(new WindowAdapter() {
@@ -1160,9 +1161,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				kontroller.getConnection(name, databaseName, userid, password);
 				// SukuData.instance().connectToDatabase(host, dbname, userid,
 				// password);
-				isConnected = 2;
-				enableCommands();
-				setTitle(null);
+
 				SukuData serverVersion = kontroller
 						.getSukuData("cmd=dbversion");
 
@@ -1190,9 +1189,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				// copy report languages here to static
 				SukuData rlang = kontroller.getSukuData("cmd=repolanguages");
-
 				repoLangList = rlang.generalArray;
-
 				SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
 						"type=needle", "name=needle");
 
@@ -1226,7 +1223,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				long timeOfIntelli = (endOfIntelli - startOfIntelli) / 1000;
 				postServerVersion += ", Intellisens [" + timeOfIntelli
 						+ "] secs";
-
+				isConnected = 2;
+				enableCommands();
+				setTitle(null);
 				// if (dat != null && dat.generalArray != null
 				// && dat.generalArray.length > 1) {
 				// sens.setPaikat(dat.generalArray);
@@ -1244,11 +1243,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				JOptionPane.showMessageDialog(this, e2[0], Resurses
 						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
+				this.isConnected = 1;
+				enableCommands();
 			}
-
 		}
-		this.isConnected = 1;
-		enableCommands();
 
 	}
 
@@ -1292,8 +1290,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							.getSukuData("cmd=excel",
 									"path=resources/excel/TypesExcel.xls",
 									"page=types");
-
+					SukuData rlang = kontroller
+							.getSukuData("cmd=repolanguages");
+					repoLangList = rlang.generalArray;
 				}
+
 				JOptionPane.showMessageDialog(this, resu, Resurses
 						.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);

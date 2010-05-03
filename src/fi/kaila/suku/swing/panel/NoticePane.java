@@ -1405,7 +1405,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			image.setVisible(false);
 			lrivi += 428;
 
-			addLabel.setBounds(10, listY1, 70, 20);
+			addLabel.setBounds(10, listY1, 70, 42);
 			listaName.setBounds(lcol, listY1, 200, 20);
 
 			listaAddname.setBounds(lcol + 205, listY1, 100, 20);
@@ -1485,8 +1485,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		boolean privateShow = mustPrivate;
 		if (mustPrivate) {
 			lrivi += 64;
-			privateLbl.setBounds(10, lrivi, 70, 20);
-
+			privateLbl.setBounds(10, lrivi, 70, 42);
 			scrollPrivate.setBounds(lcol, lrivi, lwidth, 60);
 		}
 		privateLbl.setVisible(privateShow);
