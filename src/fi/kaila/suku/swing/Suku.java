@@ -1162,15 +1162,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				// SukuData.instance().connectToDatabase(host, dbname, userid,
 				// password);
 
-				SukuData serverVersion = kontroller
-						.getSukuData("cmd=dbversion");
-
-				if (serverVersion.generalArray != null
-						&& serverVersion.generalArray.length > 0) {
-					postServerVersion = serverVersion.generalArray[0];
-					postServerVersion += " " + serverVersion.generalArray[1];
-				}
-
 				SukuData dblist = kontroller.getSukuData("cmd=dblista");
 
 				if (dblist.generalArray != null) {
@@ -1226,6 +1217,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				isConnected = 2;
 				enableCommands();
 				setTitle(null);
+				SukuData serverVersion = kontroller
+						.getSukuData("cmd=dbversion");
+
+				if (serverVersion.generalArray != null
+						&& serverVersion.generalArray.length > 0) {
+					postServerVersion = serverVersion.generalArray[0];
+					postServerVersion += " " + serverVersion.generalArray[1];
+				}
+
 				// if (dat != null && dat.generalArray != null
 				// && dat.generalArray.length > 1) {
 				// sens.setPaikat(dat.generalArray);

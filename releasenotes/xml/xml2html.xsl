@@ -66,7 +66,7 @@
 
   <html>
   <head>
-<title><xsl:value-of select="@title"/><xsl:value-of select="."/></title>
+<title><xsl:value-of select="@title"/> - FinFamily</title>
 
 <style type="text/css">
 
