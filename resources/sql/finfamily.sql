@@ -12,6 +12,15 @@ drop view if exists parent;
 drop view if exists wife;
 drop view if exists husband;
 drop view if exists child;
+
+drop view if exists father_all;
+drop view if exists mother_all;
+drop view if exists spouse_all;
+drop view if exists parent_all;
+drop view if exists wife_all;
+drop view if exists husband_all;
+drop view if exists child_all;
+
 drop view if exists fullTextView;
 
 drop view if exists unitNotice_fi;
