@@ -254,6 +254,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private ViewMgrWindow viewWin = null;
 	// private HiskiImporter hiski=null;
 	private LocalAdminUtilities adminUtilities = null;
+
+	private String os = "web";
+
 	/**
 	 * A static variable that contains the Suku kontroller in use
 	 */
@@ -302,7 +305,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				UIManager.setLookAndFeel(args[0]);
 			} else {
 
-				String os = System.getProperties().getProperty("os.name");
+				os = System.getProperties().getProperty("os.name");
 				if (os.toLowerCase().indexOf("windows") >= 0
 						|| os.toLowerCase().indexOf("mac") >= 0) {
 
@@ -580,7 +583,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		setLayout(null);
 		setLocation(0, 0);
 		setSize(d);
-		String os = System.getProperties().getProperty("os.name");
+		// String os = System.getProperties().getProperty("os.name");
 		if (os.toLowerCase().indexOf("windows") >= 0) {
 			setExtendedState(MAXIMIZED_BOTH);
 		} else {
