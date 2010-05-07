@@ -25,20 +25,17 @@ public class ExcelBundle {
 	private static Logger logger = Logger
 			.getLogger(ExcelBundle.class.getName());
 
-	private ExcelBundle() {
-
-	}
-
-	/**
-	 * @param path
-	 * @param currentLocale
-	 * @return an instance of this;
-	 */
-	public static ExcelBundle getBundle(String path, Locale currentLocale) {
-		ExcelBundle me = new ExcelBundle();
-		me.importBundle(path, currentLocale);
-		return me;
-	}
+	// /**
+	// * @param path
+	// * @param currentLocale
+	// * @return an instance of this;
+	// */
+	// public static ExcelBundle getBundle(String path, String page,
+	// Locale currentLocale) {
+	// ExcelBundle me = new ExcelBundle();
+	// me.importBundle(path, page, currentLocale);
+	// return me;
+	// }
 
 	/**
 	 * @param name
@@ -66,7 +63,17 @@ public class ExcelBundle {
 		return langNames;
 	}
 
-	private void importBundle(String path, Locale locale) {
+	public static String[] getLangList() {
+		if (langNames == null)
+			return null;
+		String tmp[] = new String[langNames.length];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = langCodes[i] + ";" + langNames[i];
+		}
+		return tmp;
+	}
+
+	public void importBundle(String path, String page, Locale locale) {
 		WorkbookSettings ws = new WorkbookSettings();
 		ws.setCharacterSet(0);
 		ws.setEncoding("ISO-8859-1");
@@ -88,7 +95,7 @@ public class ExcelBundle {
 			// Workbook workbook = Workbook.getWorkbook(new File("resources/"
 			// + path + ".xls"), ws);
 
-			Sheet sheet = workbook.getSheet("FinFamily");
+			Sheet sheet = workbook.getSheet(page);
 			int colCount;
 			int rowCount;
 			String[] header;

@@ -416,8 +416,8 @@ public class SukuServerImpl implements SukuServer {
 			fam = getDbVersion();
 		} else if (cmd.equals("dbstats")) {
 			fam = getDbStatistics();
-		} else if (cmd.equals("repolanguages")) {
-			fam = getReportLanguages();
+			// } else if (cmd.equals("repolanguages")) {
+			// fam = getReportLanguages();
 			// } else if (cmd.equals("report")) {
 			// fam = createReport(map.get("type"),map.get("pid"));
 		} else if (cmd.equals("crtables")) {
@@ -468,8 +468,8 @@ public class SukuServerImpl implements SukuServer {
 				fam.resu = Resurses.getString("ERR_TYPE_MISSING");
 			} else if (type.endsWith("types")) {
 				fam = getTypes(map.get("lang"));
-				SukuData txts = getTexts(map.get("lang"));
-				fam.vvTexts = txts.vvTexts;
+				// SukuData txts = getTexts(map.get("lang"));
+				// fam.vvTexts = txts.vvTexts;
 			} else if (type.endsWith("conversions")) {
 				fam = getConversions(map.get("lang"));
 			} else if (type.endsWith("dbstatistics")) {
@@ -530,9 +530,9 @@ public class SukuServerImpl implements SukuServer {
 			if (lang == null) {
 				lang = Resurses.getLanguage();
 			}
-			SukuData txts = getTexts(lang);
+
 			ImportGedcomUtil inged = new ImportGedcomUtil(con);
-			fam = inged.importGedcom(txts.vvTexts);
+			fam = inged.importGedcom(lang);
 			inged = null;
 		} else if (cmd.equals("exportGedcom")) {
 			lang = map.get("lang");
@@ -1521,33 +1521,33 @@ public class SukuServerImpl implements SukuServer {
 
 	}
 
-	private SukuData getTexts(String langu) {
-		SukuData res = new SukuData();
-		String vx[];
-		res.vvTexts = new Vector<String[]>();
-		try {
-			String sql = "select tag,name,tagtype from texts where langCode = '"
-					+ langu + "' ";
-			Statement stm = con.createStatement();
-			ResultSet rs = stm.executeQuery(sql);
-
-			while (rs.next()) {
-				vx = new String[4];
-				vx[0] = rs.getString(1);
-				vx[1] = rs.getString(2);
-				vx[2] = rs.getString(3);
-				res.vvTexts.add(vx);
-			}
-			stm.close();
-
-		} catch (SQLException e) {
-			res.resu = e.getMessage();
-			e.printStackTrace();
-		}
-
-		return res;
-
-	}
+	// private SukuData getTexts(String langu) {
+	// SukuData res = new SukuData();
+	// String vx[];
+	// res.vvTexts = new Vector<String[]>();
+	// try {
+	// String sql = "select tag,name,tagtype from texts where langCode = '"
+	// + langu + "' ";
+	// Statement stm = con.createStatement();
+	// ResultSet rs = stm.executeQuery(sql);
+	//
+	// while (rs.next()) {
+	// vx = new String[4];
+	// vx[0] = rs.getString(1);
+	// vx[1] = rs.getString(2);
+	// vx[2] = rs.getString(3);
+	// res.vvTexts.add(vx);
+	// }
+	// stm.close();
+	//
+	// } catch (SQLException e) {
+	// res.resu = e.getMessage();
+	// e.printStackTrace();
+	// }
+	//
+	// return res;
+	//
+	// }
 
 	private SukuData saveReportSettings(HashMap<String, String> map)
 			throws SukuException {

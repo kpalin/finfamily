@@ -140,10 +140,11 @@ public class SukuTypesTable extends JTable {
 	 * @return value of tag
 	 */
 	public String getTextValue(String tag) {
-		String value = model.getTextText(tag);
-		if (value == null)
-			return tag;
-		return value;
+		return Resurses.getReportString(tag);
+		// String value = model.getTextText(tag);
+		// if (value == null)
+		// return tag;
+		// return value;
 	}
 
 	/**

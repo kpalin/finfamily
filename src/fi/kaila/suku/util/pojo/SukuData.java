@@ -51,7 +51,7 @@ public class SukuData implements Serializable {
 	 */
 	public Vector<String[]> vvTypes = null;
 	/**
-	 * array vector storage (Types.xls page texts)
+	 * array vector storage (Conversions texts)
 	 */
 	public Vector<String[]> vvTexts = null;
 	/**

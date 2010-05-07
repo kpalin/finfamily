@@ -20,7 +20,6 @@ public class SukuTypesModel extends AbstractTableModel {
 	private Object[][] typesData = null;
 	private HashMap<String, Integer> typeTexts = new HashMap<String, Integer>();
 	private HashMap<String, String> typeRule = new HashMap<String, String>();
-	private HashMap<String, String> textTexts = new HashMap<String, String>();
 
 	SukuTypesModel() {
 
@@ -65,14 +64,6 @@ public class SukuTypesModel extends AbstractTableModel {
 				if (typesData[i][6] == null) {
 					typesData[i][6] = reposet.vvTypes.get(i)[1];
 				}
-			}
-
-			for (int i = 0; i < reposet.vvTexts.size(); i++) {
-				String tag = reposet.vvTexts.get(i)[0];
-				String value = reposet.vvTexts.get(i)[1];
-				if (value == null)
-					value = "";
-				textTexts.put(tag, value);
 			}
 
 		} catch (SukuException e) {
@@ -205,17 +196,6 @@ public class SukuTypesModel extends AbstractTableModel {
 	 */
 	public String getTypesValue(int idx) {
 		return typesValues[idx];
-	}
-
-	/**
-	 * @param tag
-	 * @return the textTexts
-	 */
-	public String getTextText(String tag) {
-		String value = textTexts.get(tag);
-		if (value == null)
-			return tag;
-		return value;
 	}
 
 	/**

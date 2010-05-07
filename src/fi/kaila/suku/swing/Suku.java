@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,6 +85,7 @@ import fi.kaila.suku.swing.panel.PersonView;
 import fi.kaila.suku.swing.panel.SukuTabPane;
 import fi.kaila.suku.swing.util.SukuPopupMenu;
 import fi.kaila.suku.swing.util.SukuPopupMenu.MenuSource;
+import fi.kaila.suku.util.ExcelBundle;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateComparator;
 import fi.kaila.suku.util.SukuException;
@@ -1182,8 +1184,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				}
 
 				// copy report languages here to static
-				SukuData rlang = kontroller.getSukuData("cmd=repolanguages");
-				repoLangList = rlang.generalArray;
+				Locale reportLocale = new Locale("fi");
+
+				ExcelBundle resultla = new ExcelBundle();
+
+				resultla.importBundle("excel/FinFamily", "Program",
+						reportLocale);
+
+				repoLangList = resultla.getLangList();
+
 				SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
 						"type=needle", "name=needle");
 
@@ -1293,9 +1302,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							.getSukuData("cmd=excel",
 									"path=resources/excel/TypesExcel.xls",
 									"page=types");
-					SukuData rlang = kontroller
-							.getSukuData("cmd=repolanguages");
-					repoLangList = rlang.generalArray;
+
+					//					
+					// SukuData rlang = kontroller
+					// .getSukuData("cmd=repolanguages");
+					// repoLangList = rlang.generalArray;
 				}
 
 				JOptionPane.showMessageDialog(this, resu, Resurses

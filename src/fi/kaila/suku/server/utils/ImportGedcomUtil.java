@@ -14,9 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -27,6 +27,7 @@ import java.util.zip.ZipInputStream;
 
 import fi.kaila.suku.imports.ImportGedcomDialog;
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.util.ExcelBundle;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
@@ -74,17 +75,18 @@ public class ImportGedcomUtil {
 	Vector<String> unknownLine = new Vector<String>();
 	LinkedHashMap<String, GedcomFams> gedFams = null;
 	LinkedHashMap<String, GedcomLine> gedAdopt = null;
-	HashMap<String, String> texts = null;
+	ExcelBundle repoTexts = null;
+	// HashMap<String, String> texts = null;
 	LinkedHashMap<String, String> images = null;
 	boolean isZipFile = false;
 	String baseFolder = "";
 
 	/**
-	 * @param vvTexts
+	 * @param lang
 	 * @return result in SukuData
 	 * @throws SukuException
 	 */
-	public SukuData importGedcom(Vector<String[]> vvTexts) throws SukuException {
+	public SukuData importGedcom(String lang) throws SukuException {
 		SukuData resp = new SukuData();
 		gedMap = new LinkedHashMap<String, GedcomLine>();
 		gedSource = new LinkedHashMap<String, GedcomLine>();
@@ -99,13 +101,17 @@ public class ImportGedcomUtil {
 		GedcomLine record = null;
 		Statement stm;
 
-		texts = new HashMap<String, String>();
-		if (vvTexts != null) {
-			for (int i = 0; i < vvTexts.size(); i++) {
-				String[] parts = vvTexts.get(i);
-				texts.put(parts[0], parts[1]);
-			}
-		}
+		repoTexts = new ExcelBundle();
+		Locale locRepo = new Locale(lang);
+		repoTexts.importBundle("excel/FinFamily", "Report", locRepo);
+
+		// texts = new HashMap<String, String>();
+		// if (vvTexts != null) {
+		// for (int i = 0; i < vvTexts.size(); i++) {
+		// String[] parts = vvTexts.get(i);
+		// texts.put(parts[0], parts[1]);
+		// }
+		// }
 
 		try {
 			int unitCount = 0;
@@ -1329,7 +1335,8 @@ public class ImportGedcomUtil {
 	private void extractSourceChild(GedcomLine dets, StringBuffer sb) {
 		for (int i = 0; i < dets.lines.size(); i++) {
 			GedcomLine detl = dets.lines.get(i);
-			String name = texts.get("REF_" + detl.tag);
+			// String name = texts.get("REF_" + detl.tag);
+			String name = repoTexts.getString("REF_" + detl.tag);
 			if (name != null) {
 				sb.append(name);
 				sb.append(" ");

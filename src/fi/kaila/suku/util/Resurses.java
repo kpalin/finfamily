@@ -360,7 +360,10 @@ public class Resurses {
 	private Resurses() {
 		if (resources == null) {
 			// Locale.setDefault(currentLocale);
-			resources = ExcelBundle.getBundle("excel/FinFamily", currentLocale);
+			resources = new ExcelBundle();
+			resources.importBundle("excel/FinFamily", "Program", currentLocale);
+			// resources = ExcelBundle.getBundle("excel/FinFamily", "Program",
+			// currentLocale);
 		}
 	}
 
@@ -373,8 +376,30 @@ public class Resurses {
 		currentLocale = new Locale(newLocale);
 		repoLangu = newLocale;
 		myself = null;
-		resources = ExcelBundle.getBundle("excel/FinFamily", currentLocale);
+		resources = new ExcelBundle();
 
+		resources.importBundle("excel/FinFamily", "Program", currentLocale);
+
+	}
+
+	private static ExcelBundle repoTexts = null; // new
+
+	// HashMap<String,
+	// String>();
+
+	/**
+	 * @return report text for tag
+	 */
+	public static synchronized String getReportString(String tag) {
+		if (repoTexts == null) {
+			repoTexts = new ExcelBundle();
+			Locale locRepo = new Locale(getLanguage());
+			repoTexts.importBundle("excel/FinFamily", "Report", locRepo);
+		}
+		if (repoTexts == null) {
+			return tag;
+		}
+		return repoTexts.getString(tag);
 	}
 
 	/**
@@ -386,6 +411,7 @@ public class Resurses {
 		repoLangu = langu;
 		Locale lloca = new Locale(repoLangu);
 		PersonShortData.fiCollator = Collator.getInstance(lloca);
+		repoTexts = null;
 	}
 
 	/**
