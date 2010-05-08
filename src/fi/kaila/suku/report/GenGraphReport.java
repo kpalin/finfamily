@@ -138,9 +138,9 @@ public class GenGraphReport extends CommonReport {
 							// read father into fdata
 							PersonShortData ppf = fdata.pers[i];
 							row = addPersonToSheet(sheet, row, ppf); // print
-																		// father
-																		// to
-																		// sheet
+							// father
+							// to
+							// sheet
 
 						}
 					}

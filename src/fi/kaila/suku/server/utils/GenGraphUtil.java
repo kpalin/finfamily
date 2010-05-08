@@ -8,7 +8,6 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
-import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
@@ -108,7 +107,7 @@ public class GenGraphUtil {
 
 		logger.fine("GenGraphUtil repo");
 
-		this.runner.setRunnerValue(Resurses.getString("REPORT_DESC_COUNTING"));
+		this.runner.setRunnerValue(psp.getAlfaName(true));
 		return fam;
 
 	}
