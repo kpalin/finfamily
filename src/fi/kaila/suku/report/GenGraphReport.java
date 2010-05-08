@@ -75,7 +75,8 @@ public class GenGraphReport extends CommonReport {
 
 		try {
 			vlist = caller.getKontroller().getSukuData("cmd=gengraph",
-					"type=" + Resurses.CMD_DESC_TYPE, "pid=" + caller.getPid());
+					"anc=" + genAnc, "desc=" + genDesc, "back=" + youngFrom,
+					"pid=" + caller.getPid());
 		} catch (SukuException e) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
 					e);
