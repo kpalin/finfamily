@@ -801,6 +801,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * 
+	 * @return handle to other reports pane
+	 */
+	public OtherReportsPane getOtherPane() {
+		return otherPane;
+	}
+
+	/**
 	 * @return ancestor panel
 	 */
 	public AncestorPane getAncestorPane() {

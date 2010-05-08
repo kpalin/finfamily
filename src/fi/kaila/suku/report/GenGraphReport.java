@@ -55,6 +55,24 @@ public class GenGraphReport extends CommonReport {
 		if (!Suku.kontroller.createLocalFile("xls")) {
 			return;
 		}
+
+		int genAnc = caller.getOtherPane().getAncestors();
+		int genDesc = caller.getOtherPane().getDescendants();
+		int youngFrom = caller.getOtherPane().getYoungFrom();
+
+		boolean adopted = caller.getOtherPane().isAdopted();
+		boolean parents = caller.getOtherPane().isParents();
+		boolean spouses = caller.getOtherPane().isSpouses();
+		boolean givenName = caller.getOtherPane().isGivenname();
+		boolean surname = caller.getOtherPane().isSurname();
+		boolean occu = caller.getOtherPane().isOccupation();
+		boolean lived = caller.getOtherPane().isLived();
+		boolean place = caller.getOtherPane().isPlace();
+		boolean married = caller.getOtherPane().isMarried();
+
+		logger.info("asked for " + genAnc + " ancestors, " + genDesc
+				+ " descendants and " + youngFrom + " backwards generations");
+
 		try {
 			vlist = caller.getKontroller().getSukuData("cmd=gengraph",
 					"type=" + Resurses.CMD_DESC_TYPE, "pid=" + caller.getPid());
