@@ -23,6 +23,7 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonShortData;
+import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
@@ -50,7 +51,7 @@ public class GenGraphReport extends CommonReport {
 	 * execute the report.
 	 */
 	public void executeReport() {
-		SukuData vlist = null;
+
 		// this will create the output file stream
 		if (!Suku.kontroller.createLocalFile("xls")) {
 			return;
@@ -74,21 +75,22 @@ public class GenGraphReport extends CommonReport {
 				+ " descendants and " + youngFrom + " backwards generations");
 
 		try {
-			vlist = caller.getKontroller().getSukuData("cmd=gengraph",
-					"anc=" + genAnc, "desc=" + genDesc, "back=" + youngFrom,
-					"pid=" + caller.getPid());
-		} catch (SukuException e) {
-			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
-					e);
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ":" + e.getMessage());
-			return;
-		}
+			//
+			// here read the subject person
+			//
+			// SukuData is a holder of certain classes used mainly to transfer
+			// these from
+			// server part to client part and vice versa
+			// 
+			// below command fetches 1 PersonShortData item into array
+			// vlist.pers
+			// and all its Relation into array
+			// vlist.relation
+			SukuData vlist = caller.getKontroller().getSukuData("cmd=person",
+					"mode=relations", "pid=" + caller.getPid(),
+					"lang=" + Resurses.getLanguage());
 
-		logger.info("GenGraphReport");
-
-		try {
+			// logger.info("GenGraphReport");
 
 			BufferedOutputStream bstr = new BufferedOutputStream(
 					Suku.kontroller.getOutputStream());
@@ -116,25 +118,34 @@ public class GenGraphReport extends CommonReport {
 			for (int i = 0; i < vlist.pers.length; i++) {
 				PersonShortData pp = vlist.pers[i];
 
-				String bdate = pp.getBirtDate() == null ? null : pp
-						.getBirtDate().substring(0, 4);
-				String ddate = pp.getDeatDate() == null ? null : pp
-						.getDeatDate().substring(0, 4);
+				row = addPersonToSheet(sheet, row, pp);
 
-				StringBuilder sb = new StringBuilder();
-				sb.append(pp.getAlfaName());
-				if (bdate != null) {
-					sb.append(" ");
-					sb.append(bdate);
-				}
-				if (ddate != null) {
-					sb.append("-");
-					sb.append(ddate);
-				}
-				row++;
-				label = new Label(1, row, sb.toString());
+				// now for demo lets print name of father
+				// not adopted ones
 
-				sheet.addCell(label);
+				if (vlist.relations != null) {
+					// this is a sample demo to show how to get father for
+					// person in vlist
+					for (int j = 0; j < vlist.relations.length; j++) {
+						Relation r = vlist.relations[j]; // here is relation j
+						if (r.getTag().equals("FATH") && !isAdopted(r)) {
+							// now r contains the Relation for father
+							SukuData fdata = caller.getKontroller()
+									.getSukuData("cmd=person",
+											"mode=relations",
+											"pid=" + r.getRelative(),
+											"lang=" + Resurses.getLanguage());
+							// read father into fdata
+							PersonShortData ppf = fdata.pers[i];
+							row = addPersonToSheet(sheet, row, ppf); // print
+																		// father
+																		// to
+																		// sheet
+
+						}
+					}
+
+				}
 			}
 
 			// All sheets and cells added. Now write out the workbook
@@ -153,8 +164,56 @@ public class GenGraphReport extends CommonReport {
 		} catch (WriteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (SukuException e) {
+			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
+					e);
+			JOptionPane.showMessageDialog(caller, Resurses
+					.getString(Resurses.CREATE_REPORT)
+					+ ":" + e.getMessage());
+			return;
 		}
 
+	}
+
+	private int addPersonToSheet(WritableSheet sheet, int row,
+			PersonShortData pp) throws WriteException, RowsExceededException {
+		Label label;
+		String bdate = pp.getBirtDate() == null ? null : pp.getBirtDate()
+				.substring(0, 4);
+		String ddate = pp.getDeatDate() == null ? null : pp.getDeatDate()
+				.substring(0, 4);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(pp.getAlfaName());
+		if (bdate != null) {
+			sb.append(" ");
+			sb.append(bdate);
+		}
+		if (ddate != null) {
+			sb.append("-");
+			sb.append(ddate);
+		}
+		row++;
+		label = new Label(1, row, sb.toString());
+
+		sheet.addCell(label);
+		return row;
+	}
+
+	/**
+	 * Check if this describes an adoption
+	 * 
+	 * @param rela
+	 * @return true if relation describes an adoption
+	 */
+	private boolean isAdopted(Relation rela) {
+		if (rela.getNotices() == null)
+			return false; // adoption is in the RelationNotice
+		for (int i = 0; i < rela.getNotices().length; i++) {
+			if (rela.getNotices()[i].getTag().equals("ADOP"))
+				return true;
+		}
+		return false;
 	}
 
 	@Override

@@ -375,6 +375,17 @@ public class SukuServerImpl implements SukuServer {
 					fam.pers = new PersonShortData[1];
 					fam.pers[0] = psp;
 					return fam;
+				} else if ("relations".equals(mode)) {
+					tmp = map.get("pid");
+
+					lang = map.get("lang");
+					if (tmp != null) {
+						pid = Integer.parseInt(tmp);
+
+						GenGraphUtil gutil = new GenGraphUtil(con);
+						fam = gutil.getGengraphData(pid, lang);
+						return fam;
+					}
 				}
 
 				lang = map.get("lang");
@@ -581,15 +592,7 @@ public class SukuServerImpl implements SukuServer {
 			} else {
 				fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
 			}
-		} else if (cmd.equals("gengraph")) {
-			String type = map.get("type");
-			tmp = map.get("pid");
-			if (tmp != null) {
-				pid = Integer.parseInt(tmp);
 
-				GenGraphUtil gutil = new GenGraphUtil(con);
-				fam = gutil.getGengraphData(pid);
-			}
 		} else if (cmd.equals("savesettings")) {
 			fam = saveReportSettings(map);
 

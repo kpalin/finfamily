@@ -12,6 +12,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
+import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 
 public class GenGraphUtil {
@@ -33,33 +34,70 @@ public class GenGraphUtil {
 		this.runner = ReportWorkerDialog.getRunner();
 	}
 
-	public SukuData getGengraphData(int pid) throws SukuException {
+	public SukuData getGengraphData(int pid, String lang) throws SukuException {
 		SukuData fam = new SukuData();
+		Relation rela;
 		Vector<PersonShortData> persons = new Vector<PersonShortData>();
 		Vector<Relation> relas = new Vector<Relation>();
+		// LinkedHashMap<Integer,ReportUnit> ru = new
+		// LinkedHashMap<Integer,ReportUnit>();
+		// LinkedHashMap<Integer, PersonShortData> pu = new
+		// LinkedHashMap<Integer, PersonShortData>();
+		Vector<RelationNotice> relaNotices = null;
 		PersonShortData psp = new PersonShortData(con, pid);
 		persons.add(psp);
-		Relation rela;
-
-		String sql = "select rid,bid,tag from parent where aid = ?";
 
 		try {
+
+			String sql = "select a.rid,b.pid,a.tag,a.surety,c.tag "
+					+ "from relation as a inner join relation as b on a.rid=b.rid and b.pid <> a.pid	"
+					+ "left join relationnotice as c on a.rid=c.rid "
+					+ "where a.pid=? order by a.tag,a.relationrow";
+
+			String sqln = "select tag,fromdate from relationnotice where rid=? order by noticerow";
 			PreparedStatement pst = con.prepareStatement(sql);
+
 			pst.setInt(1, pid);
 			ResultSet rs = pst.executeQuery();
+
+			int defRid = 0;
 			while (rs.next()) {
 				int rid = rs.getInt(1);
-				int bid = rs.getInt(2);
-				String tag = rs.getString(3);
-				rela = new Relation(rid, bid, pid, tag, 100, null, null);
-				relas.add(rela);
-				psp = new PersonShortData(con, bid);
-				persons.add(psp);
+				if (defRid != rid) {
+					defRid = rid;
+					int bid = rs.getInt(2);
+					String tag = rs.getString(3);
+					int surety = rs.getInt(4);
+					String noteTag = rs.getString(5);
+					rela = new Relation(rid, pid, bid, tag, surety, null, null);
+					relas.add(rela);
 
+					if (noteTag != null) {
+						relaNotices = new Vector<RelationNotice>();
+						PreparedStatement pstn = con.prepareStatement(sqln);
+						pstn.setInt(1, rid);
+						ResultSet rsn = pstn.executeQuery();
+						while (rsn.next()) {
+
+							String xtag = rsn.getString(1);
+							String xdate = rsn.getString(2);
+
+							RelationNotice rn = new RelationNotice(xtag);
+							if (xdate != null) {
+								rn.setFromDate(xdate);
+							}
+							relaNotices.add(rn);
+						}
+						rsn.close();
+						pstn.close();
+						rela.setNotices(relaNotices
+								.toArray(new RelationNotice[0]));
+					}
+
+				}
 			}
 			rs.close();
 			pst.close();
-
 			fam.relations = relas.toArray(new Relation[0]);
 
 			fam.pers = persons.toArray(new PersonShortData[0]);
