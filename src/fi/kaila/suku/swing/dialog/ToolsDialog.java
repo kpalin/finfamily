@@ -13,13 +13,18 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
 
 import fi.kaila.suku.swing.Suku;
@@ -45,7 +50,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger
 			.getLogger(ToolsDialog.class.getName());
-	private static final String OK = "OK";
+	private static final String SORT = "NOTICES.SORT";
 	private static final String CANCEL = "CANCEL";
 
 	private JLabel textContent;
@@ -60,6 +65,17 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 	private JProgressBar progressBar;
 	private Task task;
+
+	private JTextField name;
+	private JTextField address;
+	private JTextField postalCode;
+	private JTextField postOffice;
+	private JTextField state;
+	private JTextField country;
+	private JTextField email;
+	private JTextField web;
+	private JTextArea text;
+	private JButton update;
 
 	/**
 	 * @return handle to this instance
@@ -86,17 +102,18 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	 * @param owner
 	 */
 	public ToolsDialog(Suku owner) {
-		super(owner, Resurses.getString("DIALOG_SORT_NOTICES"), true);
+		super(owner, Resurses.getString("DIALOG_PROPERTIES"), true);
 		this.owner = owner;
 		runner = this;
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-		setBounds(d.width / 2 - 300, d.height / 2 - 200, 600, 400);
+		setBounds(d.width / 2 - 350, d.height / 2 - 250, 700, 500);
 		setLayout(null);
 
-		int y = 10;
-
+		int y = 30;
+		JPanel nsort = new JPanel();
+		JPanel props = new JPanel();
 		String[] notorder = null;
 		try {
 			SukuTypesModel types = Utils.typeInstance();
@@ -134,51 +151,49 @@ public class ToolsDialog extends JDialog implements ActionListener,
 					value = types.getTypesName(i);
 					kokoLista.add(value);
 				}
-				// String value = (String) types.getTypesData(i, 0);
-				// kokoMap.put(tag, value);
 			}
 
-			// for (int i = 0; i < reposet.vvTypes.size(); i++) {
-			//
-			// String tag = reposet.vvTypes.get(i)[0];
-			//
-			// String value = settiMap.get(tag);
-			// if (value == null) {
-			// kokoTags.add(tag);
-			//
-			// value = reposet.vvTypes.get(i)[1];
-			// kokoLista.add(value);
-			// }
-			// }
+			nsort.setLayout(null);
+			nsort.setBounds(400, 0, 280, 450);
 
+			nsort.setBorder(BorderFactory.createTitledBorder(Resurses
+					.getString("DIALOG_SORT_NOTICES")));
+			getContentPane().add(nsort);
+			props.setLayout(null);
+			props.setBounds(10, 0, 380, 450);
+
+			props.setBorder(BorderFactory.createTitledBorder(Resurses
+					.getString("DIALOG_OWNER")));
+
+			getContentPane().add(props);
 			JLabel lbl = new JLabel(Resurses.getString("DIALOG_NONSORT"));
-			getContentPane().add(lbl);
-			lbl.setBounds(300, y, 120, 20);
+			nsort.add(lbl);
+			lbl.setBounds(10, y, 120, 20);
 
 			lbl = new JLabel(Resurses.getString("DIALOG_YESSORT"));
-			getContentPane().add(lbl);
-			lbl.setBounds(460, y, 120, 20);
+			nsort.add(lbl);
+			lbl.setBounds(150, y, 120, 20);
 
 			y += 20;
 			koko = new JList(kokoLista);
 			koko.addMouseListener(this);
 			kokoScroll = new JScrollPane(koko);
-			getContentPane().add(kokoScroll);
-			kokoScroll.setBounds(300, y, 120, 200);
+			nsort.add(kokoScroll);
+			kokoScroll.setBounds(10, y, 120, 200);
 
 			setti = new JList(settiLista);
 			setti.addMouseListener(this);
 			settiScroll = new JScrollPane(setti);
-			getContentPane().add(settiScroll);
-			settiScroll.setBounds(460, y, 120, 200);
+			nsort.add(settiScroll);
+			settiScroll.setBounds(150, y, 120, 200);
 			y += 206;
 			lbl = new JLabel(Resurses.getString("DIALOG_CLICKINFO"));
-			getContentPane().add(lbl);
-			lbl.setBounds(300, y, 300, 20);
+			nsort.add(lbl);
+			lbl.setBounds(10, y, 300, 20);
 			y += 18;
 			lbl = new JLabel(Resurses.getString("DIALOG_STATICNAME"));
-			getContentPane().add(lbl);
-			lbl.setBounds(300, y, 300, 20);
+			nsort.add(lbl);
+			lbl.setBounds(10, y, 300, 20);
 			y += 18;
 
 		} catch (SukuException e1) {
@@ -187,43 +202,139 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 		}
 
-		y = 260;
-
+		y += 30;
 		textContent = new JLabel(Resurses.getString("DIALOG_SORTINFO"));
 
-		getContentPane().add(textContent);
-		this.textContent.setBounds(30, y, 340, 40);
+		nsort.add(textContent);
+		this.textContent.setBounds(10, y, 300, 40);
 		y += 30;
 
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
-		this.progressBar.setBounds(30, y, 340, 20);
-		getContentPane().add(this.progressBar);
+		this.progressBar.setBounds(10, y, 260, 20);
+		nsort.add(this.progressBar);
 
 		y += 40;
-		this.ok = new JButton(Resurses.getString(OK));
-		getContentPane().add(this.ok);
-		this.ok.setBounds(360, y, 100, 24);
-		this.ok.setActionCommand(OK);
+		this.ok = new JButton(Resurses.getString(SORT));
+		nsort.add(this.ok);
+		this.ok.setBounds(10, y, 100, 24);
+		this.ok.setActionCommand(SORT);
 		this.ok.addActionListener(this);
-		this.ok.setDefaultCapable(true);
-		getRootPane().setDefaultButton(this.ok);
+		// this.ok.setDefaultCapable(true);
+		// getRootPane().setDefaultButton(this.ok);
 
 		this.cancel = new JButton(Resurses.getString(CANCEL));
-		getContentPane().add(this.cancel);
-		this.cancel.setBounds(480, y, 100, 24);
+		nsort.add(this.cancel);
+		this.cancel.setBounds(140, y, 100, 24);
 		this.cancel.setActionCommand(CANCEL);
 		this.cancel.addActionListener(this);
 
 		this.task = null;
 
+		SukuData resp = new SukuData();
+		try {
+			resp = Suku.kontroller.getSukuData("cmd=variables", "type=get");
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, Resurses
+					.getString("DIALOG_UPDATE_DB")
+					+ ":" + e.getMessage(), Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
+			resp.generalArray = new String[10];
+
+		}
+		notorder = resp.generalArray;
+
+		y = 20;
+
+		JLabel lbl = new JLabel(Resurses.getString("DATA_NAME"));
+		props.add(lbl);
+		lbl.setBounds(10, y, 80, 20);
+
+		name = new JTextField(Utils.nv(resp.generalArray[0]));
+		props.add(name);
+		name.setBounds(90, y, 280, 20);
+		y += 24;
+		lbl = new JLabel(Resurses.getString("DATA_ADDRESS"));
+		props.add(lbl);
+		lbl.setBounds(10, y, 80, 20);
+
+		address = new JTextField(Utils.nv(resp.generalArray[1]));
+		props.add(address);
+		address.setBounds(90, y, 280, 20);
+
+		y += 24;
+		lbl = new JLabel(Resurses.getString("DATA_POSTCODE"));
+		props.add(lbl);
+		lbl.setBounds(90, y, 80, 20);
+		lbl = new JLabel(Resurses.getString("DATA_POSTOFF"));
+		props.add(lbl);
+		lbl.setBounds(190, y, 80, 20);
+		y += 20;
+		postalCode = new JTextField(Utils.nv(resp.generalArray[2]));
+		props.add(postalCode);
+		postalCode.setBounds(90, y, 85, 20);
+		postOffice = new JTextField(Utils.nv(resp.generalArray[3]));
+		props.add(postOffice);
+		postOffice.setBounds(180, y, 190, 20);
+
+		y += 24;
+
+		lbl = new JLabel(Resurses.getString("DATA_STATE"));
+		props.add(lbl);
+		lbl.setBounds(90, y, 80, 20);
+		lbl = new JLabel(Resurses.getString("DATA_COUNTRY"));
+		props.add(lbl);
+		lbl.setBounds(190, y, 80, 20);
+		y += 20;
+		state = new JTextField(Utils.nv(resp.generalArray[4]));
+		props.add(state);
+		state.setBounds(90, y, 85, 20);
+		country = new JTextField(Utils.nv(resp.generalArray[5]));
+		props.add(country);
+		country.setBounds(180, y, 190, 20);
+
+		y += 24;
+		lbl = new JLabel(Resurses.getString("DATA_EMAIL"));
+		props.add(lbl);
+		lbl.setBounds(10, y, 80, 20);
+
+		email = new JTextField(Utils.nv(resp.generalArray[6]));
+		props.add(email);
+		email.setBounds(90, y, 280, 20);
+
+		y += 24;
+		lbl = new JLabel(Resurses.getString("DIALOG_WWW"));
+		props.add(lbl);
+		lbl.setBounds(10, y, 80, 20);
+
+		web = new JTextField(Utils.nv(resp.generalArray[7]));
+		props.add(web);
+		web.setBounds(90, y, 280, 20);
+		y += 24;
+		lbl = new JLabel(Resurses.getString("DATA_NOTE"));
+		props.add(lbl);
+		lbl.setBounds(10, y, 80, 20);
+		text = new JTextArea(Utils.nv(resp.generalArray[8]));
+		text.setLineWrap(true);
+		JScrollPane scrollPrivate = new JScrollPane(text,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		props.add(scrollPrivate);
+		scrollPrivate.setBounds(90, y, 280, 150);
+		y += 160;
+		update = new JButton(Resurses.getString("DIALOG_UPDATE"));
+		props.add(update);
+		update.setBounds(90, y, 160, 24);
+		update.setActionCommand("DIALOG_UPDATE");
+		update.addActionListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
-		if (cmd.equals(OK)) {
+		if (cmd.equals(SORT)) {
 
 			SukuData request = new SukuData();
 			request.generalArray = settiTags.toArray(new String[0]);
@@ -245,8 +356,30 @@ public class ToolsDialog extends JDialog implements ActionListener,
 			task.addPropertyChangeListener(this);
 			task.execute();
 
-		}
-		if (cmd.equals(CANCEL)) {
+		} else if (cmd.equals("DIALOG_UPDATE")) {
+
+			try {
+
+				SukuData req = new SukuData();
+				req.generalArray = new String[9];
+				req.generalArray[0] = Utils.vn(name.getText());
+				req.generalArray[1] = Utils.vn(address.getText());
+				req.generalArray[2] = Utils.vn(postalCode.getText());
+				req.generalArray[3] = Utils.vn(postOffice.getText());
+				req.generalArray[4] = Utils.vn(state.getText());
+				req.generalArray[5] = Utils.vn(country.getText());
+				req.generalArray[6] = Utils.vn(email.getText());
+				req.generalArray[7] = Utils.vn(web.getText());
+				req.generalArray[8] = Utils.vn(text.getText());
+
+				SukuData resp = Suku.kontroller.getSukuData(req,
+						"cmd=variables", "type=update");
+				setVisible(false);
+			} catch (SukuException ee) {
+				JOptionPane.showMessageDialog(this, ee.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			}
+		} else if (cmd.equals(CANCEL)) {
 			if (this.task == null) {
 
 				setVisible(false);

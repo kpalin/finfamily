@@ -90,6 +90,7 @@ owner_info varchar,
 owner_address varchar,
 owner_postalcode varchar,
 owner_postoffice varchar,
+owner_state varchar,
 owner_country varchar,
 owner_email varchar,
 user_id varchar primary key default 'suku' ,    -- userid. network user only 

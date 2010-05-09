@@ -18,6 +18,8 @@ create index UnitPatronymIndex on UnitNotice (Patronym);
 ALTER TABLE relationlanguage ADD COLUMN rid integer;
 
 ALTER TABLE unitnotice ADD COLUMN state varchar;
+ALTER TABLE SukuVariables ADD COLUMN owner_state varchar;
+ALTER TABLE SukuVariables ADD COLUMN owner_webaddress varchar;
 
 drop view if exists unitNotice_fi;
 drop view if exists unitNotice_sv;

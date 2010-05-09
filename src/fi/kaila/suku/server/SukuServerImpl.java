@@ -186,7 +186,7 @@ public class SukuServerImpl implements SukuServer {
 				int relOrder = rs.getInt(2);
 				String aux = rs.getString(4);
 				String div = rs.getString(5);
-				String stag = rs.getString(6);
+				// String stag = rs.getString(6);
 				int surety = rs.getInt(7);
 				// System.out.println("XX: " + tag + "/" + relPid + "/" +
 				// relOrder + "/" + aux + "/" + div);
@@ -615,6 +615,14 @@ public class SukuServerImpl implements SukuServer {
 				fam.resu = "Wrong type [" + type + "] in update command";
 				return fam;
 			}
+		} else if (cmd.equals("variables")) {
+			String type = map.get("type");
+			if ("get".equals(type)) {
+				fam = getSukuInfo();
+			} else if ("update".equals(type)) {
+				fam = setSukuInfo(request);
+			}
+
 		} else if (cmd.equals("group")) {
 			String action = map.get("action");
 			String key = map.get("key");
@@ -768,6 +776,67 @@ public class SukuServerImpl implements SukuServer {
 			throw new SukuException(fam.resu);
 		}
 		return fam;
+	}
+
+	private SukuData setSukuInfo(SukuData request) throws SukuException {
+		SukuData response = new SukuData();
+		String sql = "update sukuvariables set owner_name=?,owner_address=?,owner_postalcode=?,owner_postoffice=?,"
+				+ "owner_state=?,owner_country=?,owner_email=?,owner_webaddress=?,owner_info=? ";
+
+		try {
+			PreparedStatement pst = con.prepareStatement(sql);
+			pst.setString(1, request.generalArray[0]);
+			pst.setString(2, request.generalArray[1]);
+			pst.setString(3, request.generalArray[2]);
+			pst.setString(4, request.generalArray[3]);
+			pst.setString(5, request.generalArray[4]);
+			pst.setString(6, request.generalArray[5]);
+			pst.setString(7, request.generalArray[6]);
+			pst.setString(8, request.generalArray[7]);
+			pst.setString(9, request.generalArray[8]);
+			pst.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SukuException("setSukuInfo " + e.getMessage());
+
+		}
+
+		return response;
+	}
+
+	private SukuData getSukuInfo() throws SukuException {
+
+		SukuData response = new SukuData();
+		String sql = "select * from sukuvariables";
+
+		Statement stm;
+		try {
+			stm = con.createStatement();
+
+			ResultSet rs = stm.executeQuery(sql);
+			response.generalArray = new String[9];
+			if (rs.next()) {
+				response.generalArray[0] = rs.getString("owner_name");
+				response.generalArray[1] = rs.getString("owner_address");
+				response.generalArray[2] = rs.getString("owner_postalcode");
+				response.generalArray[3] = rs.getString("owner_postoffice");
+				response.generalArray[4] = rs.getString("owner_state");
+				response.generalArray[5] = rs.getString("owner_country");
+				response.generalArray[6] = rs.getString("owner_email");
+				response.generalArray[7] = rs.getString("owner_webaddress");
+				response.generalArray[8] = rs.getString("owner_info");
+
+			}
+
+			rs.close();
+			stm.close();
+
+		} catch (SQLException e) {
+			throw new SukuException("SukuVariables: " + e.getMessage());
+		}
+
+		return response;
 	}
 
 	private SukuData getDbLista(String host, String user, String password)
@@ -933,7 +1002,7 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData getConversions(String langu) {
 		SukuData res = new SukuData();
-		String vx[];
+
 		res.vvTexts = new Vector<String[]>();
 		try {
 			String sql = "select fromtext,rule,totext from conversions where langCode = '"
@@ -1020,7 +1089,7 @@ public class SukuServerImpl implements SukuServer {
 		Vector<String> vSurnames = new Vector<String>();
 		Vector<String> vDescriptions = new Vector<String>();
 		Vector<String> vTypes = new Vector<String>();
-		Vector<String> vGroupd = new Vector<String>();
+		// Vector<String> vGroupd = new Vector<String>();
 		try {
 			String sql = "select place,count(*) from unitnotice "
 					+ "where place is not null group by place  "
@@ -1659,17 +1728,17 @@ public class SukuServerImpl implements SukuServer {
 		return resdat;
 	}
 
-	private SukuData getReportLanguages() {
-		SukuData resdat = new SukuData();
-
-		try {
-			resdat.generalArray = Upload.getReportLanguages(con);
-		} catch (SQLException e) {
-			resdat.resu = e.getMessage();
-		}
-
-		return resdat;
-	}
+	// private SukuData getReportLanguages() {
+	// SukuData resdat = new SukuData();
+	//
+	// try {
+	// resdat.generalArray = Upload.getReportLanguages(con);
+	// } catch (SQLException e) {
+	// resdat.resu = e.getMessage();
+	// }
+	//
+	// return resdat;
+	// }
 
 	private SukuData uploadFamily(SukuData family) throws SukuException {
 
