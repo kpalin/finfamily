@@ -854,7 +854,66 @@ public class ExportGedcomUtil {
 		}
 
 		sb.append("0 @U1@ SUBM\r\n");
-		sb.append("1 NAME Test user\r\n"); // TODO add user data
+
+		String sql = "select * from sukuvariables";
+		Statement stm;
+		try {
+			stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			if (rs.next()) {
+				sb.append("1 NAME " + rs.getString("owner_name") + "\r\n");
+
+				StringBuilder sbad = new StringBuilder();
+				String tmp = rs.getString("owner_address");
+				if (tmp != null) {
+					sbad.append(tmp + "\r\n");
+				}
+				tmp = rs.getString("owner_postalcode");
+				String aux = rs.getString("owner_postoffice");
+				if (tmp != null) {
+					if (aux != null) {
+						sbad.append(tmp + " " + aux + "\r\n");
+					} else {
+						sbad.append(tmp + "\r\n");
+					}
+
+				} else if (aux != null) {
+					sbad.append(aux + "\r\n");
+				}
+
+				tmp = rs.getString("owner_state");
+				if (tmp != null) {
+					sbad.append(tmp + "\r\n");
+				}
+				tmp = rs.getString("owner_country");
+				if (tmp != null) {
+					sbad.append(tmp + "\r\n");
+				}
+				sb.append(getNoteStructure(1, "ADDR", sbad.toString(), 1));
+
+				tmp = rs.getString("owner_email");
+				if (tmp != null) {
+					sb.append("1 EMAIL " + tmp + "\r\n");
+				}
+
+				tmp = rs.getString("owner_webaddress");
+				if (tmp != null) {
+					sb.append("1 WWW " + tmp + "\r\n");
+				}
+				tmp = rs.getString("owner_info");
+				if (tmp != null) {
+					sb.append(getNoteStructure(1, "NOTE", tmp, 1));
+
+				}
+			} else {
+				sb.append("1 NAME No user\r\n");
+
+			}
+			rs.close();// TODO
+			stm.close();
+		} catch (SQLException e) {
+			sb.append("1 NAME " + e.getMessage() + "\r\n");
+		}
 
 		// zip.write(gedBytes("0 HEAD\r\n"));
 		//		

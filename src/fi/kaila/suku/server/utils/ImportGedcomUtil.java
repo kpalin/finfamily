@@ -1647,31 +1647,40 @@ public class ImportGedcomUtil {
 				}
 			} else if (noti.tag.equals("ADDR")) {
 				address = splitAddress(noti.lineValue);
+			} else if (noti.tag.equals("WWW")) {
+				address.www = noti.lineValue;
+			} else if (noti.tag.equals("EMAIL")) {
+				address.email = noti.lineValue;
+			} else if (noti.tag.equals("NOTE")) {
+				note.append(noti.lineValue);
+
 			}
 		}
 
 		String sql = "insert into sukuvariables (owner_name,owner_info, "
 				+ "owner_address,owner_postalcode,owner_postoffice,"
-				+ "owner_country,owner_email,user_id) values (?,?,?,?,?,?,?,user) ";
+				+ "owner_country,owner_email,owner_webaddress,user_id) values (?,?,?,?,?,?,?,?,user) ";
 
 		PreparedStatement pst = null;
 		int lukuri;
 		try {
 			pst = con.prepareStatement(sql);
 			pst.setString(1, name);
-			pst.setString(2, ownerInfo);
+			pst.setString(2, note.toString());
 			if (address != null) {
 				pst.setString(3, address.address);
 				pst.setString(4, address.postalCode);
 				pst.setString(5, address.postOffice);
 				pst.setString(6, address.country);
 				pst.setString(7, address.email);
+				pst.setString(8, address.www);
 			} else {
 				pst.setString(3, null);
 				pst.setString(4, null);
 				pst.setString(5, null);
 				pst.setString(6, null);
 				pst.setString(7, null);
+				pst.setString(8, null);
 			}
 			lukuri = pst.executeUpdate();
 
@@ -2176,6 +2185,7 @@ public class ImportGedcomUtil {
 		String postOffice = null;
 		String country = null;
 		String email = null;
+		String www = null;
 	}
 
 	class GedcomPidEle {

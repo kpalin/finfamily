@@ -93,6 +93,7 @@ owner_postoffice varchar,
 owner_state varchar,
 owner_country varchar,
 owner_email varchar,
+owner_webaddress varchar,
 user_id varchar primary key default 'suku' ,    -- userid. network user only 
 user_pwd varchar,    -- md5 encrypted password
 Modified timestamp,                           -- timestamp modified
@@ -346,15 +347,7 @@ Modified timestamp,                           -- timestamp modified
 CreateDate timestamp not null default now()   -- timestamp created  
 );
 
-create table Texts (
-TypeID serial primary key,                    -- primary key not much used
-TagType varchar not null,		              -- type of tag (Notice/Relation/Text)
-Tag varchar not null,                         -- tag of type
-LangCode varchar not null,                    -- language code for type
-Name varchar,                        -- value as displayed in program
-Modified timestamp,                           -- timestamp modified
-CreateDate timestamp not null default now()   -- timestamp created  
-);
+
 
 create table QuickList (
 QuickId integer primary key,
