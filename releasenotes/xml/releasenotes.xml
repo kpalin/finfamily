@@ -3,31 +3,35 @@
 
 <p>At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172</p>
 
-<hdr>Release 530 on 5 may 2010</hdr>
+
+<hdr>Release 541 on 9 may 2010</hdr>
 <ul>
-<li>Bugfix for re-initailizing the database.</li>
+<li>Added partly French language. Defaults to English when French word is missing.</li>
+<li>Preparations for possible GenGraph</li>
+<li>Refactored text files. Both program and report texts are now taken from excel-file.</li>
 </ul>
 
-
-<hdr>Release 528 on 4 may 2010</hdr>
+<hdr>Release 528 on 4 may 2010 (76)</hdr>
 <ul>
 <li>Bugfix for German language reports.</li>
 </ul>
 
 
-<hdr>Release 524 on 3 may 2010</hdr>
+
+
+<hdr>Release 524 on 3 may 2010 (56)</hdr>
 <ul>
 <li>German language added.</li>
 </ul>
 
-<hdr>Release 518 on 2 may 2010</hdr>
+<hdr>Release 518 on 2 may 2010 (81)</hdr>
 <ul>
 <li>Ancestor Table Report. Some fixes.</li>
 <li>Hiski import refactored.</li>
 <li>Fixed bug with US date format.</li>
 </ul>
 
-<hdr>Release 510 on 29 apr 2010</hdr>
+<hdr>Release 510 on 29 apr 2010 (53)</hdr>
 <ul>
 <li>Ancestor Table Report. Graphic Excel report starts from Reports Ancestor tab </li>
 </ul>
