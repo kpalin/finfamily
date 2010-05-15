@@ -296,25 +296,25 @@ public class Utils {
 		}
 
 		if (parts.length == 1) {
-			return strl(parts[0], 4);
+			return strl(parti[0], 4);
 		}
 
 		if (parts.length == 2) {
 			if (df.equals("SE")) {
-				return strl(parts[0], 4) + strl(parts[1], 2);
+				return strl(parti[0], 4) + strl(parti[1], 2);
 			} else {
-				return strl(parts[1], 4) + strl(parts[0], 2);
+				return strl(parti[1], 4) + strl(parti[0], 2);
 			}
 		}
 		if (parts.length == 3) {
 			if (df.equals("SE")) {
-				return strl(parts[0], 4) + strl(parts[1], 2)
-						+ strl(parts[2], 2);
+				return strl(parti[0], 4) + strl(parti[1], 2)
+						+ strl(parti[2], 2);
 			} else if (df.equals("US")) {
-				return strl(parts[2], 4) + strl(parts[0], 2)
-						+ strl(parts[1], 2);
+				return strl(parti[2], 4) + strl(parti[0], 2)
+						+ strl(parti[1], 2);
 			}
-			return strl(parts[2], 4) + strl(parts[1], 2) + strl(parts[0], 2);
+			return strl(parti[2], 4) + strl(parti[1], 2) + strl(parti[0], 2);
 
 		}
 		throw new SukuDateException(sb.toString());
@@ -352,9 +352,11 @@ public class Utils {
 
 	}
 
-	private static String strl(String text, int len) {
-		if (text == null)
+	private static String strl(int i, int len) {
+		if (i == 0)
 			return null;
+		String text = "" + i;
+
 		if (text.length() == len) {
 			return text;
 		}
