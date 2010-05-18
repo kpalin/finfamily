@@ -152,11 +152,12 @@ public class SukuTypesTable extends JTable {
 	 * 
 	 * @param tag
 	 * @param col
-	 *            column in table. 1 = name, 2 = main, 3 = child, 4 = sub
+	 *            column in table. 1 = name, 2 = main, 3 = child, 4 = sub, 5 =
+	 *            place
 	 * @return true if settings is on
 	 */
 	public boolean isType(String tag, int col) {
-		if (col < 1 || col > 4)
+		if (col < 1 || col > 5)
 			return false;
 		Integer idxInt = model.getTypeText(tag);
 		if (idxInt == null)

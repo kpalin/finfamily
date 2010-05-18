@@ -2,6 +2,7 @@ package fi.kaila.suku.report;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -70,6 +71,8 @@ public abstract class CommonReport {
 
 	private HashMap<Integer, Integer> mapper = new HashMap<Integer, Integer>();
 
+	private HashMap<String, PlaceInTables> places = new HashMap<String, PlaceInTables>();
+
 	private int referencePid = 0;
 
 	/**
@@ -114,6 +117,26 @@ public abstract class CommonReport {
 		}
 
 		return vv;
+	}
+
+	public PlaceInTables[] getPlaceReferences() {
+
+		Vector<PlaceInTables> vv = new Vector<PlaceInTables>();
+
+		Set<Map.Entry<String, PlaceInTables>> entriesx = places.entrySet();
+		Iterator<Map.Entry<String, PlaceInTables>> eex = entriesx.iterator();
+		while (eex.hasNext()) {
+			Map.Entry<String, PlaceInTables> entrx = (Map.Entry<String, PlaceInTables>) eex
+					.next();
+			PlaceInTables pit = entrx.getValue();
+			vv.add(pit);
+		}
+
+		PlaceInTables[] pits = vv.toArray(new PlaceInTables[0]);
+		Arrays.sort(pits);
+
+		return pits;
+
 	}
 
 	/**
@@ -1537,9 +1560,46 @@ public abstract class CommonReport {
 							if (addSpace)
 								bt.addText(" ");
 							bt.addText(convertPlace(nn));
+
 							addSpace = true;
 							addDot = true;
 						}
+
+						if (caller.isCreatePlaceIndexSet()
+								&& typesTable.isType(nn.getTag(), 5)) {
+
+							String place = nn.getPlace();
+							if (place != null && nn.getTag().equals("RESI")
+									&& nn.getPostOffice() != null) {
+								place = nn.getPostOffice();
+							}
+							int idx = -1;
+							while (idx > -2) {
+
+								if (idx >= 0) {
+									if (nn.getRefPlaces() != null
+											&& idx < nn.getRefPlaces().length) {
+										place = nn.getRefPlaces()[idx];
+
+									} else {
+										idx = -9999;
+									}
+								}
+
+								if (place != null) {
+
+									PlaceInTables pit = places.get(place
+											.toUpperCase());
+									if (pit == null) {
+										pit = new PlaceInTables(place);
+										places.put(place.toUpperCase(), pit);
+									}
+									pit.addTable(tableNo);
+								}
+								idx++;
+							}
+						}
+
 						if (nn.getState() != null) {
 							if (addSpace) {
 								bt.addText(",");
@@ -1636,6 +1696,7 @@ public abstract class CommonReport {
 							}
 
 						}
+
 						if (caller.showAddress()) {
 
 							if (nn.getAddress() != null) {

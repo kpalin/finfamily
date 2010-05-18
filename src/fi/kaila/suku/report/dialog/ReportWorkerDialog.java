@@ -61,6 +61,7 @@ import fi.kaila.suku.report.DescendantReport;
 import fi.kaila.suku.report.GenGraphReport;
 import fi.kaila.suku.report.JavaReport;
 import fi.kaila.suku.report.PersonInTables;
+import fi.kaila.suku.report.PlaceInTables;
 import fi.kaila.suku.report.ReportInterface;
 import fi.kaila.suku.report.XmlReport;
 import fi.kaila.suku.swing.ISuku;
@@ -364,6 +365,22 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	public boolean showUnderlineNames() {
 		return (commonNamesUnderline.getSelectedObjects() != null);
+	}
+
+	/**
+	 * 
+	 * @return true if set to create place index
+	 */
+	public boolean isCreatePlaceIndexSet() {
+		return commonIndexPlaces.isSelected();
+	}
+
+	/**
+	 * 
+	 * @return true if set to create name index
+	 */
+	public boolean isCreateNameIndexSet() {
+		return commonIndexNames.isSelected();
 	}
 
 	/**
@@ -2385,7 +2402,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				}
 
 				setProgress(0);
-
+				int sheetNo = 0;
 				BufferedOutputStream bstr = new BufferedOutputStream(
 						Suku.kontroller.getOutputStream());
 				WritableWorkbook workbook = Workbook.createWorkbook(bstr);
@@ -2397,16 +2414,19 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				WritableCellFormat arial0bold = new WritableCellFormat(
 						arial10bold);
 				WritableCellFormat arial0 = new WritableCellFormat(arial10);
-				WritableSheet sheet = workbook.createSheet("Index", 0);
 
-				Label label = new Label(0, 0, "Nimi", arial0bold);
-				sheet.addCell(label);
+				if (commonIndexNames.isSelected() && dr != null) {
+					WritableSheet sheet = workbook.createSheet(typesTable
+							.getTextValue("INDEX_NAMES"), sheetNo++);
+					Label label = new Label(0, 0, typesTable
+							.getTextValue("INDEX_NAME"), arial0bold);
+					sheet.addCell(label);
 
-				label = new Label(1, 0, "Taulu", arial0bold);
-				sheet.addCell(label);
+					label = new Label(1, 0, typesTable
+							.getTextValue("INDEX_TABLES"), arial0bold);
+					sheet.addCell(label);
 
-				int row = 2;
-				if (dr != null) {
+					int row = 2;
 
 					// Set<Map.Entry<Integer, PersonInTables>> entries = dr
 					// .getPersonReferences().entrySet();
@@ -2517,14 +2537,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							sheet.addCell(label);
 						}
 
-						label = new Label(6, row, "" + pit.pid, arial0);
-						sheet.addCell(label);
-						label = new Label(7, row, "" + kefe, arial0);
-						sheet.addCell(label);
-						label = new Label(8, row, "" + cefe, arial0);
-						sheet.addCell(label);
-						label = new Label(9, row, "" + mefe, arial0);
-						sheet.addCell(label);
+						// label = new Label(6, row, "" + pit.pid, arial0);
+						// sheet.addCell(label);
+						// label = new Label(7, row, "" + kefe, arial0);
+						// sheet.addCell(label);
+						// label = new Label(8, row, "" + cefe, arial0);
+						// sheet.addCell(label);
+						// label = new Label(9, row, "" + mefe, arial0);
+						// sheet.addCell(label);
 
 						float prose = (i * 100f) / pits.length;
 						setRunnerValue("" + (int) prose + ";"
@@ -2539,6 +2559,31 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						// arial0);
 						// sheet.addCell(label);
 						row++;
+					}
+				}
+
+				if (commonIndexPlaces.isSelected()) {
+					WritableSheet sheet = workbook.createSheet(typesTable
+							.getTextValue("INDEX_PLACES"), 1);
+
+					Label label = new Label(0, 0, typesTable
+							.getTextValue("INDEX_PLACE"), arial0bold);
+					sheet.addCell(label);
+
+					label = new Label(1, 0, typesTable
+							.getTextValue("INDEX_TABLES"), arial0bold);
+					sheet.addCell(label);
+
+					PlaceInTables[] places = dr.getPlaceReferences();
+					int row = 1;
+					for (int i = 0; i < places.length; i++) {
+						PlaceInTables pit = places[i];
+						label = new Label(0, row, pit.getPlace(), arial0);
+						sheet.addCell(label);
+						label = new Label(1, row, pit.toString(), arial0);
+						sheet.addCell(label);
+						row++;
+
 					}
 				}
 				workbook.write();
