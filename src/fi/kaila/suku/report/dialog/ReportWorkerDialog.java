@@ -93,10 +93,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private static final String SET_UK = "UK";
 	private static final String SET_US = "US";
 	// source format
-	private static final String SET_NO = "NO";
-	private static final String SET_TX1 = "TX1";
-	private static final String SET_TX2 = "TX2";
-	private static final String SET_AFT = "AFT";
+	public static final String SET_NO = "NO";
+	public static final String SET_TX1 = "TX1";
+	public static final String SET_TX2 = "TX2";
+	public static final String SET_AFT = "AFT";
 
 	/**
 	 * Stradoniz ancestor numbering command
@@ -413,6 +413,22 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			return model.getActionCommand();
 		}
 		return "FI";
+	}
+
+	/**
+	 * format of source can be
+	 * 
+	 * SET_NO SET_TX1 SET_TX2 SET_AFT
+	 * 
+	 * 
+	 * @return format of source on report
+	 */
+	public String getSourceFormat() {
+		ButtonModel model = commonSourcesFormatGroup.getSelection();
+		if (model != null) {
+			return model.getActionCommand();
+		}
+		return SET_NO;
 	}
 
 	/**
@@ -2586,6 +2602,34 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					}
 				}
+
+				if (getSourceFormat().equals(SET_AFT)) {
+					WritableSheet sheet = workbook.createSheet(typesTable
+							.getTextValue("SOURCE_INDEXES"), 1);
+
+					Label label = new Label(0, 0, typesTable
+							.getTextValue("SOURCE_TEXT"), arial0bold);
+					sheet.addCell(label);
+
+					label = new Label(1, 0, typesTable
+							.getTextValue("SOURCE_INDEX"), arial0bold);
+					sheet.addCell(label);
+
+					String[] refs = dr.getSourceList();
+
+					int row = 1;
+					for (int i = 0; i < refs.length; i++) {
+						String src = refs[i];
+						label = new Label(0, row, "" + row, arial0);
+						sheet.addCell(label);
+						label = new Label(1, row, src, arial0);
+						sheet.addCell(label);
+						row++;
+
+					}
+
+				}
+
 				workbook.write();
 				workbook.close();
 				bstr.close();

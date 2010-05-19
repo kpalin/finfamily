@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -73,6 +74,8 @@ public abstract class CommonReport {
 
 	private HashMap<String, PlaceInTables> places = new HashMap<String, PlaceInTables>();
 
+	private LinkedHashMap<String, Integer> refs = new LinkedHashMap<String, Integer>();
+
 	private int referencePid = 0;
 
 	/**
@@ -136,6 +139,24 @@ public abstract class CommonReport {
 		Arrays.sort(pits);
 
 		return pits;
+
+	}
+
+	public String[] getSourceList() {
+
+		Vector<String> vv = new Vector<String>();
+
+		Set<Map.Entry<String, Integer>> entriesx = refs.entrySet();
+		Iterator<Map.Entry<String, Integer>> eex = entriesx.iterator();
+		while (eex.hasNext()) {
+			Map.Entry<String, Integer> entrx = (Map.Entry<String, Integer>) eex
+					.next();
+			String src = entrx.getKey();
+
+			vv.add(src);
+		}
+
+		return vv.toArray(new String[0]);
 
 	}
 
@@ -1744,9 +1765,45 @@ public abstract class CommonReport {
 									addDot = true;
 								}
 							}
-
 						}
+						String srcFormat = caller.getSourceFormat();
+						if (!ReportWorkerDialog.SET_NO.equals(srcFormat)) {
 
+							String src = nn.getSource();
+
+							if (src != null && !src.isEmpty()) {
+
+								if (srcFormat
+										.equals(ReportWorkerDialog.SET_TX1)) {
+									if (addDot) {
+										bt.addText(". ");
+									}
+									bt.addText(" ");
+									bt.addText(src);
+
+									addDot = true;
+
+								} else if (srcFormat
+										.equals(ReportWorkerDialog.SET_TX2)) {
+									bt.addText(" [");
+									bt.addText(src);
+									bt.addText("]");
+									addDot = true;
+								} else if (srcFormat
+										.equals(ReportWorkerDialog.SET_AFT)) {
+									Integer srcId = refs.get(src);
+									if (srcId == null) {
+										srcId = refs.size() + 1;
+										refs.put(src, srcId);
+									}
+									bt.addText(" [");
+									bt.addText(srcId.toString());
+									bt.addText("]");
+									addDot = true;
+								}
+
+							}
+						}
 						if (addDot) {
 							bt.addText(". ");
 							if (caller.showOnSeparateLines()) {
@@ -1754,6 +1811,7 @@ public abstract class CommonReport {
 								repoWriter.addText(bt);
 							}
 						}
+
 					}
 				}
 			}
