@@ -2,20 +2,20 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
-Release 545 on 19 may 2010
+Release 546 on 19 may 2010
 
-* Added place index
-* Added sources to report and source index
+* Added place index to index (excel)file
+* Added sources to report and source index to index (excel)file
 
 Release 541 on 9 may 2010 (92)
 
 * Added partly French language. Defaults to English when French word is missing.
 * Preparations for possible GenGraph
-* Refactored text files. Both program and report texts are now taken from excel-file. Only types are stored in database.
+* Re-factored text files. Both program and report texts are now taken from excel-file. Only types are stored in database.
 
 Release 528 on 4 may 2010 (76)
 
-* Bugfix for German language reports.
+* Bug-fix for German language reports.
 
 Release 524 on 3 may 2010 (51)
 
@@ -24,7 +24,7 @@ Release 524 on 3 may 2010 (51)
 Release 518 on 2 may 2010 (81)
 
 * Ancestor Table Report. Some fixes.
-* Hiski import refactored.
+* Hiski import re-factored.
 * Fixed bug with US date format.
 
 Release 510 on 29 apr 2010 (53)
