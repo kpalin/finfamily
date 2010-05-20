@@ -980,7 +980,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		String newDate = persShort.getBirtDate();
 		int newRow = 0;
 		if (newDate == null) {
-			children.list.add(rel);
+			// children.list.add(rel);
 		} else {
 			for (int i = 0; i < children.list.size(); i++) {
 				PersonShortData rowPers = children.list.get(i).getShortPerson();
