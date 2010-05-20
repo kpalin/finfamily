@@ -757,27 +757,12 @@ public class NoticePane extends JPanel implements ActionListener,
 		STANDARD, NAME, NOTE, RESI, PHOT
 	}
 
-	// String getDatePrefTag(){
-	//
-	// int idx = datePref.getSelectedIndex();
-	// switch (idx) {
-	// case 1: return "ABT";
-	// case 2: return "CAL";
-	// case 3: return "EST";
-	// case 4: return "BET";
-	// case 5: return "FROM";
-	// case 6: return "BEF";
-	// case 7: return "AFT";
-	// default: return null;
-	// }
-	// }
-
 	String getUnitNoticeError() {
 		String theDate = null;
 		try {
 			// This checks both dates for error. in case of error
 			// an SukuDateException is thrown
-			// if ok returns null
+			// if OK returns null
 			// FIX-ME: Dead store to theDate.
 			// Is there better way to code this?
 			// removed the second store as that is obviously never used
@@ -786,7 +771,8 @@ public class NoticePane extends JPanel implements ActionListener,
 			date.getToDate();
 			return null;
 		} catch (SukuDateException e) {
-			// e.printStackTrace();
+			logger.fine("Date check failed" + "[" + theDate + "]");
+
 			return e.getMessage();
 
 		}
@@ -1042,9 +1028,9 @@ public class NoticePane extends JPanel implements ActionListener,
 			int midx = personView.getMainPaneIndex();
 			if (midx < 0)
 				return;
-			SukuTabPane pan = personView.getPane(midx);
-			PersonMainPane main = (PersonMainPane) pan.pnl;
-			int personPid = main.getPersonPid();
+			// SukuTabPane pan = personView.getPane(midx);
+			// PersonMainPane main = (PersonMainPane) pan.pnl;
+			// int personPid = main.getPersonPid();
 
 			try {
 				verifyUnitNotice();

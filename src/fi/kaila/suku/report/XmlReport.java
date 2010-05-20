@@ -1,13 +1,11 @@
 package fi.kaila.suku.report;
 
 import java.awt.Dimension;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.logging.Level;
@@ -156,40 +154,40 @@ public class XmlReport implements ReportInterface {
 					d.mkdirs();
 				}
 			}
+			// //
+			// // css-file is currently embedded in html-file
+			// // and separate css-file is not needed
+			// //
+			// if (translatorIdx == 2 && false) {
 			//
-			// css-file is currently embedded in html-file
-			// and separate css-file is not needed
+			// InputStream in = this.getClass().getResourceAsStream(
+			// "/xml/finfamily.css");
 			//
-			if (translatorIdx == 2 && false) {
-
-				InputStream in = this.getClass().getResourceAsStream(
-						"/xml/finfamily.css");
-
-				BufferedInputStream bis = new BufferedInputStream(in);
-
-				File ff = new File(folder + "/finfamily.css");
-				byte[] buffi = new byte[1024];
-				FileOutputStream fos;
-
-				try {
-					fos = new FileOutputStream(ff);
-
-					while (true) {
-
-						int retu = in.read(buffi);
-						if (retu == -1) {
-							break;
-						}
-						fos.write(buffi, 0, retu);
-
-					}
-				} catch (FileNotFoundException e) {
-					logger.log(Level.WARNING, "css-file", e);
-				} catch (IOException e) {
-					logger.log(Level.WARNING, "css-file", e);
-				}
-
-			}
+			// BufferedInputStream bis = new BufferedInputStream(in);
+			//
+			// File ff = new File(folder + "/finfamily.css");
+			// byte[] buffi = new byte[1024];
+			// FileOutputStream fos;
+			//
+			// try {
+			// fos = new FileOutputStream(ff);
+			//
+			// while (true) {
+			//
+			// int retu = in.read(buffi);
+			// if (retu == -1) {
+			// break;
+			// }
+			// fos.write(buffi, 0, retu);
+			//
+			// }
+			// } catch (FileNotFoundException e) {
+			// logger.log(Level.WARNING, "css-file", e);
+			// } catch (IOException e) {
+			// logger.log(Level.WARNING, "css-file", e);
+			// }
+			//
+			// }
 
 			return;
 		}
