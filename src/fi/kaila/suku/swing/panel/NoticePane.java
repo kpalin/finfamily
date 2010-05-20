@@ -1181,6 +1181,7 @@ public class NoticePane extends JPanel implements ActionListener,
 				|| notice.getCountry() != null || notice.getEmail() != null) {
 			mustAddress = true;
 		}
+
 		boolean mustFarm = personView.getSuku().isShowFarm();
 		if (notice.getVillage() != null || notice.getFarm() != null
 				|| notice.getCroft() != null) {
@@ -1239,15 +1240,28 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		lrivi += 24;
 
+		if (notice.getTag().equals("TABLE")) {
+			mustFarm = false;
+			mustAddress = false;
+			mustNote = true;
+		}
+		boolean farmShow = mustFarm;
+		boolean addressShow = mustAddress;
+
 		switch (showType) {
 		case NOTE:
 			description.setVisible(false);
 			descLbl.setVisible(false);
 			noticeType.setVisible(false);
 			typeLbl.setVisible(false);
-			// FIXME: This method contains a switch statement where one case
-			// branch will fall through to the next case. Usually you need to
-			// end this case with a break or return.
+			village.setVisible(false);
+			farm.setVisible(false);
+			croft.setVisible(false);
+			// placeLbl.setVisible(false);
+			villageLbl.setVisible(false);
+			farmLbl.setVisible(false);
+			croftLbl.setVisible(false);
+			break;
 		case NAME:
 
 			// place.setVisible(false);
@@ -1285,8 +1299,8 @@ public class NoticePane extends JPanel implements ActionListener,
 			place.setBounds(lcol, lrivi, lwidth, 20);
 
 			lrivi += 24;
-			boolean farmShow = mustFarm;
-			if (mustFarm) {
+
+			if (farmShow) {
 
 				villageLbl.setBounds(10, lrivi, 70, 20);
 				village.setBounds(lcol, lrivi, lwidth, 20);
@@ -1310,7 +1324,6 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		}
 
-		boolean addressShow = false;
 		if ((showType == TagType.RESI || mustAddress)
 				&& (showType != TagType.NAME && showType != TagType.NOTE)) {
 			addressShow = true;
@@ -1431,10 +1444,17 @@ public class NoticePane extends JPanel implements ActionListener,
 				noteShow = true;
 
 				noteLbl.setBounds(10, lrivi, 70, 20);
-				noteLoc = new Rectangle(lcol, lrivi, lwidth, 80);
+				int noteHeight = 80;
+				if (!addressShow) {
+					noteHeight += 120;
+				}
+				if (!farmShow) {
+					noteHeight += 100;
+				}
+				noteLoc = new Rectangle(lcol, lrivi, lwidth, noteHeight);
 				scrollNote.setBounds(noteLoc);
 
-				lrivi += 84;
+				lrivi += noteHeight;
 			}
 			scrollNote.setVisible(noteShow);
 			noteLbl.setVisible(noteShow);

@@ -261,6 +261,17 @@ public abstract class CommonReport {
 			genText = Roman.int2roman(tab.getGen());
 		}
 
+		if (tableNotices.length > 0) {
+			bt = new MainPersonText();
+			repoWriter.addText(bt);
+			bt = new MainPersonText();
+			printNotices(bt, tableNotices, 2, tab.getTableNo());
+			repoWriter.addText(bt);
+			bt = new MainPersonText();
+			bt.addText("");
+			repoWriter.addText(bt);
+		}
+
 		bt = new TableHeaderText();
 
 		bt.addText(typesTable.getTypeText("TABLE"));
@@ -281,16 +292,6 @@ public abstract class CommonReport {
 		}
 
 		repoWriter.addText(bt);
-
-		if (tableNotices.length > 0) {
-
-			bt = new MainPersonText();
-			printNotices(bt, tableNotices, 2, tab.getTableNo());
-			repoWriter.addText(bt);
-			bt = new MainPersonText();
-			bt.addText("");
-			repoWriter.addText(bt);
-		}
 
 		bt = new MainPersonText();
 		if (genText.length() > 0) {
@@ -1569,13 +1570,28 @@ public abstract class CommonReport {
 							addDot = true;
 						}
 						if (nn.getDescription() != null) {
-							if (addSpace)
-								bt.addText(" ");
-							bt.addText(nn.getDescription());
-							addSpace = true;
-							addDot = true;
-						}
 
+							if (nn.getTag().equals("TABLE")
+									&& bt.getCount() == 0) {
+								// for TABLE notice the description contains a
+								// header if this is the first text piece for
+								// the notice
+
+								BodyText btt = bt;
+								bt = new TableHeaderText();
+
+								bt.addText(nn.getDescription(), true, false);
+								repoWriter.addText(bt);
+								bt = btt;
+								repoWriter.addText(bt);
+							} else {
+								if (addSpace)
+									bt.addText(" ");
+								bt.addText(nn.getDescription());
+								addSpace = true;
+								addDot = true;
+							}
+						}
 						String dd = printDate(nn.getDatePrefix(), nn
 								.getFromDate(), nn.getToDate());
 						if (dd.length() > 0) {
