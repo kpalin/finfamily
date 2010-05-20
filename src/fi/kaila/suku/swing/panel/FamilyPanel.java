@@ -127,9 +127,6 @@ public class FamilyPanel extends JPanel implements MouseListener,
 			} else {
 				gg.setStroke(new BasicStroke(2));
 			}
-			// else {
-			// gg.setStroke(new BasicStroke(1));
-			// }
 
 			int nearpp = pp.x > cp.x ? -10 : 10;
 			drawSuretyLine(gg, new Point(cp.x + dd.width / 2, cp.y), new Point(

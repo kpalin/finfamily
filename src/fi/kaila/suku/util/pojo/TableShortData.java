@@ -281,7 +281,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			person = famMember.get(i);
 			g.drawString("" + i, p.x, y);
 			if (person.getSurety() < 100) {
-				drawSurety(g, "S", p.x + 10, y);
+				drawSurety(g, "" + (person.getSurety() / 20), p.x + 10, y);
 				// g.drawString("?", p.x + 10, y);
 			}
 			g.drawString(person.getTextName(), p.x + xmargin, y);
@@ -373,7 +373,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				extra += "A";
 			}
 			if (pr.person.getSurety() < 100) {
-				extra += "S";
+				extra += (pr.person.getSurety() / 20);
 			}
 
 			if (!extra.isEmpty()) {
