@@ -11,6 +11,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -120,22 +121,23 @@ public class FamilyPanel extends JPanel implements MouseListener,
 			} else {
 				gg.setColor(Color.black);
 			}
+
 			if (rel.getSurety() == 100) {
 				gg.setStroke(new BasicStroke(3));
-			} else if (rel.getSurety() >= 80) {
-				gg.setStroke(new BasicStroke(2));
 			} else {
-				gg.setStroke(new BasicStroke(1));
+				gg.setStroke(new BasicStroke(2));
 			}
+			// else {
+			// gg.setStroke(new BasicStroke(1));
+			// }
+
 			int nearpp = pp.x > cp.x ? -10 : 10;
-			gg.drawLine(cp.x + dd.width / 2, cp.y,
-					pp.x + dp.width / 2 + nearpp, cp.y - 10);
-
-			gg.drawLine(pp.x + dp.width / 2 + nearpp, cp.y - 10, pp.x
-					+ dp.width / 2, pp.y + dp.height);
-
-			// g.drawLine(cp.x + dd.width / 2, cp.y, pp.x + dp.width / 2, pp.y
-			// + dp.height);
+			drawSuretyLine(gg, new Point(cp.x + dd.width / 2, cp.y), new Point(
+					pp.x + dp.width / 2 + nearpp, cp.y - 10), rel.getSurety());
+			drawSuretyLine(gg, new Point(pp.x + dp.width / 2 + nearpp,
+					cp.y - 10),
+					new Point(pp.x + dp.width / 2, pp.y + dp.height), rel
+							.getSurety());
 
 		}
 
@@ -178,6 +180,83 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		logger.finer("PREFD[" + prefd.width + "," + prefd.height + "]");
 		setPreferredSize(prefd);
 
+	}
+
+	private void drawSuretyLine(Graphics2D gg, Point aa, Point bb, int surety) {
+		double piecelen = 20;
+		double ax = aa.x;
+		double ay = aa.y;
+		double bx = bb.x;
+		double by = bb.y;
+		int piece = surety;
+		double hypoLen = Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
+		Point2D points[] = new Point2D[(int) (hypoLen / (piecelen)) + 1];
+
+		if (surety > 80) {
+			gg.drawLine((int) ax, (int) ay, (int) bx, (int) by);
+		} else {
+
+			if (points.length < 2)
+				return;
+			for (int i = 0; i < points.length; i++) {
+				points[i] = new Point();
+			}
+			if (surety > 50) {
+				piece = (surety == 80 ? 80 : 40);
+			} else {
+				piece = (surety == 40 ? 50 : 100);
+			}
+			piecelen = (int) hypoLen / (points.length - 1);
+			double lineLen = piece * piecelen / 100;
+			points[0].setLocation(ax, ay);
+
+			points[points.length - 1].setLocation(bx, by);
+
+			double aux = (bx - ax) / (points.length - 1);
+			double auy = (by - ay) / (points.length - 1);
+			for (int i = 1; i < points.length - 1; i++) {
+				points[i].setLocation(points[i - 1].getX() + aux, points[i - 1]
+						.getY()
+						+ auy);
+			}
+			// logger.info("surety=" + surety + "  (" + a.x + "," + a.y + ");("
+			// + b.x + "," + b.y + ")");
+			for (int i = 0; i < points.length - 1; i++) {
+
+				double auxx = (points[i + 1].getX() - points[i].getX())
+						* (lineLen / piecelen);
+
+				double auyy = (points[i + 1].getY() - points[i].getY())
+						* (lineLen / piecelen);
+
+				if (surety > 50) {
+
+					// gg.drawLine(points[i].x, points[i].y, e.x, e.y);
+					gg.drawLine((int) points[i].getX(), (int) points[i].getY(),
+							(int) (points[i].getX() + auxx), (int) (points[i]
+									.getY() + auyy));
+				} else {
+					if (surety > 10) {
+						gg.drawString("?", (float) points[i].getX(),
+								(float) points[i].getY());
+						if (surety > 30) {
+							gg.drawString("?",
+									(float) (points[i].getX() + auxx),
+									(float) (points[i].getY() + auyy));
+						}
+					} else {
+						gg.drawString("☻", (float) points[i].getX(),
+								(float) points[i].getY());
+					}
+				}
+				// logger.info("part[" + i + "]= (" + points[i].x + ","
+				// + points[i].y + ");(" + points[i + 1].x + ","
+				// + points[i + 1].y + "):(" + (points[i].x + e.x) + ","
+				// + (points[i].y + e.y) + ")");
+
+			}
+
+		}
 	}
 
 	/**
