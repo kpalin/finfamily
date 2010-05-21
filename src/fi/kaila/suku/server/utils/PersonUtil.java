@@ -432,21 +432,23 @@ public class PersonUtil {
 			for (int i = 0; i < req.relations.length; i++) {
 				Relation r = req.relations[i];
 				int rid = r.getRid();
-				if (req.relations[i].isToBeDeleted() && rid > 0) {
+				if (req.relations[i].isToBeDeleted()) {
+					if (rid > 0) {
 
-					pst = con.prepareStatement(delRelLangu);
-					pst.setInt(1, rid);
-					int laskLang = pst.executeUpdate();
-					pst = con.prepareStatement(delRelNoti);
-					pst.setInt(1, rid);
-					int laskNoti = pst.executeUpdate();
-					pst = con.prepareStatement(delRel);
-					pst.setInt(1, rid);
-					int laskRel = pst.executeUpdate();
-					logger.info("deleted relation [" + r.getTag() + "]" + rid
-							+ " between " + r.getPid() + "/" + r.getRelative()
-							+ " result [" + laskRel + "/" + laskNoti + "/"
-							+ laskLang + "]");
+						pst = con.prepareStatement(delRelLangu);
+						pst.setInt(1, rid);
+						int laskLang = pst.executeUpdate();
+						pst = con.prepareStatement(delRelNoti);
+						pst.setInt(1, rid);
+						int laskNoti = pst.executeUpdate();
+						pst = con.prepareStatement(delRel);
+						pst.setInt(1, rid);
+						int laskRel = pst.executeUpdate();
+						logger.info("deleted relation [" + r.getTag() + "]"
+								+ rid + " between " + r.getPid() + "/"
+								+ r.getRelative() + " result [" + laskRel + "/"
+								+ laskNoti + "/" + laskLang + "]");
+					}
 				} else if (req.relations[i].isToBeUpdated()) {
 
 					if (rid == 0) {

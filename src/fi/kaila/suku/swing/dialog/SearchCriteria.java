@@ -27,10 +27,8 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
-import fi.kaila.suku.util.SukuTextField;
 import fi.kaila.suku.util.SukuTypesModel;
 import fi.kaila.suku.util.Utils;
-import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
@@ -50,24 +48,24 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private SukuTextField surname;
-	private SukuTextField givenname;
-	private SukuTextField patronyme;
+	private JTextField surname;
+	private JTextField givenname;
+	private JTextField patronyme;
 
 	private JTextField birtFromDate;
 	private JTextField birtToDate;
-	private SukuTextField birtPlace;
+	private JTextField birtPlace;
 
 	private JTextField deatFromDate;
 	private JTextField deatToDate;
-	private SukuTextField deatPlace;
+	private JTextField deatPlace;
 
 	private JTextField createdFromDate;
 	private JTextField createdToDate;
 
 	private JComboBox viewList;
 	private String[] viewArray = null;
-	private SukuTextField viewGroup;
+	private JTextField viewGroup;
 	private String preferredView = null;
 
 	private JTextField place;
@@ -305,14 +303,15 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.namePanel.add(lbl);
 
 		// this.surname = new SukuTextField(null, Field.Fld_Surname);
-		this.surname = new SukuTextField(null, Field.Fld_Surname);
+		this.surname = new JTextField();
 		this.namePanel.add(this.surname);
+
 		// this.givenname = new SukuTextField(null, Field.Fld_Givenname);
-		this.givenname = new SukuTextField(null, Field.Fld_Givenname);
+		this.givenname = new JTextField();
 		this.namePanel.add(this.givenname);
 
 		// this.patronyme = new SukuTextField(null, Field.Fld_Patronyme);
-		this.patronyme = new SukuTextField(null, Field.Fld_Patronyme);
+		this.patronyme = new JTextField();
 		this.namePanel.add(this.patronyme);
 
 		y += 80;
@@ -339,7 +338,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.birtPanel.add(this.birtFromDate);
 		this.birtToDate = new JTextField();
 		this.birtPanel.add(this.birtToDate);
-		this.birtPlace = new SukuTextField(null, Field.Fld_Place);
+		// this.birtPlace = new SukuTextField(null, Field.Fld_Place);
+		this.birtPlace = new JTextField();
 		this.birtPanel.add(this.birtPlace);
 
 		y += 80;
@@ -365,7 +365,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.deatPanel.add(this.deatFromDate);
 		this.deatToDate = new JTextField();
 		this.deatPanel.add(this.deatToDate);
-		this.deatPlace = new SukuTextField(null, Field.Fld_Place);
+		// this.deatPlace = new SukuTextField(null, Field.Fld_Place);
+		this.deatPlace = new JTextField();
 		this.deatPanel.add(this.deatPlace);
 
 		y += 80;
@@ -400,7 +401,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.viewList = new JComboBox();
 		this.viewPanel.add(this.viewList);
 
-		viewGroup = new SukuTextField(null, Field.Fld_Group);
+		// viewGroup = new SukuTextField(null, Field.Fld_Group);
+		this.viewGroup = new JTextField();
 		this.viewPanel.add(viewGroup);
 
 		y += 80;

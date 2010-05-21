@@ -888,6 +888,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			if (cmd.equals("DEL")) {
 				activeRelation.setToBeDeleted(true);
+
 			}
 
 			boolean reOpen = true;
@@ -899,7 +900,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 			if (cmd.equals(Resurses.UPDATE) || cmd.equals("DEL")) {
 				askChanges = false;
 			}
+
 			checkActiveRelationSurety();
+
 			refreshRelativesPane(reOpen, askChanges);
 
 		}
@@ -920,6 +923,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		int personPid = main.getPersonPid();
 
 		try {
+			// TODO the below three commands should be simplified
 			personView.closePersonPane(askChanges);
 			personView.displayPersonPane(personPid);
 			personView.closeMainPane(reOpen);
