@@ -1191,7 +1191,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				resultla.importBundle("excel/FinFamily", "Program",
 						reportLocale);
 
-				repoLangList = resultla.getLangList();
+				repoLangList = ExcelBundle.getLangList();
 
 				SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
 						"type=needle", "name=needle");
@@ -1207,21 +1207,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				}
 
 				long startOfIntelli = System.currentTimeMillis();
-				SukuData dat = Suku.kontroller.getSukuData("cmd=intelli");
 
-				SukuSenser sens = SukuSenser.getInstance();
-
-				if (dat != null && dat.vvTexts != null
-						&& dat.vvTexts.size() > 6) {
-					sens.setPlaces(dat.vvTexts.get(0));
-					sens.setGivennames(dat.vvTexts.get(1));
-					sens.setPatronymes(dat.vvTexts.get(2));
-					sens.setSurnames(dat.vvTexts.get(3));
-					sens.setDescriptions(dat.vvTexts.get(4));
-					sens.setNoticeTypes(dat.vvTexts.get(5));
-					sens.setGroups(dat.vvTexts.get(6));
-
-				}
+				resetIntellisens();
 				long endOfIntelli = System.currentTimeMillis();
 				long timeOfIntelli = (endOfIntelli - startOfIntelli) / 1000;
 				postServerVersion += ", Intellisens [" + timeOfIntelli
@@ -1260,6 +1247,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 		}
 
+	}
+
+	private void resetIntellisens() throws SukuException {
+		SukuData dat = Suku.kontroller.getSukuData("cmd=intelli");
+
+		SukuSenser sens = SukuSenser.getInstance();
+
+		if (dat != null && dat.vvTexts != null && dat.vvTexts.size() > 6) {
+			sens.setPlaces(dat.vvTexts.get(0));
+			sens.setGivennames(dat.vvTexts.get(1));
+			sens.setPatronymes(dat.vvTexts.get(2));
+			sens.setSurnames(dat.vvTexts.get(3));
+			sens.setDescriptions(dat.vvTexts.get(4));
+			sens.setNoticeTypes(dat.vvTexts.get(5));
+			sens.setGroups(dat.vvTexts.get(6));
+
+		}
 	}
 
 	@Override
@@ -1338,6 +1342,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 								.getString("CREATED_NEWDB"), Resurses
 								.getString(Resurses.SUKU),
 								JOptionPane.INFORMATION_MESSAGE);
+						resetIntellisens();
 						isConnected = 2;
 						enableCommands();
 					} catch (SukuException e1) {
