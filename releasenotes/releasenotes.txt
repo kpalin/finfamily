@@ -2,12 +2,18 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
-Release 548 on 19 may 2010
+Release 557 on 22 may 2010
+
+* Table notice moved to be printed before table header
+* FamilyTree view surety information added
+* removed Intellisens feature from query arguments dialog
+
+Release 548 on 19 may 2010 (39)
 
 * Added place index to index (excel)file
 * Added sources to report and source index to index (excel)file
 
-Release 541 on 9 may 2010 (92)
+Release 541 on 9 may 2010 (98)
 
 * Added partly French language. Defaults to English when French word is missing.
 * Preparations for possible GenGraph
