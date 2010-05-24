@@ -44,6 +44,12 @@ public class SelectSchema extends JDialog implements ActionListener,
 
 	private String[] schemaList = null;
 
+	/**
+	 * Constructor that always shows the schema textfield
+	 * 
+	 * @param owner
+	 * @throws SukuException
+	 */
 	public SelectSchema(JFrame owner) throws SukuException {
 		super(owner, Resurses.getString("SCHEMA_SELECT"), true);
 		// this.owner = owner;
