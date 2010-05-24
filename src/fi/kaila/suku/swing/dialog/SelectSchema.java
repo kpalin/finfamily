@@ -12,8 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MouseInputListener;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
@@ -27,15 +26,15 @@ import fi.kaila.suku.util.pojo.SukuData;
  * @author kalle
  * 
  */
-public class SelectSchema extends JDialog implements ListSelectionListener,
-		ActionListener {
+public class SelectSchema extends JDialog implements ActionListener,
+		MouseInputListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JFrame owner = null;
+	// private JFrame owner = null;
 
 	private JTextField schema = null;
 	private boolean okSelected = false;
@@ -47,11 +46,32 @@ public class SelectSchema extends JDialog implements ListSelectionListener,
 
 	public SelectSchema(JFrame owner) throws SukuException {
 		super(owner, Resurses.getString("SCHEMA_SELECT"), true);
-		this.owner = owner;
+		// this.owner = owner;
 
+		constructMe(true);
+
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param owner
+	 * @param allowNew
+	 *            if false then only list is shown
+	 * @throws SukuException
+	 */
+	public SelectSchema(JFrame owner, boolean allowNew) throws SukuException {
+		super(owner, Resurses.getString("SCHEMA_SELECT"), true);
+		// this.owner = owner;
+
+		constructMe(allowNew);
+
+	}
+
+	private void constructMe(boolean allowNew) throws SukuException {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-		setBounds(d.width / 2 - 120, d.height / 2 - 140, 240, 280);
+		setBounds(d.width / 2 - 120, d.height / 2 - 140, 240, 240);
 		setLayout(null);
 		int y = 10;
 
@@ -62,12 +82,19 @@ public class SelectSchema extends JDialog implements ListSelectionListener,
 		schema = new JTextField();
 		getContentPane().add(schema);
 		schema.setBounds(10, y, 200, 20);
-
+		schema.setVisible(allowNew);
 		SukuData schemas = Suku.kontroller.getSukuData("cmd=schema",
 				"type=count");
 		schemaList = schemas.generalArray;
+		if (!allowNew) {
+			if (schemaList.length == 1) {
+				okSelected = true;
+				schema.setText(schemaList[0]);
+			}
+		}
 		scList = new JList(schemaList);
-		scList.addListSelectionListener(this);
+
+		scList.addMouseListener(this);
 
 		JScrollPane scroll = new JScrollPane(scList);
 		getContentPane().add(scroll);
@@ -76,31 +103,19 @@ public class SelectSchema extends JDialog implements ListSelectionListener,
 		y += 140;
 		this.ok = new JButton(Resurses.getString("OK"));
 		getContentPane().add(this.ok);
-		this.ok.setBounds(10, y, 100, 24);
+		this.ok.setBounds(30, y, 80, 24);
 		this.ok.setActionCommand("OK");
 		this.ok.addActionListener(this);
 		this.ok.setDefaultCapable(true);
+
 		getRootPane().setDefaultButton(this.ok);
 
 		this.cancel = new JButton(Resurses.getString("CANCEL"));
 		getContentPane().add(this.cancel);
-		this.cancel.setBounds(130, y, 100, 24);
+		this.cancel.setBounds(120, y, 80, 24);
 		this.cancel.setActionCommand("CANCEL");
 		this.cancel.addActionListener(this);
-
-	}
-
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-
-		System.out.println("e" + e.toString());
-
-		int idx = scList.getSelectedIndex();
-		if (idx >= 0) {
-			schema.setText(schemaList[idx]);
-			scList.setSelectedIndices(new int[0]);
-		}
-
+		getRootPane().setDefaultButton(ok);
 	}
 
 	/**
@@ -115,6 +130,10 @@ public class SelectSchema extends JDialog implements ListSelectionListener,
 
 	}
 
+	/**
+	 * 
+	 * @return true if selected schema already existed
+	 */
 	public boolean isExistingSchema() {
 
 		String aux = getSchema();
@@ -139,6 +158,52 @@ public class SelectSchema extends JDialog implements ListSelectionListener,
 
 		}
 		setVisible(false);
+	}
+
+	@Override
+	public void mouseClicked(java.awt.event.MouseEvent e) {
+		int clickCount = e.getClickCount();
+		int idx = scList.getSelectedIndex();
+		if (idx >= 0) {
+			schema.setText(schemaList[idx]);
+			if (schema.isVisible()) {
+				scList.setSelectedIndices(new int[0]);
+			}
+			if (clickCount > 1) {
+				okSelected = true;
+				setVisible(false);
+			}
+		}
+	}
+
+	@Override
+	public void mouseEntered(java.awt.event.MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseExited(java.awt.event.MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mousePressed(java.awt.event.MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseReleased(java.awt.event.MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseDragged(java.awt.event.MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseMoved(java.awt.event.MouseEvent e) {
+
 	}
 
 }

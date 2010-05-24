@@ -1183,23 +1183,39 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				kontroller.getConnection(name, databaseName, userid, password);
 				// SukuData.instance().connectToDatabase(host, dbname, userid,
 				// password);
-				SukuData schemas = kontroller.getSukuData("cmd=schema",
-						"type=count");
-				String schema = "public";
-				int resu = 0;
-				if (schemas.generalArray.length > 1) {
-					resu = JOptionPane.showOptionDialog(this, Resurses
-							.getString("LOGIN_SELECT_SCHEMA"), Resurses
-							.getString("LOGIN_SCHEMA"),
-							JOptionPane.DEFAULT_OPTION,
-							JOptionPane.QUESTION_MESSAGE, null,
-							schemas.generalArray, null);
+
+				SelectSchema schemas = new SelectSchema(this, false);
+				String schema = null;
+				schema = schemas.getSchema();
+				if (schema == null) {
+					schemas.setVisible(true);
+
+					schema = schemas.getSchema();
+					if (schema == null)
+						return;
 				}
-				if (resu >= 0) {
-					schema = schemas.generalArray[resu];
-				}
-				SukuData sche = kontroller.getSukuData("cmd=schema",
-						"type=set", "value=" + schema);
+				// SukuData schemas = kontroller.getSukuData("cmd=schema",
+				// "type=count");
+				// String schema = "public";
+				// int resu = 0;
+				// if (schemas.generalArray.length > 1) {
+				//					
+				//					
+				//					
+				//					
+				//					
+				// resu = JOptionPane.showOptionDialog(this, Resurses
+				// .getString("LOGIN_SELECT_SCHEMA"), Resurses
+				// .getString("LOGIN_SCHEMA"),
+				// JOptionPane.DEFAULT_OPTION,
+				// JOptionPane.QUESTION_MESSAGE, null,
+				// schemas.generalArray, null);
+				// }
+				// if (resu >= 0) {
+				// schema = schemas.generalArray[resu];
+				// }
+				kontroller.getSukuData("cmd=schema", "type=set", "name="
+						+ schema);
 
 				SukuData dblist = kontroller.getSukuData("cmd=dblista");
 
@@ -1351,12 +1367,42 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
 			} else if (cmd.equals(Resurses.NEWDB)) {
-				int resu = JOptionPane.showConfirmDialog(this, Resurses
-						.getString("CONFIRM_NEWDB"), Resurses
-						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
-				if (resu == JOptionPane.YES_OPTION) {
 
+				SelectSchema schema;
+				try {
+					schema = new SelectSchema(this);
+
+					schema.setVisible(true);
+
+					String selectedSchema = schema.getSchema();
+					if (selectedSchema == null)
+						return;
+					if (!schema.isExistingSchema()) {
+						kontroller.getSukuData("cmd=schema", "type=create",
+								"name=" + selectedSchema);
+
+					}
+					kontroller.getSukuData("cmd=schema", "type=set", "name="
+							+ selectedSchema);
+					setTitle(null);
+				} catch (SukuException e1) {
+
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this, e1.getMessage(),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (schema.isExistingSchema()) {
+
+					int resu = JOptionPane.showConfirmDialog(this, Resurses
+							.getString("CONFIRM_NEWDB"), Resurses
+							.getString(Resurses.SUKU),
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					if (resu != JOptionPane.YES_OPTION) {
+						return;
+					}
 					try {
 						this.tableModel.resetModel(); // clear contents of table
 						// first
@@ -1801,6 +1847,30 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.table.updateUI();
 			this.scrollPane.updateUI();
 
+			SelectSchema schema;
+			try {
+				schema = new SelectSchema(this);
+
+				schema.setVisible(true);
+
+				String selectedSchema = schema.getSchema();
+				if (selectedSchema == null)
+					return;
+				if (!schema.isExistingSchema()) {
+					kontroller.getSukuData("cmd=schema", "type=create", "name="
+							+ selectedSchema);
+
+				}
+				kontroller.getSukuData("cmd=schema", "type=set", "name="
+						+ selectedSchema);
+				setTitle(null);
+			} catch (SukuException e1) {
+
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			ImportGedcomDialog dlg;
 			try {
 				dlg = new ImportGedcomDialog(this, dbname);
