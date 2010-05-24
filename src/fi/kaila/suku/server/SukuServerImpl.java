@@ -48,21 +48,21 @@ public class SukuServerImpl implements SukuServer {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private String openFile = null;
 
-	/**
-	 * Constructor
-	 * 
-	 * @throws SukuException
-	 */
-	public SukuServerImpl() throws SukuException {
-		this.schema = "public";
-
-		try {
-			Class.forName(this.dbDriver);
-		} catch (ClassNotFoundException e) {
-			throw new SukuException(e);
-		}
-
-	}
+	// /**
+	// * Constructor
+	// *
+	// * @throws SukuException
+	// */
+	// public SukuServerImpl() throws SukuException {
+	// this.schema = "public";
+	//
+	// try {
+	// Class.forName(this.dbDriver);
+	// } catch (ClassNotFoundException e) {
+	// throw new SukuException(e);
+	// }
+	//
+	// }
 
 	/**
 	 * used by tomcat from webstart idea is that database uses different scema
@@ -509,8 +509,33 @@ public class SukuServerImpl implements SukuServer {
 			} else {
 				fam.resu = Resurses.getString("GETSUKU_BAD_PLACES");
 			}
-		} else if (cmd.equals("dblista") && "public".equals(this.schema)) {
+		} else if (cmd.equals("dblista")) {
 			fam.generalArray = LocalDatabaseUtility.getListOfDatabases(con);
+		} else if (cmd.equals("schema")) {
+			String type = map.get("type");
+			if (type != null) {
+				if (type.equals("get")) {
+					fam.generalArray = new String[1];
+					fam.generalArray[0] = this.schema;
+				} else if (type.equals("count")) {
+					fam.generalArray = LocalDatabaseUtility
+							.getListOfSchemas(con);
+				} else if (type.equals("set")) {
+					String name = map.get("name");
+					if (name != null) {
+						this.schema = name;
+						fam.resu = LocalDatabaseUtility.setSchema(con,
+								this.schema);
+					}
+				} else if (type.equals("create")) {
+					String name = map.get("name");
+					if (name != null) {
+						fam.resu = LocalDatabaseUtility.createNewSchema(con,
+								name);
+					}
+				}
+			}
+
 		} else if (cmd.equals("import2004")) {
 			// this.createSukuDb();
 			file = this.openFile;
@@ -1056,7 +1081,8 @@ public class SukuServerImpl implements SukuServer {
 			stm = con.createStatement();
 			boolean unitExists = false;
 			ResultSet rs = stm
-					.executeQuery("select tablename from pg_tables where tablename = 'unit'");
+					.executeQuery("select tablename from pg_tables where tablename = 'unit' and schemaname = '"
+							+ this.schema + "'");
 
 			if (rs.next()) {
 				unitExists = true;

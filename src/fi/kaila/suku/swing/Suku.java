@@ -76,6 +76,7 @@ import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
+import fi.kaila.suku.swing.dialog.SelectSchema;
 import fi.kaila.suku.swing.dialog.SettingsDialog;
 import fi.kaila.suku.swing.dialog.SukuPad;
 import fi.kaila.suku.swing.dialog.ToolsDialog;
@@ -1020,11 +1021,27 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	@Override
 	public void setTitle(String title) {
+		SukuData dat;
+		String schema;
+		try {
+			dat = kontroller.getSukuData("cmd=schema", "type=get");
+			schema = dat.generalArray.length == 1 ? dat.generalArray[0] : null;
+		} catch (SukuException e) {
+
+			e.printStackTrace();
+			return;
+		}
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(Resurses.getString(Resurses.SUKU));
+
 		if (isConnected == 2) {
 			sb.append(" [");
 			sb.append(databaseName);
+			if (schema != null) {
+				sb.append(" ! ");
+				sb.append(schema);
+			}
 			sb.append("]");
 		}
 		if (title != null) {
@@ -1166,6 +1183,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				kontroller.getConnection(name, databaseName, userid, password);
 				// SukuData.instance().connectToDatabase(host, dbname, userid,
 				// password);
+				SukuData schemas = kontroller.getSukuData("cmd=schema",
+						"type=count");
+				String schema = "public";
+				int resu = 0;
+				if (schemas.generalArray.length > 1) {
+					resu = JOptionPane.showOptionDialog(this, Resurses
+							.getString("LOGIN_SELECT_SCHEMA"), Resurses
+							.getString("LOGIN_SCHEMA"),
+							JOptionPane.DEFAULT_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null,
+							schemas.generalArray, null);
+				}
+				if (resu >= 0) {
+					schema = schemas.generalArray[resu];
+				}
+				SukuData sche = kontroller.getSukuData("cmd=schema",
+						"type=set", "value=" + schema);
 
 				SukuData dblist = kontroller.getSukuData("cmd=dblista");
 
@@ -2460,10 +2494,25 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			logger.finest("Opened IMPORT FILE status " + isOpened);
 
+			SelectSchema schema = new SelectSchema(this);
+			schema.setVisible(true);
+
+			String selectedSchema = schema.getSchema();
+			if (selectedSchema == null)
+				return;
+			if (!schema.isExistingSchema()) {
+				kontroller.getSukuData("cmd=schema", "type=create", "name="
+						+ selectedSchema);
+
+			}
+			kontroller.getSukuData("cmd=schema", "type=set", "name="
+					+ selectedSchema);
 			Import2004Dialog dlg = null;
 			try {
 				dlg = new Import2004Dialog(this, kontroller);
 			} catch (SukuException ex) {
+				JOptionPane.showMessageDialog(this, ex.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -2475,7 +2524,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
 			kontroller.getSukuData("cmd=excel",
 					"path=resources/excel/TypesExcel.xls", "page=types");
-
+			setTitle(null);
 			String[] failedLines = dlg.getResult();
 			if (failedLines != null) {
 				StringBuilder sb = new StringBuilder();

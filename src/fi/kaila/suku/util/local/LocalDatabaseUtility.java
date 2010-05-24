@@ -87,4 +87,59 @@ public class LocalDatabaseUtility {
 
 	}
 
+	public static String[] getListOfSchemas(Connection con)
+			throws SukuException {
+		String sql = "select * from pg_namespace where nspname not like 'pg%' and nspname <> 'information_schema' ";
+		StringBuilder sb = new StringBuilder();
+		try {
+			Statement stm = con.createStatement();
+
+			ResultSet rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+				if (sb.length() > 0) {
+					sb.append(";");
+				}
+				sb.append(rs.getString(1));
+			}
+			rs.close();
+
+			return sb.toString().split(";");
+
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "schemas list", e);
+
+			throw new SukuException(e);
+		}
+
+	}
+
+	public static String setSchema(Connection con, String schema) {
+		Statement stm;
+		String resu = null;
+		try {
+			stm = con.createStatement();
+			stm.executeUpdate("set search_path to " + schema);
+			stm.close();
+		} catch (SQLException e) {
+			resu = e.getMessage();
+			e.printStackTrace();
+		}
+		return resu;
+	}
+
+	public static String createNewSchema(Connection con, String schema) {
+		String resu = null;
+		Statement stm;
+		try {
+			stm = con.createStatement();
+			stm.executeUpdate("create schema " + schema);
+			stm.close();
+		} catch (SQLException e) {
+			resu = e.getMessage();
+			e.printStackTrace();
+		}
+		return resu;
+	}
+
 }

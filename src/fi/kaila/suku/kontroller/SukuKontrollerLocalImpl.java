@@ -41,7 +41,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	 * @throws SukuException
 	 */
 	public SukuKontrollerLocalImpl() throws SukuException {
-		this.server = new SukuServerImpl();
+		this.server = new SukuServerImpl("public");
 		sr = Preferences.userRoot();
 		logger = Logger.getLogger(this.getClass().getName());
 	}
