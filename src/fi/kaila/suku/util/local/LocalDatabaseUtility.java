@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 
 /**
@@ -134,6 +135,31 @@ public class LocalDatabaseUtility {
 		try {
 			stm = con.createStatement();
 			stm.executeUpdate("create schema " + schema);
+			stm.close();
+		} catch (SQLException e) {
+			resu = e.getMessage();
+			e.printStackTrace();
+		}
+		return resu;
+	}
+
+	/**
+	 * Drop named schema from current database
+	 * 
+	 * @param con
+	 * @param name
+	 * @return
+	 */
+	public static String dropSchema(Connection con, String name) {
+		String resu = null;
+		Statement stm;
+		if (name.equals("public")) {
+			return Resurses.getString("SCHEMA_PUBLIC_NOT_DROPPED");
+		}
+		try {
+			stm = con.createStatement();
+			stm.executeUpdate("drop schema " + name + " cascade");
+			stm.executeUpdate("set search_path to public ");
 			stm.close();
 		} catch (SQLException e) {
 			resu = e.getMessage();

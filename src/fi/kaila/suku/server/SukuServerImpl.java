@@ -533,6 +533,14 @@ public class SukuServerImpl implements SukuServer {
 						fam.resu = LocalDatabaseUtility.createNewSchema(con,
 								name);
 					}
+				} else if (type.equals("drop")) {
+					String name = map.get("name");
+					if (name != null) {
+						fam.resu = LocalDatabaseUtility.dropSchema(con, name);
+						this.schema = "public";
+					}
+				} else {
+					fam.resu = "Bad schema command";
 				}
 			}
 
@@ -903,8 +911,6 @@ public class SukuServerImpl implements SukuServer {
 			Statement stm = null;
 			try {
 				mycon = DriverManager.getConnection(constring);
-
-				// /////////////////////
 
 				sql = "select * from sukuvariables";
 

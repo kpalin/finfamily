@@ -184,6 +184,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mQuery;
 	private JMenuItem mConnect;
 	private JMenuItem mNewDatabase;
+	private JMenuItem mDropSchema;
 	private JMenuItem mDisconnect;
 	private JMenuItem mPrintPerson;
 	private JMenuItem mNewPerson;
@@ -411,6 +412,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mFile.add(this.mNewDatabase);
 		this.mNewDatabase.setActionCommand(Resurses.NEWDB);
 		this.mNewDatabase.addActionListener(this);
+
+		this.mDropSchema = new JMenuItem(Resurses.getString("SCHEMA_DROP"));
+		this.mFile.add(this.mDropSchema);
+		this.mDropSchema.setActionCommand("SCHEMA_DROP");
+		this.mDropSchema.addActionListener(this);
 
 		this.mFile.addSeparator();
 
@@ -1181,8 +1187,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			try {
 				kontroller.getConnection(name, databaseName, userid, password);
-				// SukuData.instance().connectToDatabase(host, dbname, userid,
-				// password);
 
 				SelectSchema schemas = new SelectSchema(this, false);
 				String schema = null;
@@ -1194,26 +1198,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					if (schema == null)
 						return;
 				}
-				// SukuData schemas = kontroller.getSukuData("cmd=schema",
-				// "type=count");
-				// String schema = "public";
-				// int resu = 0;
-				// if (schemas.generalArray.length > 1) {
-				//					
-				//					
-				//					
-				//					
-				//					
-				// resu = JOptionPane.showOptionDialog(this, Resurses
-				// .getString("LOGIN_SELECT_SCHEMA"), Resurses
-				// .getString("LOGIN_SCHEMA"),
-				// JOptionPane.DEFAULT_OPTION,
-				// JOptionPane.QUESTION_MESSAGE, null,
-				// schemas.generalArray, null);
-				// }
-				// if (resu >= 0) {
-				// schema = schemas.generalArray[resu];
-				// }
+
 				kontroller.getSukuData("cmd=schema", "type=set", "name="
 						+ schema);
 
@@ -1437,20 +1422,46 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					}
 				}
 
+			} else if (cmd.equals("SCHEMA_DROP")) {
+				SukuData scm = kontroller.getSukuData("cmd=schema", "type=get");
+				SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
+				if (resp.resuCount > 0) {
+					int answer = JOptionPane.showConfirmDialog(this, Resurses
+							.getString("SCHEMA_NOT_EMPTY")
+							+ " ["
+							+ scm.generalArray[0]
+							+ "] "
+							+ Resurses.getString("SCHEMA_PERSONCOUNT")
+							+ "= "
+							+ resp.resuCount
+							+ " "
+							+ Resurses.getString("DELETE_DATA_OK"), Resurses
+							.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					if (answer == 1) {
+						throw new SukuException(Resurses
+								.getString("SCHEMA_NOT_EMPTY"));
+					} else {
+						kontroller.getSukuData("cmd=schema", "type=drop",
+								"name=" + scm.generalArray[0]);
+						disconnectDb();
+					}
+
+				}
 			}
-			if (cmd.equals("MENU_TOOLS_DBWORK")) {
+
+			else if (cmd.equals("MENU_TOOLS_DBWORK")) {
 
 				executeDbWork();
-			}
-			if (cmd.equals("MENU_TOOLS_LIST_DATABASES")) {
+			} else if (cmd.equals("MENU_TOOLS_LIST_DATABASES")) {
 				listDatabaseStatistics();
 			}
 
-			if (cmd.equals("MENU_COPY")) {
+			else if (cmd.equals("MENU_COPY")) {
 				System.out.println("EDIT-COPY by ctrl/c");
 			}
 
-			if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
+			else if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
 
 				int isele = table.getSelectedRow();
 				if (isele < 0) {
@@ -1517,8 +1528,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						e1.printStackTrace();
 					}
 				}
-			}
-			if (cmd.equals(Resurses.CONNECT)) {
+			} else if (cmd.equals(Resurses.CONNECT)) {
 				connectDb();
 			} else if (cmd.equals(Resurses.DISCONNECT)) {
 				disconnectDb();
