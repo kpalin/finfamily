@@ -51,7 +51,7 @@ public class SelectSchema extends JDialog implements ActionListener,
 	 * @throws SukuException
 	 */
 	public SelectSchema(JFrame owner) throws SukuException {
-		super(owner, Resurses.getString("SCHEMA_SELECT"), true);
+		super(owner, Resurses.getString("SCHEMA"), true);
 		// this.owner = owner;
 
 		constructMe(true);
@@ -67,7 +67,7 @@ public class SelectSchema extends JDialog implements ActionListener,
 	 * @throws SukuException
 	 */
 	public SelectSchema(JFrame owner, boolean allowNew) throws SukuException {
-		super(owner, Resurses.getString("SCHEMA_SELECT"), true);
+		super(owner, Resurses.getString("SCHEMA"), true);
 		// this.owner = owner;
 
 		constructMe(allowNew);
@@ -81,7 +81,11 @@ public class SelectSchema extends JDialog implements ActionListener,
 		setLayout(null);
 		int y = 10;
 
-		JLabel lbl = new JLabel(Resurses.getString("SELECTED_SCHEMA"));
+		String labelValue = "SCHEMA_SELECT";
+		if (allowNew)
+			labelValue = "SCHEMA_SELECTNEW";
+
+		JLabel lbl = new JLabel(Resurses.getString(labelValue));
 		getContentPane().add(lbl);
 		lbl.setBounds(10, y, 100, 20);
 		y += 20;
@@ -172,9 +176,9 @@ public class SelectSchema extends JDialog implements ActionListener,
 		int idx = scList.getSelectedIndex();
 		if (idx >= 0) {
 			schema.setText(schemaList[idx]);
-			if (schema.isVisible()) {
-				scList.setSelectedIndices(new int[0]);
-			}
+			// if (schema.isVisible()) {
+			// scList.setSelectedIndices(new int[0]);
+			// }
 			if (clickCount > 1) {
 				okSelected = true;
 				setVisible(false);

@@ -365,8 +365,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		String datfo = kontroller.getPref(this, Resurses.DATEFORMAT, "FI");
 		Resurses.setDateFormat(datfo);
 
-		this.setTitle(null);
-
 		this.menubar = new JMenuBar();
 		setJMenuBar(this.menubar);
 		this.mFile = new JMenu(Resurses.getString(Resurses.FILE));
@@ -408,9 +406,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mExportGedcom.setActionCommand(Resurses.EXPORT_GEDCOM);
 		this.mExportGedcom.addActionListener(this);
 
-		this.mNewDatabase = new JMenuItem(Resurses.getString(Resurses.NEWDB));
+		this.mNewDatabase = new JMenuItem(Resurses
+				.getString("SCHEMA_INITIALIZE"));
 		this.mFile.add(this.mNewDatabase);
-		this.mNewDatabase.setActionCommand(Resurses.NEWDB);
+		this.mNewDatabase.setActionCommand("SCHEMA_INITIALIZE");
 		this.mNewDatabase.addActionListener(this);
 
 		this.mDropSchema = new JMenuItem(Resurses.getString("SCHEMA_DROP"));
@@ -772,7 +771,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.statusPanel.setEditable(false);
 		this.statusPanel.setBackground(Color.WHITE);
 		this.statusPanel.setBounds(0, 420, 700, 20);
-
+		this.setTitle(null);
 		setVisible(true);
 
 		InputStream in = this.getClass().getResourceAsStream(
@@ -1041,7 +1040,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		StringBuilder sb = new StringBuilder();
 		sb.append(Resurses.getString(Resurses.SUKU));
 
-		if (isConnected == 2) {
+		if (isConnected > 0) {
 			sb.append(" [");
 			sb.append(databaseName);
 			if (schema != null) {
@@ -1054,7 +1053,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			sb.append(" - ");
 			sb.append(title);
 		}
-
+		this.statusPanel.setText("");
 		super.setTitle(sb.toString());
 
 	}
@@ -1187,7 +1186,22 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			try {
 				kontroller.getConnection(name, databaseName, userid, password);
+			} catch (SukuException e3) {
+				String e1 = e3.getMessage();
+				String[] e2 = { "Connection failed" };
+				if (e1 != null) {
+					e2 = e1.split("\n");
+				}
 
+				// JOptionPane.showMessageDialog(this, e2[0], Resurses
+				// .getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				this.statusPanel.setText(e2[0]);
+				e3.printStackTrace();
+				this.isConnected = 0;
+				enableCommands();
+				return;
+			}
+			try {
 				SelectSchema schemas = new SelectSchema(this, false);
 				String schema = null;
 				schema = schemas.getSchema();
@@ -1274,11 +1288,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					e2 = e1.split("\n");
 				}
 
-				JOptionPane.showMessageDialog(this, e2[0], Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
+				// JOptionPane.showMessageDialog(this, e2[0], Resurses
+				// .getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 				this.isConnected = 1;
+				setTitle(null);
+				this.statusPanel.setText(e2[0]);
+				e.printStackTrace();
+
 				enableCommands();
+
 			}
 		}
 
@@ -1351,7 +1369,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				JOptionPane.showMessageDialog(this, resu, Resurses
 						.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
-			} else if (cmd.equals(Resurses.NEWDB)) {
+			} else if (cmd.equals("SCHEMA_INITIALIZE")) {
 
 				SelectSchema schema;
 				try {
@@ -1378,7 +1396,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				if (schema.isExistingSchema()) {
+
+				SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
+				if (resp.resuCount > 0) {
+					// if (schema.isExistingSchema()) {
 
 					int resu = JOptionPane.showConfirmDialog(this, Resurses
 							.getString("CONFIRM_NEWDB"), Resurses
@@ -1388,38 +1409,40 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					if (resu != JOptionPane.YES_OPTION) {
 						return;
 					}
-					try {
-						this.tableModel.resetModel(); // clear contents of table
-						// first
-						this.personView.reset();
-						this.table.updateUI();
-						this.scrollPane.updateUI();
+				}
+				try {
+					this.tableModel.resetModel(); // clear contents of table
+					// first
+					this.personView.reset();
+					this.table.updateUI();
+					this.scrollPane.updateUI();
 
-						kontroller.getSukuData("cmd=initdb");
-						kontroller.getSukuData("cmd=excel",
-								"path=resources/excel/PaikatExcel.xls",
-								"page=coordinates");
-						kontroller.getSukuData("cmd=excel",
-								"path=resources/excel/TypesExcel.xls",
-								"page=types");
+					kontroller.getSukuData("cmd=initdb");
+					kontroller.getSukuData("cmd=excel",
+							"path=resources/excel/PaikatExcel.xls",
+							"page=coordinates");
+					kontroller
+							.getSukuData("cmd=excel",
+									"path=resources/excel/TypesExcel.xls",
+									"page=types");
 
-						JOptionPane.showMessageDialog(this, Resurses
-								.getString("CREATED_NEWDB"), Resurses
-								.getString(Resurses.SUKU),
-								JOptionPane.INFORMATION_MESSAGE);
-						resetIntellisens();
-						isConnected = 2;
-						enableCommands();
-					} catch (SukuException e1) {
-						JOptionPane.showMessageDialog(this, Resurses
-								.getString(Resurses.NEWDB), Resurses
-								.getString(Resurses.SUKU),
-								JOptionPane.ERROR_MESSAGE);
-						logger.log(Level.WARNING, Resurses
-								.getString(Resurses.NEWDB), e1);
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString("CREATED_NEWDB"), Resurses
+							.getString(Resurses.SUKU),
+							JOptionPane.INFORMATION_MESSAGE);
+					resetIntellisens();
+					isConnected = 2;
+					enableCommands();
+					setTitle(null);
+				} catch (SukuException e1) {
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString(Resurses.NEWDB), Resurses
+							.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					logger.log(Level.WARNING, Resurses
+							.getString(Resurses.NEWDB), e1);
 
-						e1.printStackTrace();
-					}
+					e1.printStackTrace();
 				}
 
 			} else if (cmd.equals("SCHEMA_DROP")) {
@@ -1441,13 +1464,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					if (answer == 1) {
 						throw new SukuException(Resurses
 								.getString("SCHEMA_NOT_EMPTY"));
-					} else {
-						kontroller.getSukuData("cmd=schema", "type=drop",
-								"name=" + scm.generalArray[0]);
-						disconnectDb();
 					}
-
 				}
+				kontroller.getSukuData("cmd=schema", "type=drop", "name="
+						+ scm.generalArray[0]);
+				disconnectDb();
+
 			}
 
 			else if (cmd.equals("MENU_TOOLS_DBWORK")) {
@@ -1712,8 +1734,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		} catch (Throwable ex) {
 
 			logger.log(Level.WARNING, "Suku action", ex);
-			JOptionPane.showMessageDialog(personView.getSuku(), "Suku action"
-					+ ":" + ex.getMessage());
+			JOptionPane
+					.showMessageDialog(personView.getSuku(), ex.getMessage());
 		}
 	}
 
@@ -2528,7 +2550,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void disconnectDb() {
-		isConnected = 0;
 
 		SukuData request = new SukuData();
 		request.generalArray = needle.toArray(new String[0]);
@@ -2538,11 +2559,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					"type=needle", "name=needle");
 
 		} catch (SukuException ee) {
-			JOptionPane.showMessageDialog(this, ee.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-			ee.printStackTrace();
-		}
+			if (isConnected > 1) {
+				JOptionPane.showMessageDialog(this, ee.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				ee.printStackTrace();
+			}
 
+		}
+		isConnected = 0;
 		try {
 
 			this.tableModel.resetModel(); // clear contents of table first
@@ -2752,6 +2776,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mQuery.setEnabled(isConnected == 2);
 		mSettings.setEnabled(isConnected == 2);
 		mNewDatabase.setEnabled(isConnected != 0);
+		mDropSchema.setEnabled(isConnected != 0);
 		mOpenPerson.setEnabled(isConnected == 2);
 		mPrintPerson.setEnabled(isConnected == 2);
 		mShowInMap.setEnabled(isConnected == 2);

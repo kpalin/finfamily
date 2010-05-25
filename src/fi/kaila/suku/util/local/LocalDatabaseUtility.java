@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 
 /**
@@ -148,14 +147,14 @@ public class LocalDatabaseUtility {
 	 * 
 	 * @param con
 	 * @param name
-	 * @return
+	 * @return possible error string
 	 */
 	public static String dropSchema(Connection con, String name) {
 		String resu = null;
 		Statement stm;
-		if (name.equals("public")) {
-			return Resurses.getString("SCHEMA_PUBLIC_NOT_DROPPED");
-		}
+		// if (name.equals("public")) {
+		// return Resurses.getString("SCHEMA_PUBLIC_NOT_DROPPED");
+		// }
 		try {
 			stm = con.createStatement();
 			stm.executeUpdate("drop schema " + name + " cascade");
