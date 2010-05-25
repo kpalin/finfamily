@@ -7,7 +7,7 @@ Release 563 on 25 may 2010
 * FinFamily modified to use database schemas for the finfamily data.
   One database can now contain several genealogy schemas
 
-Release 557 on 22 may 2010
+Release 557 on 22 may 2010 (105)
 
 * Table notice moved to be printed before table header
 * FamilyTree view surety information added
