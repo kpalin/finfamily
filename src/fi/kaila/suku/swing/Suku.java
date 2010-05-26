@@ -65,6 +65,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 import fi.kaila.suku.ant.AntVersion;
+import fi.kaila.suku.exports.ExportFamilyDatabaseDialog;
 import fi.kaila.suku.exports.ExportGedcomDialog;
 import fi.kaila.suku.imports.Import2004Dialog;
 import fi.kaila.suku.imports.ImportGedcomDialog;
@@ -181,6 +182,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mImportGedcom;
 	private JMenu mExport;
 	private JMenuItem mExportGedcom;
+	private JMenuItem mExportBackup;
 	private JMenuItem mQuery;
 	private JMenuItem mConnect;
 	private JMenuItem mNewDatabase;
@@ -405,6 +407,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mExport.add(this.mExportGedcom);
 		this.mExportGedcom.setActionCommand(Resurses.EXPORT_GEDCOM);
 		this.mExportGedcom.addActionListener(this);
+
+		this.mExportBackup = new JMenuItem(Resurses
+				.getString(Resurses.EXPORT_BACKUP));
+		mExport.add(this.mExportBackup);
+		this.mExportBackup.setActionCommand(Resurses.EXPORT_BACKUP);
+		this.mExportBackup.addActionListener(this);
 
 		this.mNewDatabase = new JMenuItem(Resurses
 				.getString("SCHEMA_INITIALIZE"));
@@ -1598,6 +1606,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				enableCommands();
 			} else if (cmd.equals(Resurses.EXPORT_GEDCOM)) {
 				exportGedcom();
+			} else if (cmd.equals(Resurses.EXPORT_BACKUP)) {
+				createFamilyBackup();
 			} else if (cmd.equals(Resurses.IMPORT_HISKI)) {
 				importFromHiski();
 			} else if (cmd.equals("MENU_TOOLS_GROUP_MGR")) {
@@ -1739,6 +1749,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 	}
 
+	private void createFamilyBackup() {
+		boolean isCreated = kontroller.createLocalFile("xml");
+		String zipName = kontroller.getFileName();
+		logger.finest("Opened GEDCOM FILE status " + isCreated);
+		if (isCreated) {
+			ExportFamilyDatabaseDialog dlg;
+			try {
+				dlg = new ExportFamilyDatabaseDialog(this, databaseName,
+						zipName);
+			} catch (SukuException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());
+				return;
+			}
+			dlg.setVisible(true);
+		}
+	}
+
 	private void exportGedcom() {
 
 		boolean isCreated = kontroller.createLocalFile("zip");
@@ -1750,6 +1777,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			try {
 				dlg = new ExportGedcomDialog(this, databaseName, zipName);
 			} catch (SukuException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());
 				return;
 			}
 			dlg.setVisible(true);
@@ -1775,7 +1803,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						sb.append(dlg.getViewName());
 
 					}
-					sb.append("\n\nGEDCOM EXPORT IS UNDER CONSTRUCTION");
 					java.util.Date d = new java.util.Date();
 					SukuPad pad = new SukuPad(this, kontroller.getFileName()
 							+ "\n" + d.toString() + "\n\n" + sb.toString());
@@ -2773,6 +2800,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mImportGedcom.setEnabled(isConnected != 0);
 		mExport.setEnabled(isConnected == 2);
 		mExportGedcom.setEnabled(isConnected == 2);
+		mExportBackup.setEnabled(isConnected == 2);
 		mQuery.setEnabled(isConnected == 2);
 		mSettings.setEnabled(isConnected == 2);
 		mNewDatabase.setEnabled(isConnected != 0);

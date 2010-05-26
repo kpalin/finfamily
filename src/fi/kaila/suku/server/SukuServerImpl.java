@@ -15,6 +15,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fi.kaila.suku.server.utils.ExportBackupUtil;
 import fi.kaila.suku.server.utils.ExportGedcomUtil;
 import fi.kaila.suku.server.utils.GenGraphUtil;
 import fi.kaila.suku.server.utils.GroupUtil;
@@ -578,29 +579,37 @@ public class SukuServerImpl implements SukuServer {
 			ImportGedcomUtil inged = new ImportGedcomUtil(con);
 			fam = inged.importGedcom(lang);
 			inged = null;
-		} else if (cmd.equals("exportGedcom")) {
-			lang = map.get("lang");
-			String path = map.get("file");
-			String db = map.get("db");
-			tmp = map.get("viewId");
-			int viewId = 0;
-			if (tmp != null) {
-				viewId = Integer.parseInt(tmp);
-			}
-			int surety = 100;
-			tmp = map.get("surety");
+		} else if (cmd.equals("create")) {
+			String type = map.get("type");
+			if ("gedcom".equals(type)) {
+				lang = map.get("lang");
+				String path = map.get("file");
+				String db = map.get("db");
+				tmp = map.get("viewId");
+				int viewId = 0;
+				if (tmp != null) {
+					viewId = Integer.parseInt(tmp);
+				}
+				int surety = 100;
+				tmp = map.get("surety");
 
-			if (tmp != null) {
-				surety = Integer.parseInt(tmp);
-			}
-			tmp = map.get("charid");
-			int charid = Integer.parseInt(tmp);
-			boolean incImages = map.get("images") != null ? true : false;
-			;
-			ExportGedcomUtil exgen = new ExportGedcomUtil(con);
-			fam = exgen.exportGedcom(db, path, lang, viewId, surety, charid,
-					incImages);
+				if (tmp != null) {
+					surety = Integer.parseInt(tmp);
+				}
+				tmp = map.get("charid");
+				int charid = Integer.parseInt(tmp);
+				boolean incImages = map.get("images") != null ? true : false;
 
+				ExportGedcomUtil exgen = new ExportGedcomUtil(con);
+				fam = exgen.exportGedcom(db, path, lang, viewId, surety,
+						charid, incImages);
+			} else if ("backup".equals(type)) {
+				String path = map.get("file");
+				String db = map.get("db");
+				ExportBackupUtil exb = new ExportBackupUtil(con);
+
+				fam = exb.exportBackup();
+			}
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");
 			String path = map.get("path");

@@ -276,13 +276,14 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 			// Initialize progress property.
 			setProgress(0);
-			setRunnerValue("Luetaan tietokanta");
+			setRunnerValue(Resurses.getString("EXPORT_INITIALING"));
 
 			try {
 
 				if (fileName.getText().length() > 0) {
 					Vector<String> v = new Vector<String>();
-					v.add("cmd=exportGedcom");
+					v.add("cmd=create");
+					v.add("type=gedcom");
 					v.add("file=" + zipName);
 					v.add("db=" + dbName);
 					int listIdx = viewList.getSelectedIndex();
@@ -320,7 +321,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 					OutputStream fos = Suku.kontroller.getOutputStream();
 
-					String tekst = "GEDCOM EXPORT UNDER CONSTRUCTION";
+					String tekst = "GEDCOM EXPORT";
 
 					byte[] buffi = null;
 					if (resp.buffer != null) {

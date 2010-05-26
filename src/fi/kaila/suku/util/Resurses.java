@@ -337,6 +337,8 @@ public class Resurses {
 
 	public static final String HISKI_BROWSER = "HISKI_BROWSER";
 
+	public static final String EXPORT_BACKUP = "EXPORT_BACKUP";
+
 	private static Resurses myself = null;
 	private static ExcelBundle resources = null;
 
