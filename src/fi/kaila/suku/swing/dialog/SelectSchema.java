@@ -87,7 +87,7 @@ public class SelectSchema extends JDialog implements ActionListener,
 
 		JLabel lbl = new JLabel(Resurses.getString(labelValue));
 		getContentPane().add(lbl);
-		lbl.setBounds(10, y, 100, 20);
+		lbl.setBounds(10, y, 200, 20);
 		y += 20;
 		schema = new JTextField();
 		getContentPane().add(schema);
