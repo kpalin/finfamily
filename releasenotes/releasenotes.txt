@@ -5,7 +5,9 @@ At least for now releases follow the Subversion revision numbers. Numbers in the
 Release 568 on 26 may 2010
 
 * Database schema to be names Family database
-* First draft version of create backup command. Possibl
+* First draft version of create backup command. 
+  Possible to import both to Suku 2004 and to Finfamily. 
+  No guarantee on correctnes yet.
 
 Release 563 on 25 may 2010 (37)
 

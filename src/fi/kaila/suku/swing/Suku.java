@@ -1193,6 +1193,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			String password = cdlg.getPassword();
 
 			try {
+
 				kontroller.getConnection(name, databaseName, userid, password);
 			} catch (SukuException e3) {
 				String e1 = e3.getMessage();

@@ -171,7 +171,7 @@ public class ExportBackupUtil {
 
 			unitEle.appendChild(nameEle);
 
-			createNoticesElement(document, unitEle, pid);
+			Element notices = createNoticesElement(document, pid);
 
 			if (firstPrefix != null) {
 				ele = document.createElement("prefix");
@@ -196,6 +196,7 @@ public class ExportBackupUtil {
 
 			unitEle.appendChild(nameEle);
 
+			unitEle.appendChild(notices);
 			double prossa = unitCounter / dbSize;
 			int prose = (int) (prossa * 100);
 			this.runner.setRunnerValue("" + prose + ";unit");
@@ -529,15 +530,15 @@ public class ExportBackupUtil {
 	private String firstSurname = null;
 	private String firstPostfix = null;
 
-	private void createNoticesElement(Document document, Element rootElement,
-			int pid) throws SQLException {
+	private Element createNoticesElement(Document document, int pid)
+			throws SQLException {
 		firstPrefix = null;
 		firstGivenname = null;
 		firstSurname = null;
 		firstPostfix = null;
 		boolean isFirstname = true;
 		Element noticesEle = document.createElement("notices");
-		rootElement.appendChild(noticesEle);
+
 		String sql = "select * from unitnotice where pid = ? order by noticerow";
 
 		PreparedStatement pstm = con.prepareStatement(sql);
@@ -797,7 +798,7 @@ public class ExportBackupUtil {
 			createUnitLanguageElements(document, noticeEle, pnid);
 
 		}
-
+		return noticesEle;
 	}
 
 	private void createUnitLanguageElements(Document document,
