@@ -1753,12 +1753,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void createFamilyBackup() {
 		boolean isCreated = kontroller.createLocalFile("zip");
 		String zipName = kontroller.getFileName();
-		logger.finest("Opened GEDCOM FILE status " + isCreated);
+		if (zipName == null)
+			return;
+		int punkt = zipName.lastIndexOf(".");
+		if (punkt < 1)
+			return;
+		String dbName = zipName.substring(0, punkt);
+		logger.finest("Created Backup FILE status " + isCreated);
 		if (isCreated) {
 			ExportFamilyDatabaseDialog dlg;
 			try {
-				dlg = new ExportFamilyDatabaseDialog(this, databaseName,
-						zipName);
+				dlg = new ExportFamilyDatabaseDialog(this, dbName, zipName);
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage());
 				return;
