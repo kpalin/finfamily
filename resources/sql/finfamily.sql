@@ -292,14 +292,6 @@ CreateDate timestamp not null default now()   -- Date/time when created
 create unique index RelationLanguageIdx on RelationLanguage (RNID,LangCode);
 create index RelationLanguageRidIdx on RelationLanguage (RID);
 
-create table Groups (
-GroupId integer primary key,
-Name varchar not null,
-Description varchar,
-Modified timestamp,                           -- timestamp modified
-CreateDate timestamp not null default now()   -- Date/time when created  
-);
-
 
 create table Conversions (
 ConversionId serial primary key,    -- serial primary key

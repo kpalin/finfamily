@@ -20,6 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.exports.ExportFamilyDatabaseDialog;
 import fi.kaila.suku.util.pojo.SukuData;
 
@@ -68,6 +69,7 @@ public class ExportBackupUtil {
 			Document document = documentBuilder.newDocument();
 			Element rootElement = document.createElement(root);
 			document.appendChild(rootElement);
+			rootElement.setAttribute("finfamily", AntVersion.antVersion);
 
 			createOwnerElement(document, rootElement);
 
@@ -548,11 +550,16 @@ public class ExportBackupUtil {
 		Element ele;
 
 		String tag = null;
+		String nameTag = "INDI";
 		while (rs.next()) {
 			Element noticeEle = document.createElement("notice");
 			noticesEle.appendChild(noticeEle);
 			int pnid = rs.getInt("pnid");
 			tag = rs.getString("tag");
+			if (tag.equals("NAME")) {
+				tag = nameTag;
+				nameTag = "NAME";
+			}
 			noticeEle.setAttribute("tag", tag);
 
 			noticeEle.setAttribute("row", "" + rs.getInt("noticerow"));
@@ -701,7 +708,7 @@ public class ExportBackupUtil {
 				}
 			}
 
-			if (tag.equals("NAME")) {
+			if (tag.equals("INDI") || tag.equals("NAME")) {
 				Element nameEle = document.createElement("name");
 				noticeEle.appendChild(nameEle);
 				tmp = rs.getString("prefix");
@@ -712,26 +719,40 @@ public class ExportBackupUtil {
 					ele.setTextContent(tmp);
 					nameEle.appendChild(ele);
 				}
+				StringBuilder sbn = new StringBuilder();
 				tmp = rs.getString("givenname");
+
 				if (tmp != null) {
+					sbn.append(tmp);
 					if (isFirstname)
 						firstGivenname = tmp;
-					ele = document.createElement("givenname");
+					ele = document.createElement("firstname");
 					ele.setTextContent(tmp);
 					nameEle.appendChild(ele);
 				}
 				tmp = rs.getString("patronym");
 				if (tmp != null) {
+
 					if (isFirstname) {
-						if (firstGivenname != null)
+
+						if (firstGivenname != null) {
+							sbn.append(" " + tmp);
 							firstGivenname += " " + tmp;
-						else
+						} else {
+							sbn.append(tmp);
 							firstGivenname = tmp;
+						}
 					}
 					ele = document.createElement("patronym");
 					ele.setTextContent(tmp);
 					nameEle.appendChild(ele);
 				}
+				if (sbn.length() > 0) {
+					ele = document.createElement("givenname");
+					ele.setTextContent(sbn.toString());
+					nameEle.appendChild(ele);
+				}
+
 				tmp = rs.getString("surname");
 				if (tmp != null) {
 					if (isFirstname)

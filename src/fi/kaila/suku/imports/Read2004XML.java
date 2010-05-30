@@ -62,7 +62,7 @@ public class Read2004XML extends DefaultHandler {
 
 	private String qName = null;
 	private StringBuffer currentChars = null;
-
+	private String finFamilyVersion = null;
 	private Connection con = null;
 	private String urli = null;
 	private String databaseFolder = null;
@@ -171,7 +171,7 @@ public class Read2004XML extends DefaultHandler {
 	private static final String unitPostfixTG = "|genealog|units|unit|name|postfix";
 	private static final String unitNameTG = "|genealog|units|unit|name";
 	private static final String unitRefnTG = "|genealog|units|unit|userrefn";
-
+	private static final String genealogTG = "|genealog";
 	private static final String unitTG = "|genealog|units|unit";
 	private static final String unitSourceTG = "|genealog|units|unit|source";
 	private static final String unitPrivateTextTG = "|genealog|units|unit|privatetext";
@@ -186,6 +186,8 @@ public class Read2004XML extends DefaultHandler {
 	private static final String noticeNoteTextTG = "|genealog|units|unit|notices|notice|notetext";
 	private static final String noticePlaceTG = "|genealog|units|unit|notices|notice|place";
 	private static final String noticeGivenNameTG = "|genealog|units|unit|notices|notice|name|givenname";
+	private static final String noticeFirstNameTG = "|genealog|units|unit|notices|notice|name|firstname";
+	private static final String noticePatronymTG = "|genealog|units|unit|notices|notice|name|patronym";
 	private static final String noticePrefixTG = "|genealog|units|unit|notices|notice|name|prefix";
 	private static final String noticeSurnameTG = "|genealog|units|unit|notices|notice|name|surname";
 	private static final String noticePostfixTG = "|genealog|units|unit|notices|notice|name|postfix";
@@ -251,6 +253,7 @@ public class Read2004XML extends DefaultHandler {
 	private String unitPrefix = null;
 	private String unitPostfix = null;
 	private String unitGroupId = null;
+	private String unitGroup = null;
 	private String unitSex = null;
 	private String unitRefn = null;
 	private String unitId = null;
@@ -279,6 +282,7 @@ public class Read2004XML extends DefaultHandler {
 	private String noticeMediaFilename = null;
 	private String noticeMediaTitle = null;
 	private String noticeGivenName = null;
+	private String noticePatronym = null;
 	private String noticeSurname = null;
 	private String noticePrefix = null;
 	private String noticePostfix = null;
@@ -393,7 +397,6 @@ public class Read2004XML extends DefaultHandler {
 	public SukuData importFile() throws SukuException {
 
 		SukuData resp = new SukuData();
-		;
 
 		SAXParser parser = null;
 
@@ -418,6 +421,7 @@ public class Read2004XML extends DefaultHandler {
 			GZIPInputStream gz = null;
 
 			Statement stm = this.con.createStatement();
+
 			stm.executeUpdate(DROP_GROUPS);
 			stm.executeUpdate(CREATE_GROUPS);
 			stm.executeUpdate(DROP_SOURCES);
@@ -438,9 +442,10 @@ public class Read2004XML extends DefaultHandler {
 			stm.executeUpdate(UPDATE_UNIT_SOURCES);
 			stm.executeUpdate(UPDATE_NOTICE_SOURCES);
 			stm.executeUpdate(UPDATE_RELATION_SOURCES);
-
-			stm.executeUpdate(UPDATE_GROUPS);
-
+			if (finFamilyVersion == null) {
+				stm.executeUpdate(UPDATE_GROUPS);
+			}
+			stm.executeUpdate(DROP_GROUPS);
 			// initialize pid sequence
 			String sql = "select max(pid) from unit";
 			ResultSet rs = stm.executeQuery(sql);
@@ -518,13 +523,21 @@ public class Read2004XML extends DefaultHandler {
 		this.currentChars = new StringBuffer();
 		this.qName = qName;
 
+		if (this.currentEle.equals(genealogTG)) {
+			finFamilyVersion = attributes.getValue("finfamily");
+		}
+
 		if (this.currentEle.equals(unitTG)) {
 
 			this.unitSex = attributes.getValue("sex");
 			this.unitId = attributes.getValue("unitid");
 			this.unitTag = attributes.getValue("tag");
 			this.unitPrivacy = attributes.getValue("privacy");
-			this.unitGroupId = attributes.getValue("groupid");
+			if (finFamilyVersion == null) {
+				this.unitGroupId = attributes.getValue("groupid");
+			} else {
+				this.unitGroup = attributes.getValue("group");
+			}
 			this.unitCreateDate = attributes.getValue("createdate");
 		}
 		if (this.currentEle.equals(unitSourceTG)) {
@@ -536,7 +549,11 @@ public class Read2004XML extends DefaultHandler {
 			this.unitRefn = attributes.getValue("refn");
 		} else if (this.currentEle.equals(noticeTG)) {
 			this.noticeRow = attributes.getValue("row");
-			this.noticeTag = attributes.getValue("tag");
+			String ntag = attributes.getValue("tag");
+			if (finFamilyVersion != null && ntag.equals("INDI")) {
+				ntag = "NAME";
+			}
+			this.noticeTag = ntag;
 			this.noticePrivacy = attributes.getValue("privacy");
 			this.noticeSourceId = attributes.getValue("sourceid");
 			this.noticeCreateDate = attributes.getValue("createdate");
@@ -650,8 +667,11 @@ public class Read2004XML extends DefaultHandler {
 
 				this.pstm.setInt(1, id);
 				this.pstm.setString(2, this.unitSex);
-
-				this.pstm.setString(3, this.unitGroupId);
+				if (finFamilyVersion == null) {
+					this.pstm.setString(3, this.unitGroupId);
+				} else {
+					this.pstm.setString(3, this.unitGroup);
+				}
 				this.pstm.setString(4, this.unitPrivacy);
 
 				if (this.unitSourceId != null) {
@@ -670,70 +690,73 @@ public class Read2004XML extends DefaultHandler {
 				logger.log(Level.SEVERE, "importing unit failed", e);
 				throw new SAXException(e);
 			}
+			if (finFamilyVersion == null) {
+				if (this.unitGivenName != null || this.unitSurName != null) {
+					try {
+						this.pstm = this.con
+								.prepareStatement("select nextval('unitnoticeseq')");
+						int pnid = 0;
+						ResultSet rs = this.pstm.executeQuery();
+						if (rs.next()) {
+							pnid = rs.getInt(1);
+						} else {
+							throw new SAXException(
+									"Sequence unitnoticeseq error");
+						}
+						rs.close();
 
-			if (this.unitGivenName != null || this.unitSurName != null) {
-				try {
-					this.pstm = this.con
-							.prepareStatement("select nextval('unitnoticeseq')");
-					int pnid = 0;
-					ResultSet rs = this.pstm.executeQuery();
-					if (rs.next()) {
-						pnid = rs.getInt(1);
-					} else {
-						throw new SAXException("Sequence unitnoticeseq error");
+						this.pstm = this.con
+								.prepareStatement(INSERT_NAME_NOTICE);
+
+						this.pstm.setInt(1, id);
+						this.pstm.setInt(2, pnid);
+						this.pstm.setString(3, "NAME");
+						this.pstm.setString(4, this.unitPrivacy);
+						this.pstm.setString(5, Utils.extractPatronyme(
+								this.unitGivenName, false));
+						this.pstm.setString(6, Utils.extractPatronyme(
+								this.unitGivenName, true));
+						this.pstm.setString(7, this.unitPrefix);
+						this.pstm.setString(8, this.unitSurName);
+						this.pstm.setString(9, this.unitPostfix);
+						this.pstm.setTimestamp(10,
+								toTimestamp(this.unitCreateDate));
+						this.pstm.executeUpdate();
+
+						logger.fine("UnitName: " + this.unitId + "/"
+								+ this.unitGivenName + "/" + this.unitPrefix
+								+ "/" + this.unitSurName + "/" + unitPostfix);
+
+						if (this.runner != null) {
+							StringBuilder sb = new StringBuilder();
+
+							sb.append(this.unitId + ":  ");
+							sb.append(this.unitGivenName);
+							if (this.unitPrefix != null) {
+								sb.append(" ");
+								sb.append(this.unitPrefix);
+							}
+							if (this.unitSurName != null) {
+								sb.append(" ");
+								sb.append(this.unitSurName);
+							}
+							if (this.unitPostfix != null) {
+								sb.append(" ");
+								sb.append(this.unitPostfix);
+							}
+							if (this.runner.setRunnerValue(sb.toString())) {
+								throw new SAXException(Resurses
+										.getString("SUKU_CANCELLED"));
+							}
+						}
+
+					} catch (SQLException e) {
+						logger.log(Level.SEVERE, "importing unit name failed",
+								e);
+						throw new SAXException(e);
 					}
-					rs.close();
-
-					this.pstm = this.con.prepareStatement(INSERT_NAME_NOTICE);
-
-					this.pstm.setInt(1, id);
-					this.pstm.setInt(2, pnid);
-					this.pstm.setString(3, "NAME");
-					this.pstm.setString(4, this.unitPrivacy);
-					this.pstm.setString(5, Utils.extractPatronyme(
-							this.unitGivenName, false));
-					this.pstm.setString(6, Utils.extractPatronyme(
-							this.unitGivenName, true));
-					this.pstm.setString(7, this.unitPrefix);
-					this.pstm.setString(8, this.unitSurName);
-					this.pstm.setString(9, this.unitPostfix);
-					this.pstm
-							.setTimestamp(10, toTimestamp(this.unitCreateDate));
-					this.pstm.executeUpdate();
-
-					logger.fine("UnitName: " + this.unitId + "/"
-							+ this.unitGivenName + "/" + this.unitPrefix + "/"
-							+ this.unitSurName + "/" + unitPostfix);
-
-					if (this.runner != null) {
-						StringBuilder sb = new StringBuilder();
-
-						sb.append(this.unitId + ":  ");
-						sb.append(this.unitGivenName);
-						if (this.unitPrefix != null) {
-							sb.append(" ");
-							sb.append(this.unitPrefix);
-						}
-						if (this.unitSurName != null) {
-							sb.append(" ");
-							sb.append(this.unitSurName);
-						}
-						if (this.unitPostfix != null) {
-							sb.append(" ");
-							sb.append(this.unitPostfix);
-						}
-						if (this.runner.setRunnerValue(sb.toString())) {
-							throw new SAXException(Resurses
-									.getString("SUKU_CANCELLED"));
-						}
-					}
-
-				} catch (SQLException e) {
-					logger.log(Level.SEVERE, "importing unit name failed", e);
-					throw new SAXException(e);
 				}
 			}
-
 			logger.fine("UNIT: " + this.unitId + "/" + this.unitTag + "/"
 					+ this.unitSex + "/" + this.unitRefn + "/"
 					+ this.unitGivenName + "/" + this.unitPrefix + "/"
@@ -801,8 +824,17 @@ public class Read2004XML extends DefaultHandler {
 		if (this.currentEle.equals(noticePlaceTG)) {
 			this.noticePlace = this.currentChars.toString();
 		}
-		if (this.currentEle.equals(noticeGivenNameTG)) {
-			this.noticeGivenName = this.currentChars.toString();
+		if (finFamilyVersion == null) {
+			if (this.currentEle.equals(noticeGivenNameTG)) {
+				this.noticeGivenName = this.currentChars.toString();
+			}
+		} else {
+			if (this.currentEle.equals(noticeFirstNameTG)) {
+				this.noticeGivenName = this.currentChars.toString();
+			}
+		}
+		if (this.currentEle.equals(noticePatronymTG)) {
+			this.noticePatronym = this.currentChars.toString();
 		}
 		if (this.currentEle.equals(noticePrefixTG)) {
 			this.noticePrefix = this.currentChars.toString();
@@ -924,10 +956,16 @@ public class Read2004XML extends DefaultHandler {
 				this.pstm.setString(18, this.noticeMediaFilename);
 				this.pstm.setString(19, langText(this.noticeMediaTitle,
 						this.oldCode));
-				this.pstm.setString(20, Utils.extractPatronyme(
-						this.noticeGivenName, false));
-				this.pstm.setString(21, Utils.extractPatronyme(
-						this.noticeGivenName, true));
+				if (finFamilyVersion == null) {
+					this.pstm.setString(20, Utils.extractPatronyme(
+							this.noticeGivenName, false));
+					this.pstm.setString(21, Utils.extractPatronyme(
+							this.noticeGivenName, true));
+				} else {
+					this.pstm.setString(20, this.noticeGivenName);
+					this.pstm.setString(21, this.noticePatronym);
+
+				}
 				this.pstm.setString(22, this.noticePrefix);
 				this.pstm.setString(23, this.noticeSurname);
 				this.pstm.setString(24, this.noticePostfix);
