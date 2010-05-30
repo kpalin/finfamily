@@ -608,7 +608,7 @@ public class SukuServerImpl implements SukuServer {
 				String db = map.get("db");
 				ExportBackupUtil exb = new ExportBackupUtil(con);
 
-				fam = exb.exportBackup();
+				fam = exb.exportBackup(path, db);
 			}
 		} else if (cmd.equals("excel")) {
 			String page = map.get("page");

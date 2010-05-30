@@ -1751,7 +1751,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void createFamilyBackup() {
-		boolean isCreated = kontroller.createLocalFile("xml");
+		boolean isCreated = kontroller.createLocalFile("zip");
 		String zipName = kontroller.getFileName();
 		logger.finest("Opened GEDCOM FILE status " + isCreated);
 		if (isCreated) {

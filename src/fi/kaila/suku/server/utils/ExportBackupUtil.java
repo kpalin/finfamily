@@ -1,12 +1,16 @@
 package fi.kaila.suku.server.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,6 +42,10 @@ public class ExportBackupUtil {
 
 	private double dbSize = 0;
 	private ExportFamilyDatabaseDialog runner = null;
+	private String zipPath = "nemo";
+	private int imageCounter = 0;
+	private String dbName = "me";
+	private Vector<MinimumImage> images = null;
 
 	/**
 	 * Constructor requires an open connection
@@ -57,9 +65,15 @@ public class ExportBackupUtil {
 	 * 
 	 * @return results
 	 */
-	public SukuData exportBackup() {
+	public SukuData exportBackup(String path, String dbName) {
 		SukuData dat = new SukuData();
 		String root = "genealog";
+		this.dbName = dbName;
+		if (path == null || path.lastIndexOf(".") < 1) {
+			dat.resu = "output filename missing";
+			return dat;
+		}
+		images = new Vector<MinimumImage>();
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
 				.newInstance();
 
@@ -71,7 +85,13 @@ public class ExportBackupUtil {
 			document.appendChild(rootElement);
 			rootElement.setAttribute("finfamily", AntVersion.antVersion);
 
-			createOwnerElement(document, rootElement);
+			zipPath = path.substring(0, path.lastIndexOf("."));
+			ByteArrayOutputStream bbos = new ByteArrayOutputStream();
+
+			ZipOutputStream zip = new ZipOutputStream(bbos);
+			String fileName = zipPath + "/" + this.dbName + ".xml";
+
+			createOwnerElement(document, rootElement, dbName + "_files");
 
 			createUnitsElement(document, rootElement);
 
@@ -87,8 +107,22 @@ public class ExportBackupUtil {
 			StreamResult result = new StreamResult(bos);
 			transformer.transform(source, result);
 
-			dat.buffer = bos.toByteArray();
+			ZipEntry entry = new ZipEntry(fileName);
 
+			zip.putNextEntry(entry);
+			zip.write(bos.toByteArray());
+
+			zip.closeEntry();
+
+			for (int i = 0; i < images.size(); i++) {
+				entry = new ZipEntry(zipPath + "/" + images.get(i).getPath());
+				zip.putNextEntry(entry);
+				zip.write(images.get(i).imageData);
+				zip.closeEntry();
+			}
+
+			zip.close();
+			dat.buffer = bbos.toByteArray();
 			// dat.resu = "Under construction";
 		} catch (ParserConfigurationException e) {
 			dat.resu = e.getMessage();
@@ -97,6 +131,9 @@ public class ExportBackupUtil {
 			dat.resu = e.getMessage();
 			e.printStackTrace();
 		} catch (SQLException e) {
+			dat.resu = e.getMessage();
+			e.printStackTrace();
+		} catch (IOException e) {
 			dat.resu = e.getMessage();
 			e.printStackTrace();
 		}
@@ -642,7 +679,7 @@ public class ExportBackupUtil {
 			String country = rs.getString("country");
 
 			String email = rs.getString("email");
-
+			byte[] mediaData = rs.getBytes("mediadata");
 			if (address != null || postoff != null || postcode != null
 					|| state != null || country != null || email != null) {
 				Element addEle = document.createElement("address");
@@ -687,25 +724,31 @@ public class ExportBackupUtil {
 				noticeEle.appendChild(ele);
 			}
 			String mediaFilename = rs.getString("mediafilename");
+
 			String mediaTitle = rs.getString("mediatitle");
 
 			if (mediaFilename != null || mediaTitle != null) {
 				Element mediaEle = document.createElement("media");
-
+				String mediaFilename2 = "" + (imageCounter + 1) + "_"
+						+ mediaFilename;
 				noticeEle.appendChild(mediaEle);
 				if (mediaFilename != null) {
 					ele = document.createElement("mediafilename");
-					ele.setTextContent(mediaFilename);
-					noticeEle.appendChild(ele);
+					ele.setTextContent(mediaFilename2);
+					mediaEle.appendChild(ele);
 				}
 				if (mediaTitle != null) {
 					ele = document.createElement("mediatitle");
 					ele.setTextContent(mediaTitle);
-					noticeEle.appendChild(ele);
-
-					// TODO add here the image stuff
-
+					mediaEle.appendChild(ele);
 				}
+				if (mediaData != null) {
+
+					MinimumImage minimg = new MinimumImage(pid, mediaFilename,
+							mediaData);
+					images.add(minimg);
+				}
+
 			}
 
 			if (tag.equals("INDI") || tag.equals("NAME")) {
@@ -933,8 +976,8 @@ public class ExportBackupUtil {
 		pstm.close();
 	}
 
-	private void createOwnerElement(Document document, Element rootElement)
-			throws SQLException {
+	private void createOwnerElement(Document document, Element rootElement,
+			String mediapath) throws SQLException {
 		String sql = "select * from sukuvariables";
 
 		Statement stm = con.createStatement();
@@ -1013,9 +1056,36 @@ public class ExportBackupUtil {
 			if (hasAddress) {
 				ownerEle.appendChild(addressEle);
 			}
+			if (mediapath != null) {
+				ele = document.createElement("mediapath");
+				ele.setTextContent(mediapath);
+				ownerEle.appendChild(ele);
+			}
 		}
+
 		rs.close();
 		stm.close();
+	}
+
+	class MinimumImage {
+		int indiGid = 0;
+		String imgName = null;
+		int counter = 0;
+		byte[] imageData = null;
+
+		MinimumImage(int gid, String name, byte[] data) {
+			this.indiGid = gid;
+			this.imgName = name;
+			this.imageData = data;
+			this.counter = ++imageCounter;
+		}
+
+		String getPath() {
+			StringBuilder sb = new StringBuilder();
+			sb.append(dbName + "_files/" + counter + "_" + imgName);
+			return sb.toString();
+		}
+
 	}
 
 }
