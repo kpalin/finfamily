@@ -101,19 +101,21 @@ public class Read2004XML extends DefaultHandler {
 
 	private static final String UPDATE_UNIT_INDEX_DATA = "update UnitNotice set RefNames = ?,RefPlaces = ? where PNID = ? ";
 
-	private static final String INSERT_RELATION = "insert into Relation (RID,PID,tag,relationrow,surety,createdate) values (?,?,?,?,?,?)";
+	private static final String INSERT_RELATION = "insert into Relation "
+			+ "(RID,PID,tag,relationrow,surety,modified,createdate) values (?,?,?,?,?,?,?)";
 
 	private static final String INSERT_RELATION_NOTICE = "insert into RelationNotice "
-			+ "(RNID,RID,tag,noticerow,description,relationtype,"
+			+ "(RNID,RID,tag,noticerow,surety,description,relationtype,"
 			+ "dateprefix,fromdate,todate,place,notetext,"
-			+ "SID,sourcetext,privatetext,createdate) values (?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?)";
+			+ "SID,sourcetext,privatetext,modified,createdate) values (?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?)";
 
 	private static final String INSERT_RELATION_ADOPTION = "insert into RelationNotice "
 			+ "(RNID,RID,tag,noticerow,createdate) values (?,?,?,?,?)";
 
 	private static final String INSERT_RELATION_LANGUAGE = "insert into RelationLanguage "
 			+ "(RNID,RID,langCode,relationtype,"
-			+ "description,place,notetext) " + "values (?,?,?,?,?,?,?)";
+			+ "description,place,notetext,modified,createdate) "
+			+ "values (?,?,?,?,?,?,?,?,?)";
 
 	private static final String INSERT_GROUP = "insert into groups (groupid,name,description) "
 			+ "values (?,?,?) ";
@@ -228,6 +230,12 @@ public class Read2004XML extends DefaultHandler {
 	private static final String relationNoticeSourceTG = "|genealog|relations|relation|relationnotice|sourcetext";
 	private static final String relationNoticePrivateTextTG = "|genealog|relations|relation|relationnotice|privatetext";
 
+	private static final String relationLanguageTG = "|genealog|relations|relation|relationnotice|language";
+	private static final String relationLanguageTypeTG = "|genealog|relations|relation|relationnotice|language|relationtype";
+	private static final String relationLanguageDescriptionTG = "|genealog|relations|relation|relationnotice|language|description";
+	private static final String relationLanguagePlaceTG = "|genealog|relations|relation|relationnotice|language|place";
+	private static final String relationLanguageNoteTextTG = "|genealog|relations|relation|relationnotice|language|notetext";
+
 	private static final String groupTG = "|genealog|groups|group";
 	private static final String groupNameTG = "|genealog|groups|group|groupname";
 	private static final String groupDescriptionTG = "|genealog|groups|group|description";
@@ -303,6 +311,8 @@ public class Read2004XML extends DefaultHandler {
 
 	private String noticeCreateDate = null;
 
+	private int rid;
+
 	private String relationTag = null;
 	private String relationTaga = null;
 	private String relationTagb = null;
@@ -334,6 +344,14 @@ public class Read2004XML extends DefaultHandler {
 	private String relationNoticeRow = null;
 	private String relationNoticeSurety = null;
 	private String relationNoticeTag = null;
+	int rnid = 0;
+	private String relationLanguage = null;
+	private String relationLanguageType = null;
+	private String relationLanguageDescription = null;
+	private String relationLanguagePlace = null;
+	private String relationLanguageNoteText = null;
+	private String relationLanguageModifiedDate = null;
+	private String relationLanguageCreateDate = null;
 
 	private String groupId = null;
 	private String groupName = null;
@@ -604,12 +622,52 @@ public class Read2004XML extends DefaultHandler {
 			if (this.relationCreateDate.isEmpty()) {
 				this.relationCreateDate = attributes.getValue("createdate");
 			}
+
+			ResultSet rs;
+			try {
+				this.pstm = this.con
+						.prepareStatement("select nextval('relationseq')");
+
+				rs = this.pstm.executeQuery();
+				if (rs.next()) {
+					rid = rs.getInt(1);
+				} else {
+					throw new SAXException("Sequence relationseq error");
+				}
+				rs.close();
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+				throw new SAXException("Sequence relationseq sql error");
+			}
+
 		} else if (this.currentEle.equals(relationNoticeTG)) {
 			this.relationNoticeRow = attributes.getValue("row");
 			this.relationNoticeSurety = attributes.getValue("surety");
 			this.relationNoticeTag = attributes.getValue("tag");
 			this.relationNoticeModifiedDate = attributes.getValue("modified");
 			this.relationNoticeCreateDate = attributes.getValue("created");
+
+			PreparedStatement pst;
+			try {
+				pst = this.con
+						.prepareStatement("select nextval('relationnoticeseq')");
+				rnid = 0;
+				ResultSet rs = pst.executeQuery();
+				if (rs.next()) {
+					rnid = rs.getInt(1);
+				} else {
+					throw new SAXException("Sequence relationnoticeseq error");
+				}
+				rs.close();
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+				throw new SAXException("Sequence relationoticeseq sql error");
+			}
+
+		} else if (this.currentEle.equals(relationNoticeDateTG)) {
+			this.relationBegDatePrefix = attributes.getValue("type");
 		} else if (this.currentEle.equals(relationSourceTG)) {
 			this.relationSourceId = attributes.getValue("sourceid");
 			logger.fine("Relation: " + this.relationIdA + "/"
@@ -618,7 +676,10 @@ public class Read2004XML extends DefaultHandler {
 			this.relationBegDatePrefix = attributes.getValue("type");
 		} else if (this.currentEle.equals(relationEndDateTG)) {
 			this.relationEndDatePrefix = attributes.getValue("type");
-
+		} else if (this.currentEle.equals(relationLanguageTG)) {
+			this.relationLanguage = attributes.getValue("langcode");
+			this.relationLanguageModifiedDate = attributes.getValue("modified");
+			this.relationLanguageCreateDate = attributes.getValue("created");
 		} else if (this.currentEle.equals(sourceTG)) {
 			this.sourceId = attributes.getValue("sourceid");
 
@@ -654,7 +715,7 @@ public class Read2004XML extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
-		int id, l, i;
+
 		String aux;
 		if (this.qName != null) {
 			this.qName = null;
@@ -686,164 +747,11 @@ public class Read2004XML extends DefaultHandler {
 			this.unitPostfix = this.currentChars.toString();
 		}
 		if (this.currentEle.equals(unitNameTG)) {
-
-			if (this.unitId == null) {
-				throw new SAXException("UnitId is null");
-			}
-
-			try {
-				id = Integer.parseInt(this.unitId.substring(1));
-			} catch (NumberFormatException ne) {
-				throw new SAXException("UnitId " + this.unitId
-						+ " is not numeric");
-			}
-
-			try {
-
-				this.currentStatus = "Unit " + id;
-				this.pstm = this.con.prepareStatement(INSERT_UNIT);
-
-				this.pstm.setInt(1, id);
-				this.pstm.setString(2, this.unitSex);
-				if (finFamilyVersion == null) {
-					this.pstm.setString(3, this.unitGroupId);
-				} else {
-					this.pstm.setString(3, this.unitGroup);
-				}
-				this.pstm.setString(4, this.unitPrivacy);
-
-				if (this.unitSourceId != null) {
-					this.pstm.setInt(5, idToInt(this.unitSourceId));
-				} else {
-					this.pstm.setNull(5, Types.INTEGER);
-				}
-				this.pstm.setTimestamp(6, toTimestamp(this.unitCreateDate));
-				this.pstm.executeUpdate();
-
-				logger.fine("Unit: " + this.unitId + "/" + this.unitSex + "/"
-						+ this.unitSourceId);
-
-				laskuriUnits++;
-			} catch (SQLException e) {
-				logger.log(Level.SEVERE, "importing unit failed", e);
-				throw new SAXException(e);
-			}
-			if (finFamilyVersion == null) {
-				if (this.unitGivenName != null || this.unitSurName != null) {
-					try {
-						this.pstm = this.con
-								.prepareStatement("select nextval('unitnoticeseq')");
-						int pnid = 0;
-						ResultSet rs = this.pstm.executeQuery();
-						if (rs.next()) {
-							pnid = rs.getInt(1);
-						} else {
-							throw new SAXException(
-									"Sequence unitnoticeseq error");
-						}
-						rs.close();
-
-						this.pstm = this.con
-								.prepareStatement(INSERT_NAME_NOTICE);
-
-						this.pstm.setInt(1, id);
-						this.pstm.setInt(2, pnid);
-						this.pstm.setString(3, "NAME");
-						this.pstm.setString(4, this.unitPrivacy);
-						this.pstm.setString(5, Utils.extractPatronyme(
-								this.unitGivenName, false));
-						this.pstm.setString(6, Utils.extractPatronyme(
-								this.unitGivenName, true));
-						this.pstm.setString(7, this.unitPrefix);
-						this.pstm.setString(8, this.unitSurName);
-						this.pstm.setString(9, this.unitPostfix);
-						this.pstm.setTimestamp(10,
-								toTimestamp(this.unitCreateDate));
-						this.pstm.executeUpdate();
-
-						logger.fine("UnitName: " + this.unitId + "/"
-								+ this.unitGivenName + "/" + this.unitPrefix
-								+ "/" + this.unitSurName + "/" + unitPostfix);
-
-						if (this.runner != null) {
-							StringBuilder sb = new StringBuilder();
-
-							sb.append(this.unitId + ":  ");
-							sb.append(this.unitGivenName);
-							if (this.unitPrefix != null) {
-								sb.append(" ");
-								sb.append(this.unitPrefix);
-							}
-							if (this.unitSurName != null) {
-								sb.append(" ");
-								sb.append(this.unitSurName);
-							}
-							if (this.unitPostfix != null) {
-								sb.append(" ");
-								sb.append(this.unitPostfix);
-							}
-							if (this.runner.setRunnerValue(sb.toString())) {
-								throw new SAXException(Resurses
-										.getString("SUKU_CANCELLED"));
-							}
-						}
-
-					} catch (SQLException e) {
-						logger.log(Level.SEVERE, "importing unit name failed",
-								e);
-						throw new SAXException(e);
-					}
-				}
-			}
-			logger.fine("UNIT: " + this.unitId + "/" + this.unitTag + "/"
-					+ this.unitSex + "/" + this.unitRefn + "/"
-					+ this.unitGivenName + "/" + this.unitPrefix + "/"
-					+ this.unitSurName + "/" + this.unitPostfix + "/"
-					+ this.unitCreateDate);
-
-			this.unitGivenName = null;
-			this.unitSurName = null;
-			this.unitPrefix = null;
-			this.unitPostfix = null;
-			this.unitGroupId = null;
-			this.unitPrivacy = null;
-			this.unitSourceId = null;
-
+			insertUnitName();
 		}
 
 		if (this.currentEle.equals(unitTG)) {
-			logger.fine("UNIT: " + this.unitId + "/" + this.unitTag + "/"
-					+ this.unitSex + "/" + this.unitRefn + "/"
-					+ this.unitGivenName + "/" + this.unitPrefix + "/"
-					+ this.unitSurName + "/" + this.unitPostfix + "/"
-					+ this.unitCreateDate);
-
-			try {
-				this.pstm = this.con.prepareStatement(UPDATE_UNIT);
-
-				try {
-					id = Integer.parseInt(this.unitId.substring(1));
-				} catch (NumberFormatException ne) {
-					throw new SAXException("UnitId " + this.unitId
-							+ " is not numeric");
-				}
-				this.pstm.setString(1, this.unitRefn);
-				this.unitRefn = null;
-				this.pstm.setString(2, this.unitSourceText);
-				this.pstm.setString(3, this.unitPrivateText);
-				this.pstm.setInt(4, id);
-				int resu = this.pstm.executeUpdate();
-				if (resu != 1) {
-					throw new SAXException("update of unit " + this.unitId
-							+ " failed. count = " + resu);
-				}
-
-			} catch (SQLException e) {
-				logger.log(Level.SEVERE, "update unit source failed", e);
-			}
-
-			this.unitPrivateText = null;
-			this.unitSourceText = null;
+			updateUnit();
 
 		}
 
@@ -921,283 +829,7 @@ public class Read2004XML extends DefaultHandler {
 
 		if (this.currentEle.equals(noticeTG)) { // end of notice
 
-			StringBuilder allText = new StringBuilder();
-			if (this.noticeType != null)
-				allText.append(this.noticeType);
-			if (this.noticeDescription != null)
-				allText.append(this.noticeDescription);
-			if (this.noticePlace != null)
-				allText.append(this.noticePlace);
-			if (this.noticeNoteText != null)
-				allText.append(this.noticeNoteText);
-			// if (this.noticeSourceText != null) allText +=
-			// this.noticeSourceText;
-			if (this.noticeMediaTitle != null)
-				allText.append(this.noticeMediaTitle);
-			// System.out.println(allText.toString());
-			String langus[] = extractLangs(allText.toString());
-
-			this.nameCollector = new HashMap<String, String>();
-			this.placeCollector = new HashMap<String, String>();
-
-			try {
-				int pnid = 0;
-				int rowno = 0;
-				int suretyValue = 100;
-				this.pstm = this.con
-						.prepareStatement("select nextval('unitnoticeseq')");
-
-				ResultSet rs = this.pstm.executeQuery();
-				if (rs.next()) {
-					pnid = rs.getInt(1);
-				} else {
-					throw new SAXException("Sequence unitnoticeseq error");
-				}
-				rs.close();
-				this.pstm = this.con.prepareStatement(INSERT_UNIT_NOTICE);
-				try {
-					id = Integer.parseInt(this.unitId.substring(1));
-				} catch (NumberFormatException ne) {
-					throw new SAXException("UnitId " + this.unitId
-							+ " is not numeric");
-				}
-				this.pstm.setInt(1, id);
-				this.pstm.setInt(2, pnid);
-				this.pstm.setString(3, this.noticeTag);
-				this.pstm.setString(4, this.noticePrivacy);
-				try {
-					rowno = Integer.parseInt(this.noticeRow);
-				} catch (NumberFormatException ne) {
-					rowno = 0;
-					errorLine.add(ne.getMessage() + " [Rownumber "
-							+ this.unitId + "/" + this.noticeRow
-							+ " is not numeric" + "]");
-					// throw new SAXException();
-				}
-				this.pstm.setInt(5, rowno);
-
-				try {
-					if (this.noticeSurety != null) {
-						suretyValue = Integer.parseInt(this.noticeSurety);
-					} else {
-						suretyValue = 100;
-					}
-				} catch (NumberFormatException ne) {
-					suretyValue = 100;
-				}
-				this.pstm.setInt(6, suretyValue);
-				this.pstm.setString(7, langText(this.noticeType, this.oldCode));
-				this.pstm.setString(8, langText(this.noticeDescription,
-						this.oldCode));
-				this.pstm.setString(9, this.noticeDatePrefix);
-				this.pstm.setString(10, this.noticeDateFrom);
-				this.pstm.setString(11, this.noticeDateTo);
-				this.pstm.setString(12,
-						langText(this.noticePlace, this.oldCode));
-				this.pstm.setString(13, extractCSVPart(this.noticeTag,
-						this.noticeAddress, 0));
-				this.pstm.setString(14, this.noticePostalCode);
-				this.pstm.setString(15, this.noticePostOffice);
-				this.pstm.setString(16, this.noticeCountry);
-				this.pstm.setString(17, this.noticeEmail);
-				// String t1 = langText(this.noticeNoteText,this.oldCode);
-				this.pstm.setString(18, langText(this.noticeNoteText,
-						this.oldCode));
-				this.pstm.setString(19, this.noticeMediaFilename);
-				this.pstm.setString(20, langText(this.noticeMediaTitle,
-						this.oldCode));
-				if (finFamilyVersion == null) {
-					this.pstm.setString(21, Utils.extractPatronyme(
-							this.noticeGivenName, false));
-					this.pstm.setString(22, Utils.extractPatronyme(
-							this.noticeGivenName, true));
-				} else {
-					this.pstm.setString(21, this.noticeGivenName);
-					this.pstm.setString(22, this.noticePatronym);
-
-				}
-				this.pstm.setString(23, this.noticePrefix);
-				this.pstm.setString(24, this.noticeSurname);
-				this.pstm.setString(25, this.noticePostfix);
-				if (this.noticeSourceId != null) {
-					this.pstm.setInt(26, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
-				} else {
-					this.pstm.setNull(26, Types.INTEGER);
-				}
-
-				this.pstm.setString(27, extractCSVPart(this.noticeTag,
-						this.noticeAddress, 1));
-				this.pstm.setString(28, extractCSVPart(this.noticeTag,
-						this.noticeAddress, 2));
-				this.pstm.setString(29, extractCSVPart(this.noticeTag,
-						this.noticeAddress, 3));
-
-				this.pstm.setString(30, this.noticeSourceText);
-				this.pstm.setString(31, this.noticePrivateText);
-
-				this.pstm.setTimestamp(32, toTimestamp(this.noticeCreateDate));
-
-				this.pstm.executeUpdate();
-
-				if (this.placeCollector.size() > 0
-						|| this.nameCollector.size() > 0) {
-					// StringBuilder sn = new StringBuilder();
-					NameArray asn = new NameArray();
-					;
-					Iterator<String> it = this.nameCollector.keySet()
-							.iterator();
-					while (it.hasNext()) {
-						// if (sn.length() == 0){
-						// sn.append("{");
-						// } else {
-						// sn.append(",");
-						// }
-						asn.append(it.next());
-						// sn.append("\""+it.next()+"\"");
-					}
-
-					// sn.append("}");
-					NameArray asp = new NameArray();
-
-					// StringBuilder sp = new StringBuilder();
-					it = this.placeCollector.keySet().iterator();
-					while (it.hasNext()) {
-						// if (sp.length() == 0){
-						// sp.append("{");
-						// } else {
-						// sp.append(",");
-						// }
-						asp.append(it.next());
-						// sp.append("\""+it.next()+"\"");
-					}
-					// sp.append("}");
-
-					PreparedStatement ps = this.con
-							.prepareStatement(UPDATE_UNIT_INDEX_DATA);
-					ps.setArray(1, asn);
-					ps.setArray(2, asp);
-					// ps.setString(1, sn.toString());
-					// ps.setString(2, sp.toString());
-					ps.setInt(3, pnid);
-					ps.executeUpdate();
-					ps.close();
-				}
-
-				if (this.noticeMediaFilename != null) {
-					if (this.databaseHasImages) {
-						FileInputStream fis;
-						logger.fine("Trying image file: " + this.databaseFolder
-								+ "/" + this.sukuMediaFolder + "/"
-								+ this.noticeMediaFilename);
-						File file = new File(this.databaseFolder + "/"
-								+ this.sukuMediaFolder + "/"
-								+ this.noticeMediaFilename);
-						if (file.exists() && file.isFile()) {
-							BufferedImage sourceImage = ImageIO.read(file);
-							int mediaWidth = sourceImage.getWidth(null);
-							int mediaHeight = sourceImage.getHeight(null);
-							try {
-								fis = new FileInputStream(file);
-								PreparedStatement ps = this.con
-										.prepareStatement(UPDATE_IMAGE_DATA);
-
-								ps.setBinaryStream(1, fis, (int) file.length());
-								ps.setInt(2, mediaWidth);
-								ps.setInt(3, mediaHeight);
-								ps.setInt(4, pnid);
-								ps.executeUpdate();
-								ps.close();
-								fis.close();
-							} catch (FileNotFoundException e) {
-								logger.warning("Image file "
-										+ this.noticeMediaFilename
-										+ " not found");
-								e.printStackTrace();
-							} catch (IOException e) {
-								logger.log(Level.WARNING, "Image file "
-										+ this.noticeMediaFilename, e);
-								e.printStackTrace();
-							}
-
-							// int mediaType = sourceImage.getType();
-							// System.out.println("kuva: " +
-							// this.noticeMediaFilename + " = " + mediaWidth +
-							// "/" + mediaHeight );
-						} else {
-							logger.warning("Image file "
-									+ this.noticeMediaFilename + " is missing");
-						}
-					} else {
-						logger.warning("Image folder for "
-								+ this.noticeMediaFilename + " is missing");
-					}
-
-				}
-
-				if (langus != null && langus.length > 1) {
-					for (i = 0; i < langus.length; i++) {
-						if (!langus[i].equals(this.oldCode)) {
-							this.pstm = this.con
-									.prepareStatement(INSERT_UNIT_LANGUAGE);
-
-							this.pstm.setInt(1, id);
-							this.pstm.setInt(2, pnid);
-							this.pstm.setString(3, this.noticeTag);
-							this.pstm.setString(4, toLangCode(langus[i]));
-
-							this.pstm.setString(5, langText(this.noticeType,
-									langus[i]));
-							this.pstm.setString(6, langText(
-									this.noticeDescription, langus[i]));
-
-							this.pstm.setString(7, langText(this.noticePlace,
-									langus[i]));
-							this.pstm.setString(8, langText(
-									this.noticeNoteText, langus[i]));
-							this.pstm.setString(9, langText(
-									this.noticeMediaTitle, langus[i]));
-							// this.pstm.setInt (11,
-							// this.langText(this.noticeSourceText,langus[i]));
-
-							this.pstm.executeUpdate();
-						}
-					}
-				}
-
-				this.noticeTag = null;
-				this.noticeRow = null;
-				this.noticeType = null;
-				this.noticeDescription = null;
-				this.noticeDatePrefix = null;
-				this.noticeDateFrom = null;
-				this.noticeDateTo = null;
-				this.noticePlace = null;
-				this.noticeAddress = null;
-				this.noticePostOffice = null;
-				this.noticePostalCode = null;
-				this.noticeCountry = null;
-				this.noticeEmail = null;
-				this.noticeNoteText = null;
-				this.noticeMediaFilename = null;
-				this.noticeMediaTitle = null;
-				this.noticeGivenName = null;
-				this.noticePrefix = null;
-				this.noticeSurname = null;
-				this.noticePostfix = null;
-				this.noticeSourceId = null;
-				this.noticePrivateText = null;
-				this.noticeSourceText = null;
-				this.noticeCreateDate = null;
-
-			} catch (SQLException e) {
-
-				logger.log(Level.SEVERE, "importing notices failed", e);
-				throw new SAXException(e);
-
-			} catch (IOException e) {
-				logger.log(Level.SEVERE, "importing image failed", e);
-				throw new SAXException(e);
-			}
+			insertUnitNotice();
 
 		}
 
@@ -1241,519 +873,58 @@ public class Read2004XML extends DefaultHandler {
 		}
 
 		if (this.currentEle.equals(relationTG)) {
-			int rid;
-			int aid = 0;
-			int bid = 0;
-			int surety = 0;
-			try {
-				this.pstm = this.con
-						.prepareStatement("select nextval('relationseq')");
 
-				ResultSet rs = this.pstm.executeQuery();
-				if (rs.next()) {
-					rid = rs.getInt(1);
-				} else {
-					throw new SAXException("Sequence relationseq error");
-				}
-				rs.close();
-
-				if (finFamilyVersion != null) {
-					// this is the restore from FinFamily
-					this.pstm = this.con.prepareStatement(INSERT_RELATION);
-
-					this.pstm.setInt(1, rid);
-					if (this.relationIdA != null) {
-						try {
-							aid = Integer.parseInt(this.relationIdA
-									.substring(1));
-
-							this.pstm.setInt(2, aid);
-						} catch (NumberFormatException ne) {
-							throw new SAXException("RelationIdA "
-									+ this.relationIdA + " not numeric");
-						}
-					}
-					if (this.relationSurety != null) {
-						try {
-							surety = Integer.parseInt(this.relationSurety);
-						} catch (NumberFormatException ne) {
-							surety = 80;
-						}
-					} else {
-						surety = 100;
-					}
-
-					this.pstm.setString(3, this.relationTaga);
-					l = 0;
-					if (this.relationRowA != null) {
-						try {
-							l = Integer.parseInt(this.relationRowA);
-							this.pstm.setInt(4, l);
-						} catch (NumberFormatException ne) {
-							throw new SAXException("RelationRowA "
-									+ this.relationRowA + " not numeric");
-						}
-					}
-					this.pstm.setInt(5, surety);
-					this.pstm.setTimestamp(6,
-							toTimestamp(this.relationCreateDate));
-					try {
-						this.pstm.executeUpdate();
-					} catch (SQLException se) {
-						String err = "Relative aPID = " + aid
-								+ " fails for RID = " + rid;
-						errorLine.add(err + " [" + se.getMessage() + "]");
-
-						logger.log(Level.WARNING, err, se);
-
-					}
-					// here the other relation
-					this.pstm.setInt(1, rid);
-					if (this.relationIdB != null) {
-						try {
-							bid = Integer.parseInt(this.relationIdB
-									.substring(1));
-
-							this.pstm.setInt(2, bid);
-						} catch (NumberFormatException ne) {
-							throw new SAXException("RelationIdB "
-									+ this.relationIdB + " not numeric");
-						}
-					}
-					this.pstm.setString(3, this.relationTagb);
-					if (this.relationRowB != null) {
-						try {
-							l = Integer.parseInt(this.relationRowB);
-							this.pstm.setInt(4, l);
-						} catch (NumberFormatException ne) {
-							throw new SAXException("RelationRowB "
-									+ this.relationRowB + " not numeric");
-						}
-					}
-					this.pstm.setInt(5, surety);
-					this.pstm.setTimestamp(6,
-							toTimestamp(this.relationCreateDate));
-
-					try {
-						this.pstm.executeUpdate();
-					} catch (SQLException se) {
-						String err = "Relative bPID = " + bid
-								+ " fails for RID = " + rid;
-						errorLine.add(err + " [" + se.getMessage() + "]");
-
-						logger.log(Level.WARNING, err, se);
-					}
-
-				} else {
-					// this is the import from Suku 2004
-					if (this.relationTag.equals("CHIL")) {
-
-						this.currentStatus = "Chil " + rid;
-
-						this.pstm = this.con.prepareStatement(INSERT_RELATION);
-
-						this.pstm.setInt(1, rid);
-						if (this.relationIdA != null) {
-							try {
-								aid = Integer.parseInt(this.relationIdA
-										.substring(1));
-
-								this.pstm.setInt(2, aid);
-							} catch (NumberFormatException ne) {
-								throw new SAXException("RelationIdA "
-										+ this.relationIdA + " not numeric");
-							}
-						}
-						if (this.relationSurety != null) {
-							try {
-								surety = Integer.parseInt(this.relationSurety);
-							} catch (NumberFormatException ne) {
-								surety = 80;
-							}
-						} else {
-							surety = 100;
-						}
-
-						this.pstm.setString(3, "FATH");
-						l = 0;
-						if (this.relationRowA != null) {
-							try {
-								l = Integer.parseInt(this.relationRowA);
-								this.pstm.setInt(4, l);
-							} catch (NumberFormatException ne) {
-								throw new SAXException("RelationRowA "
-										+ this.relationRowA + " not numeric");
-							}
-						}
-						this.pstm.setInt(5, surety);
-						this.pstm.setTimestamp(6,
-								toTimestamp(this.relationCreateDate));
-						try {
-							this.pstm.executeUpdate();
-						} catch (SQLException se) {
-							String err = "Relative aPID = " + aid
-									+ " fails for RID = " + rid;
-							errorLine.add(err + " [" + se.getMessage() + "]");
-
-							logger.log(Level.WARNING, err, se);
-
-						}
-
-						this.pstm.setInt(1, rid);
-						if (this.relationIdB != null) {
-							try {
-								bid = Integer.parseInt(this.relationIdB
-										.substring(1));
-
-								this.pstm.setInt(2, bid);
-							} catch (NumberFormatException ne) {
-								throw new SAXException("RelationIdB "
-										+ this.relationIdB + " not numeric");
-							}
-						}
-						this.pstm.setString(3, "CHIL");
-						if (this.relationRowB != null) {
-							try {
-								l = Integer.parseInt(this.relationRowB);
-								this.pstm.setInt(4, l);
-							} catch (NumberFormatException ne) {
-								throw new SAXException("RelationRowB "
-										+ this.relationRowB + " not numeric");
-							}
-						}
-						this.pstm.setInt(5, surety);
-						this.pstm.setTimestamp(6,
-								toTimestamp(this.relationCreateDate));
-
-						try {
-							this.pstm.executeUpdate();
-						} catch (SQLException se) {
-							String err = "Relative bPID = " + bid
-									+ " fails for RID = " + rid;
-							errorLine.add(err + " [" + se.getMessage() + "]");
-
-							logger.log(Level.WARNING, err, se);
-						}
-
-						if (this.relationDescription != null) {
-
-							this.pstm = this.con
-									.prepareStatement("select nextval('relationnoticeseq')");
-							int rnid = 0;
-							rs = this.pstm.executeQuery();
-							if (rs.next()) {
-								rnid = rs.getInt(1);
-							} else {
-								throw new SAXException(
-										"Sequence relationnoticeseq error");
-							}
-							rs.close();
-
-							this.pstm = this.con
-									.prepareStatement(INSERT_RELATION_ADOPTION);
-							this.pstm.setInt(1, rnid);
-							this.pstm.setInt(2, rid);
-							this.pstm.setString(3, "ADOP");
-							this.pstm.setInt(4, 1); // rownumber
-							this.pstm.setTimestamp(5,
-									toTimestamp(this.relationCreateDate));
-							this.pstm.executeUpdate();
-						}
-
-					} else {
-						this.currentStatus = "Marr " + rid;
-						this.pstm = this.con.prepareStatement(INSERT_RELATION);
-
-						this.pstm.setInt(1, rid);
-						if (this.relationIdA != null) {
-							try {
-								aid = Integer.parseInt(this.relationIdA
-										.substring(1));
-								this.pstm.setInt(2, aid);
-							} catch (NumberFormatException ne) {
-								throw new SAXException("RelationIdA "
-										+ this.relationIdA + " not numeric");
-							}
-						}
-						this.pstm.setString(3, "MARR");
-						if (this.relationRowA != null) {
-							try {
-								l = Integer.parseInt(this.relationRowA);
-								this.pstm.setInt(4, l);
-							} catch (NumberFormatException ne) {
-								throw new SAXException("RelationRowA "
-										+ this.relationRowA + " not numeric");
-							}
-						}
-						this.pstm.setInt(5, surety);
-						this.pstm.setTimestamp(6,
-								toTimestamp(this.relationCreateDate));
-
-						try {
-							this.pstm.executeUpdate();
-						} catch (SQLException se) {
-							String err = "Spouse aPID = " + aid
-									+ " fails for RID = " + rid;
-							errorLine.add(err + " [" + se.getMessage() + "]");
-							logger.log(Level.WARNING, err, se);
-						}
-
-						this.pstm.setInt(1, rid);
-						if (this.relationIdB != null) {
-							try {
-								bid = Integer.parseInt(this.relationIdB
-										.substring(1));
-								this.pstm.setInt(2, bid);
-							} catch (NumberFormatException ne) {
-								throw new SAXException("RelationIdB "
-										+ this.relationIdB + " not numeric");
-							}
-						}
-						this.pstm.setString(3, "MARR");
-						if (this.relationRowB != null) {
-							try {
-								l = Integer.parseInt(this.relationRowB);
-								this.pstm.setInt(4, l);
-							} catch (NumberFormatException ne) {
-								throw new SAXException("RelationRowB "
-										+ this.relationRowB + " not numeric");
-							}
-						}
-						this.pstm.setInt(5, surety);
-						this.pstm.setTimestamp(6,
-								toTimestamp(this.relationCreateDate));
-
-						try {
-							this.pstm.executeUpdate();
-						} catch (SQLException se) {
-							String err = "Spouse bPID = " + bid
-									+ " fails for RID = " + rid;
-							errorLine.add(err + " [" + se.getMessage() + "]");
-							logger.log(Level.WARNING, err, se);
-						}
-						if (this.runner != null) {
-							if (this.runner
-									.setRunnerValue("RelationId: " + rid)) {
-								throw new SAXException(Resurses
-										.getString("SUKU_CANCELLED"));
-							}
-
-						}
-
-						if (this.relationBegDateFrom != null
-								|| this.relationBegPlace != null
-								|| this.relationBegType != null
-								|| this.relationDescription != null) {
-
-							StringBuilder allText = new StringBuilder();
-							if (this.relationBegType != null)
-								allText.append(this.relationBegType);
-							if (this.relationDescription != null)
-								allText.append(this.relationDescription);
-							if (this.relationBegPlace != null)
-								allText.append(this.relationBegPlace);
-							if (this.relationNoteText != null)
-								allText.append(this.relationNoteText);
-							// if (this.relationSourceText != null) allText +=
-							// this.relationSourceText;
-
-							// System.out.println(allText.toString());
-							String langus[] = extractLangs(allText.toString());
-
-							this.nameCollector = new HashMap<String, String>();
-							this.placeCollector = new HashMap<String, String>();
-
-							this.pstm = this.con
-									.prepareStatement("select nextval('relationnoticeseq')");
-							int rnid = 0;
-							rs = this.pstm.executeQuery();
-							if (rs.next()) {
-								rnid = rs.getInt(1);
-							} else {
-								throw new SAXException(
-										"Sequence relationnoticeseq error");
-							}
-							rs.close();
-
-							this.pstm = this.con
-									.prepareStatement(INSERT_RELATION_NOTICE);
-							this.pstm.setInt(1, rnid);
-							this.pstm.setInt(2, rid);
-							this.pstm.setString(3, "MARR");
-							this.pstm.setInt(4, 1); // rownumber
-							this.pstm.setString(5, langText(
-									this.relationDescription, this.oldCode));
-							this.pstm.setString(6, langText(
-									this.relationBegType, this.oldCode));
-							this.pstm.setString(7, this.relationBegDatePrefix);
-							this.pstm.setString(8, this.relationBegDateFrom);
-							this.pstm.setString(9, this.relationBegDateTo);
-							this.pstm.setString(10, langText(
-									this.relationBegPlace, this.oldCode));
-							this.pstm.setString(11, langText(
-									this.relationNoteText, this.oldCode));
-							if (this.relationSourceId != null) {
-								this.pstm.setInt(12,
-										idToInt(this.relationSourceId)); // langText(this.noticeSourceText,this.oldCode));
-							} else {
-								this.pstm.setNull(12, Types.INTEGER);
-							}
-
-							this.pstm.setString(13, this.relationSourceText);
-							this.pstm.setString(14, this.relationPrivateText);
-							this.pstm.setTimestamp(15,
-									toTimestamp(this.relationCreateDate));
-							this.pstm.executeUpdate();
-							laskuriRelations++;
-
-							if (langus != null && langus.length > 1) {
-								for (i = 0; i < langus.length; i++) {
-									if (!langus[i].equals(this.oldCode)) {
-										// this.pstm =
-										// this.con.prepareStatement("select nextval('relationseq')");
-										//									
-										// rs = this.pstm.executeQuery();
-										// if (rs.next()){
-										// rid = rs.getInt(1);
-										// } else {
-										// throw new SAXException
-										// ("Sequence relationseq error");
-										// }
-										// rs.close();
-
-										this.pstm = this.con
-												.prepareStatement(INSERT_RELATION_LANGUAGE);
-										this.pstm.setInt(1, rnid);
-										this.pstm.setInt(2, rid);
-										this.pstm.setString(3,
-												toLangCode(langus[i]));
-										this.pstm.setString(4,
-												langText(this.relationBegType,
-														langus[i]));
-										this.pstm.setString(5, langText(
-												this.relationDescription,
-												langus[i]));
-										this.pstm.setString(6, langText(
-												this.relationBegPlace,
-												langus[i]));
-										this.pstm.setString(7, langText(
-												this.relationNoteText,
-												langus[i]));
-										// this.pstm.setString(9,
-										// langText(this.relationSourceText,langus[i]));
-
-										this.pstm.executeUpdate();
-									}
-								}
-							}
-						}
-
-						if (this.relationEndDateFrom != null
-								|| this.relationEndPlace != null
-								|| this.relationEndType != null) {
-
-							String allText = "";
-							if (this.relationEndType != null)
-								allText += this.relationEndType;
-							if (this.relationEndPlace != null)
-								allText += this.relationEndPlace;
-
-							String langus[] = extractLangs(allText);
-
-							this.nameCollector = new HashMap<String, String>();
-							this.placeCollector = new HashMap<String, String>();
-
-							this.pstm = this.con
-									.prepareStatement("select nextval('relationnoticeseq')");
-							int rnid = 0;
-							rs = this.pstm.executeQuery();
-							if (rs.next()) {
-								rnid = rs.getInt(1);
-							} else {
-								throw new SAXException(
-										"Sequence relationnoticeseq error");
-							}
-							rs.close();
-
-							this.pstm = this.con
-									.prepareStatement(INSERT_RELATION_NOTICE);
-							this.pstm.setInt(1, rnid);
-							this.pstm.setInt(2, rid);
-							this.pstm.setString(3, "DIV");
-							this.pstm.setInt(4, 2); // rownumber
-							this.pstm.setString(5, null);
-							this.pstm.setString(6, this.relationEndType);
-							this.pstm.setString(7, this.relationEndDatePrefix);
-							this.pstm.setString(8, this.relationEndDateFrom);
-							this.pstm.setString(9, this.relationEndDateTo);
-							this.pstm.setString(10, this.relationEndPlace);
-							this.pstm.setString(11, null); // note text
-							this.pstm.setNull(12, Types.INTEGER);
-							this.pstm.setNull(13, Types.VARCHAR);
-							this.pstm.setNull(14, Types.VARCHAR);
-
-							this.pstm.setTimestamp(15,
-									toTimestamp(this.relationCreateDate));
-							this.pstm.executeUpdate();
-
-							if (langus != null && langus.length > 1) {
-								for (i = 0; i < langus.length; i++) {
-									if (!langus[i].equals(this.oldCode)) {
-										this.pstm = this.con
-												.prepareStatement("select nextval('relationseq')");
-
-										rs = this.pstm.executeQuery();
-										if (rs.next()) {
-											rid = rs.getInt(1);
-										} else {
-											throw new SAXException(
-													"Sequence relationseq error");
-										}
-										rs.close();
-
-										this.pstm = this.con
-												.prepareStatement(INSERT_RELATION_LANGUAGE);
-										this.pstm.setInt(1, rnid);
-
-										this.pstm.setString(2,
-												toLangCode(langus[i]));
-
-										this.pstm.setString(3,
-												langText(this.relationEndType,
-														langus[i]));
-										this.pstm.setString(4, null);
-										this.pstm.setString(5, langText(
-												this.relationEndPlace,
-												langus[i]));
-										this.pstm.setString(6, null);
-
-										this.pstm.executeUpdate();
-									}
-								}
-							}
-						}
-					}
-				}
-			} catch (SQLException e) {
-				logger.log(Level.SEVERE, "importing relation failed", e);
-				throw new SAXException(e);
-			}
-
-			this.relationDescription = null;
-			this.relationBegType = null;
-			this.relationBegDateFrom = null;
-			this.relationBegDateTo = null;
-			this.relationBegPlace = null;
-			this.relationEndType = null;
-			this.relationEndDateFrom = null;
-			this.relationEndDateTo = null;
-			this.relationEndPlace = null;
-			this.relationNoteText = null;
-			this.relationSourceId = null;
-			this.relationSourceText = null;
-			this.relationPrivateText = null;
+			insertRelation();
 
 		}
+		if (this.currentEle.equals(relationNoticeTypeTG)) {
+			this.relationBegType = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationNoticeDescriptionTG)) {
+			this.relationDescription = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationNoticeDateStartTG)) {
+			this.relationBegDateFrom = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationNoticeDateEndTG)) {
+			this.relationBegDateTo = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationNoticePlaceTG)) {
+			this.relationBegPlace = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationNoticeNoteTextTG)) {
+			this.relationNoteText = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationNoticeSourceTG)) {
+			this.relationSourceText = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationNoticePrivateTextTG)) {
+			this.relationPrivateText = this.currentChars.toString();
+		}
+
+		if (this.currentEle.equals(relationNoticeTG)) {
+
+			insertRelationNotice();
+
+		}
+		if (this.currentEle.equals(relationLanguageTypeTG)) {
+			this.relationLanguageType = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationLanguageDescriptionTG)) {
+			this.relationLanguageDescription = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationLanguagePlaceTG)) {
+			this.relationLanguagePlace = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationLanguageNoteTextTG)) {
+			this.relationLanguageNoteText = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationLanguageTG)) {
+
+			insertRelationLanguage();
+
+		}
+
 		if (this.currentEle.equals(sourceTG)) {
 			this.sourceNoteText = this.currentChars.toString();
 
@@ -1991,16 +1162,1059 @@ public class Read2004XML extends DefaultHandler {
 
 			this.viewUnitPid = null;
 		}
-
+		int k;
 		if (this.currentEle.endsWith(qName)) {
-			l = this.currentEle.length();
-			this.currentEle = this.currentEle.substring(0, l - qName.length()
+			k = this.currentEle.length();
+			this.currentEle = this.currentEle.substring(0, k - qName.length()
 					- 1);
 		} else {
 			System.out.println("BAD XML: " + this.currentEle + "/" + qName);
 			return;
 		}
 
+	}
+
+	private void insertRelationLanguage() throws SAXException {
+		try {
+			PreparedStatement pst;
+
+			pst = this.con.prepareStatement(INSERT_RELATION_LANGUAGE);
+
+			pst.setInt(1, rnid);
+			pst.setInt(2, rid);
+			pst.setString(3, this.relationLanguage);
+
+			pst.setString(4, this.relationLanguageType);
+			pst.setString(5, this.relationLanguageDescription);
+			pst.setString(6, this.relationLanguagePlace);
+			pst.setString(7, this.relationLanguageNoteText);
+			if (relationLanguageModifiedDate == null) {
+				pst.setNull(8, Types.TIMESTAMP);
+			} else {
+				pst.setTimestamp(8,
+						toTimestamp(this.relationLanguageModifiedDate));
+			}
+			pst.setTimestamp(9, toTimestamp(this.relationLanguageCreateDate));
+			pst.executeUpdate();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE,
+					"importing relation language notice failed", e);
+			throw new SAXException(e);
+		}
+		relationLanguage = null;
+		relationLanguageType = null;
+		relationLanguageDescription = null;
+		relationLanguagePlace = null;
+		relationLanguageNoteText = null;
+		relationLanguageModifiedDate = null;
+		relationLanguageCreateDate = null;
+
+	}
+
+	private void insertRelationNotice() throws SAXException {
+
+		try {
+			PreparedStatement pst;
+			// PreparedStatement pst = this.con
+			// .prepareStatement("select nextval('relationnoticeseq')");
+			// rnid = 0;
+			// ResultSet rs = pst.executeQuery();
+			// if (rs.next()) {
+			// rnid = rs.getInt(1);
+			// } else {
+			// throw new SAXException("Sequence relationnoticeseq error");
+			// }
+			// rs.close();
+
+			pst = this.con.prepareStatement(INSERT_RELATION_NOTICE);
+
+			pst.setInt(1, rnid);
+			pst.setInt(2, rid);
+			pst.setString(3, this.relationNoticeTag);
+			int row = 0;
+			try {
+				row = Integer.parseInt(this.relationNoticeRow);
+			} catch (NumberFormatException ne) {
+
+			}
+			// this.pstm.setTimestamp(16,
+			// toTimestamp(this.relationCreateDate));
+			pst.setInt(4, row);
+			int surety = 100;
+			try {
+				surety = Integer.parseInt(this.relationNoticeSurety);
+			} catch (NumberFormatException ne) {
+
+			}
+			pst.setInt(5, surety);
+			pst.setString(6, this.relationDescription);
+			pst.setString(7, this.relationBegType);
+			pst.setString(8, this.relationBegDatePrefix);
+			pst.setString(9, this.relationBegDateFrom);
+			pst.setString(10, this.relationBegDateTo);
+			pst.setString(11, this.relationBegPlace);
+			pst.setString(12, this.relationNoteText);
+			pst.setInt(13, 0);
+			pst.setString(14, this.relationSourceText);
+			pst.setString(15, this.relationPrivateText);
+			if (relationNoticeModifiedDate == null) {
+				pst.setNull(16, Types.TIMESTAMP);
+			} else {
+				pst.setTimestamp(16,
+						toTimestamp(this.relationNoticeModifiedDate));
+			}
+
+			pst.setTimestamp(17, toTimestamp(this.relationNoticeCreateDate));
+			pst.executeUpdate();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "importing relation notice failed", e);
+			throw new SAXException(e);
+		}
+		relationNoticeTag = null;
+		relationNoticeRow = null;
+		relationDescription = null;
+		relationBegType = null;
+		relationBegDatePrefix = null;
+		relationBegDateFrom = null;
+		relationBegDateTo = null;
+		relationBegPlace = null;
+		relationNoteText = null;
+		relationSourceText = null;
+		relationPrivateText = null;
+		relationNoticeModifiedDate = null;
+		relationNoticeCreateDate = null;
+
+	}
+
+	private void insertRelation() throws SAXException {
+		int i;
+		int aid = 0;
+		int bid = 0;
+		int surety = 0;
+		ResultSet rs;
+		PreparedStatement pst;
+		try {
+
+			int relRow = 0;
+			if (finFamilyVersion != null) {
+				// this is the restore from FinFamily
+				pst = this.con.prepareStatement(INSERT_RELATION);
+
+				pst.setInt(1, rid);
+				if (this.relationIdA != null) {
+					try {
+						aid = Integer.parseInt(this.relationIdA.substring(1));
+
+						pst.setInt(2, aid);
+					} catch (NumberFormatException ne) {
+						throw new SAXException("RelationIdA "
+								+ this.relationIdA + " not numeric");
+					}
+				}
+				if (this.relationSurety != null) {
+					try {
+						surety = Integer.parseInt(this.relationSurety);
+					} catch (NumberFormatException ne) {
+						surety = 80;
+					}
+				} else {
+					surety = 100;
+				}
+
+				pst.setString(3, this.relationTaga);
+				relRow = 0;
+				if (this.relationRowA != null) {
+					try {
+						relRow = Integer.parseInt(this.relationRowA);
+						pst.setInt(4, relRow);
+					} catch (NumberFormatException ne) {
+						throw new SAXException("RelationRowA "
+								+ this.relationRowA + " not numeric");
+					}
+				}
+				pst.setInt(5, surety);
+				if (this.relationModifiedDate == null) {
+					pst.setNull(6, Types.TIMESTAMP);
+				} else {
+					pst.setTimestamp(6, toTimestamp(this.relationModifiedDate));
+				}
+				pst.setTimestamp(7, toTimestamp(this.relationCreateDate));
+				try {
+					pst.executeUpdate();
+				} catch (SQLException se) {
+					String err = "Relative aPID = " + aid + " fails for RID = "
+							+ rid;
+					errorLine.add(err + " [" + se.getMessage() + "]");
+
+					logger.log(Level.WARNING, err, se);
+
+				}
+				// here the other relation
+				pst.setInt(1, rid);
+				if (this.relationIdB != null) {
+					try {
+						bid = Integer.parseInt(this.relationIdB.substring(1));
+
+						pst.setInt(2, bid);
+					} catch (NumberFormatException ne) {
+						throw new SAXException("RelationIdB "
+								+ this.relationIdB + " not numeric");
+					}
+				}
+				pst.setString(3, this.relationTagb);
+				if (this.relationRowB != null) {
+					try {
+						relRow = Integer.parseInt(this.relationRowB);
+						pst.setInt(4, relRow);
+					} catch (NumberFormatException ne) {
+						throw new SAXException("RelationRowB "
+								+ this.relationRowB + " not numeric");
+					}
+				}
+				pst.setInt(5, surety);
+				pst.setNull(6, Types.TIMESTAMP);
+				pst.setTimestamp(7, toTimestamp(this.relationCreateDate));
+
+				try {
+					pst.executeUpdate();
+				} catch (SQLException se) {
+					String err = "Relative bPID = " + bid + " fails for RID = "
+							+ rid;
+					errorLine.add(err + " [" + se.getMessage() + "]");
+
+					logger.log(Level.WARNING, err, se);
+				}
+
+			} else {
+				// this is the import from Suku 2004
+				if (this.relationTag.equals("CHIL")) {
+
+					this.currentStatus = "Chil " + rid;
+
+					pst = this.con.prepareStatement(INSERT_RELATION);
+
+					pst.setInt(1, rid);
+					if (this.relationIdA != null) {
+						try {
+							aid = Integer.parseInt(this.relationIdA
+									.substring(1));
+
+							pst.setInt(2, aid);
+						} catch (NumberFormatException ne) {
+							throw new SAXException("RelationIdA "
+									+ this.relationIdA + " not numeric");
+						}
+					}
+					if (this.relationSurety != null) {
+						try {
+							surety = Integer.parseInt(this.relationSurety);
+						} catch (NumberFormatException ne) {
+							surety = 80;
+						}
+					} else {
+						surety = 100;
+					}
+
+					pst.setString(3, "FATH");
+					relRow = 0;
+					if (this.relationRowA != null) {
+						try {
+							relRow = Integer.parseInt(this.relationRowA);
+							pst.setInt(4, relRow);
+						} catch (NumberFormatException ne) {
+							throw new SAXException("RelationRowA "
+									+ this.relationRowA + " not numeric");
+						}
+					}
+					pst.setInt(5, surety);
+					pst.setNull(6, Types.TIMESTAMP);
+					pst.setTimestamp(7, toTimestamp(this.relationCreateDate));
+					try {
+						pst.executeUpdate();
+					} catch (SQLException se) {
+						String err = "Relative aPID = " + aid
+								+ " fails for RID = " + rid;
+						errorLine.add(err + " [" + se.getMessage() + "]");
+
+						logger.log(Level.WARNING, err, se);
+
+					}
+
+					pst.setInt(1, rid);
+					if (this.relationIdB != null) {
+						try {
+							bid = Integer.parseInt(this.relationIdB
+									.substring(1));
+
+							pst.setInt(2, bid);
+						} catch (NumberFormatException ne) {
+							throw new SAXException("RelationIdB "
+									+ this.relationIdB + " not numeric");
+						}
+					}
+					pst.setString(3, "CHIL");
+					if (this.relationRowB != null) {
+						try {
+							relRow = Integer.parseInt(this.relationRowB);
+							pst.setInt(4, relRow);
+						} catch (NumberFormatException ne) {
+							throw new SAXException("RelationRowB "
+									+ this.relationRowB + " not numeric");
+						}
+					}
+					pst.setInt(5, surety);
+					pst.setNull(6, Types.TIMESTAMP);
+					pst.setTimestamp(7, toTimestamp(this.relationCreateDate));
+
+					try {
+						pst.executeUpdate();
+					} catch (SQLException se) {
+						String err = "Relative bPID = " + bid
+								+ " fails for RID = " + rid;
+						errorLine.add(err + " [" + se.getMessage() + "]");
+
+						logger.log(Level.WARNING, err, se);
+					}
+
+					if (this.relationDescription != null) {
+
+						pst = this.con
+								.prepareStatement("select nextval('relationnoticeseq')");
+						int rnid = 0;
+						rs = pst.executeQuery();
+						if (rs.next()) {
+							rnid = rs.getInt(1);
+						} else {
+							throw new SAXException(
+									"Sequence relationnoticeseq error");
+						}
+						rs.close();
+
+						pst = this.con
+								.prepareStatement(INSERT_RELATION_ADOPTION);
+						pst.setInt(1, rnid);
+						pst.setInt(2, rid);
+						pst.setString(3, "ADOP");
+						pst.setInt(4, 1); // rownumber
+						pst.setTimestamp(5,
+								toTimestamp(this.relationCreateDate));
+						pst.executeUpdate();
+					}
+
+				} else {
+					this.currentStatus = "Marr " + rid;
+					pst = this.con.prepareStatement(INSERT_RELATION);
+
+					pst.setInt(1, rid);
+					if (this.relationIdA != null) {
+						try {
+							aid = Integer.parseInt(this.relationIdA
+									.substring(1));
+							pst.setInt(2, aid);
+						} catch (NumberFormatException ne) {
+							throw new SAXException("RelationIdA "
+									+ this.relationIdA + " not numeric");
+						}
+					}
+					pst.setString(3, "MARR");
+					if (this.relationRowA != null) {
+						try {
+							relRow = Integer.parseInt(this.relationRowA);
+							pst.setInt(4, relRow);
+						} catch (NumberFormatException ne) {
+							throw new SAXException("RelationRowA "
+									+ this.relationRowA + " not numeric");
+						}
+					}
+					pst.setInt(5, surety);
+					pst.setNull(6, Types.TIMESTAMP);
+					pst.setTimestamp(7, toTimestamp(this.relationCreateDate));
+
+					try {
+						pst.executeUpdate();
+					} catch (SQLException se) {
+						String err = "Spouse aPID = " + aid
+								+ " fails for RID = " + rid;
+						errorLine.add(err + " [" + se.getMessage() + "]");
+						logger.log(Level.WARNING, err, se);
+					}
+
+					pst.setInt(1, rid);
+					if (this.relationIdB != null) {
+						try {
+							bid = Integer.parseInt(this.relationIdB
+									.substring(1));
+							pst.setInt(2, bid);
+						} catch (NumberFormatException ne) {
+							throw new SAXException("RelationIdB "
+									+ this.relationIdB + " not numeric");
+						}
+					}
+					pst.setString(3, "MARR");
+					if (this.relationRowB != null) {
+						try {
+							relRow = Integer.parseInt(this.relationRowB);
+							pst.setInt(4, relRow);
+						} catch (NumberFormatException ne) {
+							throw new SAXException("RelationRowB "
+									+ this.relationRowB + " not numeric");
+						}
+					}
+					pst.setInt(5, surety);
+					pst.setNull(6, Types.TIMESTAMP);
+					pst.setTimestamp(7, toTimestamp(this.relationCreateDate));
+
+					try {
+						pst.executeUpdate();
+					} catch (SQLException se) {
+						String err = "Spouse bPID = " + bid
+								+ " fails for RID = " + rid;
+						errorLine.add(err + " [" + se.getMessage() + "]");
+						logger.log(Level.WARNING, err, se);
+					}
+					if (this.runner != null) {
+						if (this.runner.setRunnerValue("RelationId: " + rid)) {
+							throw new SAXException(Resurses
+									.getString("SUKU_CANCELLED"));
+						}
+
+					}
+
+					if (this.relationBegDateFrom != null
+							|| this.relationBegPlace != null
+							|| this.relationBegType != null
+							|| this.relationDescription != null) {
+
+						StringBuilder allText = new StringBuilder();
+						if (this.relationBegType != null)
+							allText.append(this.relationBegType);
+						if (this.relationDescription != null)
+							allText.append(this.relationDescription);
+						if (this.relationBegPlace != null)
+							allText.append(this.relationBegPlace);
+						if (this.relationNoteText != null)
+							allText.append(this.relationNoteText);
+						// if (this.relationSourceText != null) allText +=
+						// this.relationSourceText;
+
+						// System.out.println(allText.toString());
+						String langus[] = extractLangs(allText.toString());
+
+						this.nameCollector = new HashMap<String, String>();
+						this.placeCollector = new HashMap<String, String>();
+
+						pst = this.con
+								.prepareStatement("select nextval('relationnoticeseq')");
+						int rnid = 0;
+						rs = pst.executeQuery();
+						if (rs.next()) {
+							rnid = rs.getInt(1);
+						} else {
+							throw new SAXException(
+									"Sequence relationnoticeseq error");
+						}
+						rs.close();
+
+						pst = this.con.prepareStatement(INSERT_RELATION_NOTICE);
+						pst.setInt(1, rnid);
+						pst.setInt(2, rid);
+						pst.setString(3, "MARR");
+						pst.setInt(4, 1); // rownumber
+						pst.setInt(5, 100);
+						pst.setString(6, langText(this.relationDescription,
+								this.oldCode));
+						pst.setString(7, langText(this.relationBegType,
+								this.oldCode));
+						pst.setString(8, this.relationBegDatePrefix);
+						pst.setString(9, this.relationBegDateFrom);
+						pst.setString(10, this.relationBegDateTo);
+						pst.setString(11, langText(this.relationBegPlace,
+								this.oldCode));
+						pst.setString(12, langText(this.relationNoteText,
+								this.oldCode));
+						if (this.relationSourceId != null) {
+							pst.setInt(13, idToInt(this.relationSourceId)); // langText(this.noticeSourceText,this.oldCode));
+						} else {
+							pst.setNull(13, Types.INTEGER);
+						}
+
+						pst.setString(14, this.relationSourceText);
+						pst.setString(15, this.relationPrivateText);
+						pst.setNull(16, Types.TIMESTAMP);
+						pst.setTimestamp(17,
+								toTimestamp(this.relationCreateDate));
+						pst.executeUpdate();
+						laskuriRelations++;
+
+						if (langus != null && langus.length > 1) {
+							for (i = 0; i < langus.length; i++) {
+								if (!langus[i].equals(this.oldCode)) {
+									// pstm =
+									// this.con.prepareStatement("select nextval('relationseq')");
+									//									
+									// rs = pstm.executeQuery();
+									// if (rs.next()){
+									// rid = rs.getInt(1);
+									// } else {
+									// throw new SAXException
+									// ("Sequence relationseq error");
+									// }
+									// rs.close();
+
+									pst = this.con
+											.prepareStatement(INSERT_RELATION_LANGUAGE);
+									pst.setInt(1, rnid);
+									pst.setInt(2, rid);
+									pst.setString(3, toLangCode(langus[i]));
+									pst.setString(4, langText(
+											this.relationBegType, langus[i]));
+									pst.setString(5,
+											langText(this.relationDescription,
+													langus[i]));
+									pst.setString(6, langText(
+											this.relationBegPlace, langus[i]));
+									pst.setString(7, langText(
+											this.relationNoteText, langus[i]));
+									pst.setNull(8, Types.TIMESTAMP);
+									pst.setNull(9, Types.TIMESTAMP);
+									// pstm.setString(9,
+									// langText(this.relationSourceText,langus[i]));
+
+									pst.executeUpdate();
+								}
+							}
+						}
+					}
+
+					if (this.relationEndDateFrom != null
+							|| this.relationEndPlace != null
+							|| this.relationEndType != null) {
+
+						String allText = "";
+						if (this.relationEndType != null)
+							allText += this.relationEndType;
+						if (this.relationEndPlace != null)
+							allText += this.relationEndPlace;
+
+						String langus[] = extractLangs(allText);
+
+						this.nameCollector = new HashMap<String, String>();
+						this.placeCollector = new HashMap<String, String>();
+
+						this.pstm = this.con
+								.prepareStatement("select nextval('relationnoticeseq')");
+						int rnid = 0;
+						rs = pst.executeQuery();
+						if (rs.next()) {
+							rnid = rs.getInt(1);
+						} else {
+							throw new SAXException(
+									"Sequence relationnoticeseq error");
+						}
+						rs.close();
+
+						pst = this.con.prepareStatement(INSERT_RELATION_NOTICE);
+						pst.setInt(1, rnid);
+						pst.setInt(2, rid);
+						pst.setString(3, "DIV");
+						pst.setInt(4, 2); // rownumber
+						pst.setInt(5, 100);
+						pst.setString(6, null);
+						pst.setString(7, this.relationEndType);
+						pst.setString(8, this.relationEndDatePrefix);
+						pst.setString(9, this.relationEndDateFrom);
+						pst.setString(10, this.relationEndDateTo);
+						pst.setString(11, this.relationEndPlace);
+						pst.setString(12, null); // note text
+						pst.setNull(13, Types.INTEGER);
+						pst.setNull(14, Types.VARCHAR);
+						pst.setNull(15, Types.VARCHAR);
+						pst.setNull(16, Types.TIMESTAMP);
+						pst.setTimestamp(17,
+								toTimestamp(this.relationCreateDate));
+						pst.executeUpdate();
+
+						if (langus != null && langus.length > 1) {
+							for (i = 0; i < langus.length; i++) {
+								if (!langus[i].equals(this.oldCode)) {
+									pst = this.con
+											.prepareStatement("select nextval('relationseq')");
+
+									rs = pst.executeQuery();
+									if (rs.next()) {
+										rid = rs.getInt(1);
+									} else {
+										throw new SAXException(
+												"Sequence relationseq error");
+									}
+									rs.close();
+
+									pst = this.con
+											.prepareStatement(INSERT_RELATION_LANGUAGE);
+									pst.setInt(1, rnid);
+
+									pst.setString(2, toLangCode(langus[i]));
+
+									pst.setString(3, langText(
+											this.relationEndType, langus[i]));
+									pst.setString(4, null);
+									pst.setString(5, langText(
+											this.relationEndPlace, langus[i]));
+									pst.setString(6, null);
+									pst.setNull(8, Types.TIMESTAMP);
+									pst.setNull(9, Types.TIMESTAMP);
+									pst.executeUpdate();
+								}
+							}
+						}
+					}
+				}
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "importing relation failed", e);
+			throw new SAXException(e);
+		}
+
+		this.relationDescription = null;
+		this.relationBegType = null;
+		this.relationBegDateFrom = null;
+		this.relationBegDateTo = null;
+		this.relationBegPlace = null;
+		this.relationEndType = null;
+		this.relationEndDateFrom = null;
+		this.relationEndDateTo = null;
+		this.relationEndPlace = null;
+		this.relationNoteText = null;
+		this.relationSourceId = null;
+		this.relationSourceText = null;
+		this.relationPrivateText = null;
+		this.rid = 0;
+	}
+
+	private void insertUnitNotice() throws SAXException {
+		int i;
+		StringBuilder allText = new StringBuilder();
+		if (this.noticeType != null)
+			allText.append(this.noticeType);
+		if (this.noticeDescription != null)
+			allText.append(this.noticeDescription);
+		if (this.noticePlace != null)
+			allText.append(this.noticePlace);
+		if (this.noticeNoteText != null)
+			allText.append(this.noticeNoteText);
+		// if (this.noticeSourceText != null) allText +=
+		// this.noticeSourceText;
+		if (this.noticeMediaTitle != null)
+			allText.append(this.noticeMediaTitle);
+		// System.out.println(allText.toString());
+		String langus[] = extractLangs(allText.toString());
+
+		this.nameCollector = new HashMap<String, String>();
+		this.placeCollector = new HashMap<String, String>();
+
+		try {
+			int unitPid = 0;
+			int pnid = 0;
+			int rowno = 0;
+			int suretyValue = 100;
+			this.pstm = this.con
+					.prepareStatement("select nextval('unitnoticeseq')");
+
+			ResultSet rs = this.pstm.executeQuery();
+			if (rs.next()) {
+				pnid = rs.getInt(1);
+			} else {
+				throw new SAXException("Sequence unitnoticeseq error");
+			}
+			rs.close();
+			this.pstm = this.con.prepareStatement(INSERT_UNIT_NOTICE);
+			try {
+				unitPid = Integer.parseInt(this.unitId.substring(1));
+			} catch (NumberFormatException ne) {
+				throw new SAXException("UnitId " + this.unitId
+						+ " is not numeric");
+			}
+			this.pstm.setInt(1, unitPid);
+			this.pstm.setInt(2, pnid);
+			this.pstm.setString(3, this.noticeTag);
+			this.pstm.setString(4, this.noticePrivacy);
+			try {
+				rowno = Integer.parseInt(this.noticeRow);
+			} catch (NumberFormatException ne) {
+				rowno = 0;
+				errorLine.add(ne.getMessage() + " [Rownumber " + this.unitId
+						+ "/" + this.noticeRow + " is not numeric" + "]");
+				// throw new SAXException();
+			}
+			this.pstm.setInt(5, rowno);
+
+			try {
+				if (this.noticeSurety != null) {
+					suretyValue = Integer.parseInt(this.noticeSurety);
+				} else {
+					suretyValue = 100;
+				}
+			} catch (NumberFormatException ne) {
+				suretyValue = 100;
+			}
+			this.pstm.setInt(6, suretyValue);
+			this.pstm.setString(7, langText(this.noticeType, this.oldCode));
+			this.pstm.setString(8, langText(this.noticeDescription,
+					this.oldCode));
+			this.pstm.setString(9, this.noticeDatePrefix);
+			this.pstm.setString(10, this.noticeDateFrom);
+			this.pstm.setString(11, this.noticeDateTo);
+			this.pstm.setString(12, langText(this.noticePlace, this.oldCode));
+			this.pstm.setString(13, extractCSVPart(this.noticeTag,
+					this.noticeAddress, 0));
+			this.pstm.setString(14, this.noticePostalCode);
+			this.pstm.setString(15, this.noticePostOffice);
+			this.pstm.setString(16, this.noticeCountry);
+			this.pstm.setString(17, this.noticeEmail);
+			// String t1 = langText(this.noticeNoteText,this.oldCode);
+			this.pstm
+					.setString(18, langText(this.noticeNoteText, this.oldCode));
+			this.pstm.setString(19, this.noticeMediaFilename);
+			this.pstm.setString(20, langText(this.noticeMediaTitle,
+					this.oldCode));
+			if (finFamilyVersion == null) {
+				this.pstm.setString(21, Utils.extractPatronyme(
+						this.noticeGivenName, false));
+				this.pstm.setString(22, Utils.extractPatronyme(
+						this.noticeGivenName, true));
+			} else {
+				this.pstm.setString(21, this.noticeGivenName);
+				this.pstm.setString(22, this.noticePatronym);
+
+			}
+			this.pstm.setString(23, this.noticePrefix);
+			this.pstm.setString(24, this.noticeSurname);
+			this.pstm.setString(25, this.noticePostfix);
+			if (this.noticeSourceId != null) {
+				this.pstm.setInt(26, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
+			} else {
+				this.pstm.setNull(26, Types.INTEGER);
+			}
+
+			this.pstm.setString(27, extractCSVPart(this.noticeTag,
+					this.noticeAddress, 1));
+			this.pstm.setString(28, extractCSVPart(this.noticeTag,
+					this.noticeAddress, 2));
+			this.pstm.setString(29, extractCSVPart(this.noticeTag,
+					this.noticeAddress, 3));
+
+			this.pstm.setString(30, this.noticeSourceText);
+			this.pstm.setString(31, this.noticePrivateText);
+
+			this.pstm.setTimestamp(32, toTimestamp(this.noticeCreateDate));
+
+			this.pstm.executeUpdate();
+
+			if (this.placeCollector.size() > 0 || this.nameCollector.size() > 0) {
+
+				NameArray asn = new NameArray();
+				;
+				Iterator<String> it = this.nameCollector.keySet().iterator();
+				while (it.hasNext()) {
+
+					asn.append(it.next());
+
+				}
+
+				// sn.append("}");
+				NameArray asp = new NameArray();
+
+				// StringBuilder sp = new StringBuilder();
+				it = this.placeCollector.keySet().iterator();
+				while (it.hasNext()) {
+					// if (sp.length() == 0){
+					// sp.append("{");
+					// } else {
+					// sp.append(",");
+					// }
+					asp.append(it.next());
+					// sp.append("\""+it.next()+"\"");
+				}
+				// sp.append("}");
+
+				PreparedStatement ps = this.con
+						.prepareStatement(UPDATE_UNIT_INDEX_DATA);
+				ps.setArray(1, asn);
+				ps.setArray(2, asp);
+				// ps.setString(1, sn.toString());
+				// ps.setString(2, sp.toString());
+				ps.setInt(3, pnid);
+				ps.executeUpdate();
+				ps.close();
+			}
+
+			if (this.noticeMediaFilename != null) {
+				if (this.databaseHasImages) {
+					FileInputStream fis;
+					logger.fine("Trying image file: " + this.databaseFolder
+							+ "/" + this.sukuMediaFolder + "/"
+							+ this.noticeMediaFilename);
+					File file = new File(this.databaseFolder + "/"
+							+ this.sukuMediaFolder + "/"
+							+ this.noticeMediaFilename);
+					if (file.exists() && file.isFile()) {
+						BufferedImage sourceImage = ImageIO.read(file);
+						int mediaWidth = sourceImage.getWidth(null);
+						int mediaHeight = sourceImage.getHeight(null);
+						try {
+							fis = new FileInputStream(file);
+							PreparedStatement ps = this.con
+									.prepareStatement(UPDATE_IMAGE_DATA);
+
+							ps.setBinaryStream(1, fis, (int) file.length());
+							ps.setInt(2, mediaWidth);
+							ps.setInt(3, mediaHeight);
+							ps.setInt(4, pnid);
+							ps.executeUpdate();
+							ps.close();
+							fis.close();
+						} catch (FileNotFoundException e) {
+							logger.warning("Image file "
+									+ this.noticeMediaFilename + " not found");
+							e.printStackTrace();
+						} catch (IOException e) {
+							logger.log(Level.WARNING, "Image file "
+									+ this.noticeMediaFilename, e);
+							e.printStackTrace();
+						}
+
+						// int mediaType = sourceImage.getType();
+						// System.out.println("kuva: " +
+						// this.noticeMediaFilename + " = " + mediaWidth +
+						// "/" + mediaHeight );
+					} else {
+						logger.warning("Image file " + this.noticeMediaFilename
+								+ " is missing");
+					}
+				} else {
+					logger.warning("Image folder for "
+							+ this.noticeMediaFilename + " is missing");
+				}
+
+			}
+
+			if (langus != null && langus.length > 1) {
+				for (i = 0; i < langus.length; i++) {
+					if (!langus[i].equals(this.oldCode)) {
+						this.pstm = this.con
+								.prepareStatement(INSERT_UNIT_LANGUAGE);
+
+						this.pstm.setInt(1, unitPid);
+						this.pstm.setInt(2, pnid);
+						this.pstm.setString(3, this.noticeTag);
+						this.pstm.setString(4, toLangCode(langus[i]));
+
+						this.pstm.setString(5, langText(this.noticeType,
+								langus[i]));
+						this.pstm.setString(6, langText(this.noticeDescription,
+								langus[i]));
+
+						this.pstm.setString(7, langText(this.noticePlace,
+								langus[i]));
+						this.pstm.setString(8, langText(this.noticeNoteText,
+								langus[i]));
+						this.pstm.setString(9, langText(this.noticeMediaTitle,
+								langus[i]));
+						// this.pstm.setInt (11,
+						// this.langText(this.noticeSourceText,langus[i]));
+
+						this.pstm.executeUpdate();
+					}
+				}
+			}
+
+			this.noticeTag = null;
+			this.noticeRow = null;
+			this.noticeType = null;
+			this.noticeDescription = null;
+			this.noticeDatePrefix = null;
+			this.noticeDateFrom = null;
+			this.noticeDateTo = null;
+			this.noticePlace = null;
+			this.noticeAddress = null;
+			this.noticePostOffice = null;
+			this.noticePostalCode = null;
+			this.noticeCountry = null;
+			this.noticeEmail = null;
+			this.noticeNoteText = null;
+			this.noticeMediaFilename = null;
+			this.noticeMediaTitle = null;
+			this.noticeGivenName = null;
+			this.noticePrefix = null;
+			this.noticeSurname = null;
+			this.noticePostfix = null;
+			this.noticeSourceId = null;
+			this.noticePrivateText = null;
+			this.noticeSourceText = null;
+			this.noticeCreateDate = null;
+
+		} catch (SQLException e) {
+
+			logger.log(Level.SEVERE, "importing notices failed", e);
+			throw new SAXException(e);
+
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "importing image failed", e);
+			throw new SAXException(e);
+		}
+	}
+
+	private void updateUnit() throws SAXException {
+		logger.fine("UNIT: " + this.unitId + "/" + this.unitTag + "/"
+				+ this.unitSex + "/" + this.unitRefn + "/" + this.unitGivenName
+				+ "/" + this.unitPrefix + "/" + this.unitSurName + "/"
+				+ this.unitPostfix + "/" + this.unitCreateDate);
+		int unitPid = 0;
+		try {
+			this.pstm = this.con.prepareStatement(UPDATE_UNIT);
+
+			try {
+				unitPid = Integer.parseInt(this.unitId.substring(1));
+			} catch (NumberFormatException ne) {
+				throw new SAXException("UnitId " + this.unitId
+						+ " is not numeric");
+			}
+			this.pstm.setString(1, this.unitRefn);
+			this.unitRefn = null;
+			this.pstm.setString(2, this.unitSourceText);
+			this.pstm.setString(3, this.unitPrivateText);
+			this.pstm.setInt(4, unitPid);
+			int resu = this.pstm.executeUpdate();
+			if (resu != 1) {
+				throw new SAXException("update of unit " + this.unitId
+						+ " failed. count = " + resu);
+			}
+
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "update unit source failed", e);
+		}
+
+		this.unitPrivateText = null;
+		this.unitSourceText = null;
+	}
+
+	private void insertUnitName() throws SAXException {
+		if (this.unitId == null) {
+			throw new SAXException("UnitId is null");
+		}
+		int unitPid = 0;
+		try {
+			unitPid = Integer.parseInt(this.unitId.substring(1));
+		} catch (NumberFormatException ne) {
+			throw new SAXException("UnitId " + this.unitId + " is not numeric");
+		}
+
+		try {
+
+			this.currentStatus = "Unit " + unitPid;
+			this.pstm = this.con.prepareStatement(INSERT_UNIT);
+
+			this.pstm.setInt(1, unitPid);
+			this.pstm.setString(2, this.unitSex);
+			if (finFamilyVersion == null) {
+				this.pstm.setString(3, this.unitGroupId);
+			} else {
+				this.pstm.setString(3, this.unitGroup);
+			}
+			this.pstm.setString(4, this.unitPrivacy);
+
+			if (this.unitSourceId != null) {
+				this.pstm.setInt(5, idToInt(this.unitSourceId));
+			} else {
+				this.pstm.setNull(5, Types.INTEGER);
+			}
+			this.pstm.setTimestamp(6, toTimestamp(this.unitCreateDate));
+			this.pstm.executeUpdate();
+
+			logger.fine("Unit: " + this.unitId + "/" + this.unitSex + "/"
+					+ this.unitSourceId);
+
+			laskuriUnits++;
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "importing unit failed", e);
+			throw new SAXException(e);
+		}
+		if (finFamilyVersion == null) {
+			if (this.unitGivenName != null || this.unitSurName != null) {
+				try {
+					this.pstm = this.con
+							.prepareStatement("select nextval('unitnoticeseq')");
+					int pnid = 0;
+					ResultSet rs = this.pstm.executeQuery();
+					if (rs.next()) {
+						pnid = rs.getInt(1);
+					} else {
+						throw new SAXException("Sequence unitnoticeseq error");
+					}
+					rs.close();
+
+					this.pstm = this.con.prepareStatement(INSERT_NAME_NOTICE);
+
+					this.pstm.setInt(1, unitPid);
+					this.pstm.setInt(2, pnid);
+					this.pstm.setString(3, "NAME");
+					this.pstm.setString(4, this.unitPrivacy);
+					this.pstm.setString(5, Utils.extractPatronyme(
+							this.unitGivenName, false));
+					this.pstm.setString(6, Utils.extractPatronyme(
+							this.unitGivenName, true));
+					this.pstm.setString(7, this.unitPrefix);
+					this.pstm.setString(8, this.unitSurName);
+					this.pstm.setString(9, this.unitPostfix);
+					this.pstm
+							.setTimestamp(10, toTimestamp(this.unitCreateDate));
+					this.pstm.executeUpdate();
+
+					logger.fine("UnitName: " + this.unitId + "/"
+							+ this.unitGivenName + "/" + this.unitPrefix + "/"
+							+ this.unitSurName + "/" + unitPostfix);
+
+					if (this.runner != null) {
+						StringBuilder sb = new StringBuilder();
+
+						sb.append(this.unitId + ":  ");
+						sb.append(this.unitGivenName);
+						if (this.unitPrefix != null) {
+							sb.append(" ");
+							sb.append(this.unitPrefix);
+						}
+						if (this.unitSurName != null) {
+							sb.append(" ");
+							sb.append(this.unitSurName);
+						}
+						if (this.unitPostfix != null) {
+							sb.append(" ");
+							sb.append(this.unitPostfix);
+						}
+						if (this.runner.setRunnerValue(sb.toString())) {
+							throw new SAXException(Resurses
+									.getString("SUKU_CANCELLED"));
+						}
+					}
+
+				} catch (SQLException e) {
+					logger.log(Level.SEVERE, "importing unit name failed", e);
+					throw new SAXException(e);
+				}
+			}
+		}
+		logger.fine("UNIT: " + this.unitId + "/" + this.unitTag + "/"
+				+ this.unitSex + "/" + this.unitRefn + "/" + this.unitGivenName
+				+ "/" + this.unitPrefix + "/" + this.unitSurName + "/"
+				+ this.unitPostfix + "/" + this.unitCreateDate);
+
+		this.unitGivenName = null;
+		this.unitSurName = null;
+		this.unitPrefix = null;
+		this.unitPostfix = null;
+		this.unitGroupId = null;
+		this.unitPrivacy = null;
+		this.unitSourceId = null;
 	}
 
 	private String extractCSVPart(String tag, String noticeAddress, int i) {

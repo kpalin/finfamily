@@ -895,6 +895,13 @@ public class ExportBackupUtil {
 			rootElement.appendChild(langEle);
 			langEle.setAttribute("tag", tag);
 			langEle.setAttribute("langcode", langCode);
+
+			if (modified != null) {
+				langEle.setAttribute("modified", modified);
+
+			}
+			langEle.setAttribute("created", created);
+
 			if (nType != null) {
 				langEle.setAttribute("noticetype", nType);
 			}
@@ -916,15 +923,6 @@ public class ExportBackupUtil {
 				ele.setTextContent(mediatitle);
 				langEle.appendChild(ele);
 			}
-			if (modified != null) {
-				ele = document.createElement("modified");
-				ele.setTextContent(modified);
-				langEle.appendChild(ele);
-			}
-
-			ele = document.createElement("created");
-			ele.setTextContent(created);
-			langEle.appendChild(ele);
 
 		}
 		rs.close();
@@ -953,7 +951,7 @@ public class ExportBackupUtil {
 
 			langEle.setAttribute("langcode", langCode);
 			if (nType != null) {
-				ele = document.createElement("noticetype");
+				ele = document.createElement("relationtype");
 				ele.setTextContent(nType);
 				langEle.appendChild(ele);
 			}
