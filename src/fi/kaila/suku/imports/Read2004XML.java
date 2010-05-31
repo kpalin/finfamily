@@ -218,6 +218,15 @@ public class Read2004XML extends DefaultHandler {
 	private static final String relationNoteTextTG = "|genealog|relations|relation|notetext";
 
 	private static final String relationNoticeTG = "|genealog|relations|relation|relationnotice";
+	private static final String relationNoticeTypeTG = "|genealog|relations|relation|relationnotice|relationtype";
+	private static final String relationNoticeDescriptionTG = "|genealog|relations|relation|relationnotice|description";
+	private static final String relationNoticeDateTG = "|genealog|relations|relation|relationnotice|date";
+	private static final String relationNoticeDateStartTG = "|genealog|relations|relation|relationnotice|date|start";
+	private static final String relationNoticeDateEndTG = "|genealog|relations|relation|relationnotice|date|end";
+	private static final String relationNoticePlaceTG = "|genealog|relations|relation|relationnotice|place";
+	private static final String relationNoticeNoteTextTG = "|genealog|relations|relation|relationnotice|notetext";
+	private static final String relationNoticeSourceTG = "|genealog|relations|relation|relationnotice|sourcetext";
+	private static final String relationNoticePrivateTextTG = "|genealog|relations|relation|relationnotice|privatetext";
 
 	private static final String groupTG = "|genealog|groups|group";
 	private static final String groupNameTG = "|genealog|groups|group|groupname";
@@ -295,6 +304,8 @@ public class Read2004XML extends DefaultHandler {
 	private String noticeCreateDate = null;
 
 	private String relationTag = null;
+	private String relationTaga = null;
+	private String relationTagb = null;
 	private String relationIdA = null;
 	private String relationIdB = null;
 	private String relationRowA = null;
@@ -315,7 +326,14 @@ public class Read2004XML extends DefaultHandler {
 	private String relationSourceId = null;
 	private String relationSourceText = null;
 	private String relationPrivateText = null;
+	private String relationModifiedDate = null;
 	private String relationCreateDate = null;
+
+	private String relationNoticeModifiedDate = null;
+	private String relationNoticeCreateDate = null;
+	private String relationNoticeRow = null;
+	private String relationNoticeSurety = null;
+	private String relationNoticeTag = null;
 
 	private String groupId = null;
 	private String groupName = null;
@@ -548,9 +566,6 @@ public class Read2004XML extends DefaultHandler {
 		}
 		if (this.currentEle.equals(unitSourceTG)) {
 			this.unitSourceId = attributes.getValue("sourceid");
-			// logger.fine("Unit: " + this.unitId + "/" + this.unitSex +"/" +
-			// this.unitSourceId);
-
 		} else if (this.currentEle.equals(unitRefnTG)) {
 			this.unitRefn = attributes.getValue("refn");
 		} else if (this.currentEle.equals(noticeTG)) {
@@ -578,15 +593,23 @@ public class Read2004XML extends DefaultHandler {
 			this.relationIdA = attributes.getValue("unitida");
 			this.relationIdB = attributes.getValue("unitidb");
 			this.relationTag = attributes.getValue("tag");
+			this.relationTaga = attributes.getValue("taga");
+			this.relationTagb = attributes.getValue("tagb");
 			this.relationRowA = attributes.getValue("rowa");
 			this.relationRowB = attributes.getValue("rowb");
 			this.relationSurety = attributes.getValue("surety");
 			this.relationSourceId = attributes.getValue("sourceid");
+			this.relationModifiedDate = attributes.getValue("modified");
 			this.relationCreateDate = attributes.getValue("created");
 			if (this.relationCreateDate.isEmpty()) {
 				this.relationCreateDate = attributes.getValue("createdate");
 			}
-
+		} else if (this.currentEle.equals(relationNoticeTG)) {
+			this.relationNoticeRow = attributes.getValue("row");
+			this.relationNoticeSurety = attributes.getValue("surety");
+			this.relationNoticeTag = attributes.getValue("tag");
+			this.relationNoticeModifiedDate = attributes.getValue("modified");
+			this.relationNoticeCreateDate = attributes.getValue("created");
 		} else if (this.currentEle.equals(relationSourceTG)) {
 			this.relationSourceId = attributes.getValue("sourceid");
 			logger.fine("Relation: " + this.relationIdA + "/"
@@ -595,6 +618,7 @@ public class Read2004XML extends DefaultHandler {
 			this.relationBegDatePrefix = attributes.getValue("type");
 		} else if (this.currentEle.equals(relationEndDateTG)) {
 			this.relationEndDatePrefix = attributes.getValue("type");
+
 		} else if (this.currentEle.equals(sourceTG)) {
 			this.sourceId = attributes.getValue("sourceid");
 
@@ -632,18 +656,13 @@ public class Read2004XML extends DefaultHandler {
 			throws SAXException {
 		int id, l, i;
 		String aux;
-		// System.out.println("ENDE: " + this.currentEle + "/" + qName);
 		if (this.qName != null) {
-			// System.out.println("Ele: "+ this.currentEle + " = " +
-			// this.currentChars.toString());
 			this.qName = null;
 		}
 		if (this.currentEle.equals(unitSourceTG)) {
 			String saux = this.currentChars.toString();
 			if (saux.length() > 0) {
-
 				this.unitSourceText = saux;
-
 			}
 
 		}
@@ -1238,10 +1257,8 @@ public class Read2004XML extends DefaultHandler {
 				}
 				rs.close();
 
-				if (this.relationTag.equals("CHIL")) {
-
-					this.currentStatus = "Chil " + rid;
-
+				if (finFamilyVersion != null) {
+					// this is the restore from FinFamily
 					this.pstm = this.con.prepareStatement(INSERT_RELATION);
 
 					this.pstm.setInt(1, rid);
@@ -1266,7 +1283,7 @@ public class Read2004XML extends DefaultHandler {
 						surety = 100;
 					}
 
-					this.pstm.setString(3, "FATH");
+					this.pstm.setString(3, this.relationTaga);
 					l = 0;
 					if (this.relationRowA != null) {
 						try {
@@ -1290,7 +1307,7 @@ public class Read2004XML extends DefaultHandler {
 						logger.log(Level.WARNING, err, se);
 
 					}
-
+					// here the other relation
 					this.pstm.setInt(1, rid);
 					if (this.relationIdB != null) {
 						try {
@@ -1303,7 +1320,7 @@ public class Read2004XML extends DefaultHandler {
 									+ this.relationIdB + " not numeric");
 						}
 					}
-					this.pstm.setString(3, "CHIL");
+					this.pstm.setString(3, this.relationTagb);
 					if (this.relationRowB != null) {
 						try {
 							l = Integer.parseInt(this.relationRowB);
@@ -1327,293 +1344,391 @@ public class Read2004XML extends DefaultHandler {
 						logger.log(Level.WARNING, err, se);
 					}
 
-					if (this.relationDescription != null) {
-
-						this.pstm = this.con
-								.prepareStatement("select nextval('relationnoticeseq')");
-						int rnid = 0;
-						rs = this.pstm.executeQuery();
-						if (rs.next()) {
-							rnid = rs.getInt(1);
-						} else {
-							throw new SAXException(
-									"Sequence relationnoticeseq error");
-						}
-						rs.close();
-
-						this.pstm = this.con
-								.prepareStatement(INSERT_RELATION_ADOPTION);
-						this.pstm.setInt(1, rnid);
-						this.pstm.setInt(2, rid);
-						this.pstm.setString(3, "ADOP");
-						this.pstm.setInt(4, 1); // rownumber
-						this.pstm.setTimestamp(5,
-								toTimestamp(this.relationCreateDate));
-						this.pstm.executeUpdate();
-					}
-
 				} else {
-					this.currentStatus = "Marr " + rid;
-					this.pstm = this.con.prepareStatement(INSERT_RELATION);
+					// this is the import from Suku 2004
+					if (this.relationTag.equals("CHIL")) {
 
-					this.pstm.setInt(1, rid);
-					if (this.relationIdA != null) {
-						try {
-							aid = Integer.parseInt(this.relationIdA
-									.substring(1));
-							this.pstm.setInt(2, aid);
-						} catch (NumberFormatException ne) {
-							throw new SAXException("RelationIdA "
-									+ this.relationIdA + " not numeric");
+						this.currentStatus = "Chil " + rid;
+
+						this.pstm = this.con.prepareStatement(INSERT_RELATION);
+
+						this.pstm.setInt(1, rid);
+						if (this.relationIdA != null) {
+							try {
+								aid = Integer.parseInt(this.relationIdA
+										.substring(1));
+
+								this.pstm.setInt(2, aid);
+							} catch (NumberFormatException ne) {
+								throw new SAXException("RelationIdA "
+										+ this.relationIdA + " not numeric");
+							}
 						}
-					}
-					this.pstm.setString(3, "MARR");
-					if (this.relationRowA != null) {
-						try {
-							l = Integer.parseInt(this.relationRowA);
-							this.pstm.setInt(4, l);
-						} catch (NumberFormatException ne) {
-							throw new SAXException("RelationRowA "
-									+ this.relationRowA + " not numeric");
-						}
-					}
-					this.pstm.setInt(5, surety);
-					this.pstm.setTimestamp(6,
-							toTimestamp(this.relationCreateDate));
-
-					try {
-						this.pstm.executeUpdate();
-					} catch (SQLException se) {
-						String err = "Spouse aPID = " + aid
-								+ " fails for RID = " + rid;
-						errorLine.add(err + " [" + se.getMessage() + "]");
-						logger.log(Level.WARNING, err, se);
-					}
-
-					this.pstm.setInt(1, rid);
-					if (this.relationIdB != null) {
-						try {
-							bid = Integer.parseInt(this.relationIdB
-									.substring(1));
-							this.pstm.setInt(2, bid);
-						} catch (NumberFormatException ne) {
-							throw new SAXException("RelationIdB "
-									+ this.relationIdB + " not numeric");
-						}
-					}
-					this.pstm.setString(3, "MARR");
-					if (this.relationRowB != null) {
-						try {
-							l = Integer.parseInt(this.relationRowB);
-							this.pstm.setInt(4, l);
-						} catch (NumberFormatException ne) {
-							throw new SAXException("RelationRowB "
-									+ this.relationRowB + " not numeric");
-						}
-					}
-					this.pstm.setInt(5, surety);
-					this.pstm.setTimestamp(6,
-							toTimestamp(this.relationCreateDate));
-
-					try {
-						this.pstm.executeUpdate();
-					} catch (SQLException se) {
-						String err = "Spouse bPID = " + bid
-								+ " fails for RID = " + rid;
-						errorLine.add(err + " [" + se.getMessage() + "]");
-						logger.log(Level.WARNING, err, se);
-					}
-					if (this.runner != null) {
-						if (this.runner.setRunnerValue("RelationId: " + rid)) {
-							throw new SAXException(Resurses
-									.getString("SUKU_CANCELLED"));
-						}
-
-					}
-
-					if (this.relationBegDateFrom != null
-							|| this.relationBegPlace != null
-							|| this.relationBegType != null
-							|| this.relationDescription != null) {
-
-						StringBuilder allText = new StringBuilder();
-						if (this.relationBegType != null)
-							allText.append(this.relationBegType);
-						if (this.relationDescription != null)
-							allText.append(this.relationDescription);
-						if (this.relationBegPlace != null)
-							allText.append(this.relationBegPlace);
-						if (this.relationNoteText != null)
-							allText.append(this.relationNoteText);
-						// if (this.relationSourceText != null) allText +=
-						// this.relationSourceText;
-
-						// System.out.println(allText.toString());
-						String langus[] = extractLangs(allText.toString());
-
-						this.nameCollector = new HashMap<String, String>();
-						this.placeCollector = new HashMap<String, String>();
-
-						this.pstm = this.con
-								.prepareStatement("select nextval('relationnoticeseq')");
-						int rnid = 0;
-						rs = this.pstm.executeQuery();
-						if (rs.next()) {
-							rnid = rs.getInt(1);
+						if (this.relationSurety != null) {
+							try {
+								surety = Integer.parseInt(this.relationSurety);
+							} catch (NumberFormatException ne) {
+								surety = 80;
+							}
 						} else {
-							throw new SAXException(
-									"Sequence relationnoticeseq error");
-						}
-						rs.close();
-
-						this.pstm = this.con
-								.prepareStatement(INSERT_RELATION_NOTICE);
-						this.pstm.setInt(1, rnid);
-						this.pstm.setInt(2, rid);
-						this.pstm.setString(3, "MARR");
-						this.pstm.setInt(4, 1); // rownumber
-						this.pstm.setString(5, langText(
-								this.relationDescription, this.oldCode));
-						this.pstm.setString(6, langText(this.relationBegType,
-								this.oldCode));
-						this.pstm.setString(7, this.relationBegDatePrefix);
-						this.pstm.setString(8, this.relationBegDateFrom);
-						this.pstm.setString(9, this.relationBegDateTo);
-						this.pstm.setString(10, langText(this.relationBegPlace,
-								this.oldCode));
-						this.pstm.setString(11, langText(this.relationNoteText,
-								this.oldCode));
-						if (this.relationSourceId != null) {
-							this.pstm
-									.setInt(12, idToInt(this.relationSourceId)); // langText(this.noticeSourceText,this.oldCode));
-						} else {
-							this.pstm.setNull(12, Types.INTEGER);
+							surety = 100;
 						}
 
-						this.pstm.setString(13, this.relationSourceText);
-						this.pstm.setString(14, this.relationPrivateText);
-						this.pstm.setTimestamp(15,
+						this.pstm.setString(3, "FATH");
+						l = 0;
+						if (this.relationRowA != null) {
+							try {
+								l = Integer.parseInt(this.relationRowA);
+								this.pstm.setInt(4, l);
+							} catch (NumberFormatException ne) {
+								throw new SAXException("RelationRowA "
+										+ this.relationRowA + " not numeric");
+							}
+						}
+						this.pstm.setInt(5, surety);
+						this.pstm.setTimestamp(6,
 								toTimestamp(this.relationCreateDate));
-						this.pstm.executeUpdate();
-						laskuriRelations++;
+						try {
+							this.pstm.executeUpdate();
+						} catch (SQLException se) {
+							String err = "Relative aPID = " + aid
+									+ " fails for RID = " + rid;
+							errorLine.add(err + " [" + se.getMessage() + "]");
 
-						if (langus != null && langus.length > 1) {
-							for (i = 0; i < langus.length; i++) {
-								if (!langus[i].equals(this.oldCode)) {
-									// this.pstm =
-									// this.con.prepareStatement("select nextval('relationseq')");
-									//									
-									// rs = this.pstm.executeQuery();
-									// if (rs.next()){
-									// rid = rs.getInt(1);
-									// } else {
-									// throw new SAXException
-									// ("Sequence relationseq error");
-									// }
-									// rs.close();
+							logger.log(Level.WARNING, err, se);
 
-									this.pstm = this.con
-											.prepareStatement(INSERT_RELATION_LANGUAGE);
-									this.pstm.setInt(1, rnid);
-									this.pstm.setInt(2, rid);
-									this.pstm.setString(3,
-											toLangCode(langus[i]));
-									this.pstm.setString(4, langText(
-											this.relationBegType, langus[i]));
-									this.pstm.setString(5,
-											langText(this.relationDescription,
-													langus[i]));
-									this.pstm.setString(6, langText(
-											this.relationBegPlace, langus[i]));
-									this.pstm.setString(7, langText(
-											this.relationNoteText, langus[i]));
-									// this.pstm.setString(9,
-									// langText(this.relationSourceText,langus[i]));
+						}
 
-									this.pstm.executeUpdate();
+						this.pstm.setInt(1, rid);
+						if (this.relationIdB != null) {
+							try {
+								bid = Integer.parseInt(this.relationIdB
+										.substring(1));
+
+								this.pstm.setInt(2, bid);
+							} catch (NumberFormatException ne) {
+								throw new SAXException("RelationIdB "
+										+ this.relationIdB + " not numeric");
+							}
+						}
+						this.pstm.setString(3, "CHIL");
+						if (this.relationRowB != null) {
+							try {
+								l = Integer.parseInt(this.relationRowB);
+								this.pstm.setInt(4, l);
+							} catch (NumberFormatException ne) {
+								throw new SAXException("RelationRowB "
+										+ this.relationRowB + " not numeric");
+							}
+						}
+						this.pstm.setInt(5, surety);
+						this.pstm.setTimestamp(6,
+								toTimestamp(this.relationCreateDate));
+
+						try {
+							this.pstm.executeUpdate();
+						} catch (SQLException se) {
+							String err = "Relative bPID = " + bid
+									+ " fails for RID = " + rid;
+							errorLine.add(err + " [" + se.getMessage() + "]");
+
+							logger.log(Level.WARNING, err, se);
+						}
+
+						if (this.relationDescription != null) {
+
+							this.pstm = this.con
+									.prepareStatement("select nextval('relationnoticeseq')");
+							int rnid = 0;
+							rs = this.pstm.executeQuery();
+							if (rs.next()) {
+								rnid = rs.getInt(1);
+							} else {
+								throw new SAXException(
+										"Sequence relationnoticeseq error");
+							}
+							rs.close();
+
+							this.pstm = this.con
+									.prepareStatement(INSERT_RELATION_ADOPTION);
+							this.pstm.setInt(1, rnid);
+							this.pstm.setInt(2, rid);
+							this.pstm.setString(3, "ADOP");
+							this.pstm.setInt(4, 1); // rownumber
+							this.pstm.setTimestamp(5,
+									toTimestamp(this.relationCreateDate));
+							this.pstm.executeUpdate();
+						}
+
+					} else {
+						this.currentStatus = "Marr " + rid;
+						this.pstm = this.con.prepareStatement(INSERT_RELATION);
+
+						this.pstm.setInt(1, rid);
+						if (this.relationIdA != null) {
+							try {
+								aid = Integer.parseInt(this.relationIdA
+										.substring(1));
+								this.pstm.setInt(2, aid);
+							} catch (NumberFormatException ne) {
+								throw new SAXException("RelationIdA "
+										+ this.relationIdA + " not numeric");
+							}
+						}
+						this.pstm.setString(3, "MARR");
+						if (this.relationRowA != null) {
+							try {
+								l = Integer.parseInt(this.relationRowA);
+								this.pstm.setInt(4, l);
+							} catch (NumberFormatException ne) {
+								throw new SAXException("RelationRowA "
+										+ this.relationRowA + " not numeric");
+							}
+						}
+						this.pstm.setInt(5, surety);
+						this.pstm.setTimestamp(6,
+								toTimestamp(this.relationCreateDate));
+
+						try {
+							this.pstm.executeUpdate();
+						} catch (SQLException se) {
+							String err = "Spouse aPID = " + aid
+									+ " fails for RID = " + rid;
+							errorLine.add(err + " [" + se.getMessage() + "]");
+							logger.log(Level.WARNING, err, se);
+						}
+
+						this.pstm.setInt(1, rid);
+						if (this.relationIdB != null) {
+							try {
+								bid = Integer.parseInt(this.relationIdB
+										.substring(1));
+								this.pstm.setInt(2, bid);
+							} catch (NumberFormatException ne) {
+								throw new SAXException("RelationIdB "
+										+ this.relationIdB + " not numeric");
+							}
+						}
+						this.pstm.setString(3, "MARR");
+						if (this.relationRowB != null) {
+							try {
+								l = Integer.parseInt(this.relationRowB);
+								this.pstm.setInt(4, l);
+							} catch (NumberFormatException ne) {
+								throw new SAXException("RelationRowB "
+										+ this.relationRowB + " not numeric");
+							}
+						}
+						this.pstm.setInt(5, surety);
+						this.pstm.setTimestamp(6,
+								toTimestamp(this.relationCreateDate));
+
+						try {
+							this.pstm.executeUpdate();
+						} catch (SQLException se) {
+							String err = "Spouse bPID = " + bid
+									+ " fails for RID = " + rid;
+							errorLine.add(err + " [" + se.getMessage() + "]");
+							logger.log(Level.WARNING, err, se);
+						}
+						if (this.runner != null) {
+							if (this.runner
+									.setRunnerValue("RelationId: " + rid)) {
+								throw new SAXException(Resurses
+										.getString("SUKU_CANCELLED"));
+							}
+
+						}
+
+						if (this.relationBegDateFrom != null
+								|| this.relationBegPlace != null
+								|| this.relationBegType != null
+								|| this.relationDescription != null) {
+
+							StringBuilder allText = new StringBuilder();
+							if (this.relationBegType != null)
+								allText.append(this.relationBegType);
+							if (this.relationDescription != null)
+								allText.append(this.relationDescription);
+							if (this.relationBegPlace != null)
+								allText.append(this.relationBegPlace);
+							if (this.relationNoteText != null)
+								allText.append(this.relationNoteText);
+							// if (this.relationSourceText != null) allText +=
+							// this.relationSourceText;
+
+							// System.out.println(allText.toString());
+							String langus[] = extractLangs(allText.toString());
+
+							this.nameCollector = new HashMap<String, String>();
+							this.placeCollector = new HashMap<String, String>();
+
+							this.pstm = this.con
+									.prepareStatement("select nextval('relationnoticeseq')");
+							int rnid = 0;
+							rs = this.pstm.executeQuery();
+							if (rs.next()) {
+								rnid = rs.getInt(1);
+							} else {
+								throw new SAXException(
+										"Sequence relationnoticeseq error");
+							}
+							rs.close();
+
+							this.pstm = this.con
+									.prepareStatement(INSERT_RELATION_NOTICE);
+							this.pstm.setInt(1, rnid);
+							this.pstm.setInt(2, rid);
+							this.pstm.setString(3, "MARR");
+							this.pstm.setInt(4, 1); // rownumber
+							this.pstm.setString(5, langText(
+									this.relationDescription, this.oldCode));
+							this.pstm.setString(6, langText(
+									this.relationBegType, this.oldCode));
+							this.pstm.setString(7, this.relationBegDatePrefix);
+							this.pstm.setString(8, this.relationBegDateFrom);
+							this.pstm.setString(9, this.relationBegDateTo);
+							this.pstm.setString(10, langText(
+									this.relationBegPlace, this.oldCode));
+							this.pstm.setString(11, langText(
+									this.relationNoteText, this.oldCode));
+							if (this.relationSourceId != null) {
+								this.pstm.setInt(12,
+										idToInt(this.relationSourceId)); // langText(this.noticeSourceText,this.oldCode));
+							} else {
+								this.pstm.setNull(12, Types.INTEGER);
+							}
+
+							this.pstm.setString(13, this.relationSourceText);
+							this.pstm.setString(14, this.relationPrivateText);
+							this.pstm.setTimestamp(15,
+									toTimestamp(this.relationCreateDate));
+							this.pstm.executeUpdate();
+							laskuriRelations++;
+
+							if (langus != null && langus.length > 1) {
+								for (i = 0; i < langus.length; i++) {
+									if (!langus[i].equals(this.oldCode)) {
+										// this.pstm =
+										// this.con.prepareStatement("select nextval('relationseq')");
+										//									
+										// rs = this.pstm.executeQuery();
+										// if (rs.next()){
+										// rid = rs.getInt(1);
+										// } else {
+										// throw new SAXException
+										// ("Sequence relationseq error");
+										// }
+										// rs.close();
+
+										this.pstm = this.con
+												.prepareStatement(INSERT_RELATION_LANGUAGE);
+										this.pstm.setInt(1, rnid);
+										this.pstm.setInt(2, rid);
+										this.pstm.setString(3,
+												toLangCode(langus[i]));
+										this.pstm.setString(4,
+												langText(this.relationBegType,
+														langus[i]));
+										this.pstm.setString(5, langText(
+												this.relationDescription,
+												langus[i]));
+										this.pstm.setString(6, langText(
+												this.relationBegPlace,
+												langus[i]));
+										this.pstm.setString(7, langText(
+												this.relationNoteText,
+												langus[i]));
+										// this.pstm.setString(9,
+										// langText(this.relationSourceText,langus[i]));
+
+										this.pstm.executeUpdate();
+									}
 								}
 							}
 						}
-					}
 
-					if (this.relationEndDateFrom != null
-							|| this.relationEndPlace != null
-							|| this.relationEndType != null) {
+						if (this.relationEndDateFrom != null
+								|| this.relationEndPlace != null
+								|| this.relationEndType != null) {
 
-						String allText = "";
-						if (this.relationEndType != null)
-							allText += this.relationEndType;
-						if (this.relationEndPlace != null)
-							allText += this.relationEndPlace;
+							String allText = "";
+							if (this.relationEndType != null)
+								allText += this.relationEndType;
+							if (this.relationEndPlace != null)
+								allText += this.relationEndPlace;
 
-						String langus[] = extractLangs(allText);
+							String langus[] = extractLangs(allText);
 
-						this.nameCollector = new HashMap<String, String>();
-						this.placeCollector = new HashMap<String, String>();
+							this.nameCollector = new HashMap<String, String>();
+							this.placeCollector = new HashMap<String, String>();
 
-						this.pstm = this.con
-								.prepareStatement("select nextval('relationnoticeseq')");
-						int rnid = 0;
-						rs = this.pstm.executeQuery();
-						if (rs.next()) {
-							rnid = rs.getInt(1);
-						} else {
-							throw new SAXException(
-									"Sequence relationnoticeseq error");
-						}
-						rs.close();
+							this.pstm = this.con
+									.prepareStatement("select nextval('relationnoticeseq')");
+							int rnid = 0;
+							rs = this.pstm.executeQuery();
+							if (rs.next()) {
+								rnid = rs.getInt(1);
+							} else {
+								throw new SAXException(
+										"Sequence relationnoticeseq error");
+							}
+							rs.close();
 
-						this.pstm = this.con
-								.prepareStatement(INSERT_RELATION_NOTICE);
-						this.pstm.setInt(1, rnid);
-						this.pstm.setInt(2, rid);
-						this.pstm.setString(3, "DIV");
-						this.pstm.setInt(4, 2); // rownumber
-						this.pstm.setString(5, null);
-						this.pstm.setString(6, this.relationEndType);
-						this.pstm.setString(7, this.relationEndDatePrefix);
-						this.pstm.setString(8, this.relationEndDateFrom);
-						this.pstm.setString(9, this.relationEndDateTo);
-						this.pstm.setString(10, this.relationEndPlace);
-						this.pstm.setString(11, null); // note text
-						this.pstm.setNull(12, Types.INTEGER);
-						this.pstm.setNull(13, Types.VARCHAR);
-						this.pstm.setNull(14, Types.VARCHAR);
+							this.pstm = this.con
+									.prepareStatement(INSERT_RELATION_NOTICE);
+							this.pstm.setInt(1, rnid);
+							this.pstm.setInt(2, rid);
+							this.pstm.setString(3, "DIV");
+							this.pstm.setInt(4, 2); // rownumber
+							this.pstm.setString(5, null);
+							this.pstm.setString(6, this.relationEndType);
+							this.pstm.setString(7, this.relationEndDatePrefix);
+							this.pstm.setString(8, this.relationEndDateFrom);
+							this.pstm.setString(9, this.relationEndDateTo);
+							this.pstm.setString(10, this.relationEndPlace);
+							this.pstm.setString(11, null); // note text
+							this.pstm.setNull(12, Types.INTEGER);
+							this.pstm.setNull(13, Types.VARCHAR);
+							this.pstm.setNull(14, Types.VARCHAR);
 
-						this.pstm.setTimestamp(15,
-								toTimestamp(this.relationCreateDate));
-						this.pstm.executeUpdate();
+							this.pstm.setTimestamp(15,
+									toTimestamp(this.relationCreateDate));
+							this.pstm.executeUpdate();
 
-						if (langus != null && langus.length > 1) {
-							for (i = 0; i < langus.length; i++) {
-								if (!langus[i].equals(this.oldCode)) {
-									this.pstm = this.con
-											.prepareStatement("select nextval('relationseq')");
+							if (langus != null && langus.length > 1) {
+								for (i = 0; i < langus.length; i++) {
+									if (!langus[i].equals(this.oldCode)) {
+										this.pstm = this.con
+												.prepareStatement("select nextval('relationseq')");
 
-									rs = this.pstm.executeQuery();
-									if (rs.next()) {
-										rid = rs.getInt(1);
-									} else {
-										throw new SAXException(
-												"Sequence relationseq error");
+										rs = this.pstm.executeQuery();
+										if (rs.next()) {
+											rid = rs.getInt(1);
+										} else {
+											throw new SAXException(
+													"Sequence relationseq error");
+										}
+										rs.close();
+
+										this.pstm = this.con
+												.prepareStatement(INSERT_RELATION_LANGUAGE);
+										this.pstm.setInt(1, rnid);
+
+										this.pstm.setString(2,
+												toLangCode(langus[i]));
+
+										this.pstm.setString(3,
+												langText(this.relationEndType,
+														langus[i]));
+										this.pstm.setString(4, null);
+										this.pstm.setString(5, langText(
+												this.relationEndPlace,
+												langus[i]));
+										this.pstm.setString(6, null);
+
+										this.pstm.executeUpdate();
 									}
-									rs.close();
-
-									this.pstm = this.con
-											.prepareStatement(INSERT_RELATION_LANGUAGE);
-									this.pstm.setInt(1, rnid);
-
-									this.pstm.setString(2,
-											toLangCode(langus[i]));
-
-									this.pstm.setString(3, langText(
-											this.relationEndType, langus[i]));
-									this.pstm.setString(4, null);
-									this.pstm.setString(5, langText(
-											this.relationEndPlace, langus[i]));
-									this.pstm.setString(6, null);
-
-									this.pstm.executeUpdate();
 								}
 							}
 						}
