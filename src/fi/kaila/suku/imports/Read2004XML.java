@@ -84,12 +84,12 @@ public class Read2004XML extends DefaultHandler {
 			+ " values (?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String INSERT_UNIT_NOTICE = "insert into UnitNotice "
-			+ "(PID,PNID,tag,privacy,noticerow,noticetype,"
+			+ "(PID,PNID,tag,privacy,noticerow,surety,noticetype,"
 			+ "description,dateprefix,fromdate,todate,place,"
 			+ "address,postalcode,postoffice,country,email,"
 			+ "notetext,mediafilename,mediatitle,givenname,patronym,prefix,"
 			+ "surname,postfix,SID,village,farm,croft,sourcetext,privatetext,createdate) "
-			+ "values (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?)";
+			+ "values (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?)";
 
 	private static final String INSERT_UNIT_LANGUAGE = "insert into UnitLanguage "
 			+ "(PID,PNID,tag,langCode,noticetype,"
@@ -101,7 +101,7 @@ public class Read2004XML extends DefaultHandler {
 
 	private static final String UPDATE_UNIT_INDEX_DATA = "update UnitNotice set RefNames = ?,RefPlaces = ? where PNID = ? ";
 
-	private static final String INSERT_RELATION = "insert into Relation (RID,PID,tag,relationrow,createdate) values (?,?,?,?,?)";
+	private static final String INSERT_RELATION = "insert into Relation (RID,PID,tag,relationrow,surety,createdate) values (?,?,?,?,?,?)";
 
 	private static final String INSERT_RELATION_NOTICE = "insert into RelationNotice "
 			+ "(RNID,RID,tag,noticerow,description,relationtype,"
@@ -215,8 +215,9 @@ public class Read2004XML extends DefaultHandler {
 	private static final String relationEndPlaceTG = "|genealog|relations|relation|endplace";
 	private static final String relationSourceTG = "|genealog|relations|relation|source";
 	private static final String relationPrivateTextTG = "|genealog|relations|relation|privatetext";
-
 	private static final String relationNoteTextTG = "|genealog|relations|relation|notetext";
+
+	private static final String relationNoticeTG = "|genealog|relations|relation|relationnotice";
 
 	private static final String groupTG = "|genealog|groups|group";
 	private static final String groupNameTG = "|genealog|groups|group|groupname";
@@ -268,6 +269,7 @@ public class Read2004XML extends DefaultHandler {
 	private String noticeRow = null;
 	private String noticeType = null;
 	private String noticePrivacy = null;
+	private String noticeSurety = null;
 	private String noticeDescription = null;
 	private String noticeDatePrefix = null;
 	private String noticeDateFrom = null;
@@ -297,6 +299,7 @@ public class Read2004XML extends DefaultHandler {
 	private String relationIdB = null;
 	private String relationRowA = null;
 	private String relationRowB = null;
+	private String relationSurety = null;
 	private String relationDescription = null;
 	private String relationBegType = null;
 	private String relationBegDatePrefix = null;
@@ -555,6 +558,7 @@ public class Read2004XML extends DefaultHandler {
 			}
 			this.noticeTag = ntag;
 			this.noticePrivacy = attributes.getValue("privacy");
+			this.noticeSurety = attributes.getValue("surety");
 			this.noticeSourceId = attributes.getValue("sourceid");
 			this.noticeCreateDate = attributes.getValue("createdate");
 		} else if (this.currentEle.equals(noticeSourceTG)) {
@@ -569,6 +573,7 @@ public class Read2004XML extends DefaultHandler {
 			this.relationTag = attributes.getValue("tag");
 			this.relationRowA = attributes.getValue("rowa");
 			this.relationRowB = attributes.getValue("rowb");
+			this.relationSurety = attributes.getValue("surety");
 			this.relationSourceId = attributes.getValue("sourceid");
 			this.relationCreateDate = attributes.getValue("createdate");
 
@@ -905,6 +910,7 @@ public class Read2004XML extends DefaultHandler {
 			try {
 				int pnid = 0;
 				int rowno = 0;
+				int suretyValue = 100;
 				this.pstm = this.con
 						.prepareStatement("select nextval('unitnoticeseq')");
 
@@ -936,56 +942,67 @@ public class Read2004XML extends DefaultHandler {
 					// throw new SAXException();
 				}
 				this.pstm.setInt(5, rowno);
-				this.pstm.setString(6, langText(this.noticeType, this.oldCode));
-				this.pstm.setString(7, langText(this.noticeDescription,
+
+				try {
+					if (this.noticeSurety != null) {
+						suretyValue = Integer.parseInt(this.noticeSurety);
+					} else {
+						suretyValue = 100;
+					}
+				} catch (NumberFormatException ne) {
+					suretyValue = 100;
+				}
+				this.pstm.setInt(6, suretyValue);
+				this.pstm.setString(7, langText(this.noticeType, this.oldCode));
+				this.pstm.setString(8, langText(this.noticeDescription,
 						this.oldCode));
-				this.pstm.setString(8, this.noticeDatePrefix);
-				this.pstm.setString(9, this.noticeDateFrom);
-				this.pstm.setString(10, this.noticeDateTo);
-				this.pstm.setString(11,
+				this.pstm.setString(9, this.noticeDatePrefix);
+				this.pstm.setString(10, this.noticeDateFrom);
+				this.pstm.setString(11, this.noticeDateTo);
+				this.pstm.setString(12,
 						langText(this.noticePlace, this.oldCode));
-				this.pstm.setString(12, extractCSVPart(this.noticeTag,
+				this.pstm.setString(13, extractCSVPart(this.noticeTag,
 						this.noticeAddress, 0));
-				this.pstm.setString(13, this.noticePostalCode);
-				this.pstm.setString(14, this.noticePostOffice);
-				this.pstm.setString(15, this.noticeCountry);
-				this.pstm.setString(16, this.noticeEmail);
+				this.pstm.setString(14, this.noticePostalCode);
+				this.pstm.setString(15, this.noticePostOffice);
+				this.pstm.setString(16, this.noticeCountry);
+				this.pstm.setString(17, this.noticeEmail);
 				// String t1 = langText(this.noticeNoteText,this.oldCode);
-				this.pstm.setString(17, langText(this.noticeNoteText,
+				this.pstm.setString(18, langText(this.noticeNoteText,
 						this.oldCode));
-				this.pstm.setString(18, this.noticeMediaFilename);
-				this.pstm.setString(19, langText(this.noticeMediaTitle,
+				this.pstm.setString(19, this.noticeMediaFilename);
+				this.pstm.setString(20, langText(this.noticeMediaTitle,
 						this.oldCode));
 				if (finFamilyVersion == null) {
-					this.pstm.setString(20, Utils.extractPatronyme(
-							this.noticeGivenName, false));
 					this.pstm.setString(21, Utils.extractPatronyme(
+							this.noticeGivenName, false));
+					this.pstm.setString(22, Utils.extractPatronyme(
 							this.noticeGivenName, true));
 				} else {
-					this.pstm.setString(20, this.noticeGivenName);
-					this.pstm.setString(21, this.noticePatronym);
+					this.pstm.setString(21, this.noticeGivenName);
+					this.pstm.setString(22, this.noticePatronym);
 
 				}
-				this.pstm.setString(22, this.noticePrefix);
-				this.pstm.setString(23, this.noticeSurname);
-				this.pstm.setString(24, this.noticePostfix);
+				this.pstm.setString(23, this.noticePrefix);
+				this.pstm.setString(24, this.noticeSurname);
+				this.pstm.setString(25, this.noticePostfix);
 				if (this.noticeSourceId != null) {
-					this.pstm.setInt(25, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
+					this.pstm.setInt(26, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
 				} else {
-					this.pstm.setNull(25, Types.INTEGER);
+					this.pstm.setNull(26, Types.INTEGER);
 				}
 
-				this.pstm.setString(26, extractCSVPart(this.noticeTag,
-						this.noticeAddress, 1));
 				this.pstm.setString(27, extractCSVPart(this.noticeTag,
-						this.noticeAddress, 2));
+						this.noticeAddress, 1));
 				this.pstm.setString(28, extractCSVPart(this.noticeTag,
+						this.noticeAddress, 2));
+				this.pstm.setString(29, extractCSVPart(this.noticeTag,
 						this.noticeAddress, 3));
 
-				this.pstm.setString(29, this.noticeSourceText);
-				this.pstm.setString(30, this.noticePrivateText);
+				this.pstm.setString(30, this.noticeSourceText);
+				this.pstm.setString(31, this.noticePrivateText);
 
-				this.pstm.setTimestamp(31, toTimestamp(this.noticeCreateDate));
+				this.pstm.setTimestamp(32, toTimestamp(this.noticeCreateDate));
 
 				this.pstm.executeUpdate();
 
@@ -1194,6 +1211,7 @@ public class Read2004XML extends DefaultHandler {
 			int rid;
 			int aid = 0;
 			int bid = 0;
+			int surety = 0;
 			try {
 				this.pstm = this.con
 						.prepareStatement("select nextval('relationseq')");
@@ -1224,6 +1242,16 @@ public class Read2004XML extends DefaultHandler {
 									+ this.relationIdA + " not numeric");
 						}
 					}
+					if (this.relationSurety != null) {
+						try {
+							surety = Integer.parseInt(this.relationSurety);
+						} catch (NumberFormatException ne) {
+							surety = 80;
+						}
+					} else {
+						surety = 100;
+					}
+
 					this.pstm.setString(3, "FATH");
 					l = 0;
 					if (this.relationRowA != null) {
@@ -1235,7 +1263,8 @@ public class Read2004XML extends DefaultHandler {
 									+ this.relationRowA + " not numeric");
 						}
 					}
-					this.pstm.setTimestamp(5,
+					this.pstm.setInt(5, surety);
+					this.pstm.setTimestamp(6,
 							toTimestamp(this.relationCreateDate));
 					try {
 						this.pstm.executeUpdate();
@@ -1270,7 +1299,8 @@ public class Read2004XML extends DefaultHandler {
 									+ this.relationRowB + " not numeric");
 						}
 					}
-					this.pstm.setTimestamp(5,
+					this.pstm.setInt(5, surety);
+					this.pstm.setTimestamp(6,
 							toTimestamp(this.relationCreateDate));
 
 					try {
@@ -1333,8 +1363,10 @@ public class Read2004XML extends DefaultHandler {
 									+ this.relationRowA + " not numeric");
 						}
 					}
-					this.pstm.setTimestamp(5,
+					this.pstm.setInt(5, surety);
+					this.pstm.setTimestamp(6,
 							toTimestamp(this.relationCreateDate));
+
 					try {
 						this.pstm.executeUpdate();
 					} catch (SQLException se) {
@@ -1365,8 +1397,10 @@ public class Read2004XML extends DefaultHandler {
 									+ this.relationRowB + " not numeric");
 						}
 					}
-					this.pstm.setTimestamp(5,
+					this.pstm.setInt(5, surety);
+					this.pstm.setTimestamp(6,
 							toTimestamp(this.relationCreateDate));
+
 					try {
 						this.pstm.executeUpdate();
 					} catch (SQLException se) {

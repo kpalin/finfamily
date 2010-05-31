@@ -549,21 +549,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			mListDatabases.setActionCommand("MENU_TOOLS_LIST_DATABASES");
 			mListDatabases.addActionListener(this);
 		}
-		// if (System.getProperty("file.separator").charAt(0) == '\\') { //
-		// windows
-		// // only
-		// this.mStopPgsql = new JMenuItem(Resurses
-		// .getString(Resurses.PGSQL_STOP));
-		// this.mTools.add(this.mStopPgsql);
-		// this.mStopPgsql.setActionCommand(Resurses.PGSQL_STOP);
-		// this.mStopPgsql.addActionListener(this);
-		//
-		// this.mStartPgsql = new JMenuItem(Resurses
-		// .getString(Resurses.PGSQL_START));
-		// this.mTools.add(this.mStartPgsql);
-		// this.mStartPgsql.setActionCommand(Resurses.PGSQL_START);
-		// this.mStartPgsql.addActionListener(this);
-		// }
 
 		this.mHelp = new JMenu(Resurses.getString(Resurses.HELP));
 		this.menubar.add(this.mHelp);
@@ -748,7 +733,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			throw new SukuException("Failed to create toolbar", e2);
 		}
 
-		// sukuClipboard = new Clipboard("suku");
 		enableCommands();
 
 		addComponentListener(this);
@@ -1185,129 +1169,128 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		sukuObject = null;
 		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
 		this.isConnected = 0;
-		cdlg.setVisible(true);
-		if (cdlg.wasOk()) {
-			String name = cdlg.getHost();
-			databaseName = cdlg.getDbName();
-			String userid = cdlg.getUserId();
-			String password = cdlg.getPassword();
 
-			try {
+		if (cdlg.getPassword() == null) {
 
-				kontroller.getConnection(name, databaseName, userid, password);
-			} catch (SukuException e3) {
-				String e1 = e3.getMessage();
-				String[] e2 = { "Connection failed" };
-				if (e1 != null) {
-					e2 = e1.split("\n");
-				}
-
-				// JOptionPane.showMessageDialog(this, e2[0], Resurses
-				// .getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-				this.statusPanel.setText(e2[0]);
-				e3.printStackTrace();
-				this.isConnected = 0;
-				enableCommands();
+			cdlg.setVisible(true);
+			if (!cdlg.wasOk())
 				return;
-			}
-			try {
-				SelectSchema schemas = new SelectSchema(this, false);
-				String schema = null;
-				schema = schemas.getSchema();
-				if (schema == null) {
-					schemas.setVisible(true);
-
-					schema = schemas.getSchema();
-					if (schema == null)
-						return;
-				}
-
-				kontroller.getSukuData("cmd=schema", "type=set", "name="
-						+ schema);
-
-				SukuData dblist = kontroller.getSukuData("cmd=dblista");
-
-				if (dblist.generalArray != null) {
-					StringBuilder sb = new StringBuilder();
-					sb.append(databaseName);
-					for (int i = 0; i < dblist.generalArray.length; i++) {
-						if (!dblist.generalArray[i]
-								.equalsIgnoreCase(databaseName)) {
-							sb.append(";");
-							sb.append(dblist.generalArray[i]);
-						}
-					}
-
-					kontroller.putPref(cdlg, "DBNAMES", sb.toString());
-				}
-
-				// copy report languages here to static
-				Locale reportLocale = new Locale("fi");
-
-				ExcelBundle resultla = new ExcelBundle();
-
-				resultla.importBundle("excel/FinFamily", "Program",
-						reportLocale);
-
-				repoLangList = ExcelBundle.getLangList();
-
-				SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
-						"type=needle", "name=needle");
-
-				if (resp.generalArray != null) {
-
-					for (int i = 0; i < resp.generalArray.length; i++) {
-						needle.add(resp.generalArray[i]);
-					}
-					if (resp.generalArray.length > 0) {
-						tSubjectPButton.setEnabled(true);
-					}
-				}
-
-				long startOfIntelli = System.currentTimeMillis();
-
-				resetIntellisens();
-				long endOfIntelli = System.currentTimeMillis();
-				long timeOfIntelli = (endOfIntelli - startOfIntelli) / 1000;
-				postServerVersion += ", Intellisens [" + timeOfIntelli
-						+ "] secs";
-				isConnected = 2;
-				enableCommands();
-				setTitle(null);
-				SukuData serverVersion = kontroller
-						.getSukuData("cmd=dbversion");
-
-				if (serverVersion.generalArray != null
-						&& serverVersion.generalArray.length > 0) {
-					postServerVersion = serverVersion.generalArray[0];
-					postServerVersion += " " + serverVersion.generalArray[1];
-				}
-
-				// if (dat != null && dat.generalArray != null
-				// && dat.generalArray.length > 1) {
-				// sens.setPaikat(dat.generalArray);
-				// }
-
-				return;
-
-			} catch (SukuException e) {
-				String e1 = e.getMessage();
-				String[] e2 = { "Connection failed" };
-				if (e1 != null) {
-					e2 = e1.split("\n");
-				}
-
-				// JOptionPane.showMessageDialog(this, e2[0], Resurses
-				// .getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
-				this.isConnected = 1;
-				setTitle(null);
-				this.statusPanel.setText(e2[0]);
-				e.printStackTrace();
-
-				enableCommands();
-
-			}
 		}
+		// if (cdlg.wasOk()) {
+		String name = cdlg.getHost();
+		databaseName = cdlg.getDbName();
+		String userid = cdlg.getUserId();
+		String password = cdlg.getPassword();
+
+		try {
+
+			kontroller.getConnection(name, databaseName, userid, password);
+		} catch (SukuException e3) {
+			String e1 = e3.getMessage();
+			String[] e2 = { "Connection failed" };
+			if (e1 != null) {
+				e2 = e1.split("\n");
+			}
+
+			this.statusPanel.setText(e2[0]);
+			e3.printStackTrace();
+			this.isConnected = 0;
+			enableCommands();
+			return;
+		}
+		try {
+			SelectSchema schemas = new SelectSchema(this, false);
+			String schema = null;
+			schema = schemas.getSchema();
+			if (schema == null) {
+				schemas.setVisible(true);
+
+				schema = schemas.getSchema();
+				if (schema == null)
+					return;
+			}
+
+			kontroller.getSukuData("cmd=schema", "type=set", "name=" + schema);
+
+			SukuData dblist = kontroller.getSukuData("cmd=dblista");
+
+			if (dblist.generalArray != null) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(databaseName);
+				for (int i = 0; i < dblist.generalArray.length; i++) {
+					if (!dblist.generalArray[i].equalsIgnoreCase(databaseName)) {
+						sb.append(";");
+						sb.append(dblist.generalArray[i]);
+					}
+				}
+
+				kontroller.putPref(cdlg, "DBNAMES", sb.toString());
+			}
+
+			// copy report languages here to static
+			Locale reportLocale = new Locale("fi");
+
+			ExcelBundle resultla = new ExcelBundle();
+
+			resultla.importBundle("excel/FinFamily", "Program", reportLocale);
+
+			repoLangList = ExcelBundle.getLangList();
+
+			SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
+					"type=needle", "name=needle");
+
+			if (resp.generalArray != null) {
+
+				for (int i = 0; i < resp.generalArray.length; i++) {
+					needle.add(resp.generalArray[i]);
+				}
+				if (resp.generalArray.length > 0) {
+					tSubjectPButton.setEnabled(true);
+				}
+			}
+
+			long startOfIntelli = System.currentTimeMillis();
+
+			resetIntellisens();
+			long endOfIntelli = System.currentTimeMillis();
+			long timeOfIntelli = (endOfIntelli - startOfIntelli) / 1000;
+			postServerVersion += ", Intellisens [" + timeOfIntelli + "] secs";
+			isConnected = 2;
+			enableCommands();
+			setTitle(null);
+			SukuData serverVersion = kontroller.getSukuData("cmd=dbversion");
+
+			if (serverVersion.generalArray != null
+					&& serverVersion.generalArray.length > 0) {
+				postServerVersion = serverVersion.generalArray[0];
+				postServerVersion += " " + serverVersion.generalArray[1];
+			}
+
+			// if (dat != null && dat.generalArray != null
+			// && dat.generalArray.length > 1) {
+			// sens.setPaikat(dat.generalArray);
+			// }
+
+			return;
+
+		} catch (SukuException e) {
+			String e1 = e.getMessage();
+			String[] e2 = { "Connection failed" };
+			if (e1 != null) {
+				e2 = e1.split("\n");
+			}
+
+			// JOptionPane.showMessageDialog(this, e2[0], Resurses
+			// .getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			this.isConnected = 1;
+			setTitle(null);
+			this.statusPanel.setText(e2[0]);
+			e.printStackTrace();
+
+			enableCommands();
+
+		}
+		// }
 
 	}
 
@@ -2586,6 +2569,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		SukuData request = new SukuData();
 		request.generalArray = needle.toArray(new String[0]);
+
+		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
+		cdlg.resetPassword();
 
 		try {
 			Suku.kontroller.getSukuData(request, "cmd=updatesettings",

@@ -239,7 +239,15 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	 * @return database password
 	 */
 	public String getPassword() {
-		return this.password.getText();
+		String pwd = this.password.getText();
+		if (pwd.isEmpty())
+			return null;
+		return pwd;
+	}
+
+	public void resetPassword() {
+
+		this.kontroller.putPref(this, "PASSWORD", "");
 	}
 
 }

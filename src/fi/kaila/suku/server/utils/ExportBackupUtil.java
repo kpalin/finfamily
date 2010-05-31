@@ -179,7 +179,7 @@ public class ExportBackupUtil {
 			}
 
 			String created = rs.getString("createdate");
-			unitEle.setAttribute("createdate", created.substring(0, 10));
+			unitEle.setAttribute("created", created);
 
 			String modified = rs.getString("modified");
 			if (modified != null) {
@@ -281,8 +281,8 @@ public class ExportBackupUtil {
 			prevRid = rid;
 			int apid = rs.getInt(2);
 			int bpid = rs.getInt(3);
-			String atag = rs.getString(4);
-			String btag = rs.getString(5);
+			String taga = rs.getString(4);
+			String tagb = rs.getString(5);
 			int surety = rs.getInt(6);
 			int arow = rs.getInt(7);
 			int brow = rs.getInt(8);
@@ -290,49 +290,49 @@ public class ExportBackupUtil {
 			int xpid = 0;
 			int ypid = 0;
 			String xtag = null;
-			String axtag = null;
-			String bxtag = null;
+			String xtaga = null;
+			String xtagb = null;
 			int xrow = 0;
 			int yrow = 0;
-			if (atag.equals("WIFE")) {
+			if (taga.equals("WIFE")) {
 				xpid = apid;
 				ypid = bpid;
 				xtag = "MARR";
-				axtag = atag;
-				bxtag = btag;
+				xtaga = taga;
+				xtagb = tagb;
 				xrow = arow;
 				yrow = brow;
 
-			} else if (atag.equals("HUSB")) {
+			} else if (taga.equals("HUSB")) {
 				xpid = bpid;
 				ypid = apid;
 				xtag = "MARR";
-				axtag = btag;
-				bxtag = atag;
+				xtaga = tagb;
+				xtagb = taga;
 				xrow = brow;
 				yrow = arow;
-			} else if (atag.equals("CHIL")) {
+			} else if (taga.equals("CHIL")) {
 				xpid = bpid;
 				ypid = apid;
 				xtag = "CHIL";
-				axtag = btag;
-				bxtag = atag;
+				xtaga = tagb;
+				xtagb = taga;
 				xrow = brow;
 				yrow = arow;
-			} else if (atag.equals("FATH") || atag.equals("MOTH")) {
+			} else if (taga.equals("FATH") || taga.equals("MOTH")) {
 				xpid = apid;
 				ypid = bpid;
 				xtag = "CHIL";
-				axtag = atag;
-				bxtag = btag;
+				xtaga = taga;
+				xtagb = tagb;
 				xrow = arow;
 				yrow = brow;
 			} else {
 				xpid = apid;
 				ypid = bpid;
 				xtag = null;
-				axtag = atag;
-				bxtag = btag;
+				xtaga = taga;
+				xtagb = tagb;
 				xrow = arow;
 				yrow = brow;
 			}
@@ -343,12 +343,12 @@ public class ExportBackupUtil {
 			if (xtag != null) {
 				relEle.setAttribute("tag", xtag);
 			}
-			relEle.setAttribute("atag", axtag);
-			relEle.setAttribute("btag", bxtag);
+			relEle.setAttribute("taga", xtaga);
+			relEle.setAttribute("tagb", xtagb);
 			relEle.setAttribute("rowa", "" + xrow);
 			relEle.setAttribute("rowb", "" + yrow);
 			relEle.setAttribute("surety", "" + surety);
-			relEle.setAttribute("createdate", created.substring(1, 10));
+			relEle.setAttribute("created", created);
 
 			double prossa = relaCounter / dbSize;
 			int prose = (int) (prossa * 100);
@@ -379,11 +379,11 @@ public class ExportBackupUtil {
 					ddEle.setAttribute("type", beginDateType);
 				}
 				ele = document.createElement("start");
-				relEle.appendChild(ele);
+				ddEle.appendChild(ele);
 				ele.setTextContent(beginStart);
 				if (beginEnd != null) {
 					ele = document.createElement("end");
-					relEle.appendChild(ele);
+					ddEle.appendChild(ele);
 					ele.setTextContent(beginEnd);
 				}
 			}
@@ -414,11 +414,11 @@ public class ExportBackupUtil {
 					ddEle.setAttribute("type", endDateType);
 				}
 				ele = document.createElement("start");
-				relEle.appendChild(ele);
+				ddEle.appendChild(ele);
 				ele.setTextContent(endStart);
 				if (endEnd != null) {
 					ele = document.createElement("end");
-					relEle.appendChild(ele);
+					ddEle.appendChild(ele);
 					ele.setTextContent(endEnd);
 				}
 			}
@@ -497,12 +497,17 @@ public class ExportBackupUtil {
 			if (modified != null) {
 				nEle.setAttribute("modified", modified);
 			}
-			nEle.setAttribute("createdate", created.substring(0, 10));
+			nEle.setAttribute("created", created);
 			if (rtype != null) {
-				nEle.setAttribute("relationtype", rtype);
+				ele = document.createElement("relationtype");
+				ele.setTextContent(rtype);
+				nEle.appendChild(ele);
 			}
 			if (desc != null) {
-				nEle.setAttribute("description", desc);
+				ele = document.createElement("description");
+				ele.setTextContent(desc);
+				nEle.appendChild(ele);
+
 			}
 			if (fromdate != null) {
 				Element dEle = document.createElement("date");
@@ -520,7 +525,10 @@ public class ExportBackupUtil {
 				}
 			}
 			if (place != null) {
-				nEle.setAttribute("place", place);
+				ele = document.createElement("place");
+				ele.setTextContent(place);
+				nEle.appendChild(ele);
+
 			}
 			if (notetext != null) {
 				ele = document.createElement("notetext");
@@ -607,7 +615,7 @@ public class ExportBackupUtil {
 			}
 
 			String created = rs.getString("createdate");
-			noticeEle.setAttribute("createdate", created.substring(0, 10));
+			noticeEle.setAttribute("created", created);
 
 			String modified = rs.getString("modified");
 			if (modified != null) {
@@ -914,7 +922,7 @@ public class ExportBackupUtil {
 				langEle.appendChild(ele);
 			}
 
-			ele = document.createElement("createdate");
+			ele = document.createElement("created");
 			ele.setTextContent(created);
 			langEle.appendChild(ele);
 
@@ -945,10 +953,15 @@ public class ExportBackupUtil {
 
 			langEle.setAttribute("langcode", langCode);
 			if (nType != null) {
-				langEle.setAttribute("noticetype", nType);
+				ele = document.createElement("noticetype");
+				ele.setTextContent(nType);
+				langEle.appendChild(ele);
 			}
 			if (desc != null) {
-				langEle.setAttribute("description", desc);
+				ele = document.createElement("description");
+				ele.setTextContent(desc);
+				langEle.appendChild(ele);
+
 			}
 			if (place != null) {
 				ele = document.createElement("place");
@@ -962,14 +975,10 @@ public class ExportBackupUtil {
 			}
 
 			if (modified != null) {
-				ele = document.createElement("modified");
-				ele.setTextContent(modified);
-				langEle.appendChild(ele);
-			}
 
-			ele = document.createElement("createdate");
-			ele.setTextContent(created);
-			langEle.appendChild(ele);
+				langEle.setAttribute("modified", modified);
+			}
+			langEle.setAttribute("created", created);
 
 		}
 		rs.close();
