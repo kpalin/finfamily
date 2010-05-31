@@ -541,7 +541,10 @@ public class Read2004XML extends DefaultHandler {
 			} else {
 				this.unitGroup = attributes.getValue("group");
 			}
-			this.unitCreateDate = attributes.getValue("createdate");
+			this.unitCreateDate = attributes.getValue("created");
+			if (this.unitCreateDate.isEmpty()) {
+				this.unitCreateDate = attributes.getValue("createdate");
+			}
 		}
 		if (this.currentEle.equals(unitSourceTG)) {
 			this.unitSourceId = attributes.getValue("sourceid");
@@ -560,7 +563,11 @@ public class Read2004XML extends DefaultHandler {
 			this.noticePrivacy = attributes.getValue("privacy");
 			this.noticeSurety = attributes.getValue("surety");
 			this.noticeSourceId = attributes.getValue("sourceid");
-			this.noticeCreateDate = attributes.getValue("createdate");
+
+			this.noticeCreateDate = attributes.getValue("created");
+			if (this.noticeCreateDate.isEmpty()) {
+				this.noticeCreateDate = attributes.getValue("createdate");
+			}
 		} else if (this.currentEle.equals(noticeSourceTG)) {
 			this.noticeSourceId = attributes.getValue("sourceid");
 			logger.fine("UnitNotice: " + this.unitId + "/"
@@ -575,7 +582,10 @@ public class Read2004XML extends DefaultHandler {
 			this.relationRowB = attributes.getValue("rowb");
 			this.relationSurety = attributes.getValue("surety");
 			this.relationSourceId = attributes.getValue("sourceid");
-			this.relationCreateDate = attributes.getValue("createdate");
+			this.relationCreateDate = attributes.getValue("created");
+			if (this.relationCreateDate.isEmpty()) {
+				this.relationCreateDate = attributes.getValue("createdate");
+			}
 
 		} else if (this.currentEle.equals(relationSourceTG)) {
 			this.relationSourceId = attributes.getValue("sourceid");
@@ -597,7 +607,11 @@ public class Read2004XML extends DefaultHandler {
 			this.conversionsLang = attributes.getValue("language");
 		} else if (this.currentEle.equals(viewTG)) {
 			this.viewId = attributes.getValue("viewid");
-			this.viewCreateDate = attributes.getValue("createdate");
+			this.viewCreateDate = attributes.getValue("created");
+			if (this.viewCreateDate.isEmpty()) {
+				this.viewCreateDate = attributes.getValue("createdate");
+			}
+
 		} else if (this.currentEle.equals(viewUnitTG)) {
 			this.viewUnitPid = attributes.getValue("unitid");
 		}
