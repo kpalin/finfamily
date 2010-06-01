@@ -1168,8 +1168,16 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void connectDb() {
 		sukuObject = null;
 		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
-		this.isConnected = 0;
 
+		if (this.isConnected != 0) {
+			this.tableModel.resetModel(); // clear contents of table first
+			// this.table.removeAll();
+			this.table.clearSelection();
+			// this.personView.reset();
+			this.tableMap.clear();
+			disconnectDb();
+		}
+		this.isConnected = 0;
 		if (cdlg.getPassword() == null) {
 
 			cdlg.setVisible(true);
@@ -1191,7 +1199,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (e1 != null) {
 				e2 = e1.split("\n");
 			}
-
+			cdlg.resetPassword();
 			this.statusPanel.setText(e2[0]);
 			e3.printStackTrace();
 			this.isConnected = 0;
@@ -2786,7 +2794,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void enableCommands() {
-		mConnect.setEnabled(isConnected == 0);
+		// mConnect.setEnabled(isConnected == 0);
 		mImport.setEnabled(isConnected != 0);
 		mImport2004.setEnabled(isConnected != 0);
 		mImportGedcom.setEnabled(isConnected != 0);

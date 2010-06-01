@@ -238,7 +238,6 @@ CreateDate timestamp not null default now()    --  timestamp created
 ) with oids;
 
 
-
 create unique index UnitLanguageIdx on UnitLanguage (PNID,LangCode);
 create index UnitLanguagePidIdx on UnitLanguage (PID);
 

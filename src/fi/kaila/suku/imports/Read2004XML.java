@@ -83,6 +83,17 @@ public class Read2004XML extends DefaultHandler {
 			+ "(PID,PNID,tag,privacy,givenname,patronym,prefix,surname,postfix,createdate)"
 			+ " values (?,?,?,?,?,?,?,?,?,?)";
 
+	private static final String INIT_UNIT_NOTICE = "insert into UnitNotice "
+			+ "(PID,PNID,tag,privacy,noticerow,surety,modified,createdate) "
+			+ "values (?,?,?,?,?, ?,?,?)";
+
+	private static final String UPDATE_UNIT_NOTICE = "update UnitNotice "
+			+ "set noticetype=?,description=?,dateprefix=?,fromdate=?,todate=?,"
+			+ "place=?,address=?,postalcode=?,postoffice=?,country=?,email=?,"
+			+ "notetext=?,mediafilename=?,mediatitle=?,givenname=?,patronym=?,prefix=?,"
+			+ "surname=?,postfix=?,SID=?,village=?,farm=?,croft=?,sourcetext=?,privatetext=? "
+			+ "where pnid=?";
+
 	private static final String INSERT_UNIT_NOTICE = "insert into UnitNotice "
 			+ "(PID,PNID,tag,privacy,noticerow,surety,noticetype,"
 			+ "description,dateprefix,fromdate,todate,place,"
@@ -93,8 +104,8 @@ public class Read2004XML extends DefaultHandler {
 
 	private static final String INSERT_UNIT_LANGUAGE = "insert into UnitLanguage "
 			+ "(PID,PNID,tag,langCode,noticetype,"
-			+ "description,place,notetext,mediatitle) "
-			+ "values (?,?,?,?,?,?,?,?,?)";
+			+ "description,place,notetext,mediatitle,modified,createdate) "
+			+ "values (?,?,?,?,?, ?,?,?,?,?, ?)";
 
 	private static final String UPDATE_IMAGE_DATA = "update UnitNotice set MediaData = ?,mediaWidth = ?"
 			+ ",mediaheight = ? where PNID = ? ";
@@ -203,6 +214,13 @@ public class Read2004XML extends DefaultHandler {
 	private static final String noticeCountryTG = "|genealog|units|unit|notices|notice|address|country";
 	private static final String noticeEmailTG = "|genealog|units|unit|notices|notice|address|email";
 
+	private static final String noticeLanguageTG = "|genealog|units|unit|notices|notice|language";
+	private static final String noticeLanguageTypeTG = "|genealog|units|unit|notices|notice|language|relationtype";
+	private static final String noticeLanguageDescriptionTG = "|genealog|units|unit|notices|notice|language|description";
+	private static final String noticeLanguagePlaceTG = "|genealog|units|unit|notices|notice|language|place";
+	private static final String noticeLanguageMediaTitleTG = "|genealog|units|unit|notices|notice|language|mediatitle";
+	private static final String noticeLanguageNoteTextTG = "|genealog|units|unit|notices|notice|language|notetext";
+
 	private static final String relationTG = "|genealog|relations|relation";
 	private static final String relationDescriptionTG = "|genealog|relations|relation|description";
 	private static final String relationBegTypeTG = "|genealog|relations|relation|begintype";
@@ -308,8 +326,19 @@ public class Read2004XML extends DefaultHandler {
 	private String noticeSourceId = null;
 	private String noticePrivateText = null;
 	private String noticeSourceText = null;
-
+	private String noticeModifiedDate = null;
 	private String noticeCreateDate = null;
+
+	private String noticeLanguage = null;
+	private String noticeLanguageType = null;
+	private String noticeLanguageDescription = null;
+	private String noticeLanguagePlace = null;
+	private String noticeLanguageMediaTitleText = null;
+	private String noticeLanguageNoteText = null;
+	private String noticeLanguageModifiedDate = null;
+	private String noticeLanguageCreateDate = null;
+	private int pnid = 0;
+	private int unitPid = 0;
 
 	private int rid;
 
@@ -570,6 +599,12 @@ public class Read2004XML extends DefaultHandler {
 
 			this.unitSex = attributes.getValue("sex");
 			this.unitId = attributes.getValue("unitid");
+			try {
+				unitPid = Integer.parseInt(this.unitId.substring(1));
+			} catch (NumberFormatException ne) {
+				throw new SAXException("UnitId " + this.unitId
+						+ " is not numeric");
+			}
 			this.unitTag = attributes.getValue("tag");
 			this.unitPrivacy = attributes.getValue("privacy");
 			if (finFamilyVersion == null) {
@@ -587,6 +622,7 @@ public class Read2004XML extends DefaultHandler {
 		} else if (this.currentEle.equals(unitRefnTG)) {
 			this.unitRefn = attributes.getValue("refn");
 		} else if (this.currentEle.equals(noticeTG)) {
+
 			this.noticeRow = attributes.getValue("row");
 			String ntag = attributes.getValue("tag");
 			if (finFamilyVersion != null && ntag.equals("INDI")) {
@@ -596,17 +632,22 @@ public class Read2004XML extends DefaultHandler {
 			this.noticePrivacy = attributes.getValue("privacy");
 			this.noticeSurety = attributes.getValue("surety");
 			this.noticeSourceId = attributes.getValue("sourceid");
-
+			this.noticeModifiedDate = attributes.getValue("modified");
 			this.noticeCreateDate = attributes.getValue("created");
 			if (this.noticeCreateDate.isEmpty()) {
 				this.noticeCreateDate = attributes.getValue("createdate");
 			}
+			initUnitNotice();
 		} else if (this.currentEle.equals(noticeSourceTG)) {
 			this.noticeSourceId = attributes.getValue("sourceid");
 			logger.fine("UnitNotice: " + this.unitId + "/"
 					+ this.noticeSourceId);
 		} else if (this.currentEle.equals(noticeDateTG)) {
 			this.noticeDatePrefix = attributes.getValue("type");
+		} else if (this.currentEle.equals(noticeLanguageTG)) {
+			this.noticeLanguage = attributes.getValue("langcode");
+			this.noticeLanguageModifiedDate = attributes.getValue("modified");
+			this.noticeLanguageCreateDate = attributes.getValue("created");
 		} else if (this.currentEle.equals(relationTG)) {
 			this.relationIdA = attributes.getValue("unitida");
 			this.relationIdB = attributes.getValue("unitidb");
@@ -828,9 +869,25 @@ public class Read2004XML extends DefaultHandler {
 		}
 
 		if (this.currentEle.equals(noticeTG)) { // end of notice
-
-			insertUnitNotice();
-
+			updateUnitNotice();
+		}
+		if (this.currentEle.equals(noticeLanguageTypeTG)) {
+			this.noticeLanguageType = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeLanguageDescriptionTG)) {
+			this.noticeLanguageDescription = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeLanguagePlaceTG)) {
+			this.noticeLanguagePlace = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeLanguageMediaTitleTG)) {
+			this.noticeLanguageMediaTitleText = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeLanguageNoteTextTG)) {
+			this.noticeLanguageNoteText = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeLanguageTG)) {
+			insertUnitLanguage();
 		}
 
 		if (this.currentEle.equals(relationDescriptionTG)) {
@@ -1174,6 +1231,47 @@ public class Read2004XML extends DefaultHandler {
 
 	}
 
+	private void insertUnitLanguage() throws SAXException {
+		try {
+
+			PreparedStatement pst;
+
+			pst = this.con.prepareStatement(INSERT_UNIT_LANGUAGE);
+
+			pst.setInt(1, unitPid);
+			pst.setInt(2, pnid);
+			pst.setString(3, this.noticeTag);
+			pst.setString(4, this.noticeLanguage);
+			pst.setString(5, this.noticeLanguageType);
+			pst.setString(6, this.noticeLanguageDescription);
+			pst.setString(7, this.noticeLanguagePlace);
+			pst.setString(8, this.noticeLanguageNoteText);
+			pst.setString(9, this.noticeLanguageMediaTitleText);
+
+			if (noticeLanguageModifiedDate == null) {
+				pst.setNull(10, Types.TIMESTAMP);
+			} else {
+				pst.setTimestamp(10,
+						toTimestamp(this.noticeLanguageModifiedDate));
+			}
+			pst.setTimestamp(11, toTimestamp(this.noticeLanguageCreateDate));
+			pst.executeUpdate();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "importing notice language notice failed",
+					e);
+			throw new SAXException(e);
+		}
+		noticeLanguage = null;
+		noticeLanguageType = null;
+		noticeLanguageDescription = null;
+		noticeLanguagePlace = null;
+		noticeLanguageNoteText = null;
+		noticeLanguageMediaTitleText = null;
+		noticeLanguageModifiedDate = null;
+		noticeLanguageCreateDate = null;
+
+	}
+
 	private void insertRelationLanguage() throws SAXException {
 		try {
 			PreparedStatement pst;
@@ -1215,16 +1313,6 @@ public class Read2004XML extends DefaultHandler {
 
 		try {
 			PreparedStatement pst;
-			// PreparedStatement pst = this.con
-			// .prepareStatement("select nextval('relationnoticeseq')");
-			// rnid = 0;
-			// ResultSet rs = pst.executeQuery();
-			// if (rs.next()) {
-			// rnid = rs.getInt(1);
-			// } else {
-			// throw new SAXException("Sequence relationnoticeseq error");
-			// }
-			// rs.close();
 
 			pst = this.con.prepareStatement(INSERT_RELATION_NOTICE);
 
@@ -1791,7 +1879,68 @@ public class Read2004XML extends DefaultHandler {
 		this.rid = 0;
 	}
 
-	private void insertUnitNotice() throws SAXException {
+	private void initUnitNotice() throws SAXException {
+		try {
+			PreparedStatement pst;
+
+			try {
+				pst = this.con
+						.prepareStatement("select nextval('unitnoticeseq')");
+				ResultSet rs = pst.executeQuery();
+				if (rs.next()) {
+					pnid = rs.getInt(1);
+				} else {
+					throw new SAXException("Sequence unitnoticeseq error");
+				}
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new SAXException("Sequence unitnoticeseq sql error");
+			}
+
+			pst = this.con.prepareStatement(INIT_UNIT_NOTICE);
+
+			pst.setInt(1, unitPid);
+			pst.setInt(2, pnid);
+			pst.setString(3, this.noticeTag);
+
+			pst.setString(4, this.noticePrivacy);
+			int row = 0;
+			try {
+				row = Integer.parseInt(this.noticeRow);
+			} catch (NumberFormatException ne) {
+
+			}
+			pst.setInt(5, row);
+			int surety = 100;
+			try {
+				row = Integer.parseInt(this.noticeSurety);
+			} catch (NumberFormatException ne) {
+
+			}
+			pst.setInt(6, surety);
+
+			if (noticeModifiedDate == null) {
+				pst.setNull(7, Types.TIMESTAMP);
+			} else {
+				pst.setTimestamp(7, toTimestamp(this.noticeModifiedDate));
+			}
+			pst.setTimestamp(8, toTimestamp(this.noticeCreateDate));
+			pst.executeUpdate();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "importing notice init failed", e);
+			throw new SAXException(e);
+		}
+		relationLanguage = null;
+		relationLanguageType = null;
+		relationLanguageDescription = null;
+		relationLanguagePlace = null;
+		relationLanguageNoteText = null;
+		relationLanguageModifiedDate = null;
+		relationLanguageCreateDate = null;
+	}
+
+	private void updateUnitNotice() throws SAXException {
 		int i;
 		StringBuilder allText = new StringBuilder();
 		if (this.noticeType != null)
@@ -1813,100 +1962,98 @@ public class Read2004XML extends DefaultHandler {
 		this.placeCollector = new HashMap<String, String>();
 
 		try {
-			int unitPid = 0;
-			int pnid = 0;
+
 			int rowno = 0;
 			int suretyValue = 100;
-			this.pstm = this.con
-					.prepareStatement("select nextval('unitnoticeseq')");
 
-			ResultSet rs = this.pstm.executeQuery();
-			if (rs.next()) {
-				pnid = rs.getInt(1);
-			} else {
-				throw new SAXException("Sequence unitnoticeseq error");
-			}
-			rs.close();
-			this.pstm = this.con.prepareStatement(INSERT_UNIT_NOTICE);
-			try {
-				unitPid = Integer.parseInt(this.unitId.substring(1));
-			} catch (NumberFormatException ne) {
-				throw new SAXException("UnitId " + this.unitId
-						+ " is not numeric");
-			}
-			this.pstm.setInt(1, unitPid);
-			this.pstm.setInt(2, pnid);
-			this.pstm.setString(3, this.noticeTag);
-			this.pstm.setString(4, this.noticePrivacy);
-			try {
-				rowno = Integer.parseInt(this.noticeRow);
-			} catch (NumberFormatException ne) {
-				rowno = 0;
-				errorLine.add(ne.getMessage() + " [Rownumber " + this.unitId
-						+ "/" + this.noticeRow + " is not numeric" + "]");
-				// throw new SAXException();
-			}
-			this.pstm.setInt(5, rowno);
+			this.pstm = this.con.prepareStatement(UPDATE_UNIT_NOTICE);
 
-			try {
-				if (this.noticeSurety != null) {
-					suretyValue = Integer.parseInt(this.noticeSurety);
-				} else {
-					suretyValue = 100;
-				}
-			} catch (NumberFormatException ne) {
-				suretyValue = 100;
-			}
-			this.pstm.setInt(6, suretyValue);
-			this.pstm.setString(7, langText(this.noticeType, this.oldCode));
-			this.pstm.setString(8, langText(this.noticeDescription,
+			// this.pstm.setInt(1, unitPid);
+			// this.pstm.setInt(2, pnid);
+			// this.pstm.setString(3, this.noticeTag);
+			// this.pstm.setString(4, this.noticePrivacy);
+			// try {
+			// rowno = Integer.parseInt(this.noticeRow);
+			// } catch (NumberFormatException ne) {
+			// rowno = 0;
+			// errorLine.add(ne.getMessage() + " [Rownumber " + this.unitId
+			// + "/" + this.noticeRow + " is not numeric" + "]");
+			// // throw new SAXException();
+			// }
+			// this.pstm.setInt(5, rowno);
+
+			// try {
+			// if (this.noticeSurety != null) {
+			// suretyValue = Integer.parseInt(this.noticeSurety);
+			// } else {
+			// suretyValue = 100;
+			// }
+			// } catch (NumberFormatException ne) {
+			// suretyValue = 100;
+			// }
+			// this.pstm.setInt(6, suretyValue);
+			this.pstm.setString(1, langText(this.noticeType, this.oldCode));
+			this.pstm.setString(2, langText(this.noticeDescription,
 					this.oldCode));
-			this.pstm.setString(9, this.noticeDatePrefix);
-			this.pstm.setString(10, this.noticeDateFrom);
-			this.pstm.setString(11, this.noticeDateTo);
-			this.pstm.setString(12, langText(this.noticePlace, this.oldCode));
-			this.pstm.setString(13, extractCSVPart(this.noticeTag,
+			this.pstm.setString(3, this.noticeDatePrefix);
+			this.pstm.setString(4, this.noticeDateFrom);
+			this.pstm.setString(5, this.noticeDateTo);
+			this.pstm.setString(6, langText(this.noticePlace, this.oldCode));
+			this.pstm.setString(7, extractCSVPart(this.noticeTag,
 					this.noticeAddress, 0));
-			this.pstm.setString(14, this.noticePostalCode);
-			this.pstm.setString(15, this.noticePostOffice);
-			this.pstm.setString(16, this.noticeCountry);
-			this.pstm.setString(17, this.noticeEmail);
+			this.pstm.setString(8, this.noticePostalCode);
+			this.pstm.setString(9, this.noticePostOffice);
+			this.pstm.setString(10, this.noticeCountry);
+			this.pstm.setString(11, this.noticeEmail);
 			// String t1 = langText(this.noticeNoteText,this.oldCode);
 			this.pstm
-					.setString(18, langText(this.noticeNoteText, this.oldCode));
-			this.pstm.setString(19, this.noticeMediaFilename);
-			this.pstm.setString(20, langText(this.noticeMediaTitle,
+					.setString(12, langText(this.noticeNoteText, this.oldCode));
+			this.pstm.setString(13, this.noticeMediaFilename);
+			this.pstm.setString(14, langText(this.noticeMediaTitle,
 					this.oldCode));
+			// private static final String UPDATE_UNIT_NOTICE =
+			// "update UnitNotice "
+			// +
+			// "set noticetype=?,description=?,dateprefix=?,fromdate=?,todate=?,"
+			// +
+			// "place=?,address=?,postalcode=?,postoffice=?,country=?,email=?,"
+			// +
+			// "notetext=?,mediafilename=?,mediatitle=?,givenname=?,patronym=?,prefix=?,"
+			// +
+			// "surname=?,postfix=?,SID=?,village=?,farm=?,croft=?,sourcetext=?,privatetext=? "
+			// + "where pnid=?";
+			//		
+
 			if (finFamilyVersion == null) {
-				this.pstm.setString(21, Utils.extractPatronyme(
+				this.pstm.setString(15, Utils.extractPatronyme(
 						this.noticeGivenName, false));
-				this.pstm.setString(22, Utils.extractPatronyme(
+				this.pstm.setString(16, Utils.extractPatronyme(
 						this.noticeGivenName, true));
 			} else {
-				this.pstm.setString(21, this.noticeGivenName);
-				this.pstm.setString(22, this.noticePatronym);
+				this.pstm.setString(15, this.noticeGivenName);
+				this.pstm.setString(16, this.noticePatronym);
 
 			}
-			this.pstm.setString(23, this.noticePrefix);
-			this.pstm.setString(24, this.noticeSurname);
-			this.pstm.setString(25, this.noticePostfix);
+			this.pstm.setString(17, this.noticePrefix);
+			this.pstm.setString(18, this.noticeSurname);
+			this.pstm.setString(19, this.noticePostfix);
 			if (this.noticeSourceId != null) {
-				this.pstm.setInt(26, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
+				this.pstm.setInt(20, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
 			} else {
-				this.pstm.setNull(26, Types.INTEGER);
+				this.pstm.setNull(20, Types.INTEGER);
 			}
 
-			this.pstm.setString(27, extractCSVPart(this.noticeTag,
+			this.pstm.setString(21, extractCSVPart(this.noticeTag,
 					this.noticeAddress, 1));
-			this.pstm.setString(28, extractCSVPart(this.noticeTag,
+			this.pstm.setString(22, extractCSVPart(this.noticeTag,
 					this.noticeAddress, 2));
-			this.pstm.setString(29, extractCSVPart(this.noticeTag,
+			this.pstm.setString(23, extractCSVPart(this.noticeTag,
 					this.noticeAddress, 3));
 
-			this.pstm.setString(30, this.noticeSourceText);
-			this.pstm.setString(31, this.noticePrivateText);
+			this.pstm.setString(24, this.noticeSourceText);
+			this.pstm.setString(25, this.noticePrivateText);
 
-			this.pstm.setTimestamp(32, toTimestamp(this.noticeCreateDate));
+			this.pstm.setInt(26, pnid);
 
 			this.pstm.executeUpdate();
 
@@ -2020,9 +2167,8 @@ public class Read2004XML extends DefaultHandler {
 								langus[i]));
 						this.pstm.setString(9, langText(this.noticeMediaTitle,
 								langus[i]));
-						// this.pstm.setInt (11,
-						// this.langText(this.noticeSourceText,langus[i]));
-
+						this.pstm.setNull(10, Types.TIMESTAMP);
+						this.pstm.setNull(11, Types.TIMESTAMP);
 						this.pstm.executeUpdate();
 					}
 				}
@@ -2101,12 +2247,6 @@ public class Read2004XML extends DefaultHandler {
 	private void insertUnitName() throws SAXException {
 		if (this.unitId == null) {
 			throw new SAXException("UnitId is null");
-		}
-		int unitPid = 0;
-		try {
-			unitPid = Integer.parseInt(this.unitId.substring(1));
-		} catch (NumberFormatException ne) {
-			throw new SAXException("UnitId " + this.unitId + " is not numeric");
 		}
 
 		try {

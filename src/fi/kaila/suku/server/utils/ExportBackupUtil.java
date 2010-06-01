@@ -893,7 +893,7 @@ public class ExportBackupUtil {
 
 			Element langEle = document.createElement("language");
 			rootElement.appendChild(langEle);
-			langEle.setAttribute("tag", tag);
+
 			langEle.setAttribute("langcode", langCode);
 
 			if (modified != null) {
