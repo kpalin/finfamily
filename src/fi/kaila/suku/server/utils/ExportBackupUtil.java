@@ -97,6 +97,10 @@ public class ExportBackupUtil {
 
 			createRelationsElement(document, rootElement);
 
+			createConversionsElement(document, rootElement);
+
+			createTypesElement(document, rootElement);
+
 			TransformerFactory transformerFactory = TransformerFactory
 					.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -139,6 +143,84 @@ public class ExportBackupUtil {
 		}
 
 		return dat;
+
+	}
+
+	private void createTypesElement(Document document, Element rootElement)
+			throws SQLException {
+		String sql = "select * from types order by tag,langcode";
+		Element typesEle = document.createElement("types");
+		rootElement.appendChild(typesEle);
+
+		Statement stm = con.createStatement();
+		ResultSet rs;
+		Element conversionsEle = null;
+		rs = stm.executeQuery(sql);
+		String prevTag = "";
+		Element typeEle = null;
+		while (rs.next()) {
+			String tag = rs.getString("tag");
+			String rule = rs.getString("rule");
+			String langcode = rs.getString("langcode");
+			String name = rs.getString("name");
+			String reportname = rs.getString("reportname");
+			if (!prevTag.equals(tag)) {
+				typeEle = document.createElement("type");
+				typeEle.setAttribute("tag", tag);
+				typesEle.appendChild(typeEle);
+				if (rule != null) {
+					typeEle.setAttribute("rule", rule);
+				}
+				prevTag = tag;
+			}
+			Element ele = document.createElement("name");
+			typeEle.appendChild(ele);
+			ele.setAttribute("langcode", langcode);
+			ele.setAttribute("name", name);
+			if (reportname != null) {
+				ele.setAttribute("reportname", reportname);
+			}
+
+		}
+		rs.next();
+		stm.close();
+
+	}
+
+	private void createConversionsElement(Document document, Element rootElement)
+			throws SQLException {
+		String sql = "select * from conversions";
+
+		Statement stm = con.createStatement();
+		ResultSet rs;
+		Element conversionsEle = null;
+		rs = stm.executeQuery(sql);
+
+		while (rs.next()) {
+			if (conversionsEle == null) {
+				conversionsEle = document.createElement("conversions");
+				rootElement.appendChild(conversionsEle);
+			}
+
+			Element conversionEle = document.createElement("conversion");
+			conversionsEle.appendChild(conversionEle);
+			conversionEle.setAttribute("rule", rs.getString("rule"));
+			Element fromEle = document.createElement("fromtext");
+			fromEle.setTextContent(rs.getString("fromtext"));
+			conversionEle.appendChild(fromEle);
+			Element toEle = document.createElement("totext");
+			String ll = rs.getString("langcode");
+			toEle.setAttribute("langcode", ll);
+			if (ll.equals("sv")) {
+				ll = "SE";
+			}
+			toEle.setAttribute("language", ll.toUpperCase());
+			toEle.setTextContent(rs.getString("totext"));
+			conversionEle.appendChild(toEle);
+
+		}
+		rs.next();
+		stm.close();
 
 	}
 

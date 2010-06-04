@@ -261,8 +261,8 @@ public class Read2004XML extends DefaultHandler {
 	private static final String sourceTG = "|genealog|sources|source-data";
 	// private static final String sourceNoteTextTG =
 	// "|genealog|sources|source-data|notetext";
-
-	private static final String conversionsTG = "|genealog|conversions|conversion";
+	private static final String conversionsTG = "|genealog|conversions";
+	private static final String conversionTG = "|genealog|conversions|conversion";
 	private static final String conversionsFromTG = "|genealog|conversions|conversion|fromtext";
 	private static final String conversionsToTG = "|genealog|conversions|conversion|totext";
 
@@ -410,6 +410,8 @@ public class Read2004XML extends DefaultHandler {
 
 	private HashMap<String, String> nameCollector = null;
 	private HashMap<String, String> placeCollector = null;
+
+	private HashMap<String, String> conversionsChecker = null;
 
 	private Import2004Dialog runner = null;
 
@@ -727,6 +729,8 @@ public class Read2004XML extends DefaultHandler {
 		} else if (this.currentEle.equals(groupTG)) {
 			this.groupId = attributes.getValue("groupid");
 		} else if (this.currentEle.equals(conversionsTG)) {
+			this.conversionsChecker = new HashMap<String, String>();
+		} else if (this.currentEle.equals(conversionTG)) {
 			this.conversionsRule = attributes.getValue("rule");
 		} else if (this.currentEle.equals(conversionsToTG)) {
 			this.conversionsLang = attributes.getValue("language");
@@ -1108,34 +1112,41 @@ public class Read2004XML extends DefaultHandler {
 			this.conversionsTo = this.currentChars.toString();
 		}
 
-		if (this.currentEle.equals(conversionsTG)) {
+		if (this.currentEle.equals(conversionTG)) {
 			if (this.conversionsFrom != null && this.conversionsLang != null
 					&& this.conversionsRule != null
 					&& this.conversionsTo != null) {
-
-				try {
-					pst = this.con.prepareStatement(INSERT_CONVERSION);
-					pst.setString(1, this.conversionsFrom);
-					String newLang = this.conversionsLang.toLowerCase();
-					if (newLang.equals("se")) {
-						newLang = "sv";
-					}
-					pst.setString(2, newLang);
-					pst.setString(3, this.conversionsRule);
-					pst.setString(4, this.conversionsTo);
-					pst.executeUpdate();
-					laskuriConversion++;
-					if (this.runner != null) {
-						if (this.runner.setRunnerValue("ConversionId: "
-								+ laskuriConversion)) {
-							throw new SAXException(Resurses
-									.getString("SUKU_CANCELLED"));
+				String newLang = this.conversionsLang.toLowerCase();
+				if (newLang.equals("se")) {
+					newLang = "sv";
+				}
+				String tmp = this.conversionsFrom + "/" + newLang
+						+ this.conversionsRule;
+				String xx = this.conversionsChecker.put(tmp.toLowerCase(),
+						this.conversionsTo);
+				if (xx == null) {
+					// add to db only if not there yet
+					try {
+						pst = this.con.prepareStatement(INSERT_CONVERSION);
+						pst.setString(1, this.conversionsFrom.toLowerCase());
+						pst.setString(2, newLang);
+						pst.setString(3, this.conversionsRule);
+						pst.setString(4, this.conversionsTo);
+						pst.executeUpdate();
+						laskuriConversion++;
+						if (this.runner != null) {
+							if (this.runner.setRunnerValue("ConversionId: "
+									+ laskuriConversion)) {
+								throw new SAXException(Resurses
+										.getString("SUKU_CANCELLED"));
+							}
 						}
-					}
-				} catch (SQLException e) {
-					logger.log(Level.SEVERE, "importing conversion failed", e);
-					throw new SAXException(e);
+					} catch (SQLException e) {
+						logger.log(Level.SEVERE, "importing conversion failed",
+								e);
+						throw new SAXException(e);
 
+					}
 				}
 				this.conversionsFrom = null;
 				this.conversionsLang = null;
