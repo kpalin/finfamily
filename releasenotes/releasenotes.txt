@@ -6,13 +6,13 @@ Release 584 on 5 jun 2010
 
 * Added rest of tables to backup. Fixed bug (from 580) in restore from Suku 2004
 
-Release 580 on 1 jun 2010
+Release 580 on 1 jun 2010 (41)
 
 * Backup/restore should now function with both FinFamily and Suku 2004 both directions
 * Backup created into zip-file including images. Restore requires UnZip of the file.
 * Create backup still "Under Construction". Possibly speed of backup needs to be improved.
 
-Release 568 on 26 may 2010
+Release 568 on 26 may 2010 (41)
 
 * Database schema to be names Family database
 * First draft version of create backup command. 
