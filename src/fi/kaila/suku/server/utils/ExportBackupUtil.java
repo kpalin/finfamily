@@ -101,6 +101,8 @@ public class ExportBackupUtil {
 
 			createTypesElement(document, rootElement);
 
+			createViewsElement(document, rootElement);
+
 			TransformerFactory transformerFactory = TransformerFactory
 					.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -143,6 +145,61 @@ public class ExportBackupUtil {
 		}
 
 		return dat;
+
+	}
+
+	private void createViewsElement(Document document, Element rootElement)
+			throws SQLException {
+		String sql = "select * from views";
+		String sqlu = "select * from viewunits where vid=?";
+		Element viewsEle = document.createElement("views");
+		rootElement.appendChild(viewsEle);
+
+		Statement stm = con.createStatement();
+
+		PreparedStatement pst = con.prepareStatement(sqlu);
+		ResultSet rs;
+		ResultSet rsu;
+		rs = stm.executeQuery(sql);
+
+		while (rs.next()) {
+			int vid = rs.getInt("vid");
+			String name = rs.getString("name");
+			String created = rs.getString("createdate");
+			Element viewEle = document.createElement("view");
+			viewsEle.appendChild(viewEle);
+			viewEle.setAttribute("viewid", "V" + vid);
+			viewEle.setAttribute("created", created);
+			viewEle.setAttribute("createdate", created.substring(0, 10));
+			Element e = document.createElement("description");
+			e.setTextContent(name);
+			viewEle.appendChild(e);
+
+			pst.setInt(1, vid);
+
+			rsu = pst.executeQuery();
+			Element vu = null;
+			while (rsu.next()) {
+				if (vu == null) {
+					vu = document.createElement("viewunits");
+					viewEle.appendChild(vu);
+				}
+
+				int pid = rsu.getInt("pid");
+				int value = rsu.getInt("value");
+
+				Element ref = document.createElement("ref");
+				ref.setAttribute("unitid", "U" + pid);
+				vu.appendChild(ref);
+				if (value != 0) {
+					ref.setAttribute("value", "" + value);
+				}
+
+			}
+
+		}
+		rs.next();
+		stm.close();
 
 	}
 
