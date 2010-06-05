@@ -334,7 +334,6 @@ Rule varchar,
 LangCode varchar not null,                    -- language code for type
 Name varchar,                        -- value as displayed in program
 ReportName varchar, 						  -- value in reports if not =O name
-Modified timestamp,                           -- timestamp modified
 CreateDate timestamp not null default now()   -- timestamp created  
 );
 

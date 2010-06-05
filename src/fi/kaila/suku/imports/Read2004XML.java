@@ -280,6 +280,10 @@ public class Read2004XML extends DefaultHandler {
 	private static final String viewNameTG = "|genealog|views|view|description";
 	private static final String viewUnitTG = "|genealog|views|view|viewunits|ref";
 
+	private static final String typesTG = "|genealog|types";
+	private static final String typeTG = "|genealog|types|type";
+	private static final String typeNameTG = "|genealog|types|type|name";
+
 	private String oldCode = null;
 
 	private String currentEle = "";
@@ -407,6 +411,9 @@ public class Read2004XML extends DefaultHandler {
 	private String viewCreateDate = null;
 	private String viewName = null;
 	private String viewUnitPid = null;
+
+	private String typeRule = null;
+	private String typeTag = null;
 
 	private HashMap<String, String> nameCollector = null;
 	private HashMap<String, String> placeCollector = null;
@@ -743,6 +750,43 @@ public class Read2004XML extends DefaultHandler {
 
 		} else if (this.currentEle.equals(viewUnitTG)) {
 			this.viewUnitPid = attributes.getValue("unitid");
+		} else if (this.currentEle.equals(typesTG)) {
+			String sql = "delete from types";
+			try {
+				Statement stm = con.createStatement();
+				stm.executeUpdate(sql);
+				logger.log(Level.FINE, "deleted default types");
+			} catch (SQLException e) {
+				logger.log(Level.SEVERE, "deleting default types failed", e);
+				throw new SAXException(e);
+			}
+
+		} else if (this.currentEle.equals(typeTG)) {
+			this.typeRule = attributes.getValue("rule");
+			this.typeTag = attributes.getValue("tag");
+		} else if (this.currentEle.equals(typeNameTG)) {
+
+			String langcode = attributes.getValue("langcode");
+			String name = attributes.getValue("name");
+			String reportname = attributes.getValue("reportname");
+			String sql = "insert into types (tagtype,tag,rule,langcode,name,reportname) "
+					+ "values ('Notices',?,?,?,?,?) ";
+			try {
+				PreparedStatement pst = con.prepareStatement(sql);
+				pst.setString(1, this.typeTag);
+				pst.setString(2, this.typeRule);
+				pst.setString(3, langcode);
+				pst.setString(4, name);
+				pst.setString(5, reportname);
+
+				pst.executeUpdate();
+				logger.log(Level.FINEST, "Added type '" + this.typeTag + "' ["
+						+ langcode + "]");
+			} catch (SQLException e) {
+				logger.log(Level.SEVERE, "deleting default types failed", e);
+				throw new SAXException(e);
+			}
+
 		}
 	}
 
@@ -1228,6 +1272,9 @@ public class Read2004XML extends DefaultHandler {
 			}
 
 			this.viewUnitPid = null;
+		} else if (this.currentEle.equals(typeTG)) {
+			this.typeRule = null;
+			this.typeTag = null;
 		}
 		int k;
 		if (this.currentEle.endsWith(qName)) {
