@@ -623,6 +623,7 @@ public class Read2004XML extends DefaultHandler {
 			if (this.unitCreateDate == null) {
 				this.unitCreateDate = attributes.getValue("createdate");
 			}
+
 		}
 		if (this.currentEle.equals(unitSourceTG)) {
 			this.unitSourceId = attributes.getValue("sourceid");
@@ -1168,8 +1169,11 @@ public class Read2004XML extends DefaultHandler {
 						+ this.conversionsRule;
 				String xx = this.conversionsChecker.put(tmp.toLowerCase(),
 						this.conversionsTo);
+
 				if (xx == null) {
 					// add to db only if not there yet
+					this.runner.setRunnerValue("conv [" + newLang + "]"
+							+ this.conversionsFrom);
 					try {
 						pst = this.con.prepareStatement(INSERT_CONVERSION);
 						pst.setString(1, this.conversionsFrom.toLowerCase());
@@ -1223,7 +1227,8 @@ public class Read2004XML extends DefaultHandler {
 					pst.setTimestamp(3, toTimestamp(this.viewCreateDate, true));
 					pst.executeUpdate();
 					laskuriViews++;
-
+					this.runner.setRunnerValue("view [" + vid + "]"
+							+ this.viewName);
 					if (this.runner != null) {
 						if (this.runner.setRunnerValue("ViewId: " + vid)) {
 							throw new SAXException(Resurses
@@ -1928,6 +1933,7 @@ public class Read2004XML extends DefaultHandler {
 					}
 				}
 			}
+			this.runner.setRunnerValue("rid [" + rid + "]");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "importing relation failed", e);
 			throw new SAXException(e);
@@ -2343,7 +2349,7 @@ public class Read2004XML extends DefaultHandler {
 			}
 			pst.setTimestamp(6, toTimestamp(this.unitCreateDate, true));
 			pst.executeUpdate();
-
+			this.runner.setRunnerValue("pid [" + unitPid + "]");
 			logger.fine("Unit: " + this.unitId + "/" + this.unitSex + "/"
 					+ this.unitSourceId);
 
