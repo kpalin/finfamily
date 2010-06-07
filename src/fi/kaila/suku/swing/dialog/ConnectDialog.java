@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -37,11 +38,12 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	private JComboBox dbname = null;
 	private JTextField userid = null;
 	private JTextField password = null;
-
+	private JCheckBox rememberPwd = null;
 	private JButton ok;
 	private JButton cancel;
 	private boolean isRemote;
 	private boolean okPressed = false;
+	private boolean rememberDatabase = false;
 	private SukuKontroller kontroller = null;
 
 	/**
@@ -51,10 +53,10 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	 * @param kontroller
 	 * @param isRemote
 	 */
-	@SuppressWarnings("unqualified-field-access")
+
 	public ConnectDialog(JFrame owner, SukuKontroller kontroller,
 			boolean isRemote) {
-		super(owner, Resurses.getString("CONNECT"), true);
+		super(owner, Resurses.getString("LOGIN_CONNECT"), true);
 		this.isRemote = isRemote;
 		this.kontroller = kontroller;
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -63,7 +65,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		setLayout(null);
 		int y = 20;
 		if (!isRemote) {
-			lbl = new JLabel(Resurses.getString("HOST"));
+			lbl = new JLabel(Resurses.getString("LOGIN_HOST"));
 			getContentPane().add(lbl);
 			lbl.setBounds(20, y, 100, 20);
 
@@ -71,7 +73,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 			getContentPane().add(host);
 			host.setBounds(120, y, 200, 20);
 			y += 24;
-			lbl = new JLabel(Resurses.getString("DBNAME"));
+			lbl = new JLabel(Resurses.getString("LOGIN_DBNAME"));
 			getContentPane().add(lbl);
 			lbl.setBounds(20, y, 100, 20);
 
@@ -82,7 +84,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 			y += 24;
 
 		}
-		lbl = new JLabel(Resurses.getString("USERID"));
+		lbl = new JLabel(Resurses.getString("LOGIN_USERID"));
 		getContentPane().add(lbl);
 		lbl.setBounds(20, y, 100, 20);
 
@@ -90,7 +92,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		getContentPane().add(userid);
 		userid.setBounds(120, y, 200, 20);
 		y += 24;
-		lbl = new JLabel(Resurses.getString("PASSWORD"));
+		lbl = new JLabel(Resurses.getString("LOGIN_PASSWORD"));
 		getContentPane().add(lbl);
 		lbl.setBounds(20, y, 100, 20);
 
@@ -98,6 +100,11 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		getContentPane().add(password);
 		password.setBounds(120, y, 200, 20);
 
+		y += 24;
+
+		rememberPwd = new JCheckBox(Resurses.getString("LOGIN_REMEMBER"));
+		getContentPane().add(rememberPwd);
+		rememberPwd.setBounds(120, y, 200, 20);
 		// y += 24;
 		//		
 		// isRemote = new JCheckBox(Resurses.instance().getString("ISREMOTE"));
@@ -158,13 +165,17 @@ public class ConnectDialog extends JDialog implements ActionListener {
 			password.setText(aux);
 			password.setSelectionStart(aux.length());
 			password.setSelectionEnd(aux.length());
+
+			aux = this.kontroller.getPref(this, "REMEMBER", "false");
+			rememberPwd.setSelected("true".equals(aux));
+			aux = this.kontroller.getPref(this, "REMEMBER_DB", "true");
+			rememberDatabase = "true".equals(aux) ? true : false;
+
 		}
 		setBounds(d.width / 2 - 200, d.height / 2 - 100, 380, y + 80);
 
 	}
 
-	//
-	@SuppressWarnings("unqualified-field-access")
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 
@@ -175,7 +186,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		}
 		if (cmd.equals(OK)) {
 			this.okPressed = true;
-
+			rememberDatabase = true;
 			String aux;
 			if (this.isRemote) {
 				aux = userid.getText();
@@ -188,14 +199,25 @@ public class ConnectDialog extends JDialog implements ActionListener {
 				aux = host.getText();
 				this.kontroller.putPref(this, "HOST", aux);
 
-				// aux = dbname.getText();
-				// this.kontroller.putPref(this,"DBNAME", aux);
-
 				aux = userid.getText();
 				this.kontroller.putPref(this, "USERID", aux);
 
+				if (rememberPwd.isSelected()) {
+
+					this.kontroller.putPref(this, "REMEMBER", "true");
+
+				} else {
+					this.kontroller.putPref(this, "REMEMBER", "false");
+
+				}
 				aux = password.getText();
-				this.kontroller.putPref(this, "PASSWORD", aux);
+				if (rememberPwd.isSelected()) {
+					this.kontroller.putPref(this, "PASSWORD", aux);
+				} else {
+					this.kontroller.putPref(this, "PASSWORD", "");
+				}
+
+				this.kontroller.putPref(this, "REMEMBER_DB", "true");
 
 			}
 			setVisible(false);
@@ -245,9 +267,19 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		return pwd;
 	}
 
-	public void resetPassword() {
+	public void rememberDatabase(boolean value) {
+		rememberDatabase = value;
+		this.kontroller.putPref(this, "REMEMBER_DB", rememberDatabase ? "true"
+				: "false");
+		// this.kontroller.putPref(this, "PASSWORD", "");
+	}
 
-		this.kontroller.putPref(this, "PASSWORD", "");
+	/**
+	 * 
+	 * @return true is database is activated
+	 */
+	public boolean hasDatabase() {
+		return rememberDatabase;
 	}
 
 }

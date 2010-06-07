@@ -1178,7 +1178,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			disconnectDb();
 		}
 		this.isConnected = 0;
-		if (cdlg.getPassword() == null) {
+
+		if (cdlg.getPassword() == null || !cdlg.hasDatabase()) {
 
 			cdlg.setVisible(true);
 			if (!cdlg.wasOk())
@@ -1199,7 +1200,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (e1 != null) {
 				e2 = e1.split("\n");
 			}
-			cdlg.resetPassword();
+			cdlg.rememberDatabase(false);
 			this.statusPanel.setText(e2[0]);
 			e3.printStackTrace();
 			this.isConnected = 0;
@@ -2579,7 +2580,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		request.generalArray = needle.toArray(new String[0]);
 
 		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
-		cdlg.resetPassword();
+		cdlg.rememberDatabase(false);
 
 		try {
 			Suku.kontroller.getSukuData(request, "cmd=updatesettings",
