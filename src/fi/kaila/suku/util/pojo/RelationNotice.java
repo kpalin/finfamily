@@ -234,7 +234,7 @@ public class RelationNotice implements Serializable {
 
 	/**
 	 * @param text
-	 *            i.e. dateprefox (see GEDCOM)
+	 *            Gedcom style date prefix
 	 */
 	public void setDatePrefix(String text) {
 		if (!nv(this.datePrefix).equals(nv(text))) {
@@ -297,6 +297,16 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * @param surety
+	 */
+	public void setSurety(int surety) {
+		if (this.surety != surety) {
+			toBeUpdated = true;
+		}
+		this.surety = surety;
+	}
+
+	/**
 	 * @return source
 	 */
 	public String getSource() {
@@ -337,13 +347,6 @@ public class RelationNotice implements Serializable {
 
 	public String toString() {
 		return tag + "/" + type + "/" + description;
-	}
-
-	/**
-	 * @param surety
-	 */
-	public void setSurety(int surety) {
-		this.surety = surety;
 	}
 
 	/**

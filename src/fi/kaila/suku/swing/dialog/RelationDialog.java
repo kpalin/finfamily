@@ -318,6 +318,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 		}
 		relationType.setText(rela.getType());
 		description.setText(rela.getDescription());
+		surety.setSurety(rela.getSurety());
 		if (rela.getTag().equals("MARR") || rela.getTag().equals("DIV")
 				|| rela.getTag().equals("ADOP")) {
 			date.setVisible(true);
@@ -384,7 +385,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 		rela.setType(relationType.getText());
 
 		rela.setDescription(description.getText());
-
+		rela.setSurety(surety.getSurety());
 		String tmp = date.getFromDate();
 		String ttmp = date.getToDate();
 		String pre = date.getDatePrefTag();
