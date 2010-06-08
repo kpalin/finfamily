@@ -20,7 +20,7 @@ public class RelationNotice implements Serializable {
 	private boolean toBeUpdated = false;
 	int rnid = 0; // notice id
 	int rid = 0; // rela id
-	int surety = 0;
+	int surety = 100;
 	String tag = null;
 	String type = null;
 	String description = null;
@@ -72,6 +72,8 @@ public class RelationNotice implements Serializable {
 		this.privateText = privateText;
 		this.modified = modified;
 		this.created = created;
+		this.toBeUpdated = false;
+		this.toBeDeleted = false;
 	}
 
 	/**

@@ -31,7 +31,7 @@ public class Relation implements Serializable {
 	int bid = 0; // relative pid
 	int rid = 0;
 	String rtag = null; // subject tag
-	int surety = 0; // relation surety
+	int surety = 100; // relation surety
 	Timestamp modified = null;
 	Timestamp created = null;
 

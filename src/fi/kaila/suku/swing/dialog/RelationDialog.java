@@ -373,14 +373,14 @@ public class RelationDialog extends JDialog implements ActionListener,
 	}
 
 	/**
-	 * 
+	 * @return true if rel notice needs to be updated
 	 * @throws SukuDateException
 	 */
-	public void updateData() throws SukuDateException {
+	public boolean updateData() throws SukuDateException {
 		if (rela == null)
-			return;
+			return false;
 		if (rela.isToBeDeleted())
-			return;
+			return true;
 
 		rela.setType(relationType.getText());
 
@@ -409,7 +409,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 		// noteText.setText(rela.getNoteText());
 		rela.setSource(sourceText.getText());
 		rela.setPrivateText(privateText.getText());
-		return;
+		return rela.isToBeUpdated();
 	}
 
 	String oldLanguage = null;

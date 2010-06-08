@@ -1391,8 +1391,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 		lan.setVisible(true);
 
 		try {
-			lan.updateData();
-			return true;
+			return lan.updateData();
+
 		} catch (SukuDateException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
 					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
