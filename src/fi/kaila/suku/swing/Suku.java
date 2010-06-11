@@ -76,6 +76,7 @@ import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
+import fi.kaila.suku.swing.dialog.ImportOtherDialog;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SelectSchema;
 import fi.kaila.suku.swing.dialog.SettingsDialog;
@@ -180,6 +181,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenu mImport;
 	private JMenuItem mImport2004;
 	private JMenuItem mImportGedcom;
+	private JMenuItem mImportOther;
 	private JMenu mExport;
 	private JMenuItem mExportGedcom;
 	private JMenuItem mExportBackup;
@@ -399,6 +401,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mImport.add(this.mImportGedcom);
 		this.mImportGedcom.setActionCommand(Resurses.IMPORT_GEDCOM);
 		this.mImportGedcom.addActionListener(this);
+
+		this.mImportOther = new JMenuItem(Resurses
+				.getString(Resurses.IMPORT_OTHER));
+		mImport.add(this.mImportOther);
+		this.mImportOther.setActionCommand(Resurses.IMPORT_OTHER);
+		this.mImportOther.addActionListener(this);
 
 		mExport = new JMenu(Resurses.getString("EXPORT"));
 		this.mFile.add(mExport);
@@ -1555,6 +1563,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				connectDb();
 			} else if (cmd.equals(Resurses.DISCONNECT)) {
 				disconnectDb();
+			} else if (cmd.equals(Resurses.IMPORT_OTHER)) {
+				importOther();
 			} else if (cmd.equals(Resurses.IMPORT_SUKU)) {
 				importSuku2004Backup();
 				isConnected = 2;
@@ -1740,6 +1750,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			JOptionPane
 					.showMessageDialog(personView.getSuku(), ex.getMessage());
 		}
+	}
+
+	private void importOther() {
+
+		try {
+			ImportOtherDialog cdlg = new ImportOtherDialog(this);
+
+			System.out.println("from:" + cdlg.getSchema() + "/"
+					+ cdlg.getViewId() + "/");
+
+		} catch (SukuException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	private void createFamilyBackup() {

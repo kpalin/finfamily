@@ -139,9 +139,13 @@ public class SukuServerImpl implements SukuServer {
 
 	}
 
-	private SukuData getViewList() throws SukuException {
+	private SukuData getViewList(String schema) throws SukuException {
 		SukuData vlist = new SukuData();
 		String sql = "select vid,name from views order by name";
+
+		if (schema != null) {
+			sql = "select vid,name from " + schema + ".views order by name";
+		}
 
 		Vector<String> v = new Vector<String>();
 		try {
@@ -473,7 +477,8 @@ public class SukuServerImpl implements SukuServer {
 			data.createSukuDb(this.con, path);
 
 		} else if (cmd.equals("viewlist")) {
-			fam = getViewList();
+			String schema = map.get("schema");
+			fam = getViewList(schema);
 		} else if (cmd.equals("get")) {
 			String type = map.get("type");
 			if (type == null) {

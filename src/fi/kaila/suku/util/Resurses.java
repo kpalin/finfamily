@@ -339,6 +339,8 @@ public class Resurses {
 
 	public static final String EXPORT_BACKUP = "EXPORT_BACKUP";
 
+	public static final String IMPORT_OTHER = "IMPORT_OTHER";
+
 	private static Resurses myself = null;
 	private static ExcelBundle resources = null;
 
