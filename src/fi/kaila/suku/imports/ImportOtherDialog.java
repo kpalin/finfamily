@@ -1,4 +1,4 @@
-package fi.kaila.suku.swing.dialog;
+package fi.kaila.suku.imports;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
