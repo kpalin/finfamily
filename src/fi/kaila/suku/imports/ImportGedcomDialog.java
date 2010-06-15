@@ -244,7 +244,8 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				// "path=resources/excel/TextsExcel.xls", "page=texts");
 
 				if (fileName.getText().length() > 0) {
-					SukuData resp = kontroller.getSukuData("cmd=importGedcom");
+					SukuData resp = kontroller.getSukuData("cmd=import",
+							"type=gedcom");
 
 					gedcomResult = resp;
 					if (resp.resu != null) {

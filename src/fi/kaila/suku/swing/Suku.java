@@ -1757,11 +1757,24 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			ImportOtherDialog cdlg = new ImportOtherDialog(this);
 
-			System.out.println("from:" + cdlg.getSchema() + "/"
-					+ cdlg.getViewId() + "/");
+			StringBuilder sb = new StringBuilder();
+
+			if (cdlg.getResult() != null) {
+				sb.append(Resurses.getString("IMPORT_ERROR"));
+
+				sb.append(": ");
+				sb.append(cdlg.getSchema());
+				if (cdlg.getViewId() >= 0) {
+					sb.append("/");
+					sb.append(cdlg.getViewName());
+				}
+				sb.append("\n");
+				sb.append(cdlg.getResult());
+				JOptionPane.showMessageDialog(this, sb.toString(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			}
 
 		} catch (SukuException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

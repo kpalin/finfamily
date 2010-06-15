@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -11,7 +13,9 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -21,7 +25,7 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 public class ImportOtherDialog extends JDialog implements ActionListener,
-		ListSelectionListener {
+		ListSelectionListener, PropertyChangeListener {
 
 	/** */
 	private static final long serialVersionUID = 1L;
@@ -35,8 +39,17 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	private Vector<String> viewList = null;
 	private JScrollPane viewScroll;
 	private int[] viewIds;
+	private String[] viewNames;
 	private int selectedView = -1;
 	private boolean wasOk = false;
+
+	private JProgressBar progressBar;
+	private Task task = null;
+	private JLabel timeEstimate;
+	private JLabel textContent;
+	private String errorMessage = null;
+
+	private static ImportOtherDialog runner = null;
 
 	/**
 	 * Constructor
@@ -46,10 +59,17 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	 */
 	public ImportOtherDialog(JFrame owner) throws SukuException {
 		super(owner, Resurses.getString(Resurses.IMPORT_OTHER), true);
-		// this.owner = owner;
+		this.runner = this;
 
 		constructMe(true);
 
+	}
+
+	/**
+	 * @return the dialog handle used for the progresBar
+	 */
+	public static ImportOtherDialog getRunner() {
+		return runner;
 	}
 
 	private void constructMe(boolean allowNew) throws SukuException {
@@ -100,6 +120,25 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		viewScroll.setBounds(10, y, 260, 100);
 		y += 110;
 
+		textContent = new JLabel("");
+		getContentPane().add(textContent);
+		this.textContent.setBounds(30, y, 340, 20);
+
+		y += 30;
+
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		this.progressBar.setBounds(10, y, 260, 20);
+		getContentPane().add(this.progressBar);
+
+		y += 20;
+		timeEstimate = new JLabel("");
+		getContentPane().add(timeEstimate);
+		timeEstimate.setBounds(30, y, 340, 20);
+
+		y += 30;
+
 		this.ok = new JButton(Resurses.getString("OK"));
 		getContentPane().add(this.ok);
 		this.ok.setBounds(30, y, 80, 24);
@@ -122,6 +161,14 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * 
+	 * @return possible error result
+	 */
+	public String getResult() {
+		return this.errorMessage;
+	}
+
 	public String getSchema() {
 		if (wasOk) {
 			return selectedSchema;
@@ -137,6 +184,13 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		return -1;
 	}
 
+	public String getViewName() {
+		if (wasOk && selectedView >= 0) {
+			return viewNames[selectedView];
+		}
+		return null;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent arg) {
 
@@ -146,7 +200,14 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		if (activator == this.ok) {
 			selectedView = scViews.getSelectedIndex();
 			wasOk = true;
-			setVisible(false);
+
+			this.ok.setEnabled(false);
+
+			// we create new instances as needed.
+			task = new Task();
+			task.addPropertyChangeListener(this);
+			task.execute();
+
 			return;
 		}
 		if (activator == this.cancel) {
@@ -170,11 +231,13 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 			SukuData views = Suku.kontroller.getSukuData("cmd=viewlist",
 					"schema=" + selectedSchema);
 			viewIds = new int[views.generalArray.length];
+			viewNames = new String[views.generalArray.length];
 			viewList.removeAllElements();
 			for (int i = 0; i < views.generalArray.length; i++) {
 				String[] parts = views.generalArray[i].split(";");
 				if (parts.length == 2) {
 					viewIds[i] = Integer.parseInt(parts[0]);
+					viewNames[i] = parts[1];
 					viewList.add(parts[1]);
 				}
 			}
@@ -185,6 +248,153 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 			e.printStackTrace();
 		}
 
+	}
+
+	class Task extends SwingWorker<Void, Void> {
+
+		/*
+		 * Main task. Executed in background thread.
+		 */
+		@Override
+		public Void doInBackground() {
+			System.out.println("Alkaa se");
+			// Initialize progress property.
+			setProgress(0);
+			setRunnerValue("Aloitetaan tuonti");
+
+			try {
+				Vector<String> parms = new Vector<String>();
+				parms.add("cmd=import");
+				parms.add("type=other");
+				parms.add("schema=" + selectedSchema);
+				if (getViewId() >= 0) {
+					parms.add("view=" + getViewId());
+				}
+
+				// SukuData resp =
+				Suku.kontroller.getSukuData(parms.toArray(new String[0]));
+
+			} catch (SukuException e) {
+
+				e.printStackTrace();
+				errorMessage = e.getMessage();
+			}
+
+			setVisible(false);
+			return null;
+		}
+
+		/*
+		 * Executed in event dispatching thread
+		 */
+		@Override
+		public void done() {
+			Toolkit.getDefaultToolkit().beep();
+			// setVisible(false);
+
+			// startButton.setEnabled(true);
+			// setCursor(null); //turn off the wait cursor
+			// taskOutput.append("Done!\n");
+		}
+	}
+
+	private boolean isCancelled = false;
+	private long startTime = 0;
+	private String timerText = null;
+	private int showCounter = 0;
+
+	/**
+	 * The runner is the progress bar on the import dialog. Set new values to
+	 * the progress bar using this command
+	 * 
+	 * the text may be split in two parts separated by ";"
+	 * 
+	 * if the text is divided then part before ; must be an integer number
+	 * between 0-100 for the progress bar. Text behind ; or if ; does not exist
+	 * is displayed above the progress bar
+	 * 
+	 * 
+	 * @param juttu
+	 * @return true if cancel command has been issued
+	 */
+	public boolean setRunnerValue(String juttu) {
+		String[] kaksi = juttu.split(";");
+		if (kaksi.length >= 2) {
+			int progress = 0;
+			try {
+				progress = Integer.parseInt(kaksi[0]);
+
+				if (progress == 0) {
+					startTime = System.currentTimeMillis();
+					timerText = Resurses.getString("IMPORT_TIME_LEFT");
+					showCounter = 10;
+				}
+
+			} catch (NumberFormatException ne) {
+				textContent.setText(juttu);
+				progressBar.setIndeterminate(true);
+				progressBar.setValue(0);
+				timeEstimate.setText("Cancelled");
+				return isCancelled;
+			}
+			progressBar.setIndeterminate(false);
+			progressBar.setValue(progress);
+			textContent.setText(kaksi[1]);
+			showCounter--;
+			if (progress > 0 && showCounter < 0 && timerText != null) {
+				showCounter = 10;
+				long nowTime = System.currentTimeMillis();
+				long usedTime = nowTime - startTime;
+				long estimatedDuration = (usedTime / progress) * 100;
+				long restShow = estimatedDuration - usedTime;
+				// long restShow = usedTime * (100 - progress);
+				restShow = restShow / 1000;
+				String timeType = " s";
+				if (restShow > 180) {
+					timeType = " min";
+					restShow = restShow / 60;
+				}
+				String showTime = timerText + " :" + restShow + timeType;
+				if (!timeEstimate.getText().equals(showTime)) {
+					timeEstimate.setText(showTime);
+				}
+			}
+		} else {
+
+			textContent.setText(juttu);
+
+			progressBar.setIndeterminate(true);
+			progressBar.setValue(0);
+			timeEstimate.setText("");
+
+		}
+		return isCancelled;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ("progress" == evt.getPropertyName()) {
+			String juttu = evt.getNewValue().toString();
+			String[] kaksi = juttu.split(";");
+			if (kaksi.length >= 2) {
+				int progress = Integer.parseInt(kaksi[0]);
+				progressBar.setIndeterminate(false);
+				progressBar.setValue(progress);
+				textContent.setText(kaksi[1]);
+			} else {
+
+				textContent.setText(juttu);
+				int progre = progressBar.getValue();
+				if (progre > 95) {
+					progre = 0;
+
+				} else {
+					progre++;
+				}
+				progressBar.setIndeterminate(true);
+				progressBar.setValue(progre);
+			}
+		}
 	}
 
 }

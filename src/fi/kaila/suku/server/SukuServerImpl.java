@@ -20,6 +20,7 @@ import fi.kaila.suku.server.utils.ExportGedcomUtil;
 import fi.kaila.suku.server.utils.GenGraphUtil;
 import fi.kaila.suku.server.utils.GroupUtil;
 import fi.kaila.suku.server.utils.ImportGedcomUtil;
+import fi.kaila.suku.server.utils.ImportOtherUtil;
 import fi.kaila.suku.server.utils.PersonUtil;
 import fi.kaila.suku.server.utils.QueryUtil;
 import fi.kaila.suku.server.utils.ReportUtil;
@@ -550,40 +551,50 @@ public class SukuServerImpl implements SukuServer {
 				}
 			}
 
-		} else if (cmd.equals("import2004")) {
-			// this.createSukuDb();
-			file = this.openFile;
-			if (file == null) {
-				file = map.get("filename");
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
-			}
-			lang = map.get("lang");
-			logger.info("Suku 2004 FILE: " + file);
-			if (file != null) {
-				if (file.toLowerCase().endsWith("xml.gz")
-						|| file.toLowerCase().endsWith("xml")) {
-					fam = import2004Data(file, lang);
+		} else if (cmd.equals("import")) {
+			String type = map.get("type");
+			if (type != null) {
+				if (type.equals("backup")) {
+					// this.createSukuDb();
+					file = this.openFile;
+					if (file == null) {
+						file = map.get("filename");
+					} else {
+						fam.resu = Resurses
+								.getString("GETSUKU_BAD_FILEMISSING");
+					}
+					lang = map.get("lang");
+					logger.info("Suku 2004 FILE: " + file);
+					if (file != null) {
+						if (file.toLowerCase().endsWith("xml.gz")
+								|| file.toLowerCase().endsWith("xml")) {
+							fam = import2004Data(file, lang);
+						}
+					}
+				} else if (type.equals("gedcom")) {
+					lang = map.get("lang");
+					if (lang == null) {
+						lang = Resurses.getLanguage();
+					}
+
+					ImportGedcomUtil inged = new ImportGedcomUtil(con);
+					fam = inged.importGedcom(lang);
+					inged = null;
+				} else if (type.equals("other")) {
+					ImportOtherUtil inoth = new ImportOtherUtil(con);
+					String schema = map.get("schema");
+					int viewId = -1;
+					String view = map.get("view");
+					if (view != null) {
+						viewId = Integer.parseInt(view);
+					}
+					fam = inoth.importOther(schema, viewId);
+
 				}
 			}
+
 		} else if (cmd.equals("unitCount")) {
 			fam = getUnitCount();
-		} else if (cmd.equals("importGedcom")) {
-			// String db = map.get("db");
-			// file = this.openFile;
-			// if (file == null) {
-			// file = map.get("filename"); // probably not used
-			// } else {
-			// fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
-			// }
-			lang = map.get("lang");
-			if (lang == null) {
-				lang = Resurses.getLanguage();
-			}
-
-			ImportGedcomUtil inged = new ImportGedcomUtil(con);
-			fam = inged.importGedcom(lang);
-			inged = null;
 		} else if (cmd.equals("create")) {
 			String type = map.get("type");
 			if ("gedcom".equals(type)) {
