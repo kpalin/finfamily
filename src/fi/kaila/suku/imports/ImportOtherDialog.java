@@ -154,7 +154,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		this.cancel.setActionCommand("CANCEL");
 		this.cancel.addActionListener(this);
 		getRootPane().setDefaultButton(ok);
-		y += 60;
+		y += 80;
 		setBounds(d.width / 2 - 150, d.height / 2 - 200, 300, y);
 
 		this.setVisible(true);

@@ -954,7 +954,6 @@ public class ExportGedcomUtil {
 	private void collectFamilies() throws SQLException {
 
 		StringBuilder sql = new StringBuilder();
-		;
 		PreparedStatement pst;
 
 		sql

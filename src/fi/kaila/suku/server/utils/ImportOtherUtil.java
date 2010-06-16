@@ -17,6 +17,12 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
+/**
+ * Server class to import from another database
+ * 
+ * @author kalle
+ * 
+ */
 public class ImportOtherUtil {
 	private Connection con;
 
@@ -48,6 +54,9 @@ public class ImportOtherUtil {
 
 		try {
 			result.resuCount = collectIndividuals();
+
+			collectRelations();
+
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Import from Other database failed", e);
 			throw new SukuException(e);
@@ -70,6 +79,42 @@ public class ImportOtherUtil {
 
 				rs = stm.executeQuery(sql);
 				rs.close();
+
+				sql = "select max(rid) from relation ";
+
+				rs = stm.executeQuery(sql);
+				int maxrid = 0;
+				if (rs.next()) {
+					maxrid = rs.getInt(1);
+				}
+				rs.close();
+
+				if (maxrid > nextrid) {
+					nextrid = maxpnid;
+				}
+				sql = "SELECT setval('relationseq'," + nextrid + ")";
+
+				rs = stm.executeQuery(sql);
+				rs.close();
+
+				sql = "select max(rnid) from relationnotice ";
+
+				rs = stm.executeQuery(sql);
+				int maxrnid = 0;
+				if (rs.next()) {
+					maxrnid = rs.getInt(1);
+				}
+				rs.close();
+
+				if (maxrnid > nextnrid) {
+					nextnrid = maxrnid;
+				}
+				sql = "SELECT setval('relationnoticeseq'," + nextnrid + ")";
+
+				rs = stm.executeQuery(sql);
+				rs.close();
+				stm.close();
+
 			} catch (SQLException e) {
 				logger.log(Level.SEVERE, "Import from Other database failed "
 						+ "to update unitnoticeseq", e);
@@ -80,6 +125,179 @@ public class ImportOtherUtil {
 
 		result.resu = "Under construction";
 		return result;
+
+	}
+
+	private int nextrid = 0;
+	private int nextnrid = 0;
+
+	private void collectRelations() throws SQLException, SukuException {
+		StringBuilder sq = new StringBuilder();
+		PreparedStatement pst;
+		LinkedHashMap<String, Integer> ridpidmap = new LinkedHashMap<String, Integer>();
+		LinkedHashMap<Integer, Integer> ridmap = new LinkedHashMap<Integer, Integer>();
+		sq.append("select a.rid,a.pid from " + schema
+				+ ".relation as a inner join " + schema
+				+ ".relation as b on a.rid=b.rid and a.pid <> b.pid ");
+		if (viewId > 0) {
+			sq.append("and a.pid in (select pid from " + schema
+					+ ".viewunits where vid=" + viewId + ") "
+					+ "and b.pid in (select pid from " + schema
+					+ ".viewunits where vid=" + viewId + ")  ");
+		}
+
+		Statement stm = con.createStatement();
+		ResultSet rs = stm.executeQuery("select nextval('relationseq')");
+
+		if (rs.next()) {
+			nextrid = rs.getInt(1);
+
+		} else {
+			throw new SQLException("Sequence relationseq error");
+		}
+
+		rs = stm.executeQuery("select nextval('relationnoticeseq')");
+
+		if (rs.next()) {
+			nextnrid = rs.getInt(1);
+
+		} else {
+			throw new SQLException("Sequence relationnoticeseq error");
+		}
+
+		rs.close();
+
+		rs = stm.executeQuery(sq.toString());
+
+		while (rs.next()) {
+			int orid = rs.getInt(1);
+			int opid = rs.getInt(2);
+			String thekey = "" + orid + ";" + opid;
+			Integer nrid = ridpidmap.get(thekey);
+			if (nrid == null) {
+				Integer newRid = ridmap.get(orid);
+				if (newRid == null) {
+					ridmap.put(orid, nextrid);
+					ridpidmap.put(thekey, nextrid);
+					nextrid++;
+				} else {
+					ridpidmap.put(thekey, newRid);
+				}
+			}
+		}
+		rs.close();
+
+		String sql = "insert into relation (rid,pid,surety,tag,relationrow,modified,createdate) "
+				+ "select ?,?,surety,tag,relationrow,modified,createdate from "
+				+ schema + ".relation where rid=? and pid = ?";
+
+		pst = con.prepareStatement(sql);
+
+		int counter = 0;
+		int relativesInserted = 0;
+		Set<Map.Entry<String, Integer>> entriesx = ridpidmap.entrySet();
+		Iterator<Map.Entry<String, Integer>> eex = entriesx.iterator();
+		while (eex.hasNext()) {
+			Map.Entry<String, Integer> entrx = (Map.Entry<String, Integer>) eex
+					.next();
+			String key = entrx.getKey();
+
+			Integer newrid = entrx.getValue();
+
+			String[] parts = key.split(";");
+			if (parts.length != 2)
+				continue;
+			int orid = Integer.parseInt(parts[0]);
+			int opid = Integer.parseInt(parts[1]);
+			int npid = pidmap.get(opid);
+
+			if (npid == 0)
+				continue;
+
+			pst.setInt(1, newrid);
+			pst.setInt(2, npid);
+			pst.setInt(3, orid);
+			pst.setInt(4, opid);
+			int relCount = pst.executeUpdate();
+			relativesInserted += relCount;
+			double dbSize = ridpidmap.size();
+
+			double prossa = counter++ / dbSize;
+			int prose = (int) (prossa * 100);
+
+			if (prose > 100)
+				prose = 100;
+			prose = prose / 2;
+			if (this.runner.setRunnerValue("" + prose + ";relation")) {
+
+				throw new SukuException(Resurses.getString("IMPORT_CANCELLED"));
+			}
+
+		}
+
+		String sqln = "insert into relationnotice (rid,rnid,surety,noticerow,tag,description,relationtype,"
+				+ "dateprefix,fromdate,todate,place,notetext,sourcetext,privatetext,modified,createdate) "
+				+ "select ?,?,surety,noticerow,tag,description,relationtype,dateprefix,fromdate,todate,"
+				+ "place,notetext,sourcetext,privatetext,modified,createdate from "
+				+ schema + ".relationnotice where rnid = ?";
+
+		pst = con.prepareStatement(sqln);
+
+		String sqll = "insert into relationlanguage (rid,rnid,langcode,relationtype,description,"
+				+ "place,notetext,modified,createdate) "
+				+ "select ?,?,langcode,relationtype,description,"
+				+ "place,notetext,modified,createdate from "
+				+ schema
+				+ ".relationlanguage where rnid = ?";
+
+		PreparedStatement pstl = con.prepareStatement(sqll);
+
+		sql = "select rid,rnid from " + schema + ".relationnotice ";
+
+		rs = stm.executeQuery(sql);
+		counter = 0;
+		while (rs.next()) {
+			int nrid = rs.getInt(1);
+			int nrnid = rs.getInt(2);
+			Integer torid = ridmap.get(nrid);
+			if (torid != null) {
+
+				pst.setInt(1, torid);
+				pst.setInt(2, nextnrid);
+				pst.setInt(3, nrnid);
+				pst.executeUpdate();
+
+				pstl.setInt(1, torid);
+				pstl.setInt(2, nextnrid);
+				pstl.setInt(3, nrnid);
+				pstl.executeUpdate();
+
+				nextnrid++;
+
+				double dbSize = ridmap.size();
+
+				double prossa = counter++ / dbSize;
+				int prose = (int) (prossa * 100);
+
+				if (prose > 100)
+					prose = 100;
+				prose = 50 + (prose / 2);
+				if (this.runner.setRunnerValue("" + prose + ";relationnotice")) {
+
+					throw new SukuException(Resurses
+							.getString("IMPORT_CANCELLED"));
+				}
+			}
+
+			this.runner.setRunnerValue("100;relationnotice");
+
+		}
+		pst.close();
+		pstl.close();
+		rs.close();
+		stm.close();
+
+		logger.info("Copied " + relativesInserted + " relatives ");
 
 	}
 
@@ -156,12 +374,23 @@ public class ImportOtherUtil {
 
 		PreparedStatement pnst = con.prepareStatement(sqln);
 
+		String sqll = "insert into unitlanguage (pnid,pid,tag,langcode,noticetype,description,place,"
+				+ "notetext,mediatitle,modified,createdate) "
+				+ "select ?,?,tag,langcode,noticetype,description,place,"
+				+ "notetext,mediatitle,modified,createdate from "
+				+ schema
+				+ ".unitlanguage where pnid=? ";
+
+		PreparedStatement pnsl = con.prepareStatement(sqll);
+
 		String sqln2 = "select pnid from " + schema
 				+ ".unitnotice where pid = ?";
 
 		PreparedStatement pnst2 = con.prepareStatement(sqln2);
 
 		double counter = 0;
+		int languageCount = 0;
+		int noticeCount = 0;
 		Set<Map.Entry<Integer, Integer>> entriesx = pidmap.entrySet();
 		Iterator<Map.Entry<Integer, Integer>> eex = entriesx.iterator();
 		while (eex.hasNext()) {
@@ -194,7 +423,15 @@ public class ImportOtherUtil {
 				pnst.setInt(2, newpid);
 				pnst.setInt(3, oldpnid);
 
-				pnst.executeUpdate();
+				int ii = pnst.executeUpdate();
+				noticeCount += ii;
+
+				pnsl.setInt(1, nextnpid);
+				pnsl.setInt(2, newpid);
+				pnsl.setInt(3, oldpnid);
+
+				int lanCount = pnsl.executeUpdate();
+				languageCount += lanCount;
 				nextnpid++;
 			}
 			rs.close();
@@ -202,8 +439,21 @@ public class ImportOtherUtil {
 			counter += luku;
 
 		}
+		logger.info("Copied " + ((int) counter) + " units with " + noticeCount
+				+ " notices, " + " with " + languageCount
+				+ " unitlanguage records");
 		this.runner.setRunnerValue("100;unit");
 		return (int) counter;
 	}
+
+	// class MiniRelation{
+	// int rid=0;
+	// int pid=0;
+	//		
+	// MiniRelation(int rid,int pid) {
+	// this.rid=rid;
+	// this.pid=pid;
+	// }
+	// }
 
 }
