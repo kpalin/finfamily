@@ -110,7 +110,7 @@ tag varchar,               -- Tag. GEDCOM like INDI for individual
 Privacy  char,             -- Privacy indicator, null = Public  
 GroupId varchar,           -- Id of group for this unit  
 Sex char not null,         -- Male = M, Female = F, Unknown = U  
-SID integer,               -- temp storage for sourcieid for now
+--SID integer,               -- temp storage for sourcieid for now
 SourceText varchar ,       -- Source as text
 PrivateText varchar,       -- Private researcher information  
 UserREFN varchar,          -- Reference number to the unit. GEDCOM REFN tag  
@@ -211,7 +211,7 @@ Patronym varchar,                -- Patronyymi  NEW
 PostFix varchar,                 --  Name Postfix  
 RefNames varchar[],                -- List of names within notice for index
 RefPlaces varchar[],               -- List of places within notice for index
-SID integer,               -- temp storage for sourcieid for now
+--SID integer,               -- temp storage for sourcieid for now
 SourceText varchar ,       -- Source as text
 PrivateText varchar,             --  Private researcher information  
 Modified timestamp,                           -- timestamp modified
@@ -269,7 +269,7 @@ FromDate varchar,                -- Date for the (beginning) event described in 
 ToDate varchar,                  -- End Date for the beginning even  
 Place varchar,                   -- Place for the (beginning of the) event  
 NoteText varchar,                -- Note textfield  
-SID integer,                     -- temp storage for sourcieid for now
+--SID integer,                     -- temp storage for sourcieid for now
 SourceText varchar ,             -- Source as text
 PrivateText varchar,             -- Private researcher information  
 Modified timestamp,                           -- timestamp modified
@@ -300,15 +300,7 @@ Rule varchar,           -- rule
 ToText varchar          -- text in report
 ) ;
 
-create table PlaceFormat (
-Name varchar not null,                      -- name to convert  ex Helsinki
-LangCode varchar not null default 'fi',     -- Language code. ISO 639-1 Code 2 char code  usually fi
-inForm varchar,                             -- format of name when in name  (ex; Helsingiss�)
-toForm varchar,                             -- format f name when to name  (ex; Helsinkiin)
-fromForm varchar,                           -- format f name when from name  (ex; Helsingist�)
-Modified timestamp,                         -- timestamp modified
-CreateDate timestamp not null default now() -- Date/time when created  
-);
+
 
 --
 -- Settinggroups for reports
@@ -338,16 +330,6 @@ CreateDate timestamp not null default now()   -- timestamp created
 );
 
 
-
-create table QuickList (
-QuickId integer primary key,
-FieldName varchar not null,
-LangCode varchar not null,                    -- language code for type
-UsedValue varchar not null,                   -- Value used in field
-LastUsed  timestamp not null default now(),   -- timestamp last used
-Modified timestamp,                           -- timestamp modified
-CreateDate timestamp not null default now()   -- timestamp created  
-);
 
 
 create table PlaceLocations (             -- Contains locations of known places 

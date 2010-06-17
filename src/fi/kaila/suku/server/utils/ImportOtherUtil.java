@@ -123,7 +123,7 @@ public class ImportOtherUtil {
 			}
 		}
 
-		result.resu = "Under construction";
+		// result.resu = "Under construction";
 		return result;
 
 	}

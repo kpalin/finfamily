@@ -159,6 +159,14 @@ public class Read2004XML extends DefaultHandler {
 
 	private static final String CREATE_SOURCES = "create table sources "
 			+ "(sid integer primary key," + "sourcenote varchar" + ") ";
+	private static final String ADD_UNIT_SID = "alter table unit add column sid integer";
+	private static final String ADD_UNITNOTICE_SID = "alter table unitnotice add column sid integer";
+	private static final String ADD_RELATIONNOTICE_SID = "alter table relationnotice add column sid integer";
+
+	private static final String DROP_UNIT_SID = "alter table unit drop column sid";
+	private static final String DROP_UNITNOTICE_SID = "alter table unitnotice drop column sid";
+	private static final String DROP_RELATIONNOTICE_SID = "alter table relationnotice drop column sid";
+
 	private static final String DROP_SOURCES = "drop table if exists sources ";
 
 	private static final String UPDATE_UNIT_SOURCES = "update unit set sourcetext "
@@ -502,6 +510,10 @@ public class Read2004XML extends DefaultHandler {
 			stm.executeUpdate(DROP_SOURCES);
 			stm.executeUpdate(CREATE_SOURCES);
 
+			stm.executeUpdate(ADD_UNIT_SID);
+			stm.executeUpdate(ADD_UNITNOTICE_SID);
+			stm.executeUpdate(ADD_RELATIONNOTICE_SID);
+
 			if (this.urli.endsWith(".gz")) {
 				gz = new GZIPInputStream(new FileInputStream(this.urli));
 				parser.parse(gz, this);
@@ -565,6 +577,11 @@ public class Read2004XML extends DefaultHandler {
 				errorLine.add(Resurses.getString("SUKU2004_DELETED_RID") + " ["
 						+ deletedRels + "]");
 			}
+
+			stm.executeUpdate(DROP_UNIT_SID);
+			stm.executeUpdate(DROP_UNITNOTICE_SID);
+			stm.executeUpdate(DROP_RELATIONNOTICE_SID);
+
 			stm.executeUpdate(VACUUM);
 			long ended = System.currentTimeMillis();
 			logger.info("Backup " + this.urli + " converted in "

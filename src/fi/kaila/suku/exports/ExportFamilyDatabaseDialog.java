@@ -266,11 +266,12 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 						JOptionPane.showMessageDialog(owner, Resurses
 								.getString("EXPORT_BACKUP")
 								+ ":" + resp.resu);
-					} else {
-						JOptionPane.showMessageDialog(owner, Resurses
-								.getString("EXPORT_BACKUP")
-								+ ": Under construction");
 					}
+					// else {
+					// JOptionPane.showMessageDialog(owner, Resurses
+					// .getString("EXPORT_BACKUP")
+					// + ": Under construction");
+					// }
 				}
 			} catch (SukuException e) {
 				e.printStackTrace();

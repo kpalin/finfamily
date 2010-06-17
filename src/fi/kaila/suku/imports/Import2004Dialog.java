@@ -228,8 +228,8 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 			setRunnerValue("Luodaan tietokanta");
 
 			try {
-				xmlResult = kontroller.getSukuData("cmd=import2004", "lang="
-						+ lang);
+				xmlResult = kontroller.getSukuData("cmd=import", "type=backup",
+						"lang=" + lang);
 
 			} catch (SukuException e) {
 				errorMessage = e.getMessage();
