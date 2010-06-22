@@ -270,6 +270,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 				parms.add("schema=" + selectedSchema);
 				if (getViewId() >= 0) {
 					parms.add("view=" + getViewId());
+					parms.add("viewName=" + viewNames[selectedView]);
 				}
 
 				// SukuData resp =

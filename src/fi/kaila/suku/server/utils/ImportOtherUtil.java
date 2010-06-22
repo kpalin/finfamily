@@ -31,6 +31,7 @@ public class ImportOtherUtil {
 
 	private String schema = null;
 	private int viewId = -1;
+	private String viewName = null;
 
 	private LinkedHashMap<Integer, Integer> pidmap = new LinkedHashMap<Integer, Integer>();
 
@@ -45,12 +46,14 @@ public class ImportOtherUtil {
 
 	}
 
-	public SukuData importOther(String schema, int viewId) throws SukuException {
+	public SukuData importOther(String schema, int viewId, String viewName)
+			throws SukuException {
 		SukuData result = new SukuData();
 		logger.info("Starting to import from " + schema
 				+ ((viewId >= 0) ? " the view " + viewId : ""));
 		this.schema = schema;
 		this.viewId = viewId;
+		this.viewName = viewName;
 
 		try {
 			result.resuCount = collectIndividuals();
@@ -452,8 +455,8 @@ public class ImportOtherUtil {
 		}
 		rs.close();
 		maxvid++;
-		String viewName = Resurses.getString("IMPORTED_VIEW") + " [" + maxvid
-				+ "]";
+		String viewName = Resurses.getString("IMPORTED_VIEW") + " "
+				+ this.viewName + " [" + maxvid + "]";
 		SukuData oth = vu.addView(viewName);
 		vu.addViewUnits(oth.resultPid, newpids, false);
 		// (newpids,oth.resultPid);

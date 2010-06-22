@@ -585,10 +585,12 @@ public class SukuServerImpl implements SukuServer {
 					String schema = map.get("schema");
 					int viewId = -1;
 					String view = map.get("view");
+					String viewName = null;
 					if (view != null) {
 						viewId = Integer.parseInt(view);
+						viewName = map.get("viewName");
 					}
-					fam = inoth.importOther(schema, viewId);
+					fam = inoth.importOther(schema, viewId, viewName);
 
 				}
 			}
