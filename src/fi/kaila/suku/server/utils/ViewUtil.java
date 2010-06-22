@@ -94,6 +94,7 @@ public class ViewUtil {
 
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setInt(1, vid);
+			resu.resultPid = vid;
 			pst.setString(2, viewname);
 			pst.executeUpdate();
 			pst.close();

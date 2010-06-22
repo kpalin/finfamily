@@ -643,7 +643,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 			SukuData vlist = Suku.kontroller.getSukuData("cmd=viewlist");
 			String[] lista = vlist.generalArray;
-
+			viewList.removeAllItems();
 			viewArray = lista;
 			viewList.addItem("");
 			for (int i = 0; i < viewArray.length; i++) {
@@ -663,8 +663,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 			}
 
-			if (preferredIndex >= 0 && preferredIndex < viewList.getItemCount()) {
-				viewList.setSelectedIndex(preferredIndex);
+			if (preferredIndex >= 0
+					&& preferredIndex < viewList.getItemCount() - 1) {
+				viewList.setSelectedIndex(preferredIndex + 1);
 			}
 
 		} catch (SukuException e) {
@@ -1007,7 +1008,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 			int vid = this.getViewId();
 			preferredView = null;
-			if (vid > 0 && vid <= viewArray.length) {
+			if (vid > 0) {
 
 				int ppnum = 0;
 

@@ -329,7 +329,7 @@ public class ImportOtherUtil {
 		}
 		rs.close();
 
-		if (viewId <= 0) {
+		if (viewId < 0) {
 			sql = "select pid from " + schema + ".unit order by pid";
 			pst = con.prepareStatement(sql);
 		} else {
@@ -393,6 +393,9 @@ public class ImportOtherUtil {
 		int noticeCount = 0;
 		Set<Map.Entry<Integer, Integer>> entriesx = pidmap.entrySet();
 		Iterator<Map.Entry<Integer, Integer>> eex = entriesx.iterator();
+		int pidIdx = 0;
+		int newpids[] = new int[pidmap.size()];
+
 		while (eex.hasNext()) {
 			Map.Entry<Integer, Integer> entrx = (Map.Entry<Integer, Integer>) eex
 					.next();
@@ -403,7 +406,7 @@ public class ImportOtherUtil {
 			pst.setInt(2, prevpid);
 			int luku = pst.executeUpdate();
 			double dbSize = pidmap.size();
-
+			newpids[pidIdx++] = newpid;
 			double prossa = counter / dbSize;
 			int prose = (int) (prossa * 100);
 			if (prose > 100)
@@ -439,6 +442,22 @@ public class ImportOtherUtil {
 			counter += luku;
 
 		}
+
+		ViewUtil vu = new ViewUtil(con);
+
+		rs = stm.executeQuery("select max(vid) from views");
+		int maxvid = 0;
+		while (rs.next()) {
+			maxvid = rs.getInt(1);
+		}
+		rs.close();
+		maxvid++;
+		String viewName = Resurses.getString("IMPORTED_VIEW") + " [" + maxvid
+				+ "]";
+		SukuData oth = vu.addView(viewName);
+		vu.addViewUnits(oth.resultPid, newpids, false);
+		// (newpids,oth.resultPid);
+
 		logger.info("Copied " + ((int) counter) + " units with " + noticeCount
 				+ " notices, " + " with " + languageCount
 				+ " unitlanguage records");

@@ -179,7 +179,8 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 
 	public int getViewId() {
 		if (wasOk) {
-			return selectedView;
+			if (selectedView >= 0 && selectedView < viewIds.length)
+				return viewIds[selectedView];
 		}
 		return -1;
 	}
