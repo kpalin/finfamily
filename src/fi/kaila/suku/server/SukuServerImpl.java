@@ -594,7 +594,9 @@ public class SukuServerImpl implements SukuServer {
 
 				}
 			}
-
+		} else if (cmd.equals("compare")) {
+			ImportOtherUtil inoth = new ImportOtherUtil(con);
+			fam = inoth.comparePersons(map);
 		} else if (cmd.equals("unitCount")) {
 			fam = getUnitCount();
 		} else if (cmd.equals("create")) {
@@ -831,6 +833,8 @@ public class SukuServerImpl implements SukuServer {
 
 		if (fam != null) {
 			fam.cmd = map.get("cmd");
+		} else {
+			throw new SukuException(Resurses.getString("SERVER_RESULT_NULL"));
 		}
 		if (fam.resu != null) {
 			throw new SukuException(fam.resu);

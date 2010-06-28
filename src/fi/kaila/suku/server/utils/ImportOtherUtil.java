@@ -5,10 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,7 +58,7 @@ public class ImportOtherUtil {
 		this.viewName = viewName;
 
 		try {
-			result.resuCount = collectIndividuals();
+			result = collectIndividuals();
 
 			collectRelations();
 
@@ -306,7 +308,8 @@ public class ImportOtherUtil {
 
 	private int nextnpid = 0;
 
-	private int collectIndividuals() throws SQLException, SukuException {
+	private SukuData collectIndividuals() throws SQLException, SukuException {
+		SukuData resu = new SukuData();
 		String sql = null;
 		PreparedStatement pst;
 
@@ -459,23 +462,138 @@ public class ImportOtherUtil {
 				+ this.viewName + " [" + maxvid + "]";
 		SukuData oth = vu.addView(viewName);
 		vu.addViewUnits(oth.resultPid, newpids, false);
+		resu.resultPid = oth.resultPid;
 		// (newpids,oth.resultPid);
 
+		resu.generalText = viewName;
 		logger.info("Copied " + ((int) counter) + " units with " + noticeCount
 				+ " notices, " + " with " + languageCount
 				+ " unitlanguage records");
 		this.runner.setRunnerValue("100;unit");
-		return (int) counter;
+		resu.resuCount = (int) counter;
+
+		return resu;
 	}
 
-	// class MiniRelation{
-	// int rid=0;
-	// int pid=0;
-	//		
-	// MiniRelation(int rid,int pid) {
-	// this.rid=rid;
-	// this.pid=pid;
-	// }
-	// }
+	public SukuData comparePersons(HashMap<String, String> map)
+			throws SukuException {
+		SukuData result = null;
+
+		String schema = map.get("schema");
+		int viewId = -1;
+		String view = map.get("view");
+		String viewName = null;
+		if (view != null) {
+			viewId = Integer.parseInt(view);
+			viewName = map.get("viewName");
+		}
+		StringBuilder sql = new StringBuilder();
+		boolean wasFirst = false;
+		if (schema != null) {
+			sql.append("select distinct a.pid from unitnotice as a inner join "
+					+ schema + ".unitnotice as b where ");
+		} else {
+			sql.append("select distinct a.pid from unitnotice as a inner join "
+					+ "unitnotice as b where  a.pid <> b.pid and ");
+			wasFirst = true;
+		}
+		if (map.get("dates") != null) {
+			if (!wasFirst) {
+				sql.append("and ");
+			}
+			sql
+					.append("( a.fromdate = b.fromdate and a.tag='BIRT' and b.tag='BIRT') ");
+
+			wasFirst = true;
+		}
+
+		if (map.get("surname") != null) {
+			if (!wasFirst) {
+				sql.append("and ");
+			}
+			sql
+					.append("( (a.surname = b.surname or a.surname is null and b.surname is null) and a.tag='NAME' and b.tag='NAME') ");
+
+			wasFirst = true;
+		}
+		if (map.get("patronym") != null) {
+			if (!wasFirst) {
+				sql.append("and ");
+			}
+			sql
+					.append("( (a.patronym = b.patronym or a.patronym is null and b.patronym is null) and a.tag='NAME' and b.tag='NAME') ");
+
+			wasFirst = true;
+		}
+		String lenn = map.get("givenname");
+		int nlen = 0;
+		try {
+			if (lenn != null) {
+				nlen = Integer.parseInt(lenn);
+			}
+		} catch (NumberFormatException ne) {
+
+		}
+
+		if (nlen == 0) {
+			if (!wasFirst) {
+				sql.append("and ");
+			}
+			sql
+					.append("( (a.givenname = b.givenname or "
+							+ "a.givenname is null and b.givenname is null) and a.tag='NAME' and b.tag='NAME') ");
+
+			wasFirst = true;
+		} else {
+			if (!wasFirst) {
+				sql.append("and ");
+			}
+			sql
+					.append("(a.givenname is null and b.givenname is null or (substring(a.givenname for "
+							+ nlen
+							+ " = substring(b.givenname for "
+							+ nlen
+							+ " ) ) and a.tag='NAME' and b.tag='NAME') ");
+
+		}
+
+		ViewUtil vu = new ViewUtil(con);
+
+		try {
+			Vector<Integer> vv = new Vector<Integer>();
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery("select max(vid) from views");
+			int maxvid = 0;
+			while (rs.next()) {
+				maxvid = rs.getInt(1);
+			}
+			rs.close();
+			maxvid++;
+			String newView = Resurses.getString("COMPARE_VIEW") + " " + " ["
+					+ maxvid + "]";
+			SukuData oth = vu.addView(newView);
+
+			rs = stm.executeQuery(sql.toString());
+			int pid = 0;
+			while (rs.next()) {
+				pid = rs.getInt(1);
+				vv.add(pid);
+			}
+			rs.close();
+			int pids[] = new int[vv.size()];
+			for (int i = 0; i < pids.length; i++) {
+				pids[i] = vv.get(i);
+			}
+			stm.close();
+			vu.addViewUnits(oth.resultPid, pids, false);
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new SukuException(e);
+		}
+
+		return result;
+	}
 
 }

@@ -15,6 +15,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -36,10 +37,10 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 
 	private JList scList = null;
 	private JList scViews = null;
-	private JButton ok;
+	private JButton copyAndComp;
 	private JButton cancel;
-	private JButton compAndCopy;
-	private JButton compOnly;
+	private JButton compToSchema;
+	private JButton compLocal;
 	private JCheckBox dates;
 	private JTextField namlen;
 	private JCheckBox patronym;
@@ -52,7 +53,8 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	private String[] viewNames;
 	private int selectedView = -1;
 	private boolean wasOk = false;
-
+	private String createdView = null;
+	private int createdViewId = 0;
 	private JProgressBar progressBar;
 	private Task task = null;
 	private JLabel timeEstimate;
@@ -69,7 +71,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	 */
 	public ImportOtherDialog(JFrame owner) throws SukuException {
 		super(owner, Resurses.getString(Resurses.IMPORT_OTHER), true);
-		this.runner = this;
+		runner = this;
 
 		constructMe(true);
 
@@ -182,28 +184,28 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		lbl.setBounds(80, yy, 200, 20);
 
 		yy += 30;
-		this.compAndCopy = new JButton(Resurses.getString("SCHEMA_COMP"));
-		pnb.add(this.compAndCopy);
-		this.compAndCopy.setBounds(20, yy, 150, 24);
-		this.compAndCopy.setActionCommand("SCHEMA_COMP");
-		this.compAndCopy.addActionListener(this);
+		this.compToSchema = new JButton(Resurses.getString("SCHEMA_COMP"));
+		pnb.add(this.compToSchema);
+		this.compToSchema.setBounds(20, yy, 150, 24);
+		this.compToSchema.setActionCommand("OK");
+		this.compToSchema.addActionListener(this);
 
 		if (yy > y)
 			y = yy;
-		this.ok = new JButton(Resurses.getString("SCHEMA_COPY"));
-		pna.add(this.ok);
-		this.ok.setBounds(10, y, 128, 24);
-		this.ok.setActionCommand("OK");
-		this.ok.addActionListener(this);
-		this.ok.setDefaultCapable(true);
+		this.copyAndComp = new JButton(Resurses.getString("SCHEMA_COPY"));
+		pna.add(this.copyAndComp);
+		this.copyAndComp.setBounds(10, y, 128, 24);
+		this.copyAndComp.setActionCommand("OK");
+		this.copyAndComp.addActionListener(this);
+		this.copyAndComp.setDefaultCapable(true);
 
-		getRootPane().setDefaultButton(this.ok);
+		getRootPane().setDefaultButton(this.copyAndComp);
 
-		this.compOnly = new JButton(Resurses.getString("SCHEMA_COMP_ONLY"));
-		pna.add(this.compOnly);
-		this.compOnly.setBounds(142, y, 128, 24);
-		this.compOnly.setActionCommand("SCHEMA_COMP_ONLY");
-		this.compOnly.addActionListener(this);
+		this.compLocal = new JButton(Resurses.getString("SCHEMA_COMP_ONLY"));
+		pna.add(this.compLocal);
+		this.compLocal.setBounds(142, y, 128, 24);
+		this.compLocal.setActionCommand("OK");
+		this.compLocal.addActionListener(this);
 
 		this.cancel = new JButton(Resurses.getString("CANCEL"));
 		getContentPane().add(this.cancel);
@@ -258,20 +260,85 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		Object activator = arg.getSource();
 		if (activator == null)
 			return;
-		if (activator == this.ok) {
+
+		Vector<String> parms = new Vector<String>();
+		parms.add("cmd=compare");
+		if (this.dates.isSelected()) {
+			parms.add("dates=true");
+		}
+		if (this.surname.isSelected()) {
+			parms.add("surname=true");
+		}
+		if (this.patronym.isSelected()) {
+			parms.add("patronym=true");
+		}
+
+		int len = 0;
+		try {
+			len = Integer.parseInt(this.namlen.getText());
+		} catch (NumberFormatException ne) {
+		}
+		parms.add("givenname=" + len);
+
+		if (activator == this.copyAndComp) {
+			if (selectedSchema == null) {
+				JOptionPane.showMessageDialog(this, Resurses
+						.getString("SCHEMA_NOT_SELECTED"));
+				return;
+			}
 			selectedView = scViews.getSelectedIndex();
 			wasOk = true;
 
-			this.ok.setEnabled(false);
+			this.copyAndComp.setEnabled(false);
 
 			// we create new instances as needed.
 			task = new Task();
 			task.addPropertyChangeListener(this);
 			task.execute();
 
+			try {
+				parms.add("view=" + createdViewId);
+				parms.add("viewName=" + createdView);
+				Suku.kontroller.getSukuData(parms.toArray(new String[0]));
+			} catch (SukuException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());
+			}
+			setVisible(false);
 			return;
-		}
-		if (activator == this.cancel) {
+		} else if (activator == this.compLocal && selectedSchema == null) {
+			try {
+
+				// SukuData resp =
+				Suku.kontroller.getSukuData(parms.toArray(new String[0]));
+
+			} catch (SukuException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());
+
+			}
+			setVisible(false);
+
+		} else if (activator == this.compToSchema) {
+			if (selectedSchema == null) {
+				JOptionPane.showMessageDialog(this, Resurses
+						.getString("SCHEMA_NOT_SELECTED"));
+				return;
+			}
+			try {
+
+				parms.add("schema=" + selectedSchema);
+				if (getViewId() >= 0) {
+					parms.add("view=" + getViewId());
+					parms.add("viewName=" + viewNames[selectedView]);
+				}
+
+				// SukuData resp =
+				Suku.kontroller.getSukuData(parms.toArray(new String[0]));
+			} catch (SukuException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());
+
+			}
+			setVisible(false);
+		} else if (activator == this.cancel) {
 			wasOk = false;
 			setVisible(false);
 			return;
@@ -333,9 +400,10 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 					parms.add("viewName=" + viewNames[selectedView]);
 				}
 
-				// SukuData resp =
-				Suku.kontroller.getSukuData(parms.toArray(new String[0]));
-
+				SukuData resp = Suku.kontroller.getSukuData(parms
+						.toArray(new String[0]));
+				createdView = resp.generalText;
+				createdViewId = resp.resultPid;
 			} catch (SukuException e) {
 
 				e.printStackTrace();
