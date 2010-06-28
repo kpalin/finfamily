@@ -38,7 +38,8 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	private JList scViews = null;
 	private JButton ok;
 	private JButton cancel;
-	private JButton comp;
+	private JButton compAndCopy;
+	private JButton compOnly;
 	private JCheckBox dates;
 	private JTextField namlen;
 	private JCheckBox patronym;
@@ -181,26 +182,32 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		lbl.setBounds(80, yy, 200, 20);
 
 		yy += 30;
-		this.comp = new JButton(Resurses.getString("SCHEMA_COMP"));
-		pnb.add(this.comp);
-		this.comp.setBounds(20, yy, 160, 24);
-		this.comp.setActionCommand("SCHEMA_COMP");
-		this.comp.addActionListener(this);
+		this.compAndCopy = new JButton(Resurses.getString("SCHEMA_COMP"));
+		pnb.add(this.compAndCopy);
+		this.compAndCopy.setBounds(20, yy, 150, 24);
+		this.compAndCopy.setActionCommand("SCHEMA_COMP");
+		this.compAndCopy.addActionListener(this);
 
 		if (yy > y)
 			y = yy;
 		this.ok = new JButton(Resurses.getString("SCHEMA_COPY"));
 		pna.add(this.ok);
-		this.ok.setBounds(20, y, 150, 24);
+		this.ok.setBounds(10, y, 128, 24);
 		this.ok.setActionCommand("OK");
 		this.ok.addActionListener(this);
 		this.ok.setDefaultCapable(true);
 
 		getRootPane().setDefaultButton(this.ok);
 
+		this.compOnly = new JButton(Resurses.getString("SCHEMA_COMP_ONLY"));
+		pna.add(this.compOnly);
+		this.compOnly.setBounds(142, y, 128, 24);
+		this.compOnly.setActionCommand("SCHEMA_COMP_ONLY");
+		this.compOnly.addActionListener(this);
+
 		this.cancel = new JButton(Resurses.getString("CANCEL"));
-		pna.add(this.cancel);
-		this.cancel.setBounds(180, y, 80, 24);
+		getContentPane().add(this.cancel);
+		this.cancel.setBounds(310, y + 10, 80, 24);
 		this.cancel.setActionCommand("CANCEL");
 		this.cancel.addActionListener(this);
 
