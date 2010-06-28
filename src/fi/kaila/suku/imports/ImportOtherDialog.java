@@ -8,13 +8,17 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -34,6 +38,11 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	private JList scViews = null;
 	private JButton ok;
 	private JButton cancel;
+	private JButton comp;
+	private JCheckBox dates;
+	private JTextField namlen;
+	private JCheckBox patronym;
+	private JCheckBox surname;
 	private String selectedSchema = null;
 	private String[] schemaList = null;
 	private Vector<String> viewList = null;
@@ -75,14 +84,17 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	private void constructMe(boolean allowNew) throws SukuException {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-		setBounds(d.width / 2 - 150, d.height / 2 - 200, 300, 400);
+		// setBounds(d.width / 2 - 300, d.height / 2 - 200, 600, 400);
 		setLayout(null);
-		int y = 10;
-
-		JLabel lbl = new JLabel(Resurses.getString("SCHEMA_SELECT"));
-		getContentPane().add(lbl);
-		lbl.setBounds(10, y, 200, 20);
-		y += 20;
+		int y = 20;
+		JPanel pna = new JPanel();
+		pna.setLayout(null);
+		getContentPane().add(pna);
+		pna.setBorder(BorderFactory.createTitledBorder(Resurses
+				.getString("SCHEMA_SELECT")));
+		JLabel lbl;// = new JLabel(Resurses.getString("SCHEMA_SELECT"));
+		// pna.add(lbl);
+		// lbl.setBounds(10, y, 200, 20);
 
 		SukuData dat = Suku.kontroller.getSukuData("cmd=schema", "type=get");
 		String schema = dat.generalArray.length == 1 ? dat.generalArray[0]
@@ -102,13 +114,13 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		scList = new JList(schemaList);
 		scList.addListSelectionListener(this);
 		JScrollPane scroll = new JScrollPane(scList);
-		getContentPane().add(scroll);
+		pna.add(scroll);
 		scroll.setBounds(10, y, 260, 100);
 
 		y += 110;
 
 		lbl = new JLabel(Resurses.getString("SELECT_VIEW"));
-		getContentPane().add(lbl);
+		pna.add(lbl);
 		lbl.setBounds(10, y, 200, 20);
 		y += 20;
 
@@ -116,12 +128,12 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		scViews = new JList(viewList);
 		scList.addListSelectionListener(this);
 		viewScroll = new JScrollPane(scViews);
-		getContentPane().add(viewScroll);
+		pna.add(viewScroll);
 		viewScroll.setBounds(10, y, 260, 100);
 		y += 110;
 
 		textContent = new JLabel("");
-		getContentPane().add(textContent);
+		pna.add(textContent);
 		this.textContent.setBounds(30, y, 340, 20);
 
 		y += 30;
@@ -130,18 +142,56 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
 		this.progressBar.setBounds(10, y, 260, 20);
-		getContentPane().add(this.progressBar);
+		pna.add(this.progressBar);
 
 		y += 20;
 		timeEstimate = new JLabel("");
-		getContentPane().add(timeEstimate);
+		pna.add(timeEstimate);
 		timeEstimate.setBounds(30, y, 340, 20);
 
 		y += 30;
+		int yy = 20;
+		JPanel pnb = new JPanel();
+		pnb.setLayout(null);
+		getContentPane().add(pnb);
+		pnb.setBorder(BorderFactory.createTitledBorder(Resurses
+				.getString("SCHEMA_COMPARE")));
 
-		this.ok = new JButton(Resurses.getString("OK"));
-		getContentPane().add(this.ok);
-		this.ok.setBounds(30, y, 80, 24);
+		dates = new JCheckBox(Resurses.getString("SCHEMA_COMP_BDATES"));
+		pnb.add(dates);
+		dates.setBounds(20, yy, 340, 20);
+
+		yy += 24;
+
+		patronym = new JCheckBox(Resurses.getString("SCHEMA_COMP_PATRONYM"));
+		pnb.add(patronym);
+		patronym.setBounds(20, yy, 340, 20);
+
+		yy += 24;
+		surname = new JCheckBox(Resurses.getString("SCHEMA_COMP_SURNAME"));
+		pnb.add(surname);
+		surname.setBounds(20, yy, 340, 20);
+		yy += 24;
+		namlen = new JTextField();
+		pnb.add(namlen);
+		namlen.setBounds(20, yy, 50, 20);
+
+		lbl = new JLabel(Resurses.getString("SCHEMA_COMP_GNAMLEN"));
+		pnb.add(lbl);
+		lbl.setBounds(80, yy, 200, 20);
+
+		yy += 30;
+		this.comp = new JButton(Resurses.getString("SCHEMA_COMP"));
+		pnb.add(this.comp);
+		this.comp.setBounds(20, yy, 160, 24);
+		this.comp.setActionCommand("SCHEMA_COMP");
+		this.comp.addActionListener(this);
+
+		if (yy > y)
+			y = yy;
+		this.ok = new JButton(Resurses.getString("SCHEMA_COPY"));
+		pna.add(this.ok);
+		this.ok.setBounds(20, y, 150, 24);
 		this.ok.setActionCommand("OK");
 		this.ok.addActionListener(this);
 		this.ok.setDefaultCapable(true);
@@ -149,13 +199,16 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		getRootPane().setDefaultButton(this.ok);
 
 		this.cancel = new JButton(Resurses.getString("CANCEL"));
-		getContentPane().add(this.cancel);
-		this.cancel.setBounds(120, y, 80, 24);
+		pna.add(this.cancel);
+		this.cancel.setBounds(180, y, 80, 24);
 		this.cancel.setActionCommand("CANCEL");
 		this.cancel.addActionListener(this);
-		getRootPane().setDefaultButton(ok);
-		y += 80;
-		setBounds(d.width / 2 - 150, d.height / 2 - 200, 300, y);
+
+		pna.setBounds(10, 10, 280, y + 40);
+
+		pnb.setBounds(300, 10, 280, yy + 40);
+		y += 100;
+		setBounds(d.width / 2 - 300, d.height / 2 - 200, 600, y);
 
 		this.setVisible(true);
 
