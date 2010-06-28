@@ -547,7 +547,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 					"type=query");
 			resetArguments();
 			int preferredVid = 0;
-			int preferredIndex = 0;
+			int preferredIndex = -1;
+			viewList.removeAllItems();
 			for (int i = 0; i < sets.generalArray.length; i++) {
 
 				String[] parts = sets.generalArray[i].split("=");
@@ -585,7 +586,6 @@ public class SearchCriteria extends JDialog implements ActionListener {
 						viewGroup.setText(parts[1]);
 					} else if (parts[0].equals("viewId")) {
 
-						viewList.removeAllItems();
 						String[] vnum = null;
 
 						if (preferredView != null) {
