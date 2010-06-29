@@ -477,7 +477,7 @@ public class ImportOtherUtil {
 
 	public SukuData comparePersons(HashMap<String, String> map)
 			throws SukuException {
-		SukuData result = null;
+		SukuData result = new SukuData();
 
 		String schema = map.get("schema");
 		int viewId = -1;
@@ -488,76 +488,66 @@ public class ImportOtherUtil {
 			viewName = map.get("viewName");
 		}
 		StringBuilder sql = new StringBuilder();
-		boolean wasFirst = false;
+		String sqlPrefix = null;
+		int subCount = 0;
 		if (schema != null) {
-			sql.append("select distinct a.pid from unitnotice as a inner join "
-					+ schema + ".unitnotice as b where ");
+			sqlPrefix = "pid in (select  a.pid from unitnotice as a, " + schema
+					+ ".unitnotice as b where ";
 		} else {
-			sql.append("select distinct a.pid from unitnotice as a inner join "
-					+ "unitnotice as b where  a.pid <> b.pid and ");
-			wasFirst = true;
+			sqlPrefix = "pid in (select  a.pid from unitnotice as a, "
+					+ "unitnotice as b where  a.pid <> b.pid and ";
 		}
-		if (map.get("dates") != null) {
-			if (!wasFirst) {
-				sql.append("and ");
-			}
-			sql
-					.append("( a.fromdate = b.fromdate and a.tag='BIRT' and b.tag='BIRT') ");
 
-			wasFirst = true;
+		sql.append("select pid from unit where ");
+
+		if (map.get("dates") != null) {
+			subCount++;
+			sql.append(sqlPrefix);
+			sql
+					.append("( coalesce(a.fromdate,'') = coalesce(b.fromdate,'') and a.tag='BIRT' and b.tag='BIRT') )");
 		}
 
 		if (map.get("surname") != null) {
-			if (!wasFirst) {
+			subCount++;
+			if (subCount > 1) {
 				sql.append("and ");
 			}
+			sql.append(sqlPrefix);
 			sql
-					.append("( (a.surname = b.surname or a.surname is null and b.surname is null) and a.tag='NAME' and b.tag='NAME') ");
+					.append("( coalesce(a.surname,'') = coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')) ");
 
-			wasFirst = true;
 		}
 		if (map.get("patronym") != null) {
-			if (!wasFirst) {
+			subCount++;
+			if (subCount > 1) {
 				sql.append("and ");
 			}
+			sql.append(sqlPrefix);
 			sql
-					.append("( (a.patronym = b.patronym or a.patronym is null and b.patronym is null) and a.tag='NAME' and b.tag='NAME') ");
-
-			wasFirst = true;
-		}
-		String lenn = map.get("givenname");
-		int nlen = 0;
-		try {
-			if (lenn != null) {
-				nlen = Integer.parseInt(lenn);
-			}
-		} catch (NumberFormatException ne) {
+					.append("( coalesce(a.patronym,'') = coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')) ");
 
 		}
 
-		if (nlen == 0) {
-			if (!wasFirst) {
-				sql.append("and ");
-			}
-			sql
-					.append("( (a.givenname = b.givenname or "
-							+ "a.givenname is null and b.givenname is null) and a.tag='NAME' and b.tag='NAME') ");
+		subCount++;
+		if (subCount > 1) {
+			sql.append("and ");
+		}
 
-			wasFirst = true;
+		if (map.get("firstname") == null) {
+
+			sql.append(sqlPrefix);
+			sql.append("( coalesce(a.givenname,'') = coalesce(b.givenname,'') "
+					+ " and a.tag='NAME' and b.tag='NAME') )");
+
 		} else {
-			if (!wasFirst) {
-				sql.append("and ");
-			}
-			sql
-					.append("(a.givenname is null and b.givenname is null or (substring(a.givenname for "
-							+ nlen
-							+ " = substring(b.givenname for "
-							+ nlen
-							+ " ) ) and a.tag='NAME' and b.tag='NAME') ");
+			sql.append(sqlPrefix);
+			sql.append("( substring(coalesce(a.givenname,'') from '[\\\\w]+') "
+					+ " = substring(coalesce(b.givenname,'') from '[\\\\w]+') "
+					+ "   and a.tag='NAME' and b.tag='NAME')) ");
 
 		}
 
-		ViewUtil vu = new ViewUtil(con);
+		logger.info(sql.toString());
 
 		try {
 			Vector<Integer> vv = new Vector<Integer>();
@@ -571,7 +561,6 @@ public class ImportOtherUtil {
 			maxvid++;
 			String newView = Resurses.getString("COMPARE_VIEW") + " " + " ["
 					+ maxvid + "]";
-			SukuData oth = vu.addView(newView);
 
 			rs = stm.executeQuery(sql.toString());
 			int pid = 0;
@@ -580,12 +569,19 @@ public class ImportOtherUtil {
 				vv.add(pid);
 			}
 			rs.close();
-			int pids[] = new int[vv.size()];
-			for (int i = 0; i < pids.length; i++) {
-				pids[i] = vv.get(i);
+			if (vv.size() > 0) {
+				ViewUtil vu = new ViewUtil(con);
+				SukuData oth = vu.addView(newView);
+
+				int pids[] = new int[vv.size()];
+				for (int i = 0; i < pids.length; i++) {
+					pids[i] = vv.get(i);
+				}
+				vu.addViewUnits(oth.resultPid, pids, false);
+				result.generalText = newView;
+				result.resultPid = oth.resultPid;
 			}
 			stm.close();
-			vu.addViewUnits(oth.resultPid, pids, false);
 
 		} catch (SQLException e) {
 

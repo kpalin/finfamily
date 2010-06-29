@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -42,7 +41,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	private JButton compToSchema;
 	private JButton compLocal;
 	private JCheckBox dates;
-	private JTextField namlen;
+	private JCheckBox firstname;
 	private JCheckBox patronym;
 	private JCheckBox surname;
 	private String selectedSchema = null;
@@ -175,13 +174,9 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		pnb.add(surname);
 		surname.setBounds(20, yy, 340, 20);
 		yy += 24;
-		namlen = new JTextField();
-		pnb.add(namlen);
-		namlen.setBounds(20, yy, 50, 20);
-
-		lbl = new JLabel(Resurses.getString("SCHEMA_COMP_GNAMLEN"));
-		pnb.add(lbl);
-		lbl.setBounds(80, yy, 200, 20);
+		firstname = new JCheckBox(Resurses.getString("SCHEMA_COMP_FIRSTNAME"));
+		pnb.add(firstname);
+		firstname.setBounds(20, yy, 340, 20);
 
 		yy += 30;
 		this.compToSchema = new JButton(Resurses.getString("SCHEMA_COMP"));
@@ -273,12 +268,9 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 			parms.add("patronym=true");
 		}
 
-		int len = 0;
-		try {
-			len = Integer.parseInt(this.namlen.getText());
-		} catch (NumberFormatException ne) {
+		if (this.firstname.isSelected()) {
+			parms.add("firstname=true");
 		}
-		parms.add("givenname=" + len);
 
 		if (activator == this.copyAndComp) {
 			if (selectedSchema == null) {
@@ -299,7 +291,18 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 			try {
 				parms.add("view=" + createdViewId);
 				parms.add("viewName=" + createdView);
-				Suku.kontroller.getSukuData(parms.toArray(new String[0]));
+				SukuData resp = Suku.kontroller.getSukuData(parms
+						.toArray(new String[0]));
+
+				if (resp.generalText != null) {
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString("COMPARE_RESULT")
+							+ " " + resp.generalText);
+				} else {
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString("COMPARE_RESULT_NONE"));
+				}
+
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage());
 			}
@@ -308,14 +311,23 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		} else if (activator == this.compLocal && selectedSchema == null) {
 			try {
 
-				// SukuData resp =
-				Suku.kontroller.getSukuData(parms.toArray(new String[0]));
+				SukuData resp = Suku.kontroller.getSukuData(parms
+						.toArray(new String[0]));
+
+				if (resp.generalText != null) {
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString("COMPARE_RESULT")
+							+ " " + resp.generalText);
+					setVisible(false);
+				} else {
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString("COMPARE_RESULT_NONE"));
+				}
 
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage());
 
 			}
-			setVisible(false);
 
 		} else if (activator == this.compToSchema) {
 			if (selectedSchema == null) {
@@ -331,13 +343,24 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 					parms.add("viewName=" + viewNames[selectedView]);
 				}
 
-				// SukuData resp =
-				Suku.kontroller.getSukuData(parms.toArray(new String[0]));
+				SukuData resp = Suku.kontroller.getSukuData(parms
+						.toArray(new String[0]));
+
+				if (resp.generalText != null) {
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString("COMPARE_RESULT")
+							+ " " + resp.generalText);
+					setVisible(false);
+				} else {
+					JOptionPane.showMessageDialog(this, Resurses
+							.getString("COMPARE_RESULT_NONE"));
+				}
+
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage());
 
 			}
-			setVisible(false);
+
 		} else if (activator == this.cancel) {
 			wasOk = false;
 			setVisible(false);
