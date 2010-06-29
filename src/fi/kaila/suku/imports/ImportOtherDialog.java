@@ -159,22 +159,24 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		pnb.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("SCHEMA_COMPARE")));
 
-		dates = new JCheckBox(Resurses.getString("SCHEMA_COMP_BDATES"));
+		dates = new JCheckBox(Resurses.getString("SCHEMA_COMP_BDATES"), true);
 		pnb.add(dates);
 		dates.setBounds(20, yy, 340, 20);
 
 		yy += 24;
 
-		patronym = new JCheckBox(Resurses.getString("SCHEMA_COMP_PATRONYM"));
+		patronym = new JCheckBox(Resurses.getString("SCHEMA_COMP_PATRONYM"),
+				true);
 		pnb.add(patronym);
 		patronym.setBounds(20, yy, 340, 20);
 
 		yy += 24;
-		surname = new JCheckBox(Resurses.getString("SCHEMA_COMP_SURNAME"));
+		surname = new JCheckBox(Resurses.getString("SCHEMA_COMP_SURNAME"), true);
 		pnb.add(surname);
 		surname.setBounds(20, yy, 340, 20);
 		yy += 24;
-		firstname = new JCheckBox(Resurses.getString("SCHEMA_COMP_FIRSTNAME"));
+		firstname = new JCheckBox(Resurses.getString("SCHEMA_COMP_FIRSTNAME"),
+				true);
 		pnb.add(firstname);
 		firstname.setBounds(20, yy, 340, 20);
 

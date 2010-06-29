@@ -514,7 +514,7 @@ public class ImportOtherUtil {
 			}
 			sql.append(sqlPrefix);
 			sql
-					.append("( coalesce(a.surname,'') = coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')) ");
+					.append("( coalesce(a.surname,'') ilike coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')) ");
 
 		}
 		if (map.get("patronym") != null) {
@@ -524,7 +524,7 @@ public class ImportOtherUtil {
 			}
 			sql.append(sqlPrefix);
 			sql
-					.append("( coalesce(a.patronym,'') = coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')) ");
+					.append("( coalesce(a.patronym,'') ilike coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')) ");
 
 		}
 
@@ -536,18 +536,17 @@ public class ImportOtherUtil {
 		if (map.get("firstname") == null) {
 
 			sql.append(sqlPrefix);
-			sql.append("( coalesce(a.givenname,'') = coalesce(b.givenname,'') "
-					+ " and a.tag='NAME' and b.tag='NAME') )");
-
+			sql
+					.append("( coalesce(a.givenname,'') ilike coalesce(b.givenname,'') "
+							+ " and a.tag='NAME' and b.tag='NAME') )");
 		} else {
 			sql.append(sqlPrefix);
-			sql.append("( substring(coalesce(a.givenname,'') from '[\\\\w]+') "
-					+ " = substring(coalesce(b.givenname,'') from '[\\\\w]+') "
-					+ "   and a.tag='NAME' and b.tag='NAME')) ");
-
+			sql
+					.append("( substring(coalesce(a.givenname,'') from '[\\\\w]+') "
+							+ " ilike substring(coalesce(b.givenname,'') from '[\\\\w]+') "
+							+ "   and a.tag='NAME' and b.tag='NAME')) ");
 		}
-
-		logger.info(sql.toString());
+		logger.fine(sql.toString());
 
 		try {
 			Vector<Integer> vv = new Vector<Integer>();
