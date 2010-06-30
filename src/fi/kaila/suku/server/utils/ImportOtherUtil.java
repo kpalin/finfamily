@@ -500,6 +500,10 @@ public class ImportOtherUtil {
 		} else {
 			sqlPrefix = "pid in (select  a.pid from unitnotice as a, "
 					+ "unitnotice as b where  a.pid <> b.pid and ";
+			if (viewId > 0) {
+				sqlPostfix = " and b.pid in (select pid from viewunits where vid = "
+						+ viewId + ") and a.pid <> b.pid ";
+			}
 		}
 
 		sql.append("select pid from unit where ");

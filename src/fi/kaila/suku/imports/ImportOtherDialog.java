@@ -311,7 +311,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 			}
 			setVisible(false);
 			return;
-		} else if (activator == this.compLocal && selectedSchema == null) {
+		} else if (activator == this.compLocal) {
 			try {
 
 				SukuData resp = Suku.kontroller.getSukuData(parms
