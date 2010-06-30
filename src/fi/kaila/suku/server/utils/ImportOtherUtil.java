@@ -482,17 +482,21 @@ public class ImportOtherUtil {
 		String schema = map.get("schema");
 		int viewId = -1;
 		String view = map.get("view");
-		String viewName = null;
+
 		if (view != null) {
 			viewId = Integer.parseInt(view);
-			viewName = map.get("viewName");
 		}
 		StringBuilder sql = new StringBuilder();
 		String sqlPrefix = null;
+		String sqlPostfix = "";
 		int subCount = 0;
 		if (schema != null) {
 			sqlPrefix = "pid in (select  a.pid from unitnotice as a, " + schema
 					+ ".unitnotice as b where ";
+			if (viewId > 0) {
+				sqlPostfix = " and b.pid in (select pid from " + schema
+						+ ".viewunits where vid = " + viewId + ") ";
+			}
 		} else {
 			sqlPrefix = "pid in (select  a.pid from unitnotice as a, "
 					+ "unitnotice as b where  a.pid <> b.pid and ";
@@ -504,7 +508,8 @@ public class ImportOtherUtil {
 			subCount++;
 			sql.append(sqlPrefix);
 			sql
-					.append("( coalesce(a.fromdate,'') = coalesce(b.fromdate,'') and a.tag='BIRT' and b.tag='BIRT') )");
+					.append("( coalesce(a.fromdate,'') = coalesce(b.fromdate,'') and a.tag='BIRT' and b.tag='BIRT')"
+							+ sqlPostfix + " )");
 		}
 
 		if (map.get("surname") != null) {
@@ -514,7 +519,8 @@ public class ImportOtherUtil {
 			}
 			sql.append(sqlPrefix);
 			sql
-					.append("( coalesce(a.surname,'') ilike coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')) ");
+					.append("( coalesce(a.surname,'') ilike coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')"
+							+ sqlPostfix + ")  ");
 
 		}
 		if (map.get("patronym") != null) {
@@ -524,7 +530,8 @@ public class ImportOtherUtil {
 			}
 			sql.append(sqlPrefix);
 			sql
-					.append("( coalesce(a.patronym,'') ilike coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')) ");
+					.append("( coalesce(a.patronym,'') ilike coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')"
+							+ sqlPostfix + ")  ");
 
 		}
 
@@ -538,15 +545,17 @@ public class ImportOtherUtil {
 			sql.append(sqlPrefix);
 			sql
 					.append("( coalesce(a.givenname,'') ilike coalesce(b.givenname,'') "
-							+ " and a.tag='NAME' and b.tag='NAME') )");
+							+ " and a.tag='NAME' and b.tag='NAME') "
+							+ sqlPostfix + " )");
 		} else {
 			sql.append(sqlPrefix);
 			sql
 					.append("( substring(coalesce(a.givenname,'') from '[\\\\w]+') "
 							+ " ilike substring(coalesce(b.givenname,'') from '[\\\\w]+') "
-							+ "   and a.tag='NAME' and b.tag='NAME')) ");
+							+ "   and a.tag='NAME' and b.tag='NAME') "
+							+ sqlPostfix + ") ");
 		}
-		logger.fine(sql.toString());
+		logger.info(sql.toString());
 
 		try {
 			Vector<Integer> vv = new Vector<Integer>();

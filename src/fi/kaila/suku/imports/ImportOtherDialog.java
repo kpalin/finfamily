@@ -237,6 +237,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	}
 
 	public int getViewId() {
+
 		if (wasOk) {
 			if (selectedView >= 0 && selectedView < viewIds.length)
 				return viewIds[selectedView];
@@ -333,10 +334,13 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 
 		} else if (activator == this.compToSchema) {
 			if (selectedSchema == null) {
+
 				JOptionPane.showMessageDialog(this, Resurses
 						.getString("SCHEMA_NOT_SELECTED"));
 				return;
 			}
+			selectedView = scViews.getSelectedIndex();
+			wasOk = true;
 			try {
 
 				parms.add("schema=" + selectedSchema);

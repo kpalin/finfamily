@@ -2090,6 +2090,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 			viewWin.setVisible(true);
 		} else {
+			try {
+				viewWin.initViewlist();
+			} catch (SukuException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, Resurses.getString("SUKU")
+						+ ":" + e.getMessage());
+			}
 			viewWin.setVisible(true);
 		}
 

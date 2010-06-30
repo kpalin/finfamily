@@ -179,21 +179,13 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 				.getString("DIALOG_VIEW_ADD_CAPTION")));
 		addViewGroup.setLayout(null);
 		addes = new ButtonGroup();
-		;
+
 		formd = new JRadioButton(Resurses.getString("DIALOG_VIEW_ADD_SELECTED"));
 		formd.setActionCommand("SELECTED");
 		formd.setSelected(true);
 		addViewGroup.add(formd);
 		addes.add(formd);
 		formd.setBounds(10, 22, 240, 20);
-
-		// formd=new
-		// JRadioButton(Resurses.getString("DIALOG_VIEW_ADD_SELECTED_EMPTY"));
-		// formd.setActionCommand("SELECTEDEMPTY");
-		//		
-		// addViewGroup.add(formd);
-		// addes.add(formd);
-		// formd.setBounds(10,44,240,20);
 
 		addDescendant = new JRadioButton(Resurses
 				.getString("DIALOG_VIEW_ADD_DESC"));
@@ -304,7 +296,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 	}
 
-	private void initViewlist() throws SukuException {
+	public void initViewlist() throws SukuException {
 		viewlist.removeAllItems();
 		viewlist.addItem("");
 		SukuData vlist = Suku.kontroller.getSukuData("cmd=viewlist");
