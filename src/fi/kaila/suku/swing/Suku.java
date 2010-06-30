@@ -2075,31 +2075,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void openViewWin() {
-
-		if (viewWin == null) {
-			try {
+		try {
+			if (viewWin == null) {
 				viewWin = new ViewMgrWindow(this);
-
-			} catch (Exception e) {
-
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, Resurses.getString("SUKU")
-						+ ":" + e.getMessage());
-				return;
-
-			}
-			viewWin.setVisible(true);
-		} else {
-			try {
+				viewWin.setVisible(true);
+			} else {
 				viewWin.initViewlist();
-			} catch (SukuException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, Resurses.getString("SUKU")
-						+ ":" + e.getMessage());
+				viewWin.setVisible(true);
 			}
-			viewWin.setVisible(true);
+		} catch (SukuException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, Resurses.getString("SUKU")
+					+ ":" + e.getMessage());
 		}
-
 	}
 
 	private void executeDbWork() {
