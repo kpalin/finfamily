@@ -304,7 +304,7 @@ public class SukuServerImpl implements SukuServer {
 			PersonShortData p = new PersonShortData(this.con, pid);
 			pv.add(p);
 
-			sql = "select count(*) from child where aid=?";
+			sql = "select tag,count(*) from relation where pid=? group by tag";
 			pstm = this.con.prepareStatement(sql);
 
 			for (int i = 0; i < fam.rels.length; i++) {
@@ -319,10 +319,23 @@ public class SukuServerImpl implements SukuServer {
 
 					pstm.setInt(1, ipid);
 					rs = pstm.executeQuery();
-					if (rs.next()) {
-						p.setChildCount(rs.getInt(1));
+					int cc = 0;
+					int pc = 0;
+					while (rs.next()) {
+						String tag = rs.getString(1);
+						int cnt = rs.getInt(2);
+						if (tag.equals("CHIL")) {
+							cc += cnt;
+						} else if (tag.equals("FATH")) {
+							pc += cnt;
+						} else if (tag.equals("MOTH")) {
+							pc += cnt;
+						}
+
 					}
 					rs.close();
+					p.setChildCount(cc);
+					p.setPareCount(pc);
 
 					pv.add(p);
 				}

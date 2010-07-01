@@ -106,8 +106,12 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		g.fillRect(p.x, p.y, d.width + xmargin, d.height);
 		g.setColor(color);
 		g.drawRect(p.x, p.y, d.width + xmargin, d.height);
+		if (person.getPareCount() > 0) {
+			int rx = p.x + (d.width + xmargin) / 2;
+			g.setColor(Color.lightGray);
+			g.drawLine(rx - 20, p.y, rx + 20, p.y);
+		}
 		g.setColor(Color.black);
-
 		y += headerHeight;
 		g.drawLine(p.x, y, p.x + d.width, y);
 		BufferedImage img;
@@ -138,7 +142,6 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 				g.drawImage(img, imgx, y, (int) xw, (int) yh, Color.red, null);
 
-				// imgx += imageSize.width + separatorWidth;
 			}
 
 			y += imageSize.height;
@@ -421,13 +424,13 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		if (suretyCode != null) {
 			String imgLocation = "/images/rela" + suretyCode + ".jpg";
 			InputStream in = null;
-			int imsize;
+
 			byte imbytes[] = new byte[2048];
 			BufferedImage img = null;
 			try {
 				in = this.getClass().getResourceAsStream(imgLocation);
 				if (in != null) {
-					imsize = in.read(imbytes);
+					in.read(imbytes);
 					ByteArrayInputStream bb = new ByteArrayInputStream(imbytes);
 					if (bb != null) {
 						img = ImageIO.read(bb);
@@ -435,7 +438,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			} finally {
 				if (in != null) {
