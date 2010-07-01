@@ -295,6 +295,7 @@ public class SukuServerImpl implements SukuServer {
 				v.add(rel);
 
 			}
+			rs.close();
 
 			RelationShortData[] dt = new RelationShortData[0];
 			fam.rels = v.toArray(dt);
@@ -302,6 +303,9 @@ public class SukuServerImpl implements SukuServer {
 
 			PersonShortData p = new PersonShortData(this.con, pid);
 			pv.add(p);
+
+			sql = "select count(*) from child where aid=?";
+			pstm = this.con.prepareStatement(sql);
 
 			for (int i = 0; i < fam.rels.length; i++) {
 				int ipid = fam.rels[i].getRelationPid();
@@ -312,11 +316,19 @@ public class SukuServerImpl implements SukuServer {
 					// }
 					//					
 					p = new PersonShortData(this.con, ipid);
+
+					pstm.setInt(1, ipid);
+					rs = pstm.executeQuery();
+					if (rs.next()) {
+						p.setChildCount(rs.getInt(1));
+					}
+					rs.close();
+
 					pv.add(p);
 				}
 			}
-			PersonShortData[] dp = new PersonShortData[0];
-			fam.pers = pv.toArray(dp);
+
+			fam.pers = pv.toArray(new PersonShortData[0]);
 
 			pstm.close();
 

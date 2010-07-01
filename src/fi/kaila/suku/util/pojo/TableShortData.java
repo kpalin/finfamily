@@ -391,6 +391,19 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
 						+ xdate + xmargin, y + rowHeight);
 			}
+			if (person.getChildCount() > 0) {
+
+				int rx = currentArea.x + currentArea.width + xmargin;
+				int ry = y - rowHeight / 2;
+				Color colo = g.getColor();
+				g
+						.setColor(person.getSex().equals("M") ? Color.blue
+								: Color.red);
+				g.drawLine(rx, ry, rx + 10, ry);
+				g.setColor(colo);
+
+			}
+
 			// if (person.getSurety() != 100) {
 			// g.drawString("SU:" + person.getSurety(), p.x + xmargin, y
 			// + rowHeight);
