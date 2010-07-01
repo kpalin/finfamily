@@ -1126,7 +1126,6 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		private static final long serialVersionUID = 1L;
 		private JTextField createdDate;
 		private JCalendarButton calDate;
-		SimpleDateFormat sf = null;
 
 		DateTextField() {
 			this.setLayout(null);
@@ -1134,23 +1133,24 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			this.add(createdDate);
 			this.calDate = new JCalendarButton();
 			this.add(calDate);
-			String df = Resurses.getDateFormat();
-			String dff = "yyyy.MM.dd";
-			if (df != null) {
-				if (df.equals("FI")) {
-					dff = "dd.MM.yyyy";
-				} else if (df.equals("UK")) {
-					dff = "dd/MM/yyyy";
-				} else if (df.equals("US")) {
-					dff = "MM/dd/yyyy";
-				}
-			}
-			sf = new SimpleDateFormat(dff);
+
 			calDate
 					.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
 						public void propertyChange(
 								java.beans.PropertyChangeEvent evt) {
 							if (evt.getNewValue() instanceof Date) {
+								String df = Resurses.getDateFormat();
+								String dff = "yyyy.MM.dd";
+								if (df != null) {
+									if (df.equals("FI")) {
+										dff = "dd.MM.yyyy";
+									} else if (df.equals("UK")) {
+										dff = "dd/MM/yyyy";
+									} else if (df.equals("US")) {
+										dff = "MM/dd/yyyy";
+									}
+								}
+								SimpleDateFormat sf = new SimpleDateFormat(dff);
 								Date dat = (Date) evt.getNewValue();
 								StringBuffer sb = new StringBuffer();
 								sb = sf.format(dat, sb, new FieldPosition(0));
