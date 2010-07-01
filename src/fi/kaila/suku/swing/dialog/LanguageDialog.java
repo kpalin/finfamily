@@ -97,8 +97,9 @@ public class LanguageDialog extends JDialog implements ActionListener,
 			languageGroup.add(langxx[i]);
 			add(langxx[i]);
 			languages[i] = new UnitLanguage(Suku.getRepoLanguage(i, true));
+
 		}
-		langxx[0].setSelected(true);
+		// langxx[0].setSelected(true);
 
 		typeLbl = new JLabel(Resurses.getString("DATA_TYPE"));
 		add(typeLbl);
@@ -133,6 +134,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		mediaTitle = new JTextField();
 		add(mediaTitle);
 
+		enableFields(false);
 		addComponentListener(this);
 
 		ok = new JButton(Resurses.getString("CLOSE"));
@@ -197,6 +199,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 				if (this.languages[i].getPnid() > 0) {
 					langxx[i].setSelected(true);
 					langTextToPojo(this.languages[i].getLangCode());
+					enableFields(true);
 					break;
 				}
 			}
@@ -222,6 +225,8 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		langTextToPojo(cmd);
 		if (cmd.equals("OK")) {
 			setVisible(false);
+		} else {
+			enableFields(true);
 		}
 	}
 
@@ -234,6 +239,9 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	 *            = langcode
 	 */
 	public void langTextToPojo(String cmd) {
+		// if (previousLang == null) {
+		// previousLang = languages[0].getLangCode();
+		// }
 
 		if (previousLang != null) {
 			int langIdx = 0;
@@ -290,6 +298,14 @@ public class LanguageDialog extends JDialog implements ActionListener,
 				mediaTitle.setText(languages[langIdx].getMediaTitle());
 			}
 		}
+	}
+
+	private void enableFields(boolean value) {
+		noticeType.setEnabled(value);
+		description.setEnabled(value);
+		place.setEnabled(value);
+		noteText.setEnabled(value);
+		mediaTitle.setEnabled(value);
 	}
 
 	@Override
