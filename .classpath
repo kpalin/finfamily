@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
 	<classpathentry kind="lib" path="lib/jxl.jar"/>
 	<classpathentry kind="lib" path="lib/looks-2.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/jcalendarbutton-1.4.5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

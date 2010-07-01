@@ -5,6 +5,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +25,8 @@ import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+
+import org.jbundle.thin.base.screen.jcalendarbutton.JCalendarButton;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.swing.util.SukuSuretyField;
@@ -60,8 +65,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	private JTextField deatToDate;
 	private JTextField deatPlace;
 
-	private JTextField createdFromDate;
-	private JTextField createdToDate;
+	private DateTextField createdFromDate;
+
+	private DateTextField createdToDate;
 
 	private JComboBox viewList;
 	private String[] viewArray = null;
@@ -288,7 +294,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		TitledBorder tit = BorderFactory.createTitledBorder(bvl, Resurses
 				.getString(Resurses.CRITERIA_NAME));
 
-		this.namePanel = new JPanel(new GridLayout(2, 3, 10, 10));
+		this.namePanel = new JPanel(new GridLayout(2, 0, 10, 10));
 		getContentPane().add(this.namePanel);
 		this.namePanel.setBounds(20, y, 600, 80);
 		this.namePanel.setBorder(tit);
@@ -374,7 +380,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		tit = BorderFactory.createTitledBorder(bvl, Resurses
 				.getString(Resurses.CRITERIA_CREATED));
 
-		this.createdPanel = new JPanel(new GridLayout(2, 3, 10, 10));
+		this.createdPanel = new JPanel(new GridLayout(2, 3, 2, 2));
 		getContentPane().add(this.createdPanel);
 		this.createdPanel.setBounds(20, y, 400, 80);
 		this.createdPanel.setBorder(tit);
@@ -385,15 +391,15 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		lbl = new JLabel(Resurses.getString(Resurses.CRITERIA_CREATED_TO));
 		this.createdPanel.add(lbl);
 
-		this.createdFromDate = new JTextField();
+		this.createdFromDate = new DateTextField();
 		this.createdPanel.add(this.createdFromDate);
-		this.createdToDate = new JTextField();
+		this.createdToDate = new DateTextField();
 		this.createdPanel.add(this.createdToDate);
 
 		tit = BorderFactory.createTitledBorder(bvl, Resurses
 				.getString(Resurses.CRITERIA_VIEW));
 
-		this.viewPanel = new JPanel(new GridLayout(2, 0, 10, 10));
+		this.viewPanel = new JPanel(new GridLayout(2, 4, 10, 10));
 		getContentPane().add(this.viewPanel);
 		this.viewPanel.setBounds(420, y, 200, 80);
 		this.viewPanel.setBorder(tit);
@@ -1110,6 +1116,62 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		surety.setSurety(100);
 		noticeExist.setSelected(false);
 		fullText.setText("");
+
+	}
+
+	class DateTextField extends JPanel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private JTextField createdDate;
+		private JCalendarButton calDate;
+		SimpleDateFormat sf = null;
+
+		DateTextField() {
+			this.setLayout(null);
+			this.createdDate = new JTextField();
+			this.add(createdDate);
+			this.calDate = new JCalendarButton();
+			this.add(calDate);
+			String df = Resurses.getDateFormat();
+			String dff = "yyyy.MM.dd";
+			if (df != null) {
+				if (df.equals("FI")) {
+					dff = "dd.MM.yyyy";
+				} else if (df.equals("UK")) {
+					dff = "dd/MM/yyyy";
+				} else if (df.equals("US")) {
+					dff = "MM/dd/yyyy";
+				}
+			}
+			sf = new SimpleDateFormat(dff);
+			calDate
+					.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+						public void propertyChange(
+								java.beans.PropertyChangeEvent evt) {
+							if (evt.getNewValue() instanceof Date) {
+								Date dat = (Date) evt.getNewValue();
+								StringBuffer sb = new StringBuffer();
+								sb = sf.format(dat, sb, new FieldPosition(0));
+								createdDate.setText(sb.toString());
+							}
+						}
+					});
+
+			Dimension dd = this.calDate.getPreferredSize();
+			this.createdDate.setBounds(0, 0, 155, dd.height);
+			this.calDate.setBounds(160, 0, dd.width, dd.height);
+
+		}
+
+		public void setText(String text) {
+			createdDate.setText(text);
+		}
+
+		public String getText() {
+			return createdDate.getText();
+		}
 
 	}
 
