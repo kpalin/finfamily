@@ -1179,7 +1179,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		if (this.isConnected != 0) {
 			this.tableModel.resetModel(); // clear contents of table first
-			// this.table.removeAll();
+			table.getRowSorter().modelStructureChanged();
 			this.table.clearSelection();
 			// this.personView.reset();
 			this.tableMap.clear();
@@ -1421,6 +1421,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				}
 				try {
 					this.tableModel.resetModel(); // clear contents of table
+					table.getRowSorter().modelStructureChanged();
 					// first
 					this.personView.reset();
 					this.table.updateUI();
@@ -1494,7 +1495,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			else if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
 
-				int isele = table.getSelectedRow();
+				int[] selection = table.getSelectedRows();
+				for (int i = 0; i < selection.length; i++) {
+					selection[i] = table.convertRowIndexToModel(selection[i]);
+				}
+				if (selection.length < 1) {
+					return;
+				}
+				// int isele = table.getSelectedRow();
+				int isele = selection[0];
 				if (isele < 0) {
 					JOptionPane.showMessageDialog(this, Resurses
 							.getString("MESSAGE_NO_PERSON_TO_DELETE"), Resurses
@@ -1503,6 +1512,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					return;
 
 				}
+
 				SukuRow row = (SukuRow) tableModel.getValueAt(isele,
 						SukuModel.SUKU_ROW);
 
@@ -1547,7 +1557,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						tSubjectPButton.setEnabled(needle.size() > 0);
 
 						tableModel.removeRow(isele);
-
+						table.getRowSorter().modelStructureChanged();
 						table.updateUI();
 						scrollPane.updateUI();
 
@@ -1938,6 +1948,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		logger.finest("Opened GEDCOM FILE status " + isOpened);
 		if (isOpened) {
 			this.tableModel.resetModel(); // clear contents of table first
+			table.getRowSorter().modelStructureChanged();
 			this.personView.reset();
 			this.table.updateUI();
 			this.scrollPane.updateUI();
@@ -2478,6 +2489,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			Arrays.sort(databaseWindowPersons);
 
 			this.tableModel.resetModel(); // clear contents of table first
+			table.getRowSorter().modelStructureChanged();
 			// this.table.removeAll();
 			this.table.clearSelection();
 			// this.personView.reset();
@@ -2558,6 +2570,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		if (ret == null) {
 			SukuRow row = new SukuRow(this, this.tableModel, p);
 			tableModel.addRow(0, row);
+			table.getRowSorter().modelStructureChanged();
+
 		}
 		table.updateUI();
 		scrollPane.updateUI();
@@ -2631,6 +2645,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 
 			this.tableModel.resetModel(); // clear contents of table first
+			table.getRowSorter().modelStructureChanged();
 			this.personView.reset();
 			kontroller.getSukuData("cmd=logout");
 			this.databaseWindowPersons = null;
@@ -2651,6 +2666,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		boolean isOpened;
 		try {
 			this.tableModel.resetModel(); // clear contents of table first
+			table.getRowSorter().modelStructureChanged();
 			this.personView.reset();
 			this.table.updateUI();
 			this.scrollPane.updateUI();

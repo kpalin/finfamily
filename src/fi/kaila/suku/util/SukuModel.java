@@ -187,8 +187,7 @@ public class SukuModel implements TableModel {
 	 */
 	public static final int SUKU_ROW = -1;
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * 
 	 * @see javax.swing.table.TableModel#getValueAt(int, int)
 	 */
