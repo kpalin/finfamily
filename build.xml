@@ -67,7 +67,7 @@
 	<manifest >
     <attribute name="Built-By" value="${user.name}"/>
 	<attribute name="Main-Class" value="fi.kaila.suku.swing.Suku"/>
-	<attribute name="Class-Path" value="lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/jcalendarbutton-1.4.5.jar resources/"/>
+	<attribute name="Class-Path" value="lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/jcalendarbutton-1.4.5.jar lib/looks-2.3.1.jar  resources/"/>
     <section name="common">
       <attribute name="Specification-Title" value="Example"/>
       <attribute name="Specification-Version" value="${app.version}"/>
@@ -138,7 +138,7 @@
 	</copy>
 	
 	<zip destfile="${swing.home}/finfamily${app.version}.zip" basedir="${dist.home}"
-	  includes="suku.jar suku.sh SukuMac lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/jcalendarbutton-1.4.5.jar properties/* 
+	  includes="suku.jar suku.sh SukuMac lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/jcalendarbutton-1.4.5.jar lib/looks-2.3.1.jar properties/* 
 	  resources/excel/PaikatExcel.xls resources/excel/TypesExcel.xls 
 	  resources/excel/FinFamily.xls resources/excel/Taivut_fi.xls resources/images/suomikartta.jpg 
 	  resources/xml/*">
