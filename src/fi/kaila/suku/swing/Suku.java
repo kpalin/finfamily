@@ -306,26 +306,32 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		try {
 
-			if (args.length > 0 && !args[0].equals("web")) {
+			if (args.length > 0 && !args[0].equals("web")
+					&& !args[0].equals("$1")) {
 				// if you want to experiment with another look and feel you can
 				// write
 				// its class name as argument to the program
-				UIManager.setLookAndFeel(args[0]);
+				if (args[0].equals("metal")) {
+					UIManager.setLookAndFeel(UIManager
+							.getCrossPlatformLookAndFeelClassName());
+				} else {
+					UIManager.setLookAndFeel(args[0]);
+				}
 			} else {
 
 				os = System.getProperties().getProperty("os.name");
-				if (os.toLowerCase().indexOf("windows") >= 0
-						|| os.toLowerCase().indexOf("mac") >= 0) {
+				// if (os.toLowerCase().indexOf("windows") >= 0
+				// || os.toLowerCase().indexOf("mac") >= 0) {
 
-					UIManager.setLookAndFeel(UIManager
-							.getSystemLookAndFeelClassName());
-				} else if (os.toLowerCase().indexOf("linux") >= 0) {
-					UIManager
-							.setLookAndFeel("com.jgoodies.looks.plastic.PlasticLookAndFeel");
-				} else {
-					UIManager.setLookAndFeel(UIManager
-							.getCrossPlatformLookAndFeelClassName());
-				}
+				UIManager.setLookAndFeel(UIManager
+						.getSystemLookAndFeelClassName());
+				// } else if (os.toLowerCase().indexOf("linux") >= 0) {
+				// UIManager
+				// .setLookAndFeel("com.jgoodies.looks.plastic.PlasticLookAndFeel");
+				// } else {
+				// UIManager.setLookAndFeel(UIManager
+				// .getCrossPlatformLookAndFeelClassName());
+				// }
 			}
 
 			// * com.jgoodies.looks.windows.WindowsLookAndFeel
@@ -592,7 +598,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		setLayout(null);
 		setLocation(0, 0);
 		setSize(d);
-		// String os = System.getProperties().getProperty("os.name");
+
 		if (os.toLowerCase().indexOf("windows") >= 0) {
 			setExtendedState(MAXIMIZED_BOTH);
 		} else {
@@ -623,10 +629,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.toolbar.add(tSubjectButton);
 
 			this.toolbar.addSeparator();
-			// tSubjectName = new JButton("");
-			// tSubjectName.setEnabled(false);
-			//
-			// this.toolbar.add(tSubjectName);
 
 			tSubjectPButton = makeNavigationButton(
 					Resurses.TOOLBAR_SUBJECT_UP_IMAGE,
@@ -761,7 +763,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 		this.splitPane.setDividerLocation(splitterValue);
 
-		this.splitPane.setBounds(10, 20, this.currentSize.width,
+		this.splitPane.setBounds(10, 50, this.currentSize.width,
 				this.currentSize.height);
 
 		this.statusPanel = new JTextField("");
@@ -787,9 +789,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		logger.info("FinFamily [" + Resurses.getLanguage() + "] Version "
 				+ AntVersion.antVersion + " - Java Version: "
 				+ System.getProperty("java.version") + " from "
-				+ System.getProperty("java.vendor"));
+				+ System.getProperty("java.vendor") + " [" + os + "]");
 		// if (!this.isWebApp){
-
+		calcSize();
 		connectDb();
 		// }
 		addWindowListener(new WindowAdapter() {
