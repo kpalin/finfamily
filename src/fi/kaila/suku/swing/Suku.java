@@ -306,34 +306,37 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		try {
 
-			if (args.length > 0 && !args[0].equals("web")
-					&& !args[0].equals("$1")) {
-				// if you want to experiment with another look and feel you can
-				// write
-				// its class name as argument to the program
-				if (args[0].equals("metal")) {
-					UIManager.setLookAndFeel(UIManager
-							.getCrossPlatformLookAndFeelClassName());
-				} else {
-					UIManager.setLookAndFeel(args[0]);
-				}
-			} else {
+			if (args.length != 1 || !args[0].equals("web")) {
 
 				os = System.getProperties().getProperty("os.name");
-				// if (os.toLowerCase().indexOf("windows") >= 0
-				// || os.toLowerCase().indexOf("mac") >= 0) {
+				if (args.length > 0 && !args[0].equals("$1")) {
+					// if you want to experiment with another look and feel you
+					// can
+					// write
+					// its class name as argument to the program
+					// set metal as name for CrossPlatformLookAndFeelClassName
+					if (args[0].equals("metal")) {
+						UIManager.setLookAndFeel(UIManager
+								.getCrossPlatformLookAndFeelClassName());
+					} else {
+						UIManager.setLookAndFeel(args[0]);
+					}
+				} else {
 
-				UIManager.setLookAndFeel(UIManager
-						.getSystemLookAndFeelClassName());
-				// } else if (os.toLowerCase().indexOf("linux") >= 0) {
-				// UIManager
-				// .setLookAndFeel("com.jgoodies.looks.plastic.PlasticLookAndFeel");
-				// } else {
-				// UIManager.setLookAndFeel(UIManager
-				// .getCrossPlatformLookAndFeelClassName());
-				// }
+					// if (os.toLowerCase().indexOf("windows") >= 0
+					// || os.toLowerCase().indexOf("mac") >= 0) {
+
+					UIManager.setLookAndFeel(UIManager
+							.getSystemLookAndFeelClassName());
+					// } else if (os.toLowerCase().indexOf("linux") >= 0) {
+					// UIManager
+					// .setLookAndFeel("com.jgoodies.looks.plastic.PlasticLookAndFeel");
+					// } else {
+					// UIManager.setLookAndFeel(UIManager
+					// .getCrossPlatformLookAndFeelClassName());
+					// }
+				}
 			}
-
 			// * com.jgoodies.looks.windows.WindowsLookAndFeel
 			// * com.jgoodies.looks.plastic.PlasticLookAndFeel
 			// * com.jgoodies.looks.plastic.Plastic3DLookAndFeel
