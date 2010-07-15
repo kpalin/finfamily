@@ -59,9 +59,9 @@ public class GoogleMaps {
 		hc.setDoOutput(true);
 		hc.setReadTimeout(10000);
 		hc.connect();
+		BufferedInputStream in = null;
 		try {
-			BufferedInputStream in = new BufferedInputStream(
-					hc.getInputStream());
+			in = new BufferedInputStream(hc.getInputStream());
 			ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
 			int c;
 			while ((c = in.read()) != -1) {
@@ -70,6 +70,12 @@ public class GoogleMaps {
 			byteBuffer = byteArrayOut.toByteArray();
 		} finally {
 			hc.disconnect();
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {
+				}
+			}
 		}
 		return byteBuffer;
 	}
