@@ -40,7 +40,8 @@ import fi.kaila.suku.util.pojo.PlaceLocationData;
  * @author Kalle
  * 
  */
-public class SuomiMap extends JFrame implements ActionListener {
+public class SuomiMap extends JFrame implements ActionListener,
+		SukuMapInterface {
 
 	private static Logger logger = Logger.getLogger(SuomiMap.class.getName());
 
@@ -163,7 +164,7 @@ public class SuomiMap extends JFrame implements ActionListener {
 	 * 
 	 * @param places
 	 */
-	public void displaySuomiMap(PlaceLocationData[] places) {
+	public void displayMap(PlaceLocationData[] places) {
 		lukuri++;
 		this.places = places;
 		// int paikkddoja = 0;

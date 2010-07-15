@@ -257,7 +257,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private PersonView personView = null;
 
 	private JTextField statusPanel = null;
-	private SuomiMap suomi = null;
+	private SukuMapInterface suomi = null;
 	private GroupMgrWindow groupWin = null;
 	private ViewMgrWindow viewWin = null;
 	// private HiskiImporter hiski=null;
@@ -2315,7 +2315,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				|| this.databaseWindowPersons.length == 0)
 			return;
 		if (this.suomi == null) {
-			this.suomi = new SuomiMap(this);
+
+			if (Suku.kontroller.getPref(this, "USE_GOOGLE_MAP", "false")
+					.equals("true")) {
+				this.suomi = new WorldMap(this);
+			} else {
+
+				this.suomi = new SuomiMap(this);
+			}
 		}
 
 		HashMap<String, PlaceLocationData> paikat = new HashMap<String, PlaceLocationData>();
@@ -2355,7 +2362,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			// FIXME: Method call passes null for nonnull parameter of
 			// SuomiMap.displaySuomiMap(PlaceLocationData[])
-			suomi.displaySuomiMap((response != null) ? response.places : null);
+			suomi.displayMap((response != null) ? response.places : null);
 
 		} catch (SukuException e) {
 			e.printStackTrace();

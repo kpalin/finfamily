@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -37,6 +38,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JComboBox loca = null;
 	private JComboBox repolang = null;
 	private JComboBox dateFormat = null;
+	private JCheckBox useGoogleMap = null;
 	private JButton ok;
 
 	private String[] locatexts = null;
@@ -67,10 +69,16 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		// locas = Resurses.getString("LOCALIZAT_CODES").split(";");
 		dateFormats = Resurses.getString("LOCALIZAT_DATEFORMATS").split(";");
 		dateCodes = Resurses.getString("LOCALIZAT_DATECODES").split(";");
+		boolean google = false;
+		if (Suku.kontroller.getPref(owner, "USE_GOOGLE_MAP", "false").equals(
+				"true")) {
+			google = true;
+		}
 
 		JLabel lbl = new JLabel(Resurses.getString("SETTING_LOCALE"));
 		getContentPane().add(lbl);
 		lbl.setBounds(x, y, 200, 20);
+
 		y += 20;
 		loca = new JComboBox(locatexts);
 		getContentPane().add(loca);
@@ -84,6 +92,12 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			}
 		}
 		loca.setSelectedIndex(locaIndex);
+
+		useGoogleMap = new JCheckBox(Resurses.getString("USE_GOOGLE_MAP"),
+				google);
+		getContentPane().add(useGoogleMap);
+
+		useGoogleMap.setBounds(x + 210, y, 200, 20);
 
 		y += 20;
 		lbl = new JLabel(Resurses.getString("SETTING_REPOLANG"));
@@ -145,7 +159,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		this.ok.setBounds(120, 220, 100, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 200, d.height / 2 - 150, 400, 300);
+		setBounds(d.width / 2 - 250, d.height / 2 - 150, 500, 300);
 		getRootPane().setDefaultButton(this.ok);
 
 	}
@@ -175,6 +189,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 					dateCodes[newDateIndex]);
 			Resurses.setDateFormat(dateCodes[newDateIndex]);
 			Utils.resetSukuModel();
+
+			boolean google = useGoogleMap.isSelected();
+			Suku.kontroller.putPref(owner, "USE_GOOGLE_MAP", "" + google);
+
 			setVisible(false);
 		}
 	}

@@ -27,7 +27,8 @@ import fi.kaila.suku.util.pojo.PlaceLocationData;
  * @author halonmi
  * 
  */
-public class WorldMap extends JFrame implements ActionListener {
+public class WorldMap extends JFrame implements ActionListener,
+		SukuMapInterface {
 
 	private static final long serialVersionUID = 1L;
 
@@ -196,8 +197,8 @@ public class WorldMap extends JFrame implements ActionListener {
 					xy++;
 				}
 			}
-			this.mapImage = gMap.retrieveStaticImage(400, 600,
-					this.zoom.getSelectedIndex(), "png32", markers.toString());
+			this.mapImage = gMap.retrieveStaticImage(400, 600, this.zoom
+					.getSelectedIndex(), "png32", markers.toString());
 			this.map.setIcon(new ImageIcon(this.mapImage));
 		} catch (IOException e1) {
 			e1.printStackTrace();
