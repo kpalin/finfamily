@@ -88,6 +88,8 @@ public class WorldMap extends JFrame implements ActionListener,
 		zoom.setSelectedIndex(4);
 
 		zoom.setBounds(420, 20, 160, 20);
+		zoom.setActionCommand(Resurses.SHOWGRID);
+		zoom.addActionListener(this);
 		this.getContentPane().add(zoom);
 
 		JLabel lbl = new JLabel(Resurses.getString(Resurses.PLACECURRENT));
