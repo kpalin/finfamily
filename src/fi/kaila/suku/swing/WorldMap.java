@@ -44,7 +44,6 @@ public class WorldMap extends JFrame implements ActionListener,
 
 	private JXMapKit map;
 
-	JComboBox zoom;
 	JComboBox currentPlaces;
 	JTextArea missingPlacesList;
 
