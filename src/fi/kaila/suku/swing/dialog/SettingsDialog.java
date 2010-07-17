@@ -38,7 +38,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JComboBox loca = null;
 	private JComboBox repolang = null;
 	private JComboBox dateFormat = null;
-	private JCheckBox useGoogleMap = null;
+	private JCheckBox useOpenStreetMap = null;
 	private JButton ok;
 
 	private String[] locatexts = null;
@@ -69,10 +69,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		// locas = Resurses.getString("LOCALIZAT_CODES").split(";");
 		dateFormats = Resurses.getString("LOCALIZAT_DATEFORMATS").split(";");
 		dateCodes = Resurses.getString("LOCALIZAT_DATECODES").split(";");
-		boolean google = false;
-		if (Suku.kontroller.getPref(owner, "USE_GOOGLE_MAP", "false").equals(
+		boolean openStreetMap = false;
+		if (Suku.kontroller.getPref(owner, "USE_OPEN_STREETMAP", "false").equals(
 				"true")) {
-			google = true;
+			openStreetMap = true;
 		}
 
 		JLabel lbl = new JLabel(Resurses.getString("SETTING_LOCALE"));
@@ -93,11 +93,11 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		}
 		loca.setSelectedIndex(locaIndex);
 
-		useGoogleMap = new JCheckBox(Resurses.getString("USE_GOOGLE_MAP"),
-				google);
-		getContentPane().add(useGoogleMap);
+		useOpenStreetMap = new JCheckBox(Resurses.getString("USE_OPEN_STREETMAP"),
+				openStreetMap);
+		getContentPane().add(useOpenStreetMap);
 
-		useGoogleMap.setBounds(x + 210, y, 200, 20);
+		useOpenStreetMap.setBounds(x + 210, y, 200, 20);
 
 		y += 20;
 		lbl = new JLabel(Resurses.getString("SETTING_REPOLANG"));
@@ -190,8 +190,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			Resurses.setDateFormat(dateCodes[newDateIndex]);
 			Utils.resetSukuModel();
 
-			boolean google = useGoogleMap.isSelected();
-			Suku.kontroller.putPref(owner, "USE_GOOGLE_MAP", "" + google);
+			boolean openStreetMap = useOpenStreetMap.isSelected();
+			Suku.kontroller.putPref(owner, "USE_OPEN_STREETMAP", "" + openStreetMap);
 
 			setVisible(false);
 		}

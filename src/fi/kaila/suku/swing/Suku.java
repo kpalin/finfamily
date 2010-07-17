@@ -2316,7 +2316,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			return;
 		if (this.suomi == null) {
 
-			if (Suku.kontroller.getPref(this, "USE_GOOGLE_MAP", "false")
+			if (Suku.kontroller.getPref(this, "USE_OPEN_STREETMAP", "false")
 					.equals("true")) {
 				this.suomi = new WorldMap(this);
 			} else {

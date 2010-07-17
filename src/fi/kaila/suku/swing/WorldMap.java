@@ -1,28 +1,34 @@
 package fi.kaila.suku.swing;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.util.logging.Level;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.jdesktop.swingx.JXMapKit;
+import org.jdesktop.swingx.mapviewer.DefaultTileFactory;
+import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jdesktop.swingx.mapviewer.TileFactory;
+import org.jdesktop.swingx.mapviewer.TileFactoryInfo;
+import org.jdesktop.swingx.mapviewer.Waypoint;
+import org.jdesktop.swingx.mapviewer.WaypointPainter;
+
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.PlaceLocationData;
 
 /**
  * 
- * Shows world map from Google Maps service with locations of relatives
+ * Shows world map from OpenStreet maps service with locations of relatives
  * 
  * @author halonmi
  * 
@@ -36,8 +42,7 @@ public class WorldMap extends JFrame implements ActionListener,
 	private ISuku parent;
 	private WorldMap me;
 
-	private JLabel map;
-	private Image mapImage;
+	private JXMapKit map;
 
 	JComboBox zoom;
 	JComboBox currentPlaces;
@@ -59,57 +64,41 @@ public class WorldMap extends JFrame implements ActionListener,
 		setLayout(null);
 		setLocation(200, 10);
 
-		this.map = new JLabel("Map");
+		final int max = 17;
+		TileFactoryInfo info = new TileFactoryInfo(0, max, max, 256, true,
+				true, "http://tile.openstreetmap.org", "x", "y", "z") {
+			public String getTileUrl(int x, int y, int zoom) {
+				zoom = max - zoom;
+				return this.baseURL + "/" + zoom + "/" + x + "/" + y + ".png";
+			}
+		};
+		info.setDefaultZoomLevel(10);
+
+		TileFactory tf = new DefaultTileFactory(info);
+		map = new JXMapKit();
+		map.setTileFactory(tf);
+
 		this.map.setBounds(10, 10, 400, 600);
 		this.getContentPane().add(this.map);
 
-		JLabel lblZ = new JLabel(Resurses.getString("Zoom"));
-		lblZ.setBounds(420, 0, 200, 20);
-		this.getContentPane().add(lblZ);
-
-		zoom = new JComboBox();
-		zoom.addItem(makeObj("0"));
-		zoom.addItem(makeObj("1"));
-		zoom.addItem(makeObj("2"));
-		zoom.addItem(makeObj("3"));
-		zoom.addItem(makeObj("4"));
-		zoom.addItem(makeObj("5"));
-		zoom.addItem(makeObj("6"));
-		zoom.addItem(makeObj("7"));
-		zoom.addItem(makeObj("8"));
-		zoom.addItem(makeObj("9"));
-		zoom.addItem(makeObj("10"));
-		zoom.addItem(makeObj("11"));
-		zoom.addItem(makeObj("12"));
-		zoom.addItem(makeObj("14"));
-		zoom.addItem(makeObj("15"));
-		zoom.addItem(makeObj("16"));
-
-		zoom.setSelectedIndex(4);
-
-		zoom.setBounds(420, 20, 160, 20);
-		zoom.setActionCommand(Resurses.SHOWGRID);
-		zoom.addActionListener(this);
-		this.getContentPane().add(zoom);
-
 		JLabel lbl = new JLabel(Resurses.getString(Resurses.PLACECURRENT));
-		lbl.setBounds(420, 50, 200, 20);
+		lbl.setBounds(420, 0, 200, 20);
 		this.getContentPane().add(lbl);
 
 		currentPlaces = new JComboBox();
-		currentPlaces.setBounds(420, 70, 160, 20);
+		currentPlaces.setBounds(420, 20, 160, 20);
 		currentPlaces.setActionCommand(Resurses.SHOWGRID);
 		currentPlaces.addActionListener(this);
 		this.getContentPane().add(currentPlaces);
 
 		lbl = new JLabel(Resurses.getString(Resurses.PLACEMISSING));
-		lbl.setBounds(420, 100, 200, 20);
+		lbl.setBounds(420, 50, 200, 20);
 		this.getContentPane().add(lbl);
 
 		this.missingPlacesList = new JTextArea();
 		this.missingPlacesList.setEditable(false);
 		JScrollPane js = new JScrollPane(this.missingPlacesList);
-		js.setBounds(420, 120, 160, 480);
+		js.setBounds(420, 80, 160, 520);
 		this.getContentPane().add(js);
 
 		setSize(new Dimension(650, 680));
@@ -176,39 +165,37 @@ public class WorldMap extends JFrame implements ActionListener,
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		GoogleMaps gMap = new GoogleMaps("");
-		StringBuffer markers = new StringBuffer("&markers=color:blue");
-
 		int xy = 0;
 		int x = this.currentPlaces.getSelectedIndex() - 1;
 
-		try {
-			for (int xx = 0; xx < places.length; xx++) {
-				if (places[xx].getLatitude() > 0) {
-					if (x == -1) {
-						markers.append("|" + places[xx].getLatitude() + ","
-								+ places[xx].getLongitude());
+		Set<Waypoint> waypoints = new HashSet<Waypoint>();
 
-					} else {
-						if (xy == x) {
-							markers.append("|" + places[xx].getLatitude() + ","
-									+ places[xx].getLongitude());
-							xx = places.length + 10;
-						}
+		for (int xx = 0; xx < places.length; xx++) {
+			if (places[xx].getLatitude() > 0) {
+				if (x == -1) {
+					waypoints.add(new Waypoint(places[xx].getLatitude(),
+							places[xx].getLongitude()));
+					if (xy == 0) {
+						map.setCenterPosition(new GeoPosition(places[xx]
+								.getLatitude(), places[xx].getLongitude()));
 					}
-					xy++;
+				} else {
+					if (xy == x) {
+						waypoints.add(new Waypoint(places[xx].getLatitude(),
+								places[xx].getLongitude()));
+						map.setCenterPosition(new GeoPosition(places[xx]
+								.getLatitude(), places[xx].getLongitude()));
+						xx = places.length + 10;
+					}
 				}
+				xy++;
 			}
-			this.mapImage = gMap.retrieveStaticImage(400, 600, this.zoom
-					.getSelectedIndex(), "png32", markers.toString());
-			this.map.setIcon(new ImageIcon(this.mapImage));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			logger.log(Level.WARNING, "Cannot read map from Google", e1);
-			this.mapImage = null;
 		}
 
-		map.updateUI();
+		// crate a WaypointPainter to draw the points
+		WaypointPainter painter = new WaypointPainter();
+		painter.setWaypoints(waypoints);
+		map.getMainMap().setOverlayPainter(painter);
 	}
 
 }
