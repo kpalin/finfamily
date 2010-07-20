@@ -67,7 +67,7 @@
 	<manifest >
     <attribute name="Built-By" value="${user.name}"/>
 	<attribute name="Main-Class" value="fi.kaila.suku.swing.Suku"/>
-	<attribute name="Class-Path" value="lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/jcalendarbutton-1.4.5.jar lib/looks-2.3.1.jar  resources/"/>
+	<attribute name="Class-Path" value="lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/jcalendarbutton-1.4.5.jar lib/looks-2.3.1.jar lib/swingx-1.6.jar lib/swingx-ws-1.0.jar  resources/"/>
     <section name="common">
       <attribute name="Specification-Title" value="Example"/>
       <attribute name="Specification-Version" value="${app.version}"/>
@@ -113,7 +113,7 @@
    <mkdir dir="${swing.home}"/>
    
    <copy file="${resources.home}/properties/logging.properties" todir="${dist.home}/properties"/>
-   <copy file="${resources.home}/excel/PaikatExcel.xls" todir="${dist.home}/resources/excel"/>
+   <copy file="${resources.home}/excel/PlaceLocations.xls" todir="${dist.home}/resources/excel"/>
    <copy file="${resources.home}/excel/TypesExcel.xls" todir="${dist.home}/resources/excel"/>
    <copy file="${resources.home}/excel/Taivut_fi.xls" todir="${dist.home}/resources/excel"/>
 
@@ -138,8 +138,10 @@
 	</copy>
 	
 	<zip destfile="${swing.home}/finfamily${app.version}.zip" basedir="${dist.home}"
-	  includes="suku.jar suku.sh SukuMac lib/postgresql-8.3-604.jdbc4.jar lib/jxl.jar lib/jcalendarbutton-1.4.5.jar lib/looks-2.3.1.jar properties/* 
-	  resources/excel/PaikatExcel.xls resources/excel/TypesExcel.xls 
+	  includes="suku.jar suku.sh SukuMac lib/postgresql-8.3-604.jdbc4.jar 
+	  lib/jxl.jar lib/jcalendarbutton-1.4.5.jar lib/swingx-1.6.jar lib/swingx-ws-1.0.jar
+	  lib/looks-2.3.1.jar properties/* 
+	  resources/excel/PlaceLocations.xls resources/excel/TypesExcel.xls 
 	  resources/excel/FinFamily.xls resources/excel/Taivut_fi.xls resources/images/suomikartta.jpg 
 	  resources/xml/*">
 	
@@ -296,7 +298,7 @@ Filename: "{app}\Suku.exe"; Description: "{cm:LaunchProgram,FinFamily}"; Flags: 
 
 
     <target name="javadoc">
-        <javadoc access="public" encoding="UTF-8" author="true" classpath="lib/servlet.jar;lib/postgresql-8.3-604.jdbc4.jar;lib/jxl.jar;resources;lib/junit-4.4.jar;lib/jnlp.jar" 
+        <javadoc access="public" encoding="UTF-8" author="true" classpath="lib/servlet.jar;lib/postgresql-8.3-604.jdbc4.jar;lib/jxl.jar;resources;lib/junit-4.4.jar;lib/jnlp.jar;lib/swingx-1.6.jar;lib/swingx-ws-1.0.jar" 
 		destdir="guide/javadoc" doctitle="FinFamily 11" nodeprecated="false" 
 		nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" 
 		stylesheetfile="guide/xml/stylesheet.css"
