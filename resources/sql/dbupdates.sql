@@ -26,6 +26,24 @@ drop view if exists unitNotice_sv;
 drop view if exists unitNotice_en;
 drop view if exists unitNotice_de;
 
+drop table if exists PlaceOtherNames;
+drop table if exists PlaceLocations;
+
+create table PlaceLocations (
+PlaceName varchar,
+CountryCode varchar,
+Location point,
+primary key (PlaceName,CountryCode)
+);
+
+create table PlaceOtherNames (
+OtherName varchar,
+CountryCode varchar,
+PlaceName varchar,
+primary key (OtherName,CountryCode),
+FOREIGN KEY (PlaceName, CountryCode) REFERENCES PlaceLocations (PlaceName, CountryCode)
+);
+
 
 create view fullTextView as
 select pid,coalesce(NoticeType,'') || ' ' || coalesce(Description,'') || ' ' ||coalesce(Place,'') || ' ' ||

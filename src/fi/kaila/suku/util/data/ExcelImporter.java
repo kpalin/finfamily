@@ -370,14 +370,14 @@ public class ExcelImporter {
 
 		SukuData suk = new SukuData();
 
-		String INSERT_PLACELOC = "insert into PlaceLocations (PlaceName,Location) values (?,point(?,?))";
-		String INSERT_PLACEOTHER = "insert into PlaceOtherNames (OtherName,PlaceName) values (?,?)";
+		String INSERT_PLACELOC = "insert into PlaceLocations (PlaceName,CountryCode,Location) values (?,?,point(?,?))";
+		String INSERT_PLACEOTHER = "insert into PlaceOtherNames (OtherName,CountryCode,PlaceName) values (?,?,?)";
 
 		String DELETE_PLACELOC = "delete from PlaceLocations";
 		String DELETE_PLACEOTHER = "delete from PlaceOtherNames";
 
 		PreparedStatement pst;
-
+		PreparedStatement pstOther;
 		Workbook workbook;
 		try {
 			WorkbookSettings ws = new WorkbookSettings();
@@ -385,136 +385,135 @@ public class ExcelImporter {
 			ws.setCharacterSet(0);
 
 			workbook = Workbook.getWorkbook(new File(path), ws);
-
-			Sheet sheet = workbook.getSheet("Coordinates");
-
-			int rivi;
-			int col;
-			int colCount = sheet.getColumns();
-			int rowCount = sheet.getRows();
-
-			String header[] = new String[colCount];
-
-			for (col = 0; col < colCount; col++) {
-				Cell x0 = sheet.getCell(col, 0);
-				header[col] = null;
-				if (x0 != null) {
-					header[col] = x0.getContents();
-				}
-			}
-
-			if (!"place".equalsIgnoreCase(header[0])
-					|| !"latitude".equalsIgnoreCase(header[1])
-					|| !"longitude".equalsIgnoreCase(header[2])) {
-				throw new SukuException("Incorrect columns in coordinates page");
-			}
+			int sheetCount = workbook.getNumberOfSheets();
 
 			pst = con.prepareStatement(DELETE_PLACEOTHER);
 			pst.executeUpdate();
 			pst = con.prepareStatement(DELETE_PLACELOC);
 			pst.executeUpdate();
-			pst = con.prepareStatement(INSERT_PLACELOC);
 
-			String placeName;
-			double placeLatitude;
-			double placeLongitude;
-			int laskuri = 0;
+			for (int sheetIdx = 0; sheetIdx < sheetCount; sheetIdx++) {
 
-			for (rivi = 1; rivi < rowCount; rivi++) {
+				Sheet sheet = workbook.getSheet(sheetIdx);
 
-				Cell ac1 = sheet.getCell(0, rivi);
-				Cell bc1 = sheet.getCell(1, rivi);
-				Cell cc1 = sheet.getCell(2, rivi);
-				// LabelCell ll = (LabelCell) ac1;
-				placeName = ac1.getContents();
-				// String llname = ll.getString();
-				// String utname = toUtf(placeName);
-				// placeName = utname;
-				String b1 = bc1.getContents();
-				String c1 = cc1.getContents();
+				String sheetName = sheet.getName();
 
-				if (placeName != null && b1 != null && c1 != null) {
+				int rivi;
+				int col;
+				int colCount = sheet.getColumns();
+				int rowCount = sheet.getRows();
 
-					String b2 = b1.replace(',', '.');
-					placeLongitude = Double.parseDouble(b2);
+				String header[] = new String[colCount];
 
-					String c2 = c1.replace(',', '.');
-					placeLatitude = Double.parseDouble(c2);
+				for (col = 0; col < colCount; col++) {
+					Cell x0 = sheet.getCell(col, 0);
+					header[col] = null;
+					if (x0 != null) {
+						header[col] = x0.getContents();
+					}
+				}
 
-					try {
-						pst.setString(1, placeName.toUpperCase());
-						pst.setDouble(2, placeLatitude);
-						pst.setDouble(3, placeLongitude);
-						pst.executeUpdate();
-						laskuri++;
+				if (!"place".equalsIgnoreCase(header[0])
+						|| !"latitude".equalsIgnoreCase(header[1])
+						|| !"longitude".equalsIgnoreCase(header[2])) {
+					throw new SukuException(
+							"Incorrect columns in coordinates page");
+				}
 
-					} catch (SQLException e) {
-						logger.info("failed to insert " + placeName + " at ["
-								+ placeLongitude + ";" + placeLatitude + "] "
-								+ e.getMessage());
-						e.printStackTrace();
+				pst = con.prepareStatement(INSERT_PLACELOC);
+				pstOther = con.prepareStatement(INSERT_PLACEOTHER);
+
+				String placeName;
+				double placeLatitude;
+				double placeLongitude;
+				int laskuri1 = 0;
+
+				for (rivi = 1; rivi < rowCount; rivi++) {
+
+					Cell ac1 = sheet.getCell(0, rivi);
+					Cell bc1 = sheet.getCell(1, rivi);
+					Cell cc1 = sheet.getCell(2, rivi);
+					// LabelCell ll = (LabelCell) ac1;
+					placeName = ac1.getContents();
+					// String llname = ll.getString();
+					// String utname = toUtf(placeName);
+					// placeName = utname;
+					String b1 = bc1.getContents();
+					String c1 = cc1.getContents();
+
+					if (placeName != null && b1 != null && c1 != null) {
+
+						String b2 = b1.replace(',', '.');
+						placeLongitude = Double.parseDouble(b2);
+
+						String c2 = c1.replace(',', '.');
+						placeLatitude = Double.parseDouble(c2);
+
+						try {
+							pst.setString(1, placeName.toUpperCase());
+							pst.setString(2, sheetName.toUpperCase());
+							pst.setDouble(3, placeLatitude);
+							pst.setDouble(4, placeLongitude);
+							pst.executeUpdate();
+							laskuri1++;
+
+						} catch (SQLException e) {
+							logger.info("failed to insert " + placeName
+									+ " at [" + placeLongitude + ";"
+									+ placeLatitude + "] " + e.getMessage());
+							e.printStackTrace();
+						}
+
 					}
 
 				}
 
-			}
-			logger.info("inserted " + laskuri + " places with locations");
+				String otherName;
 
-			sheet = workbook.getSheet("MuutNimet");
+				int laskuri2 = 0;
 
-			colCount = sheet.getColumns();
-			rowCount = sheet.getRows();
+				for (rivi = 1; rivi < rowCount; rivi++) {
 
-			header = new String[colCount];
+					Cell ac1 = sheet.getCell(0, rivi);
+					placeName = ac1.getContents();
 
-			for (col = 0; col < colCount; col++) {
-				Cell x0 = sheet.getCell(col, 0);
-				header[col] = null;
-				if (x0 != null) {
-					header[col] = x0.getContents();
-				}
-			}
+					int colo = 0;
+					for (colo = 3; colo < colCount; colo++) {
+						Cell bc1 = sheet.getCell(colo, rivi);
+						if (bc1 != null) {
+							otherName = bc1.getContents();
+							if (otherName != null && !otherName.isEmpty()) {
+								try {
+									pstOther.setString(1, otherName
+											.toUpperCase());
+									pstOther.setString(2, sheetName
+											.toUpperCase());
+									pstOther.setString(3, placeName
+											.toUpperCase());
 
-			if (!"othername".equalsIgnoreCase(header[0])
-					|| !"placename".equalsIgnoreCase(header[1])) {
-				throw new SukuException("Incorrect columns in muutnimet page");
-			}
+									pstOther.executeUpdate();
+									laskuri2++;
+								} catch (SQLException e) {
+									logger.info("failed to insert " + otherName
+											+ " for [" + placeName + "] "
+											+ e.getMessage());
+									e.printStackTrace();
+								}
+							}
 
-			pst = con.prepareStatement(INSERT_PLACEOTHER);
+						}
 
-			String otherName;
-
-			laskuri = 0;
-
-			for (rivi = 1; rivi < rowCount; rivi++) {
-
-				Cell ac1 = sheet.getCell(0, rivi);
-				Cell bc1 = sheet.getCell(1, rivi);
-
-				placeName = ac1.getContents();
-				otherName = bc1.getContents();
-
-				if (placeName != null && otherName != null) {
-
-					try {
-
-						pst.setString(1, placeName.toUpperCase());
-						pst.setString(2, otherName.toUpperCase());
-
-						pst.executeUpdate();
-						laskuri++;
-
-					} catch (SQLException e) {
-						logger.info("failed to insert " + otherName + " for ["
-								+ placeName + "] " + e.getMessage());
-						e.printStackTrace();
 					}
 
 				}
+				pst.close();
+				pstOther.close();
+
+				logger.info("inserted " + laskuri1
+						+ " places with locations and " + laskuri2
+						+ " othernames in [" + sheetName.toUpperCase() + "]");
 
 			}
-			logger.info("inserted " + laskuri + " othernames for places");
-
 		} catch (Throwable e1) {
 			suk.resu = e1.getMessage();
 			e1.printStackTrace();

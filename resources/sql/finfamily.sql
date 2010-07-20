@@ -330,17 +330,33 @@ CreateDate timestamp not null default now()   -- timestamp created
 );
 
 
-
-
-create table PlaceLocations (             -- Contains locations of known places 
-PlaceName varchar primary key,
-Location point
+create table PlaceLocations (
+PlaceName varchar,
+CountryCode varchar,
+Location point,
+primary key (PlaceName,CountryCode)
 );
+-- create unique index LocationsIdx on Locations (PlaceName,CountryCode);
 
 create table PlaceOtherNames (
-OtherName varchar primary key,
-PlaceName varchar references PlaceLocations(PlaceName) 
+OtherName varchar,
+CountryCode varchar,
+PlaceName varchar,
+primary key (OtherName,CountryCode),
+FOREIGN KEY (PlaceName, CountryCode) REFERENCES PlaceLocations (PlaceName, CountryCode)
 );
+-- create unique index OtherNamesIdx on OtherNames (OtherName,CountryCode);
+
+
+--create table PlaceLocations (             -- Contains locations of known places 
+--PlaceName varchar primary key,
+--Location point
+--);
+
+--create table PlaceOtherNames (
+--OtherName varchar primary key,
+--PlaceName varchar references PlaceLocations(PlaceName) 
+--);
 
 -- insert into PlaceLocations (PlaceName,Location) values ('BROMARV','(60,23)');
 --select placename,location[0],location[1] from placelocations 

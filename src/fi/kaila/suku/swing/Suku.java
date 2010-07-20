@@ -1367,7 +1367,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					resu = resp.resu;
 				} else {
 					kontroller.getSukuData("cmd=excel",
-							"path=resources/excel/PaikatExcel.xls",
+							"path=resources/excel/PlaceLocations.xls",
 							"page=coordinates");
 					kontroller
 							.getSukuData("cmd=excel",
@@ -1434,7 +1434,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 					kontroller.getSukuData("cmd=initdb");
 					kontroller.getSukuData("cmd=excel",
-							"path=resources/excel/PaikatExcel.xls",
+							"path=resources/excel/PlaceLocations.xls",
 							"page=coordinates");
 					kontroller
 							.getSukuData("cmd=excel",
@@ -2713,7 +2713,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
 			kontroller.getSukuData("cmd=excel",
-					"path=resources/excel/PaikatExcel.xls", "page=coordinates");
+					"path=resources/excel/PlaceLocations.xls",
+					"page=coordinates");
 			dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
 			kontroller.getSukuData("cmd=excel",
 					"path=resources/excel/TypesExcel.xls", "page=types");

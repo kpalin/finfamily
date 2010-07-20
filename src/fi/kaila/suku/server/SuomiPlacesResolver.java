@@ -36,9 +36,9 @@ public class SuomiPlacesResolver {
 
 		StringBuilder sql = new StringBuilder();
 		sql
-				.append("select location[0],location[1] from placelocations where placename in ( ");
+				.append("select location[0],location[1] from placelocations where placename || ';' || countrycode  in ( ");
 		sql
-				.append("select placename from placeothernames where othername = ?) ");
+				.append("select placename || ';' || countrycode from placeothernames where othername = ?) ");
 		sql.append("union ");
 		sql
 				.append("select location[0],location[1] from placelocations where placename = ? ");
