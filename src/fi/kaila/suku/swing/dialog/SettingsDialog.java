@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.ExcelBundle;
@@ -39,6 +40,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JComboBox repolang = null;
 	private JComboBox dateFormat = null;
 	private JCheckBox useOpenStreetMap = null;
+	private JComboBox defaultCountryCode = null;
+	private String ccodes[] = null;
+	private String selectedCc = "FI";
+
 	private JButton ok;
 
 	private String[] locatexts = null;
@@ -70,8 +75,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		dateFormats = Resurses.getString("LOCALIZAT_DATEFORMATS").split(";");
 		dateCodes = Resurses.getString("LOCALIZAT_DATECODES").split(";");
 		boolean openStreetMap = false;
-		if (Suku.kontroller.getPref(owner, "USE_OPEN_STREETMAP", "false").equals(
-				"true")) {
+		if (Suku.kontroller.getPref(owner, "USE_OPEN_STREETMAP", "false")
+				.equals("true")) {
 			openStreetMap = true;
 		}
 
@@ -93,8 +98,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		}
 		loca.setSelectedIndex(locaIndex);
 
-		useOpenStreetMap = new JCheckBox(Resurses.getString("USE_OPEN_STREETMAP"),
-				openStreetMap);
+		useOpenStreetMap = new JCheckBox(Resurses
+				.getString("USE_OPEN_STREETMAP"), openStreetMap);
 		getContentPane().add(useOpenStreetMap);
 
 		useOpenStreetMap.setBounds(x + 210, y, 200, 20);
@@ -103,6 +108,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		lbl = new JLabel(Resurses.getString("SETTING_REPOLANG"));
 		getContentPane().add(lbl);
 		lbl.setBounds(x, y, 200, 20);
+
+		lbl = new JLabel(Resurses.getString("COUNTRY_DEFAULT"));
+		getContentPane().add(lbl);
+		lbl.setBounds(x + 210, y, 200, 20);
 
 		y += 20;
 
@@ -130,6 +139,32 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			repolang.setSelectedIndex(locaIndex);
 		}
 
+		SukuData countdata = Suku.kontroller.getSukuData("cmd=get",
+				"type=countries");
+		selectedCc = Suku.kontroller.getPref(owner, "COUNTRY_PREV", selectedCc);
+		if (countdata.generalArray == null) {
+			JOptionPane.showMessageDialog(this, Resurses
+					.getString("COUNTRY_ERROR"), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+		} else {
+			int seleId = -1;
+			ccodes = new String[countdata.generalArray.length];
+			String countries[] = new String[countdata.generalArray.length];
+			for (int i = 0; i < countdata.generalArray.length; i++) {
+				String parts[] = countdata.generalArray[i].split(";");
+				ccodes[i] = parts[0];
+				if (ccodes[i].equals(selectedCc)) {
+					seleId = i;
+				}
+				countries[i] = parts[1] + " - " + parts[2];
+			}
+			defaultCountryCode = new JComboBox(countries);
+			getContentPane().add(defaultCountryCode);
+			defaultCountryCode.setBounds(x + 210, y, 200, 20);
+			if (seleId >= 0) {
+				defaultCountryCode.setSelectedIndex(seleId);
+			}
+		}
 		y += 20;
 
 		lbl = new JLabel(Resurses.getString("SETTING_DATEFORMAT"));
@@ -184,6 +219,14 @@ public class SettingsDialog extends JDialog implements ActionListener {
 						.getRepoLanguage(newLang, true));
 
 			}
+
+			int seleId = defaultCountryCode.getSelectedIndex();
+			if (seleId >= 0) {
+				selectedCc = ccodes[seleId];
+			}
+
+			Suku.kontroller.putPref(owner, "COUNTRY_PREV", selectedCc);
+
 			int newDateIndex = dateFormat.getSelectedIndex();
 			Suku.kontroller.putPref(owner, Resurses.DATEFORMAT,
 					dateCodes[newDateIndex]);
@@ -191,7 +234,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			Utils.resetSukuModel();
 
 			boolean openStreetMap = useOpenStreetMap.isSelected();
-			Suku.kontroller.putPref(owner, "USE_OPEN_STREETMAP", "" + openStreetMap);
+			Suku.kontroller.putPref(owner, "USE_OPEN_STREETMAP", ""
+					+ openStreetMap);
 
 			setVisible(false);
 		}

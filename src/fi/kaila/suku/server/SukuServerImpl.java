@@ -520,6 +520,8 @@ public class SukuServerImpl implements SukuServer {
 				String password = map.get("password");
 				String host = map.get("host");
 				fam = getDbLista(host, user, password);
+			} else if (type.endsWith("countries")) {
+				fam = getCountryList();
 			} else {
 				fam.resu = Resurses.getString("ERR_TYPE_INVALID");
 			}
@@ -865,6 +867,42 @@ public class SukuServerImpl implements SukuServer {
 			throw new SukuException(fam.resu);
 		}
 		return fam;
+	}
+
+	private SukuData getCountryList() {
+		SukuData res = new SukuData();
+		Vector<String> v = new Vector<String>();
+
+		try {
+			String sql = "select a.countrycode,a.placename,b.othername"
+					+ " from placelocations as a inner join "
+					+ "placeothernames as b on a.placename=b.placename "
+					+ "and a.countrycode = b.countrycode "
+					+ "where location[0] = 0 and location[1] = 0";
+
+			String prev = "";
+
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+
+				String cc = rs.getString(1);
+				String nm = rs.getString(2);
+				String ot = rs.getString(3);
+
+				if (!cc.equals(prev)) {
+					v.add(cc + ";" + nm + ";" + ot);
+				}
+				prev = cc;
+
+			}
+			res.generalArray = v.toArray(new String[0]);
+
+		} catch (SQLException e) {
+			res.resu = e.getMessage();
+			e.printStackTrace();
+		}
+		return res;
 	}
 
 	private SukuData setSukuInfo(SukuData request) throws SukuException {

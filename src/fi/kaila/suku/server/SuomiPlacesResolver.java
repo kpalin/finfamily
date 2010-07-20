@@ -36,14 +36,15 @@ public class SuomiPlacesResolver {
 
 		StringBuilder sql = new StringBuilder();
 		sql
-				.append("select location[0],location[1] from placelocations where placename || ';' || countrycode  in ( ");
+				.append("select location[0],location[1],countrycode from placelocations where placename || ';' || countrycode  in ( ");
 		sql
 				.append("select placename || ';' || countrycode from placeothernames where othername = ?) ");
 		sql.append("union ");
 		sql
-				.append("select location[0],location[1] from placelocations where placename = ? ");
+				.append("select location[0],location[1],countrycode from placelocations where placename = ? ");
 
 		PreparedStatement pstm;
+		String countryCode = null;
 		try {
 			pstm = con.prepareStatement(sql.toString());
 
@@ -51,11 +52,14 @@ public class SuomiPlacesResolver {
 
 				pstm.setString(1, response[idx].getName().toUpperCase());
 				pstm.setString(2, response[idx].getName().toUpperCase());
-
+				boolean bb = false;
 				ResultSet rs = pstm.executeQuery();
 				while (rs.next()) {
+					countryCode = rs.getString(3);
+
 					response[idx].setLongitude(rs.getDouble(1));
 					response[idx].setLatitude(rs.getDouble(2));
+					bb = true;
 				}
 				rs.close();
 
