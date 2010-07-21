@@ -50,13 +50,13 @@ public class AddNotice extends JDialog implements MouseListener {
 		SukuTypesModel types = Utils.typeInstance();
 
 		for (int i = 0; i < types.getTypesTagsCount(); i++) {
-			String tag = (String) types.getTypesTags(i);
+			String tag = types.getTypesTags(i);
 			String value = types.getTypesName(i);
 			kokoMap.put(tag, value);
 		}
 
 		for (int i = 0; i < types.getTypesTagsCount(); i++) {
-			String tag = (String) types.getTypesTags(i);
+			String tag = types.getTypesTags(i);
 			kokoTags.add(tag);
 
 			String value = types.getTypesName(i);
