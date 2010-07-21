@@ -1,14 +1,19 @@
 package fi.kaila.suku.swing;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,12 +21,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.jdesktop.swingx.JXMapKit;
-import org.jdesktop.swingx.mapviewer.DefaultTileFactory;
+import org.jdesktop.swingx.JXMapViewer;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
-import org.jdesktop.swingx.mapviewer.TileFactory;
-import org.jdesktop.swingx.mapviewer.TileFactoryInfo;
 import org.jdesktop.swingx.mapviewer.Waypoint;
 import org.jdesktop.swingx.mapviewer.WaypointPainter;
+import org.jdesktop.swingx.mapviewer.WaypointRenderer;
 
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.PlaceLocationData;
@@ -38,7 +42,6 @@ public class WorldMap extends JFrame implements ActionListener,
 
 	private static final long serialVersionUID = 1L;
 
-	private static Logger logger = Logger.getLogger(WorldMap.class.getName());
 	private ISuku parent;
 	private WorldMap me;
 
@@ -46,6 +49,8 @@ public class WorldMap extends JFrame implements ActionListener,
 
 	JComboBox currentPlaces;
 	JTextArea missingPlacesList;
+
+	BufferedImage markerImg;
 
 	/**
 	 * Constructor
@@ -63,19 +68,12 @@ public class WorldMap extends JFrame implements ActionListener,
 		setLayout(null);
 		setLocation(200, 10);
 
-		final int max = 17;
-		TileFactoryInfo info = new TileFactoryInfo(0, max, max, 256, true,
-				true, "http://tile.openstreetmap.org", "x", "y", "z") {
-			public String getTileUrl(int x, int y, int zoom) {
-				zoom = max - zoom;
-				return this.baseURL + "/" + zoom + "/" + x + "/" + y + ".png";
-			}
-		};
-		info.setDefaultZoomLevel(10);
+		// Own waypoint renderer image
+		// markerImg = createImageIcon("/images/jalkipolvi.gif");
 
-		TileFactory tf = new DefaultTileFactory(info);
 		map = new JXMapKit();
-		map.setTileFactory(tf);
+		map.setDefaultProvider(JXMapKit.DefaultProviders.OpenStreetMaps);
+		map.setZoom(12);
 
 		this.map.setBounds(10, 10, 400, 600);
 		this.getContentPane().add(this.map);
@@ -115,6 +113,21 @@ public class WorldMap extends JFrame implements ActionListener,
 
 			}
 		});
+	}
+
+	/** Returns an BufferedImage, or null if the path was invalid. */
+	protected BufferedImage createImageIcon(String path) {
+
+		InputStream in = this.getClass().getResourceAsStream(path);
+		BufferedImage icon;
+		try {
+			icon = ImageIO.read(in);
+			return icon;
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return null;
+		}
 
 	}
 
@@ -191,10 +204,40 @@ public class WorldMap extends JFrame implements ActionListener,
 			}
 		}
 
-		// crate a WaypointPainter to draw the points
-		WaypointPainter painter = new WaypointPainter();
+		// Create a WaypointPainter to draw the points
+		WaypointPainter<JXMapViewer> painter = new WaypointPainter<JXMapViewer>();
 		painter.setWaypoints(waypoints);
+
+		// Use own waypoint renderer
+		// painter.setRenderer(new SpecialWaypointRenderer());
+
 		map.getMainMap().setOverlayPainter(painter);
+	}
+
+	private class SpecialWaypointRenderer implements WaypointRenderer {
+
+		public boolean paintWaypoint(Graphics2D g, JXMapViewer map, Waypoint wp) {
+			if (wp.getPosition() != null) {
+				// Draw selected image
+				// g.drawImage(markerImg, null, 0, 0);
+
+				// Draw red X
+				g.setColor(Color.RED);
+				g.drawLine(-5, -5, +5, +5);
+				g.drawLine(-5, +5, +5, -5);
+
+				// Draw Oval with text
+				// g.setColor(new Color(255, 255, 255, 175));
+				// g.fillOval(-20, -20, 20, 20);
+				// g.setColor(Color.BLACK);
+				// g.drawString("20", -15, -8);
+
+				return false;
+
+			}
+			return true;
+		}
+
 	}
 
 }
