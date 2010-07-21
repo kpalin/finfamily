@@ -2,6 +2,11 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 640 on 21 jul 2010
+
+* Fixes to placelocations
+* Moved default country to database
+
 Release 635 on 20 jul 2010
 
 * Added alternative map from OpenStreetMaps service
