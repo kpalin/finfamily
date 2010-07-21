@@ -141,7 +141,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 		SukuData countdata = Suku.kontroller.getSukuData("cmd=get",
 				"type=countries");
-		selectedCc = Suku.kontroller.getPref(owner, "COUNTRY_PREV", selectedCc);
+		selectedCc = Resurses.getDefaulCountry();
+
 		if (countdata.generalArray == null) {
 			JOptionPane.showMessageDialog(this, Resurses
 					.getString("COUNTRY_ERROR"), Resurses
@@ -225,7 +226,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 				selectedCc = ccodes[seleId];
 			}
 
-			Suku.kontroller.putPref(owner, "COUNTRY_PREV", selectedCc);
+			Resurses.setDefaultCountry(selectedCc);
 
 			int newDateIndex = dateFormat.getSelectedIndex();
 			Suku.kontroller.putPref(owner, Resurses.DATEFORMAT,

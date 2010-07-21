@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.logging.Logger;
 
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.pojo.PersonShortData;
 
 /**
@@ -416,6 +417,24 @@ public class Resurses {
 		Locale lloca = new Locale(repoLangu);
 		PersonShortData.fiCollator = Collator.getInstance(lloca);
 		repoTexts = null;
+	}
+
+	public static synchronized String getDefaulCountry() {
+		if (myself == null) {
+			myself = new Resurses();
+		}
+		String selectedCc = Suku.kontroller.getPref(myself, "COUNTRY_PREV",
+				"FI");
+
+		return selectedCc;
+
+	}
+
+	public static synchronized void setDefaultCountry(String countryCode) {
+		if (myself == null) {
+			myself = new Resurses();
+		}
+		Suku.kontroller.putPref(myself, "COUNTRY_PREV", countryCode);
 	}
 
 	/**
