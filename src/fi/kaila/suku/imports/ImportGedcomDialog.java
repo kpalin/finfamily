@@ -235,7 +235,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 				setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
 				kontroller.getSukuData("cmd=excel",
-						"path=resources/excel/PaikatExcel.xls",
+						"path=resources/excel/PlaceLocations.xls",
 						"page=coordinates");
 				setRunnerValue(Resurses.getString("IMPORT_TYPES"));
 				kontroller.getSukuData("cmd=excel",

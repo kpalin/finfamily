@@ -2056,8 +2056,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			boolean openedFile = Suku.kontroller.openLocalFile("xls");
 			if (openedFile) {
 				kontroller.getSukuData("cmd=excel", "page=coordinates");
-				// kontroller.getSukuData("cmd=excel",
-				// "path=resources/excel/PaikatExcel.xls", "page=coordinates");
+
 				JOptionPane.showMessageDialog(this, Resurses
 						.getString("IMPORTED_COORDINATES"), Resurses
 						.getString(Resurses.SUKU),

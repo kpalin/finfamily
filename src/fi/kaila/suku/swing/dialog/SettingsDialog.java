@@ -226,7 +226,12 @@ public class SettingsDialog extends JDialog implements ActionListener {
 				selectedCc = ccodes[seleId];
 			}
 
-			Resurses.setDefaultCountry(selectedCc);
+			try {
+				Resurses.setDefaultCountry(selectedCc);
+			} catch (SukuException e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			}
 
 			int newDateIndex = dateFormat.getSelectedIndex();
 			Suku.kontroller.putPref(owner, Resurses.DATEFORMAT,

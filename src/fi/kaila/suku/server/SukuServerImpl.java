@@ -1790,17 +1790,7 @@ public class SukuServerImpl implements SukuServer {
 
 		}
 		try {
-			// if (luku < 0) {
-			// sql = "create table SukuSettings " +
-			// "(SettingType varchar not null,	" +
-			// "SettingIndex integer not null," +
-			// "SettingName varchar not null," +
-			// "SettingValue varchar) with oids";
-			//				
-			// pstm = con.prepareStatement(sql);
-			// pstm.executeUpdate();
-			//				
-			// } else if (luku > 0) {
+
 			sql = "delete from SukuSettings where SettingIndex = ? and settingtype = ?";
 			pstm = con.prepareStatement(sql);
 			pstm.setInt(1, index);

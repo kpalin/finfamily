@@ -3,10 +3,12 @@ package fi.kaila.suku.util;
 import java.text.Collator;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.pojo.PersonShortData;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  *Commonly used constants and access to resourceBudle
@@ -419,22 +421,36 @@ public class Resurses {
 		repoTexts = null;
 	}
 
-	public static synchronized String getDefaulCountry() {
+	public static synchronized String getDefaulCountry() throws SukuException {
 		if (myself == null) {
 			myself = new Resurses();
 		}
-		String selectedCc = Suku.kontroller.getPref(myself, "COUNTRY_PREV",
-				"FI");
+		SukuData sets = Suku.kontroller.getSukuData("cmd=getsettings",
+				"type=country", "index=0");
 
-		return selectedCc;
+		if (sets.vvTypes != null && sets.vvTypes.size() > 0) {
+			String[] parts = sets.vvTypes.get(0);
+			return parts[1];
+		}
+		return "FI";
 
 	}
 
-	public static synchronized void setDefaultCountry(String countryCode) {
+	public static synchronized void setDefaultCountry(String countryCode)
+			throws SukuException {
 		if (myself == null) {
 			myself = new Resurses();
 		}
-		Suku.kontroller.putPref(myself, "COUNTRY_PREV", countryCode);
+
+		Vector<String> v = new Vector<String>();
+
+		v.add("cmd=savesettings");
+		v.add("type=country");
+		v.add("index=0");
+		v.add("country=" + countryCode);
+
+		Suku.kontroller.getSukuData(v.toArray(new String[0]));
+
 	}
 
 	/**

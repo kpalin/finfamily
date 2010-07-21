@@ -469,35 +469,6 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		fullText = new JTextField();
 		textPanel.add(fullText);
 
-		// String [] auxes = {"cmd=viewlist"};
-		// SukuData fam = kontroller.getSukuData(auxes);
-		//		
-
-		// patronyme.setText(Suku.kontroller.getPref(this, "patronyme", ""));
-		// surname.setText(Suku.kontroller.getPref(this, "surname", ""));
-		// givenname.setText(Suku.kontroller.getPref(this, "givenname", ""));
-		// // putPref(this, "patronym", patronyme.getText());
-		//
-		// birtFromDate.setText(Suku.kontroller.getPref(this, "birtFromDate",
-		// ""));
-		// birtToDate.setText(Suku.kontroller.getPref(this, "birtToDate", ""));
-		// birtPlace.setText(Suku.kontroller.getPref(this, "birtPlace", ""));
-		//
-		// deatFromDate.setText(Suku.kontroller.getPref(this, "deatFromDate",
-		// ""));
-		// deatToDate.setText(Suku.kontroller.getPref(this,
-		// "givdeatToDateenname",
-		// ""));
-		// deatPlace.setText(Suku.kontroller.getPref(this, "deatPlace", ""));
-		//
-		// createdFromDate.setText(Suku.kontroller.getPref(this,
-		// "createdFromDate", ""));
-		// createdToDate.setText(Suku.kontroller
-		// .getPref(this, "createdToDate", ""));
-		// viewGroup.setText(Suku.kontroller.getPref(this, "viewGroup", ""));
-		//
-		// preferredView = Suku.kontroller.getPref(this, "viewId", "0");
-
 		y = 460;
 
 		this.ok = new JButton(Resurses.OK);
