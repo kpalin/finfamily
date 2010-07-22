@@ -120,7 +120,7 @@ public class JavaReport extends JFrame implements ActionListener,
 
 				// if(parent != null) {
 				// parent.ReportFrameClosing();
-				//					
+				//
 				// }
 				e.getClass();
 
@@ -175,10 +175,9 @@ public class JavaReport extends JFrame implements ActionListener,
 				int imgHeight = it.getHeight();
 
 				Dimension maxSize = parent.getImageMaxSize();
-				;
+
 				if (it.isPersonImage()) {
 					maxSize = parent.getPersonImageMaxSize();
-					;
 				}
 				float w;
 				float h;

@@ -64,7 +64,7 @@ public class SukuTextField extends JTextField implements FocusListener {
 		 * No field
 		 */
 		Fld_Null
-	};
+	}
 
 	SukuSenser senser = null;
 	private String tag = null;

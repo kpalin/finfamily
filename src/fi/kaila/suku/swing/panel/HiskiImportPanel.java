@@ -217,7 +217,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		eventReason.setBounds(200, y, 310, 20);
 
 		y += 30;
-		//		
+		//
 		// eventRemark = new JTextField();
 		// add(eventRemark);
 		// eventRemark.setBounds(200, y, 310, 20);
@@ -557,8 +557,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				sex = "U";
 				break;
 			default:
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("ERROR_MISSINGSEX"));
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("ERROR_MISSINGSEX"));
 				return;
 			}
 
@@ -717,8 +717,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					sex = "U";
 					break;
 				default:
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("ERROR_MISSINGSEX"));
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("ERROR_MISSINGSEX"));
 					return;
 				}
 
@@ -956,8 +956,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				sex = "U";
 				break;
 			default:
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("ERROR_MISSINGSEX"));
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("ERROR_MISSINGSEX"));
 				return;
 			}
 
@@ -1113,7 +1113,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		Vector<UnitNotice> notices = null;
 		int childIdx = -1;
 		Vector<UnitNotice> noticesChild = new Vector<UnitNotice>();
-		;
+
 		for (int i = 0; i < personCount; i++) {
 			String aux = pType[i].getText();
 			notices = new Vector<UnitNotice>();
@@ -1136,8 +1136,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				sex = "U";
 				break;
 			default:
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("ERROR_MISSINGSEX"));
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("ERROR_MISSINGSEX"));
 				return;
 			}
 
@@ -1417,8 +1417,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			hiskiNum = Integer.parseInt(hiskiNumStr);
 		} catch (NumberFormatException ne) {
 			JOptionPane.showMessageDialog(this, "'" + hiskiNumStr + "'"
-					+ Resurses.getString("NOT_NUMBER"), Resurses
-					.getString("HISKI_NUMBER"), JOptionPane.WARNING_MESSAGE);
+					+ Resurses.getString("NOT_NUMBER"),
+					Resurses.getString("HISKI_NUMBER"),
+					JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		sb.append("" + hiskiNum);

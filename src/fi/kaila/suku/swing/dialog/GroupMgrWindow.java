@@ -172,14 +172,14 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		addGroup = new JPanel();
 		add(addGroup);
 		addGroup.setBounds(10, yy, 260, 300);
-		addGroup.setBorder(BorderFactory.createTitledBorder(BorderFactory
-				.createEtchedBorder(EtchedBorder.RAISED), Resurses
-				.getString("DIALOG_GROUP_ADD_CAPTION")));
+		addGroup.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
+				Resurses.getString("DIALOG_GROUP_ADD_CAPTION")));
 		addGroup.setLayout(null);
 		addes = new ButtonGroup();
-		;
-		formd = new JRadioButton(Resurses
-				.getString("DIALOG_GROUP_ADD_SELECTED"));
+
+		formd = new JRadioButton(
+				Resurses.getString("DIALOG_GROUP_ADD_SELECTED"));
 		formd.setActionCommand("SELECTED");
 		formd.setSelected(true);
 		addGroup.add(formd);
@@ -193,22 +193,22 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		addes.add(formd);
 		formd.setBounds(10, 44, 240, 20);
 
-		addDescendant = new JRadioButton(Resurses
-				.getString("DIALOG_GROUP_ADD_DESC"));
+		addDescendant = new JRadioButton(
+				Resurses.getString("DIALOG_GROUP_ADD_DESC"));
 		addDescendant.setActionCommand("DESC");
 		addGroup.add(addDescendant);
 		addes.add(addDescendant);
 		addDescendant.setBounds(10, 66, 240, 20);
 
-		addDescAndSpouses = new JRadioButton(Resurses
-				.getString("DIALOG_GROUP_ADD_DESC_SPOUSES"));
+		addDescAndSpouses = new JRadioButton(
+				Resurses.getString("DIALOG_GROUP_ADD_DESC_SPOUSES"));
 		addDescAndSpouses.setActionCommand("DESC_SPOUSES");
 		addGroup.add(addDescAndSpouses);
 		addes.add(addDescAndSpouses);
 		addDescAndSpouses.setBounds(10, 88, 240, 20);
 
-		addAncestors = new JRadioButton(Resurses
-				.getString("DIALOG_GROUP_ADD_ANC"));
+		addAncestors = new JRadioButton(
+				Resurses.getString("DIALOG_GROUP_ADD_ANC"));
 		addAncestors.setActionCommand("ANC");
 		addGroup.add(addAncestors);
 		addes.add(addAncestors);
@@ -234,15 +234,15 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		removeGroup = new JPanel();
 		add(removeGroup);
 		removeGroup.setBounds(300, yy, 260, 300);
-		removeGroup.setBorder(BorderFactory.createTitledBorder(BorderFactory
-				.createEtchedBorder(EtchedBorder.RAISED), Resurses
-				.getString("DIALOG_GROUP_REMOVE_CAPTION")));
+		removeGroup.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
+				Resurses.getString("DIALOG_GROUP_REMOVE_CAPTION")));
 		removeGroup.setLayout(null);
 		removes = new ButtonGroup();
 
 		int rivi = 22;
-		formd = new JRadioButton(Resurses
-				.getString("DIALOG_GROUP_REMOVE_SELECTED"));
+		formd = new JRadioButton(
+				Resurses.getString("DIALOG_GROUP_REMOVE_SELECTED"));
 		formd.setActionCommand("SELECTED");
 		formd.setSelected(true);
 		removeGroup.add(formd);
@@ -257,8 +257,8 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		removes.add(formd);
 		formd.setBounds(10, rivi, 240, 20);
 		rivi += 22;
-		formd = new JRadioButton(Resurses
-				.getString("DIALOG_GROUP_REMOVE_GROUP"));
+		formd = new JRadioButton(
+				Resurses.getString("DIALOG_GROUP_REMOVE_GROUP"));
 		formd.setActionCommand("GROUP");
 		formd.setSelected(true);
 		removeGroup.add(formd);
@@ -331,14 +331,17 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 					return;
 				selectedName.setText(Resurses
 						.getString("DIALOG_GROUP_SELECTED_COUNT")
-						+ " " + pids.length);
+						+ " "
+						+ pids.length);
 			} else {
 				selectedName.setText(Resurses
 						.getString("DIALOG_GROUP_SELECTED_NAME")
-						+ " " + pp.getAlfaName());
+						+ " "
+						+ pp.getAlfaName());
 				selectedGroup.setText(Resurses
 						.getString("DIALOG_GROUP_SELECTED_GROUP")
-						+ " " + nv(pp.getGroup()));
+						+ " "
+						+ nv(pp.getGroup()));
 
 				if (groupId.getText().isEmpty()) {
 					groupId.setText(nv(pp.getGroup()));
@@ -382,8 +385,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 							JOptionPane
 									.showMessageDialog(
 											parent,
-											Resurses
-													.getString("DIALOG_GROUP_VIEW_NOTSELECTED"));
+											Resurses.getString("DIALOG_GROUP_VIEW_NOTSELECTED"));
 							return;
 						}
 						response = Suku.kontroller.getSukuData(request,
@@ -392,8 +394,8 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 					} else if (remocmd.equals("GROUP")) {
 						String grp = groupId.getText();
 						if (grp.isEmpty()) {
-							JOptionPane.showMessageDialog(parent, Resurses
-									.getString("DIALOG_GROUP_MISSING"));
+							JOptionPane.showMessageDialog(parent,
+									Resurses.getString("DIALOG_GROUP_MISSING"));
 							return;
 						}
 						response = Suku.kontroller.getSukuData(request,
@@ -412,7 +414,8 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 						parent.refreshDbView();
 						String messu = Resurses
 								.getString("DIALOG_GROUP_REMOVED")
-								+ " [" + response.pidArray.length + "]";
+								+ " ["
+								+ response.pidArray.length + "]";
 						JOptionPane.showMessageDialog(parent, messu);
 						logger.info("REMOVE " + remocmd + " GROUPS: " + messu);
 
@@ -435,8 +438,8 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 						return;
 					String grp = groupId.getText();
 					if (grp.isEmpty()) {
-						JOptionPane.showMessageDialog(parent, Resurses
-								.getString("DIALOG_GROUP_MISSING"));
+						JOptionPane.showMessageDialog(parent,
+								Resurses.getString("DIALOG_GROUP_MISSING"));
 						return;
 					}
 
@@ -454,8 +457,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 							JOptionPane
 									.showMessageDialog(
 											parent,
-											Resurses
-													.getString("DIALOG_GROUP_VIEW_NOTSELECTED"));
+											Resurses.getString("DIALOG_GROUP_VIEW_NOTSELECTED"));
 							return;
 						}
 						response = Suku.kontroller.getSukuData("cmd=group",
