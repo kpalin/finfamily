@@ -1699,6 +1699,17 @@ public class Read2004XML extends DefaultHandler {
 									+ this.relationRowA + " not numeric");
 						}
 					}
+					
+					if (this.relationSurety != null) {
+						try {
+							surety = Integer.parseInt(this.relationSurety);
+						} catch (NumberFormatException ne) {
+							surety = 80;
+						}
+					} else {
+						surety = 100;
+					}
+					
 					pst.setInt(5, surety);
 					pst.setNull(6, Types.TIMESTAMP);
 					pst.setTimestamp(7,
