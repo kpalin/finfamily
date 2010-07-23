@@ -264,26 +264,11 @@ public class WorldMap extends JFrame implements ActionListener,
 				}
 
 				g.setColor(Color.BLACK);
-				if (swp.getCount() < 5) {
-					g.drawOval(-1, -1, 2, 2);
-				} else if (swp.getCount() < 10) {
-					g.drawOval(-2, -2, 4, 4);
-				} else if (swp.getCount() < 20) {
-					g.drawOval(-4, -4, 8, 8);
-				} else if (swp.getCount() < 30) {
-					g.drawOval(-6, -6, 12, 12);
-				} else if (swp.getCount() < 40) {
-					g.drawOval(-8, -8, 16, 16);
-				} else if (swp.getCount() < 50) {
-					g.drawOval(-10, -10, 20, 20);
-				} else if (swp.getCount() < 60) {
-					g.drawOval(-12, -12, 24, 24);
-				} else if (swp.getCount() < 70) {
-					g.drawOval(-14, -14, 28, 28);
-				} else if (swp.getCount() < 80) {
-					g.drawOval(-16, -16, 32, 32);
-				} else if (swp.getCount() < 90) {
-					g.drawOval(-18, -18, 36, 36);
+				int x = swp.getCount() + 5;
+				if (x < 105) {
+					int y = -1 * (x / 5);
+					int z = 2 * (x / 5);
+					g.drawOval(y, y, z, z);
 				} else {
 					g.drawOval(-20, -20, 40, 40);
 				}
