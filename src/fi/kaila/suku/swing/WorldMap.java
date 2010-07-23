@@ -225,13 +225,14 @@ public class WorldMap extends JFrame implements ActionListener,
 
 		for (int xx = 0; xx < places.length; xx++) {
 			if (places[xx].getLatitude() > 0) {
-				waypoints.add(new Waypoint(places[xx].getLatitude(), places[xx]
-						.getLongitude()));
+				waypoints.add(new SpecialWaypoint(places[xx].getLatitude(),
+						places[xx].getLongitude(), places[xx].getCount()));
 				if (xy == x) {
 					map.setCenterPosition(new GeoPosition(places[xx]
 							.getLatitude(), places[xx].getLongitude()));
-					centerWaypoint = new Waypoint(places[xx].getLatitude(),
-							places[xx].getLongitude());
+					centerWaypoint = new SpecialWaypoint(
+							places[xx].getLatitude(),
+							places[xx].getLongitude(), places[xx].getCount());
 				}
 				xy++;
 			}
@@ -250,24 +251,44 @@ public class WorldMap extends JFrame implements ActionListener,
 	private class SpecialWaypointRenderer implements WaypointRenderer {
 
 		public boolean paintWaypoint(Graphics2D g, JXMapViewer map, Waypoint wp) {
-			if (wp.getPosition() != null) {
-				// Draw red X
-				if (wp.getPosition().equals(centerWaypoint.getPosition())) {
-					g.setColor(Color.BLUE);
-				} else {
+			SpecialWaypoint swp = (SpecialWaypoint) wp;
+			if (swp.getPosition() != null) {
+				if (swp.getPosition().equals(centerWaypoint.getPosition())) {
 					g.setColor(Color.RED);
+					g.drawLine(-6, -6, +6, +6);
+					g.drawLine(-6, +6, +6, -6);
+				} else {
+					g.setColor(Color.BLUE);
+					g.drawLine(-3, -3, +3, +3);
+					g.drawLine(-3, +3, +3, -3);
 				}
-				g.drawLine(-5, -5, +5, +5);
-				g.drawLine(-5, +5, +5, -5);
 
-				// Draw Oval with text
-				// g.setColor(new Color(255, 255, 255, 175));
-				// g.fillOval(-20, -20, 20, 20);
-				// g.setColor(Color.BLACK);
-				// g.drawString("20", -15, -8);
+				g.setColor(Color.BLACK);
+				if (swp.getCount() < 5) {
+					g.drawOval(-1, -1, 2, 2);
+				} else if (swp.getCount() < 10) {
+					g.drawOval(-2, -2, 4, 4);
+				} else if (swp.getCount() < 20) {
+					g.drawOval(-4, -4, 8, 8);
+				} else if (swp.getCount() < 30) {
+					g.drawOval(-6, -6, 12, 12);
+				} else if (swp.getCount() < 40) {
+					g.drawOval(-8, -8, 16, 16);
+				} else if (swp.getCount() < 50) {
+					g.drawOval(-10, -10, 20, 20);
+				} else if (swp.getCount() < 60) {
+					g.drawOval(-12, -12, 24, 24);
+				} else if (swp.getCount() < 70) {
+					g.drawOval(-14, -14, 28, 28);
+				} else if (swp.getCount() < 80) {
+					g.drawOval(-16, -16, 32, 32);
+				} else if (swp.getCount() < 90) {
+					g.drawOval(-18, -18, 36, 36);
+				} else {
+					g.drawOval(-20, -20, 40, 40);
+				}
 
 				return false;
-
 			}
 			return true;
 		}
