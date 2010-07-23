@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -46,11 +47,10 @@ public class WorldMap extends JFrame implements ActionListener,
 	private WorldMap me;
 
 	private JXMapKit map;
+	private Waypoint centerWaypoint;
 
 	JComboBox currentPlaces;
 	JTextArea missingPlacesList;
-
-	BufferedImage markerImg;
 
 	/**
 	 * Constructor
@@ -65,40 +65,83 @@ public class WorldMap extends JFrame implements ActionListener,
 
 	private void initMe() {
 
-		setLayout(null);
-		setLocation(200, 10);
-
-		// Own waypoint renderer image
-		// markerImg = createImageIcon("/images/jalkipolvi.gif");
-
 		map = new JXMapKit();
 		map.setDefaultProvider(JXMapKit.DefaultProviders.OpenStreetMaps);
 		map.setZoom(12);
 
-		this.map.setBounds(10, 10, 400, 600);
-		this.getContentPane().add(this.map);
-
-		JLabel lbl = new JLabel(Resurses.getString(Resurses.PLACECURRENT));
-		lbl.setBounds(420, 0, 200, 20);
-		this.getContentPane().add(lbl);
+		JLabel lblC = new JLabel(Resurses.getString(Resurses.PLACECURRENT));
 
 		currentPlaces = new JComboBox();
-		currentPlaces.setBounds(420, 20, 160, 20);
 		currentPlaces.setActionCommand(Resurses.SHOWGRID);
 		currentPlaces.addActionListener(this);
-		this.getContentPane().add(currentPlaces);
 
-		lbl = new JLabel(Resurses.getString(Resurses.PLACEMISSING));
-		lbl.setBounds(420, 50, 200, 20);
-		this.getContentPane().add(lbl);
+		JLabel lblM = new JLabel(Resurses.getString(Resurses.PLACEMISSING));
 
 		this.missingPlacesList = new JTextArea();
 		this.missingPlacesList.setEditable(false);
 		JScrollPane js = new JScrollPane(this.missingPlacesList);
-		js.setBounds(420, 80, 160, 520);
-		this.getContentPane().add(js);
+
+		GroupLayout layout = new GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+
+		layout.setHorizontalGroup(layout
+				.createSequentialGroup()
+				.addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.LEADING).addComponent(
+								map, 0, GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE))
+				.addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.LEADING)
+								.addComponent(lblC, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(currentPlaces, 250, 250,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblM, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(js, 250, 250,
+										GroupLayout.PREFERRED_SIZE)));
+
+		layout.setVerticalGroup(layout
+				.createSequentialGroup()
+				.addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(map, 0, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addGroup(
+										layout.createSequentialGroup()
+												.addGroup(
+														layout.createParallelGroup(
+																GroupLayout.Alignment.BASELINE)
+																.addComponent(
+																		lblC))
+												.addGroup(
+														layout.createParallelGroup(
+																GroupLayout.Alignment.LEADING)
+																.addComponent(
+																		currentPlaces,
+																		GroupLayout.PREFERRED_SIZE,
+																		GroupLayout.DEFAULT_SIZE,
+																		GroupLayout.PREFERRED_SIZE))
+												.addGroup(
+														layout.createParallelGroup(
+																GroupLayout.Alignment.LEADING)
+																.addComponent(
+																		lblM))
+												.addGroup(
+														layout.createParallelGroup(
+																GroupLayout.Alignment.LEADING)
+																.addComponent(
+																		js)))));
 
 		setSize(new Dimension(650, 680));
+
 		setVisible(true);
 
 		addWindowListener(new WindowAdapter() {
@@ -150,8 +193,6 @@ public class WorldMap extends JFrame implements ActionListener,
 		}
 		missingPlacesList.setText(sb.toString());
 
-		this.currentPlaces.addItem(makeObj(""));
-
 		for (int xx = 0; xx < places.length; xx++) {
 			if (places[xx].getLatitude() > 0) {
 				this.currentPlaces.addItem(makeObj(places[xx].getName() + "("
@@ -178,27 +219,19 @@ public class WorldMap extends JFrame implements ActionListener,
 	public void actionPerformed(ActionEvent e) {
 
 		int xy = 0;
-		int x = this.currentPlaces.getSelectedIndex() - 1;
+		int x = this.currentPlaces.getSelectedIndex();
 
 		Set<Waypoint> waypoints = new HashSet<Waypoint>();
 
 		for (int xx = 0; xx < places.length; xx++) {
 			if (places[xx].getLatitude() > 0) {
-				if (x == -1) {
-					waypoints.add(new Waypoint(places[xx].getLatitude(),
-							places[xx].getLongitude()));
-					if (xy == 0) {
-						map.setCenterPosition(new GeoPosition(places[xx]
-								.getLatitude(), places[xx].getLongitude()));
-					}
-				} else {
-					if (xy == x) {
-						waypoints.add(new Waypoint(places[xx].getLatitude(),
-								places[xx].getLongitude()));
-						map.setCenterPosition(new GeoPosition(places[xx]
-								.getLatitude(), places[xx].getLongitude()));
-						xx = places.length + 10;
-					}
+				waypoints.add(new Waypoint(places[xx].getLatitude(), places[xx]
+						.getLongitude()));
+				if (xy == x) {
+					map.setCenterPosition(new GeoPosition(places[xx]
+							.getLatitude(), places[xx].getLongitude()));
+					centerWaypoint = new Waypoint(places[xx].getLatitude(),
+							places[xx].getLongitude());
 				}
 				xy++;
 			}
@@ -209,7 +242,7 @@ public class WorldMap extends JFrame implements ActionListener,
 		painter.setWaypoints(waypoints);
 
 		// Use own waypoint renderer
-		// painter.setRenderer(new SpecialWaypointRenderer());
+		painter.setRenderer(new SpecialWaypointRenderer());
 
 		map.getMainMap().setOverlayPainter(painter);
 	}
@@ -218,11 +251,12 @@ public class WorldMap extends JFrame implements ActionListener,
 
 		public boolean paintWaypoint(Graphics2D g, JXMapViewer map, Waypoint wp) {
 			if (wp.getPosition() != null) {
-				// Draw selected image
-				// g.drawImage(markerImg, null, 0, 0);
-
 				// Draw red X
-				g.setColor(Color.RED);
+				if (wp.getPosition().equals(centerWaypoint.getPosition())) {
+					g.setColor(Color.BLUE);
+				} else {
+					g.setColor(Color.RED);
+				}
 				g.drawLine(-5, -5, +5, +5);
 				g.drawLine(-5, +5, +5, -5);
 
