@@ -5,7 +5,7 @@ At least for now releases follow the Subversion revision numbers. Numbers in the
 Release 648 on 25 jul 2010
 
 * fix to restore backup surety
-* enchanched OpenStreetMaps display
+* enchanhed OpenStreetMaps display
 
 Release 640 on 21 jul 2010
 

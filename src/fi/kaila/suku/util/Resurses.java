@@ -209,8 +209,7 @@ public class Resurses {
 	public static final String DROPDB = "DROPDB";
 	/** */
 	public static final String VERIFYPWD = "VERIFYPWD";
-	/** */
-	public static final String PASSWORD = "PASSWORD";
+
 	/** */
 	public static final String PASSWORDNOTVERIFY = "PASSWORDNOTVERIFY";
 	/** */

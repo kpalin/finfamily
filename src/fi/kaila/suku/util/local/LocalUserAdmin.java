@@ -62,7 +62,7 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 
 		y += 30;
 
-		lbl = new JLabel(Resurses.getString(Resurses.PASSWORD));
+		lbl = new JLabel(Resurses.getString("LOGIN_PASSWORD"));
 		getContentPane().add(lbl);
 		lbl.setBounds(20, y, 100, 20);
 

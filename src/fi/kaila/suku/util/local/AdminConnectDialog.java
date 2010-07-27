@@ -50,7 +50,7 @@ public class AdminConnectDialog extends JDialog implements ActionListener {
 		setLayout(null);
 		int y = 20;
 
-		lbl = new JLabel("Admin " + Resurses.getString("PASSWORD"));
+		lbl = new JLabel("Admin " + Resurses.getString("LOGIN_PASSWORD"));
 		getContentPane().add(lbl);
 		lbl.setBounds(20, y, 100, 20);
 
