@@ -157,7 +157,11 @@ public class SettingsDialog extends JDialog implements ActionListener {
 				if (ccodes[i].equals(selectedCc)) {
 					seleId = i;
 				}
-				countries[i] = parts[1] + " - " + parts[2];
+				if (!parts[2].equals("null")) {
+					countries[i] = parts[1] + " - " + parts[2];
+				} else {
+					countries[i] = parts[1];
+				}
 			}
 			defaultCountryCode = new JComboBox(countries);
 			getContentPane().add(defaultCountryCode);
