@@ -48,7 +48,9 @@ public class PersonShortData implements Serializable, Transferable,
 	private String birtTag = null;
 	private String deatTag = null;
 	private String bPlace = null;
+	private String bCountry = null;
 	private String dPlace = null;
+	private String dCountry = null;
 	private String chred = null;
 	private String buried = null;
 	private String occu = null;
@@ -203,6 +205,13 @@ public class PersonShortData implements Serializable, Transferable,
 	}
 
 	/**
+	 * @param birtCountry
+	 */
+	public void setBirtCountry(String birtCountry) {
+		this.bCountry = birtCountry;
+	}
+
+	/**
 	 * @param birtTag
 	 *            (can be CHR, BIRT or null)
 	 */
@@ -222,6 +231,13 @@ public class PersonShortData implements Serializable, Transferable,
 	 */
 	public void setDeatPlace(String deatPlace) {
 		this.dPlace = deatPlace;
+	}
+
+	/**
+	 * @param deatCountry
+	 */
+	public void setDeatCountry(String deatCountry) {
+		this.dCountry = deatCountry;
 	}
 
 	/**
@@ -389,12 +405,14 @@ public class PersonShortData implements Serializable, Transferable,
 					birtTag = n.getTag();
 					bDate = n.getFromDate();
 					bPlace = n.getPlace();
+					bCountry = n.getCountry();
 				}
 			} else if (n.getTag().equals("DEAT") || n.getTag().equals("BURI")) {
 				if (deatTag == null || !deatTag.equals("DEAT")) {
 					deatTag = n.getTag();
 					dDate = n.getFromDate();
 					dPlace = n.getPlace();
+					dCountry = n.getCountry();
 				}
 			} else if (n.getTag().equals("OCCU")) {
 				if (occu == null) {
@@ -774,6 +792,14 @@ public class PersonShortData implements Serializable, Transferable,
 	}
 
 	/**
+	 * 
+	 * @return birth country
+	 */
+	public String getBirthCountry() {
+		return this.bCountry;
+	}
+
+	/**
 	 * @return death data main part
 	 */
 	public String getDeatDate() {
@@ -792,6 +818,14 @@ public class PersonShortData implements Serializable, Transferable,
 	 */
 	public String getDeatPlace() {
 		return this.dPlace;
+	}
+
+	/**
+	 * 
+	 * @return death country
+	 */
+	public String getDeatCountry() {
+		return this.dCountry;
 	}
 
 	/**

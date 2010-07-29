@@ -2324,20 +2324,54 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 		}
 
+		HashMap<String, String> ccodes = new HashMap<String, String>();
+		try {
+			SukuData countdata = Suku.kontroller.getSukuData("cmd=get",
+					"type=ccodes");
+
+			for (String nxt : countdata.generalArray) {
+				if (nxt != null) {
+					String parts[] = nxt.split(";");
+					if (parts.length == 2) {
+						ccodes.put(parts[0], parts[1]);
+					}
+				}
+			}
+
+		} catch (SukuException e1) {
+			logger.log(Level.WARNING, "Failed to get country codes", e1);
+
+		}
+
 		HashMap<String, PlaceLocationData> paikat = new HashMap<String, PlaceLocationData>();
 		int idx;
 		String paikka;
-
+		String maa;
+		String ccode;
+		String defaultCountry = Resurses.getDefaultCountry();
 		PlaceLocationData place;
 
 		for (idx = 0; idx < databaseWindowPersons.length; idx++) {
 			paikka = databaseWindowPersons[idx].getBirtPlace();
 			if (paikka != null) {
 
-				place = paikat.get(paikka.toUpperCase());
+				maa = databaseWindowPersons[idx].getBirthCountry();
+				if (maa != null)
+					maa = maa.toUpperCase();
+
+				if (maa == null) {
+					ccode = defaultCountry;
+				} else {
+					ccode = ccodes.get(maa.toUpperCase());
+					if (ccode == null) {
+						ccode = defaultCountry;
+					}
+				}
+				place = paikat.get(paikka.toUpperCase() + ";" + ccode);
 				if (place == null) {
-					place = new PlaceLocationData(paikka);
-					paikat.put(paikka.toUpperCase(), place);
+					place = new PlaceLocationData(paikka, ccode);
+
+					paikat.put(paikka.toUpperCase() + ";" + ccode, place);
 				} else {
 					place.increment();
 				}
@@ -2352,16 +2386,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		while (it.hasNext()) {
 			request.places[idx] = paikat.get(it.next());
 			idx++;
-			// System.out.println("paikka: " + place.getName() + "[" +
-			// place.getCount() + "]");
 		}
 
 		try {
 			SukuData response = kontroller.getSukuData(request, "cmd=places");
 
-			// FIXME: Method call passes null for nonnull parameter of
-			// SuomiMap.displaySuomiMap(PlaceLocationData[])
-			suomi.displayMap((response != null) ? response.places : null);
+			suomi.displayMap((response != null) ? response.places
+					: new PlaceLocationData[0]);
 
 		} catch (SukuException e) {
 			e.printStackTrace();

@@ -141,7 +141,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 		SukuData countdata = Suku.kontroller.getSukuData("cmd=get",
 				"type=countries");
-		selectedCc = Resurses.getDefaulCountry();
+		selectedCc = Resurses.getDefaultCountry();
 
 		if (countdata.generalArray == null) {
 			JOptionPane.showMessageDialog(this, Resurses

@@ -522,6 +522,8 @@ public class SukuServerImpl implements SukuServer {
 				fam = getDbLista(host, user, password);
 			} else if (type.endsWith("countries")) {
 				fam = getCountryList();
+			} else if (type.endsWith("ccodes")) {
+				fam = getCountryCodes();
 			} else {
 				fam.resu = Resurses.getString("ERR_TYPE_INVALID");
 			}
@@ -864,7 +866,7 @@ public class SukuServerImpl implements SukuServer {
 			throw new SukuException(Resurses.getString("SERVER_RESULT_NULL"));
 		}
 		if (fam.resu != null) {
-			throw new SukuException(fam.resu);
+			throw new SukuException(fam.resu + "[" + cmd + "]");
 		}
 		return fam;
 	}
@@ -893,6 +895,48 @@ public class SukuServerImpl implements SukuServer {
 
 				if (!cc.equals(prev)) {
 					v.add(cc + ";" + nm + ";" + ot);
+				}
+				prev = cc;
+
+			}
+			res.generalArray = v.toArray(new String[0]);
+
+		} catch (SQLException e) {
+			res.resu = e.getMessage();
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	private SukuData getCountryCodes() {
+		SukuData res = new SukuData();
+		Vector<String> v = new Vector<String>();
+
+		try {
+			String sql = "select a.countrycode,a.placename,b.othername"
+					+ " from placelocations as a left join "
+					+ "placeothernames as b on a.placename=b.placename "
+					+ "and a.countrycode = b.countrycode "
+					+ "where location[0] = 0 and location[1] = 0";
+
+			String prev = "";
+
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+
+			while (rs.next()) {
+
+				String cc = rs.getString(1);
+				String nm = rs.getString(2);
+				String ot = rs.getString(3);
+
+				if (!cc.equals(prev)) {
+					v.add(nm + ";" + cc);
+					if (ot != null) {
+						v.add(ot + ";" + cc);
+					}
+				} else {
+					v.add(ot + ";" + cc);
 				}
 				prev = cc;
 

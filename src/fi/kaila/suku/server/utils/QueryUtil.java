@@ -60,7 +60,7 @@ public class QueryUtil {
 					+ "u.groupid,u.tag,n.tag,n.givenname,");
 			seleSQL.append("n.patronym,n.prefix,n.surname,n.postfix,");
 			seleSQL.append("n.fromdate,n.Place,n.Description,"
-					+ "n.pnid,n.mediafilename,n.mediatitle ");
+					+ "n.pnid,n.mediafilename,n.mediatitle,n.Country ");
 			seleSQL.append("from unit as u left join unitnotice "
 					+ "as n on u.pid = n.pid ");
 
@@ -416,11 +416,12 @@ public class QueryUtil {
 			String dbpostfix; // 11
 			String dbfromdate; // 12
 			String dbplace; // 13
+
 			String dbdescription; // 14
 			int dbnpid; // 15
 			String dbmediafilename; // 16
 			String dbmediatitle; // 17
-
+			String dbCountry; // 18
 			String rtag;
 			int marriages;
 			int children;
@@ -441,7 +442,7 @@ public class QueryUtil {
 				dbnpid = rs.getInt(15);
 				dbmediafilename = rs.getString(16);
 				dbmediatitle = rs.getString(17);
-
+				dbCountry = rs.getString(18);
 				if (pid != currentPid && currentPid != 0) {
 					personList.add(perso);
 
@@ -509,6 +510,7 @@ public class QueryUtil {
 							perso.setBirtTag(dbntag);
 							perso.setBirtDate(dbfromdate);
 							perso.setBirtPlace(dbplace);
+							perso.setBirtCountry(dbCountry);
 						}
 					}
 
@@ -520,6 +522,7 @@ public class QueryUtil {
 							perso.setDeatTag(dbntag);
 							perso.setDeatDate(dbfromdate);
 							perso.setDeatPlace(dbplace);
+							perso.setDeatCountry(dbCountry);
 						}
 					}
 				}

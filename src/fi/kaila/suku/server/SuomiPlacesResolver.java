@@ -52,14 +52,17 @@ public class SuomiPlacesResolver {
 
 				pstm.setString(1, response[idx].getName().toUpperCase());
 				pstm.setString(2, response[idx].getName().toUpperCase());
-				boolean bb = false;
+
 				ResultSet rs = pstm.executeQuery();
 				while (rs.next()) {
 					countryCode = rs.getString(3);
+					if (countryCode.equalsIgnoreCase(response[idx]
+							.getCountryCode())
+							|| response[idx].getCountryCode() == null) {
+						response[idx].setLongitude(rs.getDouble(1));
+						response[idx].setLatitude(rs.getDouble(2));
+					}
 
-					response[idx].setLongitude(rs.getDouble(1));
-					response[idx].setLatitude(rs.getDouble(2));
-					bb = true;
 				}
 				rs.close();
 

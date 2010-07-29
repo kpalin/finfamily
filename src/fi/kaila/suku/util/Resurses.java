@@ -4,6 +4,7 @@ import java.text.Collator;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.swing.Suku;
@@ -420,16 +421,23 @@ public class Resurses {
 		repoTexts = null;
 	}
 
-	public static synchronized String getDefaulCountry() throws SukuException {
+	public static synchronized String getDefaultCountry() {
 		if (myself == null) {
 			myself = new Resurses();
 		}
-		SukuData sets = Suku.kontroller.getSukuData("cmd=getsettings",
-				"type=country", "index=0");
+		SukuData sets;
+		try {
+			sets = Suku.kontroller.getSukuData("cmd=getsettings",
+					"type=country", "index=0");
 
-		if (sets.vvTypes != null && sets.vvTypes.size() > 0) {
-			String[] parts = sets.vvTypes.get(0);
-			return parts[1];
+			if (sets.vvTypes != null && sets.vvTypes.size() > 0) {
+				String[] parts = sets.vvTypes.get(0);
+				return parts[1];
+			}
+		} catch (SukuException e) {
+
+			logger.log(Level.WARNING, "Failed to get default country", e);
+
 		}
 		return "FI";
 

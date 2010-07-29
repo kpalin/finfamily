@@ -15,6 +15,7 @@ public class PlaceLocationData implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String placeName = null;
+	private String countryCode = null;
 	private int counter = 0;
 	private double latitude = 0;
 	private double longitude = 0;
@@ -22,8 +23,9 @@ public class PlaceLocationData implements Serializable {
 	/**
 	 * @param place
 	 */
-	public PlaceLocationData(String place) {
+	public PlaceLocationData(String place, String countryCode) {
 		this.placeName = place;
+		this.countryCode = countryCode;
 		this.counter = 1;
 
 	}
@@ -40,6 +42,14 @@ public class PlaceLocationData implements Serializable {
 	 */
 	public String getName() {
 		return this.placeName;
+	}
+
+	/**
+	 * 
+	 * @return country code for place
+	 */
+	public String getCountryCode() {
+		return this.countryCode;
 	}
 
 	/**
