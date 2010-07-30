@@ -377,485 +377,76 @@ public class SukuServerImpl implements SukuServer {
 			}
 		}
 		String cmd = map.get("cmd");
-		String file;
-		String lang;
+
 		if (cmd == null)
 			return null;
 		SukuData fam = new SukuData();
-
-		if (cmd.equals("plist")) {
-			QueryUtil q = new QueryUtil(con);
-			fam = q.queryDatabase(params);
-			// fam = getShortPersonList(params);
-		} else if (cmd.equals("family")) {
-			tmp = map.get("pid");
-			aux = map.get("parents");
-			if (tmp != null) {
-				pid = Integer.parseInt(tmp);
-				fam = getShortFamily(pid, aux == null ? false : true);
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
-			}
-		} else if (cmd.equals("person")) {
-			tmp = map.get("pid");
-			if (tmp != null) {
-				pid = Integer.parseInt(tmp);
-				String mode = map.get("mode");
-				if ("short".equals(mode)) {
-					PersonShortData psp = new PersonShortData(this.con, pid);
-					fam.pers = new PersonShortData[1];
-					fam.pers[0] = psp;
-					return fam;
-				} else if ("relations".equals(mode)) {
-					tmp = map.get("pid");
-
-					lang = map.get("lang");
-					if (tmp != null) {
-						pid = Integer.parseInt(tmp);
-
-						GenGraphUtil gutil = new GenGraphUtil(con);
-						fam = gutil.getGengraphData(pid, lang);
-						return fam;
-					}
-				}
-
-				lang = map.get("lang");
-				PersonUtil u = new PersonUtil(con);
-				fam = u.getFullPerson(pid, lang);
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
-			}
-		} else if (cmd.equals("delete")) {
-			tmp = map.get("pid");
-			if (tmp != null) {
-				pid = Integer.parseInt(tmp);
-
-				fam = deletePerson(pid);
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
-			}
-		} else if (cmd.equals("relatives")) {
-			tmp = map.get("pid");
-			if (tmp != null) {
-				pid = Integer.parseInt(tmp);
-				String tag = map.get("tag");
-				// throw new SukuException("parents has not been implemented");
-				fam = getRelatives(pid, tag);
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_PID");
-			}
-
-		} else if (cmd.equals("virtual")) {
-			tmp = map.get("pid");
-			if (tmp != null) {
-				pid = Integer.parseInt(tmp);
-
-				fam = getVirtualPerson(pid);
-			}
-		} else if (cmd.equals("upload")) {
-			fam = uploadFamily(request);
+		if (cmd.equals("compare")) {
+			ImportOtherUtil inoth = new ImportOtherUtil(con);
+			fam = inoth.comparePersons(map);
+		} else if (cmd.equals("create")) {
+			fam = executeCmdCreate(map, fam);
+		} else if (cmd.equals("crlista")) {
+			fam = executeCmdCrlista(map, fam);
+		} else if (cmd.equals("crtables")) {
+			fam = executeCmdCrtables(map, fam);
+		} else if (cmd.equals("dblista")) {
+			fam.generalArray = LocalDatabaseUtility.getListOfDatabases(con);
 		} else if (cmd.equals("dbversion")) {
 			fam = getDbVersion();
 		} else if (cmd.equals("dbstats")) {
 			fam = getDbStatistics();
-			// } else if (cmd.equals("repolanguages")) {
-			// fam = getReportLanguages();
-			// } else if (cmd.equals("report")) {
-			// fam = createReport(map.get("type"),map.get("pid"));
-		} else if (cmd.equals("crtables")) {
-			if ("desc".equals(map.get("type"))) {
-				fam = createDescTables(map.get("order"),
-						map.get("generations"), map.get("spougen"), map
-								.get("chilgen"), map.get("adopted"), map
-								.get("pid"));
-			} else if ("anc".equals(map.get("type"))) {
-
-				fam = createAncTables(map.get("order"), map.get("generations"),
-						map.get("family"), map.get("pid"));
-
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
-			}
-		} else if (cmd.equals("crlista")) {
-			if ("desc".equals(map.get("type"))) {
-				fam = createDescendantLista(map.get("pid"));
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
-			}
-		} else if (cmd.equals("logout")) {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				con = null;
-			}
-			con = null;
-
-		} else if (cmd.equals("initdb")) {
-			String path = map.get("path");
-			if (path == null) {
-				path = "/sql/finfamily.sql";
-			}
-			// else {
-			// fam.resu = Resurses.getString("GETSUKU_BAD_SQL_FILE");
-			// return fam;
-			// }
-			SukuUtility data = SukuUtility.instance();
-			data.createSukuDb(this.con, path);
-
-		} else if (cmd.equals("viewlist")) {
-			String schema = map.get("schema");
-			fam = getViewList(schema);
+		} else if (cmd.equals("delete")) {
+			fam = executeCmdDelete(map, fam);
+		} else if (cmd.equals("excel")) {
+			fam = executeCmdExcel(map, fam);
+		} else if (cmd.equals("family")) {
+			fam = executeCmdFamily(map, fam);
 		} else if (cmd.equals("get")) {
-			String type = map.get("type");
-			if (type == null) {
-				fam.resu = Resurses.getString("ERR_TYPE_MISSING");
-			} else if (type.endsWith("types")) {
-				fam = getTypes(map.get("lang"));
-				// SukuData txts = getTexts(map.get("lang"));
-				// fam.vvTexts = txts.vvTexts;
-			} else if (type.endsWith("conversions")) {
-				fam = getConversions(map.get("lang"));
-			} else if (type.endsWith("dbstatistics")) {
-				String user = map.get("user");
-				String password = map.get("password");
-				String host = map.get("host");
-				fam = getDbLista(host, user, password);
-			} else if (type.endsWith("countries")) {
-				fam = getCountryList();
-			} else if (type.endsWith("ccodes")) {
-				fam = getCountryCodes();
-			} else {
-				fam.resu = Resurses.getString("ERR_TYPE_INVALID");
-			}
-		} else if (cmd.equals("intelli")) {
-			fam = getIntelliSensData();
+			fam = executeCmdGet(map, cmd, fam);
 		} else if (cmd.equals("getsettings")) {
-
 			fam = getSettings(map.get("index"), map.get("type"), map
 					.get("name"));
-
-		} else if (cmd.equals("updatesettings")) {
-			fam = updateSettings(request, map.get("index"), map.get("type"),
-					map.get("name"));
-		} else if (cmd.equals("places")) {
-
-			if (request != null) {
-				fam.places = SuomiPlacesResolver.resolveSuomiPlaces(this.con,
-						request.places);
-			} else {
-				fam.resu = Resurses.getString("GETSUKU_BAD_PLACES");
-			}
-		} else if (cmd.equals("dblista")) {
-			fam.generalArray = LocalDatabaseUtility.getListOfDatabases(con);
-		} else if (cmd.equals("schema")) {
-			String type = map.get("type");
-			if (type != null) {
-				if (type.equals("get")) {
-					fam.generalArray = new String[1];
-					fam.generalArray[0] = this.schema;
-				} else if (type.equals("count")) {
-					fam.generalArray = LocalDatabaseUtility
-							.getListOfSchemas(con);
-				} else if (type.equals("set")) {
-					String name = map.get("name");
-					if (name != null) {
-						this.schema = name;
-						fam.resu = LocalDatabaseUtility.setSchema(con,
-								this.schema);
-					}
-				} else if (type.equals("create")) {
-					String name = map.get("name");
-					if (name != null) {
-						fam.resu = LocalDatabaseUtility.createNewSchema(con,
-								name);
-					}
-				} else if (type.equals("drop")) {
-					String name = map.get("name");
-					if (name != null) {
-						fam.resu = LocalDatabaseUtility.dropSchema(con, name);
-						this.schema = "public";
-					}
-				} else {
-					fam.resu = "Bad schema command";
-				}
-			}
-
+		} else if (cmd.equals("group")) {
+			fam = executeCmdGroup(request, map);
 		} else if (cmd.equals("import")) {
-			String type = map.get("type");
-			if (type != null) {
-				if (type.equals("backup")) {
-					// this.createSukuDb();
-					file = this.openFile;
-					if (file == null) {
-						file = map.get("filename");
-					} else {
-						fam.resu = Resurses
-								.getString("GETSUKU_BAD_FILEMISSING");
-					}
-					lang = map.get("lang");
-					logger.info("Suku 2004 FILE: " + file);
-					if (file != null) {
-						if (file.toLowerCase().endsWith("xml.gz")
-								|| file.toLowerCase().endsWith("xml")) {
-							fam = import2004Data(file, lang);
-						}
-					}
-				} else if (type.equals("gedcom")) {
-					lang = map.get("lang");
-					if (lang == null) {
-						lang = Resurses.getLanguage();
-					}
-
-					ImportGedcomUtil inged = new ImportGedcomUtil(con);
-					fam = inged.importGedcom(lang);
-					inged = null;
-				} else if (type.equals("other")) {
-					ImportOtherUtil inoth = new ImportOtherUtil(con);
-					String schema = map.get("schema");
-					int viewId = -1;
-					String view = map.get("view");
-					String viewName = null;
-					if (view != null) {
-						viewId = Integer.parseInt(view);
-						viewName = map.get("viewName");
-					}
-					fam = inoth.importOther(schema, viewId, viewName);
-
-				}
-			}
-		} else if (cmd.equals("compare")) {
-			ImportOtherUtil inoth = new ImportOtherUtil(con);
-			fam = inoth.comparePersons(map);
-		} else if (cmd.equals("unitCount")) {
-			fam = getUnitCount();
-		} else if (cmd.equals("create")) {
-			String type = map.get("type");
-			if ("gedcom".equals(type)) {
-				lang = map.get("lang");
-				String path = map.get("file");
-				String db = map.get("db");
-				tmp = map.get("viewId");
-				int viewId = 0;
-				if (tmp != null) {
-					viewId = Integer.parseInt(tmp);
-				}
-				int surety = 100;
-				tmp = map.get("surety");
-
-				if (tmp != null) {
-					surety = Integer.parseInt(tmp);
-				}
-				tmp = map.get("charid");
-				int charid = Integer.parseInt(tmp);
-				boolean incImages = map.get("images") != null ? true : false;
-
-				ExportGedcomUtil exgen = new ExportGedcomUtil(con);
-				fam = exgen.exportGedcom(db, path, lang, viewId, surety,
-						charid, incImages);
-			} else if ("backup".equals(type)) {
-				String path = map.get("file");
-				String db = map.get("db");
-				ExportBackupUtil exb = new ExportBackupUtil(con);
-
-				fam = exb.exportBackup(path, db);
-			}
-		} else if (cmd.equals("excel")) {
-			String page = map.get("page");
-			String path = map.get("path");
-			String type = map.get("type");
-			lang = map.get("lang");
-			String all = map.get("all");
-			if (lang == null) {
-				lang = Resurses.getLanguage();
-			}
-			if (path == null) {
-				path = this.openFile;
-				if (path == null) {
-					fam.resu = Resurses.getString("INVALID_FILE");
-					return fam;
-				}
-			}
-			if (type == null || type.equals("import")) {
-				fam = importExcelData(path, page);
-			} else if (type.equals("export")) {
-				fam = exportExcelData(path, page, lang, (all != null && all
-						.equals("true")) ? true : false);
-			} else {
-				fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
-			}
-
+			fam = executeCmdImport(map, fam);
+		} else if (cmd.equals("initdb")) {
+			executeCmdInitdb(map);
+		} else if (cmd.equals("intelli")) {
+			fam = getIntelliSensData();
+		} else if (cmd.equals("logout")) {
+			executeCmdLogout();
+		} else if (cmd.equals("person")) {
+			fam = executeCmdPerson(map, fam);
+		} else if (cmd.equals("places")) {
+			executeCmdPlaces(request, fam);
+		} else if (cmd.equals("plist")) {
+			QueryUtil q = new QueryUtil(con);
+			fam = q.queryDatabase(params);
+		} else if (cmd.equals("relatives")) {
+			fam = executeCmdRelatives(map, fam);
 		} else if (cmd.equals("savesettings")) {
 			fam = saveReportSettings(map);
-
+		} else if (cmd.equals("schema")) {
+			executeCmdSchema(map, fam);
+		} else if (cmd.equals("unitCount")) {
+			fam = getUnitCount();
 		} else if (cmd.equals("update")) {
-			String type = map.get("type");
-			if (type == null) {
-				fam.resu = Resurses.getString("GETSUKU_BAD_UPDATE_TYPE");
-				return fam;
-			}
-			if (type.equals("person")) {
-				fam = updatePerson(request);
-				if (fam.resultPid > 0) {
-					PersonShortData psp = new PersonShortData(this.con,
-							fam.resultPid);
-					fam.pers = new PersonShortData[1];
-					fam.pers[0] = psp;
-				}
-			} else {
-
-				fam.resu = "Wrong type [" + type + "] in update command";
-				return fam;
-			}
+			fam = executeCmdUpdate(request, map, fam);
+		} else if (cmd.equals("updatesettings")) {
+			fam = executeCmdUpdatesettings(request, map);
+		} else if (cmd.equals("upload")) {
+			fam = uploadFamily(request);
+		} else if (cmd.equals("viewlist")) {
+			fam = getViewList(map.get("schema"));
 		} else if (cmd.equals("variables")) {
-			String type = map.get("type");
-			if ("get".equals(type)) {
-				fam = getSukuInfo();
-			} else if ("update".equals(type)) {
-				fam = setSukuInfo(request);
-			}
-
-		} else if (cmd.equals("group")) {
-			String action = map.get("action");
-			String key = map.get("key");
-			String view = map.get("view");
-			String group = map.get("group");
-			String pidg = map.get("pid");
-			String gen = map.get("gen");
-			if (action == null)
-				return fam;
-			GroupUtil grp = new GroupUtil(con);
-			fam = new SukuData();
-			fam.resu = Resurses.getString("DIALOG_GROUP_SERVER_BADCMD")
-					+ " action=" + action;
-			if (action.equals("remove")) {
-
-				if (view != null) {
-
-					int vid = Integer.parseInt(view);
-					fam = grp.removeViewGroups(vid);
-
-				} else if (key != null) {
-					if (key.equals("all")) {
-						fam = grp.removeAllGroups();
-					} else if (key.equals("pidarray")) {
-						fam = grp.removeSelectedGroups(request.pidArray);
-					}
-				} else if (group != null) {
-					fam = grp.removeGroup(group);
-				} else {
-					fam.resu = Resurses.getString("GETSUKU_BAD_GROUP_COMMAND");
-
-				}
-
-			} else if (action.equals("add")) {
-				if (key != null) {
-					if (key.equals("pidarray")) {
-						fam = grp.addSelectedGroups(request.pidArray, group);
-					} else if (key.startsWith("DESC") && pidg != null) {
-						int pidb = Integer.parseInt(pidg);
-						fam = grp.addDescendantsToGroup(pidb, group, gen, (!key
-								.equals("DESC")));
-					} else if (key.equals("ANC") && pidg != null) {
-						int pidb = Integer.parseInt(pidg);
-						fam = grp.addAncestorsToGroup(pidb, group, gen);
-					} else {
-						fam.resu = "key=" + key + " not supported";
-					}
-				} else if (view != null) {
-					int vid = Integer.parseInt(view);
-					fam = grp.addViewGroups(vid, group);
-				} else {
-					fam.resu = Resurses.getString("GETSUKU_BAD_GROUP_COMMAND");
-				}
-			} else {
-				fam.resu = "action=" + action + " not supported";
-			}
-
+			fam = executeCmdVariables(request, map, fam);
 		} else if (cmd.equals("view")) {
-
-			ViewUtil vv = new ViewUtil(con);
-			String action = map.get("action");
-
-			String viewno = map.get("viewid");
-			String viewname = map.get("viewname");
-			String pidg = map.get("pid");
-			String key = map.get("key");
-			String gen = map.get("gen");
-			String empty = map.get("empty");
-			if ("removeview".equals(action)) {
-				if (viewno != null) {
-
-					try {
-						int viewId = Integer.parseInt(viewno);
-						fam = vv.removeView(viewId);
-					} catch (NumberFormatException ne) {
-
-						fam.resu = ne.getMessage();
-						logger.log(Level.WARNING, "Bad view number", ne);
-					}
-				}
-			} else if ("remove".equals(action) && viewno != null) {
-				int viewId = Integer.parseInt(viewno);
-				if (key != null) {
-					if (key.equals("all")) {
-						fam = vv.emptyView(viewId);
-					} else if (key.equals("pidarray")) {
-						fam = vv.removeViewUnits(viewId, request.pidArray);
-					} else {
-						fam.resu = Resurses
-								.getString("GETSUKU_BAD_VIEW_COMMAND");
-					}
-				} else {
-					fam.resu = Resurses.getString("GETSUKU_BAD_VIEW_COMMAND");
-				}
-			} else if ("addview".equals(action)) {
-				if (viewname != null) {
-
-					try {
-						fam = vv.addView(viewname);
-					} catch (NumberFormatException ne) {
-						fam.resu = ne.getMessage();
-						logger.log(Level.WARNING, "Bad view number", ne);
-					}
-				}
-			} else if ("add".equals(action)) {
-				if (viewno != null && key != null) {
-					int viewId = Integer.parseInt(viewno);
-					if (key.equals("pidarray")) {
-						// add pids to view
-						fam = vv.addViewUnits(viewId, request.pidArray, (empty
-								.equalsIgnoreCase("true")));
-
-					} else if (key.toLowerCase().startsWith("desc")) {
-						fam = vv.addViewDesc(viewId, Integer.parseInt(pidg),
-								gen,
-								(key.toUpperCase().equals("DESC_SPOUSES")),
-								(empty.equalsIgnoreCase("true")));
-					} else if (key.toLowerCase().equals("anc")) {
-						fam = vv.addViewAnc(viewId, Integer.parseInt(pidg),
-								gen, (empty.equalsIgnoreCase("true")));
-					} else {
-						fam.resu = Resurses
-								.getString("GETSUKU_BAD_VIEW_COMMAND");
-					}
-
-				} else {
-					fam.resu = Resurses.getString("GETSUKU_BAD_VIEW_COMMAND");
-				}
-
-			} else if ("get".equals(action) && pidg != null) {
-				try {
-
-					fam = vv.getViews(Integer.parseInt(pidg));
-				} catch (NumberFormatException ne) {
-					fam.resu = ne.getMessage();
-					logger.log(Level.WARNING, "Bad view number", ne);
-				}
-			}
-
-		}
-
-		else {
+			fam = executeCmdView(request, map, fam);
+		} else if (cmd.equals("virtual")) {
+			fam = executeCmdVirtual(map, fam);
+		} else {
 			fam.resu = "Unknown server request, cmd = " + cmd;
 			logger.warning(fam.resu);
 		}
@@ -866,7 +457,515 @@ public class SukuServerImpl implements SukuServer {
 			throw new SukuException(Resurses.getString("SERVER_RESULT_NULL"));
 		}
 		if (fam.resu != null) {
-			throw new SukuException(fam.resu + "[" + cmd + "]");
+			throw new SukuException(fam.resu);
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdUpdatesettings(SukuData request,
+			HashMap<String, String> map) {
+
+		return updateSettings(request, map.get("index"), map.get("type"), map
+				.get("name"));
+	}
+
+	private SukuData executeCmdVirtual(HashMap<String, String> map, SukuData fam) {
+		int pid;
+		String tmp;
+		tmp = map.get("pid");
+		if (tmp != null) {
+			pid = Integer.parseInt(tmp);
+
+			fam = getVirtualPerson(pid);
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdView(SukuData request,
+			HashMap<String, String> map, SukuData fam) throws SukuException {
+		ViewUtil vv = new ViewUtil(con);
+		String action = map.get("action");
+
+		String viewno = map.get("viewid");
+		String viewname = map.get("viewname");
+		String pidg = map.get("pid");
+		String key = map.get("key");
+		String gen = map.get("gen");
+		String empty = map.get("empty");
+		if ("removeview".equals(action)) {
+			if (viewno != null) {
+
+				try {
+					int viewId = Integer.parseInt(viewno);
+					fam = vv.removeView(viewId);
+				} catch (NumberFormatException ne) {
+
+					fam.resu = ne.getMessage();
+					logger.log(Level.WARNING, "Bad view number", ne);
+				}
+			}
+		} else if ("remove".equals(action) && viewno != null) {
+			int viewId = Integer.parseInt(viewno);
+			if (key != null) {
+				if (key.equals("all")) {
+					fam = vv.emptyView(viewId);
+				} else if (key.equals("pidarray")) {
+					fam = vv.removeViewUnits(viewId, request.pidArray);
+				} else {
+					fam.resu = Resurses.getString("GETSUKU_BAD_VIEW_COMMAND");
+				}
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_VIEW_COMMAND");
+			}
+		} else if ("addview".equals(action)) {
+			if (viewname != null) {
+
+				try {
+					fam = vv.addView(viewname);
+				} catch (NumberFormatException ne) {
+					fam.resu = ne.getMessage();
+					logger.log(Level.WARNING, "Bad view number", ne);
+				}
+			}
+		} else if ("add".equals(action)) {
+			if (viewno != null && key != null) {
+				int viewId = Integer.parseInt(viewno);
+				if (key.equals("pidarray")) {
+					// add pids to view
+					fam = vv.addViewUnits(viewId, request.pidArray, (empty
+							.equalsIgnoreCase("true")));
+
+				} else if (key.toLowerCase().startsWith("desc")) {
+					fam = vv.addViewDesc(viewId, Integer.parseInt(pidg), gen,
+							(key.toUpperCase().equals("DESC_SPOUSES")), (empty
+									.equalsIgnoreCase("true")));
+				} else if (key.toLowerCase().equals("anc")) {
+					fam = vv.addViewAnc(viewId, Integer.parseInt(pidg), gen,
+							(empty.equalsIgnoreCase("true")));
+				} else {
+					fam.resu = Resurses.getString("GETSUKU_BAD_VIEW_COMMAND");
+				}
+
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_VIEW_COMMAND");
+			}
+
+		} else if ("get".equals(action) && pidg != null) {
+			try {
+
+				fam = vv.getViews(Integer.parseInt(pidg));
+			} catch (NumberFormatException ne) {
+				fam.resu = ne.getMessage();
+				logger.log(Level.WARNING, "Bad view number", ne);
+			}
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdVariables(SukuData request,
+			HashMap<String, String> map, SukuData fam) throws SukuException {
+		String type = map.get("type");
+		if ("get".equals(type)) {
+			fam = getSukuInfo();
+		} else if ("update".equals(type)) {
+			fam = setSukuInfo(request);
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdUpdate(SukuData request,
+			HashMap<String, String> map, SukuData fam) throws SukuException {
+		String type = map.get("type");
+		if (type == null) {
+			fam.resu = Resurses.getString("GETSUKU_BAD_UPDATE_TYPE");
+
+		} else if (type.equals("person")) {
+			fam = updatePerson(request);
+			if (fam.resultPid > 0) {
+				PersonShortData psp = new PersonShortData(this.con,
+						fam.resultPid);
+				fam.pers = new PersonShortData[1];
+				fam.pers[0] = psp;
+			}
+		} else {
+			fam.resu = "Wrong type [" + type + "] in update command";
+
+		}
+		return fam;
+	}
+
+	private void executeCmdSchema(HashMap<String, String> map, SukuData fam)
+			throws SukuException {
+		String type = map.get("type");
+		if (type != null) {
+			if (type.equals("get")) {
+				fam.generalArray = new String[1];
+				fam.generalArray[0] = this.schema;
+			} else if (type.equals("count")) {
+				fam.generalArray = LocalDatabaseUtility.getListOfSchemas(con);
+			} else if (type.equals("set")) {
+				String name = map.get("name");
+				if (name != null) {
+					this.schema = name;
+					fam.resu = LocalDatabaseUtility.setSchema(con, this.schema);
+				}
+			} else if (type.equals("create")) {
+				String name = map.get("name");
+				if (name != null) {
+					fam.resu = LocalDatabaseUtility.createNewSchema(con, name);
+				}
+			} else if (type.equals("drop")) {
+				String name = map.get("name");
+				if (name != null) {
+					fam.resu = LocalDatabaseUtility.dropSchema(con, name);
+					this.schema = "public";
+				}
+			} else {
+				fam.resu = "Bad schema command";
+			}
+		}
+	}
+
+	private SukuData executeCmdRelatives(HashMap<String, String> map,
+			SukuData fam) {
+		int pid;
+		String tmp;
+		tmp = map.get("pid");
+		if (tmp != null) {
+			pid = Integer.parseInt(tmp);
+			String tag = map.get("tag");
+			// throw new SukuException("parents has not been implemented");
+			fam = getRelatives(pid, tag);
+		} else {
+			fam.resu = Resurses.getString("GETSUKU_BAD_PID");
+		}
+		return fam;
+	}
+
+	private void executeCmdLogout() {
+		try {
+			con.close();
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "logout", e);
+			con = null;
+		}
+		con = null;
+	}
+
+	private void executeCmdPlaces(SukuData request, SukuData fam)
+			throws SukuException {
+		if (request != null) {
+			fam.places = SuomiPlacesResolver.resolveSuomiPlaces(this.con,
+					request.places);
+		} else {
+			fam.resu = Resurses.getString("GETSUKU_BAD_PLACES");
+		}
+	}
+
+	private SukuData executeCmdPerson(HashMap<String, String> map, SukuData fam)
+			throws SukuException {
+		int pid;
+		String tmp;
+		String lang;
+		tmp = map.get("pid");
+		if (tmp != null) {
+			pid = Integer.parseInt(tmp);
+			String mode = map.get("mode");
+			if ("short".equals(mode)) {
+				PersonShortData psp = new PersonShortData(this.con, pid);
+				fam.pers = new PersonShortData[1];
+				fam.pers[0] = psp;
+
+			} else if ("relations".equals(mode)) {
+				tmp = map.get("pid");
+
+				lang = map.get("lang");
+				if (tmp != null) {
+					pid = Integer.parseInt(tmp);
+
+					GenGraphUtil gutil = new GenGraphUtil(con);
+					fam = gutil.getGengraphData(pid, lang);
+
+				}
+			} else {
+
+				lang = map.get("lang");
+				PersonUtil u = new PersonUtil(con);
+				fam = u.getFullPerson(pid, lang);
+			}
+		} else {
+			fam.resu = Resurses.getString("GETSUKU_BAD_PID");
+		}
+		return fam;
+	}
+
+	private void executeCmdInitdb(HashMap<String, String> map)
+			throws SukuException {
+		String path = map.get("path");
+		if (path == null) {
+			path = "/sql/finfamily.sql";
+		}
+
+		SukuUtility data = SukuUtility.instance();
+		data.createSukuDb(this.con, path);
+	}
+
+	private SukuData executeCmdImport(HashMap<String, String> map, SukuData fam)
+			throws SukuException {
+		String file;
+		String lang;
+		String type = map.get("type");
+		if (type != null) {
+			if (type.equals("backup")) {
+				// this.createSukuDb();
+				file = this.openFile;
+				if (file == null) {
+					file = map.get("filename");
+				} else {
+					fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
+				}
+				lang = map.get("lang");
+				logger.info("Suku 2004 FILE: " + file);
+				if (file != null) {
+					if (file.toLowerCase().endsWith("xml.gz")
+							|| file.toLowerCase().endsWith("xml")) {
+						fam = import2004Data(file, lang);
+					}
+				}
+			} else if (type.equals("gedcom")) {
+				lang = map.get("lang");
+				if (lang == null) {
+					lang = Resurses.getLanguage();
+				}
+
+				ImportGedcomUtil inged = new ImportGedcomUtil(con);
+				fam = inged.importGedcom(lang);
+				inged = null;
+			} else if (type.equals("other")) {
+				ImportOtherUtil inoth = new ImportOtherUtil(con);
+				String schema = map.get("schema");
+				int viewId = -1;
+				String view = map.get("view");
+				String viewName = null;
+				if (view != null) {
+					viewId = Integer.parseInt(view);
+					viewName = map.get("viewName");
+				}
+				fam = inoth.importOther(schema, viewId, viewName);
+
+			}
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdGroup(SukuData request,
+			HashMap<String, String> map) throws SukuException {
+		SukuData fam;
+		String action = map.get("action");
+
+		String key = map.get("key");
+		String view = map.get("view");
+		String group = map.get("group");
+		String pidg = map.get("pid");
+		String gen = map.get("gen");
+
+		GroupUtil grp = new GroupUtil(con);
+		fam = new SukuData();
+		if (action == null)
+			return null;
+		fam.resu = Resurses.getString("DIALOG_GROUP_SERVER_BADCMD")
+				+ " action=" + action;
+		if (action.equals("remove")) {
+
+			if (view != null) {
+
+				int vid = Integer.parseInt(view);
+				fam = grp.removeViewGroups(vid);
+
+			} else if (key != null) {
+				if (key.equals("all")) {
+					fam = grp.removeAllGroups();
+				} else if (key.equals("pidarray")) {
+					fam = grp.removeSelectedGroups(request.pidArray);
+				}
+			} else if (group != null) {
+				fam = grp.removeGroup(group);
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_GROUP_COMMAND");
+
+			}
+
+		} else if (action.equals("add")) {
+			if (key != null) {
+				if (key.equals("pidarray")) {
+					fam = grp.addSelectedGroups(request.pidArray, group);
+				} else if (key.startsWith("DESC") && pidg != null) {
+					int pidb = Integer.parseInt(pidg);
+					fam = grp.addDescendantsToGroup(pidb, group, gen, (!key
+							.equals("DESC")));
+				} else if (key.equals("ANC") && pidg != null) {
+					int pidb = Integer.parseInt(pidg);
+					fam = grp.addAncestorsToGroup(pidb, group, gen);
+				} else {
+					fam.resu = "key=" + key + " not supported";
+				}
+			} else if (view != null) {
+				int vid = Integer.parseInt(view);
+				fam = grp.addViewGroups(vid, group);
+			} else {
+				fam.resu = Resurses.getString("GETSUKU_BAD_GROUP_COMMAND");
+			}
+		} else {
+			fam.resu = "action=" + action + " not supported";
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdCrlista(HashMap<String, String> map, SukuData fam)
+			throws SukuException {
+		if ("desc".equals(map.get("type"))) {
+			fam = createDescendantLista(map.get("pid"));
+		} else {
+			fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdGet(HashMap<String, String> map, String cmd,
+			SukuData fam) throws SukuException {
+		String type = map.get("type");
+		if (type == null) {
+			fam.resu = Resurses.getString("ERR_TYPE_MISSING");
+		} else if (type.endsWith("types")) {
+			fam = getTypes(map.get("lang"));
+			// SukuData txts = getTexts(map.get("lang"));
+			// fam.vvTexts = txts.vvTexts;
+		} else if (type.endsWith("conversions")) {
+			fam = getConversions(map.get("lang"));
+		} else if (type.endsWith("dbstatistics")) {
+			String user = map.get("user");
+			String password = map.get("password");
+			String host = map.get("host");
+			fam = getDbLista(host, user, password);
+		} else if (cmd.equals("dblista")) {
+			fam.generalArray = LocalDatabaseUtility.getListOfDatabases(con);
+		} else if (type.endsWith("countries")) {
+			fam = getCountryList();
+		} else if (type.endsWith("ccodes")) {
+			fam = getCountryCodes();
+		} else {
+			fam.resu = Resurses.getString("ERR_TYPE_INVALID");
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdFamily(HashMap<String, String> map, SukuData fam)
+			throws SukuException {
+		int pid;
+		String tmp;
+		String aux;
+		tmp = map.get("pid");
+		aux = map.get("parents");
+		if (tmp != null) {
+			pid = Integer.parseInt(tmp);
+			fam = getShortFamily(pid, aux == null ? false : true);
+		} else {
+			fam.resu = Resurses.getString("GETSUKU_BAD_PID");
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdExcel(HashMap<String, String> map, SukuData fam)
+			throws SukuException {
+		String lang;
+		String page = map.get("page");
+		String path = map.get("path");
+		String type = map.get("type");
+		lang = map.get("lang");
+		String all = map.get("all");
+		if (lang == null) {
+			lang = Resurses.getLanguage();
+		}
+		if (path == null) {
+			path = this.openFile;
+			if (path == null) {
+				fam.resu = Resurses.getString("INVALID_FILE");
+
+			}
+		}
+		if (type == null || type.equals("import")) {
+			fam = importExcelData(path, page);
+		} else if (type.equals("export")) {
+			fam = exportExcelData(path, page, lang, (all != null && all
+					.equals("true")) ? true : false);
+		} else {
+			fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdDelete(HashMap<String, String> map, SukuData fam) {
+		int pid;
+		String tmp;
+		tmp = map.get("pid");
+		if (tmp != null) {
+			pid = Integer.parseInt(tmp);
+			fam = deletePerson(pid);
+		} else {
+			fam.resu = Resurses.getString("GETSUKU_BAD_PID");
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdCrtables(HashMap<String, String> map,
+			SukuData fam) throws SukuException {
+		if ("desc".equals(map.get("type"))) {
+			fam = createDescTables(map.get("order"), map.get("generations"),
+					map.get("spougen"), map.get("chilgen"), map.get("adopted"),
+					map.get("pid"));
+		} else if ("anc".equals(map.get("type"))) {
+
+			fam = createAncTables(map.get("order"), map.get("generations"), map
+					.get("family"), map.get("pid"));
+
+		} else {
+			fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
+		}
+		return fam;
+	}
+
+	private SukuData executeCmdCreate(HashMap<String, String> map, SukuData fam) {
+		String tmp;
+		String lang;
+		String type = map.get("type");
+		if ("gedcom".equals(type)) {
+			lang = map.get("lang");
+			String path = map.get("file");
+			String db = map.get("db");
+			tmp = map.get("viewId");
+			int viewId = 0;
+			if (tmp != null) {
+				viewId = Integer.parseInt(tmp);
+			}
+			int surety = 100;
+			tmp = map.get("surety");
+
+			if (tmp != null) {
+				surety = Integer.parseInt(tmp);
+			}
+			tmp = map.get("charid");
+			int charid = Integer.parseInt(tmp);
+			boolean incImages = map.get("images") != null ? true : false;
+
+			ExportGedcomUtil exgen = new ExportGedcomUtil(con);
+			fam = exgen.exportGedcom(db, path, lang, viewId, surety, charid,
+					incImages);
+		} else if ("backup".equals(type)) {
+			String path = map.get("file");
+			String db = map.get("db");
+			ExportBackupUtil exb = new ExportBackupUtil(con);
+
+			fam = exb.exportBackup(path, db);
 		}
 		return fam;
 	}
