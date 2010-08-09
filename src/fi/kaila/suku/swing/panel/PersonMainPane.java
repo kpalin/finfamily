@@ -151,6 +151,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		int privacyCount = 0;
 		StringBuilder comboname = new StringBuilder();
 		for (int i = noticeFirst; i < noticeCount; i++) {
+			Object oo = personView.getPane(i).pnl;
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 			if (pane.notice.getTag().equals("NAME")) {
 				if (!pane.notice.isToBeDeleted()) {
@@ -741,6 +742,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 						if (chnged == null)
 							return;
 					} catch (SukuDateException ee) {
+						JOptionPane.showMessageDialog(this, ee.getMessage());
 						return;
 					}
 

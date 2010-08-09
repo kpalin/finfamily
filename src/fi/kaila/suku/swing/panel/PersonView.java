@@ -267,7 +267,12 @@ public class PersonView extends JPanel implements ChangeListener {
 	 */
 	public void displayNewPersonPane(int pid) throws SukuException {
 		reOpenIndex = -1;
-		closePersonPane(true);
+		try {
+			closePersonPane(true);
+		} catch (SukuException ee) {
+			// JOptionPane.showMessageDialog(this, ee.getMessage());
+			return;
+		}
 		displayPersonPane(pid);
 	}
 
@@ -319,13 +324,10 @@ public class PersonView extends JPanel implements ChangeListener {
 					}
 
 					SukuData chnged = null;
-					try {
-						chnged = main.updatePersonStructure();
-						if (chnged == null)
-							return;
-					} catch (SukuDateException ee) {
+
+					chnged = main.updatePersonStructure();
+					if (chnged == null)
 						return;
-					}
 
 					if (chnged.resu != null) {
 						if (askChanges) {
@@ -355,8 +357,7 @@ public class PersonView extends JPanel implements ChangeListener {
 							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					logger.warning("SukuDate exception: " + e1.getMessage());
-					// e1.printStackTrace();
-					return;
+					throw new SukuException(e1);
 				}
 				closeMainPane(false);
 			}
@@ -605,8 +606,8 @@ public class PersonView extends JPanel implements ChangeListener {
 			for (int i = 0; i < grands.size(); i++) {
 				RelationShortData rel = grands.get(i);
 
-				family = Suku.kontroller.getSukuData("cmd=family",
-						"pid=" + rel.getRelationPid());
+				family = Suku.kontroller.getSukuData("cmd=family", "pid="
+						+ rel.getRelationPid());
 
 				// PersonShortData pgran = family.pers[j];
 				TableShortData ftab = new TableShortData();
@@ -699,9 +700,8 @@ public class PersonView extends JPanel implements ChangeListener {
 			textPerson.print();
 		} catch (PrinterException e) {
 			logger.log(Level.WARNING, "printing database draft", e);
-			JOptionPane.showMessageDialog(this, "PRINT ERROR",
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "PRINT ERROR", Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 
 		}
 		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
@@ -970,8 +970,8 @@ public class PersonView extends JPanel implements ChangeListener {
 
 					if (isele == previousNoticeIndex) {
 
-						JOptionPane.showMessageDialog(this, resu,
-								Resurses.getString(Resurses.SUKU),
+						JOptionPane.showMessageDialog(this, resu, Resurses
+								.getString(Resurses.SUKU),
 								JOptionPane.ERROR_MESSAGE);
 					}
 					return;
