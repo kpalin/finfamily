@@ -1214,7 +1214,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (e1 != null) {
 				e2 = e1.split("\n");
 			}
+
 			cdlg.rememberDatabase(false);
+
+			JOptionPane.showMessageDialog(this, e2[0], Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 			this.statusPanel.setText(e2[0]);
 			e3.printStackTrace();
 			this.isConnected = 0;
@@ -2903,7 +2907,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mPrintPerson.setEnabled(isConnected == 2);
 		mShowInMap.setEnabled(isConnected == 2);
 		mLista.setEnabled(isConnected == 2);
-		mDisconnect.setEnabled(isConnected != 0);
+		// mDisconnect.setEnabled(isConnected != 0);
 		tQueryButton.setEnabled(isConnected == 2);
 		mImportHiski.setEnabled(isConnected == 2);
 		mNewPerson.setEnabled(isConnected == 2);
