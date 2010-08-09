@@ -94,18 +94,25 @@ public class SukuServerImpl implements SukuServer {
 
 			this.dbConne += "&password=" + passwd;
 		}
-
+		Statement stm = null;
 		try {
 			this.con = DriverManager.getConnection(this.dbConne);
-			Statement stm = this.con.createStatement();
+			stm = this.con.createStatement();
 			stm.executeUpdate("set search_path to " + this.schema);
-
-			stm.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-
-			throw new SukuException(e.getMessage());
+			try {
+				stm.executeUpdate("set search_path to public");
+			} catch (SQLException e1) {
+				throw new SukuException("db=" + dbname + ": " + e.getMessage());
+			}
+		} finally {
+			try {
+				stm.close();
+			} catch (SQLException e) {
+				throw new SukuException("db=" + dbname + ": " + e.getMessage());
+			}
 		}
 
 	}

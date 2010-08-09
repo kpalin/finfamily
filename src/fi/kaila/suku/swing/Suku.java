@@ -1207,6 +1207,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 
 			kontroller.getConnection(name, databaseName, userid, password);
+			cdlg.rememberDatabase(true);
 		} catch (SukuException e3) {
 			String e1 = e3.getMessage();
 			String[] e2 = { "Connection failed" };
