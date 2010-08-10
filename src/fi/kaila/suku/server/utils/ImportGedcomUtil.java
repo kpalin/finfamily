@@ -1171,6 +1171,10 @@ public class ImportGedcomUtil {
 			|| noti.tag.startsWith("_")) {
 
 				String notiTag = noti.tag;
+				if (notiTag.equals("BAPM") || notiTag.equals("BARM")
+						| notiTag.equals("BASM") || notiTag.equals("BLES")) {
+					notiTag = "CHR";
+				}
 				if (notiTag.startsWith("_"))
 					notiTag = noti.tag.substring(1);
 				UnitNotice notice = new UnitNotice(notiTag);

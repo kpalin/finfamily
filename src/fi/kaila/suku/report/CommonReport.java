@@ -386,6 +386,11 @@ public abstract class CommonReport {
 								rnn = sdata.relations[i].getNotices();
 
 								RelationNotice rn = rnn[0];
+								if (!rn.getTag().equals("WIFE")
+										&& !rn.getTag().equals("HUSB")) {
+									spouType = typesTable.getTextValue(rn
+											.getTag());
+								}
 								spouType = printRelationNotice(rn, spouType,
 										spouNum);
 
@@ -1496,6 +1501,16 @@ public abstract class CommonReport {
 			}
 
 			return sb.toString();
+		}
+
+		if (rn.getDescription() != null) {
+
+			if (addSpace) {
+				sb.append(" ");
+			}
+			sb.append(rn.getDescription());
+			addSpace = true;
+
 		}
 
 		String date = printDate(rn.getDatePrefix(), rn.getFromDate(), rn
