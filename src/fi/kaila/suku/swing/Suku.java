@@ -23,6 +23,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -358,6 +359,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		} else {
 			kontroller = new SukuKontrollerLocalImpl();
 		}
+
 		String loca = kontroller.getPref(this, Resurses.LOCALE, "xx");
 		if (loca == null || loca.equals("xx")) {
 			logger.info("Locale " + loca + " encountered.");
@@ -796,6 +798,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		// if (!this.isWebApp){
 		calcSize();
 		connectDb();
+
+		File home = new File(".");
+		statusPanel.setText(home.getAbsolutePath());
+
 		// }
 		addWindowListener(new WindowAdapter() {
 			@Override
