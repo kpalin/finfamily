@@ -593,7 +593,7 @@ public class Utils {
 					return noticeGivenName.substring(0, j);
 				} else {
 					if (patronymePart)
-						return null;
+						return noticeGivenName;
 					return noticeGivenName;
 				}
 			}

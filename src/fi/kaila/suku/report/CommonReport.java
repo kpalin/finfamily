@@ -2246,7 +2246,7 @@ public abstract class CommonReport {
 					place = tmp;
 				} else {
 					tmp = typesTable.getTextValue("CNV_" + rule);
-					if (tmp != null) {
+					if (tmp != null && !tmp.isEmpty()) {
 						place = tmp + " " + place;
 					}
 				}

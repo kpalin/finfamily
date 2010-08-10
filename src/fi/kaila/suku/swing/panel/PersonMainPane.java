@@ -273,6 +273,10 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					if (!pane.isPlain())
 						birtCount++;
 				}
+				if (birtDate.getText().equals("")
+						&& birtPlace.getText().equals("")) {
+					birtCount++;
+				}
 			}
 
 			if (pane.notice.getTag().equals("CHR")) {
@@ -288,6 +292,10 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					chrPlace.setText(pane.place.getText());
 					if (!pane.isPlain())
 						chrCount++;
+				}
+				if (chrDate.getText().equals("")
+						&& chrPlace.getText().equals("")) {
+					chrCount++;
 				}
 			}
 
@@ -306,6 +314,10 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					if (!pane.isPlain())
 						deatCount++;
 				}
+				if (deatDate.getText().equals("")
+						&& deatPlace.getText().equals("")) {
+					deatCount++;
+				}
 			}
 
 			if (pane.notice.getTag().equals("BURI")) {
@@ -321,6 +333,10 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					buriPlace.setText(pane.place.getText());
 					if (!pane.isPlain())
 						buriCount++;
+				}
+				if (buriDate.getText().equals("")
+						&& buriPlace.getText().equals("")) {
+					buriCount++;
 				}
 			}
 
@@ -1249,26 +1265,26 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 			String tag = pane.notice.getTag();
 			if (tag.equals("BIRT")) {
-				pane.setToBeDeleted(birtDate.getText().isEmpty()
-						&& birtPlace.getText().isEmpty());
+				// pane.setToBeDeleted(birtDate.getText().isEmpty()
+				// && birtPlace.getText().isEmpty());
 				pane.date.setTextFromDate(birtDate.getText());
 				pane.place.setText(birtPlace.getText());
 			}
 			if (tag.equals("CHR")) {
-				pane.setToBeDeleted(chrDate.getText().isEmpty()
-						&& chrPlace.getText().isEmpty());
+				// pane.setToBeDeleted(chrDate.getText().isEmpty()
+				// && chrPlace.getText().isEmpty());
 				pane.date.setTextFromDate(chrDate.getText());
 				pane.place.setText(chrPlace.getText());
 			}
 			if (tag.equals("DEAT")) {
-				pane.setToBeDeleted(deatDate.getText().isEmpty()
-						&& deatPlace.getText().isEmpty());
+				// pane.setToBeDeleted(deatDate.getText().isEmpty()
+				// && deatPlace.getText().isEmpty());
 				pane.date.setTextFromDate(deatDate.getText());
 				pane.place.setText(deatPlace.getText());
 			}
 			if (tag.equals("BURI")) {
-				pane.setToBeDeleted(buriDate.getText().isEmpty()
-						&& buriPlace.getText().isEmpty());
+				// pane.setToBeDeleted(buriDate.getText().isEmpty()
+				// && buriPlace.getText().isEmpty());
 				pane.date.setTextFromDate(buriDate.getText());
 				pane.place.setText(buriPlace.getText());
 			}

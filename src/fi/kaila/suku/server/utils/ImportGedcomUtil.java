@@ -722,7 +722,7 @@ public class ImportGedcomUtil {
 		RelationNotice rn = null;
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine line = record.lines.get(i);
-			if ("|MARR|DIV|ANUL|CENS|DIVF|ENGA|MARB|MARC|MARL|MARS|"
+			if ("|MARR|DIV|ANUL|CENS|DIVF|ENGA|MARB|MARC|MARL|MARS|SOUR|"
 					.indexOf(line.tag) > 0) {
 				if (line.tag.equals("MARR")) {
 					rnmarr = new RelationNotice(line.tag);
@@ -733,6 +733,9 @@ public class ImportGedcomUtil {
 					rn = new RelationNotice(line.tag);
 					rn.setSurety(100);
 					relNotice.add(rn);
+					if (line.tag.equals("SOUR")) {
+						rn.setSource(line.lineValue);
+					}
 				}
 				for (int j = 0; j < line.lines.size(); j++) {
 					GedcomLine detail = line.lines.get(j);
@@ -1093,6 +1096,21 @@ public class ImportGedcomUtil {
 								notice.setPrefix(notice.getPrefix() + " "
 										+ detail.lineValue);
 							}
+						} else if (detail.tag.equals("NICK")
+								|| detail.tag.equals("GIVN")) {
+							if (notice.getPatronym() == null
+									&& detail.lineValue != null) {
+
+								String patro = Utils.extractPatronyme(
+										detail.lineValue, true);
+								if (patro != null) {
+									notice.setPatronym(patro);
+								} else {
+									unknownLine.add(detail.toString());
+								}
+
+							}
+
 						} else if (detail.tag.equals("NOTE")) {
 							if (notice.getDescription() == null) {
 								notice.setDescription(detail.lineValue);
@@ -1157,7 +1175,9 @@ public class ImportGedcomUtil {
 					notiTag = noti.tag.substring(1);
 				UnitNotice notice = new UnitNotice(notiTag);
 				notices.add(notice);
-				notice.setDescription(noti.lineValue);
+				if (noti.lineValue != null && !noti.lineValue.equals("Y")) {
+					notice.setDescription(noti.lineValue);
+				}
 				for (int j = 0; j < noti.lines.size(); j++) {
 					GedcomLine detail = noti.lines.get(j);
 					if (detail.tag.equals("TYPE")) {
