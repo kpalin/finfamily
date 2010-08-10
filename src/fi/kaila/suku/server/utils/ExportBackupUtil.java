@@ -320,6 +320,7 @@ public class ExportBackupUtil {
 			String created = rs.getString("createdate");
 			unitEle.setAttribute("created", created);
 
+			unitEle.setAttribute("createdate", created.substring(0, 10));
 			String modified = rs.getString("modified");
 			if (modified != null) {
 				unitEle.setAttribute("modified", modified);
@@ -378,7 +379,10 @@ public class ExportBackupUtil {
 			double prossa = unitCounter / dbSize;
 			int prose = (int) (prossa * 100);
 			this.runner.setRunnerValue("" + prose + ";unit");
-
+			// System.out.println("se on " + unitCounter + " [" + pid + "]");
+			// if (pid == 163) {
+			// System.out.println("onkelma");
+			// }
 		}
 		rs.close();
 		stm.close();
@@ -488,7 +492,7 @@ public class ExportBackupUtil {
 			relEle.setAttribute("rowb", "" + yrow);
 			relEle.setAttribute("surety", "" + surety);
 			relEle.setAttribute("created", created);
-
+			relEle.setAttribute("createdate", created.substring(0, 10));
 			double prossa = relaCounter / dbSize;
 			int prose = (int) (prossa * 100);
 			if (prose > 100)
@@ -637,6 +641,7 @@ public class ExportBackupUtil {
 				nEle.setAttribute("modified", modified);
 			}
 			nEle.setAttribute("created", created);
+			nEle.setAttribute("createdate", created.substring(0, 10));
 			if (rtype != null) {
 				ele = document.createElement("relationtype");
 				ele.setTextContent(rtype);
@@ -755,7 +760,7 @@ public class ExportBackupUtil {
 
 			String created = rs.getString("createdate");
 			noticeEle.setAttribute("created", created);
-
+			noticeEle.setAttribute("createdate", created.substring(0, 10));
 			String modified = rs.getString("modified");
 			if (modified != null) {
 				noticeEle.setAttribute("modified", modified);
@@ -967,7 +972,9 @@ public class ExportBackupUtil {
 			Array xx = rs.getArray("refnames");
 			if (xx != null) {
 				refNames = (String[]) xx.getArray();
-
+				if (refNames.length == 0) {
+					refNames = null;
+				}
 			}
 			if (refNames != null) {
 				Element namesEle = document.createElement("namelist");
@@ -982,12 +989,15 @@ public class ExportBackupUtil {
 			xx = rs.getArray("refplaces");
 			if (xx != null) {
 				refPlaces = (String[]) xx.getArray();
+				if (refPlaces.length == 0) {
+					refPlaces = null;
+				}
 
 			}
-			if (refNames != null) {
+			if (refPlaces != null) {
 				Element placesEle = document.createElement("placelist");
 				noticeEle.appendChild(placesEle);
-				for (int i = 0; i < refNames.length; i++) {
+				for (int i = 0; i < refPlaces.length; i++) {
 					ele = document.createElement("place");
 					ele.setTextContent(refPlaces[i]);
 					placesEle.appendChild(ele);
