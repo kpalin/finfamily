@@ -165,12 +165,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	// private boolean DEBUG = false;
 	private static final String EXIT = "EXIT";
 	private static final String START = "START";
-	private static final String LISTA = "REPORT.INDEX";
+
 	private JLabel textContent;
 
 	private JButton cancel;
 	private JButton start;
-	private JButton lista;
+
 	private static Logger logger = Logger.getLogger(ReportWorkerDialog.class
 			.getName());
 
@@ -188,8 +188,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	JTabbedPane reportTypePane = null;
 
 	/**
-	 * @return this class instance. Used to show the progressbar in local
-	 *         kontrolelr only
+	 * @return this class instance. Used to show the progress bar in local
+	 *         kontroller only
 	 */
 	public static ReportWorkerDialog getRunner() {
 		return runner;
@@ -797,12 +797,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		this.start.setActionCommand(START);
 		this.start.addActionListener(this);
 
-		this.lista = new JButton(Resurses.getString(LISTA));
-		getContentPane().add(this.lista);
-		this.lista.setBounds(140, footery + 60, 100, 24);
-		this.lista.setActionCommand(LISTA);
-		this.lista.addActionListener(this);
-		this.lista.setEnabled(false);
+		// this.lista = new JButton(Resurses.getString(LISTA));
+		// getContentPane().add(this.lista);
+		// this.lista.setBounds(140, footery + 60, 100, 24);
+		// this.lista.setActionCommand(LISTA);
+		// this.lista.addActionListener(this);
+		// this.lista.setEnabled(false);
 
 		this.cancel = new JButton(Resurses.getString(EXIT));
 		getContentPane().add(this.cancel);
@@ -1101,12 +1101,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					}
 				}
 			}
-		} else if (cmd.equals(LISTA)) {
-			taskIndex = new TaskIndex();
-			taskIndex.addPropertyChangeListener(this);
-			taskIndex.execute();
 		}
-
 	}
 
 	private void saveReportSettings() {
@@ -1304,9 +1299,26 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
 			start.setEnabled(false);
-			lista.setEnabled(true);
+
 			if (reportFormatidx == 0) {
 				setVisible(false);
+			} else {
+
+				if (getSourceFormat().equals(SET_AFT)
+						|| commonIndexNames.isSelected()
+						|| commonIndexPlaces.isSelected()) {
+
+					int answer = JOptionPane.showConfirmDialog(null, Resurses
+							.getString("REPORT.INDEX.CREATE"), Resurses
+							.getString(Resurses.SUKU),
+							JOptionPane.YES_NO_OPTION);
+					if (answer == 0) {
+						taskIndex = new TaskIndex();
+						taskIndex.addPropertyChangeListener(self);
+						taskIndex.execute();
+
+					}
+				}
 			}
 
 			if (dr != null) {
