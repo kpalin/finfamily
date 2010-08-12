@@ -52,7 +52,7 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 		setLayout(null);
 		int y = 20;
 
-		lbl = new JLabel(Resurses.getString("USERID"));
+		lbl = new JLabel(Resurses.getString("LOGIN_USERID"));
 		getContentPane().add(lbl);
 		lbl.setBounds(20, y, 100, 20);
 
