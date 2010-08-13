@@ -722,19 +722,33 @@ public class ImportGedcomUtil {
 		RelationNotice rn = null;
 		for (int i = 0; i < record.lines.size(); i++) {
 			GedcomLine line = record.lines.get(i);
-			if ("|MARR|DIV|ANUL|CENS|DIVF|ENGA|MARB|MARC|MARL|MARS|SOUR|"
+			if ("|MARR|DIV|ANUL|CENS|DIVF|ENGA|MARB|MARC|MARL|MARS|SOUR|NOTE|"
 					.indexOf(line.tag) > 0) {
-				if (line.tag.equals("MARR")) {
-					rnmarr = new RelationNotice(line.tag);
+				String sukuTag = null;
+				if ("|DIV|ANUL|CENS|DIVF|".indexOf(line.tag) > 0) {
+					sukuTag = "DIV";
+				} else if ("|MARR|ENGA|MARB|MARC|MARL|MARS|".indexOf(line.tag) > 0) {
+					sukuTag = "MARR";
+				} else {
+					sukuTag = line.tag;
+				}
+				if (sukuTag.equals("MARR") || sukuTag.equals("DIV")) {
+					rnmarr = new RelationNotice(sukuTag);
 					rnmarr.setSurety(100);
 					relNotice.add(rnmarr);
 					rn = rnmarr;
+					if (line.tag.equals("ENGA")) {
+						rn.setType(Resurses.getReportString("ENGA"));
+					}
+
 				} else {
-					rn = new RelationNotice(line.tag);
+					rn = new RelationNotice(sukuTag);
 					rn.setSurety(100);
 					relNotice.add(rn);
 					if (line.tag.equals("SOUR")) {
 						rn.setSource(line.lineValue);
+					} else if (line.tag.equals("NOTE")) {
+						rn.setNoteText(line.lineValue);
 					}
 				}
 				for (int j = 0; j < line.lines.size(); j++) {
@@ -756,8 +770,15 @@ public class ImportGedcomUtil {
 							rn.setDatePrefix(dparts[0]);
 							rn.setFromDate(dparts[1]);
 							rn.setToDate(dparts[2]);
-							rn.setDescription(Utils.nv(rn.getDescription())
-									+ dparts[3]);
+							if (dparts[3] != null) {
+								if (rn.getDescription() != null) {
+									rn.setDescription(Utils.nv(rn
+											.getDescription())
+											+ " " + dparts[3]);
+								} else {
+									rn.setDescription(dparts[3]);
+								}
+							}
 						}
 
 					} else {
@@ -1043,7 +1064,9 @@ public class ImportGedcomUtil {
 					notice.setDescription(noti.lineValue);
 				}
 			} else if (noti.tag.equals("NAME")) {
+
 				if (noti.lineValue != null) {
+					StringBuilder privSource = new StringBuilder();
 					UnitNotice notice = new UnitNotice("NAME");
 					notices.add(notice);
 					previousGivenName = null;
@@ -1096,21 +1119,27 @@ public class ImportGedcomUtil {
 								notice.setPrefix(notice.getPrefix() + " "
 										+ detail.lineValue);
 							}
-						} else if (detail.tag.equals("NICK")
-								|| detail.tag.equals("GIVN")) {
+						} else if (detail.tag.equals("NICK")) {
 							if (notice.getPatronym() == null
 									&& detail.lineValue != null) {
-
 								String patro = Utils.extractPatronyme(
 										detail.lineValue, true);
 								if (patro != null) {
 									notice.setPatronym(patro);
 								} else {
-									unknownLine.add(detail.toString());
+									if (privSource.length() > 0) {
+										privSource.append(";");
+									}
+									privSource.append(detail.lineValue);
 								}
 
 							}
-
+						} else if (detail.tag.equals("SURN")
+								|| detail.tag.equals("GIVN")) {
+							if (privSource.length() > 0) {
+								privSource.append(";");
+							}
+							privSource.append(detail.lineValue);
 						} else if (detail.tag.equals("NOTE")) {
 							if (notice.getDescription() == null) {
 								notice.setDescription(detail.lineValue);
@@ -1123,6 +1152,9 @@ public class ImportGedcomUtil {
 						} else {
 							unknownLine.add(detail.toString());
 						}
+					}
+					if (privSource.length() > 0) {
+						notice.setPrivateText(privSource.toString());
 					}
 				}
 			} else if (noti.tag.equals("NOTE")) {
@@ -1798,6 +1830,8 @@ public class ImportGedcomUtil {
 				sourceSystem = notice1.lineValue;
 				continue;
 			} else if (notice1.tag.equals("DEST")) {
+				continue;
+			} else if (notice1.tag.equals("FILE")) {
 				continue;
 			} else if (notice1.tag.equals("SUBM")) {
 				submitter = notice1.lineValue;
