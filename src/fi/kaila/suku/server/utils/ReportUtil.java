@@ -570,38 +570,61 @@ public class ReportUtil {
 		stm.close();
 
 		int childno = 0;
-
+		PreparedStatement adopstm = con
+				.prepareStatement("select count(*) from relationnotice where tag='ADOP' and rid = ?");
 		String adoptext = "";
 		if (!adopted) {
 			adoptext = "and r.tag is null";
 		}
 
-		sql = "select c.bid,u.sex,r.tag as adop "
+		sql = "select c.bid,u.sex,c.rid "
 				+ "from (child as c inner join unit as u on c.bid=u.pid ) "
-				+ "left join relationnotice as r on c.rid=r.rid "
-				+ "where aid=? " + adoptext + " order by relationrow";
+				+ "where aid=? order by relationrow";
 
 		stm = con.prepareStatement(sql);
 		stm.setInt(1, pid);
 
 		rs = stm.executeQuery();
+
 		while (rs.next()) {
 			int bid = rs.getInt("bid");
 			String csex = rs.getString("sex");
-			String adop = rs.getString("adop");
+
+			int rid = rs.getInt(3);
+			boolean isAdopted = isChildRelationAdopted(adopstm, rid);
 			member = new ReportTableMember();
 			member.setPid(bid);
 			member.setSex(csex);
 			member.setRowNo(spousenum + childno);
 			member.setTag("CHIL");
-			member.setRelTag(adop);
+			if (isAdopted) {
+				member.setRelTag("ADOP");
+			}
 			unit.addChild(member);
 			childno++;
+
 		}
+
 		rs.close();
 		stm.close();
 
 		return unit;
+
+	}
+
+	private boolean isChildRelationAdopted(PreparedStatement pst, int rid)
+			throws SQLException {
+
+		pst.setInt(1, rid);
+
+		int counter = 0;
+		ResultSet rs = pst.executeQuery();
+		while (rs.next()) {
+			counter = rs.getInt(1);
+
+		}
+		rs.close();
+		return counter > 0;
 
 	}
 

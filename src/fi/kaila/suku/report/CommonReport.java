@@ -386,10 +386,12 @@ public abstract class CommonReport {
 								rnn = sdata.relations[i].getNotices();
 
 								RelationNotice rn = rnn[0];
-								if (!rn.getTag().equals("WIFE")
-										&& !rn.getTag().equals("HUSB")) {
+								if (rn.getTag().equals("WIFE")
+										|| rn.getTag().equals("HUSB")) {
 									spouType = typesTable.getTextValue(rn
 											.getTag());
+								} else {
+									spouType = null;
 								}
 								spouType = printRelationNotice(rn, spouType,
 										spouNum);
@@ -538,19 +540,52 @@ public abstract class CommonReport {
 					}
 				}
 				// check if child is adopted
-				String adopTag = null;
+				StringBuilder adopTag = new StringBuilder();
+
 				for (int i = 0; i < cdata.relations.length; i++) {
 					if (ownerTag.equals(cdata.relations[i].getTag())) {
-						if (cdata.relations[i].getNotices() != null) {
-							adopTag = cdata.relations[i].getNotices()[0]
-									.getType();
-							if (adopTag == null) {
-								adopTag = cdata.relations[i].getNotices()[0]
-										.getTag();
-							}
 
+						if (cdata.relations[i].getNotices() != null) {
+							for (int j = 0; j < cdata.relations[i].getNotices().length; j++) {
+								RelationNotice rn = cdata.relations[i]
+										.getNotices()[j];
+								String aux = rn.getTag();
+								if ("ADOP".equals(aux)) {
+									if (adopTag.length() > 0) {
+										adopTag.append(", ");
+									}
+									String tmp = rn.getType();
+									if (tmp == null) {
+										adopTag.append(typesTable
+												.getTextValue(aux));
+									} else {
+										adopTag.append(rn.getType());
+									}
+								} else {
+									if ("NOTE".equals(aux)
+											&& rn.getNoteText() != null) {
+										if (adopTag.length() > 0) {
+											adopTag.append(", ");
+										}
+										adopTag.append(rn.getNoteText());
+									} else if ("SOUR".equals(aux)
+											&& rn.getSource() != null) {
+										String srcFormat = caller
+												.getSourceFormat();
+										if (!ReportWorkerDialog.SET_NO
+												.equals(srcFormat)) {
+
+											String src = rn.getSource();
+
+											String srcText = addSource(false,
+													srcFormat, src);
+											adopTag.append(srcText);
+										}
+									}
+								}
+
+							}
 						}
-						break;
 
 					}
 				}
@@ -559,9 +594,10 @@ public abstract class CommonReport {
 				if (!pareTxt.isEmpty()) {
 					bt.addText(pareTxt);
 				}
-				if (adopTag != null) {
-					bt.addText("(" + typesTable.getTextValue(adopTag) + ") ");
+				if (adopTag.length() > 0) {
+					bt.addText("(" + adopTag.toString() + ")");
 				}
+
 				printName(bt, cdata.persLong, (toTable.isEmpty() ? 2 : 3));
 				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3), tab
 						.getTableNo());
@@ -1459,9 +1495,9 @@ public abstract class CommonReport {
 		} else if (defType != null) {
 			sb.append(defType);
 		}
-		if (sb.length() == 0 && rn.getTag() != null) {
-			sb.append(typesTable.getTextValue(rn.getTag()));
-		}
+		// if (sb.length() == 0 && rn.getTag() != null) {
+		// sb.append(typesTable.getTextValue(rn.getTag()));
+		// }
 
 		if (sb.length() > 0) {
 			if (spouseNum > 0) {
@@ -1537,7 +1573,13 @@ public abstract class CommonReport {
 					sb.append(" ");
 				}
 			}
-			sb.append(rn.getNoteText());
+			if (rn.getTag().equals("NOTE")) {
+				sb.append("(");
+				sb.append(rn.getNoteText());
+				sb.append(")");
+			} else {
+				sb.append(rn.getNoteText());
+			}
 			addSpace = true;
 		}
 		String srcFormat = caller.getSourceFormat();

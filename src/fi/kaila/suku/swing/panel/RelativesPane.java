@@ -871,7 +871,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 					activeRelation.setNotices(notices.list
 							.toArray(new RelationNotice[0]));
-
+					activeRelation.setToBeUpdated(true);
 					// personView.addNotice(-1, an.getSelectedTag());
 				}
 
