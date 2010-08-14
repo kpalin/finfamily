@@ -32,7 +32,6 @@ import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ImageText;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
-import fi.kaila.suku.util.Utils;
 
 /**
  * 
@@ -483,7 +482,8 @@ public class XmlReport implements ReportInterface {
 				fos.write(bout.toByteArray());
 				fos.close();
 				logger.fine(report + " will be opened");
-				Utils.openExternalFile(report);
+				parent.addRepoForDisplay(report);
+				// Utils.openExternalFile(report);
 			}
 
 		} catch (Throwable e) {

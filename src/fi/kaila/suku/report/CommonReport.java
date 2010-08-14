@@ -386,15 +386,16 @@ public abstract class CommonReport {
 								rnn = sdata.relations[i].getNotices();
 
 								RelationNotice rn = rnn[0];
-								if (rn.getTag().equals("WIFE")
-										|| rn.getTag().equals("HUSB")) {
-									spouType = typesTable.getTextValue(rn
-											.getTag());
-								} else {
-									spouType = null;
+
+								if (rn.getTag().equals("MARR")) {
+									// spouType = typesTable.getTextValue(rn
+									// .getTag());
+									spouType = printRelationNotice(rn,
+											spouType, spouNum, true);
 								}
-								spouType = printRelationNotice(rn, spouType,
-										spouNum);
+								// else {
+								// spouType = null;
+								// }
 
 							}
 						}
@@ -417,10 +418,10 @@ public abstract class CommonReport {
 				printName(bt, sdata.persLong, typesColumn);
 				printNotices(bt, notices, typesColumn, tab.getTableNo());
 
-				if (rnn != null && rnn.length > 1) {
-					for (int i = 1; i < rnn.length; i++) {
+				if (rnn != null) {
+					for (int i = 0; i < rnn.length; i++) {
 						RelationNotice rn = rnn[i];
-						spouType = printRelationNotice(rn, null, 0);
+						spouType = printRelationNotice(rn, null, 0, false);
 						if (spouType.length() > 0) {
 							bt.addText(" ");
 							bt.addText(spouType);
@@ -678,7 +679,7 @@ public abstract class CommonReport {
 										for (int jj = 0; jj < rnn.length; jj++) {
 											RelationNotice rn = rnn[jj];
 											spouType = printRelationNotice(rn,
-													spouType, spouNum);
+													spouType, spouNum, true);
 										}
 									}
 								}
@@ -709,7 +710,8 @@ public abstract class CommonReport {
 								// spouType, spouNum);
 								//									
 
-								spouType = printRelationNotice(rn, null, 0);
+								spouType = printRelationNotice(rn, null, 0,
+										false);
 								if (spouType.length() > 0) {
 									bt.addText(" ");
 									bt.addText(spouType);
@@ -971,7 +973,8 @@ public abstract class CommonReport {
 						for (int i = 0; i < marr.getNotices().length; i++) {
 							RelationNotice rn = marr.getNotices()[i];
 
-							String spouType = printRelationNotice(rn, "", 0);
+							String spouType = printRelationNotice(rn, "", 0,
+									false);
 							if (!spouType.isEmpty()) {
 								sb.append(spouType);
 								sb.append(". ");
@@ -1050,7 +1053,7 @@ public abstract class CommonReport {
 
 									RelationNotice rn = rnn[0];
 									spouType = printRelationNotice(rn,
-											spouType, spouNum);
+											spouType, spouNum, true);
 
 								}
 
@@ -1078,7 +1081,7 @@ public abstract class CommonReport {
 					if (rnn != null && rnn.length > 1) {
 						for (int i = 1; i < rnn.length; i++) {
 							RelationNotice rn = rnn[i];
-							spouType = printRelationNotice(rn, null, 0);
+							spouType = printRelationNotice(rn, null, 0, false);
 							if (spouType.length() > 0) {
 								bt.addText(" ");
 								bt.addText(spouType);
@@ -1479,7 +1482,7 @@ public abstract class CommonReport {
 	}
 
 	private String printRelationNotice(RelationNotice rn, String defType,
-			int spouseNum) {
+			int spouseNum, boolean isBefore) {
 
 		String showType = caller.getSpouseData().getSelection()
 				.getActionCommand();
@@ -1489,11 +1492,22 @@ public abstract class CommonReport {
 
 		StringBuilder sb = new StringBuilder();
 		boolean addSpace = false;
-
-		if (rn.getType() != null) {
-			sb.append(rn.getType());
-		} else if (defType != null) {
-			sb.append(defType);
+		if (isBefore) {
+			if (rn.getType() != null) {
+				if (rn.getTag().equals("MARR")) {
+					sb.append(rn.getType());
+					addSpace = true;
+					spouseNum = 0;
+				}
+			} else if (defType != null) {
+				sb.append(defType);
+			}
+		} else {
+			if (!rn.getTag().equals("MARR")) {
+				sb.append(typesTable.getTextValue(Resurses.getReportString(rn
+						.getTag())));
+				addSpace = true;
+			}
 		}
 		// if (sb.length() == 0 && rn.getTag() != null) {
 		// sb.append(typesTable.getTextValue(rn.getTag()));
@@ -1510,41 +1524,56 @@ public abstract class CommonReport {
 			return sb.toString();
 		}
 		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_YEAR)) {
-
-			String yr = rn.getFromDate();
-			if (yr != null && yr.length() >= 4) {
-				if (addSpace) {
-					sb.append(" ");
+			if ((isBefore && rn.getTag().equals("MARR"))
+					|| (!isBefore && !rn.getTag().equals("MARR"))) {
+				String yr = rn.getFromDate();
+				if (yr != null && yr.length() >= 4) {
+					if (addSpace) {
+						sb.append(" ");
+					}
+					sb.append(yr.substring(0, 4));
 				}
-				sb.append(yr.substring(0, 4));
 			}
-
 			return sb.toString();
 		}
 
 		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_DATE)) {
-			String yr = rn.getFromDate();
-			if (yr != null && yr.length() >= 4) {
 
-				String date = printDate(rn.getDatePrefix(), rn.getFromDate(),
-						rn.getToDate());
-				if (date.length() > 0) {
-					if (addSpace) {
-						sb.append(" ");
+			if ((isBefore && rn.getTag().equals("MARR"))
+					|| (!isBefore && !rn.getTag().equals("MARR"))) {
+				String yr = rn.getFromDate();
+				if (yr != null && yr.length() >= 4) {
+
+					String date = printDate(rn.getDatePrefix(), rn
+							.getFromDate(), rn.getToDate());
+					if (date.length() > 0) {
+						if (addSpace) {
+							sb.append(" ");
+						}
+						sb.append(date);
 					}
-					sb.append(date);
 				}
 			}
-
 			return sb.toString();
 		}
-
+		if (isBefore) {
+			return sb.toString();
+		} else if (!showType.equals(ReportWorkerDialog.SET_SPOUSE_FULL)) {
+			return sb.toString();
+		}
+		if (rn.getTag().equals("MARR")) {
+			sb.append(typesTable.getTextValue(Resurses.getReportString(rn
+					.getTag())));
+			addSpace = true;
+		}
 		if (rn.getDescription() != null) {
 
 			if (addSpace) {
 				sb.append(" ");
 			}
+			sb.append("(");
 			sb.append(rn.getDescription());
+			sb.append(")");
 			addSpace = true;
 
 		}
@@ -1573,13 +1602,11 @@ public abstract class CommonReport {
 					sb.append(" ");
 				}
 			}
-			if (rn.getTag().equals("NOTE")) {
-				sb.append("(");
-				sb.append(rn.getNoteText());
-				sb.append(")");
-			} else {
-				sb.append(rn.getNoteText());
-			}
+
+			sb.append("(");
+			sb.append(rn.getNoteText());
+			sb.append(")");
+
 			addSpace = true;
 		}
 		String srcFormat = caller.getSourceFormat();

@@ -2182,6 +2182,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		ReportWorkerDialog dlg = new ReportWorkerDialog(this, kontroller, pers);
 		dlg.setVisible(true);
 
+		for (String repo : dlg.getReportVector()) {
+			Utils.openExternalFile(repo);
+		}
+
 	}
 
 	private void importFromHiski() {

@@ -248,6 +248,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private static final int tabh = 360;
 	private static final int tabw = 300;
 
+	private Vector<String> repos = null;
 	private Suku parent;
 
 	/**
@@ -276,6 +277,20 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		});
 
+	}
+
+	public void addRepoForDisplay(String url) {
+		if (repos == null) {
+			repos = new Vector<String>();
+		}
+		repos.add(url);
+	}
+
+	public Vector<String> getReportVector() {
+		if (repos == null) {
+			return new Vector<String>();
+		}
+		return repos;
 	}
 
 	/**
@@ -1308,7 +1323,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						|| commonIndexNames.isSelected()
 						|| commonIndexPlaces.isSelected()) {
 
-					int answer = JOptionPane.showConfirmDialog(null, Resurses
+					int answer = JOptionPane.showConfirmDialog(runner, Resurses
 							.getString("REPORT.INDEX.CREATE"), Resurses
 							.getString(Resurses.SUKU),
 							JOptionPane.YES_NO_OPTION);
@@ -1318,6 +1333,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						taskIndex.execute();
 
 					}
+					// if (repos != null) {
+					// for (String repo : repos) {
+					// Utils.openExternalFile(repo);
+					// }
+					// }
 				}
 			}
 
@@ -2646,7 +2666,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				workbook.close();
 				bstr.close();
 				String report = Suku.kontroller.getFilePath();
-				Utils.openExternalFile(report);
+				addRepoForDisplay(report);
+				// Utils.openExternalFile(report);
 			} catch (Throwable e) {
 				logger.log(Level.WARNING, "Exception in background thread", e);
 			}
