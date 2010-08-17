@@ -35,7 +35,7 @@ public class SukuNameComparator implements Comparator {
 			ll = adels[i].length();
 			if (nime.length() > ll) {
 				if (adels[i].equalsIgnoreCase(nime.substring(0, ll))) {
-					return nime.substring(ll);
+					return nime.substring(ll + 1);
 				}
 			}
 		}
@@ -48,8 +48,8 @@ public class SukuNameComparator implements Comparator {
 		if (uno == null || duo == null)
 			return 0;
 
-		String nuno = noAdel(uno).replace(' ', '!');
-		String nduo = noAdel(duo).replace(' ', '!');
+		String nuno = noAdel(uno.trim()).replace(' ', '!');
+		String nduo = noAdel(duo.trim()).replace(' ', '!');
 
 		int compnresu = this.colli.compare(nuno, nduo);
 		// System.out.println("NoComp: [" + compnresu + "] '" + nuno + "'/'"

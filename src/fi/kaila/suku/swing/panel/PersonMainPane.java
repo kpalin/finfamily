@@ -1148,7 +1148,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					String name = names[i - noticeFirst];
 
 					int vonIndex = Utils.isKnownPrefix(name);
-					if (vonIndex > 0) {
+					if (vonIndex > 0 && vonIndex < name.length()) {
 						pane.prefix.setText(name.substring(0, vonIndex));
 						name = name.substring(vonIndex + 1);
 					} else {

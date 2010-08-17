@@ -2589,7 +2589,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.scrollPane.setVisible(true);
 			this.table.updateUI();
 			this.scrollPane.updateUI();
-
+			initSorter(crit);
 		} catch (SukuException e1) {
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(this, Resurses
