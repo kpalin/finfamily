@@ -486,11 +486,15 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData executeCmdVirtual(HashMap<String, String> map, SukuData fam) {
 		int pid;
 		String tmp;
+		String type = map.get("type");
 		tmp = map.get("pid");
 		if (tmp != null) {
 			pid = Integer.parseInt(tmp);
-
-			fam = getVirtualPerson(pid);
+			if (type == null || type.equals("counts")) {
+				fam = getVirtualPerson(pid);
+			} else if (type.equals("relatives")) {
+				fam = getVirtualRelatives(pid);
+			}
 		}
 		return fam;
 	}
@@ -1506,6 +1510,34 @@ public class SukuServerImpl implements SukuServer {
 			}
 			prs.close();
 			pstm.close();
+		} catch (SQLException e) {
+			resp.resu = e.getMessage();
+		}
+		return resp;
+	}
+
+	private SukuData getVirtualRelatives(int pid) {
+		SukuData resp = new SukuData();
+		Vector<Integer> relas = new Vector<Integer>();
+
+		String sql = "select b.pid from relation as a inner join relation as b on a.rid=b.rid where  b.pid<>a.pid and a.pid=? ";
+		PreparedStatement pstm;
+		try {
+			pstm = this.con.prepareStatement(sql);
+
+			pstm.setInt(1, pid);
+			ResultSet prs = pstm.executeQuery();
+			while (prs.next()) {
+				int bpid = prs.getInt(1);
+				relas.add(bpid);
+			}
+			prs.close();
+			pstm.close();
+			resp.pidArray = new int[relas.size()];
+			for (int i = 0; i < relas.size(); i++) {
+				resp.pidArray[i] = relas.get(i);
+			}
+
 		} catch (SQLException e) {
 			resp.resu = e.getMessage();
 		}

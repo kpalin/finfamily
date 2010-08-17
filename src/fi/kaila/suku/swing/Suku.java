@@ -2616,7 +2616,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		int key = p.getPid();
 		PersonShortData ret = this.tableMap.put(key, p);
 
-		SukuData resp = kontroller.getSukuData("cmd=virtual", "pid=" + key);
+		SukuData resp = kontroller.getSukuData("cmd=virtual", "type=counts",
+				"pid=" + key);
 
 		if (resp.pidArray != null && resp.pidArray.length == 3) {
 			p.setChildCount(resp.pidArray[0]);
@@ -2624,6 +2625,28 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			p.setPareCount(resp.pidArray[2]);
 
 		}
+
+		SukuData resprela = kontroller.getSukuData("cmd=virtual",
+				"type=relatives", "pid=" + key);
+
+		for (int i = 0; i < resprela.pidArray.length; i++) {
+
+			SukuData rex = kontroller.getSukuData("cmd=virtual", "type=counts",
+					"pid=" + resprela.pidArray[i]);
+
+			PersonShortData px = this.tableMap.get(resprela.pidArray[i]);
+			if (rex != null) {
+
+				if (rex.pidArray != null && rex.pidArray.length == 3) {
+					px.setChildCount(rex.pidArray[0]);
+					px.setMarrCount(rex.pidArray[1]);
+					px.setPareCount(rex.pidArray[2]);
+
+				}
+			}
+
+		}
+
 		if (ret == null) {
 			SukuRow row = new SukuRow(this, this.tableModel, p);
 			tableModel.addRow(0, row);
