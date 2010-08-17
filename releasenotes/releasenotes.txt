@@ -2,6 +2,10 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 678 on 17 aug 2010
+
+* Bugfixes
+
 Release 671 on 14 aug 2010
 
 * Some gedcom fixes regarding FAM record
