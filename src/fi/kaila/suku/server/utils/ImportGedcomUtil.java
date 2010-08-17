@@ -1131,6 +1131,7 @@ public class ImportGedcomUtil {
 										privSource.append(";");
 									}
 									privSource.append(detail.lineValue);
+									unknownLine.add(detail.toString());
 								}
 
 							}
@@ -1140,6 +1141,7 @@ public class ImportGedcomUtil {
 								privSource.append(";");
 							}
 							privSource.append(detail.lineValue);
+							unknownLine.add(detail.toString());
 						} else if (detail.tag.equals("NOTE")) {
 							if (notice.getDescription() == null) {
 								notice.setDescription(detail.lineValue);
@@ -1154,6 +1156,7 @@ public class ImportGedcomUtil {
 						}
 					}
 					if (privSource.length() > 0) {
+
 						notice.setPrivateText(privSource.toString());
 					}
 				}
