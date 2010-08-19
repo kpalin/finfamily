@@ -199,6 +199,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private JTextField commonImageSize = null;
 	private JTextField commonPersonImageSize = null;
 	private JCheckBox commonNumberImages = null;
+	private JCheckBox commonSeparateImages = null;
 	private JCheckBox commonBendNames = null;
 	private JCheckBox commonSeparateNotices = null;
 	private ButtonGroup commonDateFormatGroup = null;
@@ -352,6 +353,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	public boolean isNumberingImages() {
 		return commonNumberImages.isSelected();
+	}
+
+	/**
+	 * @return true if images are to be printed separately
+	 */
+	public boolean isSeparateImages() {
+		return commonSeparateImages.isSelected();
 	}
 
 	/**
@@ -535,35 +543,40 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		commonNumberImages.setBounds(x4, y1 + 66, 160, 20);
 		add(commonNumberImages);
 
+		commonSeparateImages = new JCheckBox(Resurses
+				.getString("REPORT.IMAGE.SEPARATE"), true);
+		commonSeparateImages.setBounds(x4, y1 + 88, 160, 20);
+		add(commonSeparateImages);
+
 		commonBendNames = new JCheckBox(Resurses.getString("REPORT.BENDNAMES"),
 				true);
-		commonBendNames.setBounds(x4, y1 + 88, 160, 20);
+		commonBendNames.setBounds(x4, y1 + 110, 160, 20);
 		add(commonBendNames);
 
 		commonSeparateNotices = new JCheckBox(Resurses
 				.getString("REPORT.SEPARATENOTICES"), true);
-		commonSeparateNotices.setBounds(x4, y1 + 110, 160, 20);
+		commonSeparateNotices.setBounds(x4, y1 + 132, 160, 20);
 		add(commonSeparateNotices);
 
 		commonDateFormatGroup = new ButtonGroup();
 
 		commonNamesBold = new JCheckBox(Resurses.getString("REPORT.NAME.BOLD"));
-		commonNamesBold.setBounds(x4, y1 + 132, 160, 20);
+		commonNamesBold.setBounds(x4, y1 + 154, 160, 20);
 		add(commonNamesBold);
 
 		commonNamesUnderline = new JCheckBox(Resurses
 				.getString("REPORT.NAME.UNDERLINE"));
-		commonNamesUnderline.setBounds(x4, y1 + 154, 160, 20);
+		commonNamesUnderline.setBounds(x4, y1 + 176, 160, 20);
 		add(commonNamesUnderline);
 
 		commonWithAddress = new JCheckBox(Resurses
 				.getString("REPORT.WITHADDERSS"), true);
-		commonWithAddress.setBounds(x4, y1 + 176, 160, 20);
+		commonWithAddress.setBounds(x4, y1 + 198, 160, 20);
 		add(commonWithAddress);
 
 		spouseData = new ButtonGroup();
 
-		int rtypy = y1 + 198;
+		int rtypy = y1 + 220;
 		pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.DESC.SPOUSE")));
@@ -906,6 +919,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 			String vx[] = null;
 			boolean numberImages = false;
+			boolean separateImages = false;
 			boolean bendNames = false;
 			boolean withImages = false;
 			boolean separateNotices = false;
@@ -925,6 +939,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					bendNames = true;
 				} else if (vx[0].equals("imagenumber")) {
 					numberImages = true;
+				} else if (vx[0].equals("separateimages")) {
+					separateImages = true;
 				} else if (vx[0].equals("images")) {
 					withImages = true;
 
@@ -1013,6 +1029,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			}
 
 			commonNumberImages.setSelected(numberImages);
+			commonSeparateImages.setSelected(separateImages);
 			commonBendNames.setSelected(bendNames);
 			commonWithImages.setSelected(withImages);
 			commonSeparateNotices.setSelected(separateNotices);
@@ -1150,6 +1167,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 		if (commonNumberImages.getSelectedObjects() != null) {
 			v.add("imagenumber=true");
+		}
+		if (commonSeparateImages.getSelectedObjects() != null) {
+			v.add("separateimages=true");
 		}
 		if (commonSeparateNotices.getSelectedObjects() != null) {
 			v.add("separate=true");

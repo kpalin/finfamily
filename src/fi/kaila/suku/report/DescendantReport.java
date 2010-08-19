@@ -109,7 +109,10 @@ public class DescendantReport extends CommonReport {
 
 			ReportUnit tab = tables.get(i);
 			createDescendantTable(i, tab);
+
 		}
+
+		printImages();
 
 		caller.setRunnerValue("100;OK");
 
