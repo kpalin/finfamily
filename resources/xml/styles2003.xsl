@@ -261,11 +261,25 @@
             <w:basedOn w:val = "BodyText"/>
             <w:rsid w:val = "006E337B"/>
             <w:pPr>
+                <w:spacing w:before = "60" w:after = "0"/>
                 <w:ind w:left = "567"/>
             </w:pPr>
             <w:rPr>
                 <wx:font wx:val = "Times New Roman"/>
             </w:rPr>
+        </w:style>
+                <w:style w:type = "paragraph" w:styleId = "ChildSpouseText">
+            <w:name w:val = "ChildSpouseText"/>
+            <w:basedOn w:val = "BodyText"/>
+            <w:rsid w:val = "006E337B"/>
+            <w:pPr>
+                <w:spacing w:before = "30" w:after = "0"/>
+                <w:ind w:left="760" w:hanging="113"/>
+            </w:pPr>
+            <w:rPr>
+                <wx:font wx:val = "Times New Roman"/>
+            </w:rPr>
+          
         </w:style>
         <w:style w:type = "paragraph" w:styleId = "MainPersonText">
             <w:name w:val = "MainPersonText"/>
@@ -274,6 +288,18 @@
             <w:rPr>
                 <wx:font wx:val = "Times New Roman"/>
             </w:rPr>
+        </w:style>
+             <w:style w:type = "paragraph" w:styleId = "SpousePersonText">
+            <w:name w:val = "SpousePersonText"/>
+            <w:basedOn w:val = "BodyText"/>
+            <w:rsid w:val = "006E337B"/>
+            <w:rPr>
+                <wx:font wx:val = "Times New Roman"/>
+            </w:rPr>
+           <w:pPr>
+                 <w:ind w:left="113" w:hanging="113"/>
+           </w:pPr>
+            
         </w:style>
         <w:style w:type = "paragraph" w:styleId = "ImageText">
             <w:name w:val = "ImageText"/>

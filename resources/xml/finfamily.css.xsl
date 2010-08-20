@@ -36,6 +36,14 @@ body {
 	text-align:left
 }
 
+.ChildSpouseText {
+	
+	font-weight: normal;
+	margin-left: 23pt;
+	margin-top:6pt;
+	text-align:left
+}
+
 .ImageText{
 	
 	font-weight: normal;
@@ -46,6 +54,14 @@ body {
 
 
 .MainPersonText{
+	
+	font-weight: normal;
+	margin-left: 6pt;
+	margin-bottom:6pt;
+	text-align:left
+}
+
+.SpousePersonText{
 	
 	font-weight: normal;
 	margin-left: 6pt;

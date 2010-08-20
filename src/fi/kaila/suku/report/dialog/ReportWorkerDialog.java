@@ -1352,6 +1352,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						taskIndex.addPropertyChangeListener(self);
 						taskIndex.execute();
 
+					} else {
+						self.setVisible(false);
 					}
 					// if (repos != null) {
 					// for (String repo : repos) {
