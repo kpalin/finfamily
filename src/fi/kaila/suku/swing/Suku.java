@@ -2635,7 +2635,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					"pid=" + resprela.pidArray[i]);
 
 			PersonShortData px = this.tableMap.get(resprela.pidArray[i]);
-			if (rex != null) {
+			if (rex != null && px != null) {
 
 				if (rex.pidArray != null && rex.pidArray.length == 3) {
 					px.setChildCount(rex.pidArray[0]);
@@ -2993,7 +2993,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				e1.printStackTrace();
 			}
 			//				
-			logger.fine("Do something to " + row);
+			logger.fine("Showed on familytree " + row);
 		}
 		// else if (e.getClickCount() == 1 && e.getButton() ==
 		// MouseEvent.BUTTON1){
