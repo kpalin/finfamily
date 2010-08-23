@@ -552,6 +552,7 @@ public class AncestorTableReport extends CommonReport {
 	}
 
 	class IndexPerson implements Comparable<IndexPerson> {
+		//FIXME: This field is never read.  Consider removing it from the class.
 		long tableNo = 0;
 		PersonShortData pu = null;
 		int page = 0;

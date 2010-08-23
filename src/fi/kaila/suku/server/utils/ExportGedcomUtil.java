@@ -1008,6 +1008,7 @@ public class ExportGedcomUtil {
 
 		sql.append("order by b.pid,a.relationrow ");
 
+		//FIXME: Method may fail to close database resource
 		pst = con.prepareStatement(sql.toString());
 		Vector<MinimumIndividual> p = new Vector<MinimumIndividual>();
 		int previd = 0;
@@ -1318,6 +1319,7 @@ public class ExportGedcomUtil {
 	}
 
 	class MinimumImage {
+		//FIXME: This field is never read.  Consider removing it from the class.
 		int indiGid = 0;
 		String imgName = null;
 		int counter = 0;

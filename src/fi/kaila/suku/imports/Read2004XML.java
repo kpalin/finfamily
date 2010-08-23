@@ -1315,6 +1315,7 @@ public class Read2004XML extends DefaultHandler {
 
 			PreparedStatement pst;
 
+			//FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(INSERT_UNIT_LANGUAGE);
 
 			pst.setInt(1, unitPid);
@@ -1356,6 +1357,7 @@ public class Read2004XML extends DefaultHandler {
 		try {
 			PreparedStatement pst;
 
+			//FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(INSERT_RELATION_LANGUAGE);
 
 			pst.setInt(1, rnid);
@@ -1395,6 +1397,7 @@ public class Read2004XML extends DefaultHandler {
 		try {
 			PreparedStatement pst;
 
+			//FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(INSERT_RELATION_NOTICE);
 
 			pst.setInt(1, rnid);
@@ -2014,6 +2017,7 @@ public class Read2004XML extends DefaultHandler {
 				throw new SAXException("Sequence unitnoticeseq sql error");
 			}
 
+			//FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(INIT_UNIT_NOTICE);
 
 			pst.setInt(1, unitPid);
@@ -2261,6 +2265,7 @@ public class Read2004XML extends DefaultHandler {
 			if (langus != null && langus.length > 1) {
 				for (i = 0; i < langus.length; i++) {
 					if (!langus[i].equals(this.oldCode)) {
+						//FIXME: Method may fail to close database resource
 						pst = this.con.prepareStatement(INSERT_UNIT_LANGUAGE);
 
 						pst.setInt(1, unitPid);
@@ -2333,6 +2338,7 @@ public class Read2004XML extends DefaultHandler {
 		int unitPid = 0;
 		PreparedStatement pst;
 		try {
+			//FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(UPDATE_UNIT);
 
 			try {
@@ -2409,6 +2415,7 @@ public class Read2004XML extends DefaultHandler {
 					}
 					rs.close();
 
+					//FIXME: Method may fail to close database resource
 					pst = this.con.prepareStatement(INSERT_NAME_NOTICE);
 
 					pst.setInt(1, unitPid);
@@ -2429,6 +2436,7 @@ public class Read2004XML extends DefaultHandler {
 							+ this.unitGivenName + "/" + this.unitPrefix + "/"
 							+ this.unitSurName + "/" + unitPostfix);
 
+					//FIXME: runner cannot be null in here
 					if (this.runner != null) {
 						StringBuilder sb = new StringBuilder();
 

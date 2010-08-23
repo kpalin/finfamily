@@ -157,6 +157,7 @@ public class ExportBackupUtil {
 
 		Statement stm = con.createStatement();
 
+		//FIXME: Method may fail to close database resource
 		PreparedStatement pst = con.prepareStatement(sqlu);
 		ResultSet rs;
 		ResultSet rsu;
@@ -287,6 +288,7 @@ public class ExportBackupUtil {
 		rootElement.appendChild(unitsEle);
 
 		String sql = "select count(*) from unit";
+		//FIXME: Method may fail to close database resource
 		Statement stm = con.createStatement();
 		ResultSet rs = stm.executeQuery(sql);
 		if (rs.next()) {
@@ -408,6 +410,7 @@ public class ExportBackupUtil {
 				+ "from relation as a inner join relation as b on a.rid=b.rid "
 				+ "where a.pid <> b.pid  order by a.rid";
 
+		//FIXME: Method may fail to close database resource
 		stm = con.createStatement();
 		rs = stm.executeQuery(sql);
 
@@ -610,6 +613,7 @@ public class ExportBackupUtil {
 
 		String sql = "select * from relationnotice where rid=? order by noticerow";
 
+		//FIXME: Method may fail to close database resource
 		PreparedStatement pstm = con.prepareStatement(sql);
 		pstm.setInt(1, rid);
 		ResultSet rs = pstm.executeQuery();
@@ -1224,6 +1228,7 @@ public class ExportBackupUtil {
 	}
 
 	class MinimumImage {
+		//FIXME: This field is never read.  Consider removing it from the class.
 		int indiGid = 0;
 		String imgName = null;
 		int counter = 0;

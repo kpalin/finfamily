@@ -197,6 +197,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 			// we create new instances as needed.
 			task = new Task();
+			//FIXME: This field is never read.  Consider removing it from the class.
 			task.lang = this.selectedOldLang;
 			task.addPropertyChangeListener(this);
 			task.execute();

@@ -293,6 +293,7 @@ public class SukuServerImpl implements SukuServer {
 			// sql = "select p.bid,p.relationrow,p.tag,p.surety "
 			// + "from parent_all as p  where p.aid=?  order by p.relationrow";
 
+			//FIXME: Method may fail to close database resource
 			pstm = this.con.prepareStatement(sql);
 
 			pstm.setInt(1, pid);
@@ -1001,6 +1002,7 @@ public class SukuServerImpl implements SukuServer {
 
 			String prev = "";
 
+			//FIXME: Method may fail to close database resource
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 
@@ -1038,6 +1040,7 @@ public class SukuServerImpl implements SukuServer {
 
 			String prev = "";
 
+			//FIXME: Method may fail to close database resource
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 
@@ -1073,6 +1076,7 @@ public class SukuServerImpl implements SukuServer {
 				+ "owner_state=?,owner_country=?,owner_email=?,owner_webaddress=?,owner_info=? ";
 
 		try {
+			//FIXME: Method may fail to close database resource
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, request.generalArray[0]);
 			pst.setString(2, request.generalArray[1]);
@@ -1185,6 +1189,7 @@ public class SukuServerImpl implements SukuServer {
 
 				sql = "select count(*) from unit";
 
+				//FIXME: Method may fail to close database resource
 				stm = mycon.createStatement();
 				rs = stm.executeQuery(sql);
 				while (rs.next()) {
@@ -1294,6 +1299,7 @@ public class SukuServerImpl implements SukuServer {
 		try {
 			String sql = "select fromtext,rule,totext from conversions where langCode = '"
 					+ langu + "' order by fromtext,rule";
+			//FIXME: Method may fail to close database resource
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
