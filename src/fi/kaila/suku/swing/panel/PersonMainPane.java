@@ -1,20 +1,25 @@
 package fi.kaila.suku.swing.panel;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.Enumeration;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -59,7 +64,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	private JCheckBox privacy;
 	private String[] sextexts = { "Mies", "Nainen", "Tuntematon" };
 	private String[] sexes = { "M", "F", "U" };
-	private JComboBox sex;
+	private ButtonGroup sexGroup = null;
+	// private JComboBox sex;
+	private JPanel sexr;
 	private SukuTextField groupid;
 	private JTextField refn;
 
@@ -151,7 +158,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		int privacyCount = 0;
 		StringBuilder comboname = new StringBuilder();
 		for (int i = noticeFirst; i < noticeCount; i++) {
-			Object oo = personView.getPane(i).pnl;
+			// Object oo = personView.getPane(i).pnl;
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 			if (pane.notice.getTag().equals("NAME")) {
 				if (!pane.notice.isToBeDeleted()) {
@@ -518,9 +525,29 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		add(lbl);
 		lbl.setBounds(10, rivi, 80, 20);
 		sextexts = Resurses.getString("DATA_SEXES").split(";");
-		sex = new JComboBox(sextexts);
-		add(sex);
-		sex.setBounds(lcol, rivi, 80, 20);
+		// sex = new JComboBox(sextexts);
+		// add(sex);
+		// sex.setBounds(lcol + 300, rivi, 80, 20);
+
+		sexr = new JPanel();
+		add(sexr);
+		sexr.setBounds(lcol, rivi - 8, 300, 24);
+		// sexr.setBorder(BorderFactory.createEtchedBorder());
+		// TODO
+		sexr.setLayout(new FlowLayout(FlowLayout.LEFT));
+		sexGroup = new ButtonGroup();
+		for (int i = 0; i < sextexts.length; i++) {
+
+			JRadioButton rb = new JRadioButton(sextexts[i]);
+			sexr.add(rb);
+			if (i == 0) {
+				rb.setSelected(true);
+			}
+			rb.setActionCommand(sexes[i]);
+			sexGroup.add(rb);
+
+		}
+
 		rivi += 24;
 		lbl = new JLabel(Resurses.getString("DATA_DATE"));
 		add(lbl);
@@ -647,6 +674,17 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 	}
 
+	private void setRadioButton(ButtonGroup g, String name) {
+		Enumeration<AbstractButton> e = g.getElements();
+		while (e.hasMoreElements()) {
+			JRadioButton rr = (JRadioButton) e.nextElement();
+			if (name.equals(rr.getActionCommand())) {
+				rr.setSelected(true);
+				break;
+			}
+		}
+	}
+
 	boolean closeNotices() {
 
 		personView.closePerson();
@@ -684,7 +722,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 				sexidx = i;
 			}
 		}
-		sex.setSelectedIndex(sexidx);
+		// sex.setSelectedIndex(sexidx);
+
+		setRadioButton(sexGroup, currSex);
 
 		privacy.setSelected(persLong.getPrivacy() != null);
 
@@ -852,8 +892,13 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 		boolean foundModification = false;
 		boolean orderModification = false;
-		String newSex = sexes[sex.getSelectedIndex()];
-		persLong.setSex(newSex);
+		// String newSex = sexes[sex.getSelectedIndex()];
+		// persLong.setSex(newSex);
+
+		ButtonModel model = sexGroup.getSelection();
+		if (model != null) {
+			persLong.setSex(model.getActionCommand());
+		}
 
 		String priva = privacy.isSelected() ? "P" : null;
 		persLong.setPrivacy(priva);
@@ -1348,8 +1393,13 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	public void updateUnit() {
 
 		if (persLong != null) {
-			String newSex = sexes[sex.getSelectedIndex()];
-			persLong.setSex(newSex);
+			// String newSex = sexes[sex.getSelectedIndex()];
+			// persLong.setSex(newSex);
+
+			ButtonModel model = sexGroup.getSelection();
+			if (model != null) {
+				persLong.setSex(model.getActionCommand());
+			}
 
 			String priva = privacy.isSelected() ? "P" : null;
 			persLong.setPrivacy(priva);
@@ -1480,7 +1530,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 		rivi += 20;
 		rivi += 24;
-		sex.setBounds(lcol, rivi, 80, 20);
+		// sex.setBounds(lcol + 300, rivi, 80, 20);
+		sexr.setBounds(lcol - 10, rivi - 10, 300, 24);
 		rivi += 20;
 		rivi += 24;
 		birtDate.setBounds(lcol, rivi, datelen, 20);
