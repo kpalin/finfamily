@@ -2866,7 +2866,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				// System.out.println("LOCAN/W: " + locaNew + "/" + lastLoc);
 				this.splitPane.setDividerLocation(locaNew);
 			}
-			this.splitPane.updateUI();
+			try {
+				this.splitPane.updateUI();
+			} catch (NullPointerException ne) {
+				ne.printStackTrace();
+			}
 		}
 
 		this.scrollPane.updateUI();

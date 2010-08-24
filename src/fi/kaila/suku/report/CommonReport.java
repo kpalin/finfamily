@@ -584,6 +584,7 @@ public abstract class CommonReport {
 
 				if (childMember.getSubCount() > 0) {
 					repoWriter.addText(bt);
+					HashMap<String, String> submap = new HashMap<String, String>();
 
 					for (int i = 0; i < childMember.getSubCount(); i++) {
 						bt = new SubPersonText();
@@ -600,10 +601,23 @@ public abstract class CommonReport {
 						if (ref != null) {
 							fromSubTable = ref.getReferences(tab.getTableNo(),
 									true, true, true);
-							if (fromSubTable.length() > 0) {
+
+							String[] froms = fromSubTable.split(",");
+							StringBuilder fromsTable = new StringBuilder();
+							for (int j = 0; j < froms.length; j++) {
+								String mapx = submap.put(froms[j], froms[j]);
+								if (mapx == null) {
+									if (j > 0) {
+										fromsTable.append(",");
+									}
+									fromsTable.append(froms[j]);
+								}
+							}
+
+							if (fromsTable.length() > 0) {
 								bt.addText(typesTable.getTextValue("ALSO")
-										+ " " + fromSubTable + ". ", true,
-										false);
+										+ " " + fromsTable.toString() + ". ",
+										true, false);
 							}
 						}
 
@@ -929,9 +943,12 @@ public abstract class CommonReport {
 			repoWriter.addText(bt);
 		}
 
+		HashMap<String, Integer> submap = new HashMap<String, Integer>();
+
 		for (int i = 0; i < spouseMember.getSubCount(); i++) {
 			bt = new SubPersonText();
-			bt.addText(spouseMember.getSubDadMom(i) + " ");
+			String subDad = spouseMember.getSubDadMom(i);
+			bt.addText(subDad + " ");
 			SukuData sub = caller.getKontroller().getSukuData("cmd=person",
 					"pid=" + spouseMember.getSubPid(i));
 			notices = sub.persLong.getNotices();
@@ -939,13 +956,26 @@ public abstract class CommonReport {
 			printNotices(bt, notices, 4, tab.getTableNo());
 
 			fromTable = "";
+
 			refs = personReferences.get(spouseMember.getSubPid(i));
 			if (refs != null) {
 				fromTable = refs.getReferences(tab.getTableNo(), true, true,
 						true);
-				if (fromTable.length() > 0) {
+
+				String[] froms = fromTable.split(",");
+				StringBuilder fromsTable = new StringBuilder();
+				for (int j = 0; j < froms.length; j++) {
+					Integer mapx = submap.put(froms[j], subDad.length());
+					if (mapx == null || mapx == subDad.length()) {
+						if (j > 0) {
+							fromsTable.append(",");
+						}
+						fromsTable.append(froms[j]);
+					}
+				}
+				if (fromsTable.length() > 0) {
 					bt.addText(typesTable.getTextValue("ALSO") + " "
-							+ fromTable + ". ", true, false);
+							+ fromsTable.toString() + ". ", true, false);
 				}
 			}
 
