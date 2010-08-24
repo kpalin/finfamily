@@ -276,6 +276,12 @@ public abstract class CommonReport {
 		ReportTableMember subjectmember = tab.getParent().get(0);
 		SukuData pdata = null;
 		StringBuilder tabOwner = new StringBuilder();
+		int tableOffset = caller.getDescendantPane().getStartTable();
+		if (tableOffset > 1) {
+			tableOffset = tableOffset - 1;
+		} else {
+			tableOffset = 0;
+		}
 		try {
 			pdata = caller.getKontroller().getSukuData("cmd=person",
 					"pid=" + subjectmember.getPid(),
@@ -331,8 +337,8 @@ public abstract class CommonReport {
 			}
 		}
 		float prose = (idx * 100f) / tables.size();
-		caller.setRunnerValue("" + (int) prose + ";" + tab.getTableNo() + ":"
-				+ tabOwner);
+		caller.setRunnerValue("" + (int) prose + ";"
+				+ (tab.getTableNo() + tableOffset) + ":" + tabOwner);
 
 		String genText = "";
 		if (tab.getGen() > 0) {
@@ -343,7 +349,7 @@ public abstract class CommonReport {
 			bt = new MainPersonText();
 			repoWriter.addText(bt);
 			bt = new MainPersonText();
-			printNotices(bt, tableNotices, 2, tab.getTableNo());
+			printNotices(bt, tableNotices, 2, tab.getTableNo() + tableOffset);
 			repoWriter.addText(bt);
 			bt = new MainPersonText();
 			bt.addText("");
@@ -353,7 +359,7 @@ public abstract class CommonReport {
 		bt = new TableHeaderText();
 
 		bt.addText(typesTable.getTypeText("TABLE"));
-		bt.addText(" " + tab.getTableNo());
+		bt.addText(" " + (tab.getTableNo() + tableOffset));
 		repoWriter.addText(bt);
 
 		bt = new TableSubHeaderText();
@@ -362,7 +368,8 @@ public abstract class CommonReport {
 		String fromSubTable = "";
 		ref = personReferences.get(tab.getPid());
 		if (ref != null) {
-			fromTable = ref.getReferences(tab.getTableNo(), false, true, false);
+			fromTable = ref.getReferences(tab.getTableNo(), false, true, false,
+					tableOffset);
 		}
 
 		if (fromTable.length() > 0) {
@@ -379,16 +386,18 @@ public abstract class CommonReport {
 
 		printName(bt, pdata.persLong, 2);
 
-		printNotices(bt, notices, 2, tab.getTableNo());
+		printNotices(bt, notices, 2, tab.getTableNo() + tableOffset);
 
 		fromTable = "";
 		ref = personReferences.get(tab.getPid());
 		if (ref != null) {
-			fromTable = ref.getReferences(tab.getTableNo(), true, false, false);
+			fromTable = ref.getReferences(tab.getTableNo(), true, false, false,
+					tableOffset);
 		}
 		if (fromTable.length() == 0) {
 
-			fromTable = ref.getReferences(tab.getTableNo(), false, false, true);
+			fromTable = ref.getReferences(tab.getTableNo(), false, false, true,
+					tableOffset);
 		}
 		if (fromTable.length() > 0) {
 			bt.addText(
@@ -408,13 +417,13 @@ public abstract class CommonReport {
 						"pid=" + subjectmember.getSubPid(i));
 				notices = sub.persLong.getNotices();
 				printName(bt, sub.persLong, 4);
-				printNotices(bt, notices, 4, tab.getTableNo());
+				printNotices(bt, notices, 4, tab.getTableNo() + tableOffset);
 
 				fromTable = "";
 				ref = personReferences.get(subjectmember.getSubPid(i));
 				if (ref != null) {
 					fromTable = ref.getReferences(tab.getTableNo(), true, true,
-							true);
+							true, tableOffset);
 					if (fromTable.length() > 0) {
 						bt.addText(typesTable.getTextValue("ALSO") + " "
 								+ fromTable + ". ", true, false);
@@ -446,7 +455,8 @@ public abstract class CommonReport {
 
 			try {
 
-				notices = printSpouse(tab, bt, spouseMember, spouNum);
+				notices = printSpouse(tab, bt, spouseMember, spouNum,
+						tableOffset);
 
 			} catch (SukuException e1) {
 				logger.log(Level.WARNING, "background reporting", e1);
@@ -481,7 +491,8 @@ public abstract class CommonReport {
 				toTable = "";
 				hasOwnTable = false;
 				if (ref != null) {
-					toTable = ref.getReferences(0, true, false, false);
+					toTable = ref.getReferences(0, true, false, false,
+							tableOffset);
 					if (!toTable.isEmpty() && ref.asOwner > 0) {
 						hasOwnTable = true;
 					}
@@ -580,7 +591,8 @@ public abstract class CommonReport {
 
 				printName(bt, cdata.persLong, (toTable.isEmpty() ? 2 : 3));
 				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3), tab
-						.getTableNo());
+						.getTableNo()
+						+ tableOffset);
 
 				if (childMember.getSubCount() > 0) {
 					repoWriter.addText(bt);
@@ -594,13 +606,14 @@ public abstract class CommonReport {
 										"pid=" + childMember.getSubPid(i));
 						notices = sub.persLong.getNotices();
 						printName(bt, sub.persLong, 4);
-						printNotices(bt, notices, 4, tab.getTableNo());
+						printNotices(bt, notices, 4, tab.getTableNo()
+								+ tableOffset);
 
 						fromSubTable = "";
 						ref = personReferences.get(childMember.getSubPid(i));
 						if (ref != null) {
 							fromSubTable = ref.getReferences(tab.getTableNo(),
-									true, true, true);
+									true, true, true, tableOffset);
 
 							String[] froms = fromSubTable.split(",");
 							StringBuilder fromsTable = new StringBuilder();
@@ -651,175 +664,8 @@ public abstract class CommonReport {
 						}
 
 						notices = printSpouse(tab, bt, childSpouseMember,
-								spouNum);
+								spouNum, tableOffset);
 
-						// SukuData child = caller.getKontroller().getSukuData(
-						// "cmd=person",
-						// "pid=" + childSpouseMember.getPid());
-						// String tmp;
-						// if ("M".equals(child.persLong.getSex())) {
-						// tmp = "HUSB";
-						// } else {
-						// tmp = "WIFE";
-						// }
-						// String spouType = typesTable.getTextValue(tmp);
-						//
-						//					
-						// repoWriter.addText(bt);
-						// RelationNotice rnn[] = null;
-						// if (child.relations != null) {
-						//
-						// for (int i = 0; i < child.relations.length; i++) {
-						// if (child.relations[i].getRelative() == childMember
-						// .getPid()) {
-						// // if (child.relations[i].getNotices() !=
-						// // null) {
-						// // rnn = child.relations[i].getNotices();
-						// // for (int jj = 0; jj < rnn.length; jj++) {
-						// // RelationNotice rn = rnn[jj];
-						// // spouType = printRelationNotice(rn,
-						// // spouType, spouNum, true);
-						// // }
-						// // }
-
-						//
-						//									
-						//									
-						// //
-						// // notices = printSpouse(tab, bt, spouseMember,
-						// spouNum);
-						//									
-						// boolean isMarrTag = false;
-						// if (child.relations[i].getNotices() != null) {
-						// rnn = child.relations[i].getNotices();
-						//
-						// for (RelationNotice rr : rnn) {
-						// if (rr.getTag().equals("MARR")) {
-						// isMarrTag = true;
-						// }
-						// }
-						// if (isMarrTag) {
-						//
-						// RelationNotice rn = rnn[0];
-						//
-						// if (rn.getTag().equals("MARR")) {
-						// // spouType =
-						// // typesTable.getTextValue(rn
-						// // .getTag());
-						// spouType = printRelationNotice(
-						// rn, spouType, spouNum,
-						// true);
-						// }
-						// } else {
-						//
-						// }
-						//
-						// }
-						// if (!isMarrTag) {
-						// if (spouNum > 0) {
-						// spouType += " " + spouNum + ":o";
-						// }
-						// }
-						//
-						// }
-						//
-						// }
-						// }
-						//
-						// bt.addText("- ");
-						// bt.addText(spouType);
-						// bt.addText(" ");
-						//
-						// notices = child.persLong.getNotices();
-						// int typesColumn = 2;
-						// ref =
-						// personReferences.get(childSpouseMember.getPid());
-						// if (ref != null) {
-						// typesColumn = ref.getTypesColumn(tab.getTableNo(),
-						// true, true, false);
-						// }
-						//
-						// printName(bt, child.persLong, typesColumn);
-						// printNotices(bt, notices, typesColumn,
-						// tab.getTableNo());
-						//
-						// if (rnn != null && rnn.length > 1) {
-						// for (int i = 1; i < rnn.length; i++) {
-						// RelationNotice rn = rnn[i];
-						//
-						// // spouType = printRelationNotice(rn,
-						// // spouType, spouNum);
-						// //
-						//
-						// spouType = printRelationNotice(rn, null, 0,
-						// false);
-						// if (spouType.length() > 0) {
-						// bt.addText(" ");
-						// bt.addText(spouType);
-						// bt.addText(".");
-						// }
-						// }
-						// }
-						//
-						// fromTable = "";
-						// // ref =
-						// // personReferences.get(child.persLong.getPid()) ;
-						// if (ref != null) {
-						// fromTable = ref.getReferences(tab.getTableNo(),
-						// true, false, false);
-						// if (fromTable.isEmpty()) {
-						// fromTable = ref.getReferences(tab.getTableNo(),
-						// false, true, false);
-						// }
-						// if (fromTable.isEmpty()) {
-						// fromTable = ref.getReferences(tab.getTableNo(),
-						// false, false, true);
-						// }
-						// if (fromTable.length() > 0) {
-						// bt.addText(typesTable.getTextValue("ALSO")
-						// + " " + fromTable + ". ", true, false);
-						// }
-						// }
-						// if (bt.getCount() > 0) {
-						// // repoWriter.addText(bt);
-						//
-						// }
-						//
-						// if (childSpouseMember.getSubCount() > 0) {
-						//
-						// for (int i = 0; i < childSpouseMember.getSubCount();
-						// i++) {
-						// bt = new SubPersonText();
-						// bt.addText(childSpouseMember.getSubDadMom(i)
-						// + " ");
-						// SukuData sub = caller.getKontroller()
-						// .getSukuData(
-						// "cmd=person",
-						// "pid="
-						// + childSpouseMember
-						// .getSubPid(i));
-						// notices = sub.persLong.getNotices();
-						// printName(bt, sub.persLong, 4);
-						// printNotices(bt, notices, 4, tab.getTableNo());
-						//
-						// fromTable = "";
-						// ref = personReferences.get(childSpouseMember
-						// .getSubPid(i));
-						// if (ref != null) {
-						// fromTable = ref.getReferences(tab
-						// .getTableNo(), true, true, true);
-						// if (fromTable.length() > 0) {
-						// bt.addText(typesTable
-						// .getTextValue("ALSO")
-						// + " " + fromTable + ". ", true,
-						// false);
-						// }
-						// }
-						//
-						// repoWriter.addText(bt);
-						//
-						// }
-						// }
 					}
 				}
 				// }
@@ -851,7 +697,8 @@ public abstract class CommonReport {
 	 * @throws SukuException
 	 */
 	private UnitNotice[] printSpouse(ReportUnit tab, BodyText bt,
-			ReportTableMember spouseMember, int spouNum) throws SukuException {
+			ReportTableMember spouseMember, int spouNum, int tableOffset)
+			throws SukuException {
 		UnitNotice[] notices;
 		String fromTable;
 		SukuData sdata;
@@ -932,7 +779,8 @@ public abstract class CommonReport {
 		}
 
 		if (refs != null) {
-			fromTable = refs.getReferences(tab.getTableNo(), true, true, false);
+			fromTable = refs.getReferences(tab.getTableNo(), true, true, false,
+					tableOffset);
 			if (fromTable.length() > 0) {
 				bt.addText(typesTable.getTextValue("ALSO") + " " + fromTable
 						+ ". ", true, false);
@@ -960,7 +808,7 @@ public abstract class CommonReport {
 			refs = personReferences.get(spouseMember.getSubPid(i));
 			if (refs != null) {
 				fromTable = refs.getReferences(tab.getTableNo(), true, true,
-						true);
+						true, tableOffset);
 
 				String[] froms = fromTable.split(",");
 				StringBuilder fromsTable = new StringBuilder();
@@ -1307,7 +1155,7 @@ public abstract class CommonReport {
 						ref = personReferences.get(spouseMember.getSubPid(i));
 						if (ref != null) {
 							fromTable = ref.getReferences(tableNum, true, true,
-									true);
+									true, 0);
 							if (fromTable.length() > 0) {
 								bt.addText(typesTable.getTextValue("ALSO")
 										+ " " + fromTable + ". ", true, false);

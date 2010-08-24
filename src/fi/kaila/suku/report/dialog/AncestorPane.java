@@ -54,6 +54,7 @@ public class AncestorPane extends JPanel {
 		lb.setBounds(50, 0, 180, 20);
 		add(pp);
 		rtypy += 24;
+
 		JPanel pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.ANC.NUMBERING")));

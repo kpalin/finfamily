@@ -135,7 +135,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 * @return a comma separated list of tables
 	 */
 	public String getReferences(long table, boolean alsoSpouse,
-			boolean alsoChild, boolean alsoOther) {
+			boolean alsoChild, boolean alsoOther, int tableOffset) {
 		StringBuilder sx = new StringBuilder();
 
 		if (alsoChild) {
@@ -143,7 +143,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 				if (asChildren.get(i) != table) {
 					if (sx.length() > 0)
 						sx.append(",");
-					sx.append("" + asChildren.get(i));
+					sx.append("" + (asChildren.get(i) + tableOffset));
 				}
 			}
 		}
@@ -153,7 +153,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 				if (asParents.get(i) != table) {
 					if (sx.length() > 0)
 						sx.append(",");
-					sx.append("" + asParents.get(i));
+					sx.append("" + (asParents.get(i) + tableOffset));
 				}
 			}
 		}
@@ -162,7 +162,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 				if (references.get(i) != table) {
 					if (sx.length() > 0)
 						sx.append(",");
-					sx.append("" + references.get(i));
+					sx.append("" + (references.get(i) + tableOffset));
 				}
 			}
 		}

@@ -29,7 +29,7 @@ public class DescendantPane extends JPanel {
 	private JCheckBox adopted = null;
 	private JTextField spouseAncestors = null;
 	private JTextField childAncestors = null;
-
+	private JTextField startTable = null;
 	private ButtonGroup tableOrder = null;
 
 	/**
@@ -59,6 +59,20 @@ public class DescendantPane extends JPanel {
 		lb.setBounds(50, 0, 180, 20);
 		add(pp);
 		rtypy += 20;
+		pp = new JPanel();
+		pp.setLayout(null);
+		pp.setBounds(rtypx, rtypy, 200, 20);
+		startTable = new JTextField();
+		startTable.setText("1");
+		pp.add(startTable);
+		startTable.setBounds(0, 0, 40, 20);
+		lb = new JLabel(Resurses.getString("REPORT.DESC.STARTTABLE"));
+		pp.add(lb);
+		lb.setBounds(50, 0, 180, 20);
+		add(pp);
+
+		rtypy += 24;
+
 		adopted = new JCheckBox(Resurses.getString("REPORT.DESC.ADOPTEDALSO"));
 		adopted.setBounds(rtypx, rtypy, 200, 20);
 		add(adopted);
@@ -173,6 +187,21 @@ public class DescendantPane extends JPanel {
 	}
 
 	/**
+	 * 
+	 * @return start table number
+	 */
+	public int getStartTable() {
+		int tab = 1;
+		try {
+			tab = Integer.parseInt(startTable.getText());
+		} catch (NumberFormatException ne) {
+			tab = 1;
+			generations.setText("1");
+		}
+		return tab;
+	}
+
+	/**
 	 * @return no of spouse ancestor generations
 	 */
 	public int getSpouseAncestors() {
@@ -217,6 +246,15 @@ public class DescendantPane extends JPanel {
 	void setGenerations(String string) {
 		generations.setText(string);
 
+	}
+
+	/**
+	 * set start table number
+	 * 
+	 * @param tab
+	 */
+	void setStartTable(String tab) {
+		startTable.setText(tab);
 	}
 
 	/**

@@ -989,6 +989,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				} else if (pers != null) {
 					if (vx[0].equals("descgen")) {
 						descendantPanel.setGenerations(vx[1]);
+					} else if (vx[0].equals("descstart")) {
+						descendantPanel.setStartTable(vx[1]);
 					} else if (vx[0].equals("ancgen")) {
 						ancestorPanel.setGenerations(vx[1]);
 					} else if (vx[0].equals("descadopted")) {
@@ -1203,6 +1205,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		v.add("reportIndex=" + reportTypePane.getSelectedIndex());
 		if (pers != null) {
 			v.add("descgen=" + descendantPanel.getGenerations());
+			v.add("descstart=" + descendantPanel.getStartTable());
 			v.add("ancgen=" + ancestorPanel.getGenerations());
 			if (descendantPanel.getAdopted()) {
 				v.add("descadopted=true");
@@ -1272,6 +1275,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	class Task extends SwingWorker<Void, Void> {
 
 		int reportFormatidx = 0;
+		int tabOffset = 0;
 
 		/*
 		 * Main task. Executed in background thread.
@@ -1303,9 +1307,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				setProgress(0);
 
 				if (reportTypePane.getSelectedIndex() == 0) {
-
+					tabOffset = self.getDescendantPane().getStartTable();
 					dr = new DescendantReport(self, typesTable, repo);
 				} else if (reportTypePane.getSelectedIndex() == 1) {
+					tabOffset = 0;
 					String order = getAncestorPane().getNumberingFormat()
 							.getSelection().getActionCommand();
 					if (SET_ANC_TABLES.equals(order)) {
@@ -1349,6 +1354,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							JOptionPane.YES_NO_OPTION);
 					if (answer == 0) {
 						taskIndex = new TaskIndex();
+						taskIndex.indexTabOffset = tabOffset;
 						taskIndex.addPropertyChangeListener(self);
 						taskIndex.execute();
 
@@ -2463,6 +2469,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	class TaskIndex extends SwingWorker<Void, Void> {
 
+		int indexTabOffset = 0;
+
 		@Override
 		protected Void doInBackground() throws Exception {
 			try {
@@ -2562,8 +2570,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						label = new Label(0, row, ""
 								+ pit.shortPerson.getAlfaName(), arial0);
 						sheet.addCell(label);
-						String kefe = pit.getReferences(0, true, false, false);
-						String cefe = pit.getReferences(0, false, true, false);
+						String kefe = pit.getReferences(0, true, false, false,
+								indexTabOffset);
+						String cefe = pit.getReferences(0, false, true, false,
+								indexTabOffset);
 						String refe = kefe;
 
 						if (pit.asOwner == 0) {
@@ -2578,7 +2588,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						}
 						// System.out.println("RUN:"
 						// + pit.shortPerson.getAlfaName());
-						String mefe = pit.getReferences(0, false, false, true);
+						String mefe = pit.getReferences(0, false, false, true,
+								indexTabOffset);
 
 						if (!mefe.isEmpty()) {
 							if (!refe.isEmpty()) {

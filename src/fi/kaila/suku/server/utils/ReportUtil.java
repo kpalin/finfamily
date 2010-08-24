@@ -176,7 +176,7 @@ public class ReportUtil {
 				fromTable = "";
 				if (ref != null) {
 					fromTable = ref.getReferences(unit.getTableNo(), true,
-							true, false);
+							true, false, 0);
 				}
 				if (fromTable.isEmpty()) {
 					addAncestorsToMember(member, 1, gen);
@@ -197,7 +197,7 @@ public class ReportUtil {
 						fromTable = "";
 						if (ref != null) {
 							fromTable = ref.getReferences(unit.getTableNo(),
-									true, true, false);
+									true, true, false, 0);
 						}
 						if (fromTable.isEmpty()) {
 							addAncestorsToMember(spouses[k], 1, gen);
@@ -252,10 +252,10 @@ public class ReportUtil {
 			ref = personReferences.get(member.getPid());
 			String fromTable = "";
 			if (ref != null) {
-				fromTable = ref.getReferences(0, true, true, false);
+				fromTable = ref.getReferences(0, true, true, false, 0);
 			}
 			if (fromTable.isEmpty()) {
-				//FIXME:???
+				// FIXME:???
 			}
 		}
 
