@@ -133,6 +133,10 @@ public class PersonTextPane extends JTextPane {
 
 			doc.remove(0, doc.getLength());
 
+			if (pers == null) {
+				return;
+			}
+
 			// StringBuilder sb = new StringBuilder();
 
 			doc.insertString(0, Resurses.getString("TEXT_HEADER") + "\n",

@@ -514,6 +514,12 @@ public class PersonView extends JPanel implements ChangeListener {
 	public void setSubjectForFamily(PersonShortData subject)
 			throws SukuException {
 
+		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
+		if (subject == null) {
+			famPanel.resetTable();
+			return;
+		}
+
 		SukuData family = Suku.kontroller.getSukuData("cmd=family", "pid="
 				+ subject.getPid(), "parents=both");
 		if (family.pers == null || family.pers.length < 1) {
@@ -521,7 +527,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		}
 		PersonShortData familySubject = family.pers[0];
 		Dimension reqDim;
-		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
+		// FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
 
 		if (family.pers == null || family.pers.length == 0) {
 
@@ -718,11 +724,17 @@ public class PersonView extends JPanel implements ChangeListener {
 	 */
 	public void setTextForPerson(PersonShortData person) throws SukuException {
 
+		PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
+		if (person == null) {
+			textPerson.initPerson(null, null, null);
+			return;
+		}
+
 		SukuData pdata = Suku.kontroller.getSukuData("cmd=person", "pid="
 				+ person.getPid(), "lang=" + Resurses.getLanguage());
 		SukuData family = Suku.kontroller.getSukuData("cmd=family", "pid="
 				+ person.getPid(), "parents=yes");
-		PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
+		// PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
 		textPerson.initPerson(pdata.persLong, pdata.relations, family.pers);
 		setSelectedIndex(1);
 

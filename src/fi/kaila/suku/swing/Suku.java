@@ -1067,6 +1067,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.statusPanel.setText("");
 		super.setTitle(sb.toString());
 
+		try {
+			this.personView.setSubjectForFamily(null);
+			personView.setTextForPerson(null);
+		} catch (SukuException e) {
+			logger.log(Level.WARNING, "resetting family tree", e);
+
+		}
+
 	}
 
 	protected JButton makeNavigationButton(String imageName,
