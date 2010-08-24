@@ -1,6 +1,5 @@
 package fi.kaila.suku.report;
 
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -1934,7 +1933,7 @@ public abstract class CommonReport {
 									double newh = 300;
 									double neww = 300;
 
-									Dimension xx = caller.getImageMaxSize();
+									// Dimension xx = caller.getImageMaxSize();
 
 									if (imh <= newh) {
 										if (imw <= neww) {
@@ -1979,7 +1978,8 @@ public abstract class CommonReport {
 									bt.addText(" ");
 								}
 							}
-							int tlen = printText(bt, nn.getNoteText());
+
+							int tlen = printText(bt, trim(nn.getNoteText()));
 							if (tlen > 0) {
 								addSpace = true;
 								addDot = true;
@@ -2060,7 +2060,7 @@ public abstract class CommonReport {
 						String srcFormat = caller.getSourceFormat();
 						if (!ReportWorkerDialog.SET_NO.equals(srcFormat)) {
 
-							String src = nn.getSource();
+							String src = trim(nn.getSource());
 
 							String text = addSource(addDot, srcFormat, src);
 							bt.addText(text);
@@ -2539,6 +2539,20 @@ public abstract class CommonReport {
 		}
 		return postOffice;
 
+	}
+
+	private String trim(String text) {
+		if (text == null)
+			return null;
+
+		String tek = text.trim();
+		if (tek.equals(".")) {
+			return "";
+		}
+		if (tek.endsWith(".")) {
+			tek = tek.substring(0, tek.length() - 1);
+		}
+		return tek.trim();
 	}
 
 	protected String nv(String text) {
