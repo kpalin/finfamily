@@ -337,6 +337,10 @@ public class RelationNotice implements Serializable {
 	}
 
 	private String trim(String text) {
+		return text;
+	}
+
+	private String trimx(String text) {
 		if (text == null)
 			return null;
 

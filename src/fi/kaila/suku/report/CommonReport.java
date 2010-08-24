@@ -1762,7 +1762,7 @@ public abstract class CommonReport {
 			}
 
 			sb.append("(");
-			sb.append(rn.getNoteText());
+			sb.append(trim(rn.getNoteText()));
 			sb.append(")");
 
 			addSpace = true;
@@ -1770,7 +1770,7 @@ public abstract class CommonReport {
 		String srcFormat = caller.getSourceFormat();
 		if (!ReportWorkerDialog.SET_NO.equals(srcFormat)) {
 
-			String src = rn.getSource();
+			String src = trim(rn.getSource());
 
 			String srcText = addSource(false, srcFormat, src);
 			sb.append(srcText);
