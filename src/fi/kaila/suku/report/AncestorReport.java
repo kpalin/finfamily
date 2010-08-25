@@ -1,6 +1,7 @@
 package fi.kaila.suku.report;
 
 import java.util.HashMap;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,7 +91,11 @@ public class AncestorReport extends CommonReport {
 			if (order.equals("ESPOLIN")) {
 				createEspolinReport();
 			} else {
-				createStradoReport();
+				if (caller.getAncestorPane().getAllBranches()) {
+					createFullStradoReport(vlist.reportUnits);
+				} else {
+					createStradoReport();
+				}
 			}
 			repoWriter.closeReport();
 
@@ -98,12 +103,89 @@ public class AncestorReport extends CommonReport {
 
 	}
 
+	private void createFullStradoReport(HashMap<Integer, ReportUnit> reportUnits) {
+		textReferences = new HashMap<String, PersonInTables>();
+
+		ReportUnitAll ftab = null;
+		ReportUnitAll mtab = null;
+		int i = 0;
+		if (tables.size() == 0) {
+			return;
+		}
+
+		Vector<ReportUnitAll> genlistNext = null;
+
+		Vector<ReportUnitAll> genlist = new Vector<ReportUnitAll>();
+		ReportUnitAll ra = new ReportUnitAll();
+		ra.r = tables.get(0);
+		ra.gene = 1;
+		ra.tabNo = 1;
+		genlist.add(ra);
+		boolean firstTable = true;
+		while (true) {
+			genlistNext = new Vector<ReportUnitAll>();
+			for (ReportUnitAll ua : genlist) {
+				if (firstTable) {
+					ftab = ua;
+					mtab = new ReportUnitAll();
+					mtab.r = null;
+				} else {
+					ftab = new ReportUnitAll();
+					ftab.r = reportUnits.get(ua.r.getFatherPid());
+					if (ftab.r != null) {
+						ftab.tabNo = ua.tabNo * 2;
+						ftab.gene = ua.gene + 1;
+						ftab.r.setTableNo(ftab.tabNo);
+						ftab.r.setGen(ftab.gene);
+					}
+					mtab = new ReportUnitAll();
+					mtab.r = reportUnits.get(ua.r.getMotherPid());
+					if (mtab.r != null) {
+						mtab.tabNo = ua.tabNo * 2 + 1;
+						mtab.gene = ua.gene + 1;
+						mtab.r.setTableNo(mtab.tabNo);
+						mtab.r.setGen(mtab.gene);
+					}
+				}
+
+				if (ua.r.getFatherPid() > 0 || ua.r.getMotherPid() > 0) {
+
+					createAncestorTable(0, ftab.r, mtab.r,
+							(ftab.r != null ? ftab.tabNo : mtab.tabNo));
+
+					if (ftab.r != null) {
+						genlistNext.add(ftab);
+					}
+					if (mtab.r != null) {
+						genlistNext.add(mtab);
+					}
+				}
+				// if (!firstTable && ua.r.getMotherPid() > 0) {
+				// createAncestorTable(0, ftab.r, mtab.r, tabNo);
+				// if (mtab.r != null) {
+				// genlistNext.add(mtab);
+				// }
+				// }
+				firstTable = false;
+			}
+			if (genlistNext.size() > 0) {
+				genlist = genlistNext;
+			} else {
+				break;
+			}
+		}
+
+		caller.setRunnerValue("100;OK");
+
+	}
+
 	private void createStradoReport() {
 		textReferences = new HashMap<String, PersonInTables>();
-		long tabno = 0;
+
 		ReportUnit ftab;
 		ReportUnit mtab;
 		int i = 0;
+
 		while (i < tables.size()) {
 
 			ReportUnit tab = tables.get(i);
@@ -170,6 +252,27 @@ public class AncestorReport extends CommonReport {
 			ff.setVisible(b);
 		}
 
+	}
+
+	class ReportUnitAll {
+
+		long tabNo = 0;
+		int gene = 0;
+		ReportUnit r = null;
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("tab(" + tabNo + ") ;");
+			sb.append("gen(" + gene + ") ;");
+			if (r != null) {
+				sb.append("pid(" + r.getPid() + ") ;");
+				sb.append("father(" + r.getFatherPid() + ") ;");
+				sb.append("mother(" + r.getMotherPid() + ").");
+			}
+			return sb.toString();
+		}
 	}
 
 }

@@ -931,6 +931,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			boolean indexYears = false;
 			boolean descendantAdopted = false;
 			boolean ancestorFamily = false;
+			boolean ancestorAllBranches = false;
 			int vid = 0;
 			for (int i = 0; i < sets.vvTypes.size(); i++) {
 
@@ -1010,6 +1011,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						ancestorPanel.setDescGen(vx[1]);
 					} else if (vx[0].equals("ancFamily")) {
 						ancestorFamily = true;
+					} else if (vx[0].equals("ancAllBranches")) {
+						ancestorAllBranches = true;
 					}
 				} else if (pers == null) {
 					if (vx[0].equals("viewId")) {
@@ -1044,6 +1047,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			if (pers != null) {
 				descendantPanel.setAdopted(descendantAdopted);
 				ancestorPanel.setShowFamily(ancestorFamily);
+				ancestorPanel.setAllBranches(ancestorAllBranches);
 			}
 			typesTable.loadReportSettings(type + "types", settingsIndex);
 
@@ -1229,6 +1233,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			}
 			if (ancestorPanel.getShowfamily()) {
 				v.add("ancFamily=true");
+			}
+			if (ancestorPanel.getAllBranches()) {
+				v.add("ancAllBranches=true");
 			}
 			String tmp = ancestorPanel.getShowDescGen();
 			if (tmp != null && tmp.length() > 0) {

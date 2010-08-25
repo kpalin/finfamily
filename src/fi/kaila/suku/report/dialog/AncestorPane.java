@@ -29,6 +29,7 @@ public class AncestorPane extends JPanel {
 	private ButtonGroup ancestorNumberingFormatGroup = null;
 
 	private JCheckBox ancestorShowFamily = null;
+	private JCheckBox ancestorAllBranches = null;
 	private JTextField ancestorShowDescGen = null;
 	private JTextField generations = null;
 
@@ -87,6 +88,12 @@ public class AncestorPane extends JPanel {
 		ancestorShowFamily.setBounds(rtypx, rtypy, 280, 20);
 		add(ancestorShowFamily);
 		rtypy += 22;
+		ancestorAllBranches = new JCheckBox(Resurses
+				.getString("REPORT.ANC.ALL.BRANCHES"));
+		ancestorAllBranches.setBounds(rtypx, rtypy, 280, 20);
+		add(ancestorAllBranches);
+		rtypy += 22;
+
 		pp = new JPanel();
 		pp.setLayout(null);
 		pp.setBounds(rtypx, rtypy, 300, 50);
@@ -150,12 +157,29 @@ public class AncestorPane extends JPanel {
 	}
 
 	/**
+	 * 
+	 * @return true if all ancestor branches are to be shown
+	 */
+	public boolean getAllBranches() {
+		return ancestorAllBranches.isSelected();
+	}
+
+	/**
 	 * @param value
 	 *            set true to show also ancestro family
 	 */
 	public void setShowFamily(boolean value) {
 		ancestorShowFamily.setSelected(value);
 
+	}
+
+	/**
+	 * 
+	 * @param value
+	 *            set true to include all ancestor brances
+	 */
+	public void setAllBranches(boolean value) {
+		ancestorAllBranches.setSelected(value);
 	}
 
 	/**

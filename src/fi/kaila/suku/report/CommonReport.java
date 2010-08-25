@@ -854,9 +854,14 @@ public abstract class CommonReport {
 		SukuData pappadata = null;
 		SukuData mammadata = null;
 		ReportUnit mainTab = null;
+		long currTabNo = 0;
 		boolean fams = caller.getAncestorPane().getShowfamily();
 		String order = caller.getAncestorPane().getNumberingFormat()
 				.getSelection().getActionCommand();
+		if (!order.equals("ESPOLIN")
+				&& caller.getAncestorPane().getAllBranches()) {
+			currTabNo = tableNum;
+		}
 		UnitNotice[] xnotices = null;
 		StringBuilder tabOwner = new StringBuilder();
 		if (ftab != null) {
@@ -948,8 +953,17 @@ public abstract class CommonReport {
 
 		for (int j = 0; j < tab.getChild().size(); j++) {
 			ReportTableMember mom = tab.getChild().get(j);
-			addChildReference(ftab, mtab, mom.getPid(), typesTable
-					.getTextValue("FROMTABLE"), bt);
+			PersonInTables pt = personReferences.get(mom.getPid());
+			System.out.println("pt:" + pt);
+			// if (tab.getPid() == 61) {
+			// System.out.println("onx " + tab.getPid());
+			// }
+
+			boolean res = addChildReference(ftab, mtab, mom.getPid(),
+					typesTable.getTextValue("FROMTABLE"), bt, currTabNo);
+			if (res && currTabNo > 0) {
+				break;
+			}
 		}
 		if (bt.getCount() > 0) {
 			repoWriter.addText(bt);
@@ -1253,7 +1267,7 @@ public abstract class CommonReport {
 					printName(bt, cdata.persLong, (toTable.isEmpty() ? 2 : 3));
 
 					addChildReference(ftab, mtab, cdata.persLong.getPid(),
-							typesTable.getTextValue("TABLE"), bt);
+							typesTable.getTextValue("TABLE"), bt, 0);
 
 					printNotices(bt, notices, getTypeColumn(cdata.persLong
 							.getPid()), tab.getTableNo());
@@ -1359,7 +1373,7 @@ public abstract class CommonReport {
 							printName(bt, cdata.persLong,
 									(toTable.isEmpty() ? 2 : 3));
 							addChildReference(ftab, mtab, tab.getPid(),
-									typesTable.getTextValue("TABLE"), bt);
+									typesTable.getTextValue("TABLE"), bt, 0);
 							printNotices(bt, notices, tab.getPid(), tab
 									.getTableNo());
 
@@ -1446,9 +1460,16 @@ public abstract class CommonReport {
 				long pareTab = ref.asChildren.get(i);
 				String partext = typesTable
 						.getTextValue((pareTab % 2 == 0) ? "Father" : "Mother");
-
-				sb.append(partext + " "
-						+ toPrintTable(ref.asChildren.get(i), true));
+				if (caller.getAncestorPane().getAllBranches()) {
+					long fftab = ftab.getTableNo() * 2;
+					if (pareTab % 2 != 0) {
+						fftab++;
+					}
+					sb.append(partext + " " + toPrintTable(fftab, true));
+				} else {
+					sb.append(partext + " "
+							+ toPrintTable(ref.asChildren.get(i), true));
+				}
 			}
 			if (sb.length() > 0) {
 				bt.addText("(" + sb.toString() + "). ");
@@ -1463,7 +1484,7 @@ public abstract class CommonReport {
 	 * @return
 	 */
 	private boolean addChildReference(ReportUnit pop, ReportUnit mom, int pid,
-			String text, BodyText bt) {
+			String text, BodyText bt, long currTab) {
 		PersonInTables ref;
 		ref = personReferences.get(pid);
 		if (ref == null) {
@@ -1472,12 +1493,19 @@ public abstract class CommonReport {
 
 		long tabPop = pop == null ? 0 : pop.getTableNo();
 		long tabMom = mom == null ? 0 : mom.getTableNo();
+
 		StringBuilder sb = new StringBuilder();
 		long nxtTab = ref.asOwner;
+
 		if (nxtTab != tabPop && nxtTab != tabMom && nxtTab != 0) {
+
 			sb.append(text);
 			sb.append(" ");
-			sb.append("" + toPrintTable(nxtTab, true));
+			if (currTab > 0 && currTab > 1) {
+				sb.append("" + toPrintTable(currTab / 2, true));
+			} else {
+				sb.append("" + toPrintTable(nxtTab, true));
+			}
 		}
 
 		if (sb.length() > 0) {
