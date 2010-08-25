@@ -454,7 +454,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			}
 
 		} else {
-			getSuku().setTitle(null);
+			getSuku().setTitle("");
 		}
 
 	}
@@ -505,23 +505,36 @@ public class PersonView extends JPanel implements ChangeListener {
 		return types[idx];
 	}
 
+	public void updateSubjectForFamily(int changedPid) throws SukuException {
+
+		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
+		if (famPanel.containsPerson(changedPid)) {
+			int pid = famPanel.getOwnerPid();
+			if (pid != 0) {
+				setSubjectForFamily(pid);
+			}
+		}
+
+	}
+
 	/**
-	 * set familyview (graphic ) to show family
+	 * set family tree (graphic ) to show family
 	 * 
 	 * @param subject
 	 * @throws SukuException
 	 */
-	public void setSubjectForFamily(PersonShortData subject)
-			throws SukuException {
-
+	// public void setSubjectForFamily(PersonShortData subject)
+	// throws SukuException {
+	public void setSubjectForFamily(int subjectPid) throws SukuException {
 		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
-		if (subject == null) {
+
+		if (subjectPid == 0) {
 			famPanel.resetTable();
 			return;
 		}
 
 		SukuData family = Suku.kontroller.getSukuData("cmd=family", "pid="
-				+ subject.getPid(), "parents=both");
+				+ subjectPid, "parents=both");
 		if (family.pers == null || family.pers.length < 1) {
 			return;
 		}
@@ -713,6 +726,15 @@ public class PersonView extends JPanel implements ChangeListener {
 		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
 		famPanel.updateUI();
 
+	}
+
+	/**
+	 * 
+	 * @return pid for current person in text window
+	 */
+	public int getTextPersonPid() {
+		PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
+		return textPerson.getCurrentPid();
 	}
 
 	/**

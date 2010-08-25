@@ -80,6 +80,21 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * 
+	 * @param pid
+	 *            person pid to check
+	 * @return true if person exists in table
+	 */
+	public boolean existsPerson(int pid) {
+		for (PersonShortData p : famMember) {
+			if (p.getPid() == pid) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * @param g
 	 */
 	public void drawMe(Graphics g, Color color) {

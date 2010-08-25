@@ -42,7 +42,7 @@ public class PersonTextPane extends JTextPane {
 	 */
 	private static final long serialVersionUID = 1L;
 	private AbstractDocument doc;
-
+	private int currentPid = 0;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
@@ -79,6 +79,14 @@ public class PersonTextPane extends JTextPane {
 
 		doc.insertString(doc.getLength(), text, a);
 
+	}
+
+	/**
+	 * 
+	 * @return current pid for page
+	 */
+	public int getCurrentPid() {
+		return currentPid;
 	}
 
 	/**
@@ -134,9 +142,10 @@ public class PersonTextPane extends JTextPane {
 			doc.remove(0, doc.getLength());
 
 			if (pers == null) {
+				currentPid = 0;
 				return;
 			}
-
+			currentPid = pers.getPid();
 			// StringBuilder sb = new StringBuilder();
 
 			doc.insertString(0, Resurses.getString("TEXT_HEADER") + "\n",

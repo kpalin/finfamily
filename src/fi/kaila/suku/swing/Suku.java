@@ -1066,13 +1066,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 		this.statusPanel.setText("");
 		super.setTitle(sb.toString());
+		if (title == null) {
+			try {
+				this.personView.setSubjectForFamily(0);
+				personView.setTextForPerson(null);
+			} catch (SukuException e) {
+				logger.log(Level.WARNING, "resetting family tree", e);
 
-		try {
-			this.personView.setSubjectForFamily(null);
-			personView.setTextForPerson(null);
-		} catch (SukuException e) {
-			logger.log(Level.WARNING, "resetting family tree", e);
-
+			}
 		}
 
 	}
@@ -1240,7 +1241,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			return;
 		}
 		try {
-			SelectSchema schemas = new SelectSchema(this, false);
+			SelectSchema schemas = new SelectSchema(this, databaseName, false);
 			String schema = null;
 			schema = schemas.getSchema();
 			if (schema == null) {
@@ -1406,7 +1407,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				SelectSchema schema;
 				try {
-					schema = new SelectSchema(this);
+					schema = new SelectSchema(this, databaseName);
 
 					schema.setVisible(true);
 
@@ -1979,7 +1980,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			SelectSchema schema;
 			try {
-				schema = new SelectSchema(this);
+				schema = new SelectSchema(this, databaseName);
 
 				schema.setVisible(true);
 
@@ -2664,6 +2665,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		table.updateUI();
 		scrollPane.updateUI();
 
+		//
+		// also update familytree if person is a member there
+		//
+
+		this.personView.updateSubjectForFamily(key);
+		//
+		// and database draft
+		//
+		if (key == personView.getTextPersonPid()) {
+			personView.setTextForPerson(p);
+		}
 	}
 
 	/**
@@ -2763,7 +2775,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			logger.finest("Opened IMPORT FILE status " + isOpened);
 
-			SelectSchema schema = new SelectSchema(this);
+			SelectSchema schema = new SelectSchema(this, databaseName);
 			schema.setVisible(true);
 
 			String selectedSchema = schema.getSchema();
@@ -2998,7 +3010,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (row == null)
 				return;
 			try {
-				this.personView.setSubjectForFamily(row.getPerson());
+				this.personView.setSubjectForFamily(row.getPerson().getPid());
 			} catch (SukuException e1) {
 				JOptionPane.showMessageDialog(this, "show " + row + " error "
 						+ e1.getMessage());
@@ -3198,7 +3210,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				} else if (cmd.equals(Resurses.TAB_FAMILY)) {
 					try {
-						personView.setSubjectForFamily(pop.getPerson());
+						personView
+								.setSubjectForFamily(pop.getPerson() == null ? 0
+										: pop.getPerson().getPid());
 
 					} catch (SukuException e1) {
 						JOptionPane.showMessageDialog(null, "SHOW FAMILY: "
@@ -3210,8 +3224,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					//
 				} else if (cmd.startsWith("HISKI") && cmd.length() > 5) {
 					int hiskino = Integer.parseInt(cmd.substring(5));
-					personView.setHiskiPid(hiskino, pop.getPerson().getPid(),
-							pop.getPerson().getAlfaName());
+					personView.setHiskiPid(hiskino,
+							(pop.getPerson() == null ? 0 : pop.getPerson()
+									.getPid()), pop.getPerson().getAlfaName());
 				} else if (cmd.equals(Resurses.CREATE_REPORT)) {
 					createReport(pop.getPerson());
 				} else if (cmd.equals(Resurses.TAB_PERSON)) {

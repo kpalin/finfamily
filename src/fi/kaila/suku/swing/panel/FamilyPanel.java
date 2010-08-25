@@ -277,6 +277,36 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	}
 
 	/**
+	 * Check if person exists in family tree
+	 * 
+	 * @param pid
+	 * @return true if person exists
+	 */
+	public boolean containsPerson(int pid) {
+		for (TableShortData t : tabs) {
+			if (t.existsPerson(pid)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @return owner pid of family tree
+	 */
+	public int getOwnerPid() {
+		if (tabs.size() == 0) {
+			return 0;
+		}
+		if (tabs.size() == 0) {
+			return 0;
+		}
+		TableShortData t = tabs.get(0);
+		return t.getSubject().getPid();
+	}
+
+	/**
 	 * @return table size = number of tables in list
 	 */
 	public int getTabSize() {
@@ -312,7 +342,7 @@ public class FamilyPanel extends JPanel implements MouseListener,
 								.getPersonAtPoint(point);
 						if (person != null) {
 							try {
-								parent.setSubjectForFamily(person);
+								parent.setSubjectForFamily(person.getPid());
 							} catch (SukuException e1) {
 								logger.log(Level.WARNING, "failed", e1);
 

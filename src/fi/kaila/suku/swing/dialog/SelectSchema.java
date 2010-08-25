@@ -41,7 +41,7 @@ public class SelectSchema extends JDialog implements ActionListener,
 	private JList scList = null;
 	private JButton ok;
 	private JButton cancel;
-
+	private String postDb = "Koedatabase";
 	private String[] schemaList = null;
 
 	/**
@@ -50,10 +50,10 @@ public class SelectSchema extends JDialog implements ActionListener,
 	 * @param owner
 	 * @throws SukuException
 	 */
-	public SelectSchema(JFrame owner) throws SukuException {
+	public SelectSchema(JFrame owner, String db) throws SukuException {
 		super(owner, Resurses.getString("SCHEMA"), true);
 		// this.owner = owner;
-
+		this.postDb = db;
 		constructMe(true);
 
 	}
@@ -66,10 +66,11 @@ public class SelectSchema extends JDialog implements ActionListener,
 	 *            if false then only list is shown
 	 * @throws SukuException
 	 */
-	public SelectSchema(JFrame owner, boolean allowNew) throws SukuException {
+	public SelectSchema(JFrame owner, String db, boolean allowNew)
+			throws SukuException {
 		super(owner, Resurses.getString("SCHEMA"), true);
 		// this.owner = owner;
-
+		this.postDb = db;
 		constructMe(allowNew);
 
 	}
@@ -80,7 +81,9 @@ public class SelectSchema extends JDialog implements ActionListener,
 		setBounds(d.width / 2 - 120, d.height / 2 - 140, 240, 240);
 		setLayout(null);
 		int y = 10;
-
+		if (postDb != null) {
+			setTitle(postDb);
+		}
 		String labelValue = "SCHEMA_SELECT";
 		if (allowNew)
 			labelValue = "SCHEMA_SELECTNEW";
