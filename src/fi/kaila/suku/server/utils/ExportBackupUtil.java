@@ -157,7 +157,6 @@ public class ExportBackupUtil {
 
 		Statement stm = con.createStatement();
 
-		//FIXME: Method may fail to close database resource
 		PreparedStatement pst = con.prepareStatement(sqlu);
 		ResultSet rs;
 		ResultSet rsu;
@@ -197,11 +196,13 @@ public class ExportBackupUtil {
 				}
 
 			}
+			rsu.close();
 
 		}
+
 		rs.next();
 		stm.close();
-
+		pst.close();
 	}
 
 	private void createTypesElement(Document document, Element rootElement)
@@ -288,14 +289,14 @@ public class ExportBackupUtil {
 		rootElement.appendChild(unitsEle);
 
 		String sql = "select count(*) from unit";
-		//FIXME: Method may fail to close database resource
+
 		Statement stm = con.createStatement();
 		ResultSet rs = stm.executeQuery(sql);
 		if (rs.next()) {
 			dbSize = rs.getInt(1);
 		}
 		rs.close();
-
+		stm.close();
 		sql = "select * from unit order by pid";
 
 		stm = con.createStatement();
@@ -410,7 +411,6 @@ public class ExportBackupUtil {
 				+ "from relation as a inner join relation as b on a.rid=b.rid "
 				+ "where a.pid <> b.pid  order by a.rid";
 
-		//FIXME: Method may fail to close database resource
 		stm = con.createStatement();
 		rs = stm.executeQuery(sql);
 
@@ -575,6 +575,8 @@ public class ExportBackupUtil {
 			}
 
 		}
+		rs.close();
+		stm.close();
 	}
 
 	private String beginDesc = null;
@@ -613,7 +615,6 @@ public class ExportBackupUtil {
 
 		String sql = "select * from relationnotice where rid=? order by noticerow";
 
-		//FIXME: Method may fail to close database resource
 		PreparedStatement pstm = con.prepareStatement(sql);
 		pstm.setInt(1, rid);
 		ResultSet rs = pstm.executeQuery();
@@ -717,6 +718,8 @@ public class ExportBackupUtil {
 			createRelationLanguageElements(document, nEle, rnid);
 
 		}
+		rs.close();
+		pstm.close();
 
 	}
 
@@ -900,7 +903,7 @@ public class ExportBackupUtil {
 				}
 				if (mediaData != null) {
 
-					MinimumImage minimg = new MinimumImage(pid, mediaFilename,
+					MinimumImage minimg = new MinimumImage(mediaFilename,
 							mediaData);
 					images.add(minimg);
 				}
@@ -1228,14 +1231,13 @@ public class ExportBackupUtil {
 	}
 
 	class MinimumImage {
-		//FIXME: This field is never read.  Consider removing it from the class.
-		int indiGid = 0;
+
 		String imgName = null;
 		int counter = 0;
 		byte[] imageData = null;
 
-		MinimumImage(int gid, String name, byte[] data) {
-			this.indiGid = gid;
+		MinimumImage(String name, byte[] data) {
+
 			this.imgName = name;
 			this.imageData = data;
 			this.counter = ++imageCounter;

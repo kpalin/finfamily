@@ -45,7 +45,6 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private JButton cancel;
 	private JTextField fileName;
 	private JLabel timeEstimate;
-	private String selectedOldLang = null;
 
 	private SukuKontroller kontroller = null;
 	private String fileNameDescription = "";
@@ -197,8 +196,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 			// we create new instances as needed.
 			task = new Task();
-			//FIXME: This field is never read.  Consider removing it from the class.
-			task.lang = this.selectedOldLang;
+
 			task.addPropertyChangeListener(this);
 			task.execute();
 
@@ -217,8 +215,6 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	}
 
 	class Task extends SwingWorker<Void, Void> {
-
-		String lang = null;
 
 		/*
 		 * Main task. Executed in background thread.

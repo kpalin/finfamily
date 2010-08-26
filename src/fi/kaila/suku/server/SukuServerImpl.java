@@ -290,10 +290,6 @@ public class SukuServerImpl implements SukuServer {
 					+ "from parent_all as p left join relationNotice as rn on p.rid = rn.rid  "
 					+ "and rn.tag='ADOP' where p.aid = ? order by p.relationrow ";
 
-			// sql = "select p.bid,p.relationrow,p.tag,p.surety "
-			// + "from parent_all as p  where p.aid=?  order by p.relationrow";
-
-			//FIXME: Method may fail to close database resource
 			pstm = this.con.prepareStatement(sql);
 
 			pstm.setInt(1, pid);
@@ -311,6 +307,7 @@ public class SukuServerImpl implements SukuServer {
 
 			}
 			rs.close();
+			pstm.close();
 
 			RelationShortData[] dt = new RelationShortData[0];
 			fam.rels = v.toArray(dt);
@@ -1002,7 +999,6 @@ public class SukuServerImpl implements SukuServer {
 
 			String prev = "";
 
-			//FIXME: Method may fail to close database resource
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 
@@ -1018,6 +1014,8 @@ public class SukuServerImpl implements SukuServer {
 				prev = cc;
 
 			}
+			rs.close();
+			stm.close();
 			res.generalArray = v.toArray(new String[0]);
 
 		} catch (SQLException e) {
@@ -1040,7 +1038,6 @@ public class SukuServerImpl implements SukuServer {
 
 			String prev = "";
 
-			//FIXME: Method may fail to close database resource
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 
@@ -1061,6 +1058,8 @@ public class SukuServerImpl implements SukuServer {
 				prev = cc;
 
 			}
+			rs.close();
+			stm.close();
 			res.generalArray = v.toArray(new String[0]);
 
 		} catch (SQLException e) {
@@ -1076,7 +1075,7 @@ public class SukuServerImpl implements SukuServer {
 				+ "owner_state=?,owner_country=?,owner_email=?,owner_webaddress=?,owner_info=? ";
 
 		try {
-			//FIXME: Method may fail to close database resource
+
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, request.generalArray[0]);
 			pst.setString(2, request.generalArray[1]);
@@ -1088,7 +1087,7 @@ public class SukuServerImpl implements SukuServer {
 			pst.setString(8, request.generalArray[7]);
 			pst.setString(9, request.generalArray[8]);
 			pst.executeUpdate();
-
+			pst.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SukuException("setSukuInfo " + e.getMessage());
@@ -1189,7 +1188,6 @@ public class SukuServerImpl implements SukuServer {
 
 				sql = "select count(*) from unit";
 
-				//FIXME: Method may fail to close database resource
 				stm = mycon.createStatement();
 				rs = stm.executeQuery(sql);
 				while (rs.next()) {
@@ -1197,7 +1195,7 @@ public class SukuServerImpl implements SukuServer {
 							+ " [" + rs.getInt(1) + "]");
 				}
 				rs.close();
-
+				stm.close();
 				sql = "select max(coalesce(modified,createdate)) as maxi from unitnotice";
 
 				stm = mycon.createStatement();
@@ -1211,7 +1209,7 @@ public class SukuServerImpl implements SukuServer {
 					}
 				}
 				rs.close();
-
+				stm.close();
 				// rs = stm.executeQuery("select count(*) from unitnotice");
 				// while (rs.next()) {
 				// sb.append("unitnotice [");
@@ -1299,7 +1297,7 @@ public class SukuServerImpl implements SukuServer {
 		try {
 			String sql = "select fromtext,rule,totext from conversions where langCode = '"
 					+ langu + "' order by fromtext,rule";
-			//FIXME: Method may fail to close database resource
+
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
@@ -1309,6 +1307,8 @@ public class SukuServerImpl implements SukuServer {
 				auxx[2] = rs.getString(3);
 				res.vvTexts.add(auxx);
 			}
+			rs.close();
+			stm.close();
 		} catch (SQLException e) {
 			res.resu = e.getMessage();
 			e.printStackTrace();

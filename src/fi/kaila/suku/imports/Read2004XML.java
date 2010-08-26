@@ -1314,8 +1314,6 @@ public class Read2004XML extends DefaultHandler {
 		try {
 
 			PreparedStatement pst;
-
-			// FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(INSERT_UNIT_LANGUAGE);
 
 			pst.setInt(1, unitPid);
@@ -1337,6 +1335,7 @@ public class Read2004XML extends DefaultHandler {
 			pst.setTimestamp(11, toTimestamp(this.noticeLanguageCreateDate,
 					true));
 			pst.executeUpdate();
+			pst.close();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "importing notice language notice failed",
 					e);
@@ -1357,7 +1356,6 @@ public class Read2004XML extends DefaultHandler {
 		try {
 			PreparedStatement pst;
 
-			// FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(INSERT_RELATION_LANGUAGE);
 
 			pst.setInt(1, rnid);
@@ -1377,6 +1375,7 @@ public class Read2004XML extends DefaultHandler {
 			pst.setTimestamp(9, toTimestamp(this.relationLanguageCreateDate,
 					true));
 			pst.executeUpdate();
+			pst.close();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE,
 					"importing relation language notice failed", e);
@@ -1397,7 +1396,6 @@ public class Read2004XML extends DefaultHandler {
 		try {
 			PreparedStatement pst;
 
-			// FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(INSERT_RELATION_NOTICE);
 
 			pst.setInt(1, rnid);
@@ -1439,6 +1437,7 @@ public class Read2004XML extends DefaultHandler {
 			pst.setTimestamp(17, toTimestamp(this.relationNoticeCreateDate,
 					true));
 			pst.executeUpdate();
+			pst.close();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "importing relation notice failed", e);
 			throw new SAXException(e);
@@ -2005,7 +2004,6 @@ public class Read2004XML extends DefaultHandler {
 				throw new SAXException("Sequence unitnoticeseq sql error");
 			}
 
-			// FIXME: Method may fail to close database resource
 			pst = this.con.prepareStatement(INIT_UNIT_NOTICE);
 
 			pst.setInt(1, unitPid);
@@ -2037,6 +2035,7 @@ public class Read2004XML extends DefaultHandler {
 			}
 			pst.setTimestamp(8, toTimestamp(this.noticeCreateDate, true));
 			pst.executeUpdate();
+			pst.close();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "importing notice init failed", e);
 			throw new SAXException(e);
@@ -2255,7 +2254,7 @@ public class Read2004XML extends DefaultHandler {
 			if (langus != null && langus.length > 1) {
 				for (i = 0; i < langus.length; i++) {
 					if (!langus[i].equals(this.oldCode)) {
-						// FIXME: Method may fail to close database resource
+
 						pst = this.con.prepareStatement(INSERT_UNIT_LANGUAGE);
 
 						pst.setInt(1, unitPid);
@@ -2280,6 +2279,7 @@ public class Read2004XML extends DefaultHandler {
 						pst.setTimestamp(11, now);
 
 						pst.executeUpdate();
+						pst.close();
 					}
 				}
 			}
@@ -2329,7 +2329,7 @@ public class Read2004XML extends DefaultHandler {
 		int unitPid = 0;
 		PreparedStatement pst;
 		try {
-			// FIXME: Method may fail to close database resource
+
 			pst = this.con.prepareStatement(UPDATE_UNIT);
 
 			try {
@@ -2348,7 +2348,7 @@ public class Read2004XML extends DefaultHandler {
 				throw new SAXException("update of unit " + this.unitId
 						+ " failed. count = " + resu);
 			}
-
+			pst.close();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "update unit source failed", e);
 		}
@@ -2406,7 +2406,6 @@ public class Read2004XML extends DefaultHandler {
 					}
 					rs.close();
 
-					// FIXME: Method may fail to close database resource
 					pst = this.con.prepareStatement(INSERT_NAME_NOTICE);
 
 					pst.setInt(1, unitPid);
@@ -2424,33 +2423,30 @@ public class Read2004XML extends DefaultHandler {
 							.setTimestamp(10, toTimestamp(this.unitCreateDate,
 									true));
 					pst.executeUpdate();
-
+					pst.close();
 					logger.fine("UnitName: " + this.unitId + "/"
 							+ this.unitGivenName + "/" + this.unitPrefix + "/"
 							+ this.unitSurName + "/" + unitPostfix);
 
-					// FIXME: runner cannot be null in here
-					if (this.runner != null) {
-						StringBuilder sb = new StringBuilder();
+					StringBuilder sb = new StringBuilder();
 
-						sb.append(this.unitId + ":  ");
-						sb.append(this.unitGivenName);
-						if (this.unitPrefix != null) {
-							sb.append(" ");
-							sb.append(this.unitPrefix);
-						}
-						if (this.unitSurName != null) {
-							sb.append(" ");
-							sb.append(this.unitSurName);
-						}
-						if (this.unitPostfix != null) {
-							sb.append(" ");
-							sb.append(this.unitPostfix);
-						}
-						if (this.runner.setRunnerValue(sb.toString())) {
-							throw new SAXException(Resurses
-									.getString("SUKU_CANCELLED"));
-						}
+					sb.append(this.unitId + ":  ");
+					sb.append(this.unitGivenName);
+					if (this.unitPrefix != null) {
+						sb.append(" ");
+						sb.append(this.unitPrefix);
+					}
+					if (this.unitSurName != null) {
+						sb.append(" ");
+						sb.append(this.unitSurName);
+					}
+					if (this.unitPostfix != null) {
+						sb.append(" ");
+						sb.append(this.unitPostfix);
+					}
+					if (this.runner.setRunnerValue(sb.toString())) {
+						throw new SAXException(Resurses
+								.getString("SUKU_CANCELLED"));
 					}
 
 				} catch (SQLException e) {

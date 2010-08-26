@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -188,13 +189,14 @@ public class ExportGedcomUtil {
 
 		} catch (IOException e) {
 			result.resu = e.getMessage();
-			e.printStackTrace();
+			logger.log(Level.WARNING, "", e);
+
 		} catch (SQLException e) {
 			result.resu = e.getMessage();
-			e.printStackTrace();
+			logger.log(Level.WARNING, "", e);
 		} catch (SukuException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			result.resu = e.getMessage();
+			logger.log(Level.WARNING, "", e);
 		}
 
 		return result;
@@ -389,9 +391,8 @@ public class ExportGedcomUtil {
 					if (includeImages) {
 						if (notice.getMediaFilename() != null
 								&& notice.getMediaData() != null) {
-							MinimumImage minimg = new MinimumImage(indi.gid,
-									notice.getMediaFilename(), notice
-											.getMediaData());
+							MinimumImage minimg = new MinimumImage(notice
+									.getMediaFilename(), notice.getMediaData());
 							nm.append("2 OBJE\r\n");
 							if (notice.getMediaFilename().toLowerCase()
 									.endsWith(".jpg")) {
@@ -909,7 +910,7 @@ public class ExportGedcomUtil {
 				sb.append("1 NAME No user\r\n");
 
 			}
-			rs.close();// TODO
+			rs.close();
 			stm.close();
 		} catch (SQLException e) {
 			sb.append("1 NAME " + e.getMessage() + "\r\n");
@@ -1008,7 +1009,6 @@ public class ExportGedcomUtil {
 
 		sql.append("order by b.pid,a.relationrow ");
 
-		//FIXME: Method may fail to close database resource
 		pst = con.prepareStatement(sql.toString());
 		Vector<MinimumIndividual> p = new Vector<MinimumIndividual>();
 		int previd = 0;
@@ -1032,6 +1032,8 @@ public class ExportGedcomUtil {
 			previd = chil;
 
 		}
+		rs.close();
+		pst.close();
 		if (previd > 0) { // add last child too
 			addChildToFamilies(p, previd, rid);
 		}
@@ -1319,14 +1321,13 @@ public class ExportGedcomUtil {
 	}
 
 	class MinimumImage {
-		//FIXME: This field is never read.  Consider removing it from the class.
-		int indiGid = 0;
+
 		String imgName = null;
 		int counter = 0;
 		byte[] imageData = null;
 
-		MinimumImage(int gid, String name, byte[] data) {
-			this.indiGid = gid;
+		MinimumImage(String name, byte[] data) {
+
 			this.imgName = name;
 			this.imageData = data;
 			this.counter = ++imageCounter;

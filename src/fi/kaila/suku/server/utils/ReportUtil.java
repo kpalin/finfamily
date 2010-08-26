@@ -246,21 +246,9 @@ public class ReportUtil {
 		}
 		rs.close();
 		stm.close();
-		PersonInTables ref;
-		if (gen < 2) {
-
-			ref = personReferences.get(member.getPid());
-			String fromTable = "";
-			if (ref != null) {
-				fromTable = ref.getReferences(0, true, true, false, 0);
-			}
-			if (fromTable.isEmpty()) {
-				// FIXME:???
-			}
-		}
 
 		if (fatherPid > 0) {
-			ref = null;
+			PersonInTables ref = null;
 			if (gen < 2) {
 				ref = personReferences.get(fatherPid);
 			}
@@ -272,7 +260,7 @@ public class ReportUtil {
 			}
 		}
 		if (motherPid > 0) {
-			ref = null;
+			PersonInTables ref = null;
 			if (gen < 2) {
 				ref = personReferences.get(motherPid);
 			}

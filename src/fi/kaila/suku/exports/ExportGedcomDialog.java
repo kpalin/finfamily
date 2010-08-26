@@ -48,7 +48,6 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private JButton cancel;
 	private JTextField fileName;
 	private JLabel timeEstimate;
-	private String selectedOldLang = null;
 	private JComboBox viewList;
 	private String[] viewArray = null;
 	private String viewName = null;
@@ -246,8 +245,6 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 			// we create new instances as needed.
 			task = new Task();
-			//FIXME: This field is never read.  Consider removing it from the class.
-			task.lang = this.selectedOldLang;
 			task.addPropertyChangeListener(this);
 			task.execute();
 
@@ -266,8 +263,6 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	}
 
 	class Task extends SwingWorker<Void, Void> {
-
-		String lang = null;
 
 		/*
 		 * Main task. Executed in background thread.

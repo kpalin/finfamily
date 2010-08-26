@@ -196,7 +196,6 @@ public class ImportOtherUtil {
 				+ "select ?,?,surety,tag,relationrow,modified,createdate from "
 				+ schema + ".relation where rid=? and pid = ?";
 
-		//FIXME: Method may fail to close database resource
 		pst = con.prepareStatement(sql);
 
 		int counter = 0;
@@ -240,7 +239,7 @@ public class ImportOtherUtil {
 			}
 
 		}
-
+		pst.close();
 		String sqln = "insert into relationnotice (rid,rnid,surety,noticerow,tag,description,relationtype,"
 				+ "dateprefix,fromdate,todate,place,notetext,sourcetext,privatetext,modified,createdate) "
 				+ "select ?,?,surety,noticerow,tag,description,relationtype,dateprefix,fromdate,todate,"
@@ -325,7 +324,6 @@ public class ImportOtherUtil {
 		}
 		rs.close();
 
-		//FIXME: Method may fail to close database resource
 		stm = con.createStatement();
 		rs = stm.executeQuery("select nextval('unitnoticeseq')");
 
@@ -336,7 +334,7 @@ public class ImportOtherUtil {
 			throw new SQLException("Sequence unitnoticeseq error");
 		}
 		rs.close();
-
+		stm.close();
 		if (viewId < 0) {
 			sql = "select pid from " + schema + ".unit order by pid";
 			pst = con.prepareStatement(sql);
@@ -394,7 +392,6 @@ public class ImportOtherUtil {
 		String sqln2 = "select pnid from " + schema
 				+ ".unitnotice where pid = ?";
 
-		//FIXME: Method may fail to close database resource
 		PreparedStatement pnst2 = con.prepareStatement(sqln2);
 
 		double counter = 0;
@@ -451,6 +448,7 @@ public class ImportOtherUtil {
 			counter += luku;
 
 		}
+		pnst2.close();
 
 		ViewUtil vu = new ViewUtil(con);
 

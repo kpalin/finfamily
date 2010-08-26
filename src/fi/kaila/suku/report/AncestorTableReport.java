@@ -268,8 +268,7 @@ public class AncestorTableReport extends CommonReport {
 						pname = pp.getAlfaName(true);
 						occu = pp.getOccupation();
 						uu.setPageNo(xpage);
-						IndexPerson ixp = new IndexPerson(tableNumber, xpage,
-								pp);
+						IndexPerson ixp = new IndexPerson(xpage, pp);
 						ipers.add(ixp);
 
 						caller.setRunnerValue("" + xpage);
@@ -465,8 +464,7 @@ public class AncestorTableReport extends CommonReport {
 			lab = new Label(col++, 0, typesTable.getTextValue("ANC_DEAT"));
 			sheet.addCell(lab);
 			StringBuilder tabpage = new StringBuilder();
-			IndexPerson ipprevious = new IndexPerson(0, 0,
-					new PersonShortData());
+			IndexPerson ipprevious = new IndexPerson(0, new PersonShortData());
 			int rowx = 1;
 			for (int i = 1; i < ipx.length; i++) {
 				IndexPerson ipp = ipx[i];
@@ -533,14 +531,12 @@ public class AncestorTableReport extends CommonReport {
 			String report = Suku.kontroller.getFilePath();
 			Utils.openExternalFile(report);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "IOEx", e);
+
 		} catch (RowsExceededException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "RowsExx", e);
 		} catch (WriteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "WriteExx", e);
 		}
 
 	}
@@ -552,13 +548,12 @@ public class AncestorTableReport extends CommonReport {
 	}
 
 	class IndexPerson implements Comparable<IndexPerson> {
-		//FIXME: This field is never read.  Consider removing it from the class.
-		long tableNo = 0;
+
 		PersonShortData pu = null;
 		int page = 0;
 
-		IndexPerson(long tableNo, int page, PersonShortData pp) {
-			this.tableNo = tableNo;
+		IndexPerson(int page, PersonShortData pp) {
+			// this.tableNo = tableNo;
 			this.page = page;
 			this.pu = pp;
 
