@@ -2522,9 +2522,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					label = new Label(1, 0, typesTable
 							.getTextValue("INDEX_TABLES"), arial0bold);
 					sheet.addCell(label);
-					// label = new Label(2, 0, typesTable
-					// .getTextValue("INDEX_ANCESTORS"), arial0bold);
-					// sheet.addCell(label);
+					label = new Label(2, 0, typesTable
+							.getTextValue("INDEX_OTHERS"), arial0bold);
+					sheet.addCell(label);
 
 					label = new Label(3, 0,
 							typesTable.getTextValue("ANC_BIRT"), arial0bold);
@@ -2600,7 +2600,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					for (int i = 0; i < pits.length; i++) {
 						PersonInTables pit = pits[i];
-						if (pit.getOwnerArray().length > 0) {
+						String mefe = pit.getReferences(0, false, false, true,
+								indexTabOffset);
+
+						if (pit.getOwnerArray().length > 0 || !mefe.isEmpty()) {
 							label = new Label(0, row, ""
 									+ pit.shortPerson.getAlfaName(), arial0);
 							sheet.addCell(label);
@@ -2625,8 +2628,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							}
 							// System.out.println("RUN:"
 							// + pit.shortPerson.getAlfaName());
-							String mefe = pit.getReferences(0, false, false,
-									true, indexTabOffset);
 
 							if (!mefe.isEmpty()) {
 								if (!refe.isEmpty()) {
@@ -2642,7 +2643,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(1, row,
 									"" + pit.getOwnerString(), arial0);
 							sheet.addCell(label);
-
+							label = new Label(2, row, "" + mefe, arial0);
+							sheet.addCell(label);
 							if (pit.shortPerson.getBirtDate() != null) {
 								label = new Label(3, row, Utils
 										.nv4(pit.shortPerson.getBirtDate()),
@@ -2661,8 +2663,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							// label = new Label(7, row, "" + kefe, arial0);
 							// sheet.addCell(label);
 							// label = new Label(8, row, "" + cefe, arial0);
-							// sheet.addCell(label);
-							// label = new Label(9, row, "" + mefe, arial0);
 							// sheet.addCell(label);
 
 							float prose = (i * 100f) / pits.length;

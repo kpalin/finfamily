@@ -919,14 +919,24 @@ public abstract class CommonReport {
 
 		}
 
-		PersonInTables pt = personReferences.get(mainTab.getPid());
-		if (pt == null) {
-			logger.warning("Missing reference for " + mainTab.getPid());
-		} else {
-			if (currTabNo > 0) {
-				pt.addOwner(currTabNo);
+		for (int i = 0; i < mainTab.getMemberCount(); i++) {
+			ReportTableMember mem = mainTab.getMember(i);
+			PersonInTables pt = personReferences.get(mem.getPid());
+			if (pt != null) {
+				if (mainTab.getTableNo() > 0) {
+					pt.addOwner(mainTab.getTableNo());
+				}
 			}
 		}
+
+		// PersonInTables pt = personReferences.get(mainTab.getPid());
+		// if (pt == null) {
+		// logger.warning("Missing reference for " + mainTab.getPid());
+		// } else {
+		// if (currTabNo > 0) {
+		// pt.addOwner(currTabNo);
+		// }
+		// }
 
 		for (int j = 0; j < xnotices.length; j++) {
 			UnitNotice nn = xnotices[j];
