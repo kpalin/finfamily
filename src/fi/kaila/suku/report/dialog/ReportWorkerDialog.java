@@ -185,6 +185,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private TaskAddresses taskAddresses;
 	private ReportWorkerDialog self;
 
+	private boolean endSuccess = true;
 	JTabbedPane reportTypePane = null;
 
 	/**
@@ -193,6 +194,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	public static ReportWorkerDialog getRunner() {
 		return runner;
+	}
+
+	/**
+	 * 
+	 * @return true if execution succeeded
+	 */
+	public boolean hasEndedSuccess() {
+		return endSuccess;
 	}
 
 	private JCheckBox commonWithImages = null;
@@ -1308,6 +1317,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 								JOptionPane.ERROR_MESSAGE);
 						logger.log(Level.WARNING,
 								"Exception in background thread", se);
+						endSuccess = false;
 						return null;
 					}
 				}
@@ -1355,18 +1365,20 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						|| commonIndexNames.isSelected()
 						|| commonIndexPlaces.isSelected()) {
 
-					int answer = JOptionPane.showConfirmDialog(runner, Resurses
-							.getString("REPORT.INDEX.CREATE"), Resurses
-							.getString(Resurses.SUKU),
-							JOptionPane.YES_NO_OPTION);
-					if (answer == 0) {
-						taskIndex = new TaskIndex();
-						taskIndex.indexTabOffset = tabOffset;
-						taskIndex.addPropertyChangeListener(self);
-						taskIndex.execute();
+					if (endSuccess) {
+						int answer = JOptionPane.showConfirmDialog(runner,
+								Resurses.getString("REPORT.INDEX.CREATE"),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.YES_NO_OPTION);
+						if (answer == 0) {
+							taskIndex = new TaskIndex();
+							taskIndex.indexTabOffset = tabOffset;
+							taskIndex.addPropertyChangeListener(self);
+							taskIndex.execute();
 
-					} else {
-						self.setVisible(false);
+						} else {
+							self.setVisible(false);
+						}
 					}
 					// if (repos != null) {
 					// for (String repo : repos) {
@@ -2510,6 +2522,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					label = new Label(1, 0, typesTable
 							.getTextValue("INDEX_TABLES"), arial0bold);
 					sheet.addCell(label);
+					// label = new Label(2, 0, typesTable
+					// .getTextValue("INDEX_ANCESTORS"), arial0bold);
+					// sheet.addCell(label);
+
+					label = new Label(3, 0,
+							typesTable.getTextValue("ANC_BIRT"), arial0bold);
+					sheet.addCell(label);
+					label = new Label(4, 0,
+							typesTable.getTextValue("ANC_DEAT"), arial0bold);
+					sheet.addCell(label);
 
 					int row = 2;
 
@@ -2543,7 +2565,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 									PersonInTables pitt = new PersonInTables(
 											pit.shortPerson.getPid());
 									pitt.asChildren = pit.asChildren;
-									pitt.asOwner = pit.asOwner;
+									Long[] aa = pit.getOwnerArray();
+									for (Long a : aa) {
+										pitt.addOwner(a);
+									}
+
 									pitt.asParents = pit.asParents;
 									PersonShortData p = pit.shortPerson;
 									PersonShortData alias = new PersonShortData(
@@ -2574,79 +2600,85 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					for (int i = 0; i < pits.length; i++) {
 						PersonInTables pit = pits[i];
-						label = new Label(0, row, ""
-								+ pit.shortPerson.getAlfaName(), arial0);
-						sheet.addCell(label);
-						String kefe = pit.getReferences(0, true, false, false,
-								indexTabOffset);
-						String cefe = pit.getReferences(0, false, true, false,
-								indexTabOffset);
-						String refe = kefe;
+						if (pit.getOwnerArray().length > 0) {
+							label = new Label(0, row, ""
+									+ pit.shortPerson.getAlfaName(), arial0);
+							sheet.addCell(label);
 
-						if (pit.asOwner == 0) {
+							String kefe = pit.getReferences(0, true, false,
+									false, indexTabOffset);
+							String cefe = pit.getReferences(0, false, true,
+									false, indexTabOffset);
+							String refe = kefe;
 
-							if (refe.isEmpty()) {
-								refe = cefe;
-							} else {
-								if (!cefe.isEmpty()) {
-									refe += "," + cefe;
+							// String ownerString = pit.getOwnerString();
+
+							if (pit.getOwnerString().isEmpty()) {
+
+								if (refe.isEmpty()) {
+									refe = cefe;
+								} else {
+									if (!cefe.isEmpty()) {
+										refe += "," + cefe;
+									}
 								}
 							}
-						}
-						// System.out.println("RUN:"
-						// + pit.shortPerson.getAlfaName());
-						String mefe = pit.getReferences(0, false, false, true,
-								indexTabOffset);
+							// System.out.println("RUN:"
+							// + pit.shortPerson.getAlfaName());
+							String mefe = pit.getReferences(0, false, false,
+									true, indexTabOffset);
 
-						if (!mefe.isEmpty()) {
-							if (!refe.isEmpty()) {
-								refe += "," + mefe;
-							} else {
-								refe = mefe;
+							if (!mefe.isEmpty()) {
+								if (!refe.isEmpty()) {
+									refe += "," + mefe;
+								} else {
+									refe = mefe;
+								}
 							}
-						}
 
-						label = new Label(1, row, "" + refe, arial0);
-						sheet.addCell(label);
+							// label = new Label(1, row, "" + refe, arial0);
+							// sheet.addCell(label);
 
-						if (pit.shortPerson.getBirtDate() != null) {
-							label = new Label(2, row, Utils.nv4(pit.shortPerson
-									.getBirtDate()), arial0);
+							label = new Label(1, row,
+									"" + pit.getOwnerString(), arial0);
 							sheet.addCell(label);
+
+							if (pit.shortPerson.getBirtDate() != null) {
+								label = new Label(3, row, Utils
+										.nv4(pit.shortPerson.getBirtDate()),
+										arial0);
+								sheet.addCell(label);
+							}
+							if (pit.shortPerson.getDeatDate() != null) {
+								label = new Label(4, row, Utils
+										.nv4(pit.shortPerson.getDeatDate()),
+										arial0);
+								sheet.addCell(label);
+							}
+
+							// label = new Label(6, row, "" + pit.pid, arial0);
+							// sheet.addCell(label);
+							// label = new Label(7, row, "" + kefe, arial0);
+							// sheet.addCell(label);
+							// label = new Label(8, row, "" + cefe, arial0);
+							// sheet.addCell(label);
+							// label = new Label(9, row, "" + mefe, arial0);
+							// sheet.addCell(label);
+
+							float prose = (i * 100f) / pits.length;
+							setRunnerValue("" + (int) prose + ";"
+									+ pit.shortPerson.getAlfaName());
+
+							// label = new Label(3, row, ""
+							// + pit.getReferences(0, false, true, false),
+							// arial0);
+							// sheet.addCell(label);
+							// label = new Label(3, row, ""
+							// + pit.getReferences(0, false, false, true),
+							// arial0);
+							// sheet.addCell(label);
+							row++;
 						}
-						if (pit.shortPerson.getDeatDate() != null) {
-							label = new Label(3, row, Utils.nv4(pit.shortPerson
-									.getDeatDate()), arial0);
-							sheet.addCell(label);
-						}
-
-						if (pit.asOwner > 0) {
-							label = new Label(5, row, "" + pit.asOwner, arial0);
-							sheet.addCell(label);
-						}
-
-						// label = new Label(6, row, "" + pit.pid, arial0);
-						// sheet.addCell(label);
-						// label = new Label(7, row, "" + kefe, arial0);
-						// sheet.addCell(label);
-						// label = new Label(8, row, "" + cefe, arial0);
-						// sheet.addCell(label);
-						// label = new Label(9, row, "" + mefe, arial0);
-						// sheet.addCell(label);
-
-						float prose = (i * 100f) / pits.length;
-						setRunnerValue("" + (int) prose + ";"
-								+ pit.shortPerson.getAlfaName());
-
-						// label = new Label(3, row, ""
-						// + pit.getReferences(0, false, true, false),
-						// arial0);
-						// sheet.addCell(label);
-						// label = new Label(3, row, ""
-						// + pit.getReferences(0, false, false, true),
-						// arial0);
-						// sheet.addCell(label);
-						row++;
 					}
 				}
 

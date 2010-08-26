@@ -2884,8 +2884,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				ne.printStackTrace();
 			}
 		}
-
-		this.scrollPane.updateUI();
+		if (this.scrollPane != null) {
+			this.scrollPane.updateUI();
+		}
 
 	}
 

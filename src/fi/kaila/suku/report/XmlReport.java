@@ -114,7 +114,9 @@ public class XmlReport implements ReportInterface {
 						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
 				if (resu != JOptionPane.YES_OPTION) {
-					throw new SukuException("");
+
+					throw new SukuException(Resurses
+							.getString("WARN_REPORT_NOT_SELECTED"));
 				}
 				f.delete();
 
@@ -135,7 +137,9 @@ public class XmlReport implements ReportInterface {
 											JOptionPane.YES_NO_OPTION,
 											JOptionPane.QUESTION_MESSAGE);
 							if (resu != JOptionPane.YES_OPTION) {
-								throw new SukuException("");
+
+								throw new SukuException(Resurses
+										.getString("WARN_REPORT_NOT_SELECTED"));
 							}
 							fileExists = true;
 						}
@@ -153,40 +157,6 @@ public class XmlReport implements ReportInterface {
 					d.mkdirs();
 				}
 			}
-			// //
-			// // css-file is currently embedded in html-file
-			// // and separate css-file is not needed
-			// //
-			// if (translatorIdx == 2 && false) {
-			//
-			// InputStream in = this.getClass().getResourceAsStream(
-			// "/xml/finfamily.css");
-			//
-			// BufferedInputStream bis = new BufferedInputStream(in);
-			//
-			// File ff = new File(folder + "/finfamily.css");
-			// byte[] buffi = new byte[1024];
-			// FileOutputStream fos;
-			//
-			// try {
-			// fos = new FileOutputStream(ff);
-			//
-			// while (true) {
-			//
-			// int retu = in.read(buffi);
-			// if (retu == -1) {
-			// break;
-			// }
-			// fos.write(buffi, 0, retu);
-			//
-			// }
-			// } catch (FileNotFoundException e) {
-			// logger.log(Level.WARNING, "css-file", e);
-			// } catch (IOException e) {
-			// logger.log(Level.WARNING, "css-file", e);
-			// }
-			//
-			// }
 
 			return;
 		}

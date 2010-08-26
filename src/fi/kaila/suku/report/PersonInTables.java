@@ -1,6 +1,8 @@
 package fi.kaila.suku.report;
 
 import java.text.Collator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -33,7 +35,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	/**
 	 * references as owner
 	 */
-	public long asOwner = 0;
+	// public long asOwner = 0;
 	/**
 	 * references as child
 	 */
@@ -46,6 +48,9 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 * other references like spouses parents etc
 	 */
 	public Vector<Long> references = new Vector<Long>();
+
+	// private Vector<Long> asOwners = new Vector<Long>();
+	private LinkedHashMap<Long, Long> asOwners = new LinkedHashMap<Long, Long>();
 
 	// /**
 	// * persons from note text fields i.e. from list of refNames
@@ -167,6 +172,49 @@ public class PersonInTables implements Comparable<PersonInTables> {
 			}
 		}
 		return sx.toString();
+	}
+
+	/**
+	 * 
+	 * @return comma separated list of owners
+	 */
+	public Long[] getOwnerArray() {
+		StringBuilder sx = new StringBuilder();
+		Vector<Long> kk = new Vector<Long>();
+		Iterator<Long> ki = asOwners.keySet().iterator();
+
+		while (ki.hasNext()) {
+			kk.add(ki.next());
+		}
+
+		return kk.toArray(new Long[0]);
+	}
+
+	/**
+	 * 
+	 * @return comma separated list of owners
+	 */
+	public String getOwnerString() {
+		boolean addComma = false;
+		StringBuilder sb = new StringBuilder();
+		Long[] xx = getOwnerArray();
+		for (Long x : xx) {
+			if (addComma) {
+				sb.append(",");
+			}
+			addComma = true;
+			sb.append("" + x);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Add owner to index item
+	 * 
+	 * @param owner
+	 */
+	public void addOwner(long owner) {
+		asOwners.put(owner, owner);
 	}
 
 	@Override

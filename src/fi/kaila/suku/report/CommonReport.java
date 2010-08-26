@@ -294,6 +294,25 @@ public abstract class CommonReport {
 		if (pdata.persLong == null)
 			return;
 
+		for (int i = 0; i < tab.getMemberCount(); i++) {
+			ReportTableMember mem = tab.getMember(i);
+			PersonInTables pt = personReferences.get(mem.getPid());
+			if (pt != null) {
+				if (tab.getTableNo() > 0) {
+					pt.addOwner(tab.getTableNo());
+				}
+			}
+		}
+
+		// PersonInTables pt = personReferences.get(subjectmember.getPid());
+		// if (pt == null) {
+		// logger.warning("Missing reference for " + subjectmember.getPid());
+		// } else {
+		// if (tab.getTableNo() > 0) {
+		// pt.addOwner(tab.getTableNo());
+		// }
+		// }
+
 		UnitNotice[] xnotices = pdata.persLong.getNotices();
 
 		int tableCount = 0;
@@ -493,7 +512,7 @@ public abstract class CommonReport {
 				if (ref != null) {
 					toTable = ref.getReferences(0, true, false, false,
 							tableOffset);
-					if (!toTable.isEmpty() && ref.asOwner > 0) {
+					if (!toTable.isEmpty() && !ref.getOwnerString().isEmpty()) {
 						hasOwnTable = true;
 					}
 
@@ -900,6 +919,15 @@ public abstract class CommonReport {
 
 		}
 
+		PersonInTables pt = personReferences.get(mainTab.getPid());
+		if (pt == null) {
+			logger.warning("Missing reference for " + mainTab.getPid());
+		} else {
+			if (currTabNo > 0) {
+				pt.addOwner(currTabNo);
+			}
+		}
+
 		for (int j = 0; j < xnotices.length; j++) {
 			UnitNotice nn = xnotices[j];
 			if (nn.getTag().equals("NAME")) {
@@ -953,8 +981,8 @@ public abstract class CommonReport {
 
 		for (int j = 0; j < tab.getChild().size(); j++) {
 			ReportTableMember mom = tab.getChild().get(j);
-			PersonInTables pt = personReferences.get(mom.getPid());
-			System.out.println("pt:" + pt);
+			// PersonInTables pt = personReferences.get(mom.getPid());
+			// System.out.println("pt:" + pt);
 			// if (tab.getPid() == 61) {
 			// System.out.println("onx " + tab.getPid());
 			// }
@@ -1139,8 +1167,8 @@ public abstract class CommonReport {
 
 					if (ref != null) {
 						fromTable = "";
-						if (ref.asOwner > 0) {
-							fromTable = "" + ref.asOwner;
+						if (ref.getOwnerArray().length > 0) {
+							fromTable = "" + ref.getOwnerString();
 						}
 						// fromTable = ref.getReferences(tab.getTableNo(), true,
 						// true, false);
@@ -1495,16 +1523,23 @@ public abstract class CommonReport {
 		long tabMom = mom == null ? 0 : mom.getTableNo();
 
 		StringBuilder sb = new StringBuilder();
-		long nxtTab = ref.asOwner;
-
-		if (nxtTab != tabPop && nxtTab != tabMom && nxtTab != 0) {
-
+		// long nxtTab = ref.asOwner;
+		//
+		// if (nxtTab != tabPop && nxtTab != tabMom && nxtTab != 0) {
+		if (ref.getOwnerArray().length > 0) {
 			sb.append(text);
 			sb.append(" ");
-			if (currTab > 0 && currTab > 1) {
+			if (currTab > 1) {
 				sb.append("" + toPrintTable(currTab / 2, true));
 			} else {
-				sb.append("" + toPrintTable(nxtTab, true));
+				boolean addComma = false;
+				for (Long pif : ref.getOwnerArray()) {
+					if (addComma) {
+						sb.append(",");
+					}
+					addComma = true;
+					sb.append("" + toPrintTable(pif, true));
+				}
 			}
 		}
 

@@ -456,11 +456,11 @@ public class Utils {
 					ref = personReferences.get(member.getPid());
 					if (ref == null) {
 						ref = new PersonInTables(member.getPid());
-						ref.asOwner = tab.getTableNo();
+						ref.addOwner(tab.getTableNo());
 						personReferences.put(Integer.valueOf(member.getPid()),
 								ref);
 					} else {
-						ref.asOwner = tab.getTableNo();
+						ref.addOwner(tab.getTableNo());
 
 					}
 

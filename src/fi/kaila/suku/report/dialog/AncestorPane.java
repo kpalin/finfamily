@@ -60,7 +60,7 @@ public class AncestorPane extends JPanel {
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.ANC.NUMBERING")));
 		pane.setLayout(new GridLayout(0, 1));
-		pane.setBounds(rtypx, rtypy, 250, 100);
+		pane.setBounds(rtypx, rtypy, 250, 124);
 
 		ancestorNumberingFormatGroup = new ButtonGroup();
 		JRadioButton formd = new JRadioButton(Resurses
@@ -82,7 +82,13 @@ public class AncestorPane extends JPanel {
 
 		add(pane);
 
-		rtypy += 110;
+		formd = new JRadioButton(Resurses.getString("REPORT.ANCESTOR.TABLES"));
+		formd.setActionCommand(ReportWorkerDialog.SET_ANC_TABLES);
+		// formd.setBounds(10, rtypy, 200, 20);
+		ancestorNumberingFormatGroup.add(formd);
+		pane.add(formd);
+
+		rtypy += 130;
 		ancestorShowFamily = new JCheckBox(Resurses
 				.getString("REPORT.ANC.SHOW.FAMILY"));
 		ancestorShowFamily.setBounds(rtypx, rtypy, 280, 20);
@@ -105,11 +111,12 @@ public class AncestorPane extends JPanel {
 		ancestorShowDescGen.setBounds(0, 0, 40, 20);
 		pp.add(ancestorShowDescGen);
 		rtypy += 22;
-		formd = new JRadioButton(Resurses.getString("REPORT.ANCESTOR.TABLES"));
-		formd.setActionCommand(ReportWorkerDialog.SET_ANC_TABLES);
-		formd.setBounds(10, rtypy, 200, 20);
-		ancestorNumberingFormatGroup.add(formd);
-		add(formd);
+		// formd = new
+		// JRadioButton(Resurses.getString("REPORT.ANCESTOR.TABLES"));
+		// formd.setActionCommand(ReportWorkerDialog.SET_ANC_TABLES);
+		// formd.setBounds(10, rtypy, 200, 20);
+		// ancestorNumberingFormatGroup.add(formd);
+		// add(formd);
 
 		// JLabel lb = new
 		// JLabel(Resurses.getString("REPORT.ANC.SHOW.DESC.GEN"));
