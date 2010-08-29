@@ -150,8 +150,8 @@ public class ImportGedcomUtil {
 							baseFolder = entryName.substring(0, li + 1);
 						}
 						if (this.runner.setRunnerValue("+" + entryName)) {
-							throw new SukuException(
-									Resurses.getString("GEDCOM_CANCELLED"));
+							throw new SukuException(Resurses
+									.getString("GEDCOM_CANCELLED"));
 						}
 						break;
 					} else {
@@ -267,8 +267,8 @@ public class ImportGedcomUtil {
 											+ record.toString(false));
 									if (this.runner.setRunnerValue(sb
 											.toString())) {
-										throw new SukuException(
-												Resurses.getString("GEDCOM_CANCELLED"));
+										throw new SukuException(Resurses
+												.getString("GEDCOM_CANCELLED"));
 									}
 
 								}
@@ -365,8 +365,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(
-							Resurses.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(Resurses
+							.getString("GEDCOM_CANCELLED"));
 				}
 				indiIndex++;
 			}
@@ -389,8 +389,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(
-							Resurses.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(Resurses
+							.getString("GEDCOM_CANCELLED"));
 				}
 				famIndex++;
 			}
@@ -524,7 +524,7 @@ public class ImportGedcomUtil {
 
 		for (int i = 0; i < gedAdopt.size(); i++) {
 
-			//FIXME: Integer is incompatible with expected argument type String
+			// FIXME: Integer is incompatible with expected argument type String
 			GedcomLine line = gedAdopt.get(i);
 			for (int j = 0; j < line.lines.size(); j++) {
 				GedcomLine item = line.lines.get(j);
@@ -775,8 +775,7 @@ public class ImportGedcomUtil {
 								if (rn.getDescription() != null) {
 									rn.setDescription(Utils.nv(rn
 											.getDescription())
-											+ " "
-											+ dparts[3]);
+											+ " " + dparts[3]);
 								} else {
 									rn.setDescription(dparts[3]);
 								}
@@ -977,8 +976,8 @@ public class ImportGedcomUtil {
 		}
 
 		PersonUtil u = new PersonUtil(con);
-		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber,
-				rels.toArray(new Relation[0]));
+		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber, rels
+				.toArray(new Relation[0]));
 		if (resu != null) {
 			unknownLine.add(record.toString() + ":" + resu);
 		}
@@ -987,7 +986,7 @@ public class ImportGedcomUtil {
 	}
 
 	int recordCount = 0;
-	//FIXME: This field is never read.  Consider removing it from the class.
+	// FIXME: This field is never read. Consider removing it from the class.
 	String submitterId = null;
 	String ownerInfo = null;
 	boolean seenTrlr = false;
@@ -1209,19 +1208,9 @@ public class ImportGedcomUtil {
 			|| noti.tag.startsWith("_")) {
 
 				String notiTag = noti.tag;
-				// FIXME: This code seems to be using non-short-circuit logic
-				// (e.g., & or |) rather than short-circuit logic (&& or ||). In
-				// addition, it seem possible that, depending on the value of
-				// the left hand side, you might not want to evaluate the right
-				// hand side (because it would have side effects, could cause an
-				// exception or could be expensive. Non-short-circuit logic
-				// causes both sides of the expression to be evaluated even when
-				// the result can be inferred from knowing the left-hand side.
-				// This can be less efficient and can result in errors if the
-				// left-hand side guards cases when evaluating the right-hand
-				// side can generate an error.
+
 				if (notiTag.equals("BAPM") || notiTag.equals("BARM")
-						| notiTag.equals("BASM") || notiTag.equals("BLES")) {
+						|| notiTag.equals("BASM") || notiTag.equals("BLES")) {
 					notiTag = "CHR";
 				}
 				if (notiTag.startsWith("_"))
@@ -1251,17 +1240,20 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("_CROFT")) {
 						notice.setCroft(detail.lineValue);
 					} else if (detail.tag.equals("PHON")) {
-						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-								: notice.getPrivateText() + ", Tel:"
-										+ detail.lineValue);
+						notice
+								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+										: notice.getPrivateText() + ", Tel:"
+												+ detail.lineValue);
 					} else if (detail.tag.equals("WWW")) {
-						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-								: notice.getPrivateText() + ", www:"
-										+ detail.lineValue);
+						notice
+								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+										: notice.getPrivateText() + ", www:"
+												+ detail.lineValue);
 					} else if (detail.tag.equals("FAX")) {
-						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-								: notice.getPrivateText() + ", Fax:"
-										+ detail.lineValue);
+						notice
+								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+										: notice.getPrivateText() + ", Fax:"
+												+ detail.lineValue);
 					} else if (detail.tag.equals("NOTE")) {
 						if (detail.lineValue.startsWith("@")
 								&& detail.lineValue.indexOf('@', 1) > 1) {
@@ -2263,7 +2255,7 @@ public class ImportGedcomUtil {
 	class GedcomPidEle {
 		public String id;
 		int pid = 0;
-		//FIXME: This field is never read.  Consider removing it from the class.
+		// FIXME: This field is never read. Consider removing it from the class.
 		String sex = "U";
 	}
 

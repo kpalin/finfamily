@@ -584,9 +584,16 @@ public class Utils {
 		if (noticeGivenName == null)
 			return null;
 		int j;
+		String trimmedName = null;
+		int nl = noticeGivenName.length();
+		if (noticeGivenName.endsWith(".") && nl > 1) {
+			trimmedName = noticeGivenName.substring(0, nl - 1);
+		} else {
+			trimmedName = noticeGivenName;
+		}
 		for (int i = 0; i < patronymeEnds.length; i++) {
-			if (noticeGivenName.endsWith(patronymeEnds[i])) {
-				j = noticeGivenName.lastIndexOf(' ');
+			if (trimmedName.endsWith(patronymeEnds[i])) {
+				j = trimmedName.lastIndexOf(' ');
 				if (j > 0) {
 					if (patronymePart)
 						return noticeGivenName.substring(j + 1);
