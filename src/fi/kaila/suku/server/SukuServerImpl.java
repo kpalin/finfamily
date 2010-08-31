@@ -905,7 +905,8 @@ public class SukuServerImpl implements SukuServer {
 		if (path == null) {
 			path = this.openFile;
 			if (path == null) {
-				fam.resu = Resurses.getString("INVALID_FILE");
+				path = "resources/excel/TypesExcel.xls";
+				// fam.resu = Resurses.getString("INVALID_FILE");
 
 			}
 		}

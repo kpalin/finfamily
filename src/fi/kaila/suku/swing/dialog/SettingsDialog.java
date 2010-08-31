@@ -64,8 +64,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		int x = 20;
 		int y = 20;
 
-		SukuData exresp = Suku.kontroller.getSukuData("cmd=excel",
-				"page=languages");
+		// SukuData exresp = Suku.kontroller.getSukuData("cmd=excel",
+		// "page=languages");
 
 		// ExcelBundle.getBundle("excel/FinFamily", "Report", new Locale("fi"));
 		locatexts = ExcelBundle.getLangNames();
