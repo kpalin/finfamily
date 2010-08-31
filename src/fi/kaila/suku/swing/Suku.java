@@ -901,10 +901,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						java.awt.Point p = e.getPoint();
 						int index = this.columnModel.getColumnIndexAtX(p.x);
 						// System.out.print("COLUMNINDEX: [" + index);
-						int realIndex = this.columnModel.getColumn(index)
-								.getModelIndex();
+						int someIndex = table.convertColumnIndexToModel(index);
+
+						// int realIndex = this.columnModel.getColumn(index)
+						// .getModelIndex();
 						// System.out.print(":" + realIndex + ":");
-						int someIndex = Suku.crit.getColAbsIndex(realIndex);
+						// int someIndex = Suku.crit.getColAbsIndex(realIndex);
 						// System.out.println(":" + someIndex + "]");
 						return Suku.this.tableModel.getColumnName(someIndex);
 						// int realIndex = this.columnModel.getColumn(index)
@@ -985,6 +987,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
+	public int convertToView(int viewIdx) {
+		return table.convertColumnIndexToView(viewIdx);
+	}
+
 	@SuppressWarnings("unchecked")
 	private void initSorter(SearchCriteria crit) {
 		TableRowSorter<SukuModel> sorter = (TableRowSorter<SukuModel>) this.table
@@ -997,34 +1003,36 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		for (i = 0; i < crit.getColTableCount(); i++) {
 			ColTable col = crit.getColTable(i);
 			if (col.getCurrentState()) {
+				curre = i;
 				if (col.getColName().equals(Resurses.COLUMN_T_NAME)) {
 					sukucompa = new SukuNameComparator(Resurses.getLanguage());
 					sorter.setComparator(curre, sukucompa);
-					this.table.setRowSorter(sorter);
+
 				} else if (col.getColName().equals(Resurses.COLUMN_T_PID)) {
 					sukucompa = new SukuPidComparator();
 					sorter.setComparator(curre, sukucompa);
-					this.table.setRowSorter(sorter);
+					// this.table.setRowSorter(sorter);
 				} else if (col.getColName().equals(Resurses.COLUMN_T_ISMARR)
 						|| col.getColName().equals(Resurses.COLUMN_T_ISCHILD)
 						|| col.getColName().equals(Resurses.COLUMN_T_ISPARE)) {
 					sukucompa = new SukuNumStringComparator();
 					sorter.setComparator(curre, sukucompa);
-					this.table.setRowSorter(sorter);
+					// this.table.setRowSorter(sorter);
 				} else if (col.getColName().equals(Resurses.COLUMN_T_BIRT)
 						|| col.getColName().equals(Resurses.COLUMN_T_DEAT)) {
 					sukucompa = new SukuDateComparator();
 					sorter.setComparator(curre, sukucompa);
-					this.table.setRowSorter(sorter);
+					// this.table.setRowSorter(sorter);
 				} else {
 					sukucompa = new SukuStringComparator();
 					sorter.setComparator(curre, sukucompa);
-					this.table.setRowSorter(sorter);
+					// this.table.setRowSorter(sorter);
 
 				}
-				curre++;
+				// curre++;
 			}
 		}
+		this.table.setRowSorter(sorter);
 
 	}
 
@@ -3363,6 +3371,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		DbTable(SukuModel model) {
 			super(model);
 			this.model = model;
+		}
+
+		@Override
+		public int convertColumnIndexToView(int modelColumnIndex) {
+			int ii = crit.getViewIndex(modelColumnIndex);
+			// System.out.println("toView[" + modelColumnIndex + "/" + ii +
+			// "]");
+			return ii;
+		}
+
+		@Override
+		public int convertColumnIndexToModel(int viewColumnIndex) {
+			int ii = crit.getModelIndex(viewColumnIndex);
+
+			// System.out.println("toModel[" + viewColumnIndex + "/" + ii +
+			// "]");
+			return ii;
 		}
 
 	}

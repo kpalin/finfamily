@@ -152,7 +152,7 @@ public class SukuModel implements TableModel {
 
 		if (col == null)
 			return null;
-
+		// System.out.println("getcolu:[" + idx + "]" + col.getColName());
 		return Resurses.getString(col.getColName());
 
 	}

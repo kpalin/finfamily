@@ -136,6 +136,36 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 	}
 
+	public int getModelIndex(int viewIdx) {
+		int compa = -1;
+		for (int i = 0; i < coltables.length; i++) {
+			if (coltables[i].getCurrentState()) {
+				compa++;
+			}
+			if (compa == viewIdx) {
+				return i;
+			}
+
+		}
+		return -1;
+
+	}
+
+	public int getViewIndex(int modelIdx) {
+		int compa = -1;
+		for (int i = 0; i < coltables.length; i++) {
+
+			if (coltables[i].getCurrentState()) {
+				compa++;
+			}
+			if (modelIdx == i) {
+				return compa;
+			}
+		}
+		return -1;
+
+	}
+
 	private int getPropIndex(String colName) {
 		int i;
 		for (i = 0; i < this.proptables.length; i++) {
@@ -180,26 +210,26 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		return this.coltables[idx].getColName();
 	}
 
-	/**
-	 * 
-	 * @param idx
-	 * @return absolute SukuModel column index
-	 */
-	public int getColAbsIndex(int idx) {
-		int index = 0;
-
-		for (int i = 0; i < this.coltables.length; i++) {
-			if (this.coltables[i].currState) {
-
-				if (i >= idx) {
-					return index;
-				}
-				index++;
-			}
-		}
-
-		return index;
-	}
+	// /**
+	// *
+	// * @param idx
+	// * @return absolute SukuModel column index
+	// */
+	// public int getColAbsIndex(int idx) {
+	// int index = 0;
+	//
+	// for (int i = 0; i < this.coltables.length; i++) {
+	// if (this.coltables[i].currState) {
+	//
+	// if (i >= idx) {
+	// return index;
+	// }
+	// index++;
+	// }
+	// }
+	//
+	// return index;
+	// }
 
 	/**
 	 * @param prop
@@ -700,19 +730,21 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 * @return column at current idx
 	 */
 	public ColTable getCurrentColTable(int idx) {
-		ColTable col = null;
-		int i;
-		int curre = 0;
-		for (i = 0; i < this.coltables.length; i++) {
-			col = getColTable(i);
-			if (col.getCurrentState()) {
-				if (idx == curre) {
-					return col;
-				}
-				curre++;
-			}
-		}
-		return col;
+
+		return this.coltables[idx];
+		// ColTable col = null;
+		// int i;
+		// int curre = 0;
+		// for (i = 0; i < this.coltables.length; i++) {
+		// col = getColTable(i);
+		// if (col.getCurrentState()) {
+		// if (idx == curre) {
+		// return col;
+		// }
+		// curre++;
+		// }
+		// }
+		// return col;
 	}
 
 	/**

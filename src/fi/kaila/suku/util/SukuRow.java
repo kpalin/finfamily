@@ -151,6 +151,8 @@ public class SukuRow {
 	public Object get(int idx) {
 		StringBuilder sb;
 
+		// int idx = suku.convertToView(vidx);
+
 		// int fullIdx;
 		SearchCriteria crit;
 		try {
