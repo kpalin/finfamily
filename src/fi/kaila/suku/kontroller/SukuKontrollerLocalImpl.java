@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 
 import fi.kaila.suku.server.SukuServer;
 import fi.kaila.suku.server.SukuServerImpl;
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
@@ -31,6 +32,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	private static Logger logger = null;
 
 	private File file = null;
+	private Suku host = null;
 
 	// private File outFile = null;
 
@@ -40,7 +42,8 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	 * 
 	 * @throws SukuException
 	 */
-	public SukuKontrollerLocalImpl() throws SukuException {
+	public SukuKontrollerLocalImpl(Suku host) throws SukuException {
+		this.host = host;
 		this.server = new SukuServerImpl("public");
 		sr = Preferences.userRoot();
 		logger = Logger.getLogger(this.getClass().getName());
@@ -202,7 +205,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		chooser.setDialogTitle("Create " + filter + " file");
 		chooser.setSelectedFile(new File(koe + "/."));
 
-		if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
+		if (chooser.showSaveDialog(host) != JFileChooser.APPROVE_OPTION) {
 			return false;
 		}
 

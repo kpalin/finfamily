@@ -52,7 +52,7 @@ public class Import2004Test extends TestCase {
 	public void testImportTesti() throws SukuException {
 
 		// SukuServer server = new SukuServerImpl();
-		SukuKontrollerLocalImpl kontroller = new SukuKontrollerLocalImpl();
+		SukuKontrollerLocalImpl kontroller = new SukuKontrollerLocalImpl(null);
 
 		kontroller.getConnection(this.host, this.dbname, this.userid,
 				this.password);

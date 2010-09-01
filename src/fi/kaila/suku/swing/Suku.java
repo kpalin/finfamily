@@ -33,6 +33,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -357,7 +359,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.isWebApp = true;
 			kontroller = new SukuKontrollerWebstartImpl();
 		} else {
-			kontroller = new SukuKontrollerLocalImpl();
+			kontroller = new SukuKontrollerLocalImpl(this);
 		}
 
 		String loca = kontroller.getPref(this, Resurses.LOCALE, "xx");
@@ -2342,8 +2344,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void displayMap() {
-		if (this.databaseWindowPersons == null
-				|| this.databaseWindowPersons.length == 0)
+		PersonShortData ppp[] = new PersonShortData[tableMap.size()];
+		Set<Map.Entry<Integer, PersonShortData>> entriesx = tableMap.entrySet();
+		Iterator<Map.Entry<Integer, PersonShortData>> eex = entriesx.iterator();
+		int i = 0;
+		while (eex.hasNext()) {
+			Map.Entry<Integer, PersonShortData> entrx = (Map.Entry<Integer, PersonShortData>) eex
+					.next();
+			ppp[i++] = entrx.getValue();
+		}
+
+		if (ppp.length == 0)
 			return;
 		if (this.suomi == null) {
 
@@ -2383,11 +2394,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		String defaultCountry = Resurses.getDefaultCountry();
 		PlaceLocationData place;
 
-		for (idx = 0; idx < databaseWindowPersons.length; idx++) {
-			paikka = databaseWindowPersons[idx].getBirtPlace();
+		for (idx = 0; idx < ppp.length; idx++) {
+			paikka = ppp[idx].getBirtPlace();
 			if (paikka != null) {
 
-				maa = databaseWindowPersons[idx].getBirthCountry();
+				maa = ppp[idx].getBirthCountry();
 				if (maa != null)
 					maa = maa.toUpperCase();
 
