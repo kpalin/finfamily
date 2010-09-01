@@ -214,12 +214,16 @@ public class ImportGedcomUtil {
 
 			}
 
-			while ((data = bis.read()) >= 0) {
+			// while ((data = bis.read()) >= 0) {
+			while (true) {
+				data = bis.read();
 
 				fileIndex++;
-
-				c = cnvToChar(data, bis);
-
+				if (data < 0) {
+					c = '\n';
+				} else {
+					c = cnvToChar(data, bis);
+				}
 				if (c != '\n' && c != '\r') {
 					if (line.length() > 0 || c != ' ') {
 						line.append(c);
@@ -327,7 +331,8 @@ public class ImportGedcomUtil {
 					line = new StringBuilder();
 
 				}
-
+				if (data < 0)
+					break;
 			}
 			if (record == null) {
 				throw new SukuException(Resurses.getString("GEDCOM_MISSING"));
@@ -372,7 +377,8 @@ public class ImportGedcomUtil {
 			}
 
 			if (!seenTrlr) {
-				resp.resu = Resurses.getString("GEDCOM_NO_TRLR");
+				unknownLine.add(Resurses.getString("GEDCOM_NO_TRLR") + "\r\n");
+
 			}
 			logger.info("Starting to do FAM");
 			this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
@@ -1137,13 +1143,23 @@ public class ImportGedcomUtil {
 								}
 
 							}
-						} else if (detail.tag.equals("SURN")
-								|| detail.tag.equals("GIVN")) {
-							if (privSource.length() > 0) {
-								privSource.append(";");
+						} else if (detail.tag.equals("GIVN")) {
+
+							if (!notice.getGivenname().equals(detail.lineValue)) {
+								if (privSource.length() > 0) {
+									privSource.append(";");
+								}
+								privSource.append(detail.lineValue);
+								unknownLine.add(detail.toString());
 							}
-							privSource.append(detail.lineValue);
-							unknownLine.add(detail.toString());
+						} else if (detail.tag.equals("SURN")) {
+							if (!notice.getSurname().equals(detail.lineValue)) {
+								if (privSource.length() > 0) {
+									privSource.append(";");
+								}
+								privSource.append(detail.lineValue);
+								unknownLine.add(detail.toString());
+							}
 						} else if (detail.tag.equals("NOTE")) {
 							if (notice.getDescription() == null) {
 								notice.setDescription(detail.lineValue);

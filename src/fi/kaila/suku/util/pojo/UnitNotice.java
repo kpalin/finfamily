@@ -882,14 +882,15 @@ public class UnitNotice implements Serializable {
 	private String nv(String text) {
 		if (text == null)
 			return "";
-		return text;
+		return text.trim();
 	}
 
 	private String vn(String text) {
 		if (text == null || text.length() == 0) {
 			text = null;
 		}
-		return text;
+
+		return text.trim();
 	}
 
 }
