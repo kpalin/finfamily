@@ -1226,7 +1226,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		lrivi += 24;
 
-		if (notice.getTag().equals("TABLE")) {
+		if (notice.getTag().equals("TABLE") || notice.getTag().equals("FAMT")) {
 			mustFarm = false;
 			mustAddress = false;
 			mustNote = true;
