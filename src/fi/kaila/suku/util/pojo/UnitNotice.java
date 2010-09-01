@@ -889,8 +889,10 @@ public class UnitNotice implements Serializable {
 		if (text == null || text.length() == 0) {
 			text = null;
 		}
-
-		return text.trim();
+		if (text != null) {
+			return text.trim();
+		}
+		return null;
 	}
 
 }

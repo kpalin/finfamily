@@ -1309,25 +1309,25 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		for (int i = noticeFirst; i < tabCount; i++) {
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 			String tag = pane.notice.getTag();
-			if (tag.equals("BIRT")) {
+			if (birtCount == 1 && tag.equals("BIRT")) {
 				// pane.setToBeDeleted(birtDate.getText().isEmpty()
 				// && birtPlace.getText().isEmpty());
 				pane.date.setTextFromDate(birtDate.getText());
 				pane.place.setText(birtPlace.getText());
 			}
-			if (tag.equals("CHR")) {
+			if (chrCount == 1 && tag.equals("CHR")) {
 				// pane.setToBeDeleted(chrDate.getText().isEmpty()
 				// && chrPlace.getText().isEmpty());
 				pane.date.setTextFromDate(chrDate.getText());
 				pane.place.setText(chrPlace.getText());
 			}
-			if (tag.equals("DEAT")) {
+			if (deatCount == 1 && tag.equals("DEAT")) {
 				// pane.setToBeDeleted(deatDate.getText().isEmpty()
 				// && deatPlace.getText().isEmpty());
 				pane.date.setTextFromDate(deatDate.getText());
 				pane.place.setText(deatPlace.getText());
 			}
-			if (tag.equals("BURI")) {
+			if (buriCount == 1 && tag.equals("BURI")) {
 				// pane.setToBeDeleted(buriDate.getText().isEmpty()
 				// && buriPlace.getText().isEmpty());
 				pane.date.setTextFromDate(buriDate.getText());

@@ -313,12 +313,12 @@ public class PersonView extends JPanel implements ChangeListener {
 					//
 					// if previous was the main pane
 					// then update notices
-					// else update main pane
+					// else update main pane if it was a notice
 					//
 					if (previousNoticeIndex == midx) {
 						main.updateNameNotices();
 						main.updateRestNotices();
-					} else {
+					} else if (previousNoticeIndex > midx + 1) {
 						main.updateName();
 						main.updateRest();
 					}

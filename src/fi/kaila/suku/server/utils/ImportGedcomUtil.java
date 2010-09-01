@@ -531,6 +531,8 @@ public class ImportGedcomUtil {
 		for (int i = 0; i < gedAdopt.size(); i++) {
 
 			// FIXME: Integer is incompatible with expected argument type String
+			// Note: This method is no longer used and will probably be removed
+			// anyway
 			GedcomLine line = gedAdopt.get(i);
 			for (int j = 0; j < line.lines.size(); j++) {
 				GedcomLine item = line.lines.get(j);
@@ -992,8 +994,7 @@ public class ImportGedcomUtil {
 	}
 
 	int recordCount = 0;
-	// FIXME: This field is never read. Consider removing it from the class.
-	String submitterId = null;
+
 	String ownerInfo = null;
 	boolean seenTrlr = false;
 
@@ -1341,7 +1342,7 @@ public class ImportGedcomUtil {
 		if (resp.resultPid > 0) {
 			GedcomPidEle pide = new GedcomPidEle();
 			pide.pid = resp.resultPid;
-			pide.sex = pers.getSex();
+			// pide.sex = pers.getSex();
 			pide.id = record.id;
 
 			gedPid.put(record.id, pide);
@@ -2271,8 +2272,7 @@ public class ImportGedcomUtil {
 	class GedcomPidEle {
 		public String id;
 		int pid = 0;
-		// FIXME: This field is never read. Consider removing it from the class.
-		String sex = "U";
+
 	}
 
 	class GedcomFams {
