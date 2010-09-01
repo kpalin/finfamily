@@ -379,9 +379,7 @@ public class SukuServerImpl implements SukuServer {
 		logger.fine(sb.toString());
 
 		HashMap<String, String> map = new HashMap<String, String>();
-		int pid;
-		String tmp;
-		String aux;
+
 		for (int i = 0; i < params.length; i++) {
 			auxes = params[i].split("=");
 			if (auxes.length == 2) {

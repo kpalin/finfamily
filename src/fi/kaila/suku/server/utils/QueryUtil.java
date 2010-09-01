@@ -353,7 +353,7 @@ public class QueryUtil {
 					}
 					isFirstCriteria = false;
 
-					String[] parts = searchFullText.split(" ");
+					String[] parts = trimSpaces(searchFullText).split(" ");
 
 					free.append("(");
 					int valueAndOrNot = 0;
@@ -578,6 +578,25 @@ public class QueryUtil {
 		SukuData qlist = new SukuData();
 		qlist.pers = personList.toArray(dt);
 		return qlist;
+	}
+
+	private String trimSpaces(String searchFullText) {
+		StringBuilder sb = new StringBuilder();
+		boolean wasSpace = true;
+		for (int i = 0; i < searchFullText.length(); i++) {
+			char c = searchFullText.charAt(i);
+			if (c == ' ') {
+				if (wasSpace) {
+					continue;
+				} else {
+					wasSpace = true;
+				}
+			} else {
+				wasSpace = false;
+			}
+			sb.append(c);
+		}
+		return sb.toString();
 	}
 
 	/**
