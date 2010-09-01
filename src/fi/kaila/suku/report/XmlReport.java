@@ -179,7 +179,7 @@ public class XmlReport implements ReportInterface {
 		chooser.setDialogTitle("Create " + filter + " file");
 		chooser.setSelectedFile(new File(koe + "/."));
 
-		if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
+		if (chooser.showSaveDialog(parent) != JFileChooser.APPROVE_OPTION) {
 			return null;
 		}
 
