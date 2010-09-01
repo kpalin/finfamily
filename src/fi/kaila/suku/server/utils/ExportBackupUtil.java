@@ -846,32 +846,32 @@ public class ExportBackupUtil {
 				if (address != null) {
 					ele = document.createElement("street");
 					ele.setTextContent(address);
-					noticeEle.appendChild(ele);
+					addEle.appendChild(ele);
 				}
 				if (postoff != null) {
 					ele = document.createElement("postoffice");
 					ele.setTextContent(postoff);
-					noticeEle.appendChild(ele);
+					addEle.appendChild(ele);
 				}
 				if (postcode != null) {
 					ele = document.createElement("postalcode");
 					ele.setTextContent(postcode);
-					noticeEle.appendChild(ele);
+					addEle.appendChild(ele);
 				}
 				if (state != null) {
 					ele = document.createElement("state");
 					ele.setTextContent(state);
-					noticeEle.appendChild(ele);
+					addEle.appendChild(ele);
 				}
 				if (country != null) {
 					ele = document.createElement("country");
 					ele.setTextContent(country);
-					noticeEle.appendChild(ele);
+					addEle.appendChild(ele);
 				}
 				if (email != null) {
 					ele = document.createElement("email");
 					ele.setTextContent(email);
-					noticeEle.appendChild(ele);
+					addEle.appendChild(ele);
 				}
 
 			}
@@ -1037,7 +1037,7 @@ public class ExportBackupUtil {
 		ResultSet rs = pstm.executeQuery();
 		Element ele;
 		while (rs.next()) {
-			String tag = rs.getString("tag");
+			// String tag = rs.getString("tag");
 			String langCode = rs.getString("langcode");
 			String nType = rs.getString("noticetype");
 			String desc = rs.getString("description");

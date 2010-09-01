@@ -597,7 +597,7 @@ public class Utils {
 				if (j > 0) {
 					if (patronymePart)
 						return noticeGivenName.substring(j + 1);
-					return noticeGivenName.substring(0, j);
+					return noticeGivenName.substring(0, j).trim();
 				} else {
 					if (patronymePart)
 						return noticeGivenName;
@@ -608,7 +608,7 @@ public class Utils {
 		if (patronymePart)
 			return null;
 
-		return noticeGivenName;
+		return noticeGivenName.trim();
 	}
 
 	/**
