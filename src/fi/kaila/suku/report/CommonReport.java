@@ -2085,7 +2085,7 @@ public abstract class CommonReport {
 		StringBuilder sb = new StringBuilder();
 		Vector<String> v = new Vector<String>();
 		boolean wasWhite = false;
-		boolean wasNl = false;
+		boolean wasNl = true;
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
 			if (c == ' ' || c == '\r' || c == '\t') {
@@ -2114,7 +2114,7 @@ public abstract class CommonReport {
 		}
 		for (int i = 0; i < v.size(); i++) {
 			String aux = v.get(i);
-			if (i == 0 && aux.charAt(0) == '*') {
+			if (i == 0 && aux.length() > 0 && aux.charAt(0) == '*') {
 				repoWriter.addText(bt);
 				int fontSize = bt.getFontSize();
 				if (aux.length() > 2 && aux.substring(0, 2).equals("**")) {
@@ -2496,14 +2496,40 @@ public abstract class CommonReport {
 		if (text == null)
 			return null;
 
-		String tek = text.trim();
+		String tek = spaceTrim(text);
+
 		if (tek.equals(".")) {
 			return "";
 		}
 		if (tek.endsWith(".")) {
 			tek = tek.substring(0, tek.length() - 1);
 		}
-		return tek.trim();
+		return spaceTrim(tek);
+	}
+
+	private String spaceTrim(String text) {
+		StringBuilder sb = new StringBuilder();
+		int lastSpace = -1;
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if (c != ' ' || sb.length() > 0) {
+				sb.append(c);
+			}
+			if (c == ' ' || c == '\n' || c == '\r' || c == '\t') {
+				if (lastSpace < 0) {
+					lastSpace = sb.length() - 1;
+				}
+			} else {
+				lastSpace = -1;
+			}
+		}
+
+		if (lastSpace > 0) {
+			return sb.toString().substring(0, lastSpace);
+		} else {
+			return sb.toString();
+		}
+
 	}
 
 	protected String nv(String text) {
