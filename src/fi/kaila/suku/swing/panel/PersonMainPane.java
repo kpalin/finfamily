@@ -1201,7 +1201,13 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					}
 
 					// pane.prefix.setText(name);
-					String tmp = Utils.toProper(name);
+
+					String tmp = null;
+					if (pane.notice.getPnid() == 0) {
+						tmp = Utils.toProper(name);
+					} else {
+						tmp = name;
+					}
 					pane.surname.setText(tmp);
 					pane.postfix.setText(postfix.getText());
 				}
