@@ -1,6 +1,14 @@
 FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
+
+
+Release 714 on 3 sep 2010
+
+* fixed problems in import from Suku2004
+* Allowing surnames to begin with lower case letter at update. 
+  For new surnames the 1st letter is capitalized
+
 Release 710 on 1 sep 2010
 
 * Family notice to use same layout as Table notice
