@@ -307,18 +307,18 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private int showCounter = 0;
 
 	/**
-	 * The runner is the progressbar on the import dialog. Set new values to the
-	 * progress bar using this command
+	 * The runner is the progress bar on the import dialog. Set new values to
+	 * the progress bar using this command
 	 * 
-	 * the text may be split in two parts seperated by ";"
+	 * the text may be split in two parts separated by ";"
 	 * 
 	 * if the text is divided then part before ; must be an integer number
 	 * between 0-100 for the progress bar. Text behind ; or if ; does not exist
-	 * is diplayed above the progress bar
+	 * is displayed above the progress bar
 	 * 
 	 * 
 	 * @param juttu
-	 * @return true if cancel command given
+	 * @return true if cancel command has been issued
 	 */
 	public boolean setRunnerValue(String juttu) {
 		String[] kaksi = juttu.split(";");
@@ -326,20 +326,24 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 			int progress = 0;
 			try {
 				progress = Integer.parseInt(kaksi[0]);
+
 				if (progress == 0) {
 					startTime = System.currentTimeMillis();
-					timerText = Resurses.getString("IMPORT_TIME_LEFT");
+					timerText = null;// Resurses.getString("IMPORT_TIME_LEFT");
 					showCounter = 10;
 				}
+				progressBar.setIndeterminate(false);
+				progressBar.setValue(progress);
+				textContent.setText(kaksi[1]);
 			} catch (NumberFormatException ne) {
-				textContent.setText(juttu);
-				progressBar.setIndeterminate(true);
-				progressBar.setValue(0);
-				return isCancelled;
+				System.out.println("juttu=" + juttu);
+				// textContent.setText(juttu);
+				// progressBar.setIndeterminate(true);
+				// progressBar.setValue(0);
+				// timeEstimate.setText("Cancelled");
+				// return isCancelled;
 			}
 
-			progressBar.setValue(progress);
-			textContent.setText(kaksi[1]);
 			showCounter--;
 			if (progress > 0 && showCounter < 0 && timerText != null) {
 				showCounter = 10;
@@ -360,11 +364,17 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 				}
 			}
 		} else {
-			textContent.setText(juttu);
 
+			textContent.setText(juttu);
+			int progre = progressBar.getValue();
+			if (progre > 95) {
+				progre = 0;
+
+			} else {
+				progre++;
+			}
 			progressBar.setIndeterminate(true);
-			progressBar.setValue(0);
-			timeEstimate.setText("");
+			progressBar.setValue(progre);
 		}
 		return isCancelled;
 	}

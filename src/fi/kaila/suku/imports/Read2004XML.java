@@ -60,6 +60,9 @@ public class Read2004XML extends DefaultHandler {
 	int laskuriConversion = 0;
 	int laskuriViews = 0;
 
+	String lastUnitId = null;
+	int lastMaxAid = 0;
+
 	private String qName = null;
 	private StringBuffer currentChars = null;
 	private String finFamilyVersion = null;
@@ -1065,13 +1068,13 @@ public class Read2004XML extends DefaultHandler {
 					pst.setString(2, this.sourceNoteText);
 
 					pst.executeUpdate();
-					if (this.runner != null) {
-
-						if (this.runner.setRunnerValue("SourceId: " + sid)) {
-							throw new SAXException(Resurses
-									.getString("SUKU_CANCELLED"));
-						}
-					}
+					// if (this.runner != null) {
+					//
+					// if (this.runner.setRunnerValue("SourceId: " + sid)) {
+					// throw new SAXException(Resurses
+					// .getString("SUKU_CANCELLED"));
+					// }
+					// }
 
 				} catch (SQLException e) {
 					logger.log(Level.SEVERE, "importing sources failed", e);
@@ -1097,12 +1100,12 @@ public class Read2004XML extends DefaultHandler {
 				pst.setString(2, this.groupName);
 				pst.setString(3, this.groupDescription);
 				pst.executeUpdate();
-				if (this.runner != null) {
-					if (this.runner.setRunnerValue("GroupId: " + this.groupId)) {
-						throw new SAXException(Resurses
-								.getString("SUKU_CANCELLED"));
-					}
-				}
+				// if (this.runner != null) {
+				// if (this.runner.setRunnerValue("GroupId: " + this.groupId)) {
+				// throw new SAXException(Resurses
+				// .getString("SUKU_CANCELLED"));
+				// }
+				// }
 				laskuriGroups++;
 			} catch (SQLException e) {
 				logger.log(Level.WARNING, "Problem with inserting groups ", e);
@@ -1189,8 +1192,8 @@ public class Read2004XML extends DefaultHandler {
 
 				if (xx == null) {
 					// add to db only if not there yet
-					this.runner.setRunnerValue("conv [" + newLang + "]"
-							+ this.conversionsFrom);
+					// this.runner.setRunnerValue("conv [" + newLang + "]"
+					// + this.conversionsFrom);
 					try {
 						pst = this.con.prepareStatement(INSERT_CONVERSION);
 						pst.setString(1, this.conversionsFrom.toLowerCase());
@@ -1760,13 +1763,13 @@ public class Read2004XML extends DefaultHandler {
 						errorLine.add(err + " [" + se.getMessage() + "]");
 						logger.log(Level.WARNING, err, se);
 					}
-					if (this.runner != null) {
-						if (this.runner.setRunnerValue("RelationId: " + rid)) {
-							throw new SAXException(Resurses
-									.getString("SUKU_CANCELLED"));
-						}
-
-					}
+					// if (this.runner != null) {
+					// if (this.runner.setRunnerValue("RelationId: " + rid)) {
+					// throw new SAXException(Resurses
+					// .getString("SUKU_CANCELLED"));
+					// }
+					//
+					// }
 
 					if (this.relationBegDateFrom != null
 							|| this.relationBegPlace != null
@@ -1927,30 +1930,18 @@ public class Read2004XML extends DefaultHandler {
 						if (langus != null && langus.length > 1) {
 							for (i = 0; i < langus.length; i++) {
 								if (!langus[i].equals(this.oldCode)) {
-									pst = this.con
-											.prepareStatement("select nextval('relationseq')");
-
-									rs = pst.executeQuery();
-									if (rs.next()) {
-										rid = rs.getInt(1);
-									} else {
-										throw new SAXException(
-												"Sequence relationseq error");
-									}
-									rs.close();
 
 									pst = this.con
 											.prepareStatement(INSERT_RELATION_LANGUAGE);
 									pst.setInt(1, rnid);
-
-									pst.setString(2, toLangCode(langus[i]));
-
-									pst.setString(3, langText(
+									pst.setInt(2, rid);
+									pst.setString(3, toLangCode(langus[i]));
+									pst.setString(4, langText(
 											this.relationEndType, langus[i]));
-									pst.setString(4, null);
-									pst.setString(5, langText(
+									pst.setString(5, null);
+									pst.setString(6, langText(
 											this.relationEndPlace, langus[i]));
-									pst.setString(6, null);
+									pst.setString(7, null);
 									pst.setNull(8, Types.TIMESTAMP);
 									Timestamp now = new Timestamp(System
 											.currentTimeMillis());
@@ -1963,7 +1954,19 @@ public class Read2004XML extends DefaultHandler {
 					}
 				}
 			}
-			this.runner.setRunnerValue("rid [" + rid + "]");
+
+			if (lastUnitId != null && lastUnitId.length() > 1) {
+				int last = Integer.parseInt(lastUnitId.substring(1));
+				if (aid >= lastMaxAid) {
+					lastMaxAid = aid;
+				}
+				double prose = (lastMaxAid * 100) / last;
+				int intprose = (int) prose;
+				if (intprose < 100) {
+
+					this.runner.setRunnerValue("" + intprose + ";" + rid);
+				}
+			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "importing relation failed", e);
 			throw new SAXException(e);
@@ -2040,13 +2043,16 @@ public class Read2004XML extends DefaultHandler {
 			logger.log(Level.SEVERE, "importing notice init failed", e);
 			throw new SAXException(e);
 		}
-		relationLanguage = null;
-		relationLanguageType = null;
-		relationLanguageDescription = null;
-		relationLanguagePlace = null;
-		relationLanguageNoteText = null;
-		relationLanguageModifiedDate = null;
-		relationLanguageCreateDate = null;
+
+		noticeLanguage = null;
+		noticeLanguageType = null;
+		noticeLanguageDescription = null;
+		noticeLanguagePlace = null;
+		noticeLanguageMediaTitleText = null;
+		noticeLanguageNoteText = null;
+		noticeLanguageModifiedDate = null;
+		noticeLanguageCreateDate = null;
+
 	}
 
 	private void updateUnitNotice() throws SAXException {
@@ -2383,7 +2389,7 @@ public class Read2004XML extends DefaultHandler {
 			}
 			pst.setTimestamp(6, toTimestamp(this.unitCreateDate, true));
 			pst.executeUpdate();
-			this.runner.setRunnerValue("pid [" + unitPid + "]");
+			// this.runner.setRunnerValue("pid [" + unitPid + "]");
 			logger.fine("Unit: " + this.unitId + "/" + this.unitSex + "/"
 					+ this.unitSourceId);
 
@@ -2431,6 +2437,7 @@ public class Read2004XML extends DefaultHandler {
 					StringBuilder sb = new StringBuilder();
 
 					sb.append(this.unitId + ":  ");
+					lastUnitId = this.unitId;
 					sb.append(this.unitGivenName);
 					if (this.unitPrefix != null) {
 						sb.append(" ");
