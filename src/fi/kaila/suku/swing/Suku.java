@@ -1258,8 +1258,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				schemas.setVisible(true);
 
 				schema = schemas.getSchema();
-				if (schema == null)
+				if (schema == null) {
+					this.isConnected = 1;
 					return;
+				}
 			}
 
 			kontroller.getSukuData("cmd=schema", "type=set", "name=" + schema);
@@ -2970,9 +2972,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void enableCommands() {
 		// mConnect.setEnabled(isConnected == 0);
-		mImport.setEnabled(isConnected != 0);
-		mImport2004.setEnabled(isConnected != 0);
-		mImportGedcom.setEnabled(isConnected != 0);
+		mImport.setEnabled(isConnected > 0);
+		mImport2004.setEnabled(isConnected > 0);
+		mImportGedcom.setEnabled(isConnected > 0);
 		mExport.setEnabled(isConnected == 2);
 		mExportGedcom.setEnabled(isConnected == 2);
 		mExportBackup.setEnabled(isConnected == 2);
