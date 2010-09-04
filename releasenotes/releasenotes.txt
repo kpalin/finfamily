@@ -2,11 +2,12 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
-Release 730 on 4 sep 2010
+Release 735 on 4 sep 2010
 
 * Bugfixes
   - to text search and
   - Cancel button in runner dialogs
+  - Child spouse numbering
 
 Release 714 on 3 sep 2010
 
