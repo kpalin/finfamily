@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 
 import jxl.Workbook;
 import jxl.write.Label;
-import jxl.write.Number;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
@@ -81,7 +80,7 @@ public class GenGraphReport extends CommonReport {
 			// SukuData is a holder of certain classes used mainly to transfer
 			// these from
 			// server part to client part and vice versa
-			// 
+			//
 			// below command fetches 1 PersonShortData item into array
 			// vlist.pers
 			// and all its Relation into array
@@ -114,7 +113,6 @@ public class GenGraphReport extends CommonReport {
 			Label label = new Label(0, 0, "Tulos");
 			sheet.addCell(label);
 			int row = 2;
-			Number number;
 			for (int i = 0; i < vlist.pers.length; i++) {
 				PersonShortData pp = vlist.pers[i];
 
@@ -167,9 +165,10 @@ public class GenGraphReport extends CommonReport {
 		} catch (SukuException e) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
 					e);
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ":" + e.getMessage());
+			JOptionPane.showMessageDialog(
+					caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + ":"
+							+ e.getMessage());
 			return;
 		}
 

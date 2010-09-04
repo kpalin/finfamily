@@ -1289,6 +1289,7 @@ public class ExportGedcomUtil {
 			if (mm == null) {
 				logger.warning("person for " + dad + "does not exist");
 			}
+			// FIXME: NPE
 			return mm.gid;
 		}
 
@@ -1299,6 +1300,7 @@ public class ExportGedcomUtil {
 			if (mm == null) {
 				logger.warning("person for " + mom + "does not exist");
 			}
+			// FIXME: NPE
 			return mm.gid;
 		}
 
@@ -1313,6 +1315,7 @@ public class ExportGedcomUtil {
 			if (mm == null) {
 				logger.warning("child for " + cid + "does not exist");
 			}
+			// FIXME: NPE
 			return mm.gid;
 		}
 	}
