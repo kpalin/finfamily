@@ -214,6 +214,7 @@ public class ExportGedcomUtil {
 				zip.write(bom16);
 				return;
 			}
+			// TODO: Set_Ansel, Set_Ascii, Set_None ?
 		} catch (IOException e) {
 			logger.warning("Wrining bom: " + e.getMessage());
 			e.printStackTrace();

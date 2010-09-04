@@ -76,14 +76,15 @@ public class AncestorTableReport extends CommonReport {
 		} catch (SukuException e) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
 					e);
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ":" + e.getMessage());
+			JOptionPane.showMessageDialog(
+					caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + ":"
+							+ e.getMessage());
 		}
 		if (vlist.resu != null) {
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ " [" + vlist.resu + "]");
+			JOptionPane.showMessageDialog(caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + " ["
+							+ vlist.resu + "]");
 			return;
 		}
 		tables = vlist.tables;
@@ -162,7 +163,6 @@ public class AncestorTableReport extends CommonReport {
 							if (rpux != null) {
 								page[i * 2 + 1] = rpux;
 								if (i > 7
-										&& rpux != null
 										&& rpux.getFatherPid()
 												+ rpux.getMotherPid() > 0) {
 									tabNext.add(rpux);
@@ -242,8 +242,8 @@ public class AncestorTableReport extends CommonReport {
 						} catch (SukuException e1) {
 							logger.log(Level.WARNING, "background reporting",
 									e1);
-							JOptionPane.showMessageDialog(caller, e1
-									.getMessage());
+							JOptionPane.showMessageDialog(caller,
+									e1.getMessage());
 							return;
 						}
 
@@ -417,9 +417,9 @@ public class AncestorTableReport extends CommonReport {
 						ReportUnit rru = vlist.reportUnits.get(pid);
 						if (rru != null && rru.getPageNo() > 0 && xpage > 1) {
 
-							label = new Label(0, 2, typesTable
-									.getTextValue("ANC_FROM")
-									+ " " + rru.getPageNo());
+							label = new Label(0, 2,
+									typesTable.getTextValue("ANC_FROM") + " "
+											+ rru.getPageNo());
 							sheet.addCell(label);
 						}
 					}

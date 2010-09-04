@@ -39,7 +39,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 	// public void createSukuDb() throws SukuException {
 	// // TODO Auto-generated method stub
-	//		
+	//
 	// }
 
 	/**
@@ -112,15 +112,13 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 					}
 				}
 				String aux = new String(b, 0, pit);
-				if (aux != null) {
-					String auxes[] = aux.split("/");
+				String auxes[] = aux.split("/");
 
-					this.userno = auxes[0];
-					if (auxes.length > 1) {
-						Suku.serverVersion = auxes[1];
-					}
-
+				this.userno = auxes[0];
+				if (auxes.length > 1) {
+					Suku.serverVersion = auxes[1];
 				}
+
 				// System.out.println("oli se: " + pit + "='" + this.userno +
 				// "'");
 				in.close();
@@ -143,7 +141,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	// * import suku 2004 backup from local filesystem
 	// * @throws SukuException
 	// */
-	//	
+	//
 	// public void import2004Data() throws SukuException {
 	//
 	// FileOpenService fos;
@@ -349,8 +347,8 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			fc = ps.get(keyURL);
 
 			// FileContents fc = ps.get(keyURL);
-			DataOutputStream os = new DataOutputStream(fc
-					.getOutputStream(false));
+			DataOutputStream os = new DataOutputStream(
+					fc.getOutputStream(false));
 
 			os.writeUTF(value);
 			os.flush();
@@ -478,8 +476,8 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Referer", "/SSS/" + this.userno + "/"
 					+ fileName + "/");
-			con.setRequestProperty("Content-Length", String
-					.valueOf(bytes.length));
+			con.setRequestProperty("Content-Length",
+					String.valueOf(bytes.length));
 			dos = new DataOutputStream(con.getOutputStream());
 			dos.writeBytes(twoHyphens + boundary + lineEnd);
 			dos.writeBytes("Content-Disposition: form-data; name=\"upload\";"

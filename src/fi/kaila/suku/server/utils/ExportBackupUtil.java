@@ -477,7 +477,7 @@ public class ExportBackupUtil {
 			} else {
 				xpid = apid;
 				ypid = bpid;
-				xtag = null;
+				// xtag = null;
 				xtaga = taga;
 				xtagb = tagb;
 				xrow = arow;
