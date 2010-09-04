@@ -350,7 +350,7 @@ public class XmlReport implements ReportInterface {
 		for (int i = 0; i < bt.getCount(); i++) {
 			String value = bt.getText(i);
 			String currStyle;
-			if (value != null && value != "") {
+			if (value != null && !value.isEmpty()) {
 				if (bt.isBold(i) && bt.isUnderline(i) && bt.isItalic(i)) {
 					currStyle = "bui";
 				} else if (bt.isBold(i) && bt.isUnderline(i)) {

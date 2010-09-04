@@ -209,7 +209,7 @@ public class SukuTypesTable extends JTable {
 		try {
 			SukuData reposet = Suku.kontroller.getSukuData(v
 					.toArray(new String[0]));
-			if (reposet.resu != null && reposet.resu != Resurses.OK) {
+			if (reposet.resu != null && !reposet.resu.equals(Resurses.OK)) {
 				JOptionPane.showMessageDialog(this, reposet.resu, Resurses
 						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 			}
