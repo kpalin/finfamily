@@ -894,4 +894,68 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	public boolean isEmpty() {
+		if (privacy != null)
+			return false;
+		if (noticeType != null)
+			return false;
+		if (description != null)
+			return false;
+		if (datePrefix != null)
+			return false;
+		if (fromDate != null)
+			return false;
+		if (toDate != null)
+			return false;
+		if (place != null)
+			return false;
+		if (village != null)
+			return false;
+		if (farm != null)
+			return false;
+		if (croft != null)
+			return false;
+		if (address != null)
+			return false;
+		if (postOffice != null)
+			return false;
+		if (postalCode != null)
+			return false;
+		if (state != null)
+			return false;
+		if (country != null)
+			return false;
+		if (email != null)
+			return false;
+		if (noteText != null)
+			return false;
+		if (mediaFilename != null)
+			return false;
+		if (mediaData != null)
+			return false;
+		if (mediaTitle != null)
+			return false;
+		if (prefix != null)
+			return false;
+		if (surname != null)
+			return false;
+		if (givenname != null)
+			return false;
+
+		if (patronym != null)
+			return false;
+		if (postFix != null)
+			return false;
+		if (refNames != null)
+			return false;
+		if (refPlaces != null)
+			return false;
+		if (sourceText != null)
+			return false;
+		if (privateText != null)
+			return false;
+
+		return true;
+	}
+
 }

@@ -396,7 +396,7 @@ public class QueryUtil {
 
 			sql.append("order by u.pid,n.noticerow ");
 
-			logger.fine(sql.toString());
+			logger.info(sql.toString());
 
 			PersonShortData perso = null;
 

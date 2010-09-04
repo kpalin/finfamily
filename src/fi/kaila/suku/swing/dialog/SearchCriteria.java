@@ -829,15 +829,16 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 * @return no of fields
 	 */
 	public int getFieldCount() {
-		int addCol = 0;
-		for (int i = 1; i < 4; i++) {
-			ColTable tbl = this.coltables[i];
-			if (tbl.getChkBox().isSelected()) {
-				addCol = 1;
-				break;
-			}
-		}
-		return 19 + addCol;
+		return 20;
+		// int addCol = 0;
+		// for (int i = 1; i < 4; i++) {
+		// ColTable tbl = this.coltables[i];
+		// if (tbl.getChkBox().isSelected()) {
+		// addCol = 1;
+		// break;
+		// }
+		// }
+		// return 19 + addCol;
 	}
 
 	/**

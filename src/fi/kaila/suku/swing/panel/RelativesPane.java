@@ -426,6 +426,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 							spouses.list.remove(i);
 							int modI = (i < index) ? -1 : 0;
 							spouses.list.add(index + modI, rl);
+							rl.setToBeUpdated(true);
 							spouTab.updateUI();
 							chilTab.updateUI();
 							return true;
@@ -542,6 +543,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 							children.list.remove(i);
 							int modI = (i < index) ? -1 : 0;
 							children.list.add(index + modI, rl);
+							rl.setToBeUpdated(true);
 							chilTab.updateUI();
 							return true;
 

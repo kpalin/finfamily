@@ -841,6 +841,16 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			} else if (cmd.equals(Resurses.UPDATE)) {
 				try {
 
+					SukuData chnged = null;
+					try {
+						chnged = updatePersonStructure();
+						if (chnged == null)
+							return;
+					} catch (SukuDateException ee) {
+						JOptionPane.showMessageDialog(this, ee.getMessage());
+						return;
+					}
+
 					SukuData resp = updatePerson(false);
 					personView.closeMainPane(true);
 					logger.fine("Close response:" + resp.resu);
@@ -1151,13 +1161,13 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					}
 					nameCount++;
 					if (nameCount > names.length) {
-						pane.setToBeDeleted(true);
+						pane.setToBeDeleted(true, false);
 					} else {
 						if (!hasName) {
 							lastNameidx = 0;
-							pane.setToBeDeleted(true);
+							pane.setToBeDeleted(true, false);
 						} else {
-							pane.setToBeDeleted(false);
+							pane.setToBeDeleted(false, false);
 							lastNameidx = i;
 						}
 					}
@@ -1316,34 +1326,34 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			NoticePane pane = (NoticePane) personView.getPane(i).pnl;
 			String tag = pane.notice.getTag();
 			if (birtCount == 1 && tag.equals("BIRT")) {
-				// pane.setToBeDeleted(birtDate.getText().isEmpty()
-				// && birtPlace.getText().isEmpty());
+				pane.setToBeDeleted(birtDate.getText().isEmpty()
+						&& birtPlace.getText().isEmpty(), true);
 				pane.date.setTextFromDate(birtDate.getText());
 				pane.place.setText(birtPlace.getText());
 			}
 			if (chrCount == 1 && tag.equals("CHR")) {
-				// pane.setToBeDeleted(chrDate.getText().isEmpty()
-				// && chrPlace.getText().isEmpty());
+				pane.setToBeDeleted(chrDate.getText().isEmpty()
+						&& chrPlace.getText().isEmpty(), true);
 				pane.date.setTextFromDate(chrDate.getText());
 				pane.place.setText(chrPlace.getText());
 			}
 			if (deatCount == 1 && tag.equals("DEAT")) {
-				// pane.setToBeDeleted(deatDate.getText().isEmpty()
-				// && deatPlace.getText().isEmpty());
+				pane.setToBeDeleted(deatDate.getText().isEmpty()
+						&& deatPlace.getText().isEmpty(), true);
 				pane.date.setTextFromDate(deatDate.getText());
 				pane.place.setText(deatPlace.getText());
 			}
 			if (buriCount == 1 && tag.equals("BURI")) {
-				// pane.setToBeDeleted(buriDate.getText().isEmpty()
-				// && buriPlace.getText().isEmpty());
+				pane.setToBeDeleted(buriDate.getText().isEmpty()
+						&& buriPlace.getText().isEmpty(), true);
 				pane.date.setTextFromDate(buriDate.getText());
 				pane.place.setText(buriPlace.getText());
 			}
 			if (tag.equals("OCCU")) {
 				if (pane.notice.isToBeDeleted() || occuIndex >= occus.length) {
-					pane.setToBeDeleted(true);
+					pane.setToBeDeleted(true, true);
 				} else {
-					pane.setToBeDeleted(occus[occuIndex].equals(""));
+					pane.setToBeDeleted(occus[occuIndex].equals(""), true);
 					pane.description.setText(occus[occuIndex]);
 				}
 				occuIndex++;

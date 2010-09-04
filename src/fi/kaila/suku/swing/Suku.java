@@ -1845,13 +1845,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		logger.finest("Created Backup FILE status " + isCreated);
 		if (isCreated) {
 			ExportFamilyDatabaseDialog dlg;
+
 			try {
 				dlg = new ExportFamilyDatabaseDialog(this, dbName, zipName);
+				dlg.setVisible(true);
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage());
 				return;
 			}
-			dlg.setVisible(true);
+
 		}
 	}
 

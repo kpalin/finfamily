@@ -738,19 +738,29 @@ public class NoticePane extends JPanel implements ActionListener,
 		}
 	}
 
-	void setToBeDeleted(boolean value) {
+	void setToBeDeleted(boolean value, boolean onlyEmptyNotice) {
 
-		if (value) {
+		if (!value) {
+			toDelete.setText(Resurses.getString("DATA_DELETE"));
+			toDelete.setEnabled(true);
+			notice.setToBeDeleted(false);
+		} else {
+			if (onlyEmptyNotice) {
+
+				if (!notice.isEmpty()) {
+					return;
+				}
+			}
 
 			toDelete.setText(Resurses.getString("DATA_DELETED"));
 			if (notice.getTag().equals("NOTE")) {
 				noteText.setText("");
 			}
-		} else {
-			toDelete.setText(Resurses.getString("DATA_DELETE"));
+
+			toDelete.setEnabled(!value);
+			notice.setToBeDeleted(value);
 		}
-		toDelete.setEnabled(!value);
-		notice.setToBeDeleted(value);
+
 	}
 
 	enum TagType {
@@ -898,7 +908,7 @@ public class NoticePane extends JPanel implements ActionListener,
 				}
 			}
 		} else if (cmd.equals("DELETE")) {
-			setToBeDeleted(true);
+			setToBeDeleted(true, false);
 		} else if (cmd.equals("ADD")) {
 			AddNotice an;
 			try {
