@@ -213,8 +213,8 @@ public abstract class CommonReport {
 							Image.SCALE_DEFAULT);
 
 					imagetx.setImage(imgs, nn.getMediaData(), img.getWidth(),
-							img.getHeight(), nn.getMediaFilename(), nn
-									.getMediaTitle(), nn.getTag());
+							img.getHeight(), nn.getMediaFilename(),
+							nn.getMediaTitle(), nn.getTag());
 					imagetx.addText("");
 				}
 				if (nn.getMediaTitle() != null) {
@@ -460,7 +460,7 @@ public abstract class CommonReport {
 
 		//
 		// spouse list
-		// 
+		//
 
 		ReportTableMember spouseMember;
 		for (int ispou = 1; ispou < tab.getParent().size(); ispou++) {
@@ -609,9 +609,8 @@ public abstract class CommonReport {
 				}
 
 				printName(bt, cdata.persLong, (toTable.isEmpty() ? 2 : 3));
-				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3), tab
-						.getTableNo()
-						+ tableOffset);
+				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3),
+						tab.getTableNo() + tableOffset);
 
 				if (childMember.getSubCount() > 0) {
 					repoWriter.addText(bt);
@@ -756,7 +755,7 @@ public abstract class CommonReport {
 										spouNum, true);
 							}
 						} else {
-
+							// TODO:
 						}
 
 					}
@@ -1090,8 +1089,8 @@ public abstract class CommonReport {
 				bt = addParentReference(tab, bt);
 			}
 			printNotices(bt, notices,
-					getTypeColumn(mammadata.persLong.getPid()), mtab
-							.getTableNo());
+					getTypeColumn(mammadata.persLong.getPid()),
+					mtab.getTableNo());
 		}
 
 		if (bt.getCount() > 0) {
@@ -1101,7 +1100,7 @@ public abstract class CommonReport {
 
 		//
 		// spouse list
-		// 
+		//
 		if (order.equals("ESPOLIN")) {
 			SukuData sdata;
 			String fromTable;
@@ -1307,8 +1306,9 @@ public abstract class CommonReport {
 					addChildReference(ftab, mtab, cdata.persLong.getPid(),
 							typesTable.getTextValue("TABLE"), bt, 0);
 
-					printNotices(bt, notices, getTypeColumn(cdata.persLong
-							.getPid()), tab.getTableNo());
+					printNotices(bt, notices,
+							getTypeColumn(cdata.persLong.getPid()),
+							tab.getTableNo());
 
 					// else {
 
@@ -1412,8 +1412,8 @@ public abstract class CommonReport {
 									(toTable.isEmpty() ? 2 : 3));
 							addChildReference(ftab, mtab, tab.getPid(),
 									typesTable.getTextValue("TABLE"), bt, 0);
-							printNotices(bt, notices, tab.getPid(), tab
-									.getTableNo());
+							printNotices(bt, notices, tab.getPid(),
+									tab.getTableNo());
 
 							// else {
 
@@ -1653,8 +1653,8 @@ public abstract class CommonReport {
 				String yr = rn.getFromDate();
 				if (yr != null && yr.length() >= 4) {
 
-					String date = printDate(rn.getDatePrefix(), rn
-							.getFromDate(), rn.getToDate());
+					String date = printDate(rn.getDatePrefix(),
+							rn.getFromDate(), rn.getToDate());
 					if (date.length() > 0) {
 						if (addSpace) {
 							sb.append(" ");
@@ -1687,8 +1687,8 @@ public abstract class CommonReport {
 
 		}
 
-		String date = printDate(rn.getDatePrefix(), rn.getFromDate(), rn
-				.getToDate());
+		String date = printDate(rn.getDatePrefix(), rn.getFromDate(),
+				rn.getToDate());
 		if (date.length() > 0) {
 			if (addSpace) {
 				sb.append(" ");
@@ -1785,8 +1785,8 @@ public abstract class CommonReport {
 								addDot = true;
 							}
 						}
-						String dd = printDate(nn.getDatePrefix(), nn
-								.getFromDate(), nn.getToDate());
+						String dd = printDate(nn.getDatePrefix(),
+								nn.getFromDate(), nn.getToDate());
 						if (dd.length() > 0) {
 							if (addSpace) {
 								bt.addText(" ");
@@ -1865,11 +1865,10 @@ public abstract class CommonReport {
 									addSpace = true;
 								}
 								imageNumber++;
-								bt
-										.addText(Resurses
-												.getReportString("INDEX_IMAGE")
+								bt.addText(
+										Resurses.getReportString("INDEX_IMAGE")
 												+ " " + imageNumber + ". ",
-												true, false);
+										true, false);
 
 								ImageNotice inoti = new ImageNotice(nn,
 										imageNumber, tableNo);
@@ -1904,10 +1903,9 @@ public abstract class CommonReport {
 											Image.SCALE_DEFAULT);
 
 									imagetx.setImage(imgs, nn.getMediaData(),
-											img.getWidth(), img.getHeight(), nn
-													.getMediaFilename(), nn
-													.getMediaTitle(), nn
-													.getTag());
+											img.getWidth(), img.getHeight(),
+											nn.getMediaFilename(),
+											nn.getMediaTitle(), nn.getTag());
 									imagetx.addText("");
 								}
 								if (nn.getMediaTitle() != null) {
@@ -1966,8 +1964,8 @@ public abstract class CommonReport {
 								if (addSpace)
 									bt.addText(" ");
 								int tlen = 0;
-								String parts[] = nn.getAddress().replaceAll(
-										"\\r", "").split("\n");
+								String parts[] = nn.getAddress()
+										.replaceAll("\\r", "").split("\n");
 								for (int i = 0; i < parts.length; i++) {
 
 									if (i > 0) {
@@ -2250,6 +2248,7 @@ public abstract class CommonReport {
 							isDead = true;
 						}
 					} catch (NumberFormatException ne) {
+						// NumberFormatException ignored
 					}
 
 				}
@@ -2385,16 +2384,17 @@ public abstract class CommonReport {
 				if (astidx > 0) {
 
 					if (astidx == namePart.length() - 1) {
-						bt.addText(namePart.substring(0, astidx), caller
-								.showBoldNames(), caller.showUnderlineNames());
+						bt.addText(namePart.substring(0, astidx),
+								caller.showBoldNames(),
+								caller.showUnderlineNames());
 					} else {
 
 						if (bstidx > 0) {
 							if (bstidx == namePart.length() - 2) {
 
 								bt.addText(namePart.substring(0, bstidx),
-										caller.showBoldNames(), caller
-												.showUnderlineNames());
+										caller.showBoldNames(),
+										caller.showUnderlineNames());
 							}
 						}
 					}
@@ -2411,8 +2411,9 @@ public abstract class CommonReport {
 					}
 					if (cstidx == subPart.length() - 1) {
 
-						bt.addText(subPart.substring(0, cstidx), caller
-								.showBoldNames(), caller.showUnderlineNames());
+						bt.addText(subPart.substring(0, cstidx),
+								caller.showBoldNames(),
+								caller.showUnderlineNames());
 
 					} else {
 						bt.addText(subPart, caller.showBoldNames(), false);
@@ -2447,8 +2448,8 @@ public abstract class CommonReport {
 				bendMap = new HashMap<String, String>();
 				try {
 					SukuData resp = Suku.kontroller.getSukuData("cmd=get",
-							"type=conversions", "lang="
-									+ Resurses.getLanguage());
+							"type=conversions",
+							"lang=" + Resurses.getLanguage());
 					for (int i = 0; i < resp.vvTexts.size(); i++) {
 						String[] cnvx = resp.vvTexts.get(i);
 						String key = cnvx[1] + "|" + cnvx[0];

@@ -1517,12 +1517,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 						String elpNam = elp.getNodeName();
 
 						if (elpNam == null) {
+							// TODO:
 						} else if (elpNam.equals("kyla")) {
 							pAge[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("talo")) {
 							pReason[pidx].setText(elp.getTextContent());
 						} else if (elpNam.equals("lisat")) {
-
+							// TODO:
 						} else if (elpNam.equals("ammatti")) {
 							rOccu[pidx].setText(elp.getTextContent());
 							pOccu[pidx].setText(elp.getTextContent());
@@ -1582,7 +1583,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					String eleName = ele.getNodeName();
 
 					if (eleName == null) {
-
+						// TODO:
 					} else if (eleName.equals("srk")) {
 						srkNo.setText(ele.getAttribute("nro"));
 						srk.setText(ele.getTextContent());
@@ -1638,6 +1639,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					} else if (eleName.equals("minne")) {
 						eventTo.setText(ele.getTextContent());
 					} else if (eleName.equals("henkilo")) {
+						// TODO:
 					} else if (eleName.equals("kuolinsyy")) {
 						eventReason.setText(ele.getTextContent());
 					} else if (eleName.equals("oma_kommentti")) {

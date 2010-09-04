@@ -150,8 +150,8 @@ public class ImportGedcomUtil {
 							baseFolder = entryName.substring(0, li + 1);
 						}
 						if (this.runner.setRunnerValue("+" + entryName)) {
-							throw new SukuException(Resurses
-									.getString("GEDCOM_CANCELLED"));
+							throw new SukuException(
+									Resurses.getString("GEDCOM_CANCELLED"));
 						}
 						break;
 					} else {
@@ -271,8 +271,8 @@ public class ImportGedcomUtil {
 											+ record.toString(false));
 									if (this.runner.setRunnerValue(sb
 											.toString())) {
-										throw new SukuException(Resurses
-												.getString("GEDCOM_CANCELLED"));
+										throw new SukuException(
+												Resurses.getString("GEDCOM_CANCELLED"));
 									}
 
 								}
@@ -370,8 +370,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(Resurses
-							.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(
+							Resurses.getString("GEDCOM_CANCELLED"));
 				}
 				indiIndex++;
 			}
@@ -395,8 +395,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(Resurses
-							.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(
+							Resurses.getString("GEDCOM_CANCELLED"));
 				}
 				famIndex++;
 			}
@@ -637,12 +637,14 @@ public class ImportGedcomUtil {
 				try {
 					stm.close();
 				} catch (SQLException ignored) {
+					// SQLException ignored
 				}
 			}
 			if (pst != null) {
 				try {
 					pst.close();
 				} catch (SQLException ignored) {
+					// SQLException ignored
 				}
 			}
 		}
@@ -675,6 +677,7 @@ public class ImportGedcomUtil {
 				try {
 					pst.close();
 				} catch (SQLException ignored) {
+					// SQLException ignored
 				}
 			}
 		}
@@ -783,7 +786,8 @@ public class ImportGedcomUtil {
 								if (rn.getDescription() != null) {
 									rn.setDescription(Utils.nv(rn
 											.getDescription())
-											+ " " + dparts[3]);
+											+ " "
+											+ dparts[3]);
 								} else {
 									rn.setDescription(dparts[3]);
 								}
@@ -797,6 +801,7 @@ public class ImportGedcomUtil {
 				}
 
 			} else if (line.tag.equals("HUSB") || line.tag.equals("WIFE")) {
+				// TODO:
 			} else if (line.tag.equals("NOTE")) {
 				if (rnmarr != null) {
 					StringBuilder sb = new StringBuilder();
@@ -881,7 +886,7 @@ public class ImportGedcomUtil {
 				unknownLine.add(line.toString());
 			}
 		}
-		if (relNotice != null && rel != null) {
+		if (rel != null) {
 			rel.setNotices(relNotice.toArray(new RelationNotice[0]));
 		}
 
@@ -968,7 +973,7 @@ public class ImportGedcomUtil {
 				for (int ffj = 0; ffj < faw.lines.size(); ffj++) {
 					GedcomLine fax = faw.lines.get(ffj);
 
-					if (fax != null && cid != null && fax.lineValue != null
+					if (fax != null && fax.lineValue != null
 							&& fax.lineValue.equals(cid.id)) {
 						husbandNumber = ffi;
 						break;
@@ -984,8 +989,8 @@ public class ImportGedcomUtil {
 		}
 
 		PersonUtil u = new PersonUtil(con);
-		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber, rels
-				.toArray(new Relation[0]));
+		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber,
+				rels.toArray(new Relation[0]));
 		if (resu != null) {
 			unknownLine.add(record.toString() + ":" + resu);
 		}
@@ -1202,6 +1207,7 @@ public class ImportGedcomUtil {
 				notices.add(notice);
 				extractMultimedia(notice, noti);
 			} else if (noti.tag.equals("FAMC")) {
+				// TODO:
 			} else if (noti.tag.equals("FAMS")) {
 				f.fams.add(noti);
 			} else if (noti.tag.equals("SOUR")) {
@@ -1244,6 +1250,7 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("CAUS")) {
 						notice.setDescription(detail.lineValue);
 					} else if (detail.tag.equals("FAMC")) {
+						// TODO:
 					} else if (detail.tag.equals("PLAC")) {
 						notice.setPlace(detail.lineValue);
 					} else if (detail.tag.equals("ADDR")) {
@@ -1257,20 +1264,17 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("_CROFT")) {
 						notice.setCroft(detail.lineValue);
 					} else if (detail.tag.equals("PHON")) {
-						notice
-								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-										: notice.getPrivateText() + ", Tel:"
-												+ detail.lineValue);
+						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+								: notice.getPrivateText() + ", Tel:"
+										+ detail.lineValue);
 					} else if (detail.tag.equals("WWW")) {
-						notice
-								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-										: notice.getPrivateText() + ", www:"
-												+ detail.lineValue);
+						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+								: notice.getPrivateText() + ", www:"
+										+ detail.lineValue);
 					} else if (detail.tag.equals("FAX")) {
-						notice
-								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-										: notice.getPrivateText() + ", Fax:"
-												+ detail.lineValue);
+						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+								: notice.getPrivateText() + ", Fax:"
+										+ detail.lineValue);
 					} else if (detail.tag.equals("NOTE")) {
 						if (detail.lineValue.startsWith("@")
 								&& detail.lineValue.indexOf('@', 1) > 1) {
@@ -1488,6 +1492,7 @@ public class ImportGedcomUtil {
 							try {
 								bstr.close();
 							} catch (IOException ignored) {
+								// IOException ignored
 							}
 						}
 					}
@@ -1530,6 +1535,7 @@ public class ImportGedcomUtil {
 				//
 				//
 			} else if (item.tag.equals("FORM")) {
+				// TODO:
 			} else if (item.tag.equals("TITL")) {
 				notice.setMediaTitle(item.lineValue);
 			} else {
@@ -1727,8 +1733,10 @@ public class ImportGedcomUtil {
 			} else if (noti.tag.equals("ADDR")) {
 				address = splitAddress(noti.lineValue);
 			} else if (noti.tag.equals("WWW")) {
+				// FIXME: address can be null in here
 				address.www = noti.lineValue;
 			} else if (noti.tag.equals("EMAIL")) {
+				// FIXME: address can be null in here
 				address.email = noti.lineValue;
 			} else if (noti.tag.equals("NOTE")) {
 				note.append(noti.lineValue);
@@ -1778,6 +1786,7 @@ public class ImportGedcomUtil {
 				try {
 					pst.close();
 				} catch (SQLException ignored) {
+					// SQLException ignored
 				}
 			}
 		}
@@ -1805,7 +1814,7 @@ public class ImportGedcomUtil {
 							try {
 								ponum = Integer.parseInt(posts[0]);
 							} catch (NumberFormatException ne) {
-
+								// NumberFormatException ignored
 							}
 							if (ponum > 1) { // now assume beginning is
 								// postalcode

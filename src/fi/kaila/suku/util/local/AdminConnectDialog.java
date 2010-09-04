@@ -87,7 +87,7 @@ public class AdminConnectDialog extends JDialog implements ActionListener {
 			return;
 		}
 		if (cmd.equals(OK)) {
-
+			// TODO:
 		}
 		setVisible(false);
 

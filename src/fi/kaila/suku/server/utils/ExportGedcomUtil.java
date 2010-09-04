@@ -154,8 +154,8 @@ public class ExportGedcomUtil {
 				StringBuilder sbb = new StringBuilder();
 				sbb.append("" + intprose + ";" + shortie.getAlfaName());
 				if (this.runner.setRunnerValue(sbb.toString())) {
-					throw new SukuException(Resurses
-							.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(
+							Resurses.getString("GEDCOM_CANCELLED"));
 				}
 
 			}
@@ -256,16 +256,16 @@ public class ExportGedcomUtil {
 
 				sb.append("1 NAME " + nm.toString() + "\r\n");
 				if (notices[i].getSource() != null) {
-					sb.append(getNoteStructure(2, "SOUR", notices[i]
-							.getSource()));
+					sb.append(getNoteStructure(2, "SOUR",
+							notices[i].getSource()));
 
 				}
 				if (notices[i].getNoticeType() != null) {
 					sb.append("2 TYPE " + notices[i].getNoticeType() + "\r\n");
 				}
 				if (notices[i].getDescription() != null) {
-					sb.append(getNoteStructure(2, "NOTE", notices[i]
-							.getDescription()));
+					sb.append(getNoteStructure(2, "NOTE",
+							notices[i].getDescription()));
 
 				}
 			}
@@ -283,8 +283,8 @@ public class ExportGedcomUtil {
 				}
 				if (notice.getTag().equals("NOTE")) {
 					if (notice.getNoteText() != null) {
-						nm.append(getNoteStructure(1, "NOTE", notice
-								.getNoteText()));
+						nm.append(getNoteStructure(1, "NOTE",
+								notice.getNoteText()));
 					}
 				} else {
 					String caus = null;
@@ -308,16 +308,16 @@ public class ExportGedcomUtil {
 					}
 					if (notice.getFromDate() != null) {
 						nm.append("2 DATE ");
-						nm.append(toFullDate(notice.getDatePrefix(), notice
-								.getFromDate(), notice.getToDate()));
+						nm.append(toFullDate(notice.getDatePrefix(),
+								notice.getFromDate(), notice.getToDate()));
 						nm.append("\r\n");
 					}
 					if (notice.getPlace() != null) {
 						nm.append("2 PLAC " + notice.getPlace() + "\r\n");
 					}
 					if (notice.getNoteText() != null) {
-						nm.append(getNoteStructure(2, "NOTE", notice
-								.getNoteText()));
+						nm.append(getNoteStructure(2, "NOTE",
+								notice.getNoteText()));
 					}
 
 					if (notice.getAddress() != null
@@ -325,8 +325,8 @@ public class ExportGedcomUtil {
 						if (notice.getAddress() != null) {
 							if (notice.getState() == null) {
 
-								nm.append(getNoteStructure(2, "ADDR", notice
-										.getAddress(), 1));
+								nm.append(getNoteStructure(2, "ADDR",
+										notice.getAddress(), 1));
 								if (notice.getPostOffice() != null) {
 									if (notice.getPostalCode() != null
 											&& notice.getPostOffice() != null) {
@@ -342,8 +342,8 @@ public class ExportGedcomUtil {
 
 								}
 							} else {
-								nm.append(getNoteStructure(2, "ADDR", notice
-										.getAddress(), 1));
+								nm.append(getNoteStructure(2, "ADDR",
+										notice.getAddress(), 1));
 								if (notice.getPostOffice() != null) {
 									nm.append("3 CONT "
 											+ notice.getPostOffice() + "\r\n");
@@ -391,8 +391,9 @@ public class ExportGedcomUtil {
 					if (includeImages) {
 						if (notice.getMediaFilename() != null
 								&& notice.getMediaData() != null) {
-							MinimumImage minimg = new MinimumImage(notice
-									.getMediaFilename(), notice.getMediaData());
+							MinimumImage minimg = new MinimumImage(
+									notice.getMediaFilename(),
+									notice.getMediaData());
 							nm.append("2 OBJE\r\n");
 							if (notice.getMediaFilename().toLowerCase()
 									.endsWith(".jpg")) {
@@ -477,13 +478,13 @@ public class ExportGedcomUtil {
 		Vector<RelationNotice> relNotices = new Vector<RelationNotice>();
 
 		while (rs.next()) {
-			RelationNotice rnote = new RelationNotice(rs.getInt("rpid"), rs
-					.getInt("rid"), rs.getInt("surety"), rs.getString("tag"),
+			RelationNotice rnote = new RelationNotice(rs.getInt("rpid"),
+					rs.getInt("rid"), rs.getInt("surety"), rs.getString("tag"),
 					rs.getString("relationtype"), rs.getString("description"),
-					rs.getString("dateprefix"), rs.getString("fromdate"), rs
-							.getString("todate"), rs.getString("place"), rs
-							.getString("notetext"), rs.getString("sourcetext"),
-					null, null, null);
+					rs.getString("dateprefix"), rs.getString("fromdate"),
+					rs.getString("todate"), rs.getString("place"),
+					rs.getString("notetext"), rs.getString("sourcetext"), null,
+					null, null);
 			relNotices.add(rnote);
 		}
 		rs.close();
@@ -531,32 +532,28 @@ public class ExportGedcomUtil {
 					}
 					if (notice.getFromDate() != null) {
 						adb.append("2 DATE "
-								+ toFullDate(notice.getDatePrefix(), notice
-										.getFromDate(), notice.getToDate())
-								+ "\r\n");
+								+ toFullDate(notice.getDatePrefix(),
+										notice.getFromDate(),
+										notice.getToDate()) + "\r\n");
 					}
 					if (notice.getPlace() != null) {
 						adb.append("2 PLAC " + notice.getPlace() + "\r\n");
 					}
 					if (notice.getDescription() != null) {
-						adb
-								.append("2 CAUS " + notice.getDescription()
-										+ "\r\n");
+						adb.append("2 CAUS " + notice.getDescription() + "\r\n");
 					}
 					if (notice.getNoteText() != null) {
-						adb.append(getNoteStructure(2, "NOTE", notice
-								.getNoteText())
+						adb.append(getNoteStructure(2, "NOTE",
+								notice.getNoteText())
 								+ "\r\n");
 					}
 					if (notice.getSource() != null) {
-						adb.append(getNoteStructure(2, "SOUR", notice
-								.getSource()));
+						adb.append(getNoteStructure(2, "SOUR",
+								notice.getSource()));
 						if (notice.getSurety() < 100) {
 
-							adb
-									.append("3 QUAY "
-											+ suretyToQuay(notice.getSurety())
-											+ "\r\n");
+							adb.append("3 QUAY "
+									+ suretyToQuay(notice.getSurety()) + "\r\n");
 						}
 					} else if (notice.getSurety() < 100) {
 						adb.append("2 SOUR\r\n");
@@ -646,7 +643,7 @@ public class ExportGedcomUtil {
 					mon = months[m - 1] + " ";
 				}
 			} catch (NumberFormatException ne) {
-
+				// NumberFormatException ignored
 			}
 		}
 		if (dbDate.length() == 8) {
@@ -917,7 +914,7 @@ public class ExportGedcomUtil {
 		}
 
 		// zip.write(gedBytes("0 HEAD\r\n"));
-		//		
+		//
 		// zip
 		// .write(gedBytes("1 NOTE FinFamily Gedcom Export is under construction\r\n"));
 		zip.write(gedBytes(sb.toString()));
@@ -957,9 +954,8 @@ public class ExportGedcomUtil {
 		StringBuilder sql = new StringBuilder();
 		PreparedStatement pst;
 
-		sql
-				.append("select a.pid,a.tag,a.relationrow,b.pid,b.tag,b.relationrow,a.rid "
-						+ "from relation as a inner join relation as b on a.rid=b.rid ");
+		sql.append("select a.pid,a.tag,a.relationrow,b.pid,b.tag,b.relationrow,a.rid "
+				+ "from relation as a inner join relation as b on a.rid=b.rid ");
 		if (viewId > 0) {
 			sql.append("and a.pid in (select pid from viewunits where vid="
 					+ viewId + ") "
