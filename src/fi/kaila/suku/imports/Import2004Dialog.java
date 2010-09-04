@@ -336,7 +336,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 				progressBar.setValue(progress);
 				textContent.setText(kaksi[1]);
 			} catch (NumberFormatException ne) {
-				System.out.println("juttu=" + juttu);
+				// System.out.println("juttu=" + juttu);
 				// textContent.setText(juttu);
 				// progressBar.setIndeterminate(true);
 				// progressBar.setValue(0);
@@ -381,7 +381,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if ("progress" == evt.getPropertyName()) {
+		if ("progress".equals(evt.getPropertyName())) {
 			String juttu = evt.getNewValue().toString();
 			String[] kaksi = juttu.split(";");
 			if (kaksi.length >= 2) {

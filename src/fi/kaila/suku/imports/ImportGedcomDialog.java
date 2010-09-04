@@ -359,7 +359,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if ("progress" == evt.getPropertyName()) {
+		if ("progress".equals(evt.getPropertyName())) {
 			String juttu = evt.getNewValue().toString();
 			String[] kaksi = juttu.split(";");
 			if (kaksi.length >= 2) {
