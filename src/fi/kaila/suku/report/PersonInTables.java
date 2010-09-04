@@ -179,7 +179,6 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 * @return comma separated list of owners
 	 */
 	public Long[] getOwnerArray() {
-		StringBuilder sx = new StringBuilder();
 		Vector<Long> kk = new Vector<Long>();
 		Iterator<Long> ki = asOwners.keySet().iterator();
 
