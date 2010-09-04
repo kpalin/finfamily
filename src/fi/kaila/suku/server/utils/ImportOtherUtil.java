@@ -323,6 +323,7 @@ public class ImportOtherUtil {
 			throw new SQLException("Sequence unitseq error");
 		}
 		rs.close();
+		stm.close();
 
 		stm = con.createStatement();
 		rs = stm.executeQuery("select nextval('unitnoticeseq')");

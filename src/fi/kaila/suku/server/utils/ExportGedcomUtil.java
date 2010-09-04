@@ -991,6 +991,7 @@ public class ExportGedcomUtil {
 			mi.addFams(mf.id);
 		}
 		rs.close();
+		pst.close();
 
 		sql = new StringBuilder();
 
