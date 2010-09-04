@@ -272,9 +272,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		sujet = person.getPid();
 		pr = new PersonRectangle();
 		pr.person = person;
-		pr.rectangle = new Rectangle(0, y - p.y - rowHeight, d.width, person
-				.getGraphRowCount()
-				* rowHeight);
+		pr.rectangle = new Rectangle(0, y - p.y - rowHeight, d.width,
+				person.getGraphRowCount() * rowHeight);
 		personAreas.add(pr);
 
 		g.drawString(person.getTextName(), p.x, y);
@@ -414,9 +413,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				int rx = currentArea.x + currentArea.width + xmargin;
 				int ry = y - rowHeight / 2;
 				Color colo = g.getColor();
-				g
-						.setColor(person.getSex().equals("M") ? Color.blue
-								: Color.red);
+				g.setColor(person.getSex().equals("M") ? Color.blue : Color.red);
 				g.drawLine(rx, ry, rx + 10, ry);
 				g.setColor(colo);
 
@@ -447,10 +444,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				if (in != null) {
 					in.read(imbytes);
 					ByteArrayInputStream bb = new ByteArrayInputStream(imbytes);
-					if (bb != null) {
-						img = ImageIO.read(bb);
-						g.drawImage(img, x, y - img.getHeight(), null);
-					}
+					img = ImageIO.read(bb);
+					g.drawImage(img, x, y - img.getHeight(), null);
 				}
 			} catch (IOException e) {
 
@@ -460,6 +455,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 					try {
 						in.close();
 					} catch (IOException ignored) {
+						// Exception ignored
 					}
 				}
 
