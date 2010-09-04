@@ -41,7 +41,7 @@ public class SukuModel implements TableModel {
 
 	/**
 	 * 
-	 *load icons in consrtuctor
+	 * load icons in consrtuctor
 	 * 
 	 * @param suku
 	 * 
@@ -88,6 +88,7 @@ public class SukuModel implements TableModel {
 				try {
 					in.close();
 				} catch (IOException ignored) {
+					// IOException ignored
 				}
 			}
 
@@ -207,7 +208,7 @@ public class SukuModel implements TableModel {
 		// o.toString());
 		// } else {
 		// System.out.println("getAt[" + argr + "," + argc + "]:null" );
-		//		
+		//
 		// }
 		return o;
 
@@ -254,7 +255,7 @@ public class SukuModel implements TableModel {
 		// if (argc == SUKU_ROW) {
 		// this.tab.remove(argr);
 		// this.tab.insertElementAt((SukuRow)arg0,argr);
-		//			
+		//
 		// }
 		if (argr < getRowCount()) {
 			this.row = this.tab.get(argr);

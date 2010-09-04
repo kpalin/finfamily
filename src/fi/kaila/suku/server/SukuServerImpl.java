@@ -1812,7 +1812,7 @@ public class SukuServerImpl implements SukuServer {
 				try {
 					settingIndex = Integer.parseInt(index);
 				} catch (NumberFormatException ne) {
-
+					// NumberFormatException ignored
 				}
 				String sql = "select settingindex,settingvalue "
 						+ "from sukusettings where settingtype = ? and settingname = 'name' "

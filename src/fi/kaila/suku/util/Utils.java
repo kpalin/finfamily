@@ -132,7 +132,7 @@ public class Utils {
 				}
 			}
 		} catch (NumberFormatException ne) {
-
+			// NumberFormatException ignored
 		}
 
 		if (dbDate.length() == 6) {

@@ -139,6 +139,7 @@ public class SukuUtility {
 				try {
 					in.close();
 				} catch (IOException ignored) {
+					// IOException ignored
 				}
 			}
 

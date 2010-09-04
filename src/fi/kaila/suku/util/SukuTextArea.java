@@ -67,7 +67,7 @@ public class SukuTextArea extends JTextArea implements ActionListener,
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			// 
+			//
 
 		}
 
@@ -92,6 +92,7 @@ public class SukuTextArea extends JTextArea implements ActionListener,
 				try {
 					hiskiNumero = Long.parseLong(selected);
 				} catch (NumberFormatException ne) {
+					// NumberFormatException ignored
 				}
 
 				int alk = me.getSelectionStart();
@@ -119,6 +120,7 @@ public class SukuTextArea extends JTextArea implements ActionListener,
 								.substring(icb + 1, ice));
 						maybeHiski = true;
 					} catch (NumberFormatException ne) {
+						// NumberFormatException ignored
 					}
 				}
 
@@ -150,8 +152,8 @@ public class SukuTextArea extends JTextArea implements ActionListener,
 					+ hiskiNumero);
 
 		} else if (cmd.equals(Resurses.MENU_COPY)) {
-			StringSelection stringSelection = new StringSelection(me
-					.getSelectedText());
+			StringSelection stringSelection = new StringSelection(
+					me.getSelectedText());
 			Clipboard clipboard = Toolkit.getDefaultToolkit()
 					.getSystemClipboard();
 			clipboard.setContents(stringSelection, this);
