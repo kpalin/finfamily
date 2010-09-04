@@ -67,14 +67,16 @@ public class AncestorReport extends CommonReport {
 		} catch (SukuException e) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
 					e);
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ":" + e.getMessage());
+			JOptionPane.showMessageDialog(
+					caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + ":"
+							+ e.getMessage());
 		}
+		// FIXME: vlist can be null in here
 		if (vlist.resu != null) {
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ " [" + vlist.resu + "]");
+			JOptionPane.showMessageDialog(caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + " ["
+							+ vlist.resu + "]");
 			return;
 		}
 		tables = vlist.tables;
@@ -108,7 +110,6 @@ public class AncestorReport extends CommonReport {
 
 		ReportUnitAll ftab = null;
 		ReportUnitAll mtab = null;
-		int i = 0;
 		if (tables.size() == 0) {
 			return;
 		}
@@ -208,9 +209,10 @@ public class AncestorReport extends CommonReport {
 					mtab = tab;
 				}
 			}
-
-			createAncestorTable(i, ftab, mtab, (ftab != null) ? ftab
-					.getTableNo() : mtab.getTableNo());
+			
+			//FIXME: mtab can be null in here
+			createAncestorTable(i, ftab, mtab,
+					(ftab != null) ? ftab.getTableNo() : mtab.getTableNo());
 			// tabno = tab.getTableNo();
 			// System.out.println("TAB: " + tabno);
 			i++;
