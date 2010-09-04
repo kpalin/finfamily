@@ -2002,7 +2002,7 @@ public class Read2004XML extends DefaultHandler {
 
 	private void initUnitNotice() throws SAXException {
 		try {
-			PreparedStatement pst;
+			PreparedStatement pst = null;
 
 			try {
 				pst = this.con
@@ -2017,6 +2017,14 @@ public class Read2004XML extends DefaultHandler {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new SAXException("Sequence unitnoticeseq sql error");
+			} finally {
+				if (pst != null) {
+					try {
+						pst.close();
+					} catch (SQLException ignored) {
+						// SQLException ignored
+					}
+				}
 			}
 
 			pst = this.con.prepareStatement(INIT_UNIT_NOTICE);
@@ -2179,6 +2187,7 @@ public class Read2004XML extends DefaultHandler {
 			pst.setInt(26, pnid);
 
 			pst.executeUpdate();
+			pst.close();
 
 			if (this.placeCollector.size() > 0 || this.nameCollector.size() > 0) {
 
@@ -2377,7 +2386,7 @@ public class Read2004XML extends DefaultHandler {
 		if (this.unitId == null) {
 			throw new SAXException("UnitId is null");
 		}
-		PreparedStatement pst;
+		PreparedStatement pst = null;
 		try {
 
 			this.currentStatus = "Unit " + unitPid;
@@ -2407,6 +2416,14 @@ public class Read2004XML extends DefaultHandler {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "importing unit failed", e);
 			throw new SAXException(e);
+		} finally {
+			if (pst != null) {
+				try {
+					pst.close();
+				} catch (SQLException ignored) {
+					// SQLException ignored
+				}
+			}
 		}
 		if (finFamilyVersion == null) {
 			if (this.unitGivenName != null || this.unitSurName != null) {
@@ -2421,6 +2438,7 @@ public class Read2004XML extends DefaultHandler {
 						throw new SAXException("Sequence unitnoticeseq error");
 					}
 					rs.close();
+					pst.close();
 
 					pst = this.con.prepareStatement(INSERT_NAME_NOTICE);
 
@@ -2467,6 +2485,14 @@ public class Read2004XML extends DefaultHandler {
 				} catch (SQLException e) {
 					logger.log(Level.SEVERE, "importing unit name failed", e);
 					throw new SAXException(e);
+				} finally {
+					if (pst != null) {
+						try {
+							pst.close();
+						} catch (SQLException ignored) {
+							// SQLException ignored
+						}
+					}
 				}
 			}
 		}

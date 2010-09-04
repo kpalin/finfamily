@@ -405,6 +405,7 @@ public class ExportBackupUtil {
 
 		}
 		rs.close();
+		stm.close();
 
 		sql = "select a.rid,a.pid,b.pid,a.tag,b.tag,a.surety,"
 				+ "a.relationrow,b.relationrow,a.createdate "

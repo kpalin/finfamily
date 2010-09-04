@@ -449,6 +449,9 @@ public class ImportOtherUtil {
 			counter += luku;
 
 		}
+		pst.close();
+		pnsl.close();
+		pnst.close();
 		pnst2.close();
 
 		ViewUtil vu = new ViewUtil(con);
