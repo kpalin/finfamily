@@ -255,8 +255,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		synchronized (o) {
 			if (myself == null) {
 				if (owner == null) {
-					throw new SukuException(Resurses
-							.getString(Resurses.CRITERIA_INIT_ERROR));
+					throw new SukuException(
+							Resurses.getString(Resurses.CRITERIA_INIT_ERROR));
 				}
 				myself = new SearchCriteria(owner);
 			}
@@ -298,8 +298,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 				tbl.setCurrentState(true);
 			} else {
 				this.colpanel.add(tbl.getChkBox());
-				bb = Utils.getBooleanPref(this, tbl.getColName(), tbl
-						.getCurrentState());
+				bb = Utils.getBooleanPref(this, tbl.getColName(),
+						tbl.getCurrentState());
 				// System.out.println("BB on " + bb + "/" + idx + "/" +
 				// tbl.getColName() + "/" + tbl.getCurrentState());
 
@@ -315,14 +315,14 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		for (idx = 0; idx < this.proptables.length; idx++) {
 			tbl = this.proptables[idx];
 			this.colpanel.add(tbl.getChkBox());
-			boolean bb = Utils.getBooleanPref(this, tbl.getColName(), tbl
-					.getCurrentState());
+			boolean bb = Utils.getBooleanPref(this, tbl.getColName(),
+					tbl.getCurrentState());
 			tbl.getChkBox().setSelected(bb);
 			tbl.setCurrentState(bb);
 		}
 
-		TitledBorder tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString(Resurses.CRITERIA_NAME));
+		TitledBorder tit = BorderFactory.createTitledBorder(bvl,
+				Resurses.getString(Resurses.CRITERIA_NAME));
 
 		this.namePanel = new JPanel(new GridLayout(2, 0, 10, 10));
 		getContentPane().add(this.namePanel);
@@ -356,8 +356,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		getContentPane().add(this.birtPanel);
 		this.birtPanel.setBounds(20, y, 600, 80);
 
-		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString(Resurses.CRITERIA_BIRT));
+		tit = BorderFactory.createTitledBorder(bvl,
+				Resurses.getString(Resurses.CRITERIA_BIRT));
 
 		this.birtPanel.setBorder(tit);
 
@@ -380,8 +380,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		y += 80;
 
-		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString(Resurses.CRITERIA_DEAT));
+		tit = BorderFactory.createTitledBorder(bvl,
+				Resurses.getString(Resurses.CRITERIA_DEAT));
 
 		this.deatPanel = new JPanel(new GridLayout(2, 3, 10, 10));
 		getContentPane().add(this.deatPanel);
@@ -407,8 +407,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		y += 80;
 
-		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString(Resurses.CRITERIA_CREATED));
+		tit = BorderFactory.createTitledBorder(bvl,
+				Resurses.getString(Resurses.CRITERIA_CREATED));
 
 		this.createdPanel = new JPanel(new GridLayout(2, 3, 2, 2));
 		getContentPane().add(this.createdPanel);
@@ -426,8 +426,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		this.createdToDate = new DateTextField();
 		this.createdPanel.add(this.createdToDate);
 
-		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString(Resurses.CRITERIA_VIEW));
+		tit = BorderFactory.createTitledBorder(bvl,
+				Resurses.getString(Resurses.CRITERIA_VIEW));
 
 		this.viewPanel = new JPanel(new GridLayout(2, 4, 10, 10));
 		getContentPane().add(this.viewPanel);
@@ -443,8 +443,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		y += 80;
 
-		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString("CRITERIA_PLACE_NOTICE"));
+		tit = BorderFactory.createTitledBorder(bvl,
+				Resurses.getString("CRITERIA_PLACE_NOTICE"));
 
 		placePanel = new JPanel(new GridLayout(2, 3, 10, 10));
 		getContentPane().add(this.placePanel);
@@ -454,8 +454,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		lbl = new JLabel(Resurses.getString(Resurses.CRITERIA_PLACE));
 		placePanel.add(lbl);
 
-		noticeExist = new JCheckBox(Resurses
-				.getString(Resurses.CRITERIA_NOTICE_MISSING));
+		noticeExist = new JCheckBox(
+				Resurses.getString(Resurses.CRITERIA_NOTICE_MISSING));
 		placePanel.add(noticeExist);
 
 		place = new JTextField();
@@ -464,8 +464,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		noticeList = new JComboBox();
 		placePanel.add(noticeList);
 
-		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString("CRITERIA_SEX_SURETY"));
+		tit = BorderFactory.createTitledBorder(bvl,
+				Resurses.getString("CRITERIA_SEX_SURETY"));
 
 		sexPanel = new JPanel(new GridLayout(2, 0, 10, 10));
 		getContentPane().add(sexPanel);
@@ -485,8 +485,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		y += 80;
 
-		tit = BorderFactory.createTitledBorder(bvl, Resurses
-				.getString(Resurses.CRITERIA_FULL_TEXT));
+		tit = BorderFactory.createTitledBorder(bvl,
+				Resurses.getString(Resurses.CRITERIA_FULL_TEXT));
 
 		textPanel = new JPanel(new GridLayout(2, 1, 10, 10));
 		getContentPane().add(textPanel);
@@ -601,6 +601,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 								preferredVid = Integer.parseInt(vnum[0]);
 
 							} catch (NumberFormatException ne) {
+								// NumberFormatException ignored
 							}
 
 						}
@@ -626,6 +627,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 						try {
 							suretyValue = Integer.parseInt(parts[1]);
 						} catch (NumberFormatException ne) {
+							// NumberFormatException ignored
 						}
 						surety.setSurety(suretyValue);
 
@@ -660,6 +662,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 					try {
 						vid = Integer.parseInt(pp[0]);
 					} catch (NumberFormatException ne) {
+						// NumberFormatException ignored
 					}
 					if (vid == preferredVid) {
 						preferredIndex = i;
@@ -1028,6 +1031,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 						ppnum = Integer.parseInt(pp[0]);
 
 					} catch (NumberFormatException ne) {
+						// NumberFormatException ignored
 					}
 
 					if (vid == ppnum) {
@@ -1075,15 +1079,13 @@ public class SearchCriteria extends JDialog implements ActionListener {
 				Suku.kontroller.getSukuData(request, "cmd=updatesettings",
 						"type=query");
 			} catch (SukuException e1) {
-				logger
-						.log(Level.WARNING, "Failed to write query settings ",
-								e1);
+				logger.log(Level.WARNING, "Failed to write query settings ", e1);
 			}
 			// Suku.kontroller.putPref(this, "viewId", preferredView);
 			// this.surnameTx = this.surname.getText();
 			// this.givennameTx = this.givenname.getText();
 			// this.patronymeTx = this.patronyme.getText();
-			//			
+			//
 			this.setVisible(false);
 		}
 
@@ -1137,30 +1139,28 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			this.calDate = new JCalendarButton();
 			this.add(calDate);
 
-			calDate
-					.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-						public void propertyChange(
-								java.beans.PropertyChangeEvent evt) {
-							if (evt.getNewValue() instanceof Date) {
-								String df = Resurses.getDateFormat();
-								String dff = "yyyy.MM.dd";
-								if (df != null) {
-									if (df.equals("FI")) {
-										dff = "dd.MM.yyyy";
-									} else if (df.equals("UK")) {
-										dff = "dd/MM/yyyy";
-									} else if (df.equals("US")) {
-										dff = "MM/dd/yyyy";
-									}
-								}
-								SimpleDateFormat sf = new SimpleDateFormat(dff);
-								Date dat = (Date) evt.getNewValue();
-								StringBuffer sb = new StringBuffer();
-								sb = sf.format(dat, sb, new FieldPosition(0));
-								createdDate.setText(sb.toString());
+			calDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+				public void propertyChange(java.beans.PropertyChangeEvent evt) {
+					if (evt.getNewValue() instanceof Date) {
+						String df = Resurses.getDateFormat();
+						String dff = "yyyy.MM.dd";
+						if (df != null) {
+							if (df.equals("FI")) {
+								dff = "dd.MM.yyyy";
+							} else if (df.equals("UK")) {
+								dff = "dd/MM/yyyy";
+							} else if (df.equals("US")) {
+								dff = "MM/dd/yyyy";
 							}
 						}
-					});
+						SimpleDateFormat sf = new SimpleDateFormat(dff);
+						Date dat = (Date) evt.getNewValue();
+						StringBuffer sb = new StringBuffer();
+						sb = sf.format(dat, sb, new FieldPosition(0));
+						createdDate.setText(sb.toString());
+					}
+				}
+			});
 
 			Dimension dd = this.calDate.getPreferredSize();
 			this.createdDate.setBounds(0, 0, 155, dd.height);

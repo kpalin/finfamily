@@ -954,7 +954,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			RelativesPane rel = (RelativesPane) relp.pnl;
 			rel.refreshRelativesPane(true, true);
 		} catch (ClassCastException cce) {
-
+			// ClassCastException ignored
 		}
 
 	}

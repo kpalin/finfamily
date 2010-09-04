@@ -526,8 +526,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		ImageIcon icon2 = createImageIcon("/images/esipolvi.gif");
 		ImageIcon icon3 = createImageIcon("/images/muupolvi.gif");
 
-		commonWithImages = new JCheckBox(Resurses
-				.getString("REPORT.WITHIMAGES"), true);
+		commonWithImages = new JCheckBox(
+				Resurses.getString("REPORT.WITHIMAGES"), true);
 		commonWithImages.setBounds(x4, y1, 160, 20);
 		add(commonWithImages);
 
@@ -547,13 +547,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		add(lb);
 		lb.setBounds(x4 + 64, y1 + 44, 100, 20);
 
-		commonNumberImages = new JCheckBox(Resurses
-				.getString("REPORT.IMAGE.NUMBER"), true);
+		commonNumberImages = new JCheckBox(
+				Resurses.getString("REPORT.IMAGE.NUMBER"), true);
 		commonNumberImages.setBounds(x4, y1 + 66, 160, 20);
 		add(commonNumberImages);
 
-		commonSeparateImages = new JCheckBox(Resurses
-				.getString("REPORT.IMAGE.SEPARATE"), true);
+		commonSeparateImages = new JCheckBox(
+				Resurses.getString("REPORT.IMAGE.SEPARATE"), true);
 		commonSeparateImages.setBounds(x4, y1 + 88, 160, 20);
 		add(commonSeparateImages);
 
@@ -562,8 +562,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		commonBendNames.setBounds(x4, y1 + 110, 160, 20);
 		add(commonBendNames);
 
-		commonSeparateNotices = new JCheckBox(Resurses
-				.getString("REPORT.SEPARATENOTICES"), true);
+		commonSeparateNotices = new JCheckBox(
+				Resurses.getString("REPORT.SEPARATENOTICES"), true);
 		commonSeparateNotices.setBounds(x4, y1 + 132, 160, 20);
 		add(commonSeparateNotices);
 
@@ -573,13 +573,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		commonNamesBold.setBounds(x4, y1 + 154, 160, 20);
 		add(commonNamesBold);
 
-		commonNamesUnderline = new JCheckBox(Resurses
-				.getString("REPORT.NAME.UNDERLINE"));
+		commonNamesUnderline = new JCheckBox(
+				Resurses.getString("REPORT.NAME.UNDERLINE"));
 		commonNamesUnderline.setBounds(x4, y1 + 176, 160, 20);
 		add(commonNamesUnderline);
 
-		commonWithAddress = new JCheckBox(Resurses
-				.getString("REPORT.WITHADDERSS"), true);
+		commonWithAddress = new JCheckBox(
+				Resurses.getString("REPORT.WITHADDERSS"), true);
 		commonWithAddress.setBounds(x4, y1 + 198, 160, 20);
 		add(commonWithAddress);
 
@@ -593,8 +593,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		pane.setBounds(x4 - 5, rtypy, 160, 120);
 
-		JRadioButton radio = new JRadioButton(Resurses
-				.getString("REPORT.DESC.SPOUSE.NONE"));
+		JRadioButton radio = new JRadioButton(
+				Resurses.getString("REPORT.DESC.SPOUSE.NONE"));
 		spouseData.add(radio);
 		radio.setActionCommand(ReportWorkerDialog.SET_SPOUSE_NONE);
 		pane.add(radio);
@@ -622,8 +622,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		pane.setLayout(new GridLayout(0, 1));
 		pane.setBounds(x2, y3, 160, 100);
 
-		JRadioButton formd = new JRadioButton(Resurses
-				.getString("REPORT.DATEFI"));
+		JRadioButton formd = new JRadioButton(
+				Resurses.getString("REPORT.DATEFI"));
 		formd.setActionCommand(SET_FI);
 		formd.setSelected(true);
 		commonDateFormatGroup.add(formd);
@@ -700,18 +700,18 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		add(pane);
 
-		commonIndexNames = new JCheckBox(Resurses
-				.getString("REPORT.INDEX.NAMES"));
+		commonIndexNames = new JCheckBox(
+				Resurses.getString("REPORT.INDEX.NAMES"));
 		commonIndexNames.setBounds(0, 0, 150, 0);
 		pane.add(commonIndexNames);
 
-		commonIndexPlaces = new JCheckBox(Resurses
-				.getString("REPORT.INDEX.PLACES"));
+		commonIndexPlaces = new JCheckBox(
+				Resurses.getString("REPORT.INDEX.PLACES"));
 		commonIndexPlaces.setBounds(0, 22, 150, 0);
 		pane.add(commonIndexPlaces);
 
-		commonIndexYears = new JCheckBox(Resurses
-				.getString("REPORT.INDEX.YEARS"));
+		commonIndexYears = new JCheckBox(
+				Resurses.getString("REPORT.INDEX.YEARS"));
 		commonIndexYears.setBounds(0, 44, 150, 0);
 		pane.add(commonIndexYears);
 
@@ -722,8 +722,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			descendantPanel = new DescendantPane();
 
 			reportTypePane.addTab(Resurses.getString("REPORT.DESCENDANT"),
-					icon1, descendantPanel, Resurses
-							.getString("REPORT.TIP.DESCENDANT"));
+					icon1, descendantPanel,
+					Resurses.getString("REPORT.TIP.DESCENDANT"));
 
 			reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
 
@@ -746,7 +746,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					listaPanel, Resurses.getString("REPORT.TIP.LISTAT"));
 			reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
 		}
-		//				
+		//
 		// reportTypePane.addTab(Resurses.getString("REPORT.LISTAT"), icon3,
 		// listaPanel,
 		// Resurses.getString("REPORT.TIP.LISTAT"));
@@ -762,22 +762,22 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		if (pers == null) {
 			listaGroup = new ButtonGroup();
 
-			JRadioButton listad = new JRadioButton(Resurses
-					.getString("REPORT.LISTA.PERSONCARDS"));
+			JRadioButton listad = new JRadioButton(
+					Resurses.getString("REPORT.LISTA.PERSONCARDS"));
 			listaPanel.add(listad);
 			listad.setBounds(10, 20, 200, 20);
 			listad.setActionCommand("REPORT.LISTA.PERSONCARDS");
 			listaGroup.add(listad);
 
-			listad = new JRadioButton(Resurses
-					.getString("REPORT.LISTA.SURETIES"));
+			listad = new JRadioButton(
+					Resurses.getString("REPORT.LISTA.SURETIES"));
 			listaPanel.add(listad);
 			listad.setBounds(10, 44, 200, 20);
 			listad.setActionCommand("REPORT.LISTA.SURETIES");
 			listaGroup.add(listad);
 
-			listad = new JRadioButton(Resurses
-					.getString("REPORT.LISTA.ADDRESSES"));
+			listad = new JRadioButton(
+					Resurses.getString("REPORT.LISTA.ADDRESSES"));
 			listaPanel.add(listad);
 			listad.setBounds(10, 68, 200, 20);
 			listad.setActionCommand("REPORT.LISTA.ADDRESSES");
@@ -808,8 +808,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		lb.setBounds(x1 + 20, y3, 100, 20);
 		add(lb);
 
-		JButton save = new JButton(Resurses
-				.getString(Resurses.REPORT_SETTINGS_SAVE));
+		JButton save = new JButton(
+				Resurses.getString(Resurses.REPORT_SETTINGS_SAVE));
 		save.setBounds(x1 + 20, y3 + 60, 80, 20);
 		save.setActionCommand(Resurses.REPORT_SETTINGS_SAVE);
 		save.addActionListener(this);
@@ -1028,6 +1028,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						try {
 							vid = Integer.parseInt(vx[1]);
 						} catch (NumberFormatException ne) {
+							// NumberFormatException ignored
 						}
 						for (int j = 0; j < viewids.length; j++) {
 							if (viewids[j] == vid) {
@@ -1062,8 +1063,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, "error fetching setting "
-					+ settingsIndex + ": " + e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+					+ settingsIndex + ": " + e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 
 			e.printStackTrace();
 		}
@@ -1123,8 +1125,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				}
 			} else {
 				if (listaGroup.getSelection() == null) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("REPORT.LISTA.NOLIST.SELECTED"));
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("REPORT.LISTA.NOLIST.SELECTED"));
 					return;
 				}
 				listSele = listaGroup.getSelection().getActionCommand();
@@ -1170,10 +1172,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		try {
 			v.add("imagesize=" + commonImageSize.getText());
 		} catch (NumberFormatException ne) {
+			// NumberFormatException ignored
 		}
 		try {
 			v.add("personimagesize=" + commonPersonImageSize.getText());
 		} catch (NumberFormatException ne) {
+			// NumberFormatException ignored
 		}
 		v.add("format=" + "" + commonReportFormatList.getSelectedIndex());
 
@@ -1265,15 +1269,17 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			SukuData reposet = Suku.kontroller.getSukuData(v
 					.toArray(new String[0]));
 			if (reposet.resu != null) {
-				JOptionPane.showMessageDialog(this, reposet.resu, Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, reposet.resu,
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			typesTable.saveReportSettings(type + "types", settingsIndex);
 
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 
@@ -1309,8 +1315,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					repo = new JavaReport(runner);
 				} else {
 					try {
-						repo = new XmlReport(runner, reportFormatidx, self.pers
-								.getAlfaName(true));
+						repo = new XmlReport(runner, reportFormatidx,
+								self.pers.getAlfaName(true));
 					} catch (SukuException se) {
 						JOptionPane.showMessageDialog(runner, se.getMessage(),
 								Resurses.getString(Resurses.SUKU),
@@ -1341,8 +1347,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				dr.executeReport();
 
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(runner, e.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(runner, e.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				logger.log(Level.WARNING, "Exception in background thread", e);
 			}
 
@@ -1448,9 +1455,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 				HashMap<String, String> relaMap = new HashMap<String, String>();
 				if (parent.getDatabaseRowCount() > 60000) {
-					JOptionPane.showMessageDialog(null, Resurses
-							.getString("DBLISTA_TOO_LARGE"), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(null,
+							Resurses.getString("DBLISTA_TOO_LARGE"),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					return null;
 				}
@@ -1482,16 +1489,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						WritableFont.NO_BOLD, false);
 				WritableCellFormat arial0 = new WritableCellFormat(arial10);
 
-				WritableSheet sheet = workbook.createSheet(typesTable
-						.getTextValue("SURETY_LISTA"), 0);
+				WritableSheet sheet = workbook.createSheet(
+						typesTable.getTextValue("SURETY_LISTA"), 0);
 				int rivi = 0;
 
 				String sureties[] = typesTable.getTextValue("SURETY_VALUES")
 						.split(";");
 
 				jxl.write.Number nume = null;
-				Label label = new Label(0, rivi, typesTable
-						.getTextValue("SURETY_PID"), arial0bold);
+				Label label = new Label(0, rivi,
+						typesTable.getTextValue("SURETY_PID"), arial0bold);
 				sheet.addCell(label);
 				label = new Label(1, rivi, typesTable.getTagName("NAME"),
 						arial0bold);
@@ -1502,12 +1509,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				label = new Label(3, rivi, typesTable.getTagName("DEAT"),
 						arial0bold);
 				sheet.addCell(label);
-				label = new Label(4, rivi, typesTable
-						.getTextValue("SURETY_TAG"), arial0bold);
+				label = new Label(4, rivi,
+						typesTable.getTextValue("SURETY_TAG"), arial0bold);
 				sheet.addCell(label);
 
-				label = new Label(5, rivi, typesTable
-						.getTextValue("SURETY_SURETY"), arial0bold);
+				label = new Label(5, rivi,
+						typesTable.getTextValue("SURETY_SURETY"), arial0bold);
 				sheet.addCell(label);
 				label = new Label(6, rivi, typesTable.getTagName("NAME"),
 						arial0bold);
@@ -1518,17 +1525,19 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				label = new Label(8, rivi, typesTable.getTagName("DEAT"),
 						arial0bold);
 				sheet.addCell(label);
-				label = new Label(9, rivi, typesTable
-						.getTextValue("SURETY_DESCRIPTION"), arial0bold);
+				label = new Label(9, rivi,
+						typesTable.getTextValue("SURETY_DESCRIPTION"),
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(10, rivi, typesTable
-						.getTextValue("SURETY_DATE"), arial0bold);
+				label = new Label(10, rivi,
+						typesTable.getTextValue("SURETY_DATE"), arial0bold);
 				sheet.addCell(label);
-				label = new Label(11, rivi, typesTable
-						.getTextValue("SURETY_PLACE"), arial0bold);
+				label = new Label(11, rivi,
+						typesTable.getTextValue("SURETY_PLACE"), arial0bold);
 				sheet.addCell(label);
-				label = new Label(12, rivi, typesTable
-						.getTextValue("SURETY_PRIVATE_TEXT"), arial0bold);
+				label = new Label(12, rivi,
+						typesTable.getTextValue("SURETY_PRIVATE_TEXT"),
+						arial0bold);
 				sheet.addCell(label);
 
 				rivi++;
@@ -1552,15 +1561,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(1, rivi, psp.getAlfaName(),
 									arial0);
 							sheet.addCell(label);
-							label = new Label(2, rivi, Utils.textDate(psp
-									.getBirtDate(), false), arial0);
+							label = new Label(2, rivi, Utils.textDate(
+									psp.getBirtDate(), false), arial0);
 							sheet.addCell(label);
-							label = new Label(3, rivi, Utils.textDate(psp
-									.getDeatDate(), false), arial0);
+							label = new Label(3, rivi, Utils.textDate(
+									psp.getDeatDate(), false), arial0);
 							sheet.addCell(label);
-							label = new Label(4, rivi, typesTable
-									.getTextValue(typesTable.getTagName(notice
-											.getTag())), arial0);
+							label = new Label(4, rivi,
+									typesTable.getTextValue(typesTable
+											.getTagName(notice.getTag())),
+									arial0);
 							sheet.addCell(label);
 
 							int idx = 5 - (notice.getSurety() + 10) / 20;
@@ -1605,8 +1615,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 									arial0);
 							sheet.addCell(label);
 
-							label = new Label(10, rivi, Utils.textDate(notice
-									.getFromDate(), false), arial0);
+							label = new Label(10, rivi, Utils.textDate(
+									notice.getFromDate(), false), arial0);
 							sheet.addCell(label);
 
 							label = new Label(11, rivi, notice.getPlace(),
@@ -1629,21 +1639,22 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 								relaMap.put(thisRela, "OK");
 
 								rivi++;
-								nume = new jxl.write.Number(0, rivi, psp
-										.getPid());
+								nume = new jxl.write.Number(0, rivi,
+										psp.getPid());
 								sheet.addCell(nume);
 								label = new Label(1, rivi, psp.getAlfaName(),
 										arial0);
 								sheet.addCell(label);
-								label = new Label(2, rivi, Utils.textDate(psp
-										.getBirtDate(), false), arial0);
+								label = new Label(2, rivi, Utils.textDate(
+										psp.getBirtDate(), false), arial0);
 								sheet.addCell(label);
-								label = new Label(3, rivi, Utils.textDate(psp
-										.getDeatDate(), false), arial0);
+								label = new Label(3, rivi, Utils.textDate(
+										psp.getDeatDate(), false), arial0);
 								sheet.addCell(label);
 
-								label = new Label(4, rivi, typesTable
-										.getTextValue(rela.getTag()), arial0);
+								label = new Label(4, rivi,
+										typesTable.getTextValue(rela.getTag()),
+										arial0);
 								sheet.addCell(label);
 
 								int idx = 5 - (rela.getSurety() + 10) / 20;
@@ -1665,11 +1676,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 										arial0);
 								sheet.addCell(label);
 
-								label = new Label(7, rivi, Utils.textDate(rsp
-										.getBirtDate(), false), arial0);
+								label = new Label(7, rivi, Utils.textDate(
+										rsp.getBirtDate(), false), arial0);
 								sheet.addCell(label);
-								label = new Label(8, rivi, Utils.textDate(rsp
-										.getDeatDate(), false), arial0);
+								label = new Label(8, rivi, Utils.textDate(
+										rsp.getDeatDate(), false), arial0);
 								sheet.addCell(label);
 							}
 							if (rela.getNotices() != null) {
@@ -1688,16 +1699,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 											nume = new jxl.write.Number(0,
 													rivi, psp.getPid());
 											sheet.addCell(nume);
-											label = new Label(1, rivi, psp
-													.getAlfaName(), arial0);
+											label = new Label(1, rivi,
+													psp.getAlfaName(), arial0);
 											sheet.addCell(label);
-											label = new Label(2, rivi, Utils
-													.textDate(
+											label = new Label(2, rivi,
+													Utils.textDate(
 															psp.getBirtDate(),
 															false), arial0);
 											sheet.addCell(label);
-											label = new Label(3, rivi, Utils
-													.textDate(
+											label = new Label(3, rivi,
+													Utils.textDate(
 															psp.getDeatDate(),
 															false), arial0);
 											sheet.addCell(label);
@@ -1726,27 +1737,27 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 													.getSukuData(
 															"cmd=person",
 															"pid="
-																	+ rela
-																			.getRelative());
+																	+ rela.getRelative());
 											PersonShortData rsp = new PersonShortData(
 													rdata.persLong);
-											label = new Label(6, rivi, rsp
-													.getAlfaName(), arial0);
+											label = new Label(6, rivi,
+													rsp.getAlfaName(), arial0);
 											sheet.addCell(label);
 
-											label = new Label(7, rivi, Utils
-													.textDate(
+											label = new Label(7, rivi,
+													Utils.textDate(
 															rsp.getBirtDate(),
 															false), arial0);
 											sheet.addCell(label);
-											label = new Label(8, rivi, Utils
-													.textDate(
+											label = new Label(8, rivi,
+													Utils.textDate(
 															rsp.getDeatDate(),
 															false), arial0);
 											sheet.addCell(label);
 
-											label = new Label(12, rivi, relnoti
-													.getPrivateText(), arial0);
+											label = new Label(12, rivi,
+													relnoti.getPrivateText(),
+													arial0);
 											sheet.addCell(label);
 
 										}
@@ -1791,9 +1802,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			try {
 
 				if (parent.getDatabaseRowCount() > 60000) {
-					JOptionPane.showMessageDialog(null, Resurses
-							.getString("DBLISTA_TOO_LARGE"), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(null,
+							Resurses.getString("DBLISTA_TOO_LARGE"),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					return null;
 				}
@@ -1825,55 +1836,58 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						WritableFont.NO_BOLD, false);
 				WritableCellFormat arial0 = new WritableCellFormat(arial10);
 
-				WritableSheet sheet = workbook.createSheet(typesTable
-						.getTextValue("ADDRESS_LISTA"), 0);
+				WritableSheet sheet = workbook.createSheet(
+						typesTable.getTextValue("ADDRESS_LISTA"), 0);
 				int rivi = 0;
 
 				jxl.write.Number nume = null;
-				Label label = new Label(0, rivi, typesTable
-						.getTextValue("SURETY_PID"), arial0bold);
+				Label label = new Label(0, rivi,
+						typesTable.getTextValue("SURETY_PID"), arial0bold);
 				sheet.addCell(label);
 				label = new Label(1, rivi, typesTable.getTagName("NAME"),
 						arial0bold);
 				sheet.addCell(label);
-				label = new Label(2, rivi, typesTable
-						.getTextValue("ADDRESS_GIVENNAME"), arial0bold);
+				label = new Label(2, rivi,
+						typesTable.getTextValue("ADDRESS_GIVENNAME"),
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(3, rivi, typesTable
-						.getTextValue("ADDRESS_PATRONYME"), arial0bold);
+				label = new Label(3, rivi,
+						typesTable.getTextValue("ADDRESS_PATRONYME"),
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(4, rivi, typesTable
-						.getTextValue("ADDRESS_SURNAME"), arial0bold);
+				label = new Label(4, rivi,
+						typesTable.getTextValue("ADDRESS_SURNAME"), arial0bold);
 				sheet.addCell(label);
 				label = new Label(5, rivi, typesTable.getTagName("BIRT"),
 						arial0bold);
 				sheet.addCell(label);
-				label = new Label(6, rivi, typesTable
-						.getTextValue("ADDRESS_STREET")
-						+ "1", arial0bold);
+				label = new Label(6, rivi,
+						typesTable.getTextValue("ADDRESS_STREET") + "1",
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(7, rivi, typesTable
-						.getTextValue("ADDRESS_STREET")
-						+ "2", arial0bold);
+				label = new Label(7, rivi,
+						typesTable.getTextValue("ADDRESS_STREET") + "2",
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(8, rivi, typesTable
-						.getTextValue("ADDRESS_STREET")
-						+ "3", arial0bold);
+				label = new Label(8, rivi,
+						typesTable.getTextValue("ADDRESS_STREET") + "3",
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(9, rivi, typesTable
-						.getTextValue("ADDRESS_POSTNO"), arial0bold);
+				label = new Label(9, rivi,
+						typesTable.getTextValue("ADDRESS_POSTNO"), arial0bold);
 				sheet.addCell(label);
-				label = new Label(10, rivi, typesTable
-						.getTextValue("ADDRESS_POSTOFFICE"), arial0bold);
+				label = new Label(10, rivi,
+						typesTable.getTextValue("ADDRESS_POSTOFFICE"),
+						arial0bold);
 				sheet.addCell(label);
-				label = new Label(11, rivi, typesTable
-						.getTextValue("ADDRESS_STATE"), arial0bold);
+				label = new Label(11, rivi,
+						typesTable.getTextValue("ADDRESS_STATE"), arial0bold);
 				sheet.addCell(label);
-				label = new Label(12, rivi, typesTable
-						.getTextValue("ADDRESS_COUNTRY"), arial0bold);
+				label = new Label(12, rivi,
+						typesTable.getTextValue("ADDRESS_COUNTRY"), arial0bold);
 				sheet.addCell(label);
-				label = new Label(13, rivi, typesTable
-						.getTextValue("ADDRESS_EMAIL"), arial0bold);
+				label = new Label(13, rivi,
+						typesTable.getTextValue("ADDRESS_EMAIL"), arial0bold);
 				sheet.addCell(label);
 
 				for (int i = 0; i < shorts.length; i++) {
@@ -1979,8 +1993,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						sheet.addCell(label);
 
 						if (birt != null && birt.getFromDate() != null) {
-							label = new Label(5, rivi, Utils.textDate(birt
-									.getFromDate(), true), arial0);
+							label = new Label(5, rivi, Utils.textDate(
+									birt.getFromDate(), true), arial0);
 							sheet.addCell(label);
 						}
 						if (address.getAddress() != null) {
@@ -2075,9 +2089,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			try {
 
 				if (parent.getDatabaseRowCount() > 100) {
-					JOptionPane.showMessageDialog(null, Resurses
-							.getString("CARD_TOO_MANY"), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(null,
+							Resurses.getString("CARD_TOO_MANY"),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					return null;
 				}
@@ -2135,15 +2149,15 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					WritableSheet sheet = workbook.createSheet(cardTag, i);
 
-					Label label = new Label(0, 0, Resurses
-							.getString("CARD_NAME"), arial0bold);
+					Label label = new Label(0, 0,
+							Resurses.getString("CARD_NAME"), arial0bold);
 					sheet.addCell(label);
 
 					label = new Label(0, 1, "" + (personNo++));
 					sheet.addCell(label);
 
-					label = new Label(1, 1, Resurses
-							.getString("CARD_PERSON_DATA"), arial0bold);
+					label = new Label(1, 1,
+							Resurses.getString("CARD_PERSON_DATA"), arial0bold);
 					sheet.addCell(label);
 
 					rivi = 2;
@@ -2165,11 +2179,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(0, rivi, "" + (personNo++));
 							sheet.addCell(label);
 
-							label = new Label(1, rivi, typesTable
-									.getTextValue(r.getTag()), arial0bold);
+							label = new Label(1, rivi,
+									typesTable.getTextValue(r.getTag()),
+									arial0bold);
 							sheet.addCell(label);
-							label = new Label(2, rivi, Resurses
-									.getString("CARD_PERSON_DATA"), arial0bold);
+							label = new Label(2, rivi,
+									Resurses.getString("CARD_PERSON_DATA"),
+									arial0bold);
 							sheet.addCell(label);
 
 							rivi = writerRelationToExcel(rivi, sheet, r);
@@ -2192,11 +2208,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(0, rivi, "" + (personNo++));
 							sheet.addCell(label);
 
-							label = new Label(1, rivi, typesTable
-									.getTextValue(r.getTag()), arial0bold);
+							label = new Label(1, rivi,
+									typesTable.getTextValue(r.getTag()),
+									arial0bold);
 							sheet.addCell(label);
-							label = new Label(2, rivi, Resurses
-									.getString("CARD_PERSON_DATA"), arial0bold);
+							label = new Label(2, rivi,
+									Resurses.getString("CARD_PERSON_DATA"),
+									arial0bold);
 							sheet.addCell(label);
 
 							rivi = writerRelationToExcel(rivi, sheet, r);
@@ -2218,11 +2236,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(0, rivi, "" + (personNo++));
 							sheet.addCell(label);
 
-							label = new Label(1, rivi, typesTable
-									.getTextValue(r.getTag()), arial0bold);
+							label = new Label(1, rivi,
+									typesTable.getTextValue(r.getTag()),
+									arial0bold);
 							sheet.addCell(label);
-							label = new Label(2, rivi, Resurses
-									.getString("CARD_PERSON_DATA"), arial0bold);
+							label = new Label(2, rivi,
+									Resurses.getString("CARD_PERSON_DATA"),
+									arial0bold);
 							sheet.addCell(label);
 
 							rivi = writerRelationToExcel(rivi, sheet, r);
@@ -2262,8 +2282,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							.getTag()));
 					sheet.addCell(label);
 					if (rn.getFromDate() != null) {
-						label = new Label(2, rivi, Utils.textDate(rn
-								.getFromDate(), true));
+						label = new Label(2, rivi, Utils.textDate(
+								rn.getFromDate(), true));
 						sheet.addCell(label);
 					}
 
@@ -2347,8 +2367,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							sheet.addCell(label);
 						}
 						if (n.getFromDate() != null) {
-							label = new Label(4, rivi, Utils.textDate(n
-									.getFromDate(), true));
+							label = new Label(4, rivi, Utils.textDate(
+									n.getFromDate(), true));
 							sheet.addCell(label);
 						}
 						if (n.getPlace() != null) {
@@ -2513,17 +2533,17 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				WritableCellFormat arial0 = new WritableCellFormat(arial10);
 
 				if (commonIndexNames.isSelected() && dr != null) {
-					WritableSheet sheet = workbook.createSheet(typesTable
-							.getTextValue("INDEX_NAMES"), sheetNo++);
-					Label label = new Label(0, 0, typesTable
-							.getTextValue("INDEX_NAME"), arial0bold);
+					WritableSheet sheet = workbook.createSheet(
+							typesTable.getTextValue("INDEX_NAMES"), sheetNo++);
+					Label label = new Label(0, 0,
+							typesTable.getTextValue("INDEX_NAME"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(1, 0, typesTable
-							.getTextValue("INDEX_TABLES"), arial0bold);
+					label = new Label(1, 0,
+							typesTable.getTextValue("INDEX_TABLES"), arial0bold);
 					sheet.addCell(label);
-					label = new Label(2, 0, typesTable
-							.getTextValue("INDEX_OTHERS"), arial0bold);
+					label = new Label(2, 0,
+							typesTable.getTextValue("INDEX_OTHERS"), arial0bold);
 					sheet.addCell(label);
 
 					label = new Label(3, 0,
@@ -2573,13 +2593,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 									pitt.asParents = pit.asParents;
 									PersonShortData p = pit.shortPerson;
 									PersonShortData alias = new PersonShortData(
-											p.getPid(), p.getGivenname(i), p
-													.getPatronym(i), p
-													.getPrefix(i), p
-													.getSurname(i), p
-													.getPostfix(i), p
-													.getBirtDate(), p
-													.getDeatDate());
+											p.getPid(), p.getGivenname(i),
+											p.getPatronym(i), p.getPrefix(i),
+											p.getSurname(i), p.getPostfix(i),
+											p.getBirtDate(), p.getDeatDate());
 									pitt.shortPerson = alias;
 									// vv.add(pitt);
 								}
@@ -2646,14 +2663,18 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							label = new Label(2, row, "" + mefe, arial0);
 							sheet.addCell(label);
 							if (pit.shortPerson.getBirtDate() != null) {
-								label = new Label(3, row, Utils
-										.nv4(pit.shortPerson.getBirtDate()),
+								label = new Label(
+										3,
+										row,
+										Utils.nv4(pit.shortPerson.getBirtDate()),
 										arial0);
 								sheet.addCell(label);
 							}
 							if (pit.shortPerson.getDeatDate() != null) {
-								label = new Label(4, row, Utils
-										.nv4(pit.shortPerson.getDeatDate()),
+								label = new Label(
+										4,
+										row,
+										Utils.nv4(pit.shortPerson.getDeatDate()),
 										arial0);
 								sheet.addCell(label);
 							}
@@ -2683,15 +2704,15 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				}
 
 				if (commonIndexPlaces.isSelected()) {
-					WritableSheet sheet = workbook.createSheet(typesTable
-							.getTextValue("INDEX_PLACES"), 1);
+					WritableSheet sheet = workbook.createSheet(
+							typesTable.getTextValue("INDEX_PLACES"), 1);
 
-					Label label = new Label(0, 0, typesTable
-							.getTextValue("INDEX_PLACE"), arial0bold);
+					Label label = new Label(0, 0,
+							typesTable.getTextValue("INDEX_PLACE"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(1, 0, typesTable
-							.getTextValue("INDEX_TABLES"), arial0bold);
+					label = new Label(1, 0,
+							typesTable.getTextValue("INDEX_TABLES"), arial0bold);
 					sheet.addCell(label);
 
 					PlaceInTables[] places = dr.getPlaceReferences();
@@ -2708,15 +2729,15 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				}
 
 				if (getSourceFormat().equals(SET_AFT)) {
-					WritableSheet sheet = workbook.createSheet(typesTable
-							.getTextValue("SOURCE_INDEXES"), 1);
+					WritableSheet sheet = workbook.createSheet(
+							typesTable.getTextValue("SOURCE_INDEXES"), 1);
 
-					Label label = new Label(0, 0, typesTable
-							.getTextValue("SOURCE_TEXT"), arial0bold);
+					Label label = new Label(0, 0,
+							typesTable.getTextValue("SOURCE_TEXT"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(1, 0, typesTable
-							.getTextValue("SOURCE_INDEX"), arial0bold);
+					label = new Label(1, 0,
+							typesTable.getTextValue("SOURCE_INDEX"), arial0bold);
 					sheet.addCell(label);
 
 					String[] refs = dr.getSourceList();
