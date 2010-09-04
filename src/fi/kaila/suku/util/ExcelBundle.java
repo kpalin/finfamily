@@ -137,23 +137,23 @@ public class ExcelBundle {
 
 						bundle.put(a1, x1);
 
-					}
-					if (a1.equals("LANCODE")) {
-						for (int i = 1; i < colCount; i++) {
-							Cell acx = sheet.getCell(i, rivi);
+						if (a1.equals("LANCODE")) {
+							for (int i = 1; i < colCount; i++) {
+								Cell acx = sheet.getCell(i, rivi);
 
-							String ax = acx.getContents();
-							langCodes[i - 1] = ax;
+								String ax = acx.getContents();
+								langCodes[i - 1] = ax;
 
+							}
 						}
-					}
-					if (a1.equals("LANGUAGE")) {
-						for (int i = 1; i < colCount; i++) {
-							Cell acx = sheet.getCell(i, rivi);
+						if (a1.equals("LANGUAGE")) {
+							for (int i = 1; i < colCount; i++) {
+								Cell acx = sheet.getCell(i, rivi);
 
-							String ax = acx.getContents();
-							langNames[i - 1] = ax;
+								String ax = acx.getContents();
+								langNames[i - 1] = ax;
 
+							}
 						}
 					}
 
