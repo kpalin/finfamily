@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -244,8 +245,8 @@ public class SukuServerImpl implements SukuServer {
 			rs = pstm.executeQuery();
 			while (rs.next()) {
 				RelationShortData rel = new RelationShortData(pid,
-						rs.getInt(1), rs.getInt(2), rs.getString(3),
-						rs.getInt(5));
+						rs.getInt(1), rs.getInt(2), rs.getString(3), rs
+								.getInt(5));
 				String adop = rs.getString(4);
 				if (adop != null) {
 					rel.setAdopted(adop);
@@ -297,8 +298,8 @@ public class SukuServerImpl implements SukuServer {
 			rs = pstm.executeQuery();
 			while (rs.next()) {
 				RelationShortData rel = new RelationShortData(pid,
-						rs.getInt(1), rs.getInt(2), rs.getString(3),
-						rs.getInt(5));
+						rs.getInt(1), rs.getInt(2), rs.getString(3), rs
+								.getInt(5));
 				String adop = rs.getString(4);
 				if (adop != null) {
 					rel.setAdopted(adop);
@@ -415,8 +416,8 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("get")) {
 			fam = executeCmdGet(map, cmd, fam);
 		} else if (cmd.equals("getsettings")) {
-			fam = getSettings(map.get("index"), map.get("type"),
-					map.get("name"));
+			fam = getSettings(map.get("index"), map.get("type"), map
+					.get("name"));
 		} else if (cmd.equals("group")) {
 			fam = executeCmdGroup(request, map);
 		} else if (cmd.equals("import")) {
@@ -440,6 +441,8 @@ public class SukuServerImpl implements SukuServer {
 			fam = saveReportSettings(map);
 		} else if (cmd.equals("schema")) {
 			executeCmdSchema(map, fam);
+		} else if (cmd.equals("sql")) {
+			fam = executeCmdSql(map, fam);
 		} else if (cmd.equals("unitCount")) {
 			fam = getUnitCount();
 		} else if (cmd.equals("update")) {
@@ -472,11 +475,53 @@ public class SukuServerImpl implements SukuServer {
 		return fam;
 	}
 
+	private SukuData executeCmdSql(HashMap<String, String> map, SukuData fam) {
+		String type = map.get("type");
+		String sql = map.get("command");
+		SukuData resp = new SukuData();
+
+		if (type == null || !type.equals("select")) {
+			resp.resu = Resurses.getString("SQL_ILLEGAL_COMMAND");
+		} else {
+			if (type.toLowerCase().startsWith("select ")) {
+				resp.resu = Resurses.getString("SQL_ILLEGAL_COMMAND");
+
+			} else {
+				resp.vvTexts = new Vector<String[]>();
+				Statement stm;
+				ResultSet rs;
+				try {
+					stm = con.createStatement();
+
+					rs = stm.executeQuery(sql);
+
+					ResultSetMetaData rsMetaData = rs.getMetaData();
+
+					int numberOfColumns = rsMetaData.getColumnCount();
+
+					while (rs.next()) {
+						String[] cols = new String[numberOfColumns];
+						for (int i = 0; i < numberOfColumns; i++) {
+							cols[i] = rs.getString(i + 1);
+						}
+						resp.vvTexts.add(cols);
+					}
+					rs.close();
+					stm.close();
+
+				} catch (SQLException e) {
+					resp.resu = e.getMessage();
+				}
+			}
+		}
+		return resp;
+	}
+
 	private SukuData executeCmdUpdatesettings(SukuData request,
 			HashMap<String, String> map) {
 
-		return updateSettings(request, map.get("index"), map.get("type"),
-				map.get("name"));
+		return updateSettings(request, map.get("index"), map.get("type"), map
+				.get("name"));
 	}
 
 	private SukuData executeCmdVirtual(HashMap<String, String> map, SukuData fam) {
@@ -546,13 +591,13 @@ public class SukuServerImpl implements SukuServer {
 				int viewId = Integer.parseInt(viewno);
 				if (key.equals("pidarray")) {
 					// add pids to view
-					fam = vv.addViewUnits(viewId, request.pidArray,
-							(empty.equalsIgnoreCase("true")));
+					fam = vv.addViewUnits(viewId, request.pidArray, (empty
+							.equalsIgnoreCase("true")));
 
 				} else if (key.toLowerCase().startsWith("desc")) {
 					fam = vv.addViewDesc(viewId, Integer.parseInt(pidg), gen,
-							(key.toUpperCase().equals("DESC_SPOUSES")),
-							(empty.equalsIgnoreCase("true")));
+							(key.toUpperCase().equals("DESC_SPOUSES")), (empty
+									.equalsIgnoreCase("true")));
 				} else if (key.toLowerCase().equals("anc")) {
 					fam = vv.addViewAnc(viewId, Integer.parseInt(pidg), gen,
 							(empty.equalsIgnoreCase("true")));
@@ -815,8 +860,8 @@ public class SukuServerImpl implements SukuServer {
 					fam = grp.addSelectedGroups(request.pidArray, group);
 				} else if (key.startsWith("DESC") && pidg != null) {
 					int pidb = Integer.parseInt(pidg);
-					fam = grp.addDescendantsToGroup(pidb, group, gen,
-							(!key.equals("DESC")));
+					fam = grp.addDescendantsToGroup(pidb, group, gen, (!key
+							.equals("DESC")));
 				} else if (key.equals("ANC") && pidg != null) {
 					int pidb = Integer.parseInt(pidg);
 					fam = grp.addAncestorsToGroup(pidb, group, gen);
@@ -911,8 +956,8 @@ public class SukuServerImpl implements SukuServer {
 		if (type == null || type.equals("import")) {
 			fam = importExcelData(path, page);
 		} else if (type.equals("export")) {
-			fam = exportExcelData(path, page, lang,
-					(all != null && all.equals("true")) ? true : false);
+			fam = exportExcelData(path, page, lang, (all != null && all
+					.equals("true")) ? true : false);
 		} else {
 			fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
 		}
@@ -940,8 +985,8 @@ public class SukuServerImpl implements SukuServer {
 					map.get("pid"));
 		} else if ("anc".equals(map.get("type"))) {
 
-			fam = createAncTables(map.get("order"), map.get("generations"),
-					map.get("family"), map.get("pid"));
+			fam = createAncTables(map.get("order"), map.get("generations"), map
+					.get("family"), map.get("pid"));
 
 		} else {
 			fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
