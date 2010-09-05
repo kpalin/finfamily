@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -52,6 +54,10 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private static Logger logger = Logger.getLogger(Import2004Dialog.class
+			.getName());
+
 	private static final String OK = "OK";
 	private static final String CANCEL = "CANCEL";
 	private JComboBox lista;
@@ -233,6 +239,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 			} catch (SukuException e) {
 				errorMessage = e.getMessage();
+				logger.log(Level.SEVERE, "restore failed", e);
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(owner, Resurses
 						.getString(Resurses.IMPORT_SUKU)
