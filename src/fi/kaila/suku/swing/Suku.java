@@ -1263,6 +1263,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				schema = schemas.getSchema();
 				if (schema == null) {
 					this.isConnected = 1;
+					enableCommands();
 					return;
 				}
 			}
@@ -2985,7 +2986,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mExportGedcom.setEnabled(isConnected == 2);
 		mExportBackup.setEnabled(isConnected == 2);
 		mQuery.setEnabled(isConnected == 2);
-		mSettings.setEnabled(isConnected == 2);
+		mSettings.setEnabled(isConnected > 0);
 		mNewDatabase.setEnabled(isConnected != 0);
 		mDropSchema.setEnabled(isConnected != 0);
 		mOpenPerson.setEnabled(isConnected == 2);

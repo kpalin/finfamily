@@ -498,7 +498,11 @@ public class SukuServerImpl implements SukuServer {
 					ResultSetMetaData rsMetaData = rs.getMetaData();
 
 					int numberOfColumns = rsMetaData.getColumnCount();
-
+					String[] hdrs = new String[numberOfColumns];
+					for (int i = 0; i < numberOfColumns; i++) {
+						hdrs[i] = rsMetaData.getColumnName(i);
+					}
+					resp.vvTexts.add(hdrs);
 					while (rs.next()) {
 						String[] cols = new String[numberOfColumns];
 						for (int i = 0; i < numberOfColumns; i++) {
