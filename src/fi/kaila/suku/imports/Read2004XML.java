@@ -2219,30 +2219,37 @@ public class Read2004XML extends DefaultHandler {
 							+ this.noticeMediaFilename);
 					if (file.exists() && file.isFile()) {
 						BufferedImage sourceImage = ImageIO.read(file);
-						int mediaWidth = sourceImage.getWidth(null);
-						int mediaHeight = sourceImage.getHeight(null);
-						try {
-							fis = new FileInputStream(file);
-							PreparedStatement ps = this.con
-									.prepareStatement(UPDATE_IMAGE_DATA);
+						if (sourceImage == null) {
+							logger.warning("Image file: " + this.databaseFolder
+									+ "/" + this.sukuMediaFolder + "/"
+									+ this.noticeMediaFilename
+									+ " read failed!!");
+						} else {
+							int mediaWidth = sourceImage.getWidth(null);
+							int mediaHeight = sourceImage.getHeight(null);
+							try {
+								fis = new FileInputStream(file);
+								PreparedStatement ps = this.con
+										.prepareStatement(UPDATE_IMAGE_DATA);
 
-							ps.setBinaryStream(1, fis, (int) file.length());
-							ps.setInt(2, mediaWidth);
-							ps.setInt(3, mediaHeight);
-							ps.setInt(4, pnid);
-							ps.executeUpdate();
-							ps.close();
-							fis.close();
-						} catch (FileNotFoundException e) {
-							logger.warning("Image file "
-									+ this.noticeMediaFilename + " not found");
-							e.printStackTrace();
-						} catch (IOException e) {
-							logger.log(Level.WARNING, "Image file "
-									+ this.noticeMediaFilename, e);
-							e.printStackTrace();
+								ps.setBinaryStream(1, fis, (int) file.length());
+								ps.setInt(2, mediaWidth);
+								ps.setInt(3, mediaHeight);
+								ps.setInt(4, pnid);
+								ps.executeUpdate();
+								ps.close();
+								fis.close();
+							} catch (FileNotFoundException e) {
+								logger.warning("Image file "
+										+ this.noticeMediaFilename
+										+ " not found");
+								e.printStackTrace();
+							} catch (IOException e) {
+								logger.log(Level.WARNING, "Image file "
+										+ this.noticeMediaFilename, e);
+								e.printStackTrace();
+							}
 						}
-
 						// int mediaType = sourceImage.getType();
 						// System.out.println("kuva: " +
 						// this.noticeMediaFilename + " = " + mediaWidth +

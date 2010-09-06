@@ -2176,41 +2176,48 @@ public abstract class CommonReport {
 		int dd = 0;
 		int mm = 0;
 		int yy = 0;
+		try {
+			if (date.length() == 4) {
+				return date;
+			} else if (date.length() >= 6) {
+				yy = Integer.parseInt(date.substring(0, 4).trim());
+				mm = Integer.parseInt(date.substring(4, 6).trim());
+			}
+			if (date.length() == 8) {
 
-		if (date.length() == 4) {
-			return date;
-		} else if (date.length() >= 6) {
-			yy = Integer.parseInt(date.substring(0, 4));
-			mm = Integer.parseInt(date.substring(4, 6));
-		}
-		if (date.length() == 8) {
-			dd = Integer.parseInt(date.substring(6, 8));
-		}
-		if (df.equals("SE")) {
-			if (dd == 0) {
-				return "" + date.substring(0, 4) + "-" + date.substring(4, 6);
-			} else {
-				return "" + date.substring(0, 4) + "-" + date.substring(4, 6)
-						+ "-" + date.substring(6, 8);
+				dd = Integer.parseInt(date.substring(6, 8).trim());
+
 			}
-		} else if (df.equals("UK")) {
-			if (dd == 0) {
-				return "" + mm + "/" + yy;
+			if (df.equals("SE")) {
+				if (dd == 0) {
+					return "" + date.substring(0, 4) + "-"
+							+ date.substring(4, 6);
+				} else {
+					return "" + date.substring(0, 4) + "-"
+							+ date.substring(4, 6) + "-" + date.substring(6, 8);
+				}
+			} else if (df.equals("UK")) {
+				if (dd == 0) {
+					return "" + mm + "/" + yy;
+				} else {
+					return "" + dd + "/" + mm + "/" + yy;
+				}
+			} else if (df.equals("US")) {
+				if (dd == 0) {
+					return "" + mm + "/" + yy;
+				} else {
+					return "" + mm + "/" + dd + "/" + yy;
+				}
 			} else {
-				return "" + dd + "/" + mm + "/" + yy;
+				if (dd == 0) {
+					return "" + mm + "." + yy;
+				} else {
+					return "" + dd + "." + mm + "." + yy;
+				}
 			}
-		} else if (df.equals("US")) {
-			if (dd == 0) {
-				return "" + mm + "/" + yy;
-			} else {
-				return "" + mm + "/" + dd + "/" + yy;
-			}
-		} else {
-			if (dd == 0) {
-				return "" + mm + "." + yy;
-			} else {
-				return "" + dd + "." + mm + "." + yy;
-			}
+		} catch (NumberFormatException ne) {
+			logger.log(Level.WARNING, "toRepoDate", ne);
+			return "00.00.00";
 		}
 
 	}

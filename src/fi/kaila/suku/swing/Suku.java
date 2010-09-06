@@ -3,6 +3,7 @@ package fi.kaila.suku.swing;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -938,6 +939,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				return row.getTodo();
 			}
 		};
+		// TODO add to settings
+		Font ff = new Font("Arial", Font.PLAIN, 12);
+		this.table.setFont(ff);
 		this.table.setRowSorter(new TableRowSorter<SukuModel>(this.tableModel));
 
 		this.table.setDragEnabled(true);
