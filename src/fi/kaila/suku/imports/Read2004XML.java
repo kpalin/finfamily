@@ -2214,16 +2214,19 @@ public class Read2004XML extends DefaultHandler {
 					logger.fine("Trying image file: " + this.databaseFolder
 							+ "/" + this.sukuMediaFolder + "/"
 							+ this.noticeMediaFilename);
+
 					File file = new File(this.databaseFolder + "/"
 							+ this.sukuMediaFolder + "/"
 							+ this.noticeMediaFilename);
 					if (file.exists() && file.isFile()) {
 						BufferedImage sourceImage = ImageIO.read(file);
 						if (sourceImage == null) {
-							logger.warning("Image file: " + this.databaseFolder
+							String wrn = "Image file: " + this.databaseFolder
 									+ "/" + this.sukuMediaFolder + "/"
 									+ this.noticeMediaFilename
-									+ " read failed!!");
+									+ " read failed!!";
+							logger.warning(wrn);
+							errorLine.add(wrn);
 						} else {
 							int mediaWidth = sourceImage.getWidth(null);
 							int mediaHeight = sourceImage.getHeight(null);
@@ -2240,13 +2243,20 @@ public class Read2004XML extends DefaultHandler {
 								ps.close();
 								fis.close();
 							} catch (FileNotFoundException e) {
-								logger.warning("Image file "
+								String wrn = "Image file "
 										+ this.noticeMediaFilename
-										+ " not found");
+										+ " not found";
+								logger.warning(wrn);
+								errorLine.add(wrn);
 								e.printStackTrace();
 							} catch (IOException e) {
+								String wrn = "Image file "
+										+ this.noticeMediaFilename + ":"
+										+ e.getMessage();
 								logger.log(Level.WARNING, "Image file "
 										+ this.noticeMediaFilename, e);
+
+								errorLine.add(wrn);
 								e.printStackTrace();
 							}
 						}
@@ -2255,12 +2265,16 @@ public class Read2004XML extends DefaultHandler {
 						// this.noticeMediaFilename + " = " + mediaWidth +
 						// "/" + mediaHeight );
 					} else {
-						logger.warning("Image file " + this.noticeMediaFilename
-								+ " is missing");
+						String wrn = "Image file " + this.noticeMediaFilename
+								+ " is missing";
+						logger.warning(wrn);
+						errorLine.add(wrn);
 					}
 				} else {
-					logger.warning("Image folder for "
-							+ this.noticeMediaFilename + " is missing");
+					String wrn = "Image folder for " + this.noticeMediaFilename
+							+ " is missing";
+					logger.warning(wrn);
+					errorLine.add(wrn);
 				}
 
 			}
