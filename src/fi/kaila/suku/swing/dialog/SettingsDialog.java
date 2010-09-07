@@ -13,6 +13,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.ExcelBundle;
@@ -41,6 +42,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JComboBox dateFormat = null;
 	private JCheckBox useOpenStreetMap = null;
 	private JComboBox defaultCountryCode = null;
+	private JTextField dbFontSize = null;
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
 
@@ -79,6 +81,9 @@ public class SettingsDialog extends JDialog implements ActionListener {
 				.equals("true")) {
 			openStreetMap = true;
 		}
+
+		String databaseViewFontSize = Suku.kontroller.getPref(owner,
+				"DB_VIEW_FONTSIZE", "11");
 
 		JLabel lbl = new JLabel(Resurses.getString("SETTING_LOCALE"));
 		getContentPane().add(lbl);
@@ -175,11 +180,18 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		lbl = new JLabel(Resurses.getString("SETTING_DATEFORMAT"));
 		getContentPane().add(lbl);
 		lbl.setBounds(x, y, 200, 20);
+		lbl = new JLabel(Resurses.getString("SETTING_FONTSIZE"));
+		getContentPane().add(lbl);
+		lbl.setBounds(x + 210, y, 200, 20);
 
 		y += 20;
 		dateFormat = new JComboBox(dateFormats);
 		getContentPane().add(dateFormat);
 		dateFormat.setBounds(x, y, 200, 20);
+
+		dbFontSize = new JTextField(databaseViewFontSize);
+		getContentPane().add(dbFontSize);
+		dbFontSize.setBounds(x + 210, y, 80, 20);
 
 		prevloca = Suku.kontroller.getPref(owner, Resurses.DATEFORMAT, "FI");
 		dateIndex = 0;
@@ -246,6 +258,9 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			boolean openStreetMap = useOpenStreetMap.isSelected();
 			Suku.kontroller.putPref(owner, "USE_OPEN_STREETMAP", ""
 					+ openStreetMap);
+
+			String fntSize = dbFontSize.getText();
+			Suku.kontroller.putPref(owner, "DB_VIEW_FONTSIZE", fntSize);
 
 			setVisible(false);
 		}

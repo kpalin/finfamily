@@ -164,7 +164,7 @@ public class JavaReport extends JFrame implements ActionListener,
 			String extra = "";
 			myStyle = new SimpleAttributeSet();
 			StyleConstants.setFontFamily(myStyle, bt.getFontName());
-			StyleConstants.setFontSize(myStyle, (int) (bt.getFontSize() * 1.2));
+			StyleConstants.setFontSize(myStyle, (int) (bt.getFontSize() * 1.4));
 			StyleConstants.setBold(myStyle, bt.isBold(j));
 			StyleConstants.setUnderline(myStyle, bt.isUnderline(j));
 			StyleConstants.setItalic(myStyle, bt.isItalic(j));

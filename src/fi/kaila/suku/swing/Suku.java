@@ -939,8 +939,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				return row.getTodo();
 			}
 		};
-		// TODO add to settings
-		Font ff = new Font("Arial", Font.PLAIN, 12);
+
+		String databaseViewFontSize = Suku.kontroller.getPref(this,
+				"DB_VIEW_FONTSIZE", "11");
+		int dbFont = 10;
+
+		try {
+			dbFont = Integer.parseInt(databaseViewFontSize);
+		} catch (NumberFormatException ne) {
+
+		}
+		Font fff = table.getFont();
+		Font ff = new Font(fff.getName(), Font.PLAIN, dbFont);
 		this.table.setFont(ff);
 		this.table.setRowSorter(new TableRowSorter<SukuModel>(this.tableModel));
 
