@@ -532,8 +532,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		sexr = new JPanel();
 		add(sexr);
 		sexr.setBounds(lcol, rivi - 8, 300, 24);
-		// sexr.setBorder(BorderFactory.createEtchedBorder());
-		// TODO
+
 		sexr.setLayout(new FlowLayout(FlowLayout.LEFT));
 		sexGroup = new ButtonGroup();
 		for (int i = 0; i < sextexts.length; i++) {
@@ -716,13 +715,13 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		if (currSex == null) {
 			throw new SukuException(Resurses.getString("DATA_SEX_NULL"));
 		}
-//		int sexidx = 0;
-//		for (int i = 0; i < sexes.length; i++) {
-//			if (currSex.equals(sexes[i])) {
-//				sexidx = i;
-//			}
-//		}
-//		// sex.setSelectedIndex(sexidx);
+		// int sexidx = 0;
+		// for (int i = 0; i < sexes.length; i++) {
+		// if (currSex.equals(sexes[i])) {
+		// sexidx = i;
+		// }
+		// }
+		// // sex.setSelectedIndex(sexidx);
 
 		setRadioButton(sexGroup, currSex);
 
