@@ -716,13 +716,13 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		if (currSex == null) {
 			throw new SukuException(Resurses.getString("DATA_SEX_NULL"));
 		}
-		// int sexidx = 0;
-		// for (int i = 0; i < sexes.length; i++) {
-		// if (currSex.equals(sexes[i])) {
-		// sexidx = i;
-		// }
-		// }
-		// // sex.setSelectedIndex(sexidx);
+//		int sexidx = 0;
+//		for (int i = 0; i < sexes.length; i++) {
+//			if (currSex.equals(sexes[i])) {
+//				sexidx = i;
+//			}
+//		}
+//		// sex.setSelectedIndex(sexidx);
 
 		setRadioButton(sexGroup, currSex);
 
