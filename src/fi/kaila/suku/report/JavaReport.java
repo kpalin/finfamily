@@ -369,7 +369,7 @@ public class JavaReport extends JFrame implements ActionListener,
 		JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(thumbImage);
 		int quality = 100; // Use between 1 and 100, with 100 being highest
 		quality = Math.max(0, Math.min(quality, 100));
-		param.setQuality((float) quality / 100.0f, false);
+		param.setQuality(quality / 100.0f, false);
 		encoder.setJPEGEncodeParam(param);
 		encoder.encode(thumbImage);
 		return thumbImage;
