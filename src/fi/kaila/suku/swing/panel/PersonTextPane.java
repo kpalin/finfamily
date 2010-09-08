@@ -29,11 +29,9 @@ import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * 
- * database draft text is shown here
+ * database draft text is shown here.
  * 
  * @author Kalle
- * 
  */
 public class PersonTextPane extends JTextPane {
 
@@ -46,7 +44,7 @@ public class PersonTextPane extends JTextPane {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
-	 * default constructor
+	 * default constructor.
 	 */
 	public PersonTextPane() {
 
@@ -68,6 +66,8 @@ public class PersonTextPane extends JTextPane {
 	}
 
 	/**
+	 * Gets the doc.
+	 * 
 	 * @return the doc
 	 */
 	public AbstractDocument getDoc() {
@@ -82,6 +82,7 @@ public class PersonTextPane extends JTextPane {
 	}
 
 	/**
+	 * Gets the current pid.
 	 * 
 	 * @return current pid for page
 	 */
@@ -90,11 +91,14 @@ public class PersonTextPane extends JTextPane {
 	}
 
 	/**
-	 * init the pane
+	 * init the pane.
 	 * 
 	 * @param pers
+	 *            the pers
 	 * @param relations
+	 *            the relations
 	 * @param namlist
+	 *            the namlist
 	 */
 	public void initPerson(PersonLongData pers, Relation[] relations,
 			PersonShortData[] namlist) {
@@ -331,9 +335,10 @@ public class PersonTextPane extends JTextPane {
 
 				}
 
-				bl = appendName(bodyBold, underlinedBold, bl, notice
-						.getGivenname(), notice.getPatronym(), notice
-						.getPrefix(), notice.getSurname(), notice.getPostfix());
+				bl = appendName(bodyBold, underlinedBold, bl,
+						notice.getGivenname(), notice.getPatronym(),
+						notice.getPrefix(), notice.getSurname(),
+						notice.getPostfix());
 
 				if (!bl.isEmpty()) {
 					append(". ", bodyText);
@@ -389,10 +394,10 @@ public class PersonTextPane extends JTextPane {
 							bl = " ";
 						}
 
-						bl = appendName(bodyBold, underlinedBold, bl, relative
-								.getGivenname(), relative.getPatronym(),
-								relative.getPrefix(), relative.getSurname(),
-								relative.getPostfix());
+						bl = appendName(bodyBold, underlinedBold, bl,
+								relative.getGivenname(),
+								relative.getPatronym(), relative.getPrefix(),
+								relative.getSurname(), relative.getPostfix());
 
 						// append(bl + relative.getAlfaName(),bodyText);
 						append("\n", bodyText);
@@ -416,10 +421,10 @@ public class PersonTextPane extends JTextPane {
 						append("[" + rel.getTag() + "]", greenTag);
 						bl = " ";
 						// append(" ("+wifenum +")",bodyText);
-						bl = appendName(bodyBold, underlinedBold, bl, relative
-								.getGivenname(), relative.getPatronym(),
-								relative.getPrefix(), relative.getSurname(),
-								relative.getPostfix());
+						bl = appendName(bodyBold, underlinedBold, bl,
+								relative.getGivenname(),
+								relative.getPatronym(), relative.getPrefix(),
+								relative.getSurname(), relative.getPostfix());
 
 						// append(bl + relative.getAlfaName(),bodyText);
 						RelationNotice rn;
@@ -452,17 +457,15 @@ public class PersonTextPane extends JTextPane {
 								if (rn.getToDate() != null) {
 									if (rn.getDatePrefix() != null) {
 										if (rn.getDatePrefix().equals("BET")) {
-											append(
-													bl
-															+ Resurses
-																	.getString("DATE_AND"),
+											append(bl
+													+ Resurses
+															.getString("DATE_AND"),
 													bodyText);
 										} else if (rn.getDatePrefix().equals(
 												"FROM")) {
-											append(
-													bl
-															+ Resurses
-																	.getString("DATE_TO"),
+											append(bl
+													+ Resurses
+															.getString("DATE_TO"),
 													bodyText);
 										}
 										append(bl
@@ -485,9 +488,8 @@ public class PersonTextPane extends JTextPane {
 								}
 								if (rn.getPrivateText() != null) {
 									privateTexts.add(rn.getPrivateText());
-									append(
-											bl + "{" + privateTexts.size()
-													+ "}", redForte);
+									append(bl + "{" + privateTexts.size() + "}",
+											redForte);
 									bl = " ";
 								}
 							}
@@ -516,10 +518,10 @@ public class PersonTextPane extends JTextPane {
 							append(" [" + relNotices[0].getTag() + "]", blueTag);
 							bl = " ";
 						}
-						bl = appendName(bodyBold, underlinedBold, bl, relative
-								.getGivenname(), relative.getPatronym(),
-								relative.getPrefix(), relative.getSurname(),
-								relative.getPostfix());
+						bl = appendName(bodyBold, underlinedBold, bl,
+								relative.getGivenname(),
+								relative.getPatronym(), relative.getPrefix(),
+								relative.getSurname(), relative.getPostfix());
 						// append(bl + relative.getAlfaName(),bodyText);
 						append("\n", bodyText);
 					}

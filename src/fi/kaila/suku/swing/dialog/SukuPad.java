@@ -21,11 +21,9 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 
 /**
- * 
- * simple notepad dialog
+ * simple notepad dialog.
  * 
  * @author Kalle
- * 
  */
 public class SukuPad extends JDialog implements ActionListener {
 
@@ -34,10 +32,15 @@ public class SukuPad extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JTextArea txtArea=null;
+	private JTextArea txtArea = null;
+
 	/**
+	 * Instantiates a new suku pad.
+	 * 
 	 * @param owner
+	 *            the owner
 	 * @param text
+	 *            the text
 	 */
 	public SukuPad(JFrame owner, String text) {
 
@@ -69,6 +72,12 @@ public class SukuPad extends JDialog implements ActionListener {
 		setBounds(d.width / 2 - 300, d.height / 2 - 200, 600, 400);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent a) {
 		String cmd = a.getActionCommand();
@@ -77,19 +86,20 @@ public class SukuPad extends JDialog implements ActionListener {
 			return;
 		if (cmd.equals("CLOSE")) {
 			setVisible(false);
-		} else if (cmd.equals("PRINT")){
+		} else if (cmd.equals("PRINT")) {
 			try {
 				txtArea.print();
 			} catch (PrinterException e) {
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("IMPORT_GEDCOM")
-						+ ":" + e.getMessage());
+				JOptionPane.showMessageDialog(
+						this,
+						Resurses.getString("IMPORT_GEDCOM") + ":"
+								+ e.getMessage());
 			}
-		} else if (cmd.equals("SAVE_AS")){
+		} else if (cmd.equals("SAVE_AS")) {
 			boolean isFile = Suku.kontroller.createLocalFile("txt");
 			if (isFile) {
 				OutputStream fos = Suku.kontroller.getOutputStream();
-			
+
 				String tekst;
 				if (java.io.File.pathSeparatorChar == ';') {
 					tekst = txtArea.getText().replaceAll("\n", "\r\n");
@@ -101,14 +111,14 @@ public class SukuPad extends JDialog implements ActionListener {
 					fos.write(buffi);
 					fos.close();
 				} catch (IOException e) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("IMPORT_GEDCOM")
-							+ ":" + e.getMessage());
+					JOptionPane.showMessageDialog(
+							this,
+							Resurses.getString("IMPORT_GEDCOM") + ":"
+									+ e.getMessage());
 				}
-			
+
 			}
-			
-			
+
 		}
 	}
 

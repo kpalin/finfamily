@@ -38,10 +38,9 @@ import fi.kaila.suku.util.pojo.RelationLanguage;
 import fi.kaila.suku.util.pojo.RelationNotice;
 
 /**
- * relation dialog shows and updates details of a relation
+ * relation dialog shows and updates details of a relation.
  * 
  * @author Kalle
- * 
  */
 public class RelationDialog extends JDialog implements ActionListener,
 		ComponentListener, MenuListener {
@@ -53,13 +52,20 @@ public class RelationDialog extends JDialog implements ActionListener,
 	private JTextField description = null;
 	private JTextField place = null;
 	private JTextArea noteText = null;
+
+	/** The scroll note. */
 	JScrollPane scrollNote = null;
 
 	private JTextArea sourceText = null;
+
+	/** The scroll source. */
 	JScrollPane scrollSource = null;
 	private JTextArea privateText = null;
+
+	/** The scroll private. */
 	JScrollPane scrollPrivate = null;
 
+	/** The date. */
 	SukuDateField date;
 
 	private JTextField relationTypeLang = null;
@@ -103,17 +109,32 @@ public class RelationDialog extends JDialog implements ActionListener,
 	// in Java 5.0).
 
 	// Jos tulet tänne taas niin selitä hieman
+	/** The langxx. */
 	volatile JRadioButton[] langxx;
 
+	/** The surety. */
 	SukuSuretyField surety;
+
+	/** The surety lbl. */
 	JLabel suretyLbl;
+
+	/** The created. */
 	JTextField created;
+
+	/** The created lbl. */
 	JLabel createdLbl;
+
+	/** The modified. */
 	JTextField modified;
+
+	/** The modified lbl. */
 	JLabel modifiedLbl;
 
 	/**
+	 * Instantiates a new relation dialog.
+	 * 
 	 * @param owner
+	 *            the owner
 	 */
 	public RelationDialog(JFrame owner) {
 		super(owner, Resurses.getString("RELA_UPDATE_PAGE"), true);
@@ -256,6 +277,11 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.JDialog#createRootPane()
+	 */
 	protected JRootPane createRootPane() {
 		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		JRootPane rootPane = new JRootPane();
@@ -266,7 +292,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	}
 
 	/**
-	 * Set pojo to display
+	 * Set pojo to display.
 	 * 
 	 * @param rela
 	 *            relation notice to dislpay
@@ -296,7 +322,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	}
 
 	/**
-	 * display the relationDialog
+	 * display the relationDialog.
 	 */
 	public void showMe() {
 		if (rela == null)
@@ -348,9 +374,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 			placeLangLbl.setVisible(false);
 			noteLangLbl.setVisible(false);
 		}
-		date
-				.setDate(rela.getDatePrefix(), rela.getFromDate(), rela
-						.getToDate());
+		date.setDate(rela.getDatePrefix(), rela.getFromDate(), rela.getToDate());
 		place.setText(rela.getPlace());
 		noteText.setText(rela.getNoteText());
 		sourceText.setText(rela.getSource());
@@ -373,8 +397,11 @@ public class RelationDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Update data.
+	 * 
 	 * @return true if rel notice needs to be updated
 	 * @throws SukuDateException
+	 *             the suku date exception
 	 */
 	public boolean updateData() throws SukuDateException {
 		if (rela == null)
@@ -398,9 +425,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 			rela.setToDate(ttmp);
 		}
 
-		date
-				.setDate(rela.getDatePrefix(), rela.getFromDate(), rela
-						.getToDate());
+		date.setDate(rela.getDatePrefix(), rela.getFromDate(), rela.getToDate());
 
 		rela.setPlace(place.getText());
 
@@ -412,8 +437,15 @@ public class RelationDialog extends JDialog implements ActionListener,
 		return rela.isToBeUpdated();
 	}
 
+	/** The old language. */
 	String oldLanguage = null;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -448,8 +480,9 @@ public class RelationDialog extends JDialog implements ActionListener,
 				date.getFromDate();
 				date.getToDate();
 			} catch (SukuDateException e1) {
-				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e1.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 
 				return;
 			}
@@ -512,7 +545,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	}
 
 	/**
-	 * update language to pojo
+	 * update language to pojo.
 	 */
 	public void updateLanguage() {
 		if (oldLanguage == null)
@@ -548,16 +581,35 @@ public class RelationDialog extends JDialog implements ActionListener,
 		rl.setToBeDeleted(toBeDeleted);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentResized(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentResized(ComponentEvent e) {
 
@@ -636,21 +688,47 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.MenuListener#menuCanceled(javax.swing.event.MenuEvent)
+	 */
 	@Override
 	public void menuCanceled(MenuEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.MenuListener#menuDeselected(javax.swing.event.MenuEvent
+	 * )
+	 */
 	@Override
 	public void menuDeselected(MenuEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.MenuListener#menuSelected(javax.swing.event.MenuEvent)
+	 */
 	@Override
 	public void menuSelected(MenuEvent arg0) {
 		System.out.println("MENU");

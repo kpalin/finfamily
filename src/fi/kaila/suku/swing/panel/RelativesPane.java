@@ -51,67 +51,121 @@ import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * Relatives pane contains lists of relatives
+ * Relatives pane contains lists of relatives.
  * 
  * @author Kalle
- * 
  */
 public class RelativesPane extends JPanel implements ActionListener,
 		ComponentListener, MouseListener {
 
 	private static final long serialVersionUID = 1L;
 
+	/** The person view. */
 	PersonView personView = null;
 
+	/** The long pers. */
 	PersonLongData longPers = null;
 	private Relation[] relations = null;
+
+	/** The pers. */
 	PersonShortData[] pers = null;
 
+	/** The logger. */
 	static Logger logger = Logger.getLogger(RelativesPane.class.getName());
 
+	/** The rela me. */
 	RelativesPane relaMe = this;
 
+	/** The close. */
 	JButton close;
+
+	/** The update. */
 	JButton update;
 
+	/** The parents. */
 	MyRelationModel parents = null;
+
+	/** The pare tab. */
 	JTable pareTab = null;
+
+	/** The pare scroll. */
 	JScrollPane pareScroll = null;
 
+	/** The spouses. */
 	MyRelationModel spouses = null;
+
+	/** The spou tab. */
 	JTable spouTab = null;
+
+	/** The spou scroll. */
 	JScrollPane spouScroll = null;
 
+	/** The children. */
 	MyRelationModel children = null;
+
+	/** The chil tab. */
 	JTable chilTab = null;
+
+	/** The chil scroll. */
 	JScrollPane chilScroll = null;
 
+	/** The other relations. */
 	Vector<Relation> otherRelations = null;
+
+	/** The subject. */
 	JTextField subject = null;
+
+	/** The rela pane. */
 	JPanel relaPane = null;
+
+	/** The add data. */
 	JButton addData = null;
+
+	/** The del relation. */
 	JButton delRelation;
+
+	/** The spouse name. */
 	JTextField spouseName = null;
 
+	/** The notices. */
 	MyNoticeModel notices = null;
+
+	/** The notice tab. */
 	JTable noticeTab = null;
+
+	/** The notice scroll. */
 	JScrollPane noticeScroll = null;
+
+	/** The surety lbl. */
 	JLabel suretyLbl = null;
+
+	/** The surety. */
 	SukuSuretyField surety;
+
+	/** The cre label. */
 	JLabel creLabel = null;
+
+	/** The mod label. */
 	JLabel modLabel = null;
+
+	/** The created. */
 	JTextField created = null;
+
+	/** The modified. */
 	JTextField modified = null;
 
 	private RelativePopupListener popupListener = null;
 
-	/** woman icon for database list */
+	/** woman icon for database list. */
 	public static ImageIcon womanIcon = null;
-	/** male icon for database list */
+
+	/** male icon for database list. */
 	public static ImageIcon manIcon = null;
-	/** unknown sex icon for database list */
+
+	/** unknown sex icon for database list. */
 	public static ImageIcon unknownIcon = null;
 
+	/** The active relation. */
 	Relation activeRelation = null;
 
 	private RelativesPane() {
@@ -121,12 +175,16 @@ public class RelativesPane extends JPanel implements ActionListener,
 	private static RelativesPane me = null;
 
 	/**
-	 * relatives pane is singleton as else there is problems with listeners
+	 * relatives pane is singleton as else there is problems with listeners.
 	 * 
 	 * @param peronView
+	 *            the peron view
 	 * @param longPers
+	 *            the long pers
 	 * @param relas
+	 *            the relas
 	 * @param pers
+	 *            the pers
 	 * @return relatives pane instance
 	 */
 	public static RelativesPane getInstance(PersonView peronView,
@@ -227,6 +285,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	private HashMap<Integer, PersonShortData> persMap = null;// new
 	// HashMap<Integer,PersonShortData>
 	// ();
+	/** The pop. */
 	RelativePopupMenu pop = null;
 
 	private void initMe() {
@@ -726,33 +785,64 @@ public class RelativesPane extends JPanel implements ActionListener,
 		return tab;
 	}
 
+	/**
+	 * The Class MyRelationModel.
+	 */
 	class MyRelationModel extends AbstractTableModel {
 
 		private String[] columnNames = null;
 
+		/**
+		 * Instantiates a new my relation model.
+		 * 
+		 * @param hdrTag
+		 *            the hdr tag
+		 */
 		MyRelationModel(String hdrTag) {
 			columnNames = Resurses.getString(hdrTag).split(";");
 		}
 
 		private static final long serialVersionUID = 1L;
+
+		/** The list. */
 		Vector<Relation> list = new Vector<Relation>();
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.TableModel#getColumnCount()
+		 */
 		@Override
 		public int getColumnCount() {
 			return 5;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.TableModel#getRowCount()
+		 */
 		@Override
 		public int getRowCount() {
 
 			return list.size();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+		 */
 		@Override
 		public String getColumnName(int col) {
 			return columnNames[col];
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.TableModel#getValueAt(int, int)
+		 */
 		@Override
 		public Object getValueAt(int rivi, int colo) {
 			PersonShortData p = list.get(rivi).getShortPerson();
@@ -786,6 +876,11 @@ public class RelativesPane extends JPanel implements ActionListener,
 			return null;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
+		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public Class getColumnClass(int idx) {
@@ -799,33 +894,61 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 	}
 
+	/**
+	 * The Class MyNoticeModel.
+	 */
 	class MyNoticeModel extends AbstractTableModel {
 
 		private String[] columnNames = null;
 
+		/**
+		 * Instantiates a new my notice model.
+		 */
 		MyNoticeModel() {
 			columnNames = Resurses.getString("RELA_HEADER_NOTICE").split(";");
 		}
 
 		private static final long serialVersionUID = 1L;
+
+		/** The list. */
 		Vector<RelationNotice> list = new Vector<RelationNotice>();
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.TableModel#getColumnCount()
+		 */
 		@Override
 		public int getColumnCount() {
 			return 4;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.TableModel#getRowCount()
+		 */
 		@Override
 		public int getRowCount() {
 
 			return list.size();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+		 */
 		@Override
 		public String getColumnName(int col) {
 			return columnNames[col];
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.TableModel#getValueAt(int, int)
+		 */
 		@Override
 		public Object getValueAt(int rivi, int colo) {
 			RelationNotice rn = list.get(rivi);
@@ -842,6 +965,11 @@ public class RelativesPane extends JPanel implements ActionListener,
 			return null;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
+		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public Class getColumnClass(int idx) {
@@ -851,6 +979,12 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -894,8 +1028,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			} catch (SukuException e1) {
 				logger.log(Level.WARNING, "Add new dialog error", e1);
-				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e1.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 
 			}
 
@@ -927,9 +1062,12 @@ public class RelativesPane extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * Refresh the relatives lists from db
+	 * Refresh the relatives lists from db.
 	 * 
 	 * @param reOpen
+	 *            the re open
+	 * @param askChanges
+	 *            the ask changes
 	 */
 	public void refreshRelativesPane(boolean reOpen, boolean askChanges) {
 		int midx = personView.getMainPaneIndex();
@@ -950,8 +1088,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 			}
 
 		} catch (SukuException e1) {
-			JOptionPane.showMessageDialog(this, e1.toString(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e1.toString(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.WARNING, "Closing relatives", e1);
 
 			e1.printStackTrace();
@@ -993,8 +1132,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(personView, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(personView, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -1057,8 +1197,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 								sb.append("]?");
 
 								int resu = JOptionPane.showConfirmDialog(
-										personView, sb.toString(), Resurses
-												.getString(Resurses.SUKU),
+										personView, sb.toString(),
+										Resurses.getString(Resurses.SUKU),
 										JOptionPane.YES_NO_OPTION,
 										JOptionPane.QUESTION_MESSAGE);
 								if (resu == JOptionPane.YES_OPTION) {
@@ -1095,9 +1235,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 					pares[j] = spouses.list.get(j).getShortPerson()
 							.getAlfaName();
 				}
-				Object par = JOptionPane.showInputDialog(personView, Resurses
-						.getString("QUESTION_ADD")
-						+ " " + pareTag, Resurses.getString(Resurses.SUKU),
+				Object par = JOptionPane.showInputDialog(personView,
+						Resurses.getString("QUESTION_ADD") + " " + pareTag,
+						Resurses.getString(Resurses.SUKU),
 						JOptionPane.QUESTION_MESSAGE, null, pares, pares[0]);
 
 				if (par != null) {
@@ -1113,8 +1253,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 					logger.info("Adding " + pare.getAlfaName() + " as "
 							+ pareTag);
-					Relation rpare = new Relation(0, persShort.getPid(), pare
-							.getPid(), tag, parentSurety, null, null);
+					Relation rpare = new Relation(0, persShort.getPid(),
+							pare.getPid(), tag, parentSurety, null, null);
 					persShort.setParentPid(pare.getPid());
 					rpare.setShortPerson(pare);
 					pare.setParentPid(pare.getPid());
@@ -1122,9 +1262,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 					try {
 						checkLocalRelation(persShort, rpare, pare);
 					} catch (SukuException e) {
-						JOptionPane.showMessageDialog(personView, e
-								.getMessage(), Resurses
-								.getString(Resurses.SUKU),
+						JOptionPane.showMessageDialog(personView,
+								e.getMessage(),
+								Resurses.getString(Resurses.SUKU),
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -1178,8 +1318,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(personView, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(personView, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 
 			return;
 		}
@@ -1214,8 +1355,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(personView, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(personView, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 
 			return;
 		}
@@ -1242,8 +1384,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 						sb.append(sures[3]);
 						sb.append("]");
 						JOptionPane.showMessageDialog(personView,
-								sb.toString(), Resurses
-										.getString(Resurses.SUKU),
+								sb.toString(),
+								Resurses.getString(Resurses.SUKU),
 								JOptionPane.WARNING_MESSAGE);
 
 						break;
@@ -1269,16 +1411,35 @@ public class RelativesPane extends JPanel implements ActionListener,
 		return text;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentResized(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentResized(ComponentEvent e) {
 		Dimension currSize = getSize();
@@ -1314,11 +1475,23 @@ public class RelativesPane extends JPanel implements ActionListener,
 		updateUI();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() != 1)
@@ -1413,23 +1586,39 @@ public class RelativesPane extends JPanel implements ActionListener,
 			return lan.updateData();
 
 		} catch (SukuDateException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 		}
 		return false;
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// if (e.getButton()!= 7) return;
@@ -1459,11 +1648,29 @@ public class RelativesPane extends JPanel implements ActionListener,
 		// }
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 
 	}
 
+	/**
+	 * Check local relation.
+	 * 
+	 * @param pers
+	 *            the pers
+	 * @param r
+	 *            the r
+	 * @param rela
+	 *            the rela
+	 * @throws SukuException
+	 *             the suku exception
+	 */
 	void checkLocalRelation(PersonShortData pers, Relation r,
 			PersonShortData rela) throws SukuException {
 		if (pers == null || r == null || rela == null)
@@ -1492,22 +1699,22 @@ public class RelativesPane extends JPanel implements ActionListener,
 			for (int i = 0; i < children.list.size(); i++) {
 				Relation rr = children.list.get(i);
 				if (rr.getRelative() == relapid && !rr.isToBeDeleted()) {
-					throw new SukuException(Resurses
-							.getString("CHECK_EXISTS_AS_CHILD"));
+					throw new SukuException(
+							Resurses.getString("CHECK_EXISTS_AS_CHILD"));
 				}
 			}
 			for (int i = 0; i < spouses.list.size(); i++) {
 				if (spouses.list.get(i).getRelative() == relapid
 						&& !spouses.list.get(i).isToBeDeleted()) {
-					throw new SukuException(Resurses
-							.getString("CHECK_EXISTS_AS_SPOUSE"));
+					throw new SukuException(
+							Resurses.getString("CHECK_EXISTS_AS_SPOUSE"));
 				}
 			}
 			for (int i = 0; i < parents.list.size(); i++) {
 				if (parents.list.get(i).getRelative() == relapid
 						&& !parents.list.get(i).isToBeDeleted()) {
-					throw new SukuException(Resurses
-							.getString("CHECK_EXISTS_AS_PARENT"));
+					throw new SukuException(
+							Resurses.getString("CHECK_EXISTS_AS_PARENT"));
 				}
 			}
 		}
@@ -1518,8 +1725,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 		if (pyear == 0 || cyear == 0)
 			return;
 		if (pyear + 10 > cyear) {
-			throw new SukuException(Resurses
-					.getString("CHECK_PARENT_TOO_YOUNG"));
+			throw new SukuException(
+					Resurses.getString("CHECK_PARENT_TOO_YOUNG"));
 		}
 		if (cyear > pyear + 100) {
 			throw new SukuException(Resurses.getString("CHECK_PARENT_TOO_OLD"));

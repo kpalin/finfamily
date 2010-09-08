@@ -5,11 +5,9 @@ import java.io.Serializable;
 import javax.swing.text.DefaultStyledDocument;
 
 /**
- * 
- * required by javadoc class
+ * required by javadoc class.
  * 
  * @author Kalle
- * 
  */
 public class SukuDocument extends DefaultStyledDocument implements Serializable {
 

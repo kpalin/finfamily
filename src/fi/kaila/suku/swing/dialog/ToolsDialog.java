@@ -39,10 +39,9 @@ import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
  * This dialog is now defining notice order possible other tasks will be done
- * here later
+ * here later.
  * 
  * @author Kalle
- * 
  */
 public class ToolsDialog extends JDialog implements ActionListener,
 		PropertyChangeListener, MouseListener {
@@ -78,28 +77,43 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	private JButton update;
 
 	/**
+	 * Gets the runner.
+	 * 
 	 * @return handle to this instance
 	 */
 	public static ToolsDialog getRunner() {
 		return runner;
 	}
 
+	/** The koko map. */
 	HashMap<String, String> kokoMap = new HashMap<String, String>();
+
+	/** The setti map. */
 	HashMap<String, String> settiMap = new HashMap<String, String>();
 
+	/** The koko tags. */
 	Vector<String> kokoTags = new Vector<String>();
+
+	/** The koko lista. */
 	Vector<String> kokoLista = new Vector<String>();
 
+	/** The setti tags. */
 	Vector<String> settiTags = new Vector<String>();
+
+	/** The setti lista. */
 	Vector<String> settiLista = new Vector<String>();
 
+	/** The has lista changed. */
 	boolean hasListaChanged = false;
 
 	private Suku owner = null;
 	private static ToolsDialog runner = null;
 
 	/**
+	 * Instantiates a new tools dialog.
+	 * 
 	 * @param owner
+	 *            the owner
 	 */
 	public ToolsDialog(Suku owner) {
 		super(owner, Resurses.getString("DIALOG_PROPERTIES"), true);
@@ -197,8 +211,9 @@ public class ToolsDialog extends JDialog implements ActionListener,
 			y += 18;
 
 		} catch (SukuException e1) {
-			JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e1.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 
 		}
 
@@ -236,9 +251,11 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		try {
 			resp = Suku.kontroller.getSukuData("cmd=variables", "type=get");
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString("DIALOG_UPDATE_DB")
-					+ ":" + e.getMessage(), Resurses.getString(Resurses.SUKU),
+			JOptionPane.showMessageDialog(
+					this,
+					Resurses.getString("DIALOG_UPDATE_DB") + ":"
+							+ e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
 					JOptionPane.ERROR_MESSAGE);
 			resp.generalArray = new String[10];
 
@@ -331,6 +348,12 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		update.addActionListener(this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -344,8 +367,9 @@ public class ToolsDialog extends JDialog implements ActionListener,
 						"type=order", "name=notice");
 
 			} catch (SukuException ee) {
-				JOptionPane.showMessageDialog(this, ee.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, ee.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				ee.printStackTrace();
 			}
 
@@ -376,8 +400,9 @@ public class ToolsDialog extends JDialog implements ActionListener,
 						"cmd=variables", "type=update");
 				setVisible(false);
 			} catch (SukuException ee) {
-				JOptionPane.showMessageDialog(this, ee.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, ee.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 			}
 		} else if (cmd.equals(CANCEL)) {
 			if (this.task == null) {
@@ -396,6 +421,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	 * shown in textfiels
 	 * 
 	 * @param juttu
+	 *            the new runner value
 	 */
 	public void setRunnerValue(String juttu) {
 		String[] kaksi = juttu.split(";");
@@ -413,12 +439,21 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/**
+	 * The Class Task.
+	 */
 	class Task extends SwingWorker<Void, Void> {
 
+		/** The wn. */
 		Vector<String> wn = null;
 
 		/*
 		 * Main task. Executed in background thread.
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
 		 */
 		@Override
 		public Void doInBackground() {
@@ -509,6 +544,11 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -517,6 +557,12 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {
@@ -543,6 +589,11 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2 && e.getButton() == 1) {
@@ -575,21 +626,42 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 

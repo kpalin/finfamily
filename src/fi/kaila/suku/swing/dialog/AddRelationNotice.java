@@ -15,39 +15,45 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 
 /**
- * 
- * Dialog to add relation notice
+ * Dialog to add relation notice.
  * 
  * @author Kalle
- * 
  */
 public class AddRelationNotice extends JDialog implements ActionListener,
 		MouseListener {
 
 	private static final long serialVersionUID = 1L;
+
+	/** The koko map. */
 	HashMap<String, String> kokoMap = new HashMap<String, String>();
 
 	private JScrollPane kokoScroll;
 	private JList koko;
+
+	/** The koko lista. */
 	String[] kokoLista = null;
+
+	/** The koko tags. */
 	String[] kokoTags = null;
 
 	private String selectedTag = null;
 
 	/**
-	 * 
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param owner
+	 *            the owner
 	 * @param isMarriage
+	 *            the is marriage
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public AddRelationNotice(Suku owner, boolean isMarriage)
 			throws SukuException {
 		super(owner, Resurses.getString("DIALOG_ADD_NOTICE"), true);
 
 		// Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		//		
+		//
 		// setBounds(d.width/2-300,d.height/2-200,300,400);
 		setLayout(null);
 		// setUndecorated(true);
@@ -88,17 +94,30 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the selected tag.
+	 * 
 	 * @return tag to be added
 	 */
 	public String getSelectedTag() {
 		return selectedTag;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		int idx = koko.getSelectedIndex();
@@ -107,21 +126,42 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 

@@ -23,10 +23,9 @@ import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * various settings will be done here
+ * various settings will be done here.
  * 
  * @author Kalle
- * 
  */
 public class SettingsDialog extends JDialog implements ActionListener {
 
@@ -57,8 +56,12 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JFrame owner = null;
 
 	/**
+	 * Instantiates a new settings dialog.
+	 * 
 	 * @param owner
+	 *            the owner
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SettingsDialog(JFrame owner) throws SukuException {
 		this.owner = owner;
@@ -103,8 +106,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		}
 		loca.setSelectedIndex(locaIndex);
 
-		useOpenStreetMap = new JCheckBox(Resurses
-				.getString("USE_OPEN_STREETMAP"), openStreetMap);
+		useOpenStreetMap = new JCheckBox(
+				Resurses.getString("USE_OPEN_STREETMAP"), openStreetMap);
 		getContentPane().add(useOpenStreetMap);
 
 		useOpenStreetMap.setBounds(x + 210, y, 200, 20);
@@ -149,9 +152,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		selectedCc = Resurses.getDefaultCountry();
 
 		if (countdata.generalArray == null) {
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString("COUNTRY_ERROR"), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString("COUNTRY_ERROR"),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 		} else {
 			int seleId = -1;
 			ccodes = new String[countdata.generalArray.length];
@@ -216,6 +220,12 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -232,8 +242,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 			int newLang = repolang.getSelectedIndex();
 			if (newLang >= 0) {
-				Suku.kontroller.putPref(owner, Resurses.REPOLANG, Suku
-						.getRepoLanguage(newLang, true));
+				Suku.kontroller.putPref(owner, Resurses.REPOLANG,
+						Suku.getRepoLanguage(newLang, true));
 
 			}
 
@@ -245,8 +255,9 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			try {
 				Resurses.setDefaultCountry(selectedCc);
 			} catch (SukuException e1) {
-				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e1.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 			int newDateIndex = dateFormat.getSelectedIndex();

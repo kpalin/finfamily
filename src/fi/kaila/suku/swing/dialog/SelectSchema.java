@@ -20,11 +20,9 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * 
- * Select existing or create new schema
+ * Select existing or create new schema.
  * 
  * @author kalle
- * 
  */
 public class SelectSchema extends JDialog implements ActionListener,
 		MouseInputListener {
@@ -45,10 +43,14 @@ public class SelectSchema extends JDialog implements ActionListener,
 	private String[] schemaList = null;
 
 	/**
-	 * Constructor that always shows the schema textfield
+	 * Constructor that always shows the schema textfield.
 	 * 
 	 * @param owner
+	 *            the owner
+	 * @param db
+	 *            the db
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SelectSchema(JFrame owner, String db) throws SukuException {
 		super(owner, Resurses.getString("SCHEMA"), true);
@@ -59,12 +61,16 @@ public class SelectSchema extends JDialog implements ActionListener,
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param owner
+	 *            the owner
+	 * @param db
+	 *            the db
 	 * @param allowNew
 	 *            if false then only list is shown
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SelectSchema(JFrame owner, String db, boolean allowNew)
 			throws SukuException {
@@ -132,6 +138,7 @@ public class SelectSchema extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the schema.
 	 * 
 	 * @return schema selected
 	 */
@@ -144,6 +151,7 @@ public class SelectSchema extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Checks if is existing schema.
 	 * 
 	 * @return true if selected schema already existed
 	 */
@@ -161,6 +169,12 @@ public class SelectSchema extends JDialog implements ActionListener,
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -173,6 +187,11 @@ public class SelectSchema extends JDialog implements ActionListener,
 		setVisible(false);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseClicked(java.awt.event.MouseEvent e) {
 		int clickCount = e.getClickCount();
@@ -189,31 +208,65 @@ public class SelectSchema extends JDialog implements ActionListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseEntered(java.awt.event.MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseExited(java.awt.event.MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mousePressed(java.awt.event.MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseReleased(java.awt.event.MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent
+	 * )
+	 */
 	@Override
 	public void mouseDragged(java.awt.event.MouseEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseMoved(java.awt.event.MouseEvent e) {
 

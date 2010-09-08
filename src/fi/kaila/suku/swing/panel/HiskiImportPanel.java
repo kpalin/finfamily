@@ -44,10 +44,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * Panel to do traffic to Hiski
+ * Panel to do traffic to Hiski.
  * 
  * @author Kaarle Kaila
- * 
  */
 public class HiskiImportPanel extends JPanel implements ActionListener {
 
@@ -60,8 +59,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 	private static final int hiskiSurety = 40;
 
+	/** The menubar. */
 	JMenuBar menubar;
+
+	/** The m file. */
 	JMenu mFile;
+
+	/** The m grid. */
 	JMenuItem mGrid;
 
 	private JButton close;
@@ -123,7 +127,10 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private String hiskiBrowserUrl = null;
 
 	/**
+	 * Instantiates a new hiski import panel.
+	 * 
 	 * @param suku
+	 *            the suku
 	 */
 	public HiskiImportPanel(Suku suku) {
 		this.suku = suku;
@@ -136,7 +143,10 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private int[] hiskiPid = { 0, 0, 0 };
 
 	// private String [] sukuName = {null,null,null};
+	/** The y. */
 	int y = 20;
+
+	/** The buttony. */
 	int buttony = 60;
 
 	private void initMe() {
@@ -437,7 +447,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	}
 
 	/**
-	 * reset all fields
+	 * reset all fields.
 	 */
 	public void resetHiskiPids() {
 		for (int i = 0; i < hiskiPid.length; i++) {
@@ -449,11 +459,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	}
 
 	/**
-	 * set a hiskipanel person
+	 * set a hiskipanel person.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @param pid
+	 *            the pid
 	 * @param nimi
+	 *            the nimi
 	 */
 	public void setHiskiPid(int idx, int pid, String nimi) {
 		if (idx >= 0 && idx < hiskiPid.length) {
@@ -464,6 +477,12 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 

@@ -46,8 +46,8 @@ import fi.kaila.suku.util.pojo.SukuData;
  * <p>
  * GroupId in Unit table can contain any string or be null. Updating of GroupId
  * is made with requests from here. Update possibility for GroupId from
- * PersonView has been removed to avoid updateing from two sources
- * simultaneuosly.
+ * PersonView has been removed to avoid updating from two sources
+ * simultaneously.
  * </p>
  * 
  * <h2>Remove Group</h2>
@@ -86,6 +86,8 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 			.getName());
 
 	private static final long serialVersionUID = 1L;
+
+	/** The removes. */
 	ButtonGroup removes = null;
 	private Suku parent = null;
 	private JButton close = null;
@@ -93,6 +95,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 	private JButton remove = null;
 	private JComboBox viewlist = null;
 
+	/** The addes. */
 	ButtonGroup addes = null;
 	private JPanel addGroup = null;
 	private JButton add = null;
@@ -110,8 +113,12 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 	private javax.swing.Timer t = null;
 
 	/**
+	 * Instantiates a new group mgr window.
+	 * 
 	 * @param parent
+	 *            the parent
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public GroupMgrWindow(Suku parent) throws SukuException {
 		super(parent, Resurses.getString("DIALOG_GROUP_MGR"), false);
@@ -353,6 +360,12 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// System.out.println("CLOSE GROUP FOR " + e.toString());

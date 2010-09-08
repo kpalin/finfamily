@@ -18,11 +18,9 @@ import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.util.Resurses;
 
 /**
- * 
- * Dialog for connect to database
+ * Dialog for connect to database.
  * 
  * @author FIKAAKAIL
- * 
  */
 public class ConnectDialog extends JDialog implements ActionListener {
 
@@ -47,11 +45,14 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	private SukuKontroller kontroller = null;
 
 	/**
-	 * Constructor for dialog
+	 * Constructor for dialog.
 	 * 
 	 * @param owner
+	 *            the owner
 	 * @param kontroller
+	 *            the kontroller
 	 * @param isRemote
+	 *            the is remote
 	 */
 
 	public ConnectDialog(JFrame owner, SukuKontroller kontroller,
@@ -106,7 +107,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		getContentPane().add(rememberPwd);
 		rememberPwd.setBounds(120, y, 200, 20);
 		// y += 24;
-		//		
+		//
 		// isRemote = new JCheckBox(Resurses.instance().getString("ISREMOTE"));
 		// getContentPane().add(isRemote);
 		// isRemote.setBounds(120,y,200,20);
@@ -176,6 +177,12 @@ public class ConnectDialog extends JDialog implements ActionListener {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 
@@ -225,6 +232,8 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Was ok.
+	 * 
 	 * @return true if ok was pressed
 	 */
 	public boolean wasOk() {
@@ -232,6 +241,8 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the host.
+	 * 
 	 * @return host
 	 */
 	public String getHost() {
@@ -241,6 +252,8 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the db name.
+	 * 
 	 * @return database name
 	 */
 	public String getDbName() {
@@ -251,6 +264,8 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the user id.
+	 * 
 	 * @return userid
 	 */
 	public String getUserId() {
@@ -258,6 +273,8 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the password.
+	 * 
 	 * @return database password
 	 */
 	public String getPassword() {
@@ -267,6 +284,12 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		return pwd;
 	}
 
+	/**
+	 * Remember database.
+	 * 
+	 * @param value
+	 *            the value
+	 */
 	public void rememberDatabase(boolean value) {
 		rememberDatabase = value;
 		this.kontroller.putPref(this, "REMEMBER_DB", rememberDatabase ? "true"
@@ -275,6 +298,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Checks for database.
 	 * 
 	 * @return true is database is activated
 	 */

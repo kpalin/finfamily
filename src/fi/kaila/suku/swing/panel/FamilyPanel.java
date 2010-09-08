@@ -31,12 +31,10 @@ import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.TableShortData;
 
 /**
- * 
  * FamilyPanel shows a simple graph of the subjects family, parents and
- * grandparents
+ * grandparents.
  * 
  * @author Kalle
- * 
  */
 public class FamilyPanel extends JPanel implements MouseListener,
 		MouseMotionListener {
@@ -53,7 +51,10 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	private PersonView parent;
 
 	/**
+	 * Instantiates a new family panel.
+	 * 
 	 * @param parent
+	 *            the parent
 	 */
 	public FamilyPanel(PersonView parent) {
 		this.parent = parent;
@@ -61,6 +62,9 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		this.addMouseMotionListener(this);
 	}
 
+	/**
+	 * Copy to clip as image.
+	 */
 	public void copyToClipAsImage() {
 		// Create a BufferedImage
 
@@ -72,8 +76,8 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		Graphics2D graphics = (Graphics2D) g;
 		this.paint(graphics);
 		ImageSelection imgSel = new ImageSelection(image);
-		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(imgSel,
-				null);
+		Toolkit.getDefaultToolkit().getSystemClipboard()
+				.setContents(imgSel, null);
 
 		try {
 			ImageIO.write(image, "jpg", new File("component.jpg"));
@@ -87,6 +91,11 @@ public class FamilyPanel extends JPanel implements MouseListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
 	@Override
 	public void paintComponent(Graphics g) {
 
@@ -133,8 +142,8 @@ public class FamilyPanel extends JPanel implements MouseListener,
 					pp.x + dp.width / 2 + nearpp, cp.y - 10), rel.getSurety());
 			drawSuretyLine(gg, new Point(pp.x + dp.width / 2 + nearpp,
 					cp.y - 10),
-					new Point(pp.x + dp.width / 2, pp.y + dp.height), rel
-							.getSurety());
+					new Point(pp.x + dp.width / 2, pp.y + dp.height),
+					rel.getSurety());
 
 		}
 
@@ -212,9 +221,8 @@ public class FamilyPanel extends JPanel implements MouseListener,
 			double aux = (bx - ax) / (points.length - 1);
 			double auy = (by - ay) / (points.length - 1);
 			for (int i = 1; i < points.length - 1; i++) {
-				points[i].setLocation(points[i - 1].getX() + aux, points[i - 1]
-						.getY()
-						+ auy);
+				points[i].setLocation(points[i - 1].getX() + aux,
+						points[i - 1].getY() + auy);
 			}
 			// logger.info("surety=" + surety + "  (" + a.x + "," + a.y + ");("
 			// + b.x + "," + b.y + ")");
@@ -230,8 +238,8 @@ public class FamilyPanel extends JPanel implements MouseListener,
 
 					// gg.drawLine(points[i].x, points[i].y, e.x, e.y);
 					gg.drawLine((int) points[i].getX(), (int) points[i].getY(),
-							(int) (points[i].getX() + auxx), (int) (points[i]
-									.getY() + auyy));
+							(int) (points[i].getX() + auxx),
+							(int) (points[i].getY() + auyy));
 				} else {
 					if (surety > 10) {
 						gg.drawString("?", (float) points[i].getX(),
@@ -257,7 +265,7 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * empty the graph
+	 * empty the graph.
 	 */
 	public void resetTable() {
 		tabs.removeAllElements();
@@ -265,9 +273,10 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * add a table to the graph
+	 * add a table to the graph.
 	 * 
 	 * @param data
+	 *            the data
 	 */
 	public void addTable(TableShortData data) {
 		tabs.add(data);
@@ -277,9 +286,10 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * Check if person exists in family tree
+	 * Check if person exists in family tree.
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @return true if person exists
 	 */
 	public boolean containsPerson(int pid) {
@@ -292,6 +302,7 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	}
 
 	/**
+	 * Gets the owner pid.
 	 * 
 	 * @return owner pid of family tree
 	 */
@@ -307,6 +318,8 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	}
 
 	/**
+	 * Gets the tab size.
+	 * 
 	 * @return table size = number of tables in list
 	 */
 	public int getTabSize() {
@@ -314,10 +327,10 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * 
-	 * Add parent relation
+	 * Add parent relation.
 	 * 
 	 * @param relIdx
+	 *            the rel idx
 	 */
 	public void addRels(FamilyParentRelationIndex relIdx) {
 
@@ -325,6 +338,11 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		updateUI();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
@@ -355,12 +373,22 @@ public class FamilyPanel extends JPanel implements MouseListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		presTab = null;
 		// System.out.println("ENT: " + e.toString());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
 
@@ -370,9 +398,17 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		}
 	}
 
+	/** The pres tab. */
 	TableShortData presTab = null;
+
+	/** The pres from. */
 	Point presFrom = null;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		presTab = null;
@@ -392,6 +428,12 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (e.getButton() == 1 && presTab != null) {
@@ -423,7 +465,7 @@ public class FamilyPanel extends JPanel implements MouseListener,
 						SukuPopupMenu pop = SukuPopupMenu.getInstance();
 						pop.setPerson(person);
 						pop.show(e, pp.x, pp.y, MenuSource.familyView);
-						//					
+						//
 						// parent.getSuku().pShowPerson.setText(person.getAlfaName());
 						// parent.getSuku().pMenu.show(e.getComponent(),pp.x,pp.y);
 
@@ -443,6 +485,13 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent
+	 * )
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (presTab != null) {
@@ -455,11 +504,17 @@ public class FamilyPanel extends JPanel implements MouseListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// System.out.println("MOV: " + e.toString());
 
 	}
 
-	// 
+	//
 }

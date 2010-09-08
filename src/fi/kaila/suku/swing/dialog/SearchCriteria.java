@@ -38,10 +38,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * Window that is shown before database search is made Windows contains the
- * search criterias used in the search and columns to display
+ * search criterias used in the search and columns to display.
  * 
  * @author FIKAAKAIL
- * 
  */
 public class SearchCriteria extends JDialog implements ActionListener {
 
@@ -81,15 +80,31 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	private SukuSuretyField surety;
 	private JTextField fullText;
 
+	/** The colpanel. */
 	JPanel colpanel;
 
+	/** The name panel. */
 	JPanel namePanel;
+
+	/** The birt panel. */
 	JPanel birtPanel;
+
+	/** The deat panel. */
 	JPanel deatPanel;
+
+	/** The created panel. */
 	JPanel createdPanel;
+
+	/** The view panel. */
 	JPanel viewPanel;
+
+	/** The place panel. */
 	JPanel placePanel;
+
+	/** The sex panel. */
 	JPanel sexPanel;
+
+	/** The text panel. */
 	JPanel textPanel;
 
 	private JButton ok;
@@ -119,8 +134,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			new ColTable(Resurses.COLUMN_T_DEAT_BURI, true) };
 
 	/**
+	 * Gets the col index.
 	 * 
 	 * @param colName
+	 *            the col name
 	 * @return get full column index for column name tag
 	 */
 	public int getColIndex(String colName) {
@@ -136,6 +153,13 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 	}
 
+	/**
+	 * Gets the model index.
+	 * 
+	 * @param viewIdx
+	 *            the view idx
+	 * @return the model index
+	 */
 	public int getModelIndex(int viewIdx) {
 		int compa = -1;
 		for (int i = 0; i < coltables.length; i++) {
@@ -151,6 +175,13 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 	}
 
+	/**
+	 * Gets the view index.
+	 * 
+	 * @param modelIdx
+	 *            the model idx
+	 * @return the view index
+	 */
 	public int getViewIndex(int modelIdx) {
 		int compa = -1;
 		for (int i = 0; i < coltables.length; i++) {
@@ -179,9 +210,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * get index of named column
+	 * get index of named column.
 	 * 
 	 * @param colname
+	 *            the colname
 	 * @return column index
 	 */
 	public int getCurrentIndex(String colname) {
@@ -203,7 +235,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the col name.
+	 * 
 	 * @param idx
+	 *            the idx
 	 * @return name of indexed column
 	 */
 	public String getColName(int idx) {
@@ -232,6 +267,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	// }
 
 	/**
+	 * Checks if is property set.
+	 * 
 	 * @param prop
 	 *            property name
 	 * @return true if all names is set for pro
@@ -245,9 +282,13 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	private static SearchCriteria myself = null;
 
 	/**
+	 * Gets the criteria.
+	 * 
 	 * @param owner
+	 *            the owner
 	 * @return Singleton instance of SearchCriteria
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public static SearchCriteria getCriteria(JFrame owner) throws SukuException {
 		Object o = new Object();
@@ -265,6 +306,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 	}
 
+	/** The me. */
 	SearchCriteria me = null;
 
 	/**
@@ -521,7 +563,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the col table.
+	 * 
 	 * @param idx
+	 *            the idx
 	 * @return column at idx
 	 */
 	public ColTable getColTable(int idx) {
@@ -529,6 +574,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the col table count.
+	 * 
 	 * @return count of columns
 	 */
 	public int getColTableCount() {
@@ -536,8 +583,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * populate combobox lists
-	 * 
+	 * populate combobox lists.
 	 */
 	public void populateFields() {
 
@@ -700,6 +746,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Checks for relative info.
+	 * 
 	 * @return true if person has any relatives
 	 */
 	public boolean hasRelativeInfo() {
@@ -720,6 +768,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the column count.
+	 * 
 	 * @return Number of active (current) columns
 	 */
 	public int getColumnCount() {
@@ -727,9 +777,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * Fetch current column
+	 * Fetch current column.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @return column at current idx
 	 */
 	public ColTable getCurrentColTable(int idx) {
@@ -751,14 +802,32 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * The Class ColTable.
+	 * 
 	 * @author FIKAAKAIL inner class for column for the table
 	 */
 	public class ColTable {
+
+		/** The chk. */
 		JCheckBox chk;
+
+		/** The colname. */
 		String colname;
+
+		/** The def state. */
 		boolean defState;
+
+		/** The curr state. */
 		boolean currState;
 
+		/**
+		 * Instantiates a new col table.
+		 * 
+		 * @param colname
+		 *            the colname
+		 * @param defState
+		 *            the def state
+		 */
 		ColTable(String colname, boolean defState) {
 			this.chk = new JCheckBox(Resurses.getString(colname));
 			this.colname = colname;
@@ -772,11 +841,18 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		}
 
+		/**
+		 * Gets the chk box.
+		 * 
+		 * @return the chk box
+		 */
 		JCheckBox getChkBox() {
 			return this.chk;
 		}
 
 		/**
+		 * Sets the current state.
+		 * 
 		 * @param state
 		 *            the column state (true = show column)
 		 */
@@ -785,6 +861,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		}
 
 		/**
+		 * Gets the current state.
+		 * 
 		 * @return current state of column
 		 */
 		public boolean getCurrentState() {
@@ -792,6 +870,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		}
 
 		/**
+		 * Gets the default state.
+		 * 
 		 * @return default state for the column
 		 */
 		public boolean getDefaultState() {
@@ -799,6 +879,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		}
 
 		/**
+		 * Gets the col name.
+		 * 
 		 * @return name id of column
 		 */
 		public String getColName() {
@@ -808,11 +890,11 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * get file contents
+	 * get file contents.
 	 * 
 	 * @param fieldId
+	 *            the field id
 	 * @return nameId of field
-	 * 
 	 */
 	public String getCriteriaField(String fieldId) {
 		if (fieldId.equals(Resurses.CRITERIA_SURNAME)) {
@@ -826,6 +908,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the field count.
+	 * 
 	 * @return no of fields
 	 */
 	public int getFieldCount() {
@@ -842,7 +926,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the criteria field.
+	 * 
 	 * @param idx
+	 *            the idx
 	 * @return contents of requested field idx
 	 */
 	public String getCriteriaField(int idx) {
@@ -910,7 +997,10 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the field name.
+	 * 
 	 * @param idx
+	 *            the idx
 	 * @return name of requested field idx
 	 */
 	public String getFieldName(int idx) {
@@ -960,6 +1050,12 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		int idx;
@@ -1125,6 +1221,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 	}
 
+	/**
+	 * The Class DateTextField.
+	 */
 	class DateTextField extends JPanel {
 		/**
 		 * 
@@ -1133,6 +1232,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		private JTextField createdDate;
 		private JCalendarButton calDate;
 
+		/**
+		 * Instantiates a new date text field.
+		 */
 		DateTextField() {
 			this.setLayout(null);
 			this.createdDate = new JTextField();
@@ -1169,10 +1271,21 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		}
 
+		/**
+		 * Sets the text.
+		 * 
+		 * @param text
+		 *            the new text
+		 */
 		public void setText(String text) {
 			createdDate.setText(text);
 		}
 
+		/**
+		 * Gets the text.
+		 * 
+		 * @return the text
+		 */
 		public String getText() {
 			return createdDate.getText();
 		}

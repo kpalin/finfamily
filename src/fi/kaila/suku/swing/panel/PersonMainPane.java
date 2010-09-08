@@ -31,9 +31,9 @@ import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTextArea;
 import fi.kaila.suku.util.SukuTextField;
+import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.SukuTypesModel;
 import fi.kaila.suku.util.Utils;
-import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
@@ -44,17 +44,16 @@ import fi.kaila.suku.util.pojo.UnitLanguage;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * 
- * Main pane is the first of person windows panes with person main data
+ * Main pane is the first of person windows panes with person main data.
  * 
  * @author Kalle
- * 
  */
 public class PersonMainPane extends JPanel implements ActionListener,
 		ComponentListener {
 
 	private static final long serialVersionUID = 1L;
 
+	/** The person view. */
 	PersonView personView = null;
 	private JButton close;
 	private JButton update;
@@ -105,14 +104,21 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 	private int personPid = 0;
 
+	/** The pers long. */
 	PersonLongData persLong = null;
 
+	/** The relas. */
 	RelativesPane relas = null;
 
 	/**
+	 * Instantiates a new person main pane.
+	 * 
 	 * @param peronView
+	 *            the peron view
 	 * @param pid
+	 *            the pid
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public PersonMainPane(PersonView peronView, int pid) throws SukuException {
 		this.personView = peronView;
@@ -134,10 +140,18 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 	}
 
+	/**
+	 * Gets the person pid.
+	 * 
+	 * @return the person pid
+	 */
 	int getPersonPid() {
 		return personPid;
 	}
 
+	/**
+	 * Update name.
+	 */
 	void updateName() {
 
 		boolean firstName = true;
@@ -252,6 +266,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		}
 	}
 
+	/**
+	 * Update rest.
+	 */
 	void updateRest() {
 		int birtCount = 0;
 		int chrCount = 0;
@@ -665,7 +682,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		setPreferredSize(new Dimension(lcol + biglen + colbet, rivi + 30));
 
 		// update = new JButton(Resurses.getString(Resurses.UPDATE));
-		//	
+		//
 		// add(update);
 		// update.setActionCommand(Resurses.UPDATE);
 		// update.addActionListener(this);
@@ -684,6 +701,11 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		}
 	}
 
+	/**
+	 * Close notices.
+	 * 
+	 * @return true, if successful
+	 */
 	boolean closeNotices() {
 
 		personView.closePerson();
@@ -693,6 +715,14 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 	}
 
+	/**
+	 * Open person notices.
+	 * 
+	 * @param pid
+	 *            the pid
+	 * @throws SukuException
+	 *             the suku exception
+	 */
 	void openPersonNotices(int pid) throws SukuException {
 		Relation[] relations = null;
 		PersonShortData[] persons = null;
@@ -781,6 +811,12 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -807,8 +843,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					if (chnged.resu != null) {
 
 						int askresu = JOptionPane.showConfirmDialog(this,
-								Resurses.getString("ASK_SAVE_PERSON"), Resurses
-										.getString(Resurses.SUKU),
+								Resurses.getString("ASK_SAVE_PERSON"),
+								Resurses.getString(Resurses.SUKU),
 								JOptionPane.YES_NO_OPTION,
 								JOptionPane.QUESTION_MESSAGE);
 						if (askresu == JOptionPane.YES_OPTION) {
@@ -829,8 +865,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					logger.log(Level.WARNING, "CLOSE:" + e1.getMessage());
 					return;
 				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(this, e1.toString(), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(this, e1.toString(),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					logger.log(Level.WARNING, "Closing person", e1);
 
@@ -859,7 +895,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					// }
 					// if (resp.pers != null) {
 					// personView.getSuku().updatePerson(resp.pers[0]);
-					//				
+					//
 					// }
 				} catch (SukuDateException e1) {
 					JOptionPane.showMessageDialog(this, e1.getMessage(),
@@ -868,8 +904,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					logger.log(Level.WARNING, "CLOSE:" + e1.getMessage());
 					return;
 				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(this, e1.toString(), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(this, e1.toString(),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					logger.log(Level.WARNING, "Closing person", e1);
 
@@ -886,10 +922,12 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * Update person data structure from pane fields and check if it has changed
+	 * Update person data structure from pane fields and check if it has
+	 * changed.
 	 * 
 	 * @return true is person data has changed
 	 * @throws SukuDateException
+	 *             the suku date exception
 	 */
 	SukuData updatePersonStructure() throws SukuDateException {
 		if (persLong == null)
@@ -1009,8 +1047,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					"name=notice");
 			notorder = resp.generalArray;
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.WARNING, "get settings", e);
 			return null;
 
@@ -1049,6 +1088,15 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		return req;
 	}
 
+	/**
+	 * Update person.
+	 * 
+	 * @param force
+	 *            the force
+	 * @return the suku data
+	 * @throws SukuDateException
+	 *             the suku date exception
+	 */
 	SukuData updatePerson(boolean force) throws SukuDateException {
 
 		SukuData req = updatePersonStructure();
@@ -1111,8 +1159,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 				return resp;
 			} catch (SukuException e) {
-				JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 
 				e.printStackTrace();
 			}
@@ -1123,7 +1172,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * update name notices fromn mainpane
+	 * update name notices fromn mainpane.
 	 */
 	public void updateNameNotices() {
 
@@ -1226,6 +1275,14 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		}
 	}
 
+	/**
+	 * Insert name pane.
+	 * 
+	 * @param noticeIndex
+	 *            the notice index
+	 * @param tag
+	 *            the tag
+	 */
 	void insertNamePane(int noticeIndex, String tag) {
 		UnitNotice notice = new UnitNotice(tag, persLong.getPid());
 		NoticePane pane = new NoticePane(personView, persLong.getPid(), notice);
@@ -1235,7 +1292,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * update non-name notices
+	 * update non-name notices.
 	 */
 	public void updateRestNotices() {
 		int birtCount = 0;
@@ -1368,10 +1425,12 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * reorder notices in preset order
+	 * reorder notices in preset order.
 	 * 
 	 * @param unotices
+	 *            the unotices
 	 * @param wn
+	 *            the wn
 	 * @return true if notice order has changed
 	 */
 	public boolean reorderNotices(Vector<UnitNotice> unotices, String[] wn) {
@@ -1403,7 +1462,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * update unit data from fields to pojo
+	 * update unit data from fields to pojo.
 	 */
 	public void updateUnit() {
 
@@ -1435,6 +1494,12 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 	}
 
+	/**
+	 * Verify local person dates.
+	 * 
+	 * @throws SukuDateException
+	 *             the suku date exception
+	 */
 	void verifyLocalPersonDates() throws SukuDateException {
 		if (persLong != null) {
 			PersonShortData shortie = new PersonShortData(persLong);
@@ -1443,12 +1508,12 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			int deathYear = shortie.getDeatYear();
 			if (birthYear > 0 && deathYear > 0) {
 				if (birthYear > deathYear) {
-					throw new SukuDateException(Resurses
-							.getString("ERROR_DEAT_BEF_BIRT"));
+					throw new SukuDateException(
+							Resurses.getString("ERROR_DEAT_BEF_BIRT"));
 				}
 				if (deathYear > birthYear + 150) {
-					throw new SukuDateException(Resurses
-							.getString("ERROR_TOO_OLD"));
+					throw new SukuDateException(
+							Resurses.getString("ERROR_TOO_OLD"));
 				}
 
 			}
@@ -1470,6 +1535,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	// private int rcol = lcol + datelen + placlen + colbet * 2; // 460; //
 	// private int biglen = datelen + placlen + colbet * 2 + rwidth * 2;
 
+	/**
+	 * Resize main pane.
+	 */
 	public void resizeMainPane() {
 		Dimension currSize = getSize();
 		int lwidth = 0;
@@ -1595,21 +1663,47 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		// updateUI();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentResized(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentResized(ComponentEvent e) {
 		resizeMainPane();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
 

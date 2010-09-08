@@ -34,11 +34,9 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.PlaceLocationData;
 
 /**
- * 
- * Shows map of Finland with locations of relatives
+ * Shows map of Finland with locations of relatives.
  * 
  * @author Kalle
- * 
  */
 public class SuomiMap extends JFrame implements ActionListener,
 		SukuMapInterface {
@@ -55,11 +53,19 @@ public class SuomiMap extends JFrame implements ActionListener,
 	private KarttaPanel map;
 	private BufferedImage kartta;
 
+	/** The menubar. */
 	JMenuBar menubar;
+
+	/** The m file. */
 	JMenu mFile;
+
+	/** The m grid. */
 	JMenuItem mGrid;
 
+	/** The current places. */
 	JTextArea currentPlaces;
+
+	/** The missing places list. */
 	JTextArea missingPlacesList;
 
 	private Rectangle suomiSize = new Rectangle();
@@ -71,9 +77,10 @@ public class SuomiMap extends JFrame implements ActionListener,
 	private static final double suomiTop = 70.3;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param parent
+	 *            the parent
 	 */
 	public SuomiMap(ISuku parent) {
 		this.parent = parent;
@@ -100,8 +107,8 @@ public class SuomiMap extends JFrame implements ActionListener,
 		try {
 			this.kartta = ImageIO.read(f);
 
-			suomiSize = new Rectangle(0, 0, this.kartta.getWidth(), this.kartta
-					.getHeight());
+			suomiSize = new Rectangle(0, 0, this.kartta.getWidth(),
+					this.kartta.getHeight());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			logger.log(Level.WARNING, "Cannot read suomikartta", e1);
@@ -133,9 +140,7 @@ public class SuomiMap extends JFrame implements ActionListener,
 		this.missingPlacesList = new JTextArea();
 		this.missingPlacesList.setEditable(false);
 		JScrollPane js = new JScrollPane(this.missingPlacesList);
-		js
-				.setBounds(20 + kartta.getWidth(), 140, 160,
-						kartta.getHeight() - 140);
+		js.setBounds(20 + kartta.getWidth(), 140, 160, kartta.getHeight() - 140);
 		this.getContentPane().add(js);
 
 		setSize(new Dimension(250 + kartta.getWidth(), 80 + kartta.getHeight()));
@@ -160,9 +165,10 @@ public class SuomiMap extends JFrame implements ActionListener,
 	private PlaceLocationData[] places = null;
 
 	/**
-	 * display map with listed places
+	 * display map with listed places.
 	 * 
 	 * @param places
+	 *            the places
 	 */
 	public void displayMap(PlaceLocationData[] places) {
 		lukuri++;
@@ -170,7 +176,7 @@ public class SuomiMap extends JFrame implements ActionListener,
 		// int paikkddoja = 0;
 		// if (places != null){
 		// paikkddoja = places.length;
-		//			
+		//
 		// }
 		StringBuilder sb = new StringBuilder();
 
@@ -186,6 +192,9 @@ public class SuomiMap extends JFrame implements ActionListener,
 		// "]. Käynti no " + lukuri);
 	}
 
+	/**
+	 * The Class KarttaPanel.
+	 */
 	class KarttaPanel extends JPanel implements MouseListener,
 			MouseMotionListener {
 
@@ -194,11 +203,19 @@ public class SuomiMap extends JFrame implements ActionListener,
 		 */
 		private static final long serialVersionUID = 1L;
 
+		/**
+		 * Instantiates a new kartta panel.
+		 */
 		KarttaPanel() {
 			this.addMouseListener(this);
 			this.addMouseMotionListener(this);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+		 */
 		public void paintComponent(Graphics g) {
 
 			// Rectangle suomiSize = new
@@ -301,8 +318,15 @@ public class SuomiMap extends JFrame implements ActionListener,
 
 		}
 
+		/** The mouse is here. */
 		boolean mouseIsHere = false;
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.JComponent#processMouseEvent(java.awt.event.MouseEvent)
+		 */
 		protected void processMouseEvent(MouseEvent e) {
 			if (e.getID() == MouseEvent.MOUSE_ENTERED) {
 				mouseIsHere = true;
@@ -313,6 +337,13 @@ public class SuomiMap extends JFrame implements ActionListener,
 			// System.out.println("Mouse: " + e.toString());
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.JComponent#processMouseMotionEvent(java.awt.event.MouseEvent
+		 * )
+		 */
 		protected void processMouseMotionEvent(MouseEvent e) {
 			if (mouseIsHere) {
 				int idx;
@@ -360,36 +391,80 @@ public class SuomiMap extends JFrame implements ActionListener,
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			//		
+			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mouseExited(MouseEvent e) {
 			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mousePressed(MouseEvent e) {
 			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent
+		 * )
+		 */
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
 			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent
+		 * )
+		 */
 		@Override
 		public void mouseMoved(MouseEvent arg) {
 			//
@@ -397,11 +472,25 @@ public class SuomiMap extends JFrame implements ActionListener,
 
 	}
 
+	/**
+	 * The Class PointD.
+	 */
 	class PointD {
 
+		/** The x. */
 		double x;
+
+		/** The y. */
 		double y;
 
+		/**
+		 * Instantiates a new point d.
+		 * 
+		 * @param x
+		 *            the x
+		 * @param y
+		 *            the y
+		 */
 		PointD(double x, double y) {
 			this.x = x;
 			this.y = y;
@@ -411,6 +500,12 @@ public class SuomiMap extends JFrame implements ActionListener,
 
 	private boolean showGrid = false;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 

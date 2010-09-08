@@ -28,10 +28,9 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.UnitLanguage;
 
 /**
- * Language dialog to add secondary languages to person notices
+ * Language dialog to add secondary languages to person notices.
  * 
  * @author Kalle
- * 
  */
 public class LanguageDialog extends JDialog implements ActionListener,
 		ComponentListener {
@@ -50,6 +49,8 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	private JLabel placeLbl = null;
 	private JLabel noteLbl = null;
 	private JLabel mediaLbl = null;
+
+	/** The scroll area. */
 	JScrollPane scrollArea = null;
 	private JTextField mediaTitle = null;
 
@@ -60,9 +61,17 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	// private static int ynote = 132;
 
 	private JButton ok;
+
+	/** The created lbl. */
 	JLabel createdLbl = null;
+
+	/** The created. */
 	JTextField created = null;
+
+	/** The modified lbl. */
 	JLabel modifiedLbl = null;
+
+	/** The modified. */
 	JTextField modified = null;
 
 	// public String [] texts = null;
@@ -70,10 +79,14 @@ public class LanguageDialog extends JDialog implements ActionListener,
 
 	private ButtonGroup languageGroup = null;
 
+	/** The langxx. */
 	JRadioButton[] langxx;
 
 	/**
+	 * Instantiates a new language dialog.
+	 * 
 	 * @param owner
+	 *            the owner
 	 */
 	public LanguageDialog(JFrame owner) {
 		super(owner, Resurses.getString("DATA_LANG_PAGE"), true);
@@ -158,6 +171,8 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the languages.
+	 * 
 	 * @return list of UnitLanguage notices
 	 */
 	public UnitLanguage[] getLanguages() {
@@ -175,7 +190,10 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Sets the languages.
+	 * 
 	 * @param tag
+	 *            the tag
 	 * @param languages
 	 *            to be initialized
 	 */
@@ -208,6 +226,11 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.JDialog#createRootPane()
+	 */
 	protected JRootPane createRootPane() {
 		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		JRootPane rootPane = new JRootPane();
@@ -217,6 +240,12 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		return rootPane;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -233,7 +262,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	private String previousLang = null;
 
 	/**
-	 * Copy data from dialog to the pojo
+	 * Copy data from dialog to the pojo.
 	 * 
 	 * @param cmd
 	 *            = langcode
@@ -308,16 +337,35 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		mediaTitle.setEnabled(value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentResized(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentResized(ComponentEvent e) {
 
@@ -389,6 +437,13 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		// }
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
 

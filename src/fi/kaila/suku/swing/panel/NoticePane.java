@@ -45,10 +45,9 @@ import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * pane for the single notice
+ * pane for the single notice.
  * 
  * @author Kalle
- * 
  */
 public class NoticePane extends JPanel implements ActionListener,
 		ComponentListener, ListSelectionListener {
@@ -57,114 +56,273 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	private Logger logger;
 
+	/** The move to left. */
 	JButton moveToLeft;
+
+	/** The move to right. */
 	JButton moveToRight;
+
+	/** The to delete. */
 	JButton toDelete;
+
+	/** The to add. */
 	JButton toAdd;
+
+	/** The close. */
 	JButton close;
+
+	/** The update. */
 	JButton update;
 	// JLabel toBeDeleted;
+	/** The surety. */
 	SukuSuretyField surety;
+
+	/** The privacy. */
 	JComboBox privacy;
 
+	/** The surety lbl. */
 	JLabel suretyLbl;
+
+	/** The pricavy lbl. */
 	JLabel pricavyLbl;
+
+	/** The created lbl. */
 	JLabel createdLbl;
+
+	/** The modified lbl. */
 	JLabel modifiedLbl;
+
+	/** The created. */
 	JTextField created;
+
+	/** The modified. */
 	JTextField modified;
 
+	/** The type lbl. */
 	JLabel typeLbl;
+
+	/** The desc lbl. */
 	JLabel descLbl;
 
+	/** The notice type. */
 	SukuTextField noticeType;
+
+	/** The description. */
 	SukuTextField description;
 
+	/** The date lbl. */
 	JLabel dateLbl;
+
+	/** The place lbl. */
 	JLabel placeLbl;
+
+	/** The date. */
 	SukuDateField date;
+
+	/** The place. */
 	SukuTextField place;
 
+	/** The village lbl. */
 	JLabel villageLbl;
+
+	/** The farm lbl. */
 	JLabel farmLbl;
+
+	/** The croft lbl. */
 	JLabel croftLbl;
 
+	/** The village. */
 	JTextField village;
+
+	/** The farm. */
 	JTextField farm;
+
+	/** The croft. */
 	JTextField croft;
 
+	/** The address lbl. */
 	JLabel addressLbl;
+
+	/** The postal code lbl. */
 	JLabel postalCodeLbl;
+
+	/** The post office lbl. */
 	JLabel postOfficeLbl;
+
+	/** The state lbl. */
 	JLabel stateLbl;
+
+	/** The country lbl. */
 	JLabel countryLbl;
+
+	/** The email lbl. */
 	JLabel emailLbl;
 
+	/** The address. */
 	JTextArea address;
+
+	/** The postal code. */
 	JTextField postalCode;
+
+	/** The post office. */
 	SukuTextField postOffice;
+
+	/** The state. */
 	JTextField state;
+
+	/** The country. */
 	JTextField country;
+
+	/** The email. */
 	JTextField email;
+
+	/** The scroll address. */
 	JScrollPane scrollAddress;
+
+	/** The scroll note. */
 	JScrollPane scrollNote;
 
+	/** The note lbl. */
 	JLabel noteLbl;
+
+	/** The media filename lbl. */
 	JLabel mediaFilenameLbl;
+
+	/** The media title lbl. */
 	JLabel mediaTitleLbl;
 
+	/** The note text. */
 	JTextArea noteText;
+
+	/** The media filename. */
 	JTextField mediaFilename;
+
+	/** The media title. */
 	JTextField mediaTitle;
+
+	/** The media open file. */
 	JButton mediaOpenFile;
+
+	/** The image. */
 	MyImage image;
 
+	/** The giv lbl. */
 	JLabel givLbl;
+
+	/** The pat lbl. */
 	JLabel patLbl;
+
+	/** The pre lbl. */
 	JLabel preLbl;
+
+	/** The sur lbl. */
 	JLabel surLbl;
+
+	/** The post lbl. */
 	JLabel postLbl;
 
+	/** The givenname. */
 	SukuTextField givenname;
+
+	/** The patronym. */
 	SukuTextField patronym;
+
+	/** The prefix. */
 	JTextField prefix;
+
+	/** The surname. */
 	SukuTextField surname;
+
+	/** The postfix. */
 	JTextField postfix;
+
+	/** The source lbl. */
 	JLabel sourceLbl;
+
+	/** The private lbl. */
 	JLabel privateLbl;
+
+	/** The scroll source. */
 	JScrollPane scrollSource;
+
+	/** The scroll private. */
 	JScrollPane scrollPrivate;
+
+	/** The source. */
 	SukuTextArea source;
+
+	/** The private text. */
 	JTextArea privateText;
 
+	/** The name list. */
 	JList nameList;
+
+	/** The scroll names. */
 	JScrollPane scrollNames;
+
+	/** The name label. */
 	JLabel nameLabel;
+
+	/** The names vector. */
 	Vector<String> namesVector = null;
+
+	/** The lista name. */
 	JTextField listaName;
+
+	/** The lista selected name. */
 	int listaSelectedName = -1;
+
+	/** The lista selected place. */
 	int listaSelectedPlace = -1;
+
+	/** The lista addname. */
 	JButton listaAddname;
+
+	/** The add label. */
 	JLabel addLabel;
+
+	/** The place list. */
 	JList placeList;
+
+	/** The scroll places. */
 	JScrollPane scrollPlaces;
+
+	/** The place label. */
 	JLabel placeLabel;
+
+	/** The places vector. */
 	Vector<String> placesVector = null;
+
+	/** The lista place. */
 	JTextField listaPlace;
+
+	/** The lista addplace. */
 	JButton listaAddplace;
+
+	/** The note text lang. */
 	JButton noteTextLang = null;
 
+	/** The note loc. */
 	Rectangle noteLoc = null;
 
+	/** The person view. */
 	PersonView personView = null;
 
+	/** The pid. */
 	int pid;
+
+	/** The notice. */
 	UnitNotice notice = null;
 
 	/**
+	 * Instantiates a new notice pane.
+	 * 
 	 * @param peronView
+	 *            the peron view
 	 * @param pid
+	 *            the pid
 	 * @param notice
+	 *            the notice
 	 */
 	public NoticePane(PersonView peronView, int pid, UnitNotice notice) {
 		this.personView = peronView;
@@ -514,8 +672,8 @@ public class NoticePane extends JPanel implements ActionListener,
 		description.setText(tmp);
 
 		// setDate();
-		date.setDate(notice.getDatePrefix(), notice.getFromDate(), notice
-				.getToDate());
+		date.setDate(notice.getDatePrefix(), notice.getFromDate(),
+				notice.getToDate());
 		tmp = notice.getPlace();
 		if (tmp == null)
 			tmp = "";
@@ -649,7 +807,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	/**
 	 * This checks if the fields that are not visible on the MainPerson are
-	 * empty
+	 * empty.
 	 * 
 	 * @return true if all non visible fields are empty
 	 */
@@ -738,6 +896,14 @@ public class NoticePane extends JPanel implements ActionListener,
 		}
 	}
 
+	/**
+	 * Sets the to be deleted.
+	 * 
+	 * @param value
+	 *            the value
+	 * @param onlyEmptyNotice
+	 *            the only empty notice
+	 */
 	void setToBeDeleted(boolean value, boolean onlyEmptyNotice) {
 
 		if (!value) {
@@ -763,10 +929,28 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	}
 
+	/**
+	 * The Enum TagType.
+	 */
 	enum TagType {
-		STANDARD, NAME, NOTE, RESI, PHOT
+
+		/** The STANDARD. */
+		STANDARD,
+		/** The NAME. */
+		NAME,
+		/** The NOTE. */
+		NOTE,
+		/** The RESI. */
+		RESI,
+		/** The PHOT. */
+		PHOT
 	}
 
+	/**
+	 * Gets the unit notice error.
+	 * 
+	 * @return the unit notice error
+	 */
 	String getUnitNoticeError() {
 		String theDate = null;
 		try {
@@ -789,12 +973,24 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	}
 
+	/**
+	 * Verify unit notice.
+	 * 
+	 * @throws SukuDateException
+	 *             the suku date exception
+	 */
 	void verifyUnitNotice() throws SukuDateException {
 
 		date.getFromDate();
 		date.getToDate();
 	}
 
+	/**
+	 * Copy to unit notice.
+	 * 
+	 * @throws SukuDateException
+	 *             the suku date exception
+	 */
 	void copyToUnitNotice() throws SukuDateException {
 		int sureIdx = surety.getSurety();
 
@@ -850,6 +1046,12 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -934,8 +1136,9 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			} catch (SukuException e1) {
 				logger.log(Level.WARNING, "Add new dialog error", e1);
-				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e1.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 
 			}
 
@@ -1016,8 +1219,9 @@ public class NoticePane extends JPanel implements ActionListener,
 			try {
 				verifyUnitNotice();
 			} catch (SukuDateException se) {
-				JOptionPane.showMessageDialog(this, se.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, se.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -1027,8 +1231,9 @@ public class NoticePane extends JPanel implements ActionListener,
 				personView.closeMainPane(true);
 
 			} catch (SukuException e1) {
-				JOptionPane.showMessageDialog(this, e1.toString(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e1.toString(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				logger.log(Level.WARNING, "Closing notice", e1);
 
 				// e1.printStackTrace();
@@ -1045,8 +1250,9 @@ public class NoticePane extends JPanel implements ActionListener,
 			try {
 				verifyUnitNotice();
 			} catch (SukuDateException se) {
-				JOptionPane.showMessageDialog(this, se.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, se.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -1055,8 +1261,9 @@ public class NoticePane extends JPanel implements ActionListener,
 				personView.closeMainPane(false);
 
 			} catch (SukuException e1) {
-				JOptionPane.showMessageDialog(this, e1.toString(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e1.toString(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				logger.log(Level.WARNING, "Closing notice", e1);
 
 				// e1.printStackTrace();
@@ -1077,13 +1284,23 @@ public class NoticePane extends JPanel implements ActionListener,
 		}
 	}
 
+	/**
+	 * The Class MyImage.
+	 */
 	class MyImage extends JPanel {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
+
+		/** The img. */
 		Image img = null;
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+		 */
 		@Override
 		public void paintComponent(Graphics g) {
 			if (img != null) {
@@ -1094,6 +1311,13 @@ public class NoticePane extends JPanel implements ActionListener,
 		}
 	}
 
+	/**
+	 * Nv.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return the string
+	 */
 	String nv(String text) {
 		if (text == null)
 			return "";
@@ -1101,11 +1325,24 @@ public class NoticePane extends JPanel implements ActionListener,
 			return text;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentMoved(ComponentEvent arg0) {
 
@@ -1117,6 +1354,12 @@ public class NoticePane extends JPanel implements ActionListener,
 	private int rcol = lwidth + lcol + 5;
 	private int lbuttoncol = 240;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ComponentListener#componentResized(java.awt.event.
+	 * ComponentEvent)
+	 */
 	@Override
 	public void componentResized(ComponentEvent arg0) {
 		resizeNoticePane();
@@ -1133,7 +1376,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * resize the pane and check what is to be shown
+	 * resize the pane and check what is to be shown.
 	 */
 	public void resizeNoticePane() {
 		Dimension currSize = getSize();
@@ -1513,11 +1756,25 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent
+	 * )
+	 */
 	@Override
 	public void componentShown(ComponentEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event
+	 * .ListSelectionEvent)
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent lse) {
 		if (lse.getSource() == nameList) {
@@ -1532,6 +1789,11 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.Component#toString()
+	 */
 	@Override
 	public String toString() {
 		return notice.getTag();

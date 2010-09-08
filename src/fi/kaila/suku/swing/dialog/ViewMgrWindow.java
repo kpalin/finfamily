@@ -45,7 +45,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  * </p>
  * 
  * <p>
- * Views are held in two database tabels, the Views table that contains a list
+ * Views are held in two database tables, the Views table that contains a list
  * of the named views and their corresponding numeric ViewId's and table
  * viewunits with a list of persons (units) for each view. A person is
  * considered to be a member of a view if he/she exists (at least once) in the
@@ -55,7 +55,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  * <h2>Create a View</h2>
  * 
  * <p>
- * Write the name of the view to be created in the textfield and press cerate.
+ * Write the name of the view to be created in the text field and press create.
  * If a view with the name already exists an error is thrown.
  * </p>
  * 
@@ -89,6 +89,8 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 			.getName());
 
 	private static final long serialVersionUID = 1L;
+
+	/** The removes. */
 	ButtonGroup removes = null;
 	private Suku parent = null;
 	private JButton close = null;
@@ -97,6 +99,8 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 	private JButton removeView = null;
 	private JComboBox viewlist = null;
 	private JTextField newViewName = null;
+
+	/** The addes. */
 	ButtonGroup addes = null;
 	private JPanel addViewGroup = null;
 	private JButton addView = null;
@@ -115,8 +119,12 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 	private javax.swing.Timer t = null;
 
 	/**
+	 * Instantiates a new view mgr window.
+	 * 
 	 * @param parent
+	 *            the parent
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public ViewMgrWindow(Suku parent) throws SukuException {
 		super(parent, Resurses.getString("DIALOG_VIEW_MGR"), false);
@@ -174,9 +182,9 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		add(addViewGroup);
 		addViewGroup.setBounds(10, yy, 280, 300);
 
-		addViewGroup.setBorder(BorderFactory.createTitledBorder(BorderFactory
-				.createEtchedBorder(EtchedBorder.RAISED), Resurses
-				.getString("DIALOG_VIEW_ADD_CAPTION")));
+		addViewGroup.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
+				Resurses.getString("DIALOG_VIEW_ADD_CAPTION")));
 		addViewGroup.setLayout(null);
 		addes = new ButtonGroup();
 
@@ -187,22 +195,22 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		addes.add(formd);
 		formd.setBounds(10, 22, 240, 20);
 
-		addDescendant = new JRadioButton(Resurses
-				.getString("DIALOG_VIEW_ADD_DESC"));
+		addDescendant = new JRadioButton(
+				Resurses.getString("DIALOG_VIEW_ADD_DESC"));
 		addDescendant.setActionCommand("DESC");
 		addViewGroup.add(addDescendant);
 		addes.add(addDescendant);
 		addDescendant.setBounds(10, 44, 260, 20);
 
-		addDescAndSpouses = new JRadioButton(Resurses
-				.getString("DIALOG_VIEW_ADD_DESC_SPOUSES"));
+		addDescAndSpouses = new JRadioButton(
+				Resurses.getString("DIALOG_VIEW_ADD_DESC_SPOUSES"));
 		addDescAndSpouses.setActionCommand("DESC_SPOUSES");
 		addViewGroup.add(addDescAndSpouses);
 		addes.add(addDescAndSpouses);
 		addDescAndSpouses.setBounds(10, 66, 260, 20);
 
-		addAncestors = new JRadioButton(Resurses
-				.getString("DIALOG_VIEW_ADD_ANC"));
+		addAncestors = new JRadioButton(
+				Resurses.getString("DIALOG_VIEW_ADD_ANC"));
 		addAncestors.setActionCommand("ANC");
 		addViewGroup.add(addAncestors);
 		addes.add(addAncestors);
@@ -216,8 +224,8 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		addViewGroup.add(lbl);
 		lbl.setBounds(75, 226, 180, 20);
 
-		emptyView = new JCheckBox(Resurses
-				.getString("DIALOG_VIEW_ADD_EMPTY_VIEW"));
+		emptyView = new JCheckBox(
+				Resurses.getString("DIALOG_VIEW_ADD_EMPTY_VIEW"));
 		addViewGroup.add(emptyView);
 		emptyView.setBounds(10, 250, 260, 20);
 
@@ -234,14 +242,14 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		add(removeViewGroup);
 		removeViewGroup.setBounds(300, yy, 280, 300);
 		removeViewGroup.setBorder(BorderFactory.createTitledBorder(
-				BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Resurses
-						.getString("DIALOG_VIEW_REMOVE_CAPTION")));
+				BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
+				Resurses.getString("DIALOG_VIEW_REMOVE_CAPTION")));
 		removeViewGroup.setLayout(null);
 		removes = new ButtonGroup();
 
 		int rivi = 22;
-		formd = new JRadioButton(Resurses
-				.getString("DIALOG_VIEW_REMOVE_SELECTED"));
+		formd = new JRadioButton(
+				Resurses.getString("DIALOG_VIEW_REMOVE_SELECTED"));
 		formd.setActionCommand("SELECTED");
 		formd.setSelected(true);
 		removeViewGroup.add(formd);
@@ -296,6 +304,12 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 	}
 
+	/**
+	 * Inits the viewlist.
+	 * 
+	 * @throws SukuException
+	 *             the suku exception
+	 */
 	public void initViewlist() throws SukuException {
 		viewlist.removeAllItems();
 		viewlist.addItem("");
@@ -327,7 +341,8 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 					return;
 				selectedName.setText(Resurses
 						.getString("DIALOG_VIEW_SELECTED_COUNT")
-						+ " " + pids.length);
+						+ " "
+						+ pids.length);
 			} else {
 				SukuData resp = Suku.kontroller.getSukuData("cmd=view",
 						"action=get", "pid=" + pp.getPid());
@@ -342,21 +357,30 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 				}
 				selectedName.setText(Resurses
 						.getString("DIALOG_VIEW_SELECTED_NAME")
-						+ " " + pp.getAlfaName());
+						+ " "
+						+ pp.getAlfaName());
 				selectedViews.setText(Resurses
 						.getString("DIALOG_VIEW_SELECTED_VIEWS")
-						+ " " + sb.toString());
+						+ " "
+						+ sb.toString());
 
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "updateSelectStatus()", e);
-			JOptionPane.showMessageDialog(parent, Resurses
-					.getString("DIALOG_VIEW_ERROR")
-					+ " " + e.getMessage());
+			JOptionPane.showMessageDialog(
+					parent,
+					Resurses.getString("DIALOG_VIEW_ERROR") + " "
+							+ e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// System.out.println("CLOSE GROUP FOR " + e.toString());
@@ -374,9 +398,9 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 					SukuData resp = Suku.kontroller.getSukuData("cmd=view",
 							"action=removeview", "viewid=" + seleview);
 					if (resp.resu != null) {
-						JOptionPane.showMessageDialog(parent, Resurses
-								.getString("DIALOG_VIEW_ERROR")
-								+ " " + resp.resu);
+						JOptionPane.showMessageDialog(parent,
+								Resurses.getString("DIALOG_VIEW_ERROR") + " "
+										+ resp.resu);
 						return;
 					}
 					initViewlist();
@@ -384,9 +408,10 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 				}
 			} catch (SukuException e1) {
 				logger.log(Level.WARNING, "updateSelectStatus()", e1);
-				JOptionPane.showMessageDialog(parent, Resurses
-						.getString("DIALOG_VIEW_ERROR")
-						+ " " + e1.getMessage());
+				JOptionPane.showMessageDialog(
+						parent,
+						Resurses.getString("DIALOG_VIEW_ERROR") + " "
+								+ e1.getMessage());
 				return;
 			}
 		} else if (e.getSource() == addView) {
@@ -397,9 +422,9 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 					return;
 				for (int i = 0; i < viewnames.length; i++) {
 					if (viewname.equals(viewnames[i])) {
-						JOptionPane.showMessageDialog(parent, Resurses
-								.getString("DIALOG_VIEW_EXISTS")
-								+ " [" + viewname + "]");
+						JOptionPane.showMessageDialog(parent,
+								Resurses.getString("DIALOG_VIEW_EXISTS") + " ["
+										+ viewname + "]");
 						return;
 					}
 				}
@@ -407,9 +432,9 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 				SukuData resp = Suku.kontroller.getSukuData("cmd=view",
 						"action=addview", "viewname=" + viewname);
 				if (resp.resu != null) {
-					JOptionPane.showMessageDialog(parent, Resurses
-							.getString("DIALOG_VIEW_ERROR")
-							+ " " + resp.resu);
+					JOptionPane.showMessageDialog(parent,
+							Resurses.getString("DIALOG_VIEW_ERROR") + " "
+									+ resp.resu);
 					return;
 				}
 				newViewName.setText("");
@@ -418,17 +443,18 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 			} catch (SukuException e1) {
 				logger.log(Level.WARNING, "updateSelectStatus()", e1);
-				JOptionPane.showMessageDialog(parent, Resurses
-						.getString("DIALOG_VIEW_ERROR")
-						+ " " + e1.getMessage());
+				JOptionPane.showMessageDialog(
+						parent,
+						Resurses.getString("DIALOG_VIEW_ERROR") + " "
+								+ e1.getMessage());
 				return;
 			}
 		} else if (e.getSource() == remove) {
 			int idx = viewlist.getSelectedIndex();
 
 			if (idx <= 0) {
-				JOptionPane.showMessageDialog(parent, Resurses
-						.getString("DIALOG_VIEW_NOTSELECTED"));
+				JOptionPane.showMessageDialog(parent,
+						Resurses.getString("DIALOG_VIEW_NOTSELECTED"));
 				return;
 			}
 			int seleview = viewids[idx];

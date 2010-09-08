@@ -20,6 +20,16 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
 
+/**
+ * The listener interface for receiving relativePopup events. The class that is
+ * interested in processing a relativePopup event implements this interface, and
+ * the object created with that class is registered with a component using the
+ * component's <code>addRelativePopupListener<code> method. When
+ * the relativePopup event occurs, that object's appropriate
+ * method is invoked.
+ * 
+ * @see RelativePopupEvent
+ */
 class RelativePopupListener extends MouseAdapter implements ActionListener {
 
 	/**
@@ -28,12 +38,16 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 	private RelativesPane relativesPane;
 
 	/**
+	 * Instantiates a new relative popup listener.
+	 * 
 	 * @param relativesPane
+	 *            the relatives pane
 	 */
 	RelativePopupListener(RelativesPane relativesPane) {
 		this.relativesPane = relativesPane;
 	}
 
+	/** The logger. */
 	static Logger logger = Logger.getLogger(RelativePopupListener.class
 			.getName());
 
@@ -43,6 +57,12 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 	private int pasteAtRow = -1;
 	private static Relation showRela = null;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent a) {
 
@@ -85,8 +105,8 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 		} catch (SukuException e) {
 			logger.log(Level.WARNING, "Opening person "
 					+ relativesPane.pop.getMousePerson().getAlfaName(), e);
-			JOptionPane.showMessageDialog(this.relativesPane.personView, e
-					.getMessage(), Resurses.getString(Resurses.SUKU),
+			JOptionPane.showMessageDialog(this.relativesPane.personView,
+					e.getMessage(), Resurses.getString(Resurses.SUKU),
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -138,10 +158,20 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
+	 */
 	public void mousePressed(MouseEvent e) {
 		// maybeShowPopup(e);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
+	 */
 	public void mouseReleased(MouseEvent e) {
 		maybeShowPopup(e);
 	}
@@ -247,7 +277,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 			}
 		} else if (e.getSource() == this.relativesPane.subject) {
 
-			showNewPerson = null; // 
+			showNewPerson = null; //
 			asRelative = Resurses.getString("MENU_PASTE_ASSUBJ");
 			this.relativesPane.pop.setMousePerson(new PersonShortData(
 					relativesPane.longPers));

@@ -28,11 +28,9 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.PlaceLocationData;
 
 /**
- * 
- * Shows world map from OpenStreet maps service with locations of relatives
+ * Shows world map from OpenStreet maps service with locations of relatives.
  * 
  * @author halonmi
- * 
  */
 public class WorldMap extends JFrame implements ActionListener,
 		SukuMapInterface {
@@ -45,13 +43,17 @@ public class WorldMap extends JFrame implements ActionListener,
 	private JXMapKit map;
 	private Waypoint centerWaypoint;
 
+	/** The current places. */
 	JComboBox currentPlaces;
+
+	/** The missing places list. */
 	JTextArea missingPlacesList;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param parent
+	 *            the parent
 	 */
 	public WorldMap(ISuku parent) {
 		this.parent = parent;
@@ -157,9 +159,10 @@ public class WorldMap extends JFrame implements ActionListener,
 	private PlaceLocationData[] places = null;
 
 	/**
-	 * display map with listed places
+	 * display map with listed places.
 	 * 
 	 * @param places
+	 *            the places
 	 */
 	public void displayMap(PlaceLocationData[] places) {
 		this.places = places;

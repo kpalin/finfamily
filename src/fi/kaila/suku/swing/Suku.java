@@ -82,12 +82,12 @@ import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
+import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.dialog.SelectSchema;
 import fi.kaila.suku.swing.dialog.SettingsDialog;
 import fi.kaila.suku.swing.dialog.SukuPad;
 import fi.kaila.suku.swing.dialog.ToolsDialog;
 import fi.kaila.suku.swing.dialog.ViewMgrWindow;
-import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.panel.PersonView;
 import fi.kaila.suku.swing.panel.SukuTabPane;
 import fi.kaila.suku.swing.util.SukuPopupMenu;
@@ -245,6 +245,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private static final int maxNeedle = 32;
 	private int isConnected = 0; // 0 = disconnected, 1 = connect to non suku, 2
 	// = connect to suku
+	/** The is exiting. */
 	boolean isExiting = false;
 	private String databaseName = null;
 	private PopupListener popupListener;
@@ -269,21 +270,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private String os = "web";
 
-	/**
-	 * A static variable that contains the Suku kontroller in use
-	 */
+	/** A static variable that contains the Suku kontroller in use. */
 	public static SukuKontroller kontroller = null;
 
-	/**
-	 * During connect to database the database version is stored here
-	 */
+	/** During connect to database the database version is stored here. */
 	public static String postServerVersion = null;
 
 	private static String[] repoLangList = null;
 
-	/**
-	 * A "clipboard" location where a person can be copied to
-	 */
+	/** A "clipboard" location where a person can be copied to. */
 	public static Object sukuObject = null;
 	private static SearchCriteria crit = null;
 	private int activePersonPid = 0;
@@ -291,9 +286,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	/**
 	 * FinFamily main program entry point when used as standard Swing
-	 * application
+	 * application.
 	 * 
 	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
 
@@ -821,7 +817,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	/**
 	 * Report languages is a two dimensional array with 0 = lancode and 1 =
-	 * langname
+	 * langname.
 	 * 
 	 * @return count of languages available
 	 */
@@ -832,7 +828,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * Report languages is a two dimensional array with
+	 * Report languages is a two dimensional array with.
 	 * 
 	 * @param idx
 	 *            index into report language list
@@ -850,9 +846,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * Get the index into the report language list for specified language
+	 * Get the index into the report language list for specified language.
 	 * 
 	 * @param langCode
+	 *            the lang code
 	 * @return index to language list
 	 */
 	public static int getRepoLanguageIndex(String langCode) {
@@ -865,7 +862,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * get absolute rectangle of current database window
+	 * get absolute rectangle of current database window.
 	 * 
 	 * @return the Rectangle in absolute coordinates
 	 */
@@ -1003,6 +1000,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
+	/**
+	 * Convert to view.
+	 * 
+	 * @param viewIdx
+	 *            the view idx
+	 * @return the int
+	 */
 	public int convertToView(int viewIdx) {
 		return table.convertColumnIndexToView(viewIdx);
 	}
@@ -1053,12 +1057,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
+	 * Gets the kontroller.
+	 * 
 	 * @return the kontroller instance
 	 */
 	public static SukuKontroller getKontroller() {
 		return kontroller;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.Frame#setTitle(java.lang.String)
+	 */
 	@Override
 	public void setTitle(String title) {
 		SukuData dat;
@@ -1102,6 +1113,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
+	/**
+	 * Make navigation button.
+	 * 
+	 * @param imageName
+	 *            the image name
+	 * @param selectedName
+	 *            the selected name
+	 * @param actionCommand
+	 *            the action command
+	 * @param toolTipText
+	 *            the tool tip text
+	 * @param altText
+	 *            the alt text
+	 * @return the j button
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	protected JButton makeNavigationButton(String imageName,
 			String selectedName, String actionCommand, String toolTipText,
 			String altText) throws IOException {
@@ -1171,6 +1199,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return button;
 	}
 
+	/**
+	 * Make navigation button.
+	 * 
+	 * @param imageName
+	 *            the image name
+	 * @param actionCommand
+	 *            the action command
+	 * @param toolTipText
+	 *            the tool tip text
+	 * @param altText
+	 *            the alt text
+	 * @return the j button
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	protected JButton makeNavigationButton(String imageName,
 			String actionCommand, String toolTipText, String altText)
 			throws IOException {
@@ -1384,6 +1427,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -2174,7 +2223,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * The toolbox button that defines if Note field is to be visible
+	 * The toolbox button that defines if Note field is to be visible.
 	 * 
 	 * @return true if button is depressed
 	 */
@@ -2183,7 +2232,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * The toolbox button that defines if Address field is to be visible
+	 * The toolbox button that defines if Address field is to be visible.
 	 * 
 	 * @return true if button is depressed
 	 */
@@ -2193,7 +2242,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	/**
 	 * The toolbox button that defines if village, farm and Croft fields are to
-	 * be visible
+	 * be visible.
 	 * 
 	 * @return true if button is depressed
 	 */
@@ -2202,7 +2251,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * The toolbox button that defines if Image field is to be visible
+	 * The toolbox button that defines if Image field is to be visible.
 	 * 
 	 * @return true if button is depressed
 	 */
@@ -2211,7 +2260,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * The toolbox button that defines if Notices are to be visible
+	 * The toolbox button that defines if Notices are to be visible.
 	 * 
 	 * @return true if button is depressed
 	 */
@@ -2222,7 +2271,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * The toolbox button that defines if Private text field is to be visible
+	 * The toolbox button that defines if Private text field is to be visible.
 	 * 
 	 * @return true if button is depressed
 	 */
@@ -2230,6 +2279,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return tPrivateButton.isSelected();
 	}
 
+	/**
+	 * Creates the report.
+	 * 
+	 * @param pers
+	 *            the pers
+	 */
 	public void createReport(PersonShortData pers) {
 		ReportWorkerDialog dlg = new ReportWorkerDialog(this, kontroller, pers);
 		dlg.setVisible(true);
@@ -2262,9 +2317,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	/**
 	 * Whenever a PersonView is opened this stores the activePerson pid for use
-	 * by Subject button
+	 * by Subject button.
 	 * 
 	 * @param pid
+	 *            the new active person
 	 */
 	public void setActivePerson(int pid) {
 		this.activePersonPid = pid;
@@ -2272,8 +2328,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * 
-	 * gets from db view the selected persons name if one person is selected
+	 * gets from db view the selected persons name if one person is selected.
 	 * 
 	 * @return the selected name if only one row is selected
 	 */
@@ -2299,10 +2354,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * updates group id for person on database window
+	 * updates group id for person on database window.
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @param groupId
+	 *            the group id
 	 */
 	public void updateDbGroup(int pid, String groupId) {
 		PersonShortData p = tableMap.get(pid);
@@ -2312,7 +2369,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * Refresh the DBView with updated data
+	 * Refresh the DBView with updated data.
 	 */
 	public void refreshDbView() {
 		table.updateUI();
@@ -2320,7 +2377,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * Get an array of pid's of the selected rows
+	 * Get an array of pid's of the selected rows.
 	 * 
 	 * @return an int[] array of selected pid's
 	 */
@@ -2482,7 +2539,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private PersonShortData[] databaseWindowPersons;
 
 	/**
-	 * <h1>Database window access</h1>
+	 * <h1>Database window access</h1>.
 	 * 
 	 * @return number of rows in databasewindow
 	 */
@@ -2499,6 +2556,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * PersonShortData
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @return the PersonShortData of the window on row
 	 */
 	public PersonShortData getDatbasePerson(int idx) {
@@ -2667,7 +2725,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * Update database window with data for person
 	 * 
 	 * @param p
+	 *            the p
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public void updatePerson(PersonShortData p) throws SukuException {
 
@@ -2733,9 +2793,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * get PersonShortData from database window for person pid (pid = person
 	 * identification number integer database specific identifier
 	 * 
-	 * 
-	 * 
 	 * @param pid
+	 *            the pid
 	 * @return PersonShortData instance for requested person
 	 */
 	public PersonShortData getPerson(int pid) {
@@ -2952,7 +3011,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
@@ -2961,7 +3023,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
@@ -2970,7 +3035,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * recalculates sizes
+	 * recalculates sizes.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void componentResized(ComponentEvent e) {
@@ -2979,7 +3047,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
@@ -2987,7 +3058,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void menuCanceled(MenuEvent e) {
@@ -2995,7 +3069,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void menuDeselected(MenuEvent e) {
@@ -3003,7 +3080,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void menuSelected(MenuEvent e) {
@@ -3045,8 +3125,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * Enables/disables the add notice button
-	 * 
+	 * Enables/disables the add notice button.
 	 */
 	public void showAddNoticeButton() {
 
@@ -3058,7 +3137,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * mouse clicked on database window
+	 * mouse clicked on database window.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -3097,7 +3179,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
@@ -3106,7 +3191,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
@@ -3115,7 +3203,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -3123,7 +3214,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
@@ -3149,7 +3243,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -3157,7 +3254,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -3167,7 +3267,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -3176,7 +3279,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param arg0
+	 *            the arg0
 	 */
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
@@ -3184,14 +3290,20 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * does nothing
+	 * does nothing.
+	 * 
+	 * @param e
+	 *            the e
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 	}
 
 	/**
-	 * release map window
+	 * release map window.
+	 * 
+	 * @param me
+	 *            the me
 	 */
 	@Override
 	public void SukuFormClosing(JFrame me) {
@@ -3200,7 +3312,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * release admin window
+	 * release admin window.
+	 * 
+	 * @param me
+	 *            the me
 	 */
 	@Override
 	public void AdminFormClosing(JFrame me) {
@@ -3209,7 +3324,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	/**
-	 * release hiski window
+	 * release hiski window.
 	 */
 	@Override
 	public void HiskiFormClosing() {
@@ -3217,14 +3332,36 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
+	/**
+	 * The listener interface for receiving popup events. The class that is
+	 * interested in processing a popup event implements this interface, and the
+	 * object created with that class is registered with a component using the
+	 * component's <code>addPopupListener<code> method. When
+	 * the popup event occurs, that object's appropriate
+	 * method is invoked.
+	 * 
+	 * @see PopupEvent
+	 */
 	class PopupListener extends MouseAdapter implements ActionListener {
 
 		private SukuRow activeRow = null;
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
+		 */
 		public void mousePressed(MouseEvent e) {
 			maybeShowPopup(e);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
+		 */
 		public void mouseReleased(MouseEvent e) {
 			maybeShowPopup(e);
 		}
@@ -3247,6 +3384,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent
+		 * )
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
@@ -3360,10 +3504,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	/**
 	 * This is used to align columns in database view to the right dated,
-	 * numbers etc
+	 * numbers etc.
 	 * 
 	 * @author fikaakail
-	 * 
 	 */
 	class RightTableCellRenderer extends DefaultTableCellRenderer {
 		/**
@@ -3371,36 +3514,70 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		 */
 		private static final long serialVersionUID = 1L;
 
+		/**
+		 * Instantiates a new right table cell renderer.
+		 */
 		protected RightTableCellRenderer() {
 			setHorizontalAlignment(JLabel.RIGHT);
 		}
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.datatransfer.ClipboardOwner#lostOwnership(java.awt.datatransfer
+	 * .Clipboard, java.awt.datatransfer.Transferable)
+	 */
 	@Override
 	public void lostOwnership(Clipboard arg0, Transferable arg1) {
 		// do nothing
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.swing.ISuku#GroupWindowClosing()
+	 */
 	@Override
 	public void GroupWindowClosing() {
 		groupWin = null;
 
 	}
 
+	/**
+	 * The Class SukuTransferHandler.
+	 */
 	class SukuTransferHandler extends TransferHandler {
 
 		private static final long serialVersionUID = 1L;
 
+		/**
+		 * Instantiates a new suku transfer handler.
+		 */
 		SukuTransferHandler() {
 			super();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.TransferHandler#getSourceActions(javax.swing.JComponent)
+		 */
 		public int getSourceActions(JComponent c) {
 			return COPY;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.TransferHandler#createTransferable(javax.swing.JComponent
+		 * )
+		 */
 		protected Transferable createTransferable(JComponent c) {
 			if (c instanceof JTable) {
 				int midx = personView.getMainPaneIndex();
@@ -3419,22 +3596,44 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.TransferHandler#exportDone(javax.swing.JComponent,
+		 * java.awt.datatransfer.Transferable, int)
+		 */
 		protected void exportDone(JComponent c, Transferable t, int action) {
 			// nothing needs to be done here
 		}
 
 	}
 
+	/**
+	 * The Class DbTable.
+	 */
 	class DbTable extends JTable {
 
 		private static final long serialVersionUID = 1L;
+
+		/** The model. */
 		SukuModel model = null;
 
+		/**
+		 * Instantiates a new db table.
+		 * 
+		 * @param model
+		 *            the model
+		 */
 		DbTable(SukuModel model) {
 			super(model);
 			this.model = model;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.JTable#convertColumnIndexToView(int)
+		 */
 		@Override
 		public int convertColumnIndexToView(int modelColumnIndex) {
 			int ii = crit.getViewIndex(modelColumnIndex);
@@ -3443,6 +3642,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			return ii;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.JTable#convertColumnIndexToModel(int)
+		 */
 		@Override
 		public int convertColumnIndexToModel(int viewColumnIndex) {
 			int ii = crit.getModelIndex(viewColumnIndex);

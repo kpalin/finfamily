@@ -17,6 +17,8 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
+ * The Class AboutDialog.
+ * 
  * @author FIKAAKAIL
  * 
  *         About box for Suku
@@ -32,7 +34,10 @@ public class AboutDialog extends JDialog implements ActionListener {
 	private JTextArea aboutArea;
 
 	/**
+	 * Instantiates a new about dialog.
+	 * 
 	 * @param owner
+	 *            the owner
 	 */
 	public AboutDialog(JFrame owner) {
 		super(owner, Resurses.getString("ABOUT"));
@@ -109,6 +114,12 @@ public class AboutDialog extends JDialog implements ActionListener {
 		getRootPane().setDefaultButton(ok);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 		this.setVisible(false);
 
