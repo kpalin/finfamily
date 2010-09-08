@@ -105,7 +105,7 @@ public class SukuTypesTable extends JTable {
 			// if (idx < typesModel.getTypesData().length) {
 			// return (String) typesModel.getTypesData()[idx][5];
 			// }
-			return (String) model.getTypesValue(idx);
+			return model.getTypesValue(idx);
 		}
 		return null;
 	}
@@ -141,7 +141,7 @@ public class SukuTypesTable extends JTable {
 				return txt;
 			}
 
-			return (String) model.getTypesValues()[idx];
+			return model.getTypesValues()[idx];
 		}
 		return null;
 	}
