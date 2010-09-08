@@ -539,7 +539,7 @@ public class XmlReport implements ReportInterface {
 	private String convertTo64(ImageText it) {
 
 		if (it == null) {
-			logger.warning("Image is null" + it);
+			logger.warning("Image is null");
 			return "";
 		}
 		if (it.getData() == null) {
