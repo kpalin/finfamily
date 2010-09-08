@@ -13,11 +13,9 @@ import javax.swing.JTextField;
 import fi.kaila.suku.util.Resurses;
 
 /**
- * 
- * The descendant part of report settings
+ * The descendant part of report settings.
  * 
  * @author Kalle
- * 
  */
 public class DescendantPane extends JPanel {
 
@@ -33,7 +31,7 @@ public class DescendantPane extends JPanel {
 	private ButtonGroup tableOrder = null;
 
 	/**
-	 * setup pane
+	 * setup pane.
 	 */
 	public DescendantPane() {
 
@@ -136,8 +134,8 @@ public class DescendantPane extends JPanel {
 		pane.setBounds(rtypx, rtypy, 250, 130);
 
 		tableOrder = new ButtonGroup();
-		JRadioButton radio = new JRadioButton(Resurses
-				.getString("REPORT.DESC.ORDER.TABLE"));
+		JRadioButton radio = new JRadioButton(
+				Resurses.getString("REPORT.DESC.ORDER.TABLE"));
 		tableOrder.add(radio);
 		radio.setActionCommand(ReportWorkerDialog.SET_ORDER_TAB);
 		radio.setSelected(true);
@@ -150,13 +148,13 @@ public class DescendantPane extends JPanel {
 		tableOrder.add(radio);
 		radio.setActionCommand(ReportWorkerDialog.SET_ORDER_FEMALE);
 		pane.add(radio);
-		radio = new JRadioButton(Resurses
-				.getString("REPORT.DESC.ORDER.MALEFIRST"));
+		radio = new JRadioButton(
+				Resurses.getString("REPORT.DESC.ORDER.MALEFIRST"));
 		tableOrder.add(radio);
 		radio.setActionCommand(ReportWorkerDialog.SET_ORDER_FIRSTMALE);
 		pane.add(radio);
-		radio = new JRadioButton(Resurses
-				.getString("REPORT.DESC.ORDER.REGISTER"));
+		radio = new JRadioButton(
+				Resurses.getString("REPORT.DESC.ORDER.REGISTER"));
 		tableOrder.add(radio);
 		radio.setActionCommand(ReportWorkerDialog.SET_ORDER_REG);
 		pane.add(radio);
@@ -172,6 +170,8 @@ public class DescendantPane extends JPanel {
 	}
 
 	/**
+	 * Gets the generations.
+	 * 
 	 * @return no of generations
 	 */
 	public int getGenerations() {
@@ -187,6 +187,7 @@ public class DescendantPane extends JPanel {
 	}
 
 	/**
+	 * Gets the start table.
 	 * 
 	 * @return start table number
 	 */
@@ -202,6 +203,8 @@ public class DescendantPane extends JPanel {
 	}
 
 	/**
+	 * Gets the spouse ancestors.
+	 * 
 	 * @return no of spouse ancestor generations
 	 */
 	public int getSpouseAncestors() {
@@ -217,6 +220,8 @@ public class DescendantPane extends JPanel {
 	}
 
 	/**
+	 * Gets the child ancestors.
+	 * 
 	 * @return no of child ancestor generations
 	 */
 	public int getChildAncestors() {
@@ -232,6 +237,8 @@ public class DescendantPane extends JPanel {
 	}
 
 	/**
+	 * Gets the table order.
+	 * 
 	 * @return buttongroup for tableorder
 	 */
 	public ButtonGroup getTableOrder() {
@@ -239,9 +246,10 @@ public class DescendantPane extends JPanel {
 	}
 
 	/**
-	 * set generations
+	 * set generations.
 	 * 
 	 * @param string
+	 *            the new generations
 	 */
 	void setGenerations(String string) {
 		generations.setText(string);
@@ -249,34 +257,52 @@ public class DescendantPane extends JPanel {
 	}
 
 	/**
-	 * set start table number
+	 * set start table number.
 	 * 
 	 * @param tab
+	 *            the new start table
 	 */
 	void setStartTable(String tab) {
 		startTable.setText(tab);
 	}
 
 	/**
+	 * Sets the spouse ancestors.
+	 * 
 	 * @param string
+	 *            the new spouse ancestors
 	 */
 	void setSpouseAncestors(String string) {
 		spouseAncestors.setText(string);
 
 	}
 
+	/**
+	 * Sets the child ancestors.
+	 * 
+	 * @param string
+	 *            the new child ancestors
+	 */
 	void setChildAncestors(String string) {
 		childAncestors.setText(string);
 
 	}
 
 	/**
+	 * Gets the adopted.
+	 * 
 	 * @return treu to show also adoped
 	 */
 	public boolean getAdopted() {
 		return adopted.isSelected();
 	}
 
+	/**
+	 * Sets the adopted.
+	 * 
+	 * @param value
+	 *            the new adopted
+	 */
 	void setAdopted(boolean value) {
 		adopted.setSelected(value);
 

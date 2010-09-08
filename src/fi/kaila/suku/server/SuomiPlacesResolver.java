@@ -9,20 +9,22 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PlaceLocationData;
 
 /**
- * Class used by SuomiMap view
+ * Class used by SuomiMap view.
  * 
  * @author Kalle
- * 
  */
 public class SuomiPlacesResolver {
 
 	/**
-	 * Server class to fetch addresses to request list
+	 * Server class to fetch addresses to request list.
 	 * 
 	 * @param con
+	 *            the con
 	 * @param request
-	 * @return array of places with coordimates
+	 *            the request
+	 * @return array of places with coordinates
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public static PlaceLocationData[] resolveSuomiPlaces(Connection con,
 			PlaceLocationData[] request) throws SukuException {
@@ -35,13 +37,10 @@ public class SuomiPlacesResolver {
 		PlaceLocationData[] response = request;
 
 		StringBuilder sql = new StringBuilder();
-		sql
-				.append("select location[0],location[1],countrycode from placelocations where placename || ';' || countrycode  in ( ");
-		sql
-				.append("select placename || ';' || countrycode from placeothernames where othername = ?) ");
+		sql.append("select location[0],location[1],countrycode from placelocations where placename || ';' || countrycode  in ( ");
+		sql.append("select placename || ';' || countrycode from placeothernames where othername = ?) ");
 		sql.append("union ");
-		sql
-				.append("select location[0],location[1],countrycode from placelocations where placename = ? ");
+		sql.append("select location[0],location[1],countrycode from placelocations where placename = ? ");
 
 		PreparedStatement pstm;
 		String countryCode = null;

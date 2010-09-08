@@ -15,11 +15,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 /**
  * <h1>Group Server Utility</h1>
  * 
- * Group removes and additions to / from db are done here
- * 
+ * Group removes and additions to / from db are done here.
  * 
  * @author Kalle
- * 
  */
 public class GroupUtil {
 
@@ -28,9 +26,10 @@ public class GroupUtil {
 	private Connection con = null;
 
 	/**
-	 * Constructor for this server class
+	 * Constructor for this server class.
 	 * 
 	 * @param con
+	 *            the con
 	 */
 	public GroupUtil(Connection con) {
 		this.con = con;
@@ -38,10 +37,11 @@ public class GroupUtil {
 	}
 
 	/**
-	 * Remove groupid from all persons in database
+	 * Remove groupid from all persons in database.
 	 * 
 	 * @return in SukuData as resu the # of removed groupid's
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData removeAllGroups() throws SukuException {
 		SukuData resp = new SukuData();
@@ -78,12 +78,13 @@ public class GroupUtil {
 	}
 
 	/**
-	 * 
-	 * Removes group from persons in array
+	 * Removes group from persons in array.
 	 * 
 	 * @param pids
+	 *            the pids
 	 * @return response as a SukuData object
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData removeSelectedGroups(int[] pids) throws SukuException {
 		SukuData resp = new SukuData();
@@ -118,11 +119,13 @@ public class GroupUtil {
 	}
 
 	/**
-	 * remove group from persons in view
+	 * remove group from persons in view.
 	 * 
 	 * @param viewid
+	 *            the viewid
 	 * @return response as SukuData object
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData removeViewGroups(int viewid) throws SukuException {
 		SukuData resp = new SukuData();
@@ -168,9 +171,13 @@ public class GroupUtil {
 	}
 
 	/**
+	 * Removes the group.
+	 * 
 	 * @param group
+	 *            the group
 	 * @return response as SukuData object
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData removeGroup(String group) throws SukuException {
 		SukuData resp = new SukuData();
@@ -212,12 +219,15 @@ public class GroupUtil {
 	}
 
 	/**
-	 * Add group to listed persons if group is null
+	 * Add group to listed persons if group is null.
 	 * 
 	 * @param pidArray
+	 *            the pid array
 	 * @param group
+	 *            the group
 	 * @return result in a SukuData object
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData addSelectedGroups(int[] pidArray, String group)
 			throws SukuException {
@@ -253,12 +263,15 @@ public class GroupUtil {
 	}
 
 	/**
-	 * Add group to persons in view if group is null
+	 * Add group to persons in view if group is null.
 	 * 
 	 * @param vid
+	 *            the vid
 	 * @param group
+	 *            the group
 	 * @return result as SukuData object
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData addViewGroups(int vid, String group) throws SukuException {
 		SukuData resp = new SukuData();
@@ -304,14 +317,19 @@ public class GroupUtil {
 	}
 
 	/**
-	 * add group to persons and his/her descendants
+	 * add group to persons and his/her descendants.
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @param group
+	 *            the group
 	 * @param gent
+	 *            the gent
 	 * @param includeSpouses
+	 *            the include spouses
 	 * @return as SukuData object
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData addDescendantsToGroup(int pid, String group, String gent,
 			boolean includeSpouses) throws SukuException {
@@ -404,14 +422,17 @@ public class GroupUtil {
 	}
 
 	/**
-	 * 
-	 * Add group to person and his ancestors
+	 * Add group to person and his ancestors.
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @param group
+	 *            the group
 	 * @param gent
+	 *            the gent
 	 * @return as SukuData object
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData addAncestorsToGroup(int pid, String group, String gent)
 			throws SukuException {

@@ -6,48 +6,60 @@ import java.util.Vector;
 
 /**
  * Base class for styles in Suku11 reports A BodyText style element consists of
- * a vector of Text elements
+ * a vector of Text elements.
  * 
  * @author Kalle
- * 
  */
 public class BodyText {
 
-	/**
-	 * Align left value for paraAlignment
-	 */
+	/** Align left value for paraAlignment. */
 	public static final int ALIGN_LEFT = 0;
-	/**
-	 * Align center value for paraAlignment
-	 */
+
+	/** Align center value for paraAlignment. */
 	public static final int ALIGN_CENTER = 1;
 
-	/**
-	 * Serif Font value for fontName
-	 */
+	/** Serif Font value for fontName. */
 	public static final String FONT_SERIF = "Times new Roman";
-	/**
-	 * SansSerif Font value for fontName
-	 */
+
+	/** SansSerif Font value for fontName. */
 	public static final String FONT_SANS_SERIF = "Arial";
 
+	/** The font name. */
 	protected String fontName = FONT_SANS_SERIF;
+
+	/** The font size. */
 	protected int fontSize = 10;
+
+	/** The font style. */
 	protected int fontStyle = Font.PLAIN;
 	// protected boolean fontUnderline=false;
 
+	/** The para alignment. */
 	protected int paraAlignment = ALIGN_LEFT;
+
+	/** The para indent left. */
 	protected float paraIndentLeft = 6; // left alignment in pt
+
+	/** The para spacing before. */
 	protected float paraSpacingBefore = 0; // spacing before in pt
+
+	/** The para spacing after. */
 	protected float paraSpacingAfter = 6; // spacing after in pt
 
+	/** The image. */
 	protected Image image = null;
+
+	/** The imagedata. */
 	protected byte[] imagedata = null;
+
+	/** The image name. */
 	protected String imageName = null;
 
 	private Vector<Text> txt = new Vector<Text>();
 
 	/**
+	 * Gets the font name.
+	 * 
 	 * @return fontname for this style
 	 */
 	public String getFontName() {
@@ -55,7 +67,7 @@ public class BodyText {
 	}
 
 	/**
-	 * font size in pt (1/72) inch return fontSize
+	 * font size in pt (1/72) inch return fontSize.
 	 * 
 	 * @return fontsize for this style
 	 */
@@ -64,15 +76,17 @@ public class BodyText {
 	}
 
 	/**
-	 * set (different) font size
+	 * set (different) font size.
 	 * 
 	 * @param fontSize
+	 *            the new font size
 	 */
 	public void setFontSize(int fontSize) {
 		this.fontSize = fontSize;
 	}
 
 	/**
+	 * Gets the image.
 	 * 
 	 * @return the image
 	 */
@@ -81,14 +95,14 @@ public class BodyText {
 	}
 
 	/**
-	 * reset container
+	 * reset container.
 	 */
 	public void reset() {
 		txt = new Vector<Text>();
 	}
 
 	/**
-	 * alignment of paragraph ALIGN_LEFT=0 ALIGN_CENTER=1
+	 * alignment of paragraph ALIGN_LEFT=0 ALIGN_CENTER=1.
 	 * 
 	 * @return paraAlignment
 	 */
@@ -97,7 +111,7 @@ public class BodyText {
 	}
 
 	/**
-	 * Left ident of paragraph in cm
+	 * Left ident of paragraph in cm.
 	 * 
 	 * @return paraIndentLeft
 	 */
@@ -106,7 +120,7 @@ public class BodyText {
 	}
 
 	/**
-	 * Paragraph spacing in pt (1/72 inch)
+	 * Paragraph spacing in pt (1/72 inch).
 	 * 
 	 * @return paraSpacingBefore
 	 */
@@ -115,7 +129,7 @@ public class BodyText {
 	}
 
 	/**
-	 * Paragraph spacing in pt (1/72 inch)
+	 * Paragraph spacing in pt (1/72 inch).
 	 * 
 	 * @return paraSpacingAfter
 	 */
@@ -124,9 +138,10 @@ public class BodyText {
 	}
 
 	/**
-	 * add text string to style element
+	 * add text string to style element.
 	 * 
 	 * @param text
+	 *            the text
 	 */
 	public void addText(String text) {
 		Text t = new Text(text);
@@ -134,11 +149,14 @@ public class BodyText {
 	}
 
 	/**
-	 * add text string with formatting options to style element
+	 * add text string with formatting options to style element.
 	 * 
 	 * @param text
+	 *            the text
 	 * @param isBold
+	 *            the is bold
 	 * @param isUnderline
+	 *            the is underline
 	 */
 	public void addText(String text, boolean isBold, boolean isUnderline) {
 		Text t = new Text(text);
@@ -148,12 +166,16 @@ public class BodyText {
 	}
 
 	/**
-	 * add text string with formatting options to style element
+	 * add text string with formatting options to style element.
 	 * 
 	 * @param text
+	 *            the text
 	 * @param isBold
+	 *            the is bold
 	 * @param isUnderline
+	 *            the is underline
 	 * @param isItalic
+	 *            the is italic
 	 */
 	public void addText(String text, boolean isBold, boolean isUnderline,
 			boolean isItalic) {
@@ -165,6 +187,7 @@ public class BodyText {
 	}
 
 	/**
+	 * Gets the count.
 	 * 
 	 * @return text size in style element
 	 */
@@ -173,8 +196,10 @@ public class BodyText {
 	}
 
 	/**
+	 * Gets the text.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @return text content of text element
 	 */
 	public String getText(int idx) {
@@ -183,8 +208,10 @@ public class BodyText {
 	}
 
 	/**
+	 * Checks if is bold.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @return true if the indexed text element is bold
 	 */
 	public boolean isBold(int idx) {
@@ -196,8 +223,10 @@ public class BodyText {
 	}
 
 	/**
+	 * Checks if is underline.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @return true if the indexed text elemet is underlined
 	 */
 	public boolean isUnderline(int idx) {
@@ -206,8 +235,10 @@ public class BodyText {
 	}
 
 	/**
+	 * Checks if is italic.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @return true if the indexed text elemet is underlined
 	 */
 	public boolean isItalic(int idx) {

@@ -5,15 +5,14 @@ import java.awt.Image;
 import fi.kaila.suku.util.Utils;
 
 /**
- * Images are implemented as this special styles
+ * Images are implemented as this special styles.
  * 
  * @author Kalle
- * 
  */
 public class ImageText extends BodyText {
 
 	/**
-	 * Style contains only an image with optional title
+	 * Style contains only an image with optional title.
 	 */
 	public ImageText() {
 		fontName = FONT_SERIF;
@@ -28,15 +27,22 @@ public class ImageText extends BodyText {
 	private String imageTitle = null;
 
 	/**
-	 * Set the image for reports
+	 * Set the image for reports.
 	 * 
 	 * @param img
+	 *            the img
 	 * @param data
+	 *            the data
 	 * @param width
+	 *            the width
 	 * @param height
+	 *            the height
 	 * @param name
+	 *            the name
 	 * @param title
+	 *            the title
 	 * @param tag
+	 *            the tag
 	 */
 	public void setImage(Image img, byte[] data, int width, int height,
 			String name, String title, String tag) {
@@ -51,6 +57,8 @@ public class ImageText extends BodyText {
 	}
 
 	/**
+	 * Gets the width.
+	 * 
 	 * @return the width
 	 */
 	public int getWidth() {
@@ -58,6 +66,8 @@ public class ImageText extends BodyText {
 	}
 
 	/**
+	 * Gets the data.
+	 * 
 	 * @return the data
 	 */
 	public byte[] getData() {
@@ -65,6 +75,8 @@ public class ImageText extends BodyText {
 	}
 
 	/**
+	 * Gets the height.
+	 * 
 	 * @return the height
 	 */
 	public int getHeight() {
@@ -72,6 +84,8 @@ public class ImageText extends BodyText {
 	}
 
 	/**
+	 * Gets the image name.
+	 * 
 	 * @return the imageName
 	 */
 	public String getImageName() {
@@ -79,6 +93,8 @@ public class ImageText extends BodyText {
 	}
 
 	/**
+	 * Gets the image title.
+	 * 
 	 * @return the imageTitle
 	 */
 	public String getImageTitle() {
@@ -86,12 +102,19 @@ public class ImageText extends BodyText {
 	}
 
 	/**
+	 * Checks if is person image.
+	 * 
 	 * @return the isPersonImage
 	 */
 	public boolean isPersonImage() {
 		return isPersonImage;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return imageName + ":" + imageTitle;

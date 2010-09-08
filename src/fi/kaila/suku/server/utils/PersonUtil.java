@@ -25,10 +25,9 @@ import fi.kaila.suku.util.pojo.UnitLanguage;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * Server class for update,insert and delete of person and relation data
+ * Server class for update,insert and delete of person and relation data.
  * 
  * @author Kalle
- * 
  */
 public class PersonUtil {
 
@@ -37,9 +36,10 @@ public class PersonUtil {
 	private Connection con = null;
 
 	/**
-	 * Initlaize with database conmnection
+	 * Initialize with database connection.
 	 * 
 	 * @param con
+	 *            the con
 	 */
 	public PersonUtil(Connection con) {
 		this.con = con;
@@ -47,9 +47,10 @@ public class PersonUtil {
 	}
 
 	/**
-	 * Update the person/relation data
+	 * Update the person/relation data.
 	 * 
 	 * @param req
+	 *            the req
 	 * @return result in resu field if failed
 	 */
 	public SukuData updatePerson(SukuData req) {
@@ -227,8 +228,8 @@ public class PersonUtil {
 								pst.setNull(28, Types.ARRAY);
 							} else {
 
-								Array xx = con.createArrayOf("varchar", n
-										.getRefNames());
+								Array xx = con.createArrayOf("varchar",
+										n.getRefNames());
 								pst.setArray(28, xx);
 
 							}
@@ -236,8 +237,8 @@ public class PersonUtil {
 								pst.setNull(29, Types.ARRAY);
 							} else {
 
-								Array xx = con.createArrayOf("varchar", n
-										.getRefPlaces());
+								Array xx = con.createArrayOf("varchar",
+										n.getRefPlaces());
 								pst.setArray(29, xx);
 
 							}
@@ -298,13 +299,11 @@ public class PersonUtil {
 									pst.setString(2, ll.getLangCode());
 									int lukuri = pst.executeUpdate();
 									if (lukuri != 1) {
-										logger
-												.warning("language deleted for pnid "
-														+ n.getPnid()
-														+ " ["
-														+ ll.getLangCode()
-														+ "] gave result "
-														+ lukuri);
+										logger.warning("language deleted for pnid "
+												+ n.getPnid()
+												+ " ["
+												+ ll.getLangCode()
+												+ "] gave result " + lukuri);
 									}
 								}
 							}
@@ -312,7 +311,7 @@ public class PersonUtil {
 							if (ll.isToBeUpdated()) {
 
 								if (ll.getPnid() == 0) {
-									//								
+									//
 									pst = con.prepareStatement(insLangSql);
 									pst.setInt(1, n.getPnid());
 									pst.setInt(2, pid);
@@ -325,13 +324,11 @@ public class PersonUtil {
 									pst.setString(9, ll.getMediaTitle());
 									int lukuri = pst.executeUpdate();
 									if (lukuri != 1) {
-										logger
-												.warning("language added for pnid "
-														+ n.getPnid()
-														+ " ["
-														+ ll.getLangCode()
-														+ "] gave result "
-														+ lukuri);
+										logger.warning("language added for pnid "
+												+ n.getPnid()
+												+ " ["
+												+ ll.getLangCode()
+												+ "] gave result " + lukuri);
 									}
 
 								} else {
@@ -579,8 +576,10 @@ public class PersonUtil {
 										newrel = null;
 										break;
 									} else {
-										if (newrel.getShortPerson()
-												.getBirtDate().compareTo(
+										if (newrel
+												.getShortPerson()
+												.getBirtDate()
+												.compareTo(
 														rfm.getShortPerson()
 																.getBirtDate()) < 0) {
 											ffvec.insertElementAt(newrel, j);
@@ -715,15 +714,15 @@ public class PersonUtil {
 											// +
 											updLang.setInt(1, rnid);
 											updLang.setInt(2, rid);
-											updLang.setString(3, rl
-													.getLangCode());
-											updLang.setString(4, rl
-													.getRelationType());
-											updLang.setString(5, rl
-													.getDescription());
+											updLang.setString(3,
+													rl.getLangCode());
+											updLang.setString(4,
+													rl.getRelationType());
+											updLang.setString(5,
+													rl.getDescription());
 											updLang.setString(6, rl.getPlace());
-											updLang.setString(7, rl
-													.getNoteText());
+											updLang.setString(7,
+													rl.getNoteText());
 
 											int rier = updLang.executeUpdate();
 											logger.fine("insert rl rnid: "
@@ -735,8 +734,8 @@ public class PersonUtil {
 											PreparedStatement updLang = con
 													.prepareStatement(delLangSql);
 											updLang.setInt(1, rnid);
-											updLang.setString(2, rl
-													.getLangCode());
+											updLang.setString(2,
+													rl.getLangCode());
 											int rder = updLang.executeUpdate();
 											logger.fine("delete rl rnid: "
 													+ rnid + "/"
@@ -747,16 +746,16 @@ public class PersonUtil {
 
 											PreparedStatement updLang = con
 													.prepareStatement(updLangSql);
-											updLang.setString(1, rl
-													.getRelationType());
-											updLang.setString(2, rl
-													.getDescription());
+											updLang.setString(1,
+													rl.getRelationType());
+											updLang.setString(2,
+													rl.getDescription());
 											updLang.setString(3, rl.getPlace());
-											updLang.setString(4, rl
-													.getNoteText());
+											updLang.setString(4,
+													rl.getNoteText());
 											updLang.setInt(5, rl.getRnid());
-											updLang.setString(6, rl
-													.getLangCode());
+											updLang.setString(6,
+													rl.getLangCode());
 											int rner = updLang.executeUpdate();
 											logger.fine("update rl for "
 													+ rl.getRnid() + "/"
@@ -776,7 +775,7 @@ public class PersonUtil {
 
 			//
 			// set the order still
-			// 
+			//
 			int childRow = 0;
 			int parentRow = 0;
 			int spouseRow = 0;
@@ -822,9 +821,10 @@ public class PersonUtil {
 	}
 
 	/**
-	 * delete all data for the person
+	 * delete all data for the person.
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @return status of delete operation in resu field if error
 	 */
 	public SukuData deletePerson(int pid) {
@@ -903,9 +903,12 @@ public class PersonUtil {
 	 * sukulaisuussuheet: relations[] sukujaksot: rellations[i].notices[]
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @param lang
+	 *            the lang
 	 * @return SukuData result
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 
 	public SukuData getFullPerson(int pid, String lang) throws SukuException {
@@ -1022,8 +1025,8 @@ public class PersonUtil {
 					tag = rs.getString(4);
 					relpids.add(bid);
 
-					rel = new Relation(rid, aid, bid, tag, rs.getInt(5), rs
-							.getTimestamp(6), rs.getTimestamp(7));
+					rel = new Relation(rid, aid, bid, tag, rs.getInt(5),
+							rs.getTimestamp(6), rs.getTimestamp(7));
 					rels.add(rel);
 					relmap.put(rid, rel);
 
@@ -1054,17 +1057,17 @@ public class PersonUtil {
 						relNotices = new Vector<RelationNotice>();
 					}
 
-					rnote = new RelationNotice(rs.getInt("rnid"), rid, rs
-							.getInt("surety"), rs.getString("tag"), rs
-							.getString("relationtype"), rs
-							.getString("description"), rs
-							.getString("dateprefix"), rs.getString("fromdate"),
-							rs.getString("todate"), rs.getString("place"), rs
-									.getString("notetext"), rs
-									.getString("sourcetext"), rs
-									.getString("privatetext"), rs
-									.getTimestamp("modified"), rs
-									.getTimestamp("createdate"));
+					rnote = new RelationNotice(rs.getInt("rnid"), rid,
+							rs.getInt("surety"), rs.getString("tag"),
+							rs.getString("relationtype"),
+							rs.getString("description"),
+							rs.getString("dateprefix"),
+							rs.getString("fromdate"), rs.getString("todate"),
+							rs.getString("place"), rs.getString("notetext"),
+							rs.getString("sourcetext"),
+							rs.getString("privatetext"),
+							rs.getTimestamp("modified"),
+							rs.getTimestamp("createdate"));
 					relNotices.add(rnote);
 				}
 
@@ -1115,9 +1118,9 @@ public class PersonUtil {
 							// if
 							// (pers.relations[i].getNotices()[j].getLanguages()
 							// != null){
-							//								
-							//								
-							//								
+							//
+							//
+							//
 							// }
 						}
 					}
@@ -1148,9 +1151,14 @@ public class PersonUtil {
 	}
 
 	/**
+	 * Insert gedcom relations.
+	 * 
 	 * @param husbandNumber
+	 *            the husband number
 	 * @param wifeNumber
+	 *            the wife number
 	 * @param relations
+	 *            the relations
 	 * @return result of insert,null if ok
 	 */
 	public String insertGedcomRelations(int husbandNumber, int wifeNumber,
@@ -1243,8 +1251,7 @@ public class PersonUtil {
 						int rnid = rn.getRnid();
 
 						stm = con.createStatement();
-						rs = stm
-								.executeQuery("select nextval('RelationNoticeSeq')");
+						rs = stm.executeQuery("select nextval('RelationNoticeSeq')");
 
 						if (rs.next()) {
 							rnid = rs.getInt(1);

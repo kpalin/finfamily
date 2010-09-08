@@ -14,16 +14,20 @@ import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 
+/**
+ * The Class GenGraphUtil.
+ */
 public class GenGraphUtil {
 
 	private static Logger logger = Logger.getLogger(ReportUtil.class.getName());
 
 	private Connection con = null;
 
+	/** The runner. */
 	ReportWorkerDialog runner = null;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param con
 	 *            connection instance to the PostgreSQL database
@@ -33,6 +37,17 @@ public class GenGraphUtil {
 		this.runner = ReportWorkerDialog.getRunner();
 	}
 
+	/**
+	 * Gets the gengraph data.
+	 * 
+	 * @param pid
+	 *            the pid
+	 * @param lang
+	 *            the lang
+	 * @return the gengraph data
+	 * @throws SukuException
+	 *             the suku exception
+	 */
 	public SukuData getGengraphData(int pid, String lang) throws SukuException {
 		SukuData fam = new SukuData();
 		Relation rela;

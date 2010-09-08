@@ -15,9 +15,11 @@ import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
+ * The Class QueryUtil.
+ * 
  * @author Kalle
  * 
- *         Util class to do queries to the database
+ *         Utility class to do queries to the database
  */
 public class QueryUtil {
 
@@ -28,9 +30,10 @@ public class QueryUtil {
 	// private String toDoTagName = null;
 
 	/**
-	 * Initlaize with database conmnection
+	 * Initialize with database connection.
 	 * 
 	 * @param con
+	 *            the con
 	 */
 	public QueryUtil(Connection con) {
 		this.con = con;
@@ -39,9 +42,13 @@ public class QueryUtil {
 	}
 
 	/**
+	 * Query database.
+	 * 
 	 * @param params
+	 *            the params
 	 * @return the query result
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData queryDatabase(String... params) throws SukuException {
 
@@ -131,8 +138,7 @@ public class QueryUtil {
 					} else {
 						fromSQL.append("and ");
 					}
-					fromSQL
-							.append("u.pid in (select pid from unitnotice where ");
+					fromSQL.append("u.pid in (select pid from unitnotice where ");
 					fromSQL.append(sbn.toString());
 					fromSQL.append("and tag='NAME') ");
 					isFirstCriteria = false;
@@ -156,9 +162,7 @@ public class QueryUtil {
 						fromSQL.append("and ");
 					}
 					isFirstCriteria = false;
-					fromSQL
-							.append("u.groupid ilike '" + toQuery(group)
-									+ "%' ");
+					fromSQL.append("u.groupid ilike '" + toQuery(group) + "%' ");
 				}
 
 				for (idx = 1; idx < params.length; idx++) {
@@ -181,8 +185,7 @@ public class QueryUtil {
 						fromSQL.append("and ");
 					}
 					isFirstCriteria = false;
-					fromSQL
-							.append("u.pid in (select pid from unitnotice where ");
+					fromSQL.append("u.pid in (select pid from unitnotice where ");
 					if (begdate != null && todate == null) {
 						fromSQL.append("fromdate >= '" + begdate + "' ");
 					} else if (begdate == null && todate != null) {
@@ -192,9 +195,7 @@ public class QueryUtil {
 								+ "' and '" + todate + "9999' ");
 					}
 					if (begdate == null && todate == null && place != null) {
-						fromSQL
-								.append("place ilike '" + toQuery(place)
-										+ "%' ");
+						fromSQL.append("place ilike '" + toQuery(place) + "%' ");
 					} else if (place != null) {
 						fromSQL.append("and place ilike '" + toQuery(place)
 								+ "' ");
@@ -225,8 +226,7 @@ public class QueryUtil {
 						fromSQL.append("and ");
 					}
 					isFirstCriteria = false;
-					fromSQL
-							.append("u.pid in (select pid from unitnotice where ");
+					fromSQL.append("u.pid in (select pid from unitnotice where ");
 					if (begdate != null && todate == null) {
 						fromSQL.append("fromdate >= '" + begdate + "' ");
 					} else if (begdate == null && todate != null) {
@@ -262,17 +262,14 @@ public class QueryUtil {
 					}
 					isFirstCriteria = false;
 					if (todate == null) {
-						fromSQL
-								.append("u.pid in (select pid from unitnotice where createdate >= '"
-										+ begdate + "' )");
+						fromSQL.append("u.pid in (select pid from unitnotice where createdate >= '"
+								+ begdate + "' )");
 					} else if (begdate == null) {
-						fromSQL
-								.append("u.pid in (select pid from unitnotice where createdate >= '"
-										+ todate + "' )");
+						fromSQL.append("u.pid in (select pid from unitnotice where createdate >= '"
+								+ todate + "' )");
 					} else {
-						fromSQL
-								.append("u.pid in (select pid from unitnotice where createdate between '"
-										+ begdate + "' and '" + todate + "' ) ");
+						fromSQL.append("u.pid in (select pid from unitnotice where createdate between '"
+								+ begdate + "' and '" + todate + "' ) ");
 					}
 				}
 				String viewIdTxt = null;
@@ -292,9 +289,8 @@ public class QueryUtil {
 					}
 					isFirstCriteria = false;
 
-					fromSQL
-							.append("u.pid in (select pid from viewunits where vid = "
-									+ viewIdTxt + ") ");
+					fromSQL.append("u.pid in (select pid from viewunits where vid = "
+							+ viewIdTxt + ") ");
 
 				}
 
@@ -307,26 +303,21 @@ public class QueryUtil {
 					isFirstCriteria = false;
 					if (searchPlace != null && searchNoticeTag == null) {
 
-						fromSQL
-								.append("u.pid in (select pid from unitnotice where place ilike '"
-										+ toQuery(searchPlace) + "%') ");
+						fromSQL.append("u.pid in (select pid from unitnotice where place ilike '"
+								+ toQuery(searchPlace) + "%') ");
 
 					} else if (searchPlace != null && searchNoticeTag != null) {
-						fromSQL
-								.append("u.pid in (select pid from unitnotice where place ilike '"
-										+ toQuery(searchPlace)
-										+ "' and tag = '"
-										+ searchNoticeTag
-										+ "') ");
+						fromSQL.append("u.pid in (select pid from unitnotice where place ilike '"
+								+ toQuery(searchPlace)
+								+ "' and tag = '"
+								+ searchNoticeTag + "') ");
 					} else if (searchPlace == null && searchNoticeTag != null) {
 						if (!searchNoNotice) {
-							fromSQL
-									.append("u.pid in (select pid from unitnotice where tag = '"
-											+ searchNoticeTag + "') ");
+							fromSQL.append("u.pid in (select pid from unitnotice where tag = '"
+									+ searchNoticeTag + "') ");
 						} else {
-							fromSQL
-									.append("u.pid not in (select pid from unitnotice where tag = '"
-											+ searchNoticeTag + "') ");
+							fromSQL.append("u.pid not in (select pid from unitnotice where tag = '"
+									+ searchNoticeTag + "') ");
 						}
 					}
 
@@ -339,12 +330,10 @@ public class QueryUtil {
 					}
 					isFirstCriteria = false;
 
-					fromSQL
-							.append("u.pid in (select pid from unitnotice where surety <= "
-									+ searchMaxSurety + ") ");
-					fromSQL
-							.append("or u.pid in (select pid from relation where surety <= "
-									+ searchMaxSurety + ") ");
+					fromSQL.append("u.pid in (select pid from unitnotice where surety <= "
+							+ searchMaxSurety + ") ");
+					fromSQL.append("or u.pid in (select pid from relation where surety <= "
+							+ searchMaxSurety + ") ");
 
 				}
 				if (searchFullText != null) {
@@ -378,11 +367,10 @@ public class QueryUtil {
 
 							free.append(valueAndOrNot == 1 ? "or " : "and ");
 						}
-						free
-								.append("u.pid "
-										+ ((valueAndOrNot == 2) ? "not " : "")
-										+ "in (select pid from fullTextView where fulltext ilike '%"
-										+ toQuery(parts[i]) + "%') ");
+						free.append("u.pid "
+								+ ((valueAndOrNot == 2) ? "not " : "")
+								+ "in (select pid from fullTextView where fulltext ilike '%"
+								+ toQuery(parts[i]) + "%') ");
 					}
 					free.append(")");
 
@@ -468,7 +456,7 @@ public class QueryUtil {
 					}
 
 					// if (dbntag.equals("NAME") && perso.getNameCount()>0) {
-					//						
+					//
 					// perso.setNameTag(dbntag);
 					// perso.setGivenname(dbgivenname);
 					// perso.setPatronym(dbpatronym);
@@ -538,9 +526,8 @@ public class QueryUtil {
 			if (needsRelativeInfo) {
 
 				StringBuilder relSQL = new StringBuilder();
-				relSQL
-						.append("select tag,pid,count(*) from relation where pid in "
-								+ "(select pid  from unit u ");
+				relSQL.append("select tag,pid,count(*) from relation where pid in "
+						+ "(select pid  from unit u ");
 				relSQL.append(fromSQL);
 				relSQL.append(") group by pid,tag order by pid");
 				logger.fine("Relative sql: " + relSQL.toString());

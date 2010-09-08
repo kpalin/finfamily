@@ -13,11 +13,9 @@ import javax.swing.JTextField;
 import fi.kaila.suku.util.Resurses;
 
 /**
- * 
- * <h1>Ancestor report settings pane</h1>
+ * <h1>Ancestor report settings pane</h1>.
  * 
  * @author Kalle
- * 
  */
 public class AncestorPane extends JPanel {
 
@@ -34,7 +32,7 @@ public class AncestorPane extends JPanel {
 	private JTextField generations = null;
 
 	/**
-	 * Constructor sets up ths fields
+	 * Constructor sets up ths fields.
 	 */
 	public AncestorPane() {
 
@@ -63,19 +61,19 @@ public class AncestorPane extends JPanel {
 		pane.setBounds(rtypx, rtypy, 250, 124);
 
 		ancestorNumberingFormatGroup = new ButtonGroup();
-		JRadioButton formd = new JRadioButton(Resurses
-				.getString("REPORT.ANC.NUMBERING.STRADONIZ"));
+		JRadioButton formd = new JRadioButton(
+				Resurses.getString("REPORT.ANC.NUMBERING.STRADONIZ"));
 		formd.setActionCommand(ReportWorkerDialog.SET_ANC_STRADONIZ);
 		ancestorNumberingFormatGroup.add(formd);
 		formd.setSelected(true);
 		pane.add(formd);
-		formd = new JRadioButton(Resurses
-				.getString("REPORT.ANC.NUMBERING.HAGER"));
+		formd = new JRadioButton(
+				Resurses.getString("REPORT.ANC.NUMBERING.HAGER"));
 		formd.setActionCommand(ReportWorkerDialog.SET_ANC_HAGER);
 		ancestorNumberingFormatGroup.add(formd);
 		pane.add(formd);
-		formd = new JRadioButton(Resurses
-				.getString("REPORT.ANC.NUMBERING.ESPOLIN"));
+		formd = new JRadioButton(
+				Resurses.getString("REPORT.ANC.NUMBERING.ESPOLIN"));
 		formd.setActionCommand(ReportWorkerDialog.SET_ANC_ESPOLIN);
 		ancestorNumberingFormatGroup.add(formd);
 		pane.add(formd);
@@ -89,13 +87,13 @@ public class AncestorPane extends JPanel {
 		pane.add(formd);
 
 		rtypy += 130;
-		ancestorShowFamily = new JCheckBox(Resurses
-				.getString("REPORT.ANC.SHOW.FAMILY"));
+		ancestorShowFamily = new JCheckBox(
+				Resurses.getString("REPORT.ANC.SHOW.FAMILY"));
 		ancestorShowFamily.setBounds(rtypx, rtypy, 280, 20);
 		add(ancestorShowFamily);
 		rtypy += 22;
-		ancestorAllBranches = new JCheckBox(Resurses
-				.getString("REPORT.ANC.ALL.BRANCHES"));
+		ancestorAllBranches = new JCheckBox(
+				Resurses.getString("REPORT.ANC.ALL.BRANCHES"));
 		ancestorAllBranches.setBounds(rtypx, rtypy, 280, 20);
 		add(ancestorAllBranches);
 		rtypy += 22;
@@ -127,6 +125,8 @@ public class AncestorPane extends JPanel {
 	}
 
 	/**
+	 * Gets the generations.
+	 * 
 	 * @return no of generations
 	 */
 	public int getGenerations() {
@@ -141,14 +141,19 @@ public class AncestorPane extends JPanel {
 		return gen;
 	}
 
+	/**
+	 * Sets the generations.
+	 * 
+	 * @param string
+	 *            the new generations
+	 */
 	void setGenerations(String string) {
 		generations.setText(string);
 
 	}
 
 	/**
-	 * 
-	 * Value in the buttomngroup is the getActionCommand()
+	 * Value in the buttomngroup is the getActionCommand().
 	 * 
 	 * @return the ButtonGroup for numbering of ancestors
 	 */
@@ -157,6 +162,8 @@ public class AncestorPane extends JPanel {
 	}
 
 	/**
+	 * Gets the showfamily.
+	 * 
 	 * @return true if ancestor family is to be shown also
 	 */
 	public boolean getShowfamily() {
@@ -164,6 +171,7 @@ public class AncestorPane extends JPanel {
 	}
 
 	/**
+	 * Gets the all branches.
 	 * 
 	 * @return true if all ancestor branches are to be shown
 	 */
@@ -172,6 +180,8 @@ public class AncestorPane extends JPanel {
 	}
 
 	/**
+	 * Sets the show family.
+	 * 
 	 * @param value
 	 *            set true to show also ancestro family
 	 */
@@ -181,6 +191,7 @@ public class AncestorPane extends JPanel {
 	}
 
 	/**
+	 * Sets the all branches.
 	 * 
 	 * @param value
 	 *            set true to include all ancestor brances
@@ -190,7 +201,7 @@ public class AncestorPane extends JPanel {
 	}
 
 	/**
-	 * TODO decide if this is needed
+	 * TODO decide if this is needed.
 	 * 
 	 * @return no of descendant geneartions to print
 	 */
@@ -199,7 +210,7 @@ public class AncestorPane extends JPanel {
 	}
 
 	/**
-	 * TODO decide if this is needed
+	 * TODO decide if this is needed.
 	 * 
 	 * @param string
 	 *            no of descendants generations for the ancestor

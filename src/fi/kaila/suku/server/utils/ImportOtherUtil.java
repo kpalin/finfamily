@@ -20,10 +20,9 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * Server class to import from another database
+ * Server class to import from another database.
  * 
  * @author kalle
- * 
  */
 public class ImportOtherUtil {
 	private Connection con;
@@ -38,9 +37,10 @@ public class ImportOtherUtil {
 	private LinkedHashMap<Integer, Integer> pidmap = new LinkedHashMap<Integer, Integer>();
 
 	/**
-	 * Constructor with connection
+	 * Constructor with connection.
 	 * 
 	 * @param con
+	 *            the con
 	 */
 	public ImportOtherUtil(Connection con) {
 		this.con = con;
@@ -48,6 +48,19 @@ public class ImportOtherUtil {
 
 	}
 
+	/**
+	 * Import other.
+	 * 
+	 * @param schema
+	 *            the schema
+	 * @param viewId
+	 *            the view id
+	 * @param viewName
+	 *            the view name
+	 * @return the suku data
+	 * @throws SukuException
+	 *             the suku exception
+	 */
 	public SukuData importOther(String schema, int viewId, String viewName)
 			throws SukuException {
 		SukuData result = new SukuData();
@@ -289,8 +302,8 @@ public class ImportOtherUtil {
 				prose = 50 + (prose / 2);
 				if (this.runner.setRunnerValue("" + prose + ";relationnotice")) {
 
-					throw new SukuException(Resurses
-							.getString("IMPORT_CANCELLED"));
+					throw new SukuException(
+							Resurses.getString("IMPORT_CANCELLED"));
 				}
 			}
 
@@ -480,6 +493,15 @@ public class ImportOtherUtil {
 		return resu;
 	}
 
+	/**
+	 * Compare persons.
+	 * 
+	 * @param map
+	 *            the map
+	 * @return the suku data
+	 * @throws SukuException
+	 *             the suku exception
+	 */
 	public SukuData comparePersons(HashMap<String, String> map)
 			throws SukuException {
 		SukuData result = new SukuData();
@@ -516,9 +538,8 @@ public class ImportOtherUtil {
 		if (map.get("dates") != null) {
 			subCount++;
 			sql.append(sqlPrefix);
-			sql
-					.append("( coalesce(a.fromdate,'') = coalesce(b.fromdate,'') and a.tag='BIRT' and b.tag='BIRT')"
-							+ sqlPostfix + " )");
+			sql.append("( coalesce(a.fromdate,'') = coalesce(b.fromdate,'') and a.tag='BIRT' and b.tag='BIRT')"
+					+ sqlPostfix + " )");
 		}
 
 		if (map.get("surname") != null) {
@@ -527,9 +548,8 @@ public class ImportOtherUtil {
 				sql.append("and ");
 			}
 			sql.append(sqlPrefix);
-			sql
-					.append("( coalesce(a.surname,'') ilike coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')"
-							+ sqlPostfix + ")  ");
+			sql.append("( coalesce(a.surname,'') ilike coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')"
+					+ sqlPostfix + ")  ");
 
 		}
 		if (map.get("patronym") != null) {
@@ -538,9 +558,8 @@ public class ImportOtherUtil {
 				sql.append("and ");
 			}
 			sql.append(sqlPrefix);
-			sql
-					.append("( coalesce(a.patronym,'') ilike coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')"
-							+ sqlPostfix + ")  ");
+			sql.append("( coalesce(a.patronym,'') ilike coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')"
+					+ sqlPostfix + ")  ");
 
 		}
 
@@ -552,17 +571,16 @@ public class ImportOtherUtil {
 		if (map.get("firstname") == null) {
 
 			sql.append(sqlPrefix);
-			sql
-					.append("( coalesce(a.givenname,'') ilike coalesce(b.givenname,'') "
-							+ " and a.tag='NAME' and b.tag='NAME') "
-							+ sqlPostfix + " )");
+			sql.append("( coalesce(a.givenname,'') ilike coalesce(b.givenname,'') "
+					+ " and a.tag='NAME' and b.tag='NAME') "
+					+ sqlPostfix
+					+ " )");
 		} else {
 			sql.append(sqlPrefix);
-			sql
-					.append("( substring(coalesce(a.givenname,'') from '[\\\\w]+') "
-							+ " ilike substring(coalesce(b.givenname,'') from '[\\\\w]+') "
-							+ "   and a.tag='NAME' and b.tag='NAME') "
-							+ sqlPostfix + ") ");
+			sql.append("( substring(coalesce(a.givenname,'') from '[\\\\w]+') "
+					+ " ilike substring(coalesce(b.givenname,'') from '[\\\\w]+') "
+					+ "   and a.tag='NAME' and b.tag='NAME') " + sqlPostfix
+					+ ") ");
 		}
 		logger.info(sql.toString());
 

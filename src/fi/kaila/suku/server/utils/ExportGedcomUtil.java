@@ -30,6 +30,9 @@ import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
+/**
+ * The Class ExportGedcomUtil.
+ */
 public class ExportGedcomUtil {
 
 	private Connection con;
@@ -61,15 +64,35 @@ public class ExportGedcomUtil {
 	private int imageCounter = 0;
 
 	/**
-	 * Constructor with connection
+	 * Constructor with connection.
 	 * 
 	 * @param con
+	 *            the con
 	 */
 	public ExportGedcomUtil(Connection con) {
 		this.con = con;
 		this.runner = ExportGedcomDialog.getRunner();
 	}
 
+	/**
+	 * Export gedcom.
+	 * 
+	 * @param db
+	 *            the db
+	 * @param path
+	 *            the path
+	 * @param langCode
+	 *            the lang code
+	 * @param viewId
+	 *            the view id
+	 * @param surety
+	 *            the surety
+	 * @param charsetId
+	 *            the charset id
+	 * @param includeImages
+	 *            the include images
+	 * @return the suku data
+	 */
 	public SukuData exportGedcom(String db, String path, String langCode,
 			int viewId, int surety, int charsetId, boolean includeImages) {
 
@@ -1321,12 +1344,28 @@ public class ExportGedcomUtil {
 		}
 	}
 
+	/**
+	 * The Class MinimumImage.
+	 */
 	class MinimumImage {
 
+		/** The img name. */
 		String imgName = null;
+
+		/** The counter. */
 		int counter = 0;
+
+		/** The image data. */
 		byte[] imageData = null;
 
+		/**
+		 * Instantiates a new minimum image.
+		 * 
+		 * @param name
+		 *            the name
+		 * @param data
+		 *            the data
+		 */
 		MinimumImage(String name, byte[] data) {
 
 			this.imgName = name;
@@ -1334,6 +1373,11 @@ public class ExportGedcomUtil {
 			this.counter = ++imageCounter;
 		}
 
+		/**
+		 * Gets the path.
+		 * 
+		 * @return the path
+		 */
 		String getPath() {
 			StringBuilder sb = new StringBuilder();
 			sb.append(dbName + "_files/" + counter + "_" + imgName);
@@ -1342,11 +1386,30 @@ public class ExportGedcomUtil {
 
 	}
 
+	/**
+	 * The Class AdoptionElement.
+	 */
 	class AdoptionElement {
+
+		/** The who. */
 		String who = null;
+
+		/** The fam. */
 		String fam = null;
+
+		/** The other. */
 		String other = null;
 
+		/**
+		 * Instantiates a new adoption element.
+		 * 
+		 * @param who
+		 *            the who
+		 * @param fam
+		 *            the fam
+		 * @param other
+		 *            the other
+		 */
 		AdoptionElement(String who, String fam, String other) {
 			this.who = who;
 			this.fam = fam;

@@ -1,14 +1,14 @@
 package fi.kaila.suku.report.style;
 
 /**
- * Sub person style
+ * Sub person style.
  * 
  * @author Kalle
- * 
  */
 public class SubPersonText extends BodyText {
+
 	/**
-	 * Subperson is spouses or childrens parents
+	 * Subperson is spouses or childrens parents.
 	 */
 	public SubPersonText() {
 		fontName = FONT_SERIF;

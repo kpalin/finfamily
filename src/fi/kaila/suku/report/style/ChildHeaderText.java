@@ -1,14 +1,14 @@
 package fi.kaila.suku.report.style;
 
 /**
- * The Child header style
+ * The Child header style.
  * 
  * @author Kalle
- * 
  */
 public class ChildHeaderText extends BodyText {
+
 	/**
-	 * Style used for Child section header
+	 * Style used for Child section header.
 	 */
 	public ChildHeaderText() {
 		fontName = FONT_SERIF;

@@ -1,14 +1,14 @@
 package fi.kaila.suku.report.style;
 
 /**
- * The Child list style
+ * The Child list style.
  * 
  * @author Kalle
- * 
  */
 public class ChildListText extends BodyText {
+
 	/**
-	 * Style is used for the child list
+	 * Style is used for the child list.
 	 */
 	public ChildListText() {
 		fontName = FONT_SERIF;

@@ -78,11 +78,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * 
- * All reports are requested using this dialog and settings in it
+ * All reports are requested using this dialog and settings in it.
  * 
  * @author Kalle
- * 
  */
 public class ReportWorkerDialog extends JDialog implements ActionListener,
 		PropertyChangeListener {
@@ -93,39 +91,39 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private static final String SET_UK = "UK";
 	private static final String SET_US = "US";
 	// source format
+	/** The Constant SET_NO. */
 	public static final String SET_NO = "NO";
+
+	/** The Constant SET_TX1. */
 	public static final String SET_TX1 = "TX1";
+
+	/** The Constant SET_TX2. */
 	public static final String SET_TX2 = "TX2";
+
+	/** The Constant SET_AFT. */
 	public static final String SET_AFT = "AFT";
 
-	/**
-	 * Stradoniz ancestor numbering command
-	 */
+	/** Stradoniz ancestor numbering command. */
 	public static final String SET_ANC_STRADONIZ = "STRADONIZ";
-	/**
-	 * Hager ancestor numbering command
-	 */
+
+	/** Hager ancestor numbering command. */
 	public static final String SET_ANC_HAGER = "HAGER";
-	/**
-	 * Espolin ancestor numbering command
-	 */
+
+	/** Espolin ancestor numbering command. */
 	public static final String SET_ANC_ESPOLIN = "ESPOLIN";
 
-	/**
-	 * Table descendant table numbering
-	 */
+	/** Table descendant table numbering. */
 	public static final String SET_ORDER_TAB = "TAB";
-	/**
-	 * Table descendant table numbering with male descendants only
-	 */
+
+	/** Table descendant table numbering with male descendants only. */
 	public static final String SET_ORDER_MALE = "MALE";
-	/**
-	 * Table descendant table numbering with female descendants only
-	 */
+
+	/** Table descendant table numbering with female descendants only. */
 	public static final String SET_ORDER_FEMALE = "FEMALE";
+
 	/**
 	 * Table descendant table numbering with male descendants first if both
-	 * spouses are in report as relatives
+	 * spouses are in report as relatives.
 	 */
 	public static final String SET_ORDER_FIRSTMALE = "FIRSTMALE";
 	/**
@@ -138,25 +136,21 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	public static final String SET_ORDER_REG = "REG";
 
-	/**
-	 * No marriages dates are shown
-	 */
+	/** No marriages dates are shown. */
 	public static final String SET_SPOUSE_NONE = "NONE";
-	/**
-	 * Only marriage yer ius printed
-	 */
+
+	/** Only marriage yer ius printed. */
 	public static final String SET_SPOUSE_YEAR = "YEAR";
-	/**
-	 * Full marriage date is printed
-	 */
+
+	/** Full marriage date is printed. */
 	public static final String SET_SPOUSE_DATE = "DATE";
-	/**
-	 * All marriage data is printed
-	 */
+
+	/** All marriage data is printed. */
 	public static final String SET_SPOUSE_FULL = "FULL";
 
 	private static final String ACTION_INDEX = "ACTION_INDEX";
-	/** */
+
+	/** The Constant SET_ANC_TABLES. */
 	public static final String SET_ANC_TABLES = "SET_ANC_TABLES";
 	/**
 	 * 
@@ -186,9 +180,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private ReportWorkerDialog self;
 
 	private boolean endSuccess = true;
+
+	/** The report type pane. */
 	JTabbedPane reportTypePane = null;
 
 	/**
+	 * Gets the runner.
+	 * 
 	 * @return this class instance. Used to show the progress bar in local
 	 *         kontroller only
 	 */
@@ -197,6 +195,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Checks for ended success.
 	 * 
 	 * @return true if execution succeeded
 	 */
@@ -224,7 +223,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private JCheckBox commonIndexYears = null;
 	private SukuTypesTable typesTable = null;
 
+	/** The viewnames. */
 	String[] viewnames = null;
+
+	/** The viewids. */
 	int[] viewids = null;
 
 	private ButtonGroup listaGroup = null;
@@ -262,11 +264,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private Suku parent;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param owner
+	 *            the owner
 	 * @param kontroller
+	 *            the kontroller
 	 * @param pers
+	 *            the pers
 	 */
 	public ReportWorkerDialog(Suku owner, SukuKontroller kontroller,
 			PersonShortData pers) {
@@ -289,6 +294,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * Adds the repo for display.
+	 * 
+	 * @param url
+	 *            the url
+	 */
 	public void addRepoForDisplay(String url) {
 		if (repos == null) {
 			repos = new Vector<String>();
@@ -296,6 +307,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		repos.add(url);
 	}
 
+	/**
+	 * Gets the report vector.
+	 * 
+	 * @return the report vector
+	 */
 	public Vector<String> getReportVector() {
 		if (repos == null) {
 			return new Vector<String>();
@@ -304,6 +320,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the suku parent.
+	 * 
 	 * @return Suku main program
 	 */
 	public ISuku getSukuParent() {
@@ -311,6 +329,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the image max size.
+	 * 
 	 * @return max height of image (in pixels)
 	 */
 	public Dimension getImageMaxSize() {
@@ -349,6 +369,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the person image max size.
+	 * 
 	 * @return max height of person image (in pixels)
 	 */
 	public Dimension getPersonImageMaxSize() {
@@ -358,6 +380,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Checks if is numbering images.
+	 * 
 	 * @return true if images are to be numbered
 	 */
 	public boolean isNumberingImages() {
@@ -365,6 +389,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Checks if is separate images.
+	 * 
 	 * @return true if images are to be printed separately
 	 */
 	public boolean isSeparateImages() {
@@ -372,6 +398,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Checks if is bend places.
+	 * 
 	 * @return true if place names are to be bent
 	 */
 	public boolean isBendPlaces() {
@@ -379,6 +407,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the pid.
+	 * 
 	 * @return subject pid
 	 */
 	public int getPid() {
@@ -386,6 +416,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Show bold names.
+	 * 
 	 * @return true if bold names box is set
 	 */
 	public boolean showBoldNames() {
@@ -393,6 +425,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Show underline names.
+	 * 
 	 * @return true is underline usename is set
 	 */
 	public boolean showUnderlineNames() {
@@ -400,6 +434,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Checks if is creates the place index set.
 	 * 
 	 * @return true if set to create place index
 	 */
@@ -408,6 +443,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Checks if is creates the name index set.
 	 * 
 	 * @return true if set to create name index
 	 */
@@ -416,6 +452,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Show on separate lines.
+	 * 
 	 * @return true if selected to print notices on separate line
 	 */
 	public boolean showOnSeparateLines() {
@@ -423,6 +461,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Show images.
+	 * 
 	 * @return true is selected to print images
 	 */
 	public boolean showImages() {
@@ -430,6 +470,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Show address.
+	 * 
 	 * @return true to print address fields
 	 */
 	public boolean showAddress() {
@@ -437,6 +479,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the date format.
+	 * 
 	 * @return date format selected
 	 */
 	public String getDateFormat() {
@@ -450,8 +494,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	/**
 	 * format of source can be
 	 * 
-	 * SET_NO SET_TX1 SET_TX2 SET_AFT
-	 * 
+	 * SET_NO SET_TX1 SET_TX2 SET_AFT.
 	 * 
 	 * @return format of source on report
 	 */
@@ -464,6 +507,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the kontroller.
+	 * 
 	 * @return selected kontroller
 	 */
 	public SukuKontroller getKontroller() {
@@ -471,6 +516,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the progress bar.
+	 * 
 	 * @return progress bar object
 	 */
 	public JProgressBar getProgressBar() {
@@ -864,6 +911,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the descendant pane.
+	 * 
 	 * @return descendat panel
 	 */
 	public DescendantPane getDescendantPane() {
@@ -871,6 +920,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the other pane.
 	 * 
 	 * @return handle to other reports pane
 	 */
@@ -879,6 +929,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the ancestor pane.
+	 * 
 	 * @return ancestor panel
 	 */
 	public AncestorPane getAncestorPane() {
@@ -887,7 +939,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	/**
 	 * Debug state is used to get some extra output for debugging such as raw
-	 * xml-file
+	 * xml-file.
 	 * 
 	 * @return true if debug state is checked
 	 */
@@ -898,6 +950,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		return false;
 	}
 
+	/** The is loading the settings. */
 	boolean isLoadingTheSettings = false;
 
 	private void loadReportSettings() {
@@ -1072,6 +1125,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		isLoadingTheSettings = false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -1286,21 +1345,35 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the spouse data.
+	 * 
 	 * @return spouse data button group
 	 */
 	public ButtonGroup getSpouseData() {
 		return spouseData;
 	}
 
+	/** The dr. */
 	CommonReport dr = null;
 
+	/**
+	 * The Class Task.
+	 */
 	class Task extends SwingWorker<Void, Void> {
 
+		/** The report formatidx. */
 		int reportFormatidx = 0;
+
+		/** The tab offset. */
 		int tabOffset = 0;
 
 		/*
 		 * Main task. Executed in background thread.
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
 		 */
 		@Override
 		public Void doInBackground() {
@@ -1359,6 +1432,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -1408,12 +1486,21 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/**
+	 * The Class TaskLista.
+	 */
 	class TaskLista extends SwingWorker<Void, Void> {
 
+		/** The dlista. */
 		DescendantLista dlista = null;
 
 		/*
 		 * Main task. Executed in background thread.
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
 		 */
 		@Override
 		public Void doInBackground() {
@@ -1436,6 +1523,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -1447,8 +1539,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/**
+	 * The Class TaskSureties.
+	 */
 	class TaskSureties extends SwingWorker<Void, Void> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
+		 */
 		@Override
 		protected Void doInBackground() throws Exception {
 			try {
@@ -1787,6 +1887,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -1794,8 +1899,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/**
+	 * The Class TaskAddresses.
+	 */
 	class TaskAddresses extends SwingWorker<Void, Void> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
+		 */
 		@Override
 		protected Void doInBackground() throws Exception {
 
@@ -2070,6 +2183,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -2078,10 +2196,18 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * The Class TaskCards.
+	 */
 	class TaskCards extends SwingWorker<Void, Void> {
 
 		/*
 		 * Main task. Executed in background thread.
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
 		 */
 		@Override
 		public Void doInBackground() {
@@ -2416,6 +2542,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -2434,6 +2565,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * to show
 	 * 
 	 * @param juttu
+	 *            the new runner value
 	 */
 	public void setRunnerValue(String juttu) {
 		String[] kaksi = juttu.split(";");
@@ -2450,6 +2582,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {
@@ -2487,7 +2625,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
-	/** Returns an ImageIcon, or null if the path was invalid. */
+	/**
+	 * Returns an ImageIcon, or null if the path was invalid.
+	 * 
+	 * @param path
+	 *            the path
+	 * @return the image icon
+	 */
 	protected ImageIcon createImageIcon(String path) {
 
 		InputStream in = this.getClass().getResourceAsStream(path);
@@ -2504,12 +2648,18 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
-	 * Create index for the report executed
+	 * Create index for the report executed.
 	 */
 	class TaskIndex extends SwingWorker<Void, Void> {
 
+		/** The index tab offset. */
 		int indexTabOffset = 0;
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
+		 */
 		@Override
 		protected Void doInBackground() throws Exception {
 			try {
@@ -2769,6 +2919,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		/*
 		 * Executed in event dispatching thread
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
 		 */
 		@Override
 		public void done() {

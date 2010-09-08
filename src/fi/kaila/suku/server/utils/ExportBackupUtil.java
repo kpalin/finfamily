@@ -31,10 +31,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 /**
  * Creator of backup of Family database
  * 
- * Backup is an xml file with joining images all packed in a zip-file
+ * Backup is an xml file with joining images all packed in a zip-file.
  * 
  * @author Kaarle Kaila
- * 
  */
 public class ExportBackupUtil {
 
@@ -48,9 +47,10 @@ public class ExportBackupUtil {
 	private Vector<MinimumImage> images = null;
 
 	/**
-	 * Constructor requires an open connection
+	 * Constructor requires an open connection.
 	 * 
 	 * @param con
+	 *            the con
 	 */
 	public ExportBackupUtil(Connection con) {
 		this.con = con;
@@ -61,8 +61,12 @@ public class ExportBackupUtil {
 	 * Method to execute building of backup
 	 * 
 	 * SukuData buffer will contain the backup if success SukuData resu will
-	 * contain error info if failed
+	 * contain error info if failed.
 	 * 
+	 * @param path
+	 *            the path
+	 * @param dbName
+	 *            the db name
 	 * @return results
 	 */
 	public SukuData exportBackup(String path, String dbName) {
@@ -1231,12 +1235,28 @@ public class ExportBackupUtil {
 		stm.close();
 	}
 
+	/**
+	 * The Class MinimumImage.
+	 */
 	class MinimumImage {
 
+		/** The img name. */
 		String imgName = null;
+
+		/** The counter. */
 		int counter = 0;
+
+		/** The image data. */
 		byte[] imageData = null;
 
+		/**
+		 * Instantiates a new minimum image.
+		 * 
+		 * @param name
+		 *            the name
+		 * @param data
+		 *            the data
+		 */
 		MinimumImage(String name, byte[] data) {
 
 			this.imgName = name;
@@ -1244,6 +1264,11 @@ public class ExportBackupUtil {
 			this.counter = ++imageCounter;
 		}
 
+		/**
+		 * Gets the path.
+		 * 
+		 * @return the path
+		 */
 		String getPath() {
 			StringBuilder sb = new StringBuilder();
 			sb.append(dbName + "_files/" + counter + "_" + imgName);

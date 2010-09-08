@@ -1,14 +1,14 @@
 package fi.kaila.suku.report.style;
 
 /**
- * Main Person style
+ * Main Person style.
  * 
  * @author Kalle
- * 
  */
 public class MainPersonText extends BodyText {
+
 	/**
-	 * This is the style used for the table owner and spouses
+	 * This is the style used for the table owner and spouses.
 	 */
 	public MainPersonText() {
 		fontName = FONT_SERIF;

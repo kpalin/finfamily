@@ -8,6 +8,9 @@ import javax.swing.JTextField;
 
 import fi.kaila.suku.util.Resurses;
 
+/**
+ * The Class OtherReportsPane.
+ */
 public class OtherReportsPane extends JPanel {
 
 	/**
@@ -29,6 +32,9 @@ public class OtherReportsPane extends JPanel {
 	private JCheckBox place = null;
 	private JCheckBox married = null;
 
+	/**
+	 * Instantiates a new other reports pane.
+	 */
 	public OtherReportsPane() {
 		setLayout(null);
 		int rtypx = 10;
@@ -125,6 +131,8 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Gets the ancestors.
+	 * 
 	 * @return number of ancestors
 	 */
 	public int getAncestors() {
@@ -139,6 +147,8 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Gets the descendants.
+	 * 
 	 * @return number of descendants
 	 */
 	public int getDescendants() {
@@ -153,6 +163,8 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Gets the young from.
+	 * 
 	 * @return number of ......
 	 */
 	public int getYoungFrom() {
@@ -167,6 +179,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is adopted.
 	 * 
 	 * @return true is also adopted are included
 	 */
@@ -175,6 +188,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is parents.
 	 * 
 	 * @return true to include also other parents
 	 */
@@ -183,6 +197,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is spouses.
 	 * 
 	 * @return true if also other spouses are included
 	 */
@@ -191,6 +206,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is givenname.
 	 * 
 	 * @return to show given name
 	 */
@@ -199,6 +215,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is surname.
 	 * 
 	 * @return to show surname
 	 */
@@ -207,6 +224,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is occupation.
 	 * 
 	 * @return to show occupation
 	 */
@@ -215,6 +233,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is lived.
 	 * 
 	 * @return to show birth and death years
 	 */
@@ -223,6 +242,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is place.
 	 * 
 	 * @return to show place
 	 */
@@ -231,6 +251,7 @@ public class OtherReportsPane extends JPanel {
 	}
 
 	/**
+	 * Checks if is married.
 	 * 
 	 * @return to show married date
 	 */

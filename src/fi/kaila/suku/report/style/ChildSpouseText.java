@@ -1,8 +1,12 @@
 package fi.kaila.suku.report.style;
 
+/**
+ * The Class ChildSpouseText.
+ */
 public class ChildSpouseText extends BodyText {
+
 	/**
-	 * This is the style used for the table owner and spouses
+	 * This is the style used for the table owner and spouses.
 	 */
 	public ChildSpouseText() {
 		fontName = FONT_SERIF;

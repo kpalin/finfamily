@@ -17,22 +17,24 @@ import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * upload of various data from server
+ * upload of various data from server.
  * 
  * @author Kalle
- * 
  */
 public class Upload {
 
 	private static Logger logger = Logger.getLogger(Upload.class.getName());
 
 	/**
-	 * Used to upload hiski family to database
+	 * Used to upload hiski family to database.
 	 * 
 	 * @param con
+	 *            the con
 	 * @param families
+	 *            the families
 	 * @return null
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public static SukuData uploadFamilies(Connection con, SukuData families)
 			throws SQLException {
@@ -266,11 +268,13 @@ public class Upload {
 	}
 
 	/**
-	 * get database version and do a vacuum
+	 * get database version and do a vacuum.
 	 * 
 	 * @param con
+	 *            the con
 	 * @return [0] = version, [1] = time to vacuum
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public static String[] getServerVersion(Connection con) throws SQLException {
 		Statement stm = con.createStatement();
@@ -291,11 +295,13 @@ public class Upload {
 	}
 
 	/**
-	 * request list of report languages
+	 * request list of report languages.
 	 * 
 	 * @param con
+	 *            the con
 	 * @return list of report languages in format lancode;langname
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public static String[] getReportLanguages(Connection con)
 			throws SQLException {

@@ -15,11 +15,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 /**
  * <h1>Group Server Utility</h1>
  * 
- * Group removes and additions to / from db are done here
- * 
+ * Group removes and additions to / from db are done here.
  * 
  * @author Kalle
- * 
  */
 public class ViewUtil {
 
@@ -28,9 +26,10 @@ public class ViewUtil {
 	private Connection con = null;
 
 	/**
-	 * contructor initalizes with database connection
+	 * constructor initializes with database connection.
 	 * 
 	 * @param con
+	 *            the con
 	 */
 	public ViewUtil(Connection con) {
 		this.con = con;
@@ -38,9 +37,10 @@ public class ViewUtil {
 	}
 
 	/**
-	 * remove the view
+	 * remove the view.
 	 * 
 	 * @param viewId
+	 *            the view id
 	 * @return SukuData with resu != null if error
 	 */
 	public SukuData removeView(int viewId) {
@@ -70,9 +70,10 @@ public class ViewUtil {
 	}
 
 	/**
-	 * Add new named view
+	 * Add new named view.
 	 * 
 	 * @param viewname
+	 *            the viewname
 	 * @return SukuData with resu != null if error
 	 */
 	public SukuData addView(String viewname) {
@@ -109,10 +110,10 @@ public class ViewUtil {
 	}
 
 	/**
-	 * 
-	 * get list of views a person is member of
+	 * get list of views a person is member of.
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @return SukuData with resu != null if error
 	 */
 	public SukuData getViews(int pid) {
@@ -144,10 +145,12 @@ public class ViewUtil {
 	}
 
 	/**
-	 * add list of persons to view
+	 * add list of persons to view.
 	 * 
 	 * @param vid
+	 *            the vid
 	 * @param pidArray
+	 *            the pid array
 	 * @param emptyView
 	 *            true to empty view first
 	 * @return SukuData with resu != null if error
@@ -188,16 +191,21 @@ public class ViewUtil {
 	}
 
 	/**
-	 * 
-	 * Add person and his/her descendants to view
+	 * Add person and his/her descendants to view.
 	 * 
 	 * @param viewId
+	 *            the view id
 	 * @param pid
+	 *            the pid
 	 * @param gent
+	 *            the gent
 	 * @param withSpouses
+	 *            the with spouses
 	 * @param emptyView
+	 *            the empty view
 	 * @return SukuData with pidArray with persons added
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData addViewDesc(int viewId, int pid, String gent,
 			boolean withSpouses, boolean emptyView) throws SukuException {
@@ -300,10 +308,10 @@ public class ViewUtil {
 	}
 
 	/**
-	 * 
-	 * empty the view
+	 * empty the view.
 	 * 
 	 * @param vid
+	 *            the vid
 	 * @return SukuData with resu != null if error
 	 */
 	public SukuData emptyView(int vid) {
@@ -328,10 +336,12 @@ public class ViewUtil {
 	}
 
 	/**
-	 * remove listed persons from view
+	 * remove listed persons from view.
 	 * 
 	 * @param vid
+	 *            the vid
 	 * @param pidArray
+	 *            the pid array
 	 * @return SukuData with resu != null if error
 	 */
 	public SukuData removeViewUnits(int vid, int[] pidArray) {
@@ -361,14 +371,19 @@ public class ViewUtil {
 	}
 
 	/**
-	 * add person with ancestors to view
+	 * add person with ancestors to view.
 	 * 
 	 * @param viewId
+	 *            the view id
 	 * @param pid
+	 *            the pid
 	 * @param gent
+	 *            the gent
 	 * @param emptyView
+	 *            the empty view
 	 * @return SukuData with pidArray with persons added
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData addViewAnc(int viewId, int pid, String gent,
 			boolean emptyView) throws SukuException {

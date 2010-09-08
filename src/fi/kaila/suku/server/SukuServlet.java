@@ -35,13 +35,11 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * 
  * A servlet for tomcat that is used in the webstart version The webstart
  * version implementation is not in a very active state at the moment Thus fixme
- * and warnings may not be
+ * and warnings may not be.
  * 
  * @author FIKAAKAIL
- * 
  */
 public class SukuServlet extends HttpServlet {
 
@@ -70,6 +68,11 @@ public class SukuServlet extends HttpServlet {
 	private String dbPassword = null;
 	private String uploadFolder = null;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.GenericServlet#init()
+	 */
 	@Override
 	public void init() {
 		Context ic = null;
@@ -100,6 +103,13 @@ public class SukuServlet extends HttpServlet {
 
 	private static final String hexi = "0123456789ABCDEF";
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest
+	 * , javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -159,7 +169,7 @@ public class SukuServlet extends HttpServlet {
 			leni = is.read(bbb, pos, bbb.length - pos);
 			if (leni > 0) {
 				// System.out.println("XXXXXXXX");
-				//				
+				//
 				// for (j = pos; j < pos+leni; j++) {
 				// System.out.print(bbb[j]);
 				// }
@@ -206,9 +216,9 @@ public class SukuServlet extends HttpServlet {
 					// filename = rivi.substring(i+1,j);
 					// // System.out.println("FILNM:" + filename + "Ä");
 					// fos = new FileOutputStream(this.uploadFolder + filename);
-					//							
+					//
 					// }
-					//						
+					//
 					// }
 				}
 			} else if (rivi.length() > 0 && (rivi.length() & 1) == 0) {
@@ -290,6 +300,13 @@ public class SukuServlet extends HttpServlet {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest
+	 * , javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -310,7 +327,7 @@ public class SukuServlet extends HttpServlet {
 		// if (nimi.equalsIgnoreCase("referer")){
 		// refers = value.split("/") ;
 		// }
-		//			
+		//
 		// }
 		// System.out.println("-------------");
 		// enu = req.getAttributeNames();
@@ -327,8 +344,8 @@ public class SukuServlet extends HttpServlet {
 		// System.out.println("x:" + nimi + ";" + value);
 		// }
 		// System.out.println("-------------");
-		//		
-		//		
+		//
+		//
 
 		// System.out.println(new Date());
 
@@ -439,9 +456,7 @@ public class SukuServlet extends HttpServlet {
 		while (it.hasNext()) {
 			Map.Entry<String, String> entry = (Map.Entry<String, String>) it
 					.next();
-			v
-					.add(entry.getKey().toString() + "="
-							+ entry.getValue().toString());
+			v.add(entry.getKey().toString() + "=" + entry.getValue().toString());
 		}
 
 		String[] ss = new String[0];
@@ -464,18 +479,18 @@ public class SukuServlet extends HttpServlet {
 		}
 
 		// String koe = req.getHeader("x-userno");
-		//		
+		//
 		// System.out.println("koe=" + koe);
-		//		
+		//
 		// Iterator<String>iit = this.usermap.keySet().iterator();
 		// while (iit.hasNext()){
 		// String key = iit.next();
-		//			
+		//
 		// UserInfo uu = this.usermap.get(key);
-		//			
+		//
 		// System.out.println("Coo: " + key + "/" + uu.toString());
-		//			
-		//			
+		//
+		//
 		// }
 
 		// Cookie cook[] = req.getCookies();
@@ -551,12 +566,25 @@ public class SukuServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * The Class UserInfo.
+	 */
 	class UserInfo {
 		private String userno = null;
 		private String userid = null;
 		private String passwd = null;
 		private long lastUsed = 0;
 
+		/**
+		 * Instantiates a new user info.
+		 * 
+		 * @param userno
+		 *            the userno
+		 * @param userid
+		 *            the userid
+		 * @param passwd
+		 *            the passwd
+		 */
 		UserInfo(String userno, String userid, String passwd) {
 			this.userno = userno;
 			this.userid = userid;
@@ -564,15 +592,30 @@ public class SukuServlet extends HttpServlet {
 			this.lastUsed = System.currentTimeMillis();
 		}
 
+		/**
+		 * Gets the user no.
+		 * 
+		 * @return the user no
+		 */
 		String getUserNo() {
 			this.lastUsed = System.currentTimeMillis();
 			return this.userno;
 		}
 
+		/**
+		 * Gets the user id.
+		 * 
+		 * @return the user id
+		 */
 		String getUserId() {
 			return this.userid;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#toString()
+		 */
 		@Override
 		public String toString() {
 			return this.userno + "/" + this.userid + "/" + this.passwd + "/"

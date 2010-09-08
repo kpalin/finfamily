@@ -3,14 +3,14 @@ package fi.kaila.suku.report.style;
 import java.awt.Font;
 
 /**
- * table header style
+ * table header style.
  * 
  * @author Kalle
- * 
  */
 public class TableHeaderText extends BodyText {
+
 	/**
-	 * The table header style
+	 * The table header style.
 	 */
 	public TableHeaderText() {
 		fontName = FONT_SERIF;

@@ -21,10 +21,9 @@ import fi.kaila.suku.util.pojo.ReportUnit;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * Server side class for report creator
+ * Server side class for report creator.
  * 
  * @author Kalle
- * 
  */
 public class ReportUtil {
 
@@ -32,10 +31,11 @@ public class ReportUtil {
 
 	private Connection con = null;
 
+	/** The runner. */
 	ReportWorkerDialog runner = null;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param con
 	 *            connection instance to the PostgreSQL database
@@ -54,23 +54,33 @@ public class ReportUtil {
 
 	private HashMap<Integer, ReportTableMember> pidmap = new HashMap<Integer, ReportTableMember>();
 
+	/** The person references. */
 	HashMap<Integer, PersonInTables> personReferences = null;
 
+	/** The regs1. */
 	Vector<ReportUnit> regs1 = null;
+
+	/** The regs2. */
 	Vector<ReportUnit> regs2 = null;
 
 	/**
-	 * 
-	 * Create descendant table structure
+	 * Create descendant table structure.
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @param generations
+	 *            the generations
 	 * @param spouGen
+	 *            the spou gen
 	 * @param chilGen
+	 *            the chil gen
 	 * @param order
+	 *            the order
 	 * @param adopted
+	 *            the adopted
 	 * @return result of process
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public SukuData createDescendantStructure(int pid, int generations,
 			int spouGen, int chilGen, String order, boolean adopted)
@@ -394,11 +404,12 @@ public class ReportUtil {
 		if (round > 0) {
 			this.runner.setRunnerValue(Resurses
 					.getString("REPORT_TABSTRUCT_INITMALE")
-					+ " [" + round + "]: " + tableNo);
+					+ " ["
+					+ round
+					+ "]: " + tableNo);
 		} else {
 			this.runner.setRunnerValue(Resurses
-					.getString("REPORT_TABSTRUCT_INIT")
-					+ " " + tableNo);
+					.getString("REPORT_TABSTRUCT_INIT") + " " + tableNo);
 		}
 		unitMap.put(unit.getPid(), unit);
 
@@ -617,6 +628,8 @@ public class ReportUtil {
 	}
 
 	private int tableNo;
+
+	/** The tables. */
 	Vector<ReportUnit> tables = new Vector<ReportUnit>();
 
 	private void calculateDescendantTableNumbers(ReportUnit tab,
@@ -697,14 +710,16 @@ public class ReportUtil {
 	}
 
 	/**
-	 * 
-	 * Create data for the descendant list (Excel report)
+	 * Create data for the descendant list (Excel report).
 	 * 
 	 * @param pid
+	 *            the pid
 	 * @return result in Sukudata pers = list of persons, generalArray 0 tag,
 	 *         pidarray = generation of corresponding persons
 	 * @throws SukuException
+	 *             the suku exception
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public SukuData createDescendantLista(int pid) throws SukuException,
 			SQLException {
@@ -732,10 +747,19 @@ public class ReportUtil {
 
 	}
 
+	/** The desc lista persons. */
 	Vector<PersonShortData> descListaPersons = null;
+
+	/** The desc lista text. */
 	Vector<String> descListaText = null;
+
+	/** The desc lista gen. */
 	Vector<Integer> descListaGen = null;
+
+	/** The desc lista counter. */
 	int descListaCounter = 0;
+
+	/** The multicheck. */
 	HashMap<Integer, PersonShortData> multicheck = null;
 
 	private void insertIntoDescendantLista(int pid, int gen)
@@ -753,8 +777,8 @@ public class ReportUtil {
 		stm.setInt(1, pid);
 		rs = stm.executeQuery();
 		while (rs.next()) {
-			RelationShortData rel = new RelationShortData(pid, rs.getInt(1), rs
-					.getInt(2), rs.getString(3), rs.getInt(4));
+			RelationShortData rel = new RelationShortData(pid, rs.getInt(1),
+					rs.getInt(2), rs.getString(3), rs.getInt(4));
 			rr.add(rel);
 		}
 		rs.close();
@@ -765,8 +789,8 @@ public class ReportUtil {
 		stm.setInt(1, pid);
 		rs = stm.executeQuery();
 		while (rs.next()) {
-			RelationShortData rel = new RelationShortData(pid, rs.getInt(1), rs
-					.getInt(2), rs.getString(3), rs.getInt(4));
+			RelationShortData rel = new RelationShortData(pid, rs.getInt(1),
+					rs.getInt(2), rs.getString(3), rs.getInt(4));
 			rr.add(rel);
 		}
 		stm.close();
@@ -774,8 +798,8 @@ public class ReportUtil {
 		for (int i = 0; i < rr.size(); i++) {
 			RelationShortData rel = rr.get(i);
 
-			PersonShortData p = new PersonShortData(this.con, rel
-					.getRelationPid(), true);
+			PersonShortData p = new PersonShortData(this.con,
+					rel.getRelationPid(), true);
 			descListaPersons.add(p);
 			int mygen = gen;
 			if (rel.getTag().equals("CHIL")) {
@@ -793,12 +817,19 @@ public class ReportUtil {
 	}
 
 	/**
+	 * Creates the ancestor structure.
+	 * 
 	 * @param pid
+	 *            the pid
 	 * @param generations
+	 *            the generations
 	 * @param family
+	 *            the family
 	 * @param order
+	 *            the order
 	 * @return ancestor structure
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public SukuData createAncestorStructure(int pid, int generations,
 			boolean family, String order) throws SQLException {

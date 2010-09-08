@@ -39,11 +39,9 @@ import fi.kaila.suku.util.pojo.SukuData;
 import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
- * 
- * Gedcom import class
+ * Gedcom import class.
  * 
  * @author Kalle
- * 
  */
 public class ImportGedcomUtil {
 
@@ -59,32 +57,57 @@ public class ImportGedcomUtil {
 	private GedSet thisSet = GedSet.Set_None;
 
 	/**
-	 * Constructor with connection
+	 * Constructor with connection.
 	 * 
 	 * @param con
+	 *            the con
 	 */
 	public ImportGedcomUtil(Connection con) {
 		this.con = con;
 		this.runner = ImportGedcomDialog.getRunner();
 	}
 
+	/** The ged pid. */
 	LinkedHashMap<String, GedcomPidEle> gedPid = null;
+
+	/** The ged map. */
 	LinkedHashMap<String, GedcomLine> gedMap = null;
+
+	/** The ged source. */
 	LinkedHashMap<String, GedcomLine> gedSource = null;
+
+	/** The ged fam map. */
 	LinkedHashMap<String, GedcomLine> gedFamMap = null;
+
+	/** The unknown line. */
 	Vector<String> unknownLine = new Vector<String>();
+
+	/** The ged fams. */
 	LinkedHashMap<String, GedcomFams> gedFams = null;
+
+	/** The ged adopt. */
 	LinkedHashMap<String, GedcomLine> gedAdopt = null;
+
+	/** The repo texts. */
 	ExcelBundle repoTexts = null;
 	// HashMap<String, String> texts = null;
+	/** The images. */
 	LinkedHashMap<String, String> images = null;
+
+	/** The is zip file. */
 	boolean isZipFile = false;
+
+	/** The base folder. */
 	String baseFolder = "";
 
 	/**
+	 * Import gedcom.
+	 * 
 	 * @param lang
+	 *            the lang
 	 * @return result in SukuData
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData importGedcom(String lang) throws SukuException {
 		SukuData resp = new SukuData();
@@ -998,9 +1021,13 @@ public class ImportGedcomUtil {
 
 	}
 
+	/** The record count. */
 	int recordCount = 0;
 
+	/** The owner info. */
 	String ownerInfo = null;
+
+	/** The seen trlr. */
 	boolean seenTrlr = false;
 
 	private void consumeGedcomRecord(GedcomLine record) throws SQLException,
@@ -1708,6 +1735,7 @@ public class ImportGedcomUtil {
 		return text.substring(0, 3);
 	}
 
+	/** The submitter done. */
 	boolean submitterDone = false;
 
 	private void consumeGedcomSubmitter(GedcomLine record) throws SQLException {
@@ -1851,7 +1879,10 @@ public class ImportGedcomUtil {
 		return addr;
 	}
 
+	/** The submitter. */
 	String submitter = null;
+
+	/** The created date. */
 	String createdDate = null;
 	private String sourceSystem = null;
 
@@ -2142,6 +2173,7 @@ public class ImportGedcomUtil {
 
 	}
 
+	/** The key counter. */
 	int keyCounter = 0;
 
 	// class GedcomRecord {
@@ -2164,14 +2196,35 @@ public class ImportGedcomUtil {
 	//
 	// }
 
+	/**
+	 * The Class GedcomLine.
+	 */
 	class GedcomLine {
+
+		/** The level. */
 		int level = -1;
+
+		/** The tag. */
 		String tag = null;
+
+		/** The id. */
 		String id = null;
+
+		/** The line value. */
 		String lineValue = "";
+
+		/** The parent. */
 		GedcomLine parent = null;
+
+		/** The lines. */
 		Vector<GedcomLine> lines = new Vector<GedcomLine>();
 
+		/**
+		 * Adds the.
+		 * 
+		 * @param line
+		 *            the line
+		 */
 		void add(GedcomLine line) {
 			if (line.level == level + 1) {
 				if (line.tag.equals("CONT")) {
@@ -2195,8 +2248,14 @@ public class ImportGedcomUtil {
 			}
 		}
 
+		/** The key. */
 		String key = null;
 
+		/**
+		 * Gets the key.
+		 * 
+		 * @return the key
+		 */
 		String getKey() {
 			if (id != null) {
 				return id;
@@ -2213,14 +2272,32 @@ public class ImportGedcomUtil {
 			return key;
 		}
 
+		/**
+		 * Instantiates a new gedcom line.
+		 * 
+		 * @param level
+		 *            the level
+		 */
 		GedcomLine(int level) {
 			this.level = level;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#toString()
+		 */
 		public String toString() {
 			return toString(true);
 		}
 
+		/**
+		 * To string.
+		 * 
+		 * @param withLevels
+		 *            the with levels
+		 * @return the string
+		 */
 		public String toString(boolean withLevels) {
 			StringBuilder sb = new StringBuilder();
 			if (level > 0) {
@@ -2269,24 +2346,55 @@ public class ImportGedcomUtil {
 		}
 	}
 
+	/**
+	 * The Class GedcomAddress.
+	 */
 	class GedcomAddress {
+
+		/** The address. */
 		String address = null;
+
+		/** The postal code. */
 		String postalCode = null;
+
+		/** The post office. */
 		String postOffice = null;
+
+		/** The country. */
 		String country = null;
+
+		/** The email. */
 		String email = null;
+
+		/** The www. */
 		String www = null;
 	}
 
+	/**
+	 * The Class GedcomPidEle.
+	 */
 	class GedcomPidEle {
+
+		/** The id. */
 		public String id;
+
+		/** The pid. */
 		int pid = 0;
 
 	}
 
+	/**
+	 * The Class GedcomFams.
+	 */
 	class GedcomFams {
+
+		/** The pid. */
 		int pid;
+
+		/** The id. */
 		String id;
+
+		/** The fams. */
 		Vector<GedcomLine> fams = new Vector<GedcomLine>();
 	}
 
