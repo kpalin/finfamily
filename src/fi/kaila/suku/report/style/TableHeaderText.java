@@ -16,8 +16,8 @@ public class TableHeaderText extends BodyText {
 		fontName = FONT_SERIF;
 		fontSize = 14;
 		fontStyle = Font.BOLD;
-		paraAlignment = ALIGN_CENTER;
-		paraSpacingAfter = 0;
+		paraAlignment = ALIGN_LEFT;
+		paraSpacingAfter = 12;
 		paraSpacingBefore = 12;
 	}
 }

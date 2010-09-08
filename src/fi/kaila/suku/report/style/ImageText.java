@@ -92,4 +92,10 @@ public class ImageText extends BodyText {
 		return isPersonImage;
 	}
 
+	@Override
+	public String toString() {
+		return imageName + ":" + imageTitle;
+
+	}
+
 }

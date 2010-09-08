@@ -222,7 +222,7 @@
             <w:basedOn w:val = "BodyText"/>
             <w:rsid w:val = "006E337B"/>
             <w:pPr>
-                <w:spacing w:before = "240" w:after = "0"/>
+                <w:spacing w:before = "240" w:after = "240"/>
                 <w:jc w:val = "center"/>
             </w:pPr>
             <w:rPr>

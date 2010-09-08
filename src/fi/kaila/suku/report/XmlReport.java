@@ -538,6 +538,14 @@ public class XmlReport implements ReportInterface {
 	 */
 	private String convertTo64(ImageText it) {
 
+		if (it == null) {
+			logger.warning("Image is null" + it);
+			return "";
+		}
+		if (it.getData() == null) {
+			logger.warning("Image data is null" + it);
+			return "";
+		}
 		Formatter ff = new Formatter();
 
 		StringBuilder sbb = new StringBuilder();

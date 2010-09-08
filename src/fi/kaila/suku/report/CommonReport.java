@@ -272,6 +272,8 @@ public abstract class CommonReport {
 	 */
 	protected void createDescendantTable(int idx, ReportUnit tab) {
 
+		boolean fromAfterHeader = false;
+
 		BodyText bt = null;
 		ReportTableMember subjectmember = tab.getParent().get(0);
 		SukuData pdata = null;
@@ -380,22 +382,25 @@ public abstract class CommonReport {
 		bt.addText(typesTable.getTypeText("TABLE"));
 		bt.addText(" " + (tab.getTableNo() + tableOffset));
 		repoWriter.addText(bt);
-
-		bt = new TableSubHeaderText();
-		PersonInTables ref;
 		String fromTable = "";
 		String fromSubTable = "";
-		ref = personReferences.get(tab.getPid());
-		if (ref != null) {
-			fromTable = ref.getReferences(tab.getTableNo(), false, true, false,
-					tableOffset);
-		}
+		PersonInTables ref;
+		if (fromAfterHeader) {
+			bt = new TableSubHeaderText();
 
-		if (fromTable.length() > 0) {
-			bt.addText(typesTable.getTextValue("FROMTABLE") + " " + fromTable);
-		}
+			ref = personReferences.get(tab.getPid());
+			if (ref != null) {
+				fromTable = ref.getReferences(tab.getTableNo(), false, true,
+						false, tableOffset);
+			}
 
-		repoWriter.addText(bt);
+			if (fromTable.length() > 0) {
+				bt.addText(typesTable.getTextValue("FROMTABLE") + " "
+						+ fromTable);
+			}
+
+			repoWriter.addText(bt);
+		}
 
 		bt = new MainPersonText();
 		if (genText.length() > 0) {
@@ -404,6 +409,21 @@ public abstract class CommonReport {
 		}
 
 		printName(bt, pdata.persLong, 2);
+
+		if (!fromAfterHeader) {
+
+			ref = personReferences.get(tab.getPid());
+			if (ref != null) {
+				fromTable = ref.getReferences(tab.getTableNo(), false, true,
+						false, tableOffset);
+			}
+
+			if (fromTable.length() > 0) {
+				bt.addText("(" + typesTable.getTextValue("FROMTABLE") + " "
+						+ fromTable + "). ");
+			}
+
+		}
 
 		printNotices(bt, notices, 2, tab.getTableNo() + tableOffset);
 
@@ -754,8 +774,6 @@ public abstract class CommonReport {
 								spouType = printRelationNotice(rn, spouType,
 										spouNum, true);
 							}
-						} else {
-							// TODO:
 						}
 
 					}
@@ -789,9 +807,9 @@ public abstract class CommonReport {
 					RelationNotice rn = rnn[i];
 					spouType = printRelationNotice(rn, null, 0, false);
 					if (spouType.length() > 0) {
-						bt.addText(" ");
+						// bt.addText(" ");
 						bt.addText(spouType);
-						bt.addText(".");
+						bt.addText(". ");
 					}
 				}
 			}
@@ -1600,9 +1618,15 @@ public abstract class CommonReport {
 		if (isBefore) {
 			if (rn.getType() != null) {
 				if (rn.getTag().equals("MARR")) {
-					sb.append(rn.getType());
-					addSpace = true;
-					spouseNum = 0;
+
+					if (!showType.equals(ReportWorkerDialog.SET_SPOUSE_FULL)) {
+
+						sb.append(rn.getType());
+						addSpace = true;
+						spouseNum = 0;
+					} else {
+						sb.append(defType);
+					}
 				}
 			} else if (defType != null) {
 				sb.append(defType);
@@ -1670,8 +1694,12 @@ public abstract class CommonReport {
 			return sb.toString();
 		}
 		if (rn.getTag().equals("MARR")) {
-			sb.append(typesTable.getTextValue(Resurses.getReportString(rn
-					.getTag())));
+			if (rn.getType() == null) {
+				sb.append(typesTable.getTextValue(Resurses.getReportString(rn
+						.getTag())));
+			} else {
+				sb.append(rn.getType());
+			}
 			addSpace = true;
 		}
 		if (rn.getDescription() != null) {
