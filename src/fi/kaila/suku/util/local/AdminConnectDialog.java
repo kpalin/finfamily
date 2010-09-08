@@ -15,11 +15,9 @@ import javax.swing.JTextField;
 import fi.kaila.suku.util.Resurses;
 
 /**
- * 
- * Dialog for connect to admin database
+ * Dialog for connect to admin database.
  * 
  * @author FIKAAKAIL
- * 
  */
 public class AdminConnectDialog extends JDialog implements ActionListener {
 
@@ -37,9 +35,10 @@ public class AdminConnectDialog extends JDialog implements ActionListener {
 	private JButton cancel;
 
 	/**
-	 * Constructor for dialog
+	 * Constructor for dialog.
 	 * 
 	 * @param owner
+	 *            the owner
 	 */
 	@SuppressWarnings("unqualified-field-access")
 	public AdminConnectDialog(JFrame owner) {
@@ -77,6 +76,12 @@ public class AdminConnectDialog extends JDialog implements ActionListener {
 	}
 
 	//
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@SuppressWarnings("unqualified-field-access")
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -94,6 +99,8 @@ public class AdminConnectDialog extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the password.
+	 * 
 	 * @return database password
 	 */
 	public String getPassword() {

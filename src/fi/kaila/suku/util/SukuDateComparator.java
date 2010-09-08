@@ -19,6 +19,11 @@ import java.util.Comparator;
 @SuppressWarnings("unchecked")
 public class SukuDateComparator implements Comparator {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
 	@Override
 	public int compare(Object arg0, Object arg1) {
 		if (arg0 == null || arg1 == null)

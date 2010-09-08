@@ -10,8 +10,8 @@ import fi.kaila.suku.util.pojo.PersonShortData;
 
 /**
  * 
- * One row of databalse list. Database window consists of rows containing
- * SukuRow objects
+ * One row of database list. Database window consists of rows containing SukuRow
+ * objects
  * 
  * @author FIKAAKAIL
  * 
@@ -19,20 +19,23 @@ import fi.kaila.suku.util.pojo.PersonShortData;
 public class SukuRow {
 
 	// PersonShortData person;
+	/** The pid. */
 	int pid;
+
+	/** The suku. */
 	Suku suku = null;
 	// String refn=null;
 	// String tsex=null; // col 0
-	//	
+	//
 	// // BufferedImage sex = null;
-	//	
+	//
 	// // String name=null; // col 1
 	// String patro=null;
 	// String givenName=null; // col 1.?
 	// String prefix = null;
 	// String surName = null;
 	// String morenames = null;
-	//	
+	//
 	// String birthDate=null; // col 2
 	// String birtPlace=null;
 	// String deatDate=null; // col 3
@@ -44,16 +47,19 @@ public class SukuRow {
 	// int childc = 0;
 	// int parec = 0;
 	// boolean todo;
-	//	
+	//
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(SukuRow.class.getName());
 
 	/**
-	 * Constuctor of a Sukurow
+	 * Constuctor of a Sukurow.
 	 * 
 	 * @param suku
+	 *            the suku
 	 * @param model
+	 *            the model
 	 * @param person
+	 *            the person
 	 */
 	public SukuRow(Suku suku, SukuModel model, PersonShortData person) {
 		// this.person = person;
@@ -91,15 +97,23 @@ public class SukuRow {
 	// logger.fine("Contrs: " + todo + "/" + surName + "/" + givenName);
 	// }
 
+	/**
+	 * Instantiates a new suku row.
+	 * 
+	 * @param suku
+	 *            the suku
+	 */
 	SukuRow(Suku suku) {
 		this.suku = suku;
 	}
 
 	/**
-	 * Set value into column
+	 * Set value into column.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @param value
+	 *            the value
 	 */
 	public void set(int idx, Object value) {
 
@@ -118,13 +132,18 @@ public class SukuRow {
 		// break;
 		//
 		//
-		//		
+		//
 		// }
-		//		
+		//
 
 		// this.taulu[idx]=(String)value;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -143,9 +162,10 @@ public class SukuRow {
 	}
 
 	/**
-	 * Get item from column
+	 * Get item from column.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @return content on column
 	 */
 	public Object get(int idx) {
@@ -206,11 +226,11 @@ public class SukuRow {
 			return "" + person.getPareCount();
 			// } else if (fullIdx ==
 			// crit.getColIndex(Resurses.COLUMN_T_GIVENNAME)){
-			//			
+			//
 			// return this.givenName;
 			// } else if (fullIdx ==
 			// crit.getColIndex(Resurses.COLUMN_T_SURNAME)){
-			//			
+			//
 			// return this.surName;
 		} else if (idx == crit.getColIndex(Resurses.COLUMN_T_TODO)) {
 
@@ -248,18 +268,18 @@ public class SukuRow {
 		} else {
 
 			// case 1:
-			//		
+			//
 			// if (this.prefix == null) {
 			// return this.surName ;
 			// }
-			//			
+			//
 			// return this.prefix + " "+ this.surName ;
 			// case 2: return this.givenName;
 			// case 3: return this.patro;
 			// case 4: return this.birthDate ;
-			//	
+			//
 			// case 5: return this.deatDate;
-			//	
+			//
 			// case 6: return this.idInfo;
 
 			return null;
@@ -269,6 +289,8 @@ public class SukuRow {
 	}
 
 	/**
+	 * Gets the person.
+	 * 
 	 * @return person in row
 	 */
 	public PersonShortData getPerson() {
@@ -276,6 +298,8 @@ public class SukuRow {
 	}
 
 	/**
+	 * Gets the name.
+	 * 
 	 * @return person name
 	 */
 	public String getName() {
@@ -283,6 +307,8 @@ public class SukuRow {
 	}
 
 	/**
+	 * Gets the todo.
+	 * 
 	 * @return the todo text
 	 */
 	public String getTodo() {
@@ -290,6 +316,8 @@ public class SukuRow {
 	}
 
 	/**
+	 * Gets the refn.
+	 * 
 	 * @return person pid
 	 */
 	public String getRefn() {
@@ -297,6 +325,8 @@ public class SukuRow {
 	}
 
 	/**
+	 * Gets the group.
+	 * 
 	 * @return group of personm
 	 */
 	public String getGroup() {
@@ -304,6 +334,8 @@ public class SukuRow {
 	}
 
 	/**
+	 * Gets the pid.
+	 * 
 	 * @return persons pid
 	 */
 	public int getPid() {

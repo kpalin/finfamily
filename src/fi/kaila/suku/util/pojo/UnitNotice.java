@@ -3,7 +3,6 @@ package fi.kaila.suku.util.pojo;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Array;
 import java.sql.ResultSet;
@@ -13,10 +12,9 @@ import java.sql.Timestamp;
 import javax.imageio.ImageIO;
 
 /**
- * Container class for UnitNotice table
+ * Container class for UnitNotice table.
  * 
  * @author Kalle
- * 
  */
 public class UnitNotice implements Serializable {
 
@@ -27,48 +25,119 @@ public class UnitNotice implements Serializable {
 
 	private boolean toBeDeleted = false;
 	private boolean toBeUpdated = false;
+
+	/** The pnid. */
 	int pnid = 0;
+
+	/** The pid. */
 	int pid = 0;
+
+	/** The surety. */
 	int surety = 100; // -- surety indicator
+
+	/** The notice row. */
 	int noticeRow = 0; // -- Row # of the Notice for the unit
+
+	/** The tag. */
 	String tag = null; // -- Tag of the Notice, Mostly Level 1 GEDCOM tags
+
+	/** The privacy. */
 	String privacy = null; // -- Privacy indicator, null = Public
+
+	/** The notice type. */
 	String noticeType = null; // -- Notice type (L)
+
+	/** The description. */
 	String description = null; // -- Description or remark (L)
+
+	/** The date prefix. */
 	String datePrefix = null; // -- Prefix for the date (beginning date if date
 	// period)
+	/** The from date. */
 	String fromDate = null; // -- Date for the event described in this notice
+
+	/** The to date. */
 	String toDate = null; // -- Date for the event described in this notice
+
+	/** The place. */
 	String place = null; // -- Place
+
+	/** The village. */
 	String village = null; // varchar, -- Kyl NEW
+
+	/** The farm. */
 	String farm = null; // varchar, -- Talo NEW
+
+	/** The croft. */
 	String croft = null; // varchar, -- Torppa NEW
+
+	/** The address. */
 	String address = null; // varchar, -- Address line 1 / Village/Kylä
+
+	/** The post office. */
 	String postOffice = null; // varchar, -- Place of the event, Postoffice,
 	// City
+	/** The postal code. */
 	String postalCode = null; // varchar, -- Postal Code
+
+	/** The state. */
 	String state = null; // varchar, -- State
+
+	/** The country. */
 	String country = null; // varchar, -- Country
+
+	/** The email. */
 	String email = null; // varchar, -- Email-address or web-page of person
+
+	/** The note text. */
 	String noteText = null; // varchar, -- Note textfield (L)
+
+	/** The media filename. */
 	String mediaFilename = null; // varchar, -- Filename of the multimedia file
+
+	/** The media data. */
 	byte[] mediaData = null; // bytea, -- Container of image
+
+	/** The media title. */
 	String mediaTitle = null; // varchar, -- text describing the multimedia file
 	// (L)
+	/** The media width. */
 	int mediaWidth = 0; // integer, -- media width in pixels
+
+	/** The media height. */
 	int mediaHeight = 0; // integer, -- media height in pixels
+
+	/** The prefix. */
 	String prefix = null; // varchar, -- Prefix of the surname
+
+	/** The surname. */
 	String surname = null; // varchar, -- Surname
+
+	/** The givenname. */
 	String givenname = null; // varchar, -- Givenname
+
+	/** The patronym. */
 	String patronym = null; // varchar, -- Patronyymi NEW
+
+	/** The post fix. */
 	String postFix = null; // varchar, -- Name Postfix
+
+	/** The ref names. */
 	String[] refNames = null; // varchar, -- List of names within notice for
 	// index
+	/** The ref places. */
 	String[] refPlaces = null; // varchar, -- List of places within notice for
 	// index
+	/** The source text. */
 	String sourceText = null; // varchar , -- Source as text
+
+	/** The private text. */
 	String privateText = null; // varchar, -- Private researcher information
+
+	/** The modified. */
 	Timestamp modified = null; // timestamp, -- timestamp modified
+
+	/** The create date. */
 	Timestamp createDate = null; // timestamp not null default now() --
 	// timestamp created
 
@@ -118,11 +187,12 @@ public class UnitNotice implements Serializable {
 	 * researcher information Modified timestamp, -- timestamp modified
 	 * CreateDate timestamp not null default now() -- timestamp created );
 	 * 
-	 * The sr has format select * from unitNotice
+	 * The sr has format select * from unitNotice.
 	 * 
 	 * @param rs
-	 * 
+	 *            the rs
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 
 	public UnitNotice(ResultSet rs) throws SQLException {
@@ -181,6 +251,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the to be deleted.
+	 * 
 	 * @param value
 	 *            true if this is to be deleted
 	 */
@@ -189,13 +261,15 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
-	 * reset modifeid flag
+	 * reset modifeid flag.
 	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
 	/**
+	 * Checks if is to be deleted.
+	 * 
 	 * @return true if this is to be deleted
 	 */
 	public boolean isToBeDeleted() {
@@ -203,6 +277,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Checks if is to be updated.
+	 * 
 	 * @return true if this is to be updated
 	 */
 	public boolean isToBeUpdated() {
@@ -219,15 +295,22 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Instantiates a new unit notice.
+	 * 
 	 * @param tag
+	 *            the tag
 	 */
 	public UnitNotice(String tag) {
 		this.tag = tag;
 	}
 
 	/**
+	 * Instantiates a new unit notice.
+	 * 
 	 * @param tag
+	 *            the tag
 	 * @param pid
+	 *            the pid
 	 */
 	public UnitNotice(String tag, int pid) {
 		this.tag = tag;
@@ -235,6 +318,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the languages.
+	 * 
 	 * @param languages
 	 *            = array of language variants
 	 */
@@ -243,6 +328,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the languages.
+	 * 
 	 * @return the array of existing language varianls
 	 */
 	public UnitLanguage[] getLanguages() {
@@ -250,6 +337,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the pnid.
+	 * 
 	 * @return perrson notice id
 	 */
 	public int getPnid() {
@@ -257,6 +346,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the pid.
+	 * 
 	 * @return pid
 	 */
 	public int getPid() {
@@ -264,6 +355,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the tag.
+	 * 
 	 * @return tag
 	 */
 	public String getTag() {
@@ -271,6 +364,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the surety.
+	 * 
 	 * @return surety
 	 */
 	public int getSurety() {
@@ -278,6 +373,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the surety.
+	 * 
 	 * @param surety
 	 *            (0,20,40,60,80,100)
 	 */
@@ -289,6 +386,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the privacy.
+	 * 
 	 * @return privact
 	 */
 	public String getPrivacy() {
@@ -296,6 +395,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the privacy.
+	 * 
 	 * @param text
 	 *            = null,"P","T" or "I"
 	 */
@@ -308,6 +409,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the notice type.
+	 * 
 	 * @return notice type
 	 */
 	public String getNoticeType() {
@@ -315,6 +418,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the notice type.
+	 * 
 	 * @param text
 	 *            = notice type
 	 */
@@ -327,6 +432,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the description.
+	 * 
 	 * @return description
 	 */
 	public String getDescription() {
@@ -334,7 +441,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the description.
+	 * 
 	 * @param text
+	 *            the new description
 	 */
 	public void setDescription(String text) {
 		if (!nv(this.description).equals(nv(text))) {
@@ -345,6 +455,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the date prefix.
+	 * 
 	 * @return dateprefix
 	 */
 	public String getDatePrefix() {
@@ -352,6 +464,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the date prefix.
+	 * 
 	 * @param text
 	 *            dateprefic (see GEDCOM)
 	 */
@@ -364,6 +478,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the from date.
+	 * 
 	 * @return main / first part of date
 	 */
 	public String getFromDate() {
@@ -371,6 +487,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the from date.
+	 * 
 	 * @param text
 	 *            main date
 	 */
@@ -383,6 +501,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the to date.
+	 * 
 	 * @return second date of date interval
 	 */
 	public String getToDate() {
@@ -390,6 +510,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the to date.
+	 * 
 	 * @param text
 	 *            second part of date interval
 	 */
@@ -402,6 +524,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the place.
+	 * 
 	 * @return place
 	 */
 	public String getPlace() {
@@ -409,7 +533,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the place.
+	 * 
 	 * @param text
+	 *            the new place
 	 */
 	public void setPlace(String text) {
 		if (!nv(this.place).equals(nv(text))) {
@@ -420,6 +547,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the village.
+	 * 
 	 * @return village
 	 */
 	public String getVillage() {
@@ -427,7 +556,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the village.
+	 * 
 	 * @param text
+	 *            the new village
 	 */
 	public void setVillage(String text) {
 		if (!nv(this.village).equals(nv(text))) {
@@ -438,6 +570,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the farm.
+	 * 
 	 * @return farm
 	 */
 	public String getFarm() {
@@ -445,7 +579,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the farm.
+	 * 
 	 * @param text
+	 *            the new farm
 	 */
 	public void setFarm(String text) {
 		if (!nv(this.farm).equals(nv(text))) {
@@ -456,6 +593,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the croft.
+	 * 
 	 * @return croft (torppa)
 	 */
 	public String getCroft() {
@@ -463,7 +602,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the croft.
+	 * 
 	 * @param text
+	 *            the new croft
 	 */
 	public void setCroft(String text) {
 		if (!nv(this.croft).equals(nv(text))) {
@@ -474,6 +616,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the address.
+	 * 
 	 * @return adderss
 	 */
 	public String getAddress() {
@@ -481,7 +625,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the address.
+	 * 
 	 * @param text
+	 *            the new address
 	 */
 	public void setAddress(String text) {
 		if (!nv(this.address).equals(nv(text))) {
@@ -492,6 +639,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the ref names.
+	 * 
 	 * @param names
 	 *            new namelist
 	 */
@@ -502,6 +651,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the ref places.
+	 * 
 	 * @param places
 	 *            ne place list
 	 */
@@ -512,6 +663,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the post office.
+	 * 
 	 * @return postoiffixe
 	 */
 	public String getPostOffice() {
@@ -519,7 +672,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the post office.
+	 * 
 	 * @param text
+	 *            the new post office
 	 */
 	public void setPostOffice(String text) {
 		if (!nv(this.postOffice).equals(nv(text))) {
@@ -530,6 +686,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the postal code.
+	 * 
 	 * @return postalcode/zip
 	 */
 	public String getPostalCode() {
@@ -537,7 +695,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the postal code.
+	 * 
 	 * @param text
+	 *            the new postal code
 	 */
 	public void setPostalCode(String text) {
 		if (!nv(this.postalCode).equals(nv(text))) {
@@ -548,6 +709,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the state.
+	 * 
 	 * @return state
 	 */
 	public String getState() {
@@ -555,6 +718,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the country.
+	 * 
 	 * @return country
 	 */
 	public String getCountry() {
@@ -562,7 +727,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the state.
+	 * 
 	 * @param text
+	 *            the new state
 	 */
 	public void setState(String text) {
 		if (!nv(this.state).equals(nv(text))) {
@@ -573,7 +741,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the country.
+	 * 
 	 * @param text
+	 *            the new country
 	 */
 	public void setCountry(String text) {
 		if (!nv(this.country).equals(nv(text))) {
@@ -584,6 +755,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the email.
+	 * 
 	 * @return emailaddress
 	 */
 	public String getEmail() {
@@ -591,7 +764,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the email.
+	 * 
 	 * @param text
+	 *            the new email
 	 */
 	public void setEmail(String text) {
 		if (!nv(this.email).equals(nv(text))) {
@@ -602,6 +778,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the note text.
+	 * 
 	 * @return notetext
 	 */
 	public String getNoteText() {
@@ -609,7 +787,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the note text.
+	 * 
 	 * @param text
+	 *            the new note text
 	 */
 	public void setNoteText(String text) {
 		if (!nv(this.noteText).equals(nv(text))) {
@@ -620,6 +801,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the media filename.
+	 * 
 	 * @return mediafilename
 	 */
 	public String getMediaFilename() {
@@ -627,7 +810,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the media filename.
+	 * 
 	 * @param text
+	 *            the new media filename
 	 */
 	public void setMediaFilename(String text) {
 		if (!nv(this.mediaFilename).equals(nv(text))) {
@@ -638,6 +824,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the media title.
+	 * 
 	 * @return media title
 	 */
 	public String getMediaTitle() {
@@ -645,7 +833,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the media title.
+	 * 
 	 * @param text
+	 *            the new media title
 	 */
 	public void setMediaTitle(String text) {
 		if (!nv(this.mediaTitle).equals(nv(text))) {
@@ -656,6 +847,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the media size.
+	 * 
 	 * @return media size
 	 */
 	public Dimension getMediaSize() {
@@ -663,7 +856,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the media size.
+	 * 
 	 * @param sz
+	 *            the new media size
 	 */
 	public void setMediaSize(Dimension sz) {
 		mediaWidth = sz.width;
@@ -672,8 +868,9 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the media image.
+	 * 
 	 * @return image
-	 * @throws IOException
 	 */
 	public BufferedImage getMediaImage() {
 		if (mediaData == null)
@@ -695,7 +892,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the media data.
+	 * 
 	 * @param data
+	 *            the new media data
 	 */
 	public void setMediaData(byte[] data) {
 		mediaData = data;
@@ -704,6 +904,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the media data.
+	 * 
 	 * @return media data
 	 */
 	public byte[] getMediaData() {
@@ -711,6 +913,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the givenname.
+	 * 
 	 * @return givenname
 	 */
 	public String getGivenname() {
@@ -719,7 +923,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the givenname.
+	 * 
 	 * @param text
+	 *            the new givenname
 	 */
 	public void setGivenname(String text) {
 		if (!nv(this.givenname).equals(nv(text))) {
@@ -730,6 +937,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the patronym.
+	 * 
 	 * @return patronym
 	 */
 	public String getPatronym() {
@@ -737,7 +946,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the patronym.
+	 * 
 	 * @param text
+	 *            the new patronym
 	 */
 	public void setPatronym(String text) {
 		if (!nv(this.patronym).equals(nv(text))) {
@@ -747,6 +959,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the prefix.
+	 * 
 	 * @return name prefix
 	 */
 	public String getPrefix() {
@@ -754,7 +968,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the prefix.
+	 * 
 	 * @param text
+	 *            the new prefix
 	 */
 	public void setPrefix(String text) {
 		if (!nv(this.prefix).equals(nv(text))) {
@@ -765,6 +982,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the surname.
+	 * 
 	 * @return surname
 	 */
 	public String getSurname() {
@@ -772,7 +991,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the surname.
+	 * 
 	 * @param text
+	 *            the new surname
 	 */
 	public void setSurname(String text) {
 		if (!nv(this.surname).equals(nv(text))) {
@@ -783,6 +1005,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the postfix.
+	 * 
 	 * @return name postfix
 	 */
 	public String getPostfix() {
@@ -790,7 +1014,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the postfix.
+	 * 
 	 * @param text
+	 *            the new postfix
 	 */
 	public void setPostfix(String text) {
 		if (!nv(this.postFix).equals(nv(text))) {
@@ -801,6 +1028,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the source.
+	 * 
 	 * @return source
 	 */
 	public String getSource() {
@@ -808,6 +1037,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the ref names.
+	 * 
 	 * @return array of names in note text
 	 */
 	public String[] getRefNames() {
@@ -815,6 +1046,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the ref places.
+	 * 
 	 * @return array of places in note text
 	 */
 	public String[] getRefPlaces() {
@@ -822,7 +1055,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the source.
+	 * 
 	 * @param text
+	 *            the new source
 	 */
 	public void setSource(String text) {
 		if (!nv(this.sourceText).equals(nv(text))) {
@@ -833,6 +1069,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the private text.
+	 * 
 	 * @return private text
 	 */
 	public String getPrivateText() {
@@ -840,7 +1078,10 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the private text.
+	 * 
 	 * @param text
+	 *            the new private text
 	 */
 	public void setPrivateText(String text) {
 		if (!nv(this.privateText).equals(nv(text))) {
@@ -851,6 +1092,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the modified.
+	 * 
 	 * @return when modified
 	 */
 	public Timestamp getModified() {
@@ -858,6 +1101,8 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the created.
+	 * 
 	 * @return when created
 	 */
 	public Timestamp getCreated() {
@@ -894,6 +1139,11 @@ public class UnitNotice implements Serializable {
 
 	}
 
+	/**
+	 * Checks if is empty.
+	 * 
+	 * @return true, if is empty
+	 */
 	public boolean isEmpty() {
 		if (privacy != null)
 			return false;

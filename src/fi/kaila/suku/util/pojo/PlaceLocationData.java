@@ -3,10 +3,9 @@ package fi.kaila.suku.util.pojo;
 import java.io.Serializable;
 
 /**
- * Used by Map task to contain Place name and location data
+ * Used by Map task to contain Place name and location data.
  * 
  * @author Kalle
- * 
  */
 public class PlaceLocationData implements Serializable {
 
@@ -21,7 +20,12 @@ public class PlaceLocationData implements Serializable {
 	private double longitude = 0;
 
 	/**
+	 * Instantiates a new place location data.
+	 * 
 	 * @param place
+	 *            the place
+	 * @param countryCode
+	 *            the country code
 	 */
 	public PlaceLocationData(String place, String countryCode) {
 		this.placeName = place;
@@ -31,13 +35,15 @@ public class PlaceLocationData implements Serializable {
 	}
 
 	/**
-	 * add one to number of occurrences
+	 * add one to number of occurrences.
 	 */
 	public void increment() {
 		this.counter++;
 	}
 
 	/**
+	 * Gets the name.
+	 * 
 	 * @return placename
 	 */
 	public String getName() {
@@ -45,6 +51,7 @@ public class PlaceLocationData implements Serializable {
 	}
 
 	/**
+	 * Gets the country code.
 	 * 
 	 * @return country code for place
 	 */
@@ -53,6 +60,8 @@ public class PlaceLocationData implements Serializable {
 	}
 
 	/**
+	 * Gets the count.
+	 * 
 	 * @return count of places
 	 */
 	public int getCount() {
@@ -60,20 +69,28 @@ public class PlaceLocationData implements Serializable {
 	}
 
 	/**
+	 * Sets the latitude.
+	 * 
 	 * @param latitude
+	 *            the new latitude
 	 */
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
 	/**
+	 * Sets the longitude.
+	 * 
 	 * @param longitude
+	 *            the new longitude
 	 */
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
 	/**
+	 * Gets the latitude.
+	 * 
 	 * @return latitude
 	 */
 	public double getLatitude() {
@@ -81,6 +98,8 @@ public class PlaceLocationData implements Serializable {
 	}
 
 	/**
+	 * Gets the longitude.
+	 * 
 	 * @return longitude
 	 */
 	public double getLongitude() {

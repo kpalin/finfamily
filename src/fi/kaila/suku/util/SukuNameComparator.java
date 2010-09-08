@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.Locale;
 
 /**
+ * The Class SukuNameComparator.
+ * 
  * @author FIKAAKAIL
  * 
  *         Comparator for names
@@ -12,12 +14,14 @@ import java.util.Locale;
 @SuppressWarnings("unchecked")
 public class SukuNameComparator implements Comparator {
 
+	/** The colli. */
 	Collator colli;
 
 	/**
-	 * Constructor with locale
+	 * Constructor with locale.
 	 * 
 	 * @param langu
+	 *            the langu
 	 */
 	public SukuNameComparator(String langu) {
 
@@ -42,6 +46,11 @@ public class SukuNameComparator implements Comparator {
 		return nime;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
 	public int compare(Object arg0, Object arg1) {
 		String uno = (String) arg0;
 		String duo = (String) arg1;

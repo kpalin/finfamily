@@ -4,10 +4,9 @@ import java.io.Serializable;
 import java.util.Vector;
 
 /**
- * ReportUnit contains whole structure of one table
+ * ReportUnit contains whole structure of one table.
  * 
  * @author Kaarle Kaila
- * 
  */
 public class ReportUnit implements Serializable {
 	/**
@@ -28,6 +27,8 @@ public class ReportUnit implements Serializable {
 	private Vector<ReportTableMember> asChild = new Vector<ReportTableMember>();
 
 	/**
+	 * Gets the parent.
+	 * 
 	 * @return Vector of parents
 	 */
 	public Vector<ReportTableMember> getParent() {
@@ -35,6 +36,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Gets the child.
+	 * 
 	 * @return Vector of children
 	 */
 	public Vector<ReportTableMember> getChild() {
@@ -42,6 +45,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Gets the member count.
+	 * 
 	 * @return count of members in table
 	 */
 	public int getMemberCount() {
@@ -49,7 +54,10 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Gets the member.
+	 * 
 	 * @param idx
+	 *            the idx
 	 * @return member at idx
 	 */
 	public ReportTableMember getMember(int idx) {
@@ -65,6 +73,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Adds the parent.
+	 * 
 	 * @param pare
 	 *            at end
 	 */
@@ -78,6 +88,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Adds the child.
+	 * 
 	 * @param chil
 	 *            at end
 	 */
@@ -91,13 +103,18 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Sets the pid.
+	 * 
 	 * @param pid
+	 *            the new pid
 	 */
 	public void setPid(int pid) {
 		this.pid = pid;
 	}
 
 	/**
+	 * Gets the pid.
+	 * 
 	 * @return pid
 	 */
 	public int getPid() {
@@ -105,13 +122,18 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Sets the table no.
+	 * 
 	 * @param tableNo
+	 *            the new table no
 	 */
 	public void setTableNo(long tableNo) {
 		this.tableNo = tableNo;
 	}
 
 	/**
+	 * Gets the table no.
+	 * 
 	 * @return tableno
 	 */
 	public long getTableNo() {
@@ -119,6 +141,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Sets the gen.
+	 * 
 	 * @param gen
 	 *            = generation
 	 */
@@ -127,6 +151,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Gets the gen.
+	 * 
 	 * @return generation
 	 */
 	public int getGen() {
@@ -134,6 +160,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Sets the parent table.
+	 * 
 	 * @param parentTab
 	 *            tableno of parent table
 	 */
@@ -141,6 +169,11 @@ public class ReportUnit implements Serializable {
 		// parentTable = parentTab;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 
 		StringBuilder sb = new StringBuilder();
@@ -178,6 +211,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Sets the father pid.
+	 * 
 	 * @param fatherPid
 	 *            the fatherPid to set
 	 */
@@ -186,6 +221,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Gets the father pid.
+	 * 
 	 * @return the fatherPid
 	 */
 	public int getFatherPid() {
@@ -193,6 +230,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Sets the mother pid.
+	 * 
 	 * @param motherPid
 	 *            the motherPid to set
 	 */
@@ -201,6 +240,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Gets the mother pid.
+	 * 
 	 * @return the motherPid
 	 */
 	public int getMotherPid() {
@@ -208,6 +249,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Sets the page no.
+	 * 
 	 * @param pageNo
 	 *            the pageNo to set
 	 */
@@ -218,6 +261,8 @@ public class ReportUnit implements Serializable {
 	}
 
 	/**
+	 * Gets the page no.
+	 * 
 	 * @return the pageNo
 	 */
 	public int getPageNo() {

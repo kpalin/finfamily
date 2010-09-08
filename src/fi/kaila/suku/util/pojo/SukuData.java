@@ -22,9 +22,7 @@ public class SukuData implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * The main cmd parameter value
-	 */
+	/** The main cmd parameter value. */
 	public String cmd = null;
 
 	/**
@@ -38,70 +36,52 @@ public class SukuData implements Serializable {
 	 */
 	public int[] pidArray = null;
 
-	/**
-	 * Transfer of general binary object
-	 */
+	/** Transfer of general binary object. */
 	public byte[] buffer = null;
 	/**
 	 * e.g. settings result
 	 */
 	public String[] generalArray = null;
-	/**
-	 * Text value returned
-	 */
+
+	/** Text value returned. */
 	public String generalText = null;
 	/**
 	 * array vector storage (Types.xls page types)
 	 */
 	public Vector<String[]> vvTypes = null;
-	/**
-	 * array vector storage (Conversions texts)
-	 */
+
+	/** array vector storage (Conversions texts). */
 	public Vector<String[]> vvTexts = null;
 	/**
 	 * array of persons. Subject in [0]
 	 */
 	public PersonShortData[] pers = null;
-	/**
-	 * Array of relations
-	 */
+
+	/** Array of relations. */
 	public RelationShortData[] rels = null;
-	/**
-	 * Array of place locations (used by map)
-	 */
+
+	/** Array of place locations (used by map). */
 	public PlaceLocationData[] places = null;
 
-	/**
-	 * Single full person data
-	 */
+	/** Single full person data. */
 
 	public PersonLongData persLong = null;
 
-	/**
-	 * array of long persons
-	 */
+	/** array of long persons. */
 	public PersonLongData[] persons = null;
-	/**
-	 * array of relations
-	 */
+
+	/** array of relations. */
 	public Relation[] relations = null;
-	/**
-	 * Count can be used to return count to caller
-	 */
+
+	/** Count can be used to return count to caller. */
 	public int resuCount = 0;
 
-	/**
-	 * map of reportUnits
-	 */
+	/** map of reportUnits. */
 	public HashMap<Integer, ReportUnit> reportUnits = null;
 
-	/**
-	 * vector of reportunits
-	 */
+	/** vector of reportunits. */
 	public Vector<ReportUnit> tables = null;
 
-	/**
-	 * answer as a pid
-	 */
+	/** answer as a pid. */
 	public int resultPid = 0;
 }

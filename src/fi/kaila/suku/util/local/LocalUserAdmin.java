@@ -16,11 +16,9 @@ import javax.swing.JTextField;
 import fi.kaila.suku.util.Resurses;
 
 /**
- * 
- * Dialog for usermanagement as admin
+ * Dialog for user management as admin.
  * 
  * @author Kaarle Kaila
- * 
  */
 public class LocalUserAdmin extends JDialog implements ActionListener {
 
@@ -39,9 +37,10 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 	private JButton cancel;
 
 	/**
-	 * Constructor for dialog
+	 * Constructor for dialog.
 	 * 
 	 * @param owner
+	 *            the owner
 	 */
 	@SuppressWarnings("unqualified-field-access")
 	public LocalUserAdmin(JFrame owner) {
@@ -100,6 +99,12 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 	}
 
 	//
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@SuppressWarnings("unqualified-field-access")
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -114,17 +119,21 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 					&& password.getText().length() > 2) {
 				setVisible(false);
 			} else {
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString(Resurses.PASSWORDNOTVERIFY));
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString(Resurses.PASSWORDNOTVERIFY));
 			}
 
 		}
 	}
 
+	/** The is old user. */
 	boolean isOldUser = false;
 
 	/**
+	 * Sets the userid.
+	 * 
 	 * @param userid
+	 *            the new userid
 	 */
 	public void setUserid(String userid) {
 		isOldUser = true;
@@ -135,6 +144,8 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the userid.
+	 * 
 	 * @return userid
 	 */
 	public String getUserid() {
@@ -148,6 +159,8 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Gets the password.
+	 * 
 	 * @return database password
 	 */
 	public String getPassword() {

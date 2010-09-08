@@ -3,15 +3,18 @@ package fi.kaila.suku.util;
 import java.util.Comparator;
 
 /**
- * 
- * Comparator for Suku Table to compare PID values
+ * Comparator for Suku Table to compare PID values.
  * 
  * @author FIKAAKAIL
- * 
  */
 @SuppressWarnings("unchecked")
 public class SukuPidComparator implements Comparator {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
 	public int compare(Object arg0, Object arg1) {
 
 		int a, b;

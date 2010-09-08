@@ -7,11 +7,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 /**
- * 
- * popupmenu for Suku Text area
+ * popupmenu for Suku Text area.
  * 
  * @author Kaarle Kaila
- * 
  */
 public class TextPopupMenu {
 
@@ -34,17 +32,22 @@ public class TextPopupMenu {
 	}
 
 	/**
-	 * show menu at location
+	 * show menu at location.
 	 * 
 	 * @param e
+	 *            the e
 	 * @param x
+	 *            the x
 	 * @param y
+	 *            the y
 	 */
 	public void show(MouseEvent e, int x, int y) {
 		pMenu.show(e.getComponent(), x, y);
 	}
 
 	/**
+	 * Enable hiski menu.
+	 * 
 	 * @param value
 	 *            true to enable hiskimenu
 	 */
@@ -53,6 +56,8 @@ public class TextPopupMenu {
 	}
 
 	/**
+	 * Enable copy menu.
+	 * 
 	 * @param value
 	 *            set true to enable copy menu
 	 */
@@ -84,7 +89,7 @@ public class TextPopupMenu {
 	 * This is a singleton class.
 	 * 
 	 * @param l
-	 * 
+	 *            the l
 	 * @return the menu
 	 */
 	public static TextPopupMenu getInstance(ActionListener l) {

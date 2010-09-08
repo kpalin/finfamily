@@ -12,14 +12,13 @@ import jxl.Workbook;
 import jxl.WorkbookSettings;
 
 /**
- * 
- * A FinFamily specific resource bundle class using Excel file for input
+ * A FinFamily specific resource bundle class using Excel file for input.
  * 
  * @author Kalle
- * 
  */
 public class ExcelBundle {
 
+	/** The bundle. */
 	HashMap<String, String> bundle = null;
 
 	private static Logger logger = Logger
@@ -38,7 +37,10 @@ public class ExcelBundle {
 	// }
 
 	/**
+	 * Gets the string.
+	 * 
 	 * @param name
+	 *            the name
 	 * @return value of resource
 	 */
 	public String getString(String name) {
@@ -55,14 +57,29 @@ public class ExcelBundle {
 	private static String[] langCodes = null;
 	private static String[] langNames = null;
 
+	/**
+	 * Gets the lang codes.
+	 * 
+	 * @return the lang codes
+	 */
 	public static String[] getLangCodes() {
 		return langCodes;
 	}
 
+	/**
+	 * Gets the lang names.
+	 * 
+	 * @return the lang names
+	 */
 	public static String[] getLangNames() {
 		return langNames;
 	}
 
+	/**
+	 * Gets the lang list.
+	 * 
+	 * @return the lang list
+	 */
 	public static String[] getLangList() {
 		if (langNames == null)
 			return null;
@@ -73,6 +90,16 @@ public class ExcelBundle {
 		return tmp;
 	}
 
+	/**
+	 * Import bundle.
+	 * 
+	 * @param path
+	 *            the path
+	 * @param page
+	 *            the page
+	 * @param locale
+	 *            the locale
+	 */
 	public void importBundle(String path, String page, Locale locale) {
 		WorkbookSettings ws = new WorkbookSettings();
 		ws.setCharacterSet(0);

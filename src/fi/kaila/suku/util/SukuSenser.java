@@ -15,6 +15,8 @@ import javax.swing.SwingUtilities;
 import fi.kaila.suku.util.SukuTextField.Field;
 
 /**
+ * The Class SukuSenser.
+ * 
  * @author Kalle A singleton class that displays an intellisens window below a
  *         SukuTextField
  */
@@ -54,72 +56,78 @@ public class SukuSenser implements MouseListener {
 	private String[] groups = null;
 
 	/**
-	 * Initialize the places
+	 * Initialize the places.
 	 * 
 	 * @param places
+	 *            the new places
 	 */
 	public void setPlaces(String[] places) {
 		this.paikat = places;
 	}
 
 	/**
-	 * Initialize the givennames
+	 * Initialize the givennames.
 	 * 
 	 * @param givennames
+	 *            the new givennames
 	 */
 	public void setGivennames(String[] givennames) {
 		this.givennames = givennames;
 	}
 
 	/**
-	 * Initialize the patronymes
+	 * Initialize the patronymes.
 	 * 
 	 * @param patronymes
+	 *            the new patronymes
 	 */
 	public void setPatronymes(String[] patronymes) {
 		this.patronymes = patronymes;
 	}
 
 	/**
-	 * 
-	 * Initialize the surnames
+	 * Initialize the surnames.
 	 * 
 	 * @param surnames
+	 *            the new surnames
 	 */
 	public void setSurnames(String[] surnames) {
 		this.surnames = surnames;
 	}
 
 	/**
-	 * 
-	 * Initialize the groups
+	 * Initialize the groups.
 	 * 
 	 * @param groups
+	 *            the new groups
 	 */
 	public void setGroups(String[] groups) {
 		this.groups = groups;
 	}
 
 	/**
-	 * initialize the descriptions
+	 * initialize the descriptions.
 	 * 
 	 * @param descriptions
+	 *            the new descriptions
 	 */
 	public void setDescriptions(String[] descriptions) {
 		this.descriptions = descriptions;
 	}
 
 	/**
-	 * 
-	 * initialize the noticetypes
+	 * initialize the noticetypes.
 	 * 
 	 * @param noticeTypes
+	 *            the new notice types
 	 */
 	public void setNoticeTypes(String[] noticeTypes) {
 		this.noticeTypes = noticeTypes;
 	}
 
 	/**
+	 * Gets the single instance of SukuSenser.
+	 * 
 	 * @return the handle
 	 */
 	public static SukuSenser getInstance() {
@@ -135,11 +143,14 @@ public class SukuSenser implements MouseListener {
 	private SukuTextField parent;
 
 	/**
-	 * Show intellisens
+	 * Show intellisens.
 	 * 
 	 * @param parent
+	 *            the parent
 	 * @param tag
+	 *            the tag
 	 * @param fld
+	 *            the fld
 	 */
 	public void showSens(SukuTextField parent, String tag, Field fld) {
 		Rectangle rt = parent.getBounds();
@@ -233,9 +244,11 @@ public class SukuSenser implements MouseListener {
 	}
 
 	/**
-	 * return top element from list
+	 * return top element from list.
 	 * 
 	 * @param parent
+	 *            the parent
+	 * @return the sens
 	 */
 	public void getSens(SukuTextField parent) {
 		if (model.size() > 0) {
@@ -246,13 +259,15 @@ public class SukuSenser implements MouseListener {
 	}
 
 	/**
-	 * 
+	 * Hide.
 	 */
 	public void hide() {
 		sens.setVisible(false);
 	}
 
 	/**
+	 * Checks if is visible.
+	 * 
 	 * @return visible state of senser
 	 */
 	public boolean isVisible() {
@@ -262,9 +277,10 @@ public class SukuSenser implements MouseListener {
 	private int listIndex = 0;
 
 	/**
-	 * move selection in sens-list forward or backward
+	 * move selection in sens-list forward or backward.
 	 * 
 	 * @param direction
+	 *            the direction
 	 */
 	public void selectList(int direction) {
 		// System.out.println("d:" + direction);
@@ -300,6 +316,11 @@ public class SukuSenser implements MouseListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseClicked(MouseEvent m) {
 		int indexi = lista.getSelectedIndex();
@@ -314,21 +335,42 @@ public class SukuSenser implements MouseListener {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 

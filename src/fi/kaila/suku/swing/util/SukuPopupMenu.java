@@ -11,11 +11,9 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.pojo.PersonShortData;
 
 /**
- * 
- * popupmenu for database view
+ * popupmenu for database view.
  * 
  * @author Kalle
- * 
  */
 public class SukuPopupMenu {
 
@@ -38,15 +36,24 @@ public class SukuPopupMenu {
 
 	private MenuSource callerType;
 
+	/**
+	 * The Enum MenuSource.
+	 */
 	public enum MenuSource {
-		dbView, familyView
+
+		/** The db view. */
+		dbView,
+		/** The family view. */
+		familyView
 	}
 
 	/**
-	 * enables the hiskpperson menu
+	 * enables the hiskpperson menu.
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @param b
+	 *            the b
 	 */
 	public void enableHiskiPerson(int idx, boolean b) {
 		if (idx >= 0 && idx < pHiskiPerson.length) {
@@ -54,14 +61,20 @@ public class SukuPopupMenu {
 		}
 	}
 
+	/**
+	 * Gets the source.
+	 * 
+	 * @return the source
+	 */
 	public MenuSource getSource() {
 		return callerType;
 	}
 
 	/**
-	 * add all actionlisteners for menu commands
+	 * add all actionlisteners for menu commands.
 	 * 
 	 * @param l
+	 *            the l
 	 */
 	public void addActionListener(ActionListener l) {
 		pShowPerson.addActionListener(l);
@@ -78,10 +91,10 @@ public class SukuPopupMenu {
 	}
 
 	/**
-	 * 
-	 * sets person on whom menu is shown
+	 * sets person on whom menu is shown.
 	 * 
 	 * @param person
+	 *            the new person
 	 */
 	public void setPerson(PersonShortData person) {
 		this.currentPerson = person;
@@ -90,6 +103,8 @@ public class SukuPopupMenu {
 	}
 
 	/**
+	 * Gets the person.
+	 * 
 	 * @return the person for the meny
 	 */
 	public PersonShortData getPerson() {
@@ -97,11 +112,16 @@ public class SukuPopupMenu {
 	}
 
 	/**
-	 * show menu at location
+	 * show menu at location.
 	 * 
 	 * @param e
+	 *            the e
 	 * @param x
+	 *            the x
 	 * @param y
+	 *            the y
+	 * @param callerType
+	 *            the caller type
 	 */
 	public void show(MouseEvent e, int x, int y, MenuSource callerType) {
 		this.callerType = callerType;
@@ -123,14 +143,14 @@ public class SukuPopupMenu {
 		// pPersonView.setActionCommand(Resurses.TAB_PERSON);
 		// pMenu.add(pPersonView);
 
-		pShowRelatives = new JMenuItem(Resurses
-				.getString(Resurses.TAB_RELATIVES));
+		pShowRelatives = new JMenuItem(
+				Resurses.getString(Resurses.TAB_RELATIVES));
 		// pShowPerson.addActionListener(popupListener);
 		pShowRelatives.setActionCommand(Resurses.TAB_RELATIVES);
 		pMenu.add(pShowRelatives);
 
-		pShowPerson = new JMenuItem(Resurses
-				.getString(Resurses.TAB_PERSON_TEXT));
+		pShowPerson = new JMenuItem(
+				Resurses.getString(Resurses.TAB_PERSON_TEXT));
 		// pShowPerson.addActionListener(popupListener);
 		pShowPerson.setActionCommand(Resurses.TAB_PERSON_TEXT);
 		pMenu.add(pShowPerson);

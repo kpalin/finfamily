@@ -9,6 +9,8 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
+ * The Class SukuTypesModel.
+ * 
  * @author Kalle
  * 
  *         Model for Types table use.
@@ -21,6 +23,9 @@ public class SukuTypesModel extends AbstractTableModel {
 	private HashMap<String, Integer> typeTexts = new HashMap<String, Integer>();
 	private HashMap<String, String> typeRule = new HashMap<String, String>();
 
+	/**
+	 * Instantiates a new suku types model.
+	 */
 	SukuTypesModel() {
 
 		try {
@@ -67,8 +72,9 @@ public class SukuTypesModel extends AbstractTableModel {
 			}
 
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(null, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 
 			e.printStackTrace();
 		}
@@ -80,18 +86,38 @@ public class SukuTypesModel extends AbstractTableModel {
 	private String[] columnNames = { "Tietojakso", "Nimi", "Päähenkilö",
 			"Lapsi", "Muu", "Paikkahakemisto", "Teksti" };
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.table.TableModel#getColumnCount()
+	 */
 	public int getColumnCount() {
 		return columnNames.length;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.table.TableModel#getRowCount()
+	 */
 	public int getRowCount() {
 		return typesData.length;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+	 */
 	public String getColumnName(int col) {
 		return columnNames[col];
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.table.TableModel#getValueAt(int, int)
+	 */
 	public Object getValueAt(int row, int col) {
 		return typesData[row][col];
 	}
@@ -101,12 +127,22 @@ public class SukuTypesModel extends AbstractTableModel {
 	 * each cell. If we didn't implement this method, then the last column would
 	 * contain text ("true"/"false"), rather than a check box.
 	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
+	 */
 	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
 
 	/*
 	 * Don't need to implement this method unless your table's editable.
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
 	 */
 	public boolean isCellEditable(int row, int col) {
 		// Note that the data/cell address is constant,
@@ -121,6 +157,12 @@ public class SukuTypesModel extends AbstractTableModel {
 	/*
 	 * Don't need to implement this method unless your table's data can change.
 	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.table.AbstractTableModel#setValueAt(java.lang.Object,
+	 * int, int)
+	 */
 	public void setValueAt(Object value, int row, int col) {
 
 		typesData[row][col] = value;
@@ -129,7 +171,10 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the types tags.
+	 * 
 	 * @param idx
+	 *            the idx
 	 * @return tag at idx
 	 */
 	public String getTypesTags(int idx) {
@@ -137,6 +182,8 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the types tags count.
+	 * 
 	 * @return # of tags
 	 */
 	public int getTypesTagsCount() {
@@ -144,7 +191,10 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the type text.
+	 * 
 	 * @param tag
+	 *            the tag
 	 * @return the typeTexts
 	 */
 	public Integer getTypeText(String tag) {
@@ -153,8 +203,12 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the types data.
+	 * 
 	 * @param row
+	 *            the row
 	 * @param col
+	 *            the col
 	 * @return contents of cell
 	 */
 	public Object getTypesData(int row, int col) {
@@ -165,7 +219,10 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the types name.
+	 * 
 	 * @param row
+	 *            the row
 	 * @return name of tag
 	 */
 	public String getTypesName(int row) {
@@ -176,6 +233,8 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the types values.
+	 * 
 	 * @return the typesValues
 	 */
 	public String[] getTypesValues() {
@@ -183,7 +242,10 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the types tag.
+	 * 
 	 * @param idx
+	 *            the idx
 	 * @return the tag
 	 */
 	public String getTypesTag(int idx) {
@@ -191,7 +253,10 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the types value.
+	 * 
 	 * @param idx
+	 *            the idx
 	 * @return the text portion
 	 */
 	public String getTypesValue(int idx) {
@@ -199,7 +264,10 @@ public class SukuTypesModel extends AbstractTableModel {
 	}
 
 	/**
+	 * Gets the type rule.
+	 * 
 	 * @param type
+	 *            the type
 	 * @return the typeRule
 	 */
 	public String getTypeRule(String type) {

@@ -6,10 +6,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * Container class for RelationLanguage table
+ * Container class for RelationLanguage table.
  * 
  * @author Kalle
- * 
  */
 public class RelationLanguage implements Serializable {
 
@@ -21,20 +20,40 @@ public class RelationLanguage implements Serializable {
 	private boolean toBeDeleted = false;
 	private boolean toBeUpdated = false;
 
+	/** The rnid. */
 	int rnid = 0;
+
+	/** The rid. */
 	int rid = 0;
+
+	/** The lang code. */
 	String langCode = null;
 	// String tag = null; // -- Tag of the Notice, Mostly Level 1 GEDCOM tags
+	/** The relation type. */
 	String relationType = null; // -- Notice type (L)
+
+	/** The description. */
 	String description = null; // -- Description or remark (L)
+
+	/** The place. */
 	String place = null; // -- Place
+
+	/** The note text. */
 	String noteText = null; // varchar, -- Note textfield (L)
+
+	/** The modified. */
 	Timestamp modified = null; // timestamp, -- timestamp modified
+
+	/** The create date. */
 	Timestamp createDate = null; // timestamp not null default now() --
 
 	/**
+	 * Instantiates a new relation language.
+	 * 
 	 * @param rs
+	 *            the rs
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public RelationLanguage(ResultSet rs) throws SQLException {
 		rnid = rs.getInt("rnid");
@@ -50,13 +69,18 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Instantiates a new relation language.
+	 * 
 	 * @param langCode
+	 *            the lang code
 	 */
 	public RelationLanguage(String langCode) {
 		this.langCode = langCode;
 	}
 
 	/**
+	 * Sets the to be deleted.
+	 * 
 	 * @param value
 	 *            true if to be deleted
 	 */
@@ -65,13 +89,15 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
-	 * reset modified status
+	 * reset modified status.
 	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
 	/**
+	 * Checks if is to be deleted.
+	 * 
 	 * @return true if this is to be deleted
 	 */
 	public boolean isToBeDeleted() {
@@ -79,6 +105,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Checks if is to be updated.
+	 * 
 	 * @return true if this is to be updated
 	 */
 	public boolean isToBeUpdated() {
@@ -86,6 +114,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the rnid.
+	 * 
 	 * @return rnid = relation notice id
 	 */
 	public int getRnid() {
@@ -93,6 +123,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the rid.
+	 * 
 	 * @return rid = relation id
 	 */
 	public int getRid() {
@@ -100,6 +132,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the lang code.
+	 * 
 	 * @return langcode of this language
 	 */
 	public String getLangCode() {
@@ -107,6 +141,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the relation type.
+	 * 
 	 * @return type field
 	 */
 	public String getRelationType() {
@@ -114,6 +150,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the relation type.
+	 * 
 	 * @param text
 	 *            = relation type
 	 */
@@ -126,6 +164,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the description.
+	 * 
 	 * @return dwscription
 	 */
 	public String getDescription() {
@@ -133,7 +173,10 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the description.
+	 * 
 	 * @param text
+	 *            the new description
 	 */
 	public void setDescription(String text) {
 		if (!nv(this.description).equals(nv(text))) {
@@ -144,6 +187,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the place.
+	 * 
 	 * @return place
 	 */
 	public String getPlace() {
@@ -151,6 +196,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the place.
+	 * 
 	 * @param text
 	 *            = place
 	 */
@@ -162,6 +209,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the note text.
+	 * 
 	 * @return notetext
 	 */
 	public String getNoteText() {
@@ -169,7 +218,10 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the note text.
+	 * 
 	 * @param text
+	 *            the new note text
 	 */
 	public void setNoteText(String text) {
 		if (!nv(this.noteText).equals(nv(text))) {
@@ -180,6 +232,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the modified.
+	 * 
 	 * @return when modified
 	 */
 	public Timestamp getModified() {
@@ -187,6 +241,8 @@ public class RelationLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the created.
+	 * 
 	 * @return when created
 	 */
 	public Timestamp getCreated() {

@@ -8,19 +8,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-
 import fi.kaila.suku.imports.Read2004XML;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * Utility to manage database
+ * Utility to manage database.
  * 
  * @author FIKAAKAIL 25.7.2007
- * 
- * 
  */
 public class SukuUtility {
 
@@ -29,10 +24,9 @@ public class SukuUtility {
 	private static SukuUtility sData = null;
 
 	/**
-	 * Singleton requestor of SukuData instance
+	 * Singleton requestor of SukuData instance.
 	 * 
-	 * @return the sinlgeton instance of SukuData
-	 * @throws SukuException
+	 * @return the singleton instance of SukuData
 	 */
 	public static synchronized SukuUtility instance() {
 		if (sData == null) {
@@ -57,13 +51,14 @@ public class SukuUtility {
 	}
 
 	/**
-	 * Execute sql script
+	 * Execute sql script.
 	 * 
 	 * @param con
+	 *            the con
 	 * @param sqlpath
+	 *            the sqlpath
 	 * @throws SukuException
-	 * @throws IOException
-	 * @throws SQLException
+	 *             the suku exception
 	 */
 	public void createSukuDb(Connection con, String sqlpath)
 			throws SukuException {
@@ -147,16 +142,17 @@ public class SukuUtility {
 	}
 
 	/**
-	 * import Suku 2004 backup file
+	 * import Suku 2004 backup file.
 	 * 
 	 * @param con
-	 * 
+	 *            the con
 	 * @param path
+	 *            the path
 	 * @param oldCode
+	 *            the old code
 	 * @return Read2004XML class
-	 * @throws ParserConfigurationException
-	 * @throws TransformerConfigurationException
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData import2004Data(Connection con, String path, String oldCode)
 			throws SukuException {

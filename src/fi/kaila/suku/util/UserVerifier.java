@@ -4,21 +4,22 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * 
- * User verification utilities
+ * User verification utilities.
  * 
  * @author FIKAAKAIL
- * 
  */
 public class UserVerifier {
 
 	/**
-	 * Verifies the user passwd
+	 * Verifies the user passwd.
 	 * 
 	 * @param passwd
+	 *            the passwd
 	 * @param mdPasswd
+	 *            the md passwd
 	 * @return true if passwd matched mdPasswd
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public boolean verifyPassword(String passwd, String mdPasswd)
 			throws SukuException {
@@ -31,12 +32,13 @@ public class UserVerifier {
 	}
 
 	/**
-	 * 
-	 * Encrypt password using md5 algorithm
+	 * Encrypt password using md5 algorithm.
 	 * 
 	 * @param passwd
+	 *            the passwd
 	 * @return encrypted passwd
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public String encryptPassword(String passwd) throws SukuException {
 		byte[] tunnus = passwd.getBytes();

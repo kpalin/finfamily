@@ -25,10 +25,9 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * Class to import data from excel file
+ * Class to import data from excel file.
  * 
  * @author Kalle
- * 
  */
 public class ExcelImporter {
 
@@ -36,12 +35,15 @@ public class ExcelImporter {
 			.getName());
 
 	/**
-	 * Import the types data
+	 * Import the types data.
 	 * 
 	 * @param con
+	 *            the con
 	 * @param path
+	 *            the path
 	 * @return types
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData importTypes(Connection con, String path)
 			throws SukuException {
@@ -270,7 +272,7 @@ public class ExcelImporter {
 							// LangCode varchar, -- language_code
 							// Rule varchar, -- rule
 							// ToText varchar
-							//							
+							//
 							String INSERT_CONVERSIONS = "insert into Conversions (FromText,LangCode,Rule,ToText) "
 									+ " values (?,?,?,?)";
 
@@ -310,9 +312,7 @@ public class ExcelImporter {
 											&& !b1.equals("XXX")) {
 
 										pst.setString(1, a1);
-										pst
-												.setString(2, names[i]
-														.toLowerCase());
+										pst.setString(2, names[i].toLowerCase());
 										pst.setString(3, "IN");
 										pst.setString(4, b1);
 										pst.executeUpdate();
@@ -321,9 +321,7 @@ public class ExcelImporter {
 									if (c1 != null && !c1.isEmpty()
 											&& !c1.equals("XXX")) {
 										pst.setString(1, a1);
-										pst
-												.setString(2, names[i]
-														.toLowerCase());
+										pst.setString(2, names[i].toLowerCase());
 										pst.setString(3, "TO");
 										pst.setString(4, c1);
 										pst.executeUpdate();
@@ -331,9 +329,7 @@ public class ExcelImporter {
 									if (d1 != null && !d1.isEmpty()
 											&& !d1.equals("XXX")) {
 										pst.setString(1, a1);
-										pst
-												.setString(2, names[i]
-														.toLowerCase());
+										pst.setString(2, names[i].toLowerCase());
 										pst.setString(3, "FROM");
 										pst.setString(4, d1);
 										pst.executeUpdate();
@@ -358,12 +354,15 @@ public class ExcelImporter {
 	}
 
 	/**
-	 * Import the coordinates data
+	 * Import the coordinates data.
 	 * 
 	 * @param con
+	 *            the con
 	 * @param path
+	 *            the path
 	 * @return coordinates reuqested
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuData importCoordinates(Connection con, String path)
 			throws SukuException {
@@ -484,12 +483,12 @@ public class ExcelImporter {
 							otherName = bc1.getContents();
 							if (otherName != null && !otherName.isEmpty()) {
 								try {
-									pstOther.setString(1, otherName
-											.toUpperCase());
-									pstOther.setString(2, sheetName
-											.toUpperCase());
-									pstOther.setString(3, placeName
-											.toUpperCase());
+									pstOther.setString(1,
+											otherName.toUpperCase());
+									pstOther.setString(2,
+											sheetName.toUpperCase());
+									pstOther.setString(3,
+											placeName.toUpperCase());
 
 									pstOther.executeUpdate();
 									laskuri2++;
@@ -523,8 +522,16 @@ public class ExcelImporter {
 	}
 
 	/**
+	 * Export coordinates.
+	 * 
 	 * @param con
+	 *            the con
 	 * @param path
+	 *            the path
+	 * @param langCode
+	 *            the lang code
+	 * @param doAll
+	 *            the do all
 	 * @return SukuData for response status
 	 */
 	public SukuData exportCoordinates(Connection con, String path,

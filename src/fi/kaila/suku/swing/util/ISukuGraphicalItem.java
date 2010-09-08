@@ -14,9 +14,10 @@ import fi.kaila.suku.util.pojo.PersonShortData;
 public interface ISukuGraphicalItem {
 
 	/**
-	 * Locate the person at the point from the graphical Item
+	 * Locate the person at the point from the graphical Item.
 	 * 
 	 * @param point
+	 *            the point
 	 * @return Person at location pointed at or null
 	 */
 	public PersonShortData getPersonAtPoint(Point point);

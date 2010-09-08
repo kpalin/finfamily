@@ -5,9 +5,11 @@ import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
 /**
+ * The Class SettingFilter.
+ * 
  * @author FIKAAKAIL
  * 
- *         JSuku setiing filter for selecting files
+ *         JSuku setting filter for selecting files
  */
 public class SettingFilter extends FileFilter {
 
@@ -16,10 +18,10 @@ public class SettingFilter extends FileFilter {
 	private boolean showDirectories = true;
 
 	/**
-	 * constructor
+	 * constructor.
 	 * 
 	 * @param filetype
-	 *            or list of accepted filetype separated by semicolon (;)
+	 *            or list of accepted file types separated by semicolon (;)
 	 */
 	public SettingFilter(String filetype) {
 		if (filetype != null) {
@@ -27,6 +29,11 @@ public class SettingFilter extends FileFilter {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
+	 */
 	@Override
 	public boolean accept(File arg) {
 		int i;

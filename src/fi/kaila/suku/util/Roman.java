@@ -13,6 +13,7 @@ public class Roman {
 	// ================================================================ constant
 	// This could be alternatively be done with parallel arrays.
 	// Another alternative would be Pair<Integer, String>
+	/** The Constant ROMAN_VALUE_TABLE. */
 	final static RomanValue[] ROMAN_VALUE_TABLE = { new RomanValue(1000, "M"),
 			new RomanValue(900, "CM"), new RomanValue(500, "D"),
 			new RomanValue(400, "CD"), new RomanValue(100, "C"),
@@ -23,9 +24,10 @@ public class Roman {
 
 	// ============================================================== int2roman
 	/**
-	 * convert integer to roman number
+	 * convert integer to roman number.
 	 * 
 	 * @param n
+	 *            the n
 	 * @return number as roman numeral
 	 */
 	public static String int2roman(int n) {

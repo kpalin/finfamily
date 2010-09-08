@@ -13,44 +13,41 @@ import fi.kaila.suku.util.pojo.ReportTableMember;
 import fi.kaila.suku.util.pojo.ReportUnit;
 
 /**
- * general static utilities
+ * general static utilities.
  * 
  * @author FIKAAKAIL
- * 
  */
 public class Utils {
 
 	/**
-	 * enumerator for source of person for drag-and-drop
-	 * 
+	 * enumerator for source of person for drag-and-drop.
 	 */
 	public enum PersonSource {
-		/**
-		 * Database table
-		 */
+
+		/** Database table. */
 		DATABASE,
-		/**
-		 * parent table
-		 */
+
+		/** parent table. */
 		PARENT,
-		/**
-		 * spouse table
-		 */
+
+		/** spouse table. */
 		SPOUSE,
-		/**
-		 * child table
-		 */
+
+		/** child table. */
 		CHILD
 	}
 
 	private static Logger logger = Logger.getLogger(Utils.class.getName());
 
 	/**
-	 * Get boolean preference from local repository
+	 * Get boolean preference from local repository.
 	 * 
 	 * @param o
+	 *            the o
 	 * @param key
+	 *            the key
 	 * @param def
+	 *            the def
 	 * @return true or false
 	 */
 	public static boolean getBooleanPref(Object o, String key, boolean def) {
@@ -76,11 +73,14 @@ public class Utils {
 	}
 
 	/**
-	 * Put boolean preference into local repository
+	 * Put boolean preference into local repository.
 	 * 
 	 * @param o
+	 *            the o
 	 * @param key
+	 *            the key
 	 * @param value
+	 *            the value
 	 */
 	public static void putBooleanPref(Object o, String key, boolean value) {
 		String svalue = "false";
@@ -92,10 +92,12 @@ public class Utils {
 	}
 
 	/**
-	 * convert dbdate date to viewable textformat
+	 * convert dbdate date to viewable textformat.
 	 * 
 	 * @param dbDate
+	 *            the db date
 	 * @param trimDate
+	 *            the trim date
 	 * @return in text format
 	 */
 	public static String textDate(String dbDate, boolean trimDate) {
@@ -160,7 +162,10 @@ public class Utils {
 	}
 
 	/**
+	 * Db try date.
+	 * 
 	 * @param textDate
+	 *            the text date
 	 * @return db date or null if wrong date
 	 */
 	public static String dbTryDate(String textDate) {
@@ -172,9 +177,10 @@ public class Utils {
 	}
 
 	/**
-	 * convert viewable textdate to dbformat
+	 * convert viewable textdate to dbformat.
 	 * 
 	 * @param textDate
+	 *            the text date
 	 * @return date in dbformat
 	 * @throws SukuDateException
 	 *             if bad dateformat
@@ -322,9 +328,10 @@ public class Utils {
 	}
 
 	/**
-	 * Modify name to Proper name using capital latters as first character
+	 * Modify name to Proper name using capital latters as first character.
 	 * 
 	 * @param names
+	 *            the names
 	 * @return the proper name
 	 */
 	public static String toProper(String names) {
@@ -371,8 +378,7 @@ public class Utils {
 	}
 
 	/**
-	 * 
-	 * Create from report tables a HasMap of persons in the report
+	 * Create from report tables a HasMap of persons in the report.
 	 * 
 	 * @param tables
 	 *            Vector that contains all tables for report
@@ -409,8 +415,8 @@ public class Utils {
 					if (ref == null) {
 						ref = new PersonInTables(member.getSubPid(m));
 						ref.references.add(Long.valueOf(tab.getTableNo()));
-						personReferences.put(Integer.valueOf(member
-								.getSubPid(m)), ref);
+						personReferences.put(
+								Integer.valueOf(member.getSubPid(m)), ref);
 					} else {
 						ref.references.add(tab.getTableNo());
 					}
@@ -425,8 +431,9 @@ public class Utils {
 						if (ref == null) {
 							ref = new PersonInTables(spouseMember.getPid());
 							ref.asParents.add(Long.valueOf(tab.getTableNo()));
-							personReferences.put(Integer.valueOf(spouseMember
-									.getPid()), ref);
+							personReferences
+									.put(Integer.valueOf(spouseMember.getPid()),
+											ref);
 						} else {
 							ref.asParents.add(tab.getTableNo());
 						}
@@ -434,8 +441,8 @@ public class Utils {
 							ref = personReferences.get(spouseMember
 									.getSubPid(m));
 							if (ref == null) {
-								ref = new PersonInTables(spouseMember
-										.getSubPid(m));
+								ref = new PersonInTables(
+										spouseMember.getSubPid(m));
 								ref.references.add(Long.valueOf(tab
 										.getTableNo()));
 								personReferences.put(Integer
@@ -484,8 +491,8 @@ public class Utils {
 					if (ref == null) {
 						ref = new PersonInTables(member.getSubPid(m));
 						ref.references.add(Long.valueOf(tab.getTableNo()));
-						personReferences.put(Integer.valueOf(member
-								.getSubPid(m)), ref);
+						personReferences.put(
+								Integer.valueOf(member.getSubPid(m)), ref);
 					} else {
 						ref.references.add(tab.getTableNo());
 					}
@@ -496,8 +503,10 @@ public class Utils {
 	}
 
 	/**
+	 * Nv.
 	 * 
 	 * @param text
+	 *            the text
 	 * @return empty string if null or text
 	 */
 	public static String nv(String text) {
@@ -507,8 +516,10 @@ public class Utils {
 	}
 
 	/**
+	 * Vn.
 	 * 
 	 * @param text
+	 *            the text
 	 * @return null if empty string or text
 	 */
 	public static String vn(String text) {
@@ -518,9 +529,10 @@ public class Utils {
 	}
 
 	/**
-	 * used primarily to display year only
+	 * used primarily to display year only.
 	 * 
 	 * @param text
+	 *            the text
 	 * @return 4 first chars of string if exist
 	 */
 	public static String nv4(String text) {
@@ -532,7 +544,7 @@ public class Utils {
 	}
 
 	/**
-	 * check if name begins with von part
+	 * check if name begins with von part.
 	 * 
 	 * @param name
 	 *            to check
@@ -569,8 +581,12 @@ public class Utils {
 	private static String[] patronymeEnds = null; // {"poika","son","dotter","tytär"};
 
 	/**
+	 * Extract patronyme.
+	 * 
 	 * @param noticeGivenName
+	 *            the notice given name
 	 * @param patronymePart
+	 *            the patronyme part
 	 * @return patronym for true, else givenname
 	 */
 	public static String extractPatronyme(String noticeGivenName,
@@ -612,9 +628,10 @@ public class Utils {
 	}
 
 	/**
-	 * command to start the external application for the file
+	 * command to start the external application for the file.
 	 * 
 	 * @param url
+	 *            the url
 	 */
 	public static void openExternalFile(String url) {
 		try {
@@ -656,13 +673,15 @@ public class Utils {
 	private static SukuTypesModel types = null;
 
 	/**
-	 * reset the model so next request reloads it
+	 * reset the model so next request reloads it.
 	 */
 	public static void resetSukuModel() {
 		types = null;
 	}
 
 	/**
+	 * Type instance.
+	 * 
 	 * @return the types model
 	 */
 	public static SukuTypesModel typeInstance() {

@@ -6,11 +6,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * 
- * PersonLongData contains complete copy of person data from database
+ * PersonLongData contains complete copy of person data from database.
  * 
  * @author Kalle
- * 
  */
 public class PersonLongData implements Serializable {
 
@@ -39,6 +37,8 @@ public class PersonLongData implements Serializable {
 	// private Relation[] relationNotices=null;
 
 	/**
+	 * Gets the pid.
+	 * 
 	 * @return pid
 	 */
 	public int getPid() {
@@ -46,6 +46,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the tag.
+	 * 
 	 * @return tag
 	 */
 	public String getTag() {
@@ -53,20 +55,22 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
-	 * reset teh modified status
+	 * reset teh modified status.
 	 */
 	public void resetModified() {
 		mainModified = false;
 	}
 
 	/**
-	 * set that order has been modified
+	 * set that order has been modified.
 	 */
 	public void setOrderModified() {
 		orderModified = true;
 	}
 
 	/**
+	 * Checks if is order modified.
+	 * 
 	 * @return if order has been modified
 	 */
 	public boolean isOrderModified() {
@@ -74,6 +78,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Checks if is main modified.
+	 * 
 	 * @return true if main has been modified
 	 */
 	public boolean isMainModified() {
@@ -81,6 +87,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the privacy.
+	 * 
 	 * @return privacy
 	 */
 	public String getPrivacy() {
@@ -88,6 +96,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the group id.
+	 * 
 	 * @return groupid
 	 */
 	public String getGroupId() {
@@ -95,6 +105,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the sex.
+	 * 
 	 * @return sex
 	 */
 	public String getSex() {
@@ -102,6 +114,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Sets the sex.
+	 * 
 	 * @param text
 	 *            = sex
 	 */
@@ -114,6 +128,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the source.
+	 * 
 	 * @return the source
 	 */
 	public String getSource() {
@@ -121,6 +137,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the private text.
+	 * 
 	 * @return private text
 	 */
 	public String getPrivateText() {
@@ -128,6 +146,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the refn.
+	 * 
 	 * @return refn
 	 */
 	public String getRefn() {
@@ -135,6 +155,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the created.
+	 * 
 	 * @return time creted
 	 */
 	public Timestamp getCreated() {
@@ -142,6 +164,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Gets the modified.
+	 * 
 	 * @return tiem modified
 	 */
 	public Timestamp getModified() {
@@ -149,22 +173,28 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Sets the pid.
+	 * 
 	 * @param pid
+	 *            the new pid
 	 */
 	public void setPid(int pid) {
 		this.pid = pid;
 	}
 
 	/**
-	 * sets array of notices
+	 * sets array of notices.
 	 * 
 	 * @param notices
+	 *            the new notices
 	 */
 	public void setNotices(UnitNotice[] notices) {
 		this.notices = notices;
 	}
 
 	/**
+	 * Gets the notices.
+	 * 
 	 * @return array of notices
 	 */
 	public UnitNotice[] getNotices() {
@@ -172,7 +202,10 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Sets the source.
+	 * 
 	 * @param text
+	 *            the new source
 	 */
 	public void setSource(String text) {
 		if (!nv(this.sourceText).equals(nv(text))) {
@@ -183,10 +216,12 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
-	 * extract unit data from select * from unit
+	 * extract unit data from select * from unit.
 	 * 
 	 * @param rs
+	 *            the rs
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public PersonLongData(ResultSet rs) throws SQLException {
 
@@ -204,9 +239,14 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Instantiates a new person long data.
+	 * 
 	 * @param pid
+	 *            the pid
 	 * @param tag
+	 *            the tag
 	 * @param sex
+	 *            the sex
 	 */
 	public PersonLongData(int pid, String tag, String sex) {
 		this.pid = pid;
@@ -231,6 +271,8 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Sets the privacy.
+	 * 
 	 * @param text
 	 *            "P" of null
 	 */
@@ -243,7 +285,10 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Sets the group id.
+	 * 
 	 * @param text
+	 *            the new group id
 	 */
 	public void setGroupId(String text) {
 		if (!nv(this.groupId).equals(nv(text))) {
@@ -254,7 +299,10 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Sets the user refn.
+	 * 
 	 * @param text
+	 *            the new user refn
 	 */
 	public void setUserRefn(String text) {
 		if (!nv(this.userRefn).equals(nv(text))) {
@@ -265,7 +313,10 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * Sets the private text.
+	 * 
 	 * @param text
+	 *            the new private text
 	 */
 	public void setPrivateText(String text) {
 		if (!nv(this.privateText).equals(nv(text))) {

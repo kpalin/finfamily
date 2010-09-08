@@ -4,10 +4,9 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
- * Container for relationNotice
+ * Container for relationNotice.
  * 
  * @author Kalle
- * 
  */
 public class RelationNotice implements Serializable {
 
@@ -18,39 +17,88 @@ public class RelationNotice implements Serializable {
 
 	private boolean toBeDeleted = false;
 	private boolean toBeUpdated = false;
+
+	/** The rnid. */
 	int rnid = 0; // notice id
+
+	/** The rid. */
 	int rid = 0; // rela id
+
+	/** The surety. */
 	int surety = 100;
+
+	/** The tag. */
 	String tag = null;
+
+	/** The type. */
 	String type = null;
+
+	/** The description. */
 	String description = null;
+
+	/** The date prefix. */
 	String datePrefix = null;
+
+	/** The from date. */
 	String fromDate = null;
+
+	/** The to date. */
 	String toDate = null;
+
+	/** The place. */
 	String place = null;
+
+	/** The note text. */
 	String noteText = null;
+
+	/** The source text. */
 	String sourceText = null;
+
+	/** The private text. */
 	String privateText = null;
+
+	/** The modified. */
 	Timestamp modified = null;
+
+	/** The created. */
 	Timestamp created = null;
+
+	/** The languages. */
 	RelationLanguage[] languages = null;
 
 	/**
+	 * Instantiates a new relation notice.
+	 * 
 	 * @param rnid
+	 *            the rnid
 	 * @param rid
+	 *            the rid
 	 * @param surety
+	 *            the surety
 	 * @param tag
+	 *            the tag
 	 * @param type
+	 *            the type
 	 * @param description
+	 *            the description
 	 * @param datePrefix
+	 *            the date prefix
 	 * @param fromDate
+	 *            the from date
 	 * @param toDate
+	 *            the to date
 	 * @param place
+	 *            the place
 	 * @param noteText
+	 *            the note text
 	 * @param sourceText
+	 *            the source text
 	 * @param privateText
+	 *            the private text
 	 * @param modified
+	 *            the modified
 	 * @param created
+	 *            the created
 	 */
 	public RelationNotice(int rnid, int rid, int surety, String tag,
 			String type, String description, String datePrefix,
@@ -77,13 +125,18 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Instantiates a new relation notice.
+	 * 
 	 * @param tag
+	 *            the tag
 	 */
 	public RelationNotice(String tag) {
 		this.tag = tag;
 	}
 
 	/**
+	 * Sets the to be deleted.
+	 * 
 	 * @param value
 	 *            true if this is to be deleted
 	 */
@@ -92,13 +145,15 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
-	 * reset modified status
+	 * reset modified status.
 	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
 	/**
+	 * Gets the rnid.
+	 * 
 	 * @return relation notice id
 	 */
 	public int getRnid() {
@@ -106,6 +161,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Checks if is to be deleted.
+	 * 
 	 * @return is this to be deleted
 	 */
 	public boolean isToBeDeleted() {
@@ -113,6 +170,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Checks if is to be updated.
+	 * 
 	 * @return is this to be updated
 	 */
 	public boolean isToBeUpdated() {
@@ -120,6 +179,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the languages.
+	 * 
 	 * @return array of languages
 	 */
 	public RelationLanguage[] getLanguages() {
@@ -127,6 +188,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the languages.
+	 * 
 	 * @param langu
 	 *            array of languages for this relation notice
 	 */
@@ -135,6 +198,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the type.
+	 * 
 	 * @param text
 	 *            = the type
 	 */
@@ -147,6 +212,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the description.
+	 * 
 	 * @param text
 	 *            = description
 	 */
@@ -159,6 +226,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the from date.
+	 * 
 	 * @param text
 	 *            first part of date
 	 */
@@ -171,6 +240,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the place.
+	 * 
 	 * @param text
 	 *            = place
 	 */
@@ -183,6 +254,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the source.
+	 * 
 	 * @param text
 	 *            source
 	 */
@@ -195,6 +268,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the private text.
+	 * 
 	 * @param text
 	 *            private text
 	 */
@@ -207,6 +282,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the tag.
+	 * 
 	 * @return tag
 	 */
 	public String getTag() {
@@ -214,6 +291,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the type.
+	 * 
 	 * @return type of relationnotice
 	 */
 	public String getType() {
@@ -221,6 +300,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the description.
+	 * 
 	 * @return dscription
 	 */
 	public String getDescription() {
@@ -228,6 +309,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the date prefix.
+	 * 
 	 * @return date prefix
 	 */
 	public String getDatePrefix() {
@@ -235,6 +318,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the date prefix.
+	 * 
 	 * @param text
 	 *            Gedcom style date prefix
 	 */
@@ -247,6 +332,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the from date.
+	 * 
 	 * @return first date
 	 */
 	public String getFromDate() {
@@ -254,6 +341,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the to date.
+	 * 
 	 * @return second part of dateinterval
 	 */
 	public String getToDate() {
@@ -261,6 +350,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the to date.
+	 * 
 	 * @param text
 	 *            second part of dateinterval
 	 */
@@ -273,6 +364,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the place.
+	 * 
 	 * @return place
 	 */
 	public String getPlace() {
@@ -280,6 +373,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the note text.
+	 * 
 	 * @return notetext
 	 */
 	public String getNoteText() {
@@ -287,6 +382,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the note text.
+	 * 
 	 * @param text
 	 *            = note text
 	 */
@@ -299,7 +396,10 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Sets the surety.
+	 * 
 	 * @param surety
+	 *            the new surety
 	 */
 	public void setSurety(int surety) {
 		if (this.surety != surety) {
@@ -309,6 +409,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the source.
+	 * 
 	 * @return source
 	 */
 	public String getSource() {
@@ -316,6 +418,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the private text.
+	 * 
 	 * @return private text
 	 */
 	public String getPrivateText() {
@@ -323,6 +427,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the created.
+	 * 
 	 * @return when created
 	 */
 	public Timestamp getCreated() {
@@ -330,6 +436,8 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * Gets the modified.
+	 * 
 	 * @return when modified
 	 */
 	public Timestamp getModified() {
@@ -351,11 +459,18 @@ public class RelationNotice implements Serializable {
 		return tek.trim();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return tag + "/" + type + "/" + description;
 	}
 
 	/**
+	 * Gets the surety.
+	 * 
 	 * @return surety (0,20,40,60,80,100)
 	 */
 	public int getSurety() {

@@ -6,10 +6,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * Container class for UnitLanguage table
+ * Container class for UnitLanguage table.
  * 
  * @author Kalle
- * 
  */
 public class UnitLanguage implements Serializable {
 
@@ -21,24 +20,48 @@ public class UnitLanguage implements Serializable {
 	private boolean toBeDeleted = false;
 	private boolean toBeUpdated = false;
 
+	/** The pnid. */
 	int pnid = 0;
+
+	/** The pid. */
 	int pid = 0;
+
+	/** The lang code. */
 	String langCode = null;
+
+	/** The tag. */
 	String tag = null; // -- Tag of the Notice, Mostly Level 1 GEDCOM tags
+
+	/** The notice type. */
 	String noticeType = null; // -- Notice type (L)
+
+	/** The description. */
 	String description = null; // -- Description or remark (L)
+
+	/** The place. */
 	String place = null; // -- Place
+
+	/** The note text. */
 	String noteText = null; // varchar, -- Note textfield (L)
+
+	/** The media title. */
 	String mediaTitle = null; // varchar, -- text describing the multimedia file
 	// (L)
+	/** The modified. */
 	Timestamp modified = null; // timestamp, -- timestamp modified
+
+	/** The create date. */
 	Timestamp createDate = null; // timestamp not null default now() --
 
 	// timestamp created
 
 	/**
+	 * Instantiates a new unit language.
+	 * 
 	 * @param rs
+	 *            the rs
 	 * @throws SQLException
+	 *             the sQL exception
 	 */
 	public UnitLanguage(ResultSet rs) throws SQLException {
 		pnid = rs.getInt("pnid");
@@ -59,13 +82,18 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Instantiates a new unit language.
+	 * 
 	 * @param langCode
+	 *            the lang code
 	 */
 	public UnitLanguage(String langCode) {
 		this.langCode = langCode;
 	}
 
 	/**
+	 * Sets the to be deleted.
+	 * 
 	 * @param value
 	 *            true if this is to be deleted
 	 */
@@ -74,13 +102,15 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
-	 * reet modifeid status
+	 * reet modifeid status.
 	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
 	/**
+	 * Checks if is to be deleted.
+	 * 
 	 * @return true if this is to be deleted
 	 */
 	public boolean isToBeDeleted() {
@@ -88,6 +118,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Checks if is to be updated.
+	 * 
 	 * @return true if this is to be updated
 	 */
 	public boolean isToBeUpdated() {
@@ -95,6 +127,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the pnid.
+	 * 
 	 * @return person notice id
 	 */
 	public int getPnid() {
@@ -102,6 +136,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the pid.
+	 * 
 	 * @return pid (person id)
 	 */
 	public int getPid() {
@@ -109,6 +145,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the lang code.
+	 * 
 	 * @return langcode
 	 */
 	public String getLangCode() {
@@ -116,6 +154,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the tag.
+	 * 
 	 * @return tag
 	 */
 	public String getTag() {
@@ -123,6 +163,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the notice type.
+	 * 
 	 * @return notice type
 	 */
 	public String getNoticeType() {
@@ -130,7 +172,10 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the notice type.
+	 * 
 	 * @param text
+	 *            the new notice type
 	 */
 	public void setNoticeType(String text) {
 		if (!nv(this.noticeType).equals(nv(text))) {
@@ -141,6 +186,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the description.
+	 * 
 	 * @return description
 	 */
 	public String getDescription() {
@@ -148,7 +195,10 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the description.
+	 * 
 	 * @param text
+	 *            the new description
 	 */
 	public void setDescription(String text) {
 		if (!nv(this.description).equals(nv(text))) {
@@ -159,6 +209,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the place.
+	 * 
 	 * @return place
 	 */
 	public String getPlace() {
@@ -166,7 +218,10 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the place.
+	 * 
 	 * @param text
+	 *            the new place
 	 */
 	public void setPlace(String text) {
 		if (!nv(this.place).equals(nv(text))) {
@@ -177,6 +232,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the note text.
+	 * 
 	 * @return notetext
 	 */
 	public String getNoteText() {
@@ -184,7 +241,10 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the note text.
+	 * 
 	 * @param text
+	 *            the new note text
 	 */
 	public void setNoteText(String text) {
 		if (!nv(this.noteText).equals(nv(text))) {
@@ -195,6 +255,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the media title.
+	 * 
 	 * @return media title
 	 */
 	public String getMediaTitle() {
@@ -202,7 +264,10 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Sets the media title.
+	 * 
 	 * @param text
+	 *            the new media title
 	 */
 	public void setMediaTitle(String text) {
 		if (!nv(this.mediaTitle).equals(nv(text))) {
@@ -213,6 +278,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the modified.
+	 * 
 	 * @return time when modified
 	 */
 	public Timestamp getModified() {
@@ -220,6 +287,8 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * Gets the created.
+	 * 
 	 * @return time when created
 	 */
 	public Timestamp getCreated() {

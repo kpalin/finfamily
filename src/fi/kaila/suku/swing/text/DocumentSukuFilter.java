@@ -7,25 +7,33 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 /**
- * Aux class for java type text
+ * Aux class for java type text.
  * 
  * @author Kalle
- * 
  */
 public class DocumentSukuFilter extends DocumentFilter implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	/** The DEBUG. */
 	boolean DEBUG = false;
 
 	/**
-	 * 
+	 * Instantiates a new document suku filter.
 	 */
 	public DocumentSukuFilter() {
-
+		// TODO: Empty
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.text.DocumentFilter#insertString(javax.swing.text.DocumentFilter
+	 * .FilterBypass, int, java.lang.String, javax.swing.text.AttributeSet)
+	 */
 	public void insertString(FilterBypass fb, int offs, String str,
 			AttributeSet a) throws BadLocationException {
 		if (DEBUG) {
@@ -43,6 +51,13 @@ public class DocumentSukuFilter extends DocumentFilter implements Serializable {
 		// Toolkit.getDefaultToolkit().beep();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.text.DocumentFilter#replace(javax.swing.text.DocumentFilter
+	 * .FilterBypass, int, int, java.lang.String, javax.swing.text.AttributeSet)
+	 */
 	public void replace(FilterBypass fb, int offs, int length, String str,
 			AttributeSet a) throws BadLocationException {
 		if (DEBUG) {

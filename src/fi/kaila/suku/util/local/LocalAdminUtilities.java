@@ -27,10 +27,9 @@ import fi.kaila.suku.util.Resurses;
 
 /**
  * Admin part of application uses database directly from user side This is not
- * available in webstart version
+ * available in webstart version.
  * 
  * @author Kalle
- * 
  */
 public class LocalAdminUtilities extends JFrame implements ActionListener {
 
@@ -55,10 +54,12 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 	private String dbDriver = "org.postgresql.Driver";
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param parent
+	 *            the parent
 	 * @throws ClassNotFoundException
+	 *             the class not found exception
 	 */
 	public LocalAdminUtilities(ISuku parent) throws ClassNotFoundException {
 
@@ -89,8 +90,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 		this.mNewUser.setActionCommand(Resurses.NEWUSER);
 		this.mNewUser.addActionListener(this);
 
-		this.mChangePassword = new JMenuItem(Resurses
-				.getString(Resurses.CHANGEPASSWORD));
+		this.mChangePassword = new JMenuItem(
+				Resurses.getString(Resurses.CHANGEPASSWORD));
 		this.mChangePassword.setEnabled(false);
 		mFile.add(this.mChangePassword);
 		this.mChangePassword.setActionCommand(Resurses.CHANGEPASSWORD);
@@ -174,6 +175,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 	}
 
 	/**
+	 * Connect postgres.
 	 * 
 	 * @return true is succeeded to connect to databse
 	 */
@@ -216,6 +218,12 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -241,8 +249,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 					String aux = (String) this.userCombo.getItemAt(i);
 
 					if (aux != null && aux.equalsIgnoreCase(newUser)) {
-						JOptionPane.showMessageDialog(this, Resurses
-								.getString("ADMINUSEREXIST"));
+						JOptionPane.showMessageDialog(this,
+								Resurses.getString("ADMINUSEREXIST"));
 						return;
 					}
 				}
@@ -267,8 +275,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Error: "
-							+ e1.getMessage());
+					JOptionPane.showMessageDialog(this,
+							"Error: " + e1.getMessage());
 				}
 
 			}
@@ -296,15 +304,15 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 
 				} catch (SQLException e1) {
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Error: "
-							+ e1.getMessage());
+					JOptionPane.showMessageDialog(this,
+							"Error: " + e1.getMessage());
 				}
 
 			}
 		} else if (cmd.equals(Resurses.NEWDB)) {
 
-			String newDb = toAscii(JOptionPane.showInputDialog(this, Resurses
-					.getString("NEWDATABASENAME")));
+			String newDb = toAscii(JOptionPane.showInputDialog(this,
+					Resurses.getString("NEWDATABASENAME")));
 			Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
 			setCursor(hourglassCursor);
 
@@ -325,8 +333,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Error: "
-							+ e1.getMessage());
+					JOptionPane.showMessageDialog(this,
+							"Error: " + e1.getMessage());
 				}
 				Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 				setCursor(normalCursor);
@@ -339,9 +347,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 			if (dbname == null)
 				return;
 
-			if (JOptionPane.showConfirmDialog(this, Resurses
-					.getString("ASKTODROP")
-					+ " " + dbname) == JOptionPane.YES_OPTION) {
+			if (JOptionPane.showConfirmDialog(this,
+					Resurses.getString("ASKTODROP") + " " + dbname) == JOptionPane.YES_OPTION) {
 
 				try {
 					String sql = "drop database " + dbname + " ";
@@ -356,8 +363,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Error: "
-							+ e1.getMessage());
+					JOptionPane.showMessageDialog(this,
+							"Error: " + e1.getMessage());
 				}
 
 			}

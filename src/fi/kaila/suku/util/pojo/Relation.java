@@ -4,10 +4,9 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
- * Relation table row as POJO object
+ * Relation table row as POJO object.
  * 
  * @author Kalle
- * 
  */
 public class Relation implements Serializable {
 
@@ -27,14 +26,28 @@ public class Relation implements Serializable {
 	private boolean toBeDeleted = false;
 	private boolean toBeUpdated = false;
 
+	/** The aid. */
 	int aid = 0; // subject pid
+
+	/** The bid. */
 	int bid = 0; // relative pid
+
+	/** The rid. */
 	int rid = 0;
+
+	/** The rtag. */
 	String rtag = null; // subject tag
+
+	/** The surety. */
 	int surety = 100; // relation surety
+
+	/** The modified. */
 	Timestamp modified = null;
+
+	/** The created. */
 	Timestamp created = null;
 
+	/** The notices. */
 	RelationNotice[] notices = null;
 	//
 	// used in RelaticesPane. Does not come from server
@@ -42,13 +55,22 @@ public class Relation implements Serializable {
 	private PersonShortData pers = null;
 
 	/**
+	 * Instantiates a new relation.
+	 * 
 	 * @param rid
+	 *            the rid
 	 * @param aid
+	 *            the aid
 	 * @param bid
+	 *            the bid
 	 * @param tag
+	 *            the tag
 	 * @param surety
+	 *            the surety
 	 * @param modified
+	 *            the modified
 	 * @param created
+	 *            the created
 	 */
 	public Relation(int rid, int aid, int bid, String tag, int surety,
 			Timestamp modified, Timestamp created) {
@@ -65,7 +87,10 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Sets the rid.
+	 * 
 	 * @param rid
+	 *            the new rid
 	 */
 	public void setRid(int rid) {
 		if (this.rid == 0) {
@@ -74,6 +99,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the adopted.
+	 * 
 	 * @return adopted status
 	 */
 	public String getAdopted() {
@@ -88,22 +115,25 @@ public class Relation implements Serializable {
 	}
 
 	/**
-	 * Set value for relation surety
+	 * Set value for relation surety.
 	 * 
 	 * @param surety
+	 *            the new surety
 	 */
 	public void setSurety(int surety) {
 		this.surety = surety;
 	}
 
 	/**
-	 * reset modified status
+	 * reset modified status.
 	 */
 	public void resetModified() {
 		toBeUpdated = false;
 	}
 
 	/**
+	 * Sets the notices.
+	 * 
 	 * @param notices
 	 *            an array of relationNotice objects for the relation
 	 */
@@ -112,6 +142,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the notices.
+	 * 
 	 * @return the array of relationnotices
 	 */
 	public RelationNotice[] getNotices() {
@@ -119,6 +151,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Sets the to be deleted.
+	 * 
 	 * @param value
 	 *            true if this is to be deleted
 	 */
@@ -128,6 +162,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Sets the to be updated.
+	 * 
 	 * @param value
 	 *            true if this is to be deleted
 	 */
@@ -137,6 +173,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Checks if is to be deleted.
+	 * 
 	 * @return true if it is to be deleted
 	 */
 	public boolean isToBeDeleted() {
@@ -144,6 +182,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Checks if is to be updated.
+	 * 
 	 * @return true if is to be updated
 	 */
 	public boolean isToBeUpdated() {
@@ -151,6 +191,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the tag.
+	 * 
 	 * @return tag
 	 */
 	public String getTag() {
@@ -158,6 +200,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the rid.
+	 * 
 	 * @return rid
 	 */
 	public int getRid() {
@@ -165,6 +209,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the relative.
+	 * 
 	 * @return relative pid
 	 */
 	public int getRelative() {
@@ -172,6 +218,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the pid.
+	 * 
 	 * @return pid
 	 */
 	public int getPid() {
@@ -179,7 +227,10 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Sets the pid.
+	 * 
 	 * @param pid
+	 *            the new pid
 	 */
 	public void setPid(int pid) {
 		if (this.aid != pid) {
@@ -189,6 +240,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Sets the relative.
+	 * 
 	 * @param pid
 	 *            for relative
 	 */
@@ -200,6 +253,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the surety.
+	 * 
 	 * @return (0,20,40,60,80,100)
 	 */
 	public int getSurety() {
@@ -207,6 +262,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the created.
+	 * 
 	 * @return created time
 	 */
 	public Timestamp getCreated() {
@@ -214,6 +271,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the modified.
+	 * 
 	 * @return modifieud time
 	 */
 	public Timestamp getModified() {
@@ -221,6 +280,8 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Sets the short person.
+	 * 
 	 * @param pers
 	 *            teh short person for the relation
 	 */
@@ -230,12 +291,19 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * Gets the short person.
+	 * 
 	 * @return get the short person of this relation
 	 */
 	public PersonShortData getShortPerson() {
 		return pers;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "rel " + aid + "/" + bid + "/" + rtag;

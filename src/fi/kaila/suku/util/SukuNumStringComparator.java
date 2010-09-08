@@ -3,14 +3,18 @@ package fi.kaila.suku.util;
 import java.util.Comparator;
 
 /**
- * comparator for numeric strings
+ * comparator for numeric strings.
  * 
  * @author Kalle
- * 
  */
 @SuppressWarnings("unchecked")
 public class SukuNumStringComparator implements Comparator {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
 	@Override
 	public int compare(Object arg0, Object arg1) {
 		int a, b;

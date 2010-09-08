@@ -10,22 +10,28 @@ import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.Utils;
 
 /**
- * DateField is specific to genealogy app as dates need not be exact
+ * DateField is specific to genealogy app as dates need not be exact.
  * 
  * @author Kalle
- * 
  */
 public class SukuDateField extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+
+	/** The date pref. */
 	JComboBox datePref;
+
+	/** The date from. */
 	JTextField dateFrom;
+
+	/** The date to. */
 	JTextField dateTo;
 
+	/** The date post. */
 	JLabel datePost;
 
 	/**
-	 * 
+	 * Instantiates a new suku date field.
 	 */
 	public SukuDateField() {
 
@@ -48,6 +54,8 @@ public class SukuDateField extends JPanel {
 	}
 
 	/**
+	 * Gets the date pref tag.
+	 * 
 	 * @return the prefix tag for date (See GEDCOM)
 	 */
 	public String getDatePrefTag() {
@@ -74,14 +82,19 @@ public class SukuDateField extends JPanel {
 	}
 
 	/**
+	 * Gets the from date.
+	 * 
 	 * @return date in text format
 	 * @throws SukuDateException
+	 *             the suku date exception
 	 */
 	public String getFromDate() throws SukuDateException {
 		return Utils.dbDate(dateFrom.getText());
 	}
 
 	/**
+	 * Checks if is plain.
+	 * 
 	 * @return true if no prefix exists for date
 	 */
 	public boolean isPlain() {
@@ -91,6 +104,8 @@ public class SukuDateField extends JPanel {
 	}
 
 	/**
+	 * Gets the text from date.
+	 * 
 	 * @return text from dfatefield
 	 */
 	public String getTextFromDate() {
@@ -98,29 +113,35 @@ public class SukuDateField extends JPanel {
 	}
 
 	/**
-	 * 
-	 * sets datefield (text)
+	 * sets datefield (text).
 	 * 
 	 * @param text
+	 *            the new text from date
 	 */
 	public void setTextFromDate(String text) {
 		dateFrom.setText(text);
 	}
 
 	/**
+	 * Gets the to date.
+	 * 
 	 * @return text format of date
 	 * @throws SukuDateException
+	 *             the suku date exception
 	 */
 	public String getToDate() throws SukuDateException {
 		return Utils.dbDate(dateTo.getText());
 	}
 
 	/**
-	 * sets full date
+	 * sets full date.
 	 * 
 	 * @param pre
+	 *            the pre
 	 * @param from
+	 *            the from
 	 * @param to
+	 *            the to
 	 */
 	public void setDate(String pre, String from, String to) {
 		int preIdx = 0;

@@ -19,10 +19,10 @@ import org.xml.sax.SAXException;
 import fi.kaila.suku.util.SukuException;
 
 /**
- * Class used to read excel 2003 xml data
+ * Class used to read excel 2003 xml data.
  * 
  * @author Kalle
- *@deprecated
+ * @deprecated
  */
 public class ImportExcelData {
 
@@ -33,13 +33,14 @@ public class ImportExcelData {
 	private Document doc;
 
 	/**
-	 * Database connectoon and excel workbook file is set in constructor
+	 * Database connection and excel workbook file is set in constructor.
 	 * 
 	 * @param con
 	 *            database as destination
 	 * @param path
 	 *            excel file as source
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public ImportExcelData(Connection con, String path) throws SukuException {
 		this.con = con;
@@ -71,9 +72,10 @@ public class ImportExcelData {
 	}
 
 	/**
-	 * import coordinates from excel xml
+	 * import coordinates from excel xml.
 	 * 
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public void importCoordinates() throws SukuException {
 
@@ -308,9 +310,7 @@ public class ImportExcelData {
 					}
 
 				}
-				logger
-						.fine("inserted to  PlaceOtherNames " + laskuri
-								+ " rows");
+				logger.fine("inserted to  PlaceOtherNames " + laskuri + " rows");
 
 			}
 		}

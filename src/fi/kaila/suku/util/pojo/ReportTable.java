@@ -1,9 +1,10 @@
 package fi.kaila.suku.util.pojo;
 
 /**
+ * The Class ReportTable.
  * 
  * @author Kalle
- *@deprecated
+ * @deprecated
  */
 public class ReportTable {
 	private int tid = 0;
@@ -17,6 +18,8 @@ public class ReportTable {
 	private ReportTableMember[] members = null;
 
 	/**
+	 * Sets the tid.
+	 * 
 	 * @param tid
 	 *            the tid to set
 	 */
@@ -25,6 +28,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Gets the tid.
+	 * 
 	 * @return the tid
 	 */
 	public int getTid() {
@@ -32,6 +37,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Sets the table no.
+	 * 
 	 * @param tableNo
 	 *            the tableNo to set
 	 */
@@ -40,6 +47,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Gets the table no.
+	 * 
 	 * @return the tableNo
 	 */
 	public int getTableNo() {
@@ -47,6 +56,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Sets the gen.
+	 * 
 	 * @param gen
 	 *            the gen to set
 	 */
@@ -55,6 +66,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Gets the gen.
+	 * 
 	 * @return the gen
 	 */
 	public int getGen() {
@@ -62,6 +75,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Sets the type.
+	 * 
 	 * @param type
 	 *            the type to set
 	 */
@@ -70,6 +85,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Gets the type.
+	 * 
 	 * @return the type
 	 */
 	public String getType() {
@@ -77,6 +94,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Sets the spouse count.
+	 * 
 	 * @param spouseCount
 	 *            the spouseCount to set
 	 */
@@ -85,6 +104,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Gets the spouse count.
+	 * 
 	 * @return the spouseCount
 	 */
 	public int getSpouseCount() {
@@ -92,6 +113,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Sets the child count.
+	 * 
 	 * @param childCount
 	 *            the childCount to set
 	 */
@@ -100,6 +123,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Gets the child count.
+	 * 
 	 * @return the childCount
 	 */
 	public int getChildCount() {
@@ -107,6 +132,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Sets the parent table no.
+	 * 
 	 * @param parentTableNo
 	 *            the parentTableNo to set
 	 */
@@ -115,6 +142,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Gets the parent table no.
+	 * 
 	 * @return the parentTableNo
 	 */
 	public int getParentTableNo() {
@@ -122,6 +151,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Sets the members.
+	 * 
 	 * @param members
 	 *            the members to set
 	 */
@@ -130,6 +161,8 @@ public class ReportTable {
 	}
 
 	/**
+	 * Gets the members.
+	 * 
 	 * @return the members
 	 */
 	public ReportTableMember[] getMembers() {

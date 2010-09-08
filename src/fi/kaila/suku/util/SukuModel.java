@@ -14,21 +14,22 @@ import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 
 /**
- * The Suku table model to display list of persons
+ * The Suku table model to display list of persons.
  * 
  * @author FIKAAKAIL
- * 
  */
 public class SukuModel implements TableModel {
 
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(SukuModel.class.getName());
 
-	/** woman icon for database list */
+	/** woman icon for database list. */
 	public static ImageIcon womanIcon = null;
-	/** male icon for database list */
+
+	/** male icon for database list. */
 	public static ImageIcon manIcon = null;
-	/** unknown sex icon for database list */
+
+	/** unknown sex icon for database list. */
 	public static ImageIcon unknownIcon = null;
 
 	//
@@ -40,12 +41,12 @@ public class SukuModel implements TableModel {
 	private Suku suku = null;
 
 	/**
-	 * 
-	 * load icons in consrtuctor
+	 * load icons in consrtuctor.
 	 * 
 	 * @param suku
-	 * 
+	 *            the suku
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuModel(Suku suku) throws SukuException {
 		this.suku = suku;
@@ -115,6 +116,11 @@ public class SukuModel implements TableModel {
 		return this.tab.size();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		SukuRow rw = this.tab.get(getRowCount() - 1);
@@ -122,9 +128,8 @@ public class SukuModel implements TableModel {
 	}
 
 	/**
-	 * reset table model
+	 * reset table model.
 	 * 
-	 * @throws SukuException
 	 */
 	public void resetModel() {
 		this.tab.removeAllElements();
@@ -183,13 +188,17 @@ public class SukuModel implements TableModel {
 		return false;
 	}
 
-	/**
-	 * Pseudo row number that gets the whole SukuRow object
-	 */
+	/** Pseudo row number that gets the whole SukuRow object. */
 	public static final int SUKU_ROW = -1;
 
 	/**
+	 * Gets the value at.
 	 * 
+	 * @param argr
+	 *            the argr
+	 * @param argc
+	 *            the argc
+	 * @return the value at
 	 * @see javax.swing.table.TableModel#getValueAt(int, int)
 	 */
 	public Object getValueAt(int argr, int argc) {
@@ -215,7 +224,10 @@ public class SukuModel implements TableModel {
 	}
 
 	/**
+	 * Adds the row.
+	 * 
 	 * @param row
+	 *            the row
 	 */
 	public void addRow(SukuRow row) {
 		this.row = row;
@@ -225,10 +237,12 @@ public class SukuModel implements TableModel {
 	}
 
 	/**
-	 * insert row at specified position
+	 * insert row at specified position.
 	 * 
 	 * @param index
+	 *            the index
 	 * @param row
+	 *            the row
 	 */
 	public void addRow(int index, SukuRow row) {
 		this.row = row;
@@ -238,9 +252,10 @@ public class SukuModel implements TableModel {
 	}
 
 	/**
-	 * remove row from model
+	 * remove row from model.
 	 * 
 	 * @param idx
+	 *            the idx
 	 */
 	public void removeRow(int idx) {
 		this.tab.remove(idx);

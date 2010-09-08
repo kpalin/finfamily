@@ -10,10 +10,9 @@ import java.util.logging.Logger;
 import fi.kaila.suku.util.SukuException;
 
 /**
- * Help for login routine
+ * Help for login routine.
  * 
  * @author Kalle
- * 
  */
 public class LocalDatabaseUtility {
 
@@ -21,9 +20,13 @@ public class LocalDatabaseUtility {
 			.getName());
 
 	/**
+	 * Gets the list of databases.
+	 * 
 	 * @param con
+	 *            the con
 	 * @return list of available databases
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public static String[] getListOfDatabases(Connection con)
 			throws SukuException {
@@ -54,9 +57,13 @@ public class LocalDatabaseUtility {
 	}
 
 	/**
+	 * Gets the list of users.
+	 * 
 	 * @param con
+	 *            the con
 	 * @return list of available users
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	// cmd.CommandText =
 	// "select rolname from pg_roles where rolname != 'postgres' ";
@@ -87,6 +94,15 @@ public class LocalDatabaseUtility {
 
 	}
 
+	/**
+	 * Gets the list of schemas.
+	 * 
+	 * @param con
+	 *            the con
+	 * @return the list of schemas
+	 * @throws SukuException
+	 *             the suku exception
+	 */
 	public static String[] getListOfSchemas(Connection con)
 			throws SukuException {
 		String sql = "select * from pg_namespace where nspname not like 'pg%' and nspname <> 'information_schema' ";
@@ -114,6 +130,15 @@ public class LocalDatabaseUtility {
 
 	}
 
+	/**
+	 * Sets the schema.
+	 * 
+	 * @param con
+	 *            the con
+	 * @param schema
+	 *            the schema
+	 * @return the string
+	 */
 	public static String setSchema(Connection con, String schema) {
 		Statement stm;
 		String resu = null;
@@ -128,6 +153,15 @@ public class LocalDatabaseUtility {
 		return resu;
 	}
 
+	/**
+	 * Creates the new schema.
+	 * 
+	 * @param con
+	 *            the con
+	 * @param schema
+	 *            the schema
+	 * @return the string
+	 */
 	public static String createNewSchema(Connection con, String schema) {
 		String resu = null;
 		Statement stm;
@@ -143,10 +177,12 @@ public class LocalDatabaseUtility {
 	}
 
 	/**
-	 * Drop named schema from current database
+	 * Drop named schema from current database.
 	 * 
 	 * @param con
+	 *            the con
 	 * @param name
+	 *            the name
 	 * @return possible error string
 	 */
 	public static String dropSchema(Connection con, String name) {

@@ -7,10 +7,9 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 /**
- * Executor of operating system commands
+ * Executor of operating system commands.
  * 
  * @author Kalle
- * 
  */
 public class CommandExecuter {
 
@@ -18,13 +17,16 @@ public class CommandExecuter {
 			.getName());
 
 	/**
-	 * execute the command
+	 * execute the command.
 	 * 
 	 * @param cmd
 	 *            each command part is in seperate string
 	 * @throws InterruptedException
+	 *             the interrupted exception
 	 * @throws SukuException
+	 *             the suku exception
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void executeTheCommnad(String[] cmd)
 			throws InterruptedException, SukuException, IOException {

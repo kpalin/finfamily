@@ -28,12 +28,13 @@ public class SukuTextArea extends JTextArea implements ActionListener,
 	 */
 	private static final long serialVersionUID = 1L;
 	// private Logger logger = Logger.getLogger(this.getClass().getName());
+	/** The popup listener. */
 	PopupListener popupListener = null;
 
 	private SukuTextArea me = null;
 
 	/**
-	 * Textarea with context sensitive menu
+	 * Textarea with context sensitive menu.
 	 */
 	public SukuTextArea() {
 		me = this;
@@ -42,35 +43,82 @@ public class SukuTextArea extends JTextArea implements ActionListener,
 		this.addMouseListener(popupListener);
 	}
 
+	/**
+	 * The listener interface for receiving popup events. The class that is
+	 * interested in processing a popup event implements this interface, and the
+	 * object created with that class is registered with a component using the
+	 * component's <code>addPopupListener<code> method. When
+	 * the popup event occurs, that object's appropriate
+	 * method is invoked.
+	 * 
+	 * @see PopupEvent
+	 */
 	class PopupListener implements MouseListener, ActionListener {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent
+		 * )
+		 */
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			//
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mouseExited(MouseEvent e) {
 			//
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mousePressed(MouseEvent e) {
 			//
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+		 */
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			maybeShowPopup(e);
@@ -141,6 +189,12 @@ public class SukuTextArea extends JTextArea implements ActionListener,
 
 	private static long hiskiNumero = 0;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -161,6 +215,13 @@ public class SukuTextArea extends JTextArea implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.datatransfer.ClipboardOwner#lostOwnership(java.awt.datatransfer
+	 * .Clipboard, java.awt.datatransfer.Transferable)
+	 */
 	@Override
 	public void lostOwnership(Clipboard arg0, Transferable arg1) {
 		// do nothing

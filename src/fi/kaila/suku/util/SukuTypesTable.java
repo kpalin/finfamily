@@ -12,16 +12,16 @@ import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * Component contains the table for the notices types
+ * Component contains the table for the notices types.
  * 
  * @author Kalle
- * 
  */
 public class SukuTypesTable extends JTable {
 
 	/**  */
 	private static final long serialVersionUID = 1L;
 
+	/** The model. */
 	SukuTypesModel model = null;
 
 	// /**
@@ -33,9 +33,10 @@ public class SukuTypesTable extends JTable {
 	// }
 
 	/**
+	 * Instantiates a new suku types table.
+	 * 
 	 * @param dim
 	 *            dimension of Preferred Scrollable Viewport Size
-	 * 
 	 */
 	public SukuTypesTable(Dimension dim) {
 		initme(dim);
@@ -51,6 +52,11 @@ public class SukuTypesTable extends JTable {
 
 	// Implement table header tool tips.
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.JTable#createDefaultTableHeader()
+	 */
 	@Override
 	protected JTableHeader createDefaultTableHeader() {
 		return new JTableHeader(this.columnModel) {
@@ -69,10 +75,10 @@ public class SukuTypesTable extends JTable {
 	}
 
 	/**
-	 * Gets the tag at the indicated index position
+	 * Gets the tag at the indicated index position.
 	 * 
 	 * @param idx
-	 * 
+	 *            the idx
 	 * @return the indexed tag
 	 */
 	public String getTypesTag(int idx) {
@@ -80,9 +86,10 @@ public class SukuTypesTable extends JTable {
 	}
 
 	/**
-	 * Get report value for tag
+	 * Get report value for tag.
 	 * 
 	 * @param tag
+	 *            the tag
 	 * @return name of type
 	 */
 	public String getTypeText(String tag) {
@@ -104,7 +111,10 @@ public class SukuTypesTable extends JTable {
 	}
 
 	/**
+	 * Gets the type rule.
+	 * 
 	 * @param type
+	 *            the type
 	 * @return rule for requested type
 	 */
 	public String getTypeRule(String type) {
@@ -114,7 +124,10 @@ public class SukuTypesTable extends JTable {
 	}
 
 	/**
+	 * Gets the tag name.
+	 * 
 	 * @param tag
+	 *            the tag
 	 * @return name of tag e.g. BIRT tag returns Birth in English
 	 */
 	public String getTagName(String tag) {
@@ -134,9 +147,10 @@ public class SukuTypesTable extends JTable {
 	}
 
 	/**
-	 * Get report value for tag
+	 * Get report value for tag.
 	 * 
 	 * @param tag
+	 *            the tag
 	 * @return value of tag
 	 */
 	public String getTextValue(String tag) {
@@ -148,9 +162,10 @@ public class SukuTypesTable extends JTable {
 	}
 
 	/**
-	 * get state of setting for tag
+	 * get state of setting for tag.
 	 * 
 	 * @param tag
+	 *            the tag
 	 * @param col
 	 *            column in table. 1 = name, 2 = main, 3 = child, 4 = sub, 5 =
 	 *            place
@@ -176,6 +191,8 @@ public class SukuTypesTable extends JTable {
 	}
 
 	/**
+	 * Save report settings.
+	 * 
 	 * @param type
 	 *            name of setting type (e.g. report types)
 	 * @param settingsIndex
@@ -210,19 +227,23 @@ public class SukuTypesTable extends JTable {
 			SukuData reposet = Suku.kontroller.getSukuData(v
 					.toArray(new String[0]));
 			if (reposet.resu != null && !reposet.resu.equals(Resurses.OK)) {
-				JOptionPane.showMessageDialog(this, reposet.resu, Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, reposet.resu,
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 
 	}
 
 	/**
+	 * Load report settings.
+	 * 
 	 * @param type
 	 *            of setting
 	 * @param settingsIndex
@@ -285,8 +306,9 @@ public class SukuTypesTable extends JTable {
 
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, "error fetching setting "
-					+ settingsIndex + ": " + e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+					+ settingsIndex + ": " + e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 
 			e.printStackTrace();
 		}

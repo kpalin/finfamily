@@ -20,10 +20,9 @@ import fi.kaila.suku.swing.util.ISukuGraphicalItem;
 import fi.kaila.suku.util.Utils;
 
 /**
- * Container for the table (family)
+ * Container for the table (family).
  * 
  * @author fikaakail
- * 
  */
 public class TableShortData implements Serializable, ISukuGraphicalItem {
 
@@ -64,6 +63,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	private Point p = new Point();
 
 	/**
+	 * Gets the area.
+	 * 
 	 * @return the area for the table
 	 */
 	public Rectangle getArea() {
@@ -71,7 +72,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Sets the location.
+	 * 
 	 * @param p
+	 *            the new location
 	 */
 	public void setLocation(Point p) {
 		this.p = p;
@@ -80,6 +84,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Exists person.
 	 * 
 	 * @param pid
 	 *            person pid to check
@@ -95,7 +100,12 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Draw me.
+	 * 
 	 * @param g
+	 *            the g
+	 * @param color
+	 *            the color
 	 */
 	public void drawMe(Graphics g, Color color) {
 		if (famMember.size() == 1) {
@@ -465,7 +475,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the size.
+	 * 
 	 * @param g
+	 *            the g
 	 * @return size of table
 	 */
 	public Dimension getSize(Graphics g) {
@@ -628,6 +641,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Main image count.
+	 * 
 	 * @return count of images for parents
 	 */
 	public int mainImageCount() {
@@ -642,6 +657,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Child image count.
+	 * 
 	 * @return count of child images
 	 */
 	public int childImageCount() {
@@ -656,6 +673,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the subject rows.
+	 * 
 	 * @return no of rows for subject
 	 */
 	public int getSubjectRows() {
@@ -663,6 +682,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the spouse rows.
+	 * 
 	 * @return no of rows for spouses
 	 */
 	public int getSpouseRows() {
@@ -674,6 +695,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the child rows.
+	 * 
 	 * @return no of rows for children
 	 */
 	public int getChildRows() {
@@ -685,7 +708,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Sets the subject.
+	 * 
 	 * @param subject
+	 *            the new subject
 	 */
 	public void setSubject(PersonShortData subject) {
 		famMember.removeAllElements();
@@ -704,6 +730,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the subject.
+	 * 
 	 * @return teh subject
 	 */
 	public PersonShortData getSubject() {
@@ -713,6 +741,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the child count.
+	 * 
 	 * @return count of children
 	 */
 	public int getChildCount() {
@@ -720,7 +750,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the child.
+	 * 
 	 * @param index
+	 *            the index
 	 * @return child at index
 	 */
 	public PersonShortData getChild(int index) {
@@ -731,6 +764,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the spouse count.
+	 * 
 	 * @return no of spouses
 	 */
 	public int getSpouseCount() {
@@ -738,7 +773,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the spouse.
+	 * 
 	 * @param index
+	 *            the index
 	 * @return spouse at index
 	 */
 	public PersonShortData getSpouse(int index) {
@@ -749,6 +787,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the father count.
+	 * 
 	 * @return count of fathers
 	 */
 	public int getFatherCount() {
@@ -756,7 +796,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the father.
+	 * 
 	 * @param index
+	 *            the index
 	 * @return fatehr at index
 	 */
 	public PersonShortData getFather(int index) {
@@ -767,6 +810,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the mother count.
+	 * 
 	 * @return count of mothers
 	 */
 	public int getMotherCount() {
@@ -774,7 +819,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
+	 * Gets the mother.
+	 * 
 	 * @param index
+	 *            the index
 	 * @return mother at index
 	 */
 	public PersonShortData getMother(int index) {
@@ -785,10 +833,12 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	/**
-	 * init structure
+	 * init structure.
 	 * 
 	 * @param pers
+	 *            the pers
 	 * @param rels
+	 *            the rels
 	 */
 	public void initRelatives(PersonShortData[] pers, RelationShortData[] rels) {
 
@@ -883,6 +933,11 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < famMember.size(); i++) {
@@ -903,6 +958,13 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.swing.util.ISukuGraphicalItem#getPersonAtPoint(java.awt
+	 * .Point)
+	 */
 	@Override
 	public PersonShortData getPersonAtPoint(Point point) {
 
@@ -915,12 +977,21 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		return null;
 	}
 
+	/**
+	 * The Class PersonRectangle.
+	 */
 	class PersonRectangle {
+
+		/** The person. */
 		PersonShortData person;
+
+		/** The rectangle. */
 		Rectangle rectangle;
 	}
 
 	/**
+	 * Gets the location.
+	 * 
 	 * @return location
 	 */
 	public Point getLocation() {
