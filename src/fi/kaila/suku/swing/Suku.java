@@ -1394,6 +1394,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				about.setVisible(true);
 				return;
 			}
+
 			if (cmd.equals(Resurses.SW_UPDATE)) {
 				String updateSite = "https://sourceforge.net/projects/finfamily/";
 				Utils.openExternalFile(updateSite);
@@ -2219,7 +2220,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return tPrivateButton.isSelected();
 	}
 
-	private void createReport(PersonShortData pers) {
+	public void createReport(PersonShortData pers) {
 		ReportWorkerDialog dlg = new ReportWorkerDialog(this, kontroller, pers);
 		dlg.setVisible(true);
 
@@ -2920,14 +2921,22 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				// System.out.println("LOCAN/W: " + locaNew + "/" + lastLoc);
 				this.splitPane.setDividerLocation(locaNew);
 			}
-			try {
-				this.splitPane.updateUI();
-			} catch (NullPointerException ne) {
-				ne.printStackTrace();
+			if (this.splitPane != null) {
+				try {
+					this.splitPane.updateUI();
+				} catch (NullPointerException ne) {
+					logger.warning("splitPane NullPointerException");
+					// ne.printStackTrace();
+				}
 			}
 		}
 		if (this.scrollPane != null) {
-			this.scrollPane.updateUI();
+			try {
+				this.scrollPane.updateUI();
+			} catch (NullPointerException ne) {
+				logger.warning("scrollPane NullPointerException");
+				// ne.printStackTrace();
+			}
 		}
 
 	}
@@ -3275,9 +3284,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				} else if (cmd.equals(Resurses.TAB_PERSON)) {
 
 					showPerson(pop.getPerson().getPid());
+
 					// setTitle(pop.getPerson().getAlfaName() + " "
 					// + nv4(pop.getPerson().getBirtDate()) + "-" +
 					// nv4(pop.getPerson().getDeatDate()));
+
+				} else if (cmd.equals(Resurses.TAB_RELATIVES)) {
+					showPerson(pop.getPerson().getPid());
+
+					int midx = personView.getMainPaneIndex();
+					if (midx >= 2) {
+						personView.setSelectedIndex(midx + 1);
+					}
 
 				}
 				if (cmd.equals(Resurses.MENU_COPY)) {

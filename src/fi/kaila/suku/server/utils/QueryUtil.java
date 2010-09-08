@@ -192,7 +192,9 @@ public class QueryUtil {
 								+ "' and '" + todate + "9999' ");
 					}
 					if (begdate == null && todate == null && place != null) {
-						fromSQL.append("place ilike '" + toQuery(place) + "' ");
+						fromSQL
+								.append("place ilike '" + toQuery(place)
+										+ "%' ");
 					} else if (place != null) {
 						fromSQL.append("and place ilike '" + toQuery(place)
 								+ "' ");
@@ -307,7 +309,7 @@ public class QueryUtil {
 
 						fromSQL
 								.append("u.pid in (select pid from unitnotice where place ilike '"
-										+ toQuery(searchPlace) + "') ");
+										+ toQuery(searchPlace) + "%') ");
 
 					} else if (searchPlace != null && searchNoticeTag != null) {
 						fromSQL

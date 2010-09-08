@@ -24,8 +24,10 @@ public class RelativePopupMenu {
 	private JPopupMenu pMenu = null;
 
 	private JMenuItem pPerson;
+	private JMenuItem pRelatives;
 	private JMenuItem pShowPerson;
 	private JMenuItem pShowFamily;
+	private JMenuItem pShowReport;
 	// private JMenuItem pPaste;
 	// private JMenuItem pPasteBefore;
 	// private JMenuItem pPasteAfter;
@@ -35,8 +37,10 @@ public class RelativePopupMenu {
 	private void addActionListener(ActionListener l) {
 
 		pPerson.addActionListener(l);
+		pRelatives.addActionListener(l);
 		pShowFamily.addActionListener(l);
 		pShowPerson.addActionListener(l);
+		pShowReport.addActionListener(l);
 		// pPaste.addActionListener(l);
 		// pPasteBefore.addActionListener(l);
 		// pPasteAfter.addActionListener(l);
@@ -73,6 +77,7 @@ public class RelativePopupMenu {
 		pPerson.setVisible(true);
 		if (idx == 0) {
 			pParent.setVisible(value);
+			pRelatives.setVisible(value);
 		}
 		pAddParent[idx].setVisible(value);
 	}
@@ -107,6 +112,11 @@ public class RelativePopupMenu {
 		// pShowFamily.addActionListener(popupListener);
 		pPerson.setActionCommand(Resurses.TAB_PERSON);
 		pMenu.add(pPerson);
+
+		pRelatives = new JMenuItem(Resurses.getString(Resurses.TAB_RELATIVES));
+		// pShowFamily.addActionListener(popupListener);
+		pRelatives.setActionCommand(Resurses.TAB_RELATIVES);
+		pMenu.add(pRelatives);
 		// pPerson.setEnabled(false);
 
 		pShowPerson = new JMenuItem(Resurses
@@ -119,6 +129,11 @@ public class RelativePopupMenu {
 		// pShowFamily.addActionListener(popupListener);
 		pShowFamily.setActionCommand(Resurses.TAB_FAMILY);
 		pMenu.add(pShowFamily);
+		pMenu.addSeparator();
+		pShowReport = new JMenuItem(Resurses.getString(Resurses.CREATE_REPORT));
+		// pShowFamily.addActionListener(popupListener);
+		pShowReport.setActionCommand(Resurses.CREATE_REPORT);
+		pMenu.add(pShowReport);
 
 		// pPasteBefore = new
 		// JMenuItem(Resurses.getString(Resurses.MENU_PASTE));
@@ -209,12 +224,12 @@ public class RelativePopupMenu {
 	public void setPasteAtRow(int pasteAtRow) {
 
 		pPerson.setVisible(pasteAtRow >= 0);
+		pRelatives.setVisible(pasteAtRow >= 0);
 		String name = "";
 		if (mousePerson != null) {
 			name = mousePerson.getAlfaName();
 		}
-		pPerson.setText(Resurses.getString(Resurses.TAB_PERSON) + " " + name);
-
+		pPerson.setText(Resurses.getString("" + name));
 		// if (currentPerson == null) {
 		// pPaste.setVisible(false);
 		// pPasteAfter.setVisible(false);

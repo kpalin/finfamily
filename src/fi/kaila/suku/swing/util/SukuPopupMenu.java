@@ -23,9 +23,10 @@ public class SukuPopupMenu {
 
 	private JPopupMenu pMenu = null;
 	private JMenuItem pShowPerson;
+	private JMenuItem pShowRelatives;
 	private JMenuItem pShowFamily;
 	private JMenuItem pMainPerson;
-	private JMenuItem pPersonView;
+	// private JMenuItem pPersonView;
 	private JMenuItem pCopy;
 	private JMenuItem pNeedle;
 	// private JMenuItem pPaste;
@@ -64,9 +65,10 @@ public class SukuPopupMenu {
 	 */
 	public void addActionListener(ActionListener l) {
 		pShowPerson.addActionListener(l);
+		pShowRelatives.addActionListener(l);
 		pMainPerson.addActionListener(l);
 		pShowFamily.addActionListener(l);
-		pPersonView.addActionListener(l);
+		// pPersonView.addActionListener(l);
 		pCopy.addActionListener(l);
 		pNeedle.addActionListener(l);
 		pReport.addActionListener(l);
@@ -116,10 +118,16 @@ public class SukuPopupMenu {
 		pMainPerson.setActionCommand(Resurses.TAB_PERSON);
 		pMenu.add(pMainPerson);
 		pMenu.addSeparator();
-		pPersonView = new JMenuItem(Resurses.getString(Resurses.TAB_PERSON));
+		// pPersonView = new JMenuItem(Resurses.getString(Resurses.TAB_PERSON));
+		// // pShowPerson.addActionListener(popupListener);
+		// pPersonView.setActionCommand(Resurses.TAB_PERSON);
+		// pMenu.add(pPersonView);
+
+		pShowRelatives = new JMenuItem(Resurses
+				.getString(Resurses.TAB_RELATIVES));
 		// pShowPerson.addActionListener(popupListener);
-		pPersonView.setActionCommand(Resurses.TAB_PERSON);
-		pMenu.add(pPersonView);
+		pShowRelatives.setActionCommand(Resurses.TAB_RELATIVES);
+		pMenu.add(pShowRelatives);
 
 		pShowPerson = new JMenuItem(Resurses
 				.getString(Resurses.TAB_PERSON_TEXT));

@@ -1,5 +1,6 @@
 package fi.kaila.suku.swing.panel;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -86,7 +87,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	JScrollPane chilScroll = null;
 
 	Vector<Relation> otherRelations = null;
-
+	JTextField subject = null;
 	JPanel relaPane = null;
 	JButton addData = null;
 	JButton delRelation;
@@ -144,6 +145,12 @@ public class RelativesPane extends JPanel implements ActionListener,
 		me.spouses.list.removeAllElements();
 		me.children.list.removeAllElements();
 		me.relaPane.setVisible(false);
+
+		PersonShortData psd = new PersonShortData(longPers);
+		String tmp = psd.getAlfaName(true) + " "
+				+ ((psd.getBirtYear() == 0) ? "" : " : " + psd.getBirtYear())
+				+ ((psd.getDeatYear() == 0) ? "" : " - " + psd.getDeatYear());
+		me.subject.setText(tmp);
 		for (int i = 0; i < me.pers.length; i++) {
 			me.persMap.put(pers[i].getPid(), pers[i]);
 		}
@@ -265,10 +272,17 @@ public class RelativesPane extends JPanel implements ActionListener,
 				}
 			}
 		}
+		subject = new JTextField();
+		subject.setEditable(false);
+		add(subject);
+		subject.setBackground(Color.green);
+
 		popupListener = new RelativePopupListener(this);
 		pop = RelativePopupMenu.getInstance(popupListener);
 
-		parents = new MyRelationModel();
+		subject.addMouseListener(popupListener);
+
+		parents = new MyRelationModel("RELA_HEADER_PARE");
 
 		pareTab = setupTable(parents);
 
@@ -350,7 +364,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 			}
 		});
 
-		spouses = new MyRelationModel();
+		spouses = new MyRelationModel("RELA_HEADER_SPOU");
 
 		spouTab = setupTable(spouses);
 		spouTab.addMouseListener(this);
@@ -470,7 +484,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 		otherRelations = new Vector<Relation>();
 
-		children = new MyRelationModel();
+		children = new MyRelationModel("RELA_HEADER_CHIL");
 
 		chilTab = setupTable(children);
 		chilTab.addMouseListener(this);
@@ -716,8 +730,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 		private String[] columnNames = null;
 
-		MyRelationModel() {
-			columnNames = Resurses.getString("RELA_HEADER").split(";");
+		MyRelationModel(String hdrTag) {
+			columnNames = Resurses.getString(hdrTag).split(";");
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -880,9 +894,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			} catch (SukuException e1) {
 				logger.log(Level.WARNING, "Add new dialog error", e1);
-				JOptionPane.showMessageDialog(this, e1.getMessage(),
-						Resurses.getString(Resurses.SUKU),
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
+						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 
 			}
 
@@ -937,9 +950,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 			}
 
 		} catch (SukuException e1) {
-			JOptionPane.showMessageDialog(this, e1.toString(),
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e1.toString(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.WARNING, "Closing relatives", e1);
 
 			e1.printStackTrace();
@@ -981,9 +993,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(personView, e.getMessage(),
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(personView, e.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -1046,8 +1057,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 								sb.append("]?");
 
 								int resu = JOptionPane.showConfirmDialog(
-										personView, sb.toString(),
-										Resurses.getString(Resurses.SUKU),
+										personView, sb.toString(), Resurses
+												.getString(Resurses.SUKU),
 										JOptionPane.YES_NO_OPTION,
 										JOptionPane.QUESTION_MESSAGE);
 								if (resu == JOptionPane.YES_OPTION) {
@@ -1084,9 +1095,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 					pares[j] = spouses.list.get(j).getShortPerson()
 							.getAlfaName();
 				}
-				Object par = JOptionPane.showInputDialog(personView,
-						Resurses.getString("QUESTION_ADD") + " " + pareTag,
-						Resurses.getString(Resurses.SUKU),
+				Object par = JOptionPane.showInputDialog(personView, Resurses
+						.getString("QUESTION_ADD")
+						+ " " + pareTag, Resurses.getString(Resurses.SUKU),
 						JOptionPane.QUESTION_MESSAGE, null, pares, pares[0]);
 
 				if (par != null) {
@@ -1102,8 +1113,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 					logger.info("Adding " + pare.getAlfaName() + " as "
 							+ pareTag);
-					Relation rpare = new Relation(0, persShort.getPid(),
-							pare.getPid(), tag, parentSurety, null, null);
+					Relation rpare = new Relation(0, persShort.getPid(), pare
+							.getPid(), tag, parentSurety, null, null);
 					persShort.setParentPid(pare.getPid());
 					rpare.setShortPerson(pare);
 					pare.setParentPid(pare.getPid());
@@ -1111,9 +1122,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 					try {
 						checkLocalRelation(persShort, rpare, pare);
 					} catch (SukuException e) {
-						JOptionPane.showMessageDialog(personView,
-								e.getMessage(),
-								Resurses.getString(Resurses.SUKU),
+						JOptionPane.showMessageDialog(personView, e
+								.getMessage(), Resurses
+								.getString(Resurses.SUKU),
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -1167,9 +1178,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(personView, e.getMessage(),
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(personView, e.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 
 			return;
 		}
@@ -1204,9 +1214,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(personView, e.getMessage(),
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(personView, e.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 
 			return;
 		}
@@ -1233,8 +1242,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 						sb.append(sures[3]);
 						sb.append("]");
 						JOptionPane.showMessageDialog(personView,
-								sb.toString(),
-								Resurses.getString(Resurses.SUKU),
+								sb.toString(), Resurses
+										.getString(Resurses.SUKU),
 								JOptionPane.WARNING_MESSAGE);
 
 						break;
@@ -1273,17 +1282,19 @@ public class RelativesPane extends JPanel implements ActionListener,
 	@Override
 	public void componentResized(ComponentEvent e) {
 		Dimension currSize = getSize();
+		int pt = 30;
 		int leveys = currSize.width / 2 - 10;
 		int ph = (currSize.height * 2) / 7 - 30;
-		int ch = currSize.height - ph - 30;
-		pareScroll.setBounds(10, 10, leveys, ph);
-		spouScroll.setBounds(leveys + 15, 10, leveys, ph);
-		chilScroll.setBounds(10, ph + 20, leveys, ch);
+		int ch = currSize.height - ph - pt - 20;
+		subject.setBounds(10 + leveys / 2, 5, leveys, 20);
+		pareScroll.setBounds(10, pt, leveys, ph);
+		spouScroll.setBounds(leveys + 15, pt, leveys, ph);
+		chilScroll.setBounds(10, ph + pt + 10, leveys, ch);
 
-		close.setBounds(leveys + 30, ph + 20, 80, 24);
-		update.setBounds(leveys + 30 + 80, ph + 20, 80, 24);
+		close.setBounds(leveys + 30, ph + pt + 10, 80, 24);
+		update.setBounds(leveys + 30 + 80, ph + pt + 10, 80, 24);
 
-		relaPane.setBounds(leveys + 15, ph + 44, leveys, ch);
+		relaPane.setBounds(leveys + 15, ph + pt + 34, leveys, ch);
 
 		//
 		// below locations are relative to relaPane
@@ -1402,9 +1413,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 			return lan.updateData();
 
 		} catch (SukuDateException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(),
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
+					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 		}
 		return false;
 
@@ -1482,22 +1492,22 @@ public class RelativesPane extends JPanel implements ActionListener,
 			for (int i = 0; i < children.list.size(); i++) {
 				Relation rr = children.list.get(i);
 				if (rr.getRelative() == relapid && !rr.isToBeDeleted()) {
-					throw new SukuException(
-							Resurses.getString("CHECK_EXISTS_AS_CHILD"));
+					throw new SukuException(Resurses
+							.getString("CHECK_EXISTS_AS_CHILD"));
 				}
 			}
 			for (int i = 0; i < spouses.list.size(); i++) {
 				if (spouses.list.get(i).getRelative() == relapid
 						&& !spouses.list.get(i).isToBeDeleted()) {
-					throw new SukuException(
-							Resurses.getString("CHECK_EXISTS_AS_SPOUSE"));
+					throw new SukuException(Resurses
+							.getString("CHECK_EXISTS_AS_SPOUSE"));
 				}
 			}
 			for (int i = 0; i < parents.list.size(); i++) {
 				if (parents.list.get(i).getRelative() == relapid
 						&& !parents.list.get(i).isToBeDeleted()) {
-					throw new SukuException(
-							Resurses.getString("CHECK_EXISTS_AS_PARENT"));
+					throw new SukuException(Resurses
+							.getString("CHECK_EXISTS_AS_PARENT"));
 				}
 			}
 		}
@@ -1508,8 +1518,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 		if (pyear == 0 || cyear == 0)
 			return;
 		if (pyear + 10 > cyear) {
-			throw new SukuException(
-					Resurses.getString("CHECK_PARENT_TOO_YOUNG"));
+			throw new SukuException(Resurses
+					.getString("CHECK_PARENT_TOO_YOUNG"));
 		}
 		if (cyear > pyear + 100) {
 			throw new SukuException(Resurses.getString("CHECK_PARENT_TOO_OLD"));

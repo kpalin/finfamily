@@ -216,6 +216,8 @@ public class Resurses {
 	/** */
 
 	public static final String TAB_PERSON = "TAB_PERSON";
+	public static final String TAB_RELATIVES = "TAB_RELATIVES";
+	/** */
 	/** */
 	public static final String TAB_PERSON_TEXT = "TAB_PERSON_TEXT";
 	/** */

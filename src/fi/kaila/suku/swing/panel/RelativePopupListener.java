@@ -51,7 +51,10 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 			return;
 		try {
 			if (cmd.equals(Resurses.TAB_PERSON)) {
-				doTabPerson();
+				doTabPerson(false);
+			}
+			if (cmd.equals(Resurses.TAB_RELATIVES)) {
+				doTabPerson(true);
 			}
 			if (cmd.equals(Resurses.TAB_PERSON_TEXT)) {
 				relativesPane.personView.setTextForPerson(relativesPane.pop
@@ -61,6 +64,11 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 				PersonShortData pp = relativesPane.pop.getMousePerson();
 				relativesPane.personView.setSubjectForFamily(pp == null ? 0
 						: pp.getPid());
+			}
+			if (cmd.equals(Resurses.CREATE_REPORT)) {
+				relativesPane.personView.getSuku().createReport(
+						relativesPane.pop.getMousePerson());
+
 			}
 			if (showTable == null) {
 				return;
@@ -116,11 +124,17 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 		}
 	}
 
-	private void doTabPerson() throws SukuException {
+	private void doTabPerson(boolean showRelatives) throws SukuException {
 		if (this.relativesPane.pop.getMousePerson() != null) {
 			this.relativesPane.personView.closePersonPane(true);
 			this.relativesPane.personView.displayPersonPane(relativesPane.pop
 					.getMousePerson().getPid());
+			if (showRelatives) {
+				int midx = this.relativesPane.personView.getMainPaneIndex();
+				if (midx >= 2) {
+					this.relativesPane.personView.setSelectedIndex(midx + 1);
+				}
+			}
 		}
 	}
 
@@ -231,6 +245,18 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 			for (int i = 0; i < this.relativesPane.pop.getParentCount(); i++) {
 				this.relativesPane.pop.showParent(i, false);
 			}
+		} else if (e.getSource() == this.relativesPane.subject) {
+
+			showNewPerson = null; // 
+			asRelative = Resurses.getString("MENU_PASTE_ASSUBJ");
+			this.relativesPane.pop.setMousePerson(new PersonShortData(
+					relativesPane.longPers));
+			this.relativesPane.pop.setPasteAtRow(0);
+			this.relativesPane.pop.setPerson(showNewPerson, asRelative);
+			this.relativesPane.pop.showParent(0, false);
+			this.relativesPane.pop.setPasteAtRow(0);
+			this.relativesPane.pop.show(e, e.getX(), e.getY());
+			return;
 		}
 		if (showTable == null)
 			return;
@@ -242,5 +268,4 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 			this.relativesPane.pop.show(e, e.getX(), e.getY());
 		}
 	}
-
 }
