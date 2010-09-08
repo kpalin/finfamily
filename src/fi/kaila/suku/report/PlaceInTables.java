@@ -6,25 +6,42 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * The Class PlaceInTables.
  * 
  * @author Kaarle Kaila
  * 
  *         Used to collect tables for the places in a report
- * 
  */
 public class PlaceInTables implements Comparable<PlaceInTables> {
 
 	private String place = null;
 	private LinkedHashMap<Long, Long> tableMap = new LinkedHashMap<Long, Long>();
 
+	/**
+	 * Instantiates a new place in tables.
+	 * 
+	 * @param place
+	 *            the place
+	 */
 	public PlaceInTables(String place) {
 		this.place = place;
 	}
 
+	/**
+	 * Gets the place.
+	 * 
+	 * @return the place
+	 */
 	public String getPlace() {
 		return place;
 	}
 
+	/**
+	 * Adds the table.
+	 * 
+	 * @param tabNo
+	 *            the tab no
+	 */
 	public void addTable(long tabNo) {
 		Long oldie = tableMap.get(tabNo);
 		if (oldie == null) {
@@ -32,6 +49,11 @@ public class PlaceInTables implements Comparable<PlaceInTables> {
 		}
 	}
 
+	/**
+	 * Gets the array.
+	 * 
+	 * @return the array
+	 */
 	public long[] getArray() {
 
 		long temp[] = new long[tableMap.size()];
@@ -46,6 +68,11 @@ public class PlaceInTables implements Comparable<PlaceInTables> {
 		return temp;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		long temp[] = getArray();
@@ -58,6 +85,11 @@ public class PlaceInTables implements Comparable<PlaceInTables> {
 		return sb.toString();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(PlaceInTables e) {
 

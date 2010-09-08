@@ -23,6 +23,9 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
+/**
+ * The Class ExportFamilyDatabaseDialog.
+ */
 public class ExportFamilyDatabaseDialog extends JDialog implements
 		ActionListener, PropertyChangeListener {
 
@@ -47,6 +50,18 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 
 	private Task task = null;
 
+	/**
+	 * Instantiates a new export family database dialog.
+	 * 
+	 * @param owner
+	 *            the owner
+	 * @param dbName
+	 *            the db name
+	 * @param zipName
+	 *            the zip name
+	 * @throws SukuException
+	 *             the suku exception
+	 */
 	public ExportFamilyDatabaseDialog(Suku owner, String dbName, String zipName)
 			throws SukuException {
 		super(owner, Resurses.getString("EXPORT"), true);
@@ -98,6 +113,12 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -135,8 +156,8 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 	 * between 0-100 for the progress bar. Text behind ; or if ; does not exist
 	 * is displayed above the progress bar
 	 * 
-	 * 
 	 * @param juttu
+	 *            the juttu
 	 * @return true if cancel command has been issued
 	 */
 	public boolean setRunnerValue(String juttu) {
@@ -197,6 +218,12 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 	private String timerText = null;
 	private int showCounter = 0;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {
@@ -223,8 +250,16 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 		}
 	}
 
+	/**
+	 * The Class Task.
+	 */
 	class Task extends SwingWorker<Void, Void> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
+		 */
 		@Override
 		protected Void doInBackground() throws Exception {
 			// Initialize progress property.
@@ -258,14 +293,15 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 						fos.write(buffi);
 						fos.close();
 					} catch (IOException e) {
-						JOptionPane.showMessageDialog(null, Resurses
-								.getString("EXPORT_BACKUP")
-								+ ":" + e.getMessage());
+						JOptionPane.showMessageDialog(
+								null,
+								Resurses.getString("EXPORT_BACKUP") + ":"
+										+ e.getMessage());
 					}
 					if (resp.resu != null) {
-						JOptionPane.showMessageDialog(owner, Resurses
-								.getString("EXPORT_BACKUP")
-								+ ":" + resp.resu);
+						JOptionPane.showMessageDialog(owner,
+								Resurses.getString("EXPORT_BACKUP") + ":"
+										+ resp.resu);
 					}
 					// else {
 					// JOptionPane.showMessageDialog(owner, Resurses
@@ -276,9 +312,9 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 			} catch (SukuException e) {
 				e.printStackTrace();
 				errorMessage = e.getMessage();
-				JOptionPane.showMessageDialog(owner, Resurses
-						.getString("EXPORT_BACKUP")
-						+ ":" + errorMessage);
+				JOptionPane.showMessageDialog(owner,
+						Resurses.getString("EXPORT_BACKUP") + ":"
+								+ errorMessage);
 
 			}
 
@@ -289,6 +325,11 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -296,6 +337,11 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 		}
 	}
 
+	/**
+	 * Gets the runner.
+	 * 
+	 * @return the runner
+	 */
 	public static ExportFamilyDatabaseDialog getRunner() {
 		return runner;
 	}

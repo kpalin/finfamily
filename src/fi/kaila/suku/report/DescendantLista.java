@@ -49,11 +49,14 @@ public class DescendantLista extends CommonReport {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
-	 * Construcor for Descendant report
+	 * Construcor for Descendant report.
 	 * 
 	 * @param caller
+	 *            the caller
 	 * @param typesTable
+	 *            the types table
 	 * @param repoWriter
+	 *            the repo writer
 	 */
 	public DescendantLista(ReportWorkerDialog caller,
 			SukuTypesTable typesTable, ReportInterface repoWriter) {
@@ -75,9 +78,10 @@ public class DescendantLista extends CommonReport {
 		} catch (SukuException e) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
 					e);
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ":" + e.getMessage());
+			JOptionPane.showMessageDialog(
+					caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + ":"
+							+ e.getMessage());
 			return;
 		}
 		SukuTypesModel types = Utils.typeInstance();
@@ -171,7 +175,7 @@ public class DescendantLista extends CommonReport {
 						.getDeatDate().substring(0, 4);
 				// label = new Label(col, i+1, date);
 				// sheet.addCell(label);
-				//					
+				//
 				// col++;
 
 				for (int jj = 0; jj < ttag.size(); jj++) {
@@ -206,7 +210,7 @@ public class DescendantLista extends CommonReport {
 			//
 			// Number number = new Number(3, 4, 3.1459);
 			// sheet.addCell(number);
-			//				
+			//
 
 			// All sheets and cells added. Now write out the workbook
 			workbook.write();
@@ -227,13 +231,18 @@ public class DescendantLista extends CommonReport {
 		}
 
 		// repoWriter.createReport();
-		//			
+		//
 		// repoWriter.closeReport();
-		//				
-		//		
+		//
+		//
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.report.CommonReport#setVisible(boolean)
+	 */
 	@Override
 	public void setVisible(boolean b) {
 		// not implemented here

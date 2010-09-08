@@ -22,12 +22,9 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * 
- * <h1>Import gedcom-file</h1>
- * 
+ * <h1>Import gedcom-file</h1>.
  * 
  * @author Kalle
- * 
  */
 
 public class ImportGedcomDialog extends JDialog implements ActionListener,
@@ -53,6 +50,8 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private Task task = null;
 
 	/**
+	 * Gets the runner.
+	 * 
 	 * @return the dialog handle used for the progresBar
 	 */
 	public static ImportGedcomDialog getRunner() {
@@ -65,6 +64,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private SukuData gedcomResult = null;
 
 	/**
+	 * Gets the result.
 	 * 
 	 * @return failed gedcom lines
 	 */
@@ -102,12 +102,14 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	}
 
 	/**
-	 * 
 	 * Constructor takes {@link fi.kaila.suku.swing.Suku main program} and
 	 * 
 	 * @param owner
+	 *            the owner
 	 * @param dbName
+	 *            the db name
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public ImportGedcomDialog(Suku owner, String dbName) throws SukuException {
 		super(owner, Resurses.getString("IMPORT"), true);
@@ -171,22 +173,28 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 		if (resp.resuCount > 0) {
 
-			int answer = JOptionPane.showConfirmDialog(this, Resurses
-					.getString("DATABASE_NOT_EMPTY")
-					+ " "
-					+ resp.resuCount
-					+ " "
-					+ Resurses.getString("DELETE_DATA_OK"), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			int answer = JOptionPane.showConfirmDialog(
+					this,
+					Resurses.getString("DATABASE_NOT_EMPTY") + " "
+							+ resp.resuCount + " "
+							+ Resurses.getString("DELETE_DATA_OK"),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			if (answer == 1) {
-				throw new SukuException(Resurses
-						.getString("DATABASE_NOT_EMPTY"));
+				throw new SukuException(
+						Resurses.getString("DATABASE_NOT_EMPTY"));
 
 			}
 		}
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -214,10 +222,18 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * The Class Task.
+	 */
 	class Task extends SwingWorker<Void, Void> {
 
 		/*
 		 * Main task. Executed in background thread.
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
 		 */
 		@Override
 		public Void doInBackground() {
@@ -246,9 +262,9 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 					gedcomResult = resp;
 					if (resp.resu != null) {
-						JOptionPane.showMessageDialog(owner, Resurses
-								.getString("IMPORT_GEDCOM")
-								+ ":" + resp.resu);
+						JOptionPane.showMessageDialog(owner,
+								Resurses.getString("IMPORT_GEDCOM") + ":"
+										+ resp.resu);
 					}
 				}
 			} catch (SukuException e) {
@@ -263,6 +279,11 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 
 		/*
 		 * Executed in event dispatching thread
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
 		 */
 		@Override
 		public void done() {
@@ -291,8 +312,8 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	 * between 0-100 for the progress bar. Text behind ; or if ; does not exist
 	 * is displayed above the progress bar
 	 * 
-	 * 
 	 * @param juttu
+	 *            the juttu
 	 * @return true if cancel command has been issued
 	 */
 	public boolean setRunnerValue(String juttu) {
@@ -357,6 +378,12 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 		return isCancelled;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {

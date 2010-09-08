@@ -18,21 +18,23 @@ import fi.kaila.suku.util.pojo.SukuData;
 /**
  * <h1>Descendant report creator</h1>
  * 
- * The descendant report structure is creted here
+ * The descendant report structure is creted here.
  * 
  * @author Kalle
- * 
  */
 public class DescendantReport extends CommonReport {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
-	 * Constructor for Descendant report
+	 * Constructor for Descendant report.
 	 * 
 	 * @param caller
+	 *            the caller
 	 * @param typesTable
+	 *            the types table
 	 * @param repoWriter
+	 *            the repo writer
 	 */
 	public DescendantReport(ReportWorkerDialog caller,
 			SukuTypesTable typesTable, ReportInterface repoWriter) {
@@ -44,6 +46,7 @@ public class DescendantReport extends CommonReport {
 	 * execute the report.
 	 * 
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	@Override
 	public void executeReport() throws SukuException {
@@ -52,9 +55,9 @@ public class DescendantReport extends CommonReport {
 		if (caller.getDescendantPane().getTableOrder().getSelection() == null) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT)
 					+ Resurses.getString("REPORT_ERROR_ORDERMISSING"));
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ": " + Resurses.getString("REPORT_ERROR_ORDERMISSING"));
+			JOptionPane.showMessageDialog(caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + ": "
+							+ Resurses.getString("REPORT_ERROR_ORDERMISSING"));
 			return;
 		}
 		String order = caller.getDescendantPane().getTableOrder()
@@ -81,9 +84,10 @@ public class DescendantReport extends CommonReport {
 		} catch (SukuException e) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
 					e);
-			JOptionPane.showMessageDialog(caller, Resurses
-					.getString(Resurses.CREATE_REPORT)
-					+ ":" + e.getMessage());
+			JOptionPane.showMessageDialog(
+					caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + ":"
+							+ e.getMessage());
 		}
 
 		if (vlist != null) {
@@ -119,9 +123,10 @@ public class DescendantReport extends CommonReport {
 	}
 
 	/**
-	 * Used to close / hide the report writer
+	 * Used to close / hide the report writer.
 	 * 
 	 * @param b
+	 *            the new visible
 	 */
 	@Override
 	public void setVisible(boolean b) {

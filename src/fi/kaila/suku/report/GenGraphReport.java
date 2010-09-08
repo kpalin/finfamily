@@ -26,20 +26,21 @@ import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * 
- * <h1>GenGraph Report</h1>
- * 
+ * <h1>GenGraph Report</h1>.
  */
 public class GenGraphReport extends CommonReport {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
-	 * Constructor for GenGraphReport
+	 * Constructor for GenGraphReport.
 	 * 
 	 * @param caller
+	 *            the caller
 	 * @param typesTable
+	 *            the types table
 	 * @param repoWriter
+	 *            the repo writer
 	 */
 	public GenGraphReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
 			ReportInterface repoWriter) {
@@ -215,6 +216,11 @@ public class GenGraphReport extends CommonReport {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.report.CommonReport#setVisible(boolean)
+	 */
 	@Override
 	public void setVisible(boolean b) {
 		// not implemented here

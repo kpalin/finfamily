@@ -28,6 +28,9 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
+/**
+ * The Class ImportOtherDialog.
+ */
 public class ImportOtherDialog extends JDialog implements ActionListener,
 		ListSelectionListener, PropertyChangeListener {
 
@@ -63,10 +66,12 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	private static ImportOtherDialog runner = null;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param owner
+	 *            the owner
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public ImportOtherDialog(JFrame owner) throws SukuException {
 		super(owner, Resurses.getString(Resurses.IMPORT_OTHER), true);
@@ -77,6 +82,8 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the runner.
+	 * 
 	 * @return the dialog handle used for the progresBar
 	 */
 	public static ImportOtherDialog getRunner() {
@@ -221,6 +228,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the result.
 	 * 
 	 * @return possible error result
 	 */
@@ -228,6 +236,11 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		return this.errorMessage;
 	}
 
+	/**
+	 * Gets the schema.
+	 * 
+	 * @return the schema
+	 */
 	public String getSchema() {
 		if (wasOk) {
 			return selectedSchema;
@@ -236,6 +249,11 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		}
 	}
 
+	/**
+	 * Gets the view id.
+	 * 
+	 * @return the view id
+	 */
 	public int getViewId() {
 
 		if (wasOk) {
@@ -245,6 +263,11 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		return -1;
 	}
 
+	/**
+	 * Gets the view name.
+	 * 
+	 * @return the view name
+	 */
 	public String getViewName() {
 		if (wasOk && selectedView >= 0) {
 			return viewNames[selectedView];
@@ -252,6 +275,12 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent arg) {
 
@@ -277,8 +306,8 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 
 		if (activator == this.copyAndComp) {
 			if (selectedSchema == null) {
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("SCHEMA_NOT_SELECTED"));
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("SCHEMA_NOT_SELECTED"));
 				return;
 			}
 			selectedView = scViews.getSelectedIndex();
@@ -298,12 +327,12 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 						.toArray(new String[0]));
 
 				if (resp.generalText != null) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("COMPARE_RESULT")
-							+ " " + resp.generalText);
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("COMPARE_RESULT") + " "
+									+ resp.generalText);
 				} else {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("COMPARE_RESULT_NONE"));
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("COMPARE_RESULT_NONE"));
 				}
 
 			} catch (SukuException e) {
@@ -318,13 +347,13 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 						.toArray(new String[0]));
 
 				if (resp.generalText != null) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("COMPARE_RESULT")
-							+ " " + resp.generalText);
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("COMPARE_RESULT") + " "
+									+ resp.generalText);
 					setVisible(false);
 				} else {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("COMPARE_RESULT_NONE"));
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("COMPARE_RESULT_NONE"));
 				}
 
 			} catch (SukuException e) {
@@ -335,8 +364,8 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		} else if (activator == this.compToSchema) {
 			if (selectedSchema == null) {
 
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("SCHEMA_NOT_SELECTED"));
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("SCHEMA_NOT_SELECTED"));
 				return;
 			}
 			selectedView = scViews.getSelectedIndex();
@@ -353,13 +382,13 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 						.toArray(new String[0]));
 
 				if (resp.generalText != null) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("COMPARE_RESULT")
-							+ " " + resp.generalText);
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("COMPARE_RESULT") + " "
+									+ resp.generalText);
 					setVisible(false);
 				} else {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("COMPARE_RESULT_NONE"));
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("COMPARE_RESULT_NONE"));
 				}
 
 			} catch (SukuException e) {
@@ -375,6 +404,13 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event
+	 * .ListSelectionEvent)
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent arg) {
 
@@ -407,10 +443,18 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * The Class Task.
+	 */
 	class Task extends SwingWorker<Void, Void> {
 
 		/*
 		 * Main task. Executed in background thread.
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
 		 */
 		@Override
 		public Void doInBackground() {
@@ -446,6 +490,11 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -472,8 +521,8 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	 * between 0-100 for the progress bar. Text behind ; or if ; does not exist
 	 * is displayed above the progress bar
 	 * 
-	 * 
 	 * @param juttu
+	 *            the juttu
 	 * @return true if cancel command has been issued
 	 */
 	public boolean setRunnerValue(String juttu) {
@@ -530,6 +579,12 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		return isCancelled;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {

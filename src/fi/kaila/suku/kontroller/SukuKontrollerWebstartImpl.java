@@ -27,6 +27,8 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
+ * The Class SukuKontrollerWebstartImpl.
+ * 
  * @author FIKAAKAIL
  * 
  *         remote implementation for kontroller
@@ -43,7 +45,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	// }
 
 	/**
-	 * constructor sets environment for remote
+	 * constructor sets environment for remote.
 	 */
 	public SukuKontrollerWebstartImpl() {
 		logger = Logger.getLogger(this.getClass().getName());
@@ -74,6 +76,13 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 	// private String oldCode="FI";
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#getConnection(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void getConnection(String host, String dbname, String userid,
 			String passwd) throws SukuException {
@@ -275,6 +284,12 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	//
 	// }
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getPref(java.lang.Object,
+	 * java.lang.String, java.lang.String)
+	 */
 	@Override
 	public String getPref(Object o, String key, String def) {
 		// System.out.println("K1:" + key);
@@ -317,6 +332,12 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#putPref(java.lang.Object,
+	 * java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void putPref(Object o, String key, String value) {
 		// System.out.println("key=" + key + "/ value=" + value);
@@ -360,6 +381,12 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#getSukuData(java.lang.String[])
+	 */
 	@Override
 	public SukuData getSukuData(String... params) throws SukuException {
 		StringBuilder sb = new StringBuilder();
@@ -415,6 +442,12 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#openLocalFile(java.lang.String)
+	 */
 	@Override
 	public boolean openLocalFile(String filter) {
 		this.filename = null;
@@ -544,6 +577,13 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#getSukuData(fi.kaila.suku.util
+	 * .pojo.SukuData, java.lang.String[])
+	 */
 	@Override
 	public SukuData getSukuData(SukuData request, String... params)
 			throws SukuException {
@@ -551,42 +591,78 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getFileLength()
+	 */
 	@Override
 	public long getFileLength() {
 		logger.severe("getFileLength not implemented");
 		return 0;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getInputStream()
+	 */
 	@Override
 	public InputStream getInputStream() {
 		logger.severe("getInputStream not implemented");
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getFileName()
+	 */
 	@Override
 	public String getFileName() {
 
 		return "not available yet";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#createLocalFile(java.lang.String)
+	 */
 	@Override
 	public boolean createLocalFile(String filter) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getOutputStream()
+	 */
 	@Override
 	public OutputStream getOutputStream() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#openFile(java.lang.String)
+	 */
 	@Override
 	public InputStream openFile(String path) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getFilePath()
+	 */
 	@Override
 	public String getFilePath() {
 		// return null in webstart

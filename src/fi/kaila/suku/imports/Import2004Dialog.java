@@ -79,6 +79,8 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private Task task = null;
 
 	/**
+	 * Gets the runner.
+	 * 
 	 * @return the dialog handle used for the progresBar
 	 */
 	public static Import2004Dialog getRunner() {
@@ -89,14 +91,16 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private static Import2004Dialog runner = null;
 
 	/**
-	 * 
 	 * Constructor takes {@link fi.kaila.suku.swing.Suku main program} and
-	 * {@link fi.kaila.suku.kontroller.SukuKontroller kontroller interface} as
-	 * parameters
 	 * 
 	 * @param owner
+	 *            the owner
 	 * @param kontroller
+	 *            the kontroller
 	 * @throws SukuException
+	 *             the suku exception
+	 *             {@link fi.kaila.suku.kontroller.SukuKontroller kontroller
+	 *             interface} as parameters
 	 */
 	public Import2004Dialog(JFrame owner, SukuKontroller kontroller)
 			throws SukuException {
@@ -174,22 +178,28 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
 		if (resp.resuCount > 0) {
 
-			int answer = JOptionPane.showConfirmDialog(this, Resurses
-					.getString("DATABASE_NOT_EMPTY")
-					+ " "
-					+ resp.resuCount
-					+ " "
-					+ Resurses.getString("DELETE_DATA_OK"), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			int answer = JOptionPane.showConfirmDialog(
+					this,
+					Resurses.getString("DATABASE_NOT_EMPTY") + " "
+							+ resp.resuCount + " "
+							+ Resurses.getString("DELETE_DATA_OK"),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			if (answer == 1) {
-				throw new SukuException(Resurses
-						.getString("DATABASE_NOT_EMPTY"));
+				throw new SukuException(
+						Resurses.getString("DATABASE_NOT_EMPTY"));
 
 			}
 		}
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -219,12 +229,21 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * The Class Task.
+	 */
 	class Task extends SwingWorker<Void, Void> {
 
+		/** The lang. */
 		String lang = null;
 
 		/*
 		 * Main task. Executed in background thread.
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
 		 */
 		@Override
 		public Void doInBackground() {
@@ -241,9 +260,10 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 				errorMessage = e.getMessage();
 				logger.log(Level.SEVERE, "restore failed", e);
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(owner, Resurses
-						.getString(Resurses.IMPORT_SUKU)
-						+ ":" + e.getMessage());
+				JOptionPane.showMessageDialog(
+						owner,
+						Resurses.getString(Resurses.IMPORT_SUKU) + ":"
+								+ e.getMessage());
 
 			}
 			setVisible(false);
@@ -253,6 +273,11 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		/*
 		 * Executed in event dispatching thread
 		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
+		 */
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
@@ -261,6 +286,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the result.
 	 * 
 	 * @return error message in case of failure of import. null stands for ok
 	 */
@@ -323,8 +349,8 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	 * between 0-100 for the progress bar. Text behind ; or if ; does not exist
 	 * is displayed above the progress bar
 	 * 
-	 * 
 	 * @param juttu
+	 *            the juttu
 	 * @return true if cancel command has been issued
 	 */
 	public boolean setRunnerValue(String juttu) {
@@ -386,6 +412,12 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		return isCancelled;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {

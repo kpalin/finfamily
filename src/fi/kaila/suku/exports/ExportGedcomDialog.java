@@ -27,10 +27,9 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * Export as a Gedcom file
+ * Export as a Gedcom file.
  * 
  * @author Kalle
- * 
  */
 public class ExportGedcomDialog extends JDialog implements ActionListener,
 		PropertyChangeListener {
@@ -65,6 +64,8 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private Task task = null;
 
 	/**
+	 * Gets the runner.
+	 * 
 	 * @return the dialog handle used for the progresBar
 	 */
 	public static ExportGedcomDialog getRunner() {
@@ -77,12 +78,16 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private String dbName = null;
 
 	/**
-	 * 
 	 * Constructor takes {@link fi.kaila.suku.swing.Suku main program} and
 	 * 
 	 * @param owner
+	 *            the owner
 	 * @param dbName
+	 *            the db name
+	 * @param zipName
+	 *            the zip name
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public ExportGedcomDialog(Suku owner, String dbName, String zipName)
 			throws SukuException {
@@ -200,6 +205,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the result.
 	 * 
 	 * @return failed gedcom lines
 	 */
@@ -236,6 +242,12 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		return gedcomResult.generalArray;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -262,10 +274,18 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 	}
 
+	/**
+	 * The Class Task.
+	 */
 	class Task extends SwingWorker<Void, Void> {
 
 		/*
 		 * Main task. Executed in background thread.
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#doInBackground()
 		 */
 		@Override
 		public Void doInBackground() {
@@ -330,14 +350,15 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 						fos.write(buffi);
 						fos.close();
 					} catch (IOException e) {
-						JOptionPane.showMessageDialog(null, Resurses
-								.getString("EXPORT_GEDCOM")
-								+ ":" + e.getMessage());
+						JOptionPane.showMessageDialog(
+								null,
+								Resurses.getString("EXPORT_GEDCOM") + ":"
+										+ e.getMessage());
 					}
 					if (resp.resu != null) {
-						JOptionPane.showMessageDialog(owner, Resurses
-								.getString("EXPORT_GEDCOM")
-								+ ":" + resp.resu);
+						JOptionPane.showMessageDialog(owner,
+								Resurses.getString("EXPORT_GEDCOM") + ":"
+										+ resp.resu);
 					}
 				}
 			} catch (SukuException e) {
@@ -350,6 +371,11 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 		/*
 		 * Executed in event dispatching thread
+		 */
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.SwingWorker#done()
 		 */
 		@Override
 		public void done() {
@@ -368,8 +394,8 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	 * between 0-100 for the progress bar. Text behind ; or if ; does not exist
 	 * is displayed above the progress bar
 	 * 
-	 * 
 	 * @param juttu
+	 *            the juttu
 	 * @return true if cancel command has been issued
 	 */
 	public boolean setRunnerValue(String juttu) {
@@ -430,6 +456,12 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private String timerText = null;
 	private int showCounter = 0;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {
@@ -457,6 +489,8 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the lang.
+	 * 
 	 * @param asCode
 	 *            to return language code. false = language name
 	 * @return the langCode
@@ -470,6 +504,8 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Gets the view name.
+	 * 
 	 * @return the selected view name
 	 */
 	public String getViewName() {

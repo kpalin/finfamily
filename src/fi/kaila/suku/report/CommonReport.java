@@ -63,14 +63,22 @@ public abstract class CommonReport {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
+	/** The caller. */
 	protected ReportWorkerDialog caller;
+
+	/** The types table. */
 	protected SukuTypesTable typesTable;
+
+	/** The tables. */
 	protected Vector<ReportUnit> tables = new Vector<ReportUnit>();
 
+	/** The repo writer. */
 	protected ReportInterface repoWriter;
 
+	/** The person references. */
 	protected HashMap<Integer, PersonInTables> personReferences = null;
 
+	/** The text references. */
 	protected HashMap<String, PersonInTables> textReferences = null;
 
 	private HashMap<Integer, Integer> mapper = new HashMap<Integer, Integer>();
@@ -85,6 +93,8 @@ public abstract class CommonReport {
 	private int imageNumber = 0;
 
 	/**
+	 * Gets the tables.
+	 * 
 	 * @return vector of tables
 	 */
 	public Vector<ReportUnit> getTables() {
@@ -92,13 +102,16 @@ public abstract class CommonReport {
 	}
 
 	/**
-	 * Execute the report Implemented by the derived class
+	 * Execute the report Implemented by the derived class.
 	 * 
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public abstract void executeReport() throws SukuException;
 
 	/**
+	 * Gets the person references.
+	 * 
 	 * @return hash map with references
 	 */
 	public Vector<PersonInTables> getPersonReferences() {
@@ -128,6 +141,11 @@ public abstract class CommonReport {
 		return vv;
 	}
 
+	/**
+	 * Gets the place references.
+	 * 
+	 * @return the place references
+	 */
 	public PlaceInTables[] getPlaceReferences() {
 
 		Vector<PlaceInTables> vv = new Vector<PlaceInTables>();
@@ -148,6 +166,11 @@ public abstract class CommonReport {
 
 	}
 
+	/**
+	 * Gets the source list.
+	 * 
+	 * @return the source list
+	 */
 	public String[] getSourceList() {
 
 		Vector<String> vv = new Vector<String>();
@@ -167,7 +190,7 @@ public abstract class CommonReport {
 	}
 
 	/**
-	 * access to report writer
+	 * access to report writer.
 	 * 
 	 * @return the report writer
 	 */
@@ -175,6 +198,9 @@ public abstract class CommonReport {
 		return repoWriter;
 	}
 
+	/**
+	 * Prints the images.
+	 */
 	public void printImages() {
 		if (imgNotices.size() > 0) {
 			BodyText bt = new MainPersonText();
@@ -213,8 +239,8 @@ public abstract class CommonReport {
 							Image.SCALE_DEFAULT);
 
 					imagetx.setImage(imgs, nn.getMediaData(), img.getWidth(),
-							img.getHeight(), nn.getMediaFilename(), nn
-									.getMediaTitle(), nn.getTag());
+							img.getHeight(), nn.getMediaFilename(),
+							nn.getMediaTitle(), nn.getTag());
 					imagetx.addText("");
 				}
 				if (nn.getMediaTitle() != null) {
@@ -248,6 +274,16 @@ public abstract class CommonReport {
 		}
 	}
 
+	/**
+	 * Instantiates a new common report.
+	 * 
+	 * @param caller
+	 *            the caller
+	 * @param typesTable
+	 *            the types table
+	 * @param repoWriter
+	 *            the repo writer
+	 */
 	protected CommonReport(ReportWorkerDialog caller,
 			SukuTypesTable typesTable, ReportInterface repoWriter) {
 		this.caller = caller;
@@ -268,7 +304,9 @@ public abstract class CommonReport {
 	 * taulurakenteessa
 	 * 
 	 * @param idx
+	 *            the idx
 	 * @param tab
+	 *            the tab
 	 */
 	protected void createDescendantTable(int idx, ReportUnit tab) {
 
@@ -628,9 +666,8 @@ public abstract class CommonReport {
 				}
 
 				printName(bt, cdata.persLong, (toTable.isEmpty() ? 2 : 3));
-				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3), tab
-						.getTableNo()
-						+ tableOffset);
+				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3),
+						tab.getTableNo() + tableOffset);
 
 				if (childMember.getSubCount() > 0) {
 					repoWriter.addText(bt);
@@ -878,10 +915,16 @@ public abstract class CommonReport {
 	}
 
 	/**
-	 * Ancestor report family table is created here
+	 * Ancestor report family table is created here.
 	 * 
 	 * @param idx
-	 * @param tab
+	 *            the idx
+	 * @param ftab
+	 *            the ftab
+	 * @param mtab
+	 *            the mtab
+	 * @param tableNum
+	 *            the table num
 	 */
 	protected void createAncestorTable(int idx, ReportUnit ftab,
 			ReportUnit mtab, long tableNum) {
@@ -1107,8 +1150,8 @@ public abstract class CommonReport {
 				bt = addParentReference(tab, bt);
 			}
 			printNotices(bt, notices,
-					getTypeColumn(mammadata.persLong.getPid()), mtab
-							.getTableNo());
+					getTypeColumn(mammadata.persLong.getPid()),
+					mtab.getTableNo());
 		}
 
 		if (bt.getCount() > 0) {
@@ -1324,8 +1367,9 @@ public abstract class CommonReport {
 					addChildReference(ftab, mtab, cdata.persLong.getPid(),
 							typesTable.getTextValue("TABLE"), bt, 0);
 
-					printNotices(bt, notices, getTypeColumn(cdata.persLong
-							.getPid()), tab.getTableNo());
+					printNotices(bt, notices,
+							getTypeColumn(cdata.persLong.getPid()),
+							tab.getTableNo());
 
 					// else {
 
@@ -1429,8 +1473,8 @@ public abstract class CommonReport {
 									(toTable.isEmpty() ? 2 : 3));
 							addChildReference(ftab, mtab, tab.getPid(),
 									typesTable.getTextValue("TABLE"), bt, 0);
-							printNotices(bt, notices, tab.getPid(), tab
-									.getTableNo());
+							printNotices(bt, notices, tab.getPid(),
+									tab.getTableNo());
 
 							// else {
 
@@ -1676,8 +1720,8 @@ public abstract class CommonReport {
 				String yr = rn.getFromDate();
 				if (yr != null && yr.length() >= 4) {
 
-					String date = printDate(rn.getDatePrefix(), rn
-							.getFromDate(), rn.getToDate());
+					String date = printDate(rn.getDatePrefix(),
+							rn.getFromDate(), rn.getToDate());
 					if (date.length() > 0) {
 						if (addSpace) {
 							sb.append(" ");
@@ -1714,8 +1758,8 @@ public abstract class CommonReport {
 
 		}
 
-		String date = printDate(rn.getDatePrefix(), rn.getFromDate(), rn
-				.getToDate());
+		String date = printDate(rn.getDatePrefix(), rn.getFromDate(),
+				rn.getToDate());
 		if (date.length() > 0) {
 			if (addSpace) {
 				sb.append(" ");
@@ -1812,8 +1856,8 @@ public abstract class CommonReport {
 								addDot = true;
 							}
 						}
-						String dd = printDate(nn.getDatePrefix(), nn
-								.getFromDate(), nn.getToDate());
+						String dd = printDate(nn.getDatePrefix(),
+								nn.getFromDate(), nn.getToDate());
 						if (dd.length() > 0) {
 							if (addSpace) {
 								bt.addText(" ");
@@ -1892,11 +1936,10 @@ public abstract class CommonReport {
 									addSpace = true;
 								}
 								imageNumber++;
-								bt
-										.addText(Resurses
-												.getReportString("INDEX_IMAGE")
+								bt.addText(
+										Resurses.getReportString("INDEX_IMAGE")
 												+ " " + imageNumber + ". ",
-												true, false);
+										true, false);
 
 								ImageNotice inoti = new ImageNotice(nn,
 										imageNumber, tableNo);
@@ -1931,10 +1974,9 @@ public abstract class CommonReport {
 											Image.SCALE_DEFAULT);
 
 									imagetx.setImage(imgs, nn.getMediaData(),
-											img.getWidth(), img.getHeight(), nn
-													.getMediaFilename(), nn
-													.getMediaTitle(), nn
-													.getTag());
+											img.getWidth(), img.getHeight(),
+											nn.getMediaFilename(),
+											nn.getMediaTitle(), nn.getTag());
 									imagetx.addText("");
 								}
 								if (nn.getMediaTitle() != null) {
@@ -1993,8 +2035,8 @@ public abstract class CommonReport {
 								if (addSpace)
 									bt.addText(" ");
 								int tlen = 0;
-								String parts[] = nn.getAddress().replaceAll(
-										"\\r", "").split("\n");
+								String parts[] = nn.getAddress()
+										.replaceAll("\\r", "").split("\n");
 								for (int i = 0; i < parts.length; i++) {
 
 									if (i > 0) {
@@ -2420,16 +2462,17 @@ public abstract class CommonReport {
 				if (astidx > 0) {
 
 					if (astidx == namePart.length() - 1) {
-						bt.addText(namePart.substring(0, astidx), caller
-								.showBoldNames(), caller.showUnderlineNames());
+						bt.addText(namePart.substring(0, astidx),
+								caller.showBoldNames(),
+								caller.showUnderlineNames());
 					} else {
 
 						if (bstidx > 0) {
 							if (bstidx == namePart.length() - 2) {
 
 								bt.addText(namePart.substring(0, bstidx),
-										caller.showBoldNames(), caller
-												.showUnderlineNames());
+										caller.showBoldNames(),
+										caller.showUnderlineNames());
 							}
 						}
 					}
@@ -2446,8 +2489,9 @@ public abstract class CommonReport {
 					}
 					if (cstidx == subPart.length() - 1) {
 
-						bt.addText(subPart.substring(0, cstidx), caller
-								.showBoldNames(), caller.showUnderlineNames());
+						bt.addText(subPart.substring(0, cstidx),
+								caller.showBoldNames(),
+								caller.showUnderlineNames());
 
 					} else {
 						bt.addText(subPart, caller.showBoldNames(), false);
@@ -2466,6 +2510,13 @@ public abstract class CommonReport {
 
 	private HashMap<String, String> bendMap = null;
 
+	/**
+	 * Convert place.
+	 * 
+	 * @param notice
+	 *            the notice
+	 * @return the string
+	 */
 	protected String convertPlace(UnitNotice notice) {
 		String place = null;
 		if (notice.getPlace() != null) {
@@ -2482,8 +2533,8 @@ public abstract class CommonReport {
 				bendMap = new HashMap<String, String>();
 				try {
 					SukuData resp = Suku.kontroller.getSukuData("cmd=get",
-							"type=conversions", "lang="
-									+ Resurses.getLanguage());
+							"type=conversions",
+							"lang=" + Resurses.getLanguage());
 					for (int i = 0; i < resp.vvTexts.size(); i++) {
 						String[] cnvx = resp.vvTexts.get(i);
 						String key = cnvx[1] + "|" + cnvx[0];
@@ -2567,6 +2618,13 @@ public abstract class CommonReport {
 
 	}
 
+	/**
+	 * Nv.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return the string
+	 */
 	protected String nv(String text) {
 		if (text == null)
 			return "";
@@ -2574,22 +2632,37 @@ public abstract class CommonReport {
 	}
 
 	/**
-	 * 
-	 * Implemented by derived class
+	 * Implemented by derived class.
 	 * 
 	 * @param b
+	 *            the new visible
 	 */
 	public abstract void setVisible(boolean b);
 
 	/**
-	 * Images may be stored in a Vector<ImageNotice> for later print
-	 * 
+	 * Images may be stored in a Vector<ImageNotice> for later print.
 	 */
 	class ImageNotice {
+
+		/** The nn. */
 		UnitNotice nn = null;
+
+		/** The img number. */
 		int imgNumber = 0;
+
+		/** The tab no. */
 		long tabNo = 0;
 
+		/**
+		 * Instantiates a new image notice.
+		 * 
+		 * @param nn
+		 *            the nn
+		 * @param imgNumber
+		 *            the img number
+		 * @param tabNo
+		 *            the tab no
+		 */
 		ImageNotice(UnitNotice nn, int imgNumber, long tabNo) {
 			this.nn = nn;
 			this.tabNo = tabNo;

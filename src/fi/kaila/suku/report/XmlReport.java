@@ -65,20 +65,26 @@ public class XmlReport implements ReportInterface {
 	private int translatorIdx;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
+	/** The image counter. */
 	int imageCounter = 0;
 	private boolean reportClosed = false;
 	private boolean debugState = false;
 	private ReportWorkerDialog parent;
+
+	/** The title. */
 	String title;
 
 	/**
-	 * 
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param parent
+	 *            the parent
 	 * @param translatorIdx
+	 *            the translator idx
 	 * @param title
+	 *            the title
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public XmlReport(ReportWorkerDialog parent, int translatorIdx, String title)
 			throws SukuException {
@@ -109,14 +115,16 @@ public class XmlReport implements ReportInterface {
 			boolean fileExists = false;
 			if (f.isFile()) {
 				fileExists = true;
-				int resu = JOptionPane.showConfirmDialog(parent, Resurses
-						.getString("CONFIRM_REPLACE_REPORT"), Resurses
-						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
+				int resu = JOptionPane
+						.showConfirmDialog(parent,
+								Resurses.getString("CONFIRM_REPLACE_REPORT"),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
 				if (resu != JOptionPane.YES_OPTION) {
 
-					throw new SukuException(Resurses
-							.getString("WARN_REPORT_NOT_SELECTED"));
+					throw new SukuException(
+							Resurses.getString("WARN_REPORT_NOT_SELECTED"));
 				}
 				f.delete();
 
@@ -131,15 +139,14 @@ public class XmlReport implements ReportInterface {
 							int resu = JOptionPane
 									.showConfirmDialog(
 											parent,
-											Resurses
-													.getString("CONFIRM_REPLACE_REPORTDIR"),
+											Resurses.getString("CONFIRM_REPLACE_REPORTDIR"),
 											Resurses.getString(Resurses.SUKU),
 											JOptionPane.YES_NO_OPTION,
 											JOptionPane.QUESTION_MESSAGE);
 							if (resu != JOptionPane.YES_OPTION) {
 
-								throw new SukuException(Resurses
-										.getString("WARN_REPORT_NOT_SELECTED"));
+								throw new SukuException(
+										Resurses.getString("WARN_REPORT_NOT_SELECTED"));
 							}
 							fileExists = true;
 						}
@@ -210,6 +217,9 @@ public class XmlReport implements ReportInterface {
 	/**
 	 * Add the text to the body element. For images copy the images to output
 	 * folder
+	 * 
+	 * @param bt
+	 *            the bt
 	 */
 	@Override
 	public void addText(BodyText bt) {
@@ -400,6 +410,10 @@ public class XmlReport implements ReportInterface {
 	 * <li>Translate to final format or store as raw xml as requested</li>
 	 * <li>Start application to open the report if supported</li>
 	 * </ul>
+	 * .
+	 * 
+	 * @throws SukuException
+	 *             the suku exception
 	 */
 	@Override
 	public void closeReport() throws SukuException {
@@ -478,6 +492,10 @@ public class XmlReport implements ReportInterface {
 	 * <li>create header element</li>
 	 * <li>create body element for processing</li>
 	 * </ul>
+	 * .
+	 * 
+	 * @throws SukuException
+	 *             the suku exception
 	 */
 	@Override
 	public void createReport() throws SukuException {
@@ -526,6 +544,7 @@ public class XmlReport implements ReportInterface {
 		}
 	}
 
+	/** The Constant table64. */
 	static final String table64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 	/**

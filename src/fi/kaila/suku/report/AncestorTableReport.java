@@ -34,20 +34,21 @@ import fi.kaila.suku.util.pojo.ReportUnit;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
- * 
- * <h1>GenGraph Report</h1>
- * 
+ * <h1>GenGraph Report</h1>.
  */
 public class AncestorTableReport extends CommonReport {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
-	 * Constructor for AncestorTableReport
+	 * Constructor for AncestorTableReport.
 	 * 
 	 * @param caller
+	 *            the caller
 	 * @param typesTable
+	 *            the types table
 	 * @param repoWriter
+	 *            the repo writer
 	 */
 	public AncestorTableReport(ReportWorkerDialog caller,
 			SukuTypesTable typesTable, ReportInterface repoWriter) {
@@ -541,17 +542,36 @@ public class AncestorTableReport extends CommonReport {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.report.CommonReport#setVisible(boolean)
+	 */
 	@Override
 	public void setVisible(boolean b) {
 		// not implemented here
 
 	}
 
+	/**
+	 * The Class IndexPerson.
+	 */
 	class IndexPerson implements Comparable<IndexPerson> {
 
+		/** The pu. */
 		PersonShortData pu = null;
+
+		/** The page. */
 		int page = 0;
 
+		/**
+		 * Instantiates a new index person.
+		 * 
+		 * @param page
+		 *            the page
+		 * @param pp
+		 *            the pp
+		 */
 		IndexPerson(int page, PersonShortData pp) {
 			// this.tableNo = tableNo;
 			this.page = page;
@@ -559,6 +579,11 @@ public class AncestorTableReport extends CommonReport {
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+		 */
 		@Override
 		public int compareTo(IndexPerson o) {
 			int resu = Utils.nv(pu.getSurname()).compareToIgnoreCase(

@@ -16,7 +16,7 @@ import fi.kaila.suku.util.SukuException;
 public interface ReportInterface {
 
 	/**
-	 * Add text to the report
+	 * Add text to the report.
 	 * 
 	 * @param text
 	 *            as a {@link BodyText } based object.
@@ -24,16 +24,18 @@ public interface ReportInterface {
 	public void addText(BodyText text);
 
 	/**
-	 * close the report
+	 * close the report.
 	 * 
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public void closeReport() throws SukuException;
 
 	/**
-	 * create the report
+	 * create the report.
 	 * 
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public void createReport() throws SukuException;
 

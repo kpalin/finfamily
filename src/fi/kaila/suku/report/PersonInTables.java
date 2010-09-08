@@ -17,36 +17,29 @@ import fi.kaila.suku.util.pojo.PersonShortData;
  * This is used both in server side and client side but are not transmitted
  * between the two layers
  * </p>
+ * .
  * 
  * @author Kalle
- * 
  */
 public class PersonInTables implements Comparable<PersonInTables> {
 
-	/**
-	 * owner pid
-	 */
+	/** owner pid. */
 	public int pid = 0;
-	/**
-	 * name used for index
-	 */
+
+	/** name used for index. */
 	public PersonShortData shortPerson = null;
 
-	/**
-	 * references as owner
-	 */
+	/** references as owner. */
 	// public long asOwner = 0;
 	/**
 	 * references as child
 	 */
 	public Vector<Long> asChildren = new Vector<Long>();
-	/**
-	 * references as parents
-	 */
+
+	/** references as parents. */
 	public Vector<Long> asParents = new Vector<Long>();
-	/**
-	 * other references like spouses parents etc
-	 */
+
+	/** other references like spouses parents etc. */
 	public Vector<Long> references = new Vector<Long>();
 
 	// private Vector<Long> asOwners = new Vector<Long>();
@@ -58,7 +51,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	// public Vector<Long> textReferences = new Vector<Long>();
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param pid
 	 *            i.e. person id whom this concerns
@@ -69,8 +62,6 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	}
 
 	/**
-	 * 
-	 * 
 	 * The report dialog contains a table with the names of the notices
 	 * 
 	 * <ul>
@@ -80,11 +71,16 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 * <li>column 4 contains settings for non relatives</li>
 	 * <li>column 5 contains value to be used instead of name in report</li>
 	 * </ul>
+	 * .
 	 * 
 	 * @param table
+	 *            the table
 	 * @param alsoSpouse
+	 *            the also spouse
 	 * @param alsoChild
+	 *            the also child
 	 * @param alsoOther
+	 *            the also other
 	 * @return 2 or 3
 	 */
 	public int getTypesColumn(long table, boolean alsoSpouse,
@@ -128,15 +124,20 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	}
 
 	/**
-	 * 
 	 * Get a list of tables where person also exists
 	 * 
-	 * Checks if tableNo has other references
+	 * Checks if tableNo has other references.
 	 * 
 	 * @param table
+	 *            the table
 	 * @param alsoSpouse
+	 *            the also spouse
 	 * @param alsoChild
+	 *            the also child
 	 * @param alsoOther
+	 *            the also other
+	 * @param tableOffset
+	 *            the table offset
 	 * @return a comma separated list of tables
 	 */
 	public String getReferences(long table, boolean alsoSpouse,
@@ -175,6 +176,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	}
 
 	/**
+	 * Gets the owner array.
 	 * 
 	 * @return comma separated list of owners
 	 */
@@ -190,6 +192,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	}
 
 	/**
+	 * Gets the owner string.
 	 * 
 	 * @return comma separated list of owners
 	 */
@@ -208,14 +211,20 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	}
 
 	/**
-	 * Add owner to index item
+	 * Add owner to index item.
 	 * 
 	 * @param owner
+	 *            the owner
 	 */
 	public void addOwner(long owner) {
 		asOwners.put(owner, owner);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -244,23 +253,26 @@ public class PersonInTables implements Comparable<PersonInTables> {
 		return sb.toString();
 	}
 
-	/**
-	 * collator according to language
-	 */
+	/** collator according to language. */
 	public static Collator fiCollator = Collator.getInstance(new Locale(
 			Resurses.getLanguage()));
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(PersonInTables o) {
 		if (shortPerson == null || o.shortPerson == null)
 			return 0;
-		int cl = fiCollator.compare(Utils.nv(shortPerson.getSurname()), Utils
-				.nv(o.shortPerson.getSurname()));
+		int cl = fiCollator.compare(Utils.nv(shortPerson.getSurname()),
+				Utils.nv(o.shortPerson.getSurname()));
 		if (cl != 0) {
 			return cl;
 		}
-		cl = fiCollator.compare(Utils.nv(shortPerson.getGivenname()), Utils
-				.nv(o.shortPerson.getGivenname()));
+		cl = fiCollator.compare(Utils.nv(shortPerson.getGivenname()),
+				Utils.nv(o.shortPerson.getGivenname()));
 		if (cl != 0) {
 			return cl;
 		}

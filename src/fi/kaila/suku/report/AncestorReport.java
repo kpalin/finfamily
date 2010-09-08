@@ -19,21 +19,23 @@ import fi.kaila.suku.util.pojo.SukuData;
 /**
  * <h1>Ancestor report creator</h1>
  * 
- * The descendant report structure is creted here
+ * The descendant report structure is creted here.
  * 
  * @author Kalle
- * 
  */
 public class AncestorReport extends CommonReport {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
-	 * Constructor for Ancestor report
+	 * Constructor for Ancestor report.
 	 * 
 	 * @param caller
+	 *            the caller
 	 * @param typesTable
+	 *            the types table
 	 * @param repoWriter
+	 *            the repo writer
 	 */
 	public AncestorReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
 			ReportInterface repoWriter) {
@@ -42,9 +44,10 @@ public class AncestorReport extends CommonReport {
 	}
 
 	/**
-	 * execute the ancestor report
+	 * execute the ancestor report.
 	 * 
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	@Override
 	public void executeReport() throws SukuException {
@@ -209,8 +212,8 @@ public class AncestorReport extends CommonReport {
 					mtab = tab;
 				}
 			}
-			
-			//FIXME: mtab can be null in here
+
+			// FIXME: mtab can be null in here
 			createAncestorTable(i, ftab, mtab,
 					(ftab != null) ? ftab.getTableNo() : mtab.getTableNo());
 			// tabno = tab.getTableNo();
@@ -243,9 +246,10 @@ public class AncestorReport extends CommonReport {
 	}
 
 	/**
-	 * Used to close / hide the report writer
+	 * Used to close / hide the report writer.
 	 * 
 	 * @param b
+	 *            the new visible
 	 */
 	@Override
 	public void setVisible(boolean b) {
@@ -256,12 +260,25 @@ public class AncestorReport extends CommonReport {
 
 	}
 
+	/**
+	 * The Class ReportUnitAll.
+	 */
 	class ReportUnitAll {
 
+		/** The tab no. */
 		long tabNo = 0;
+
+		/** The gene. */
 		int gene = 0;
+
+		/** The r. */
 		ReportUnit r = null;
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#toString()
+		 */
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder();

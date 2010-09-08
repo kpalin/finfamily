@@ -19,10 +19,11 @@ import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
+ * The Class SukuKontrollerLocalImpl.
+ * 
  * @author FIKAAKAIL
  * 
  *         Controller class to implement local application
- * 
  */
 public class SukuKontrollerLocalImpl implements SukuKontroller {
 
@@ -37,10 +38,12 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	// private File outFile = null;
 
 	/**
+	 * Instantiates a new suku kontroller local impl.
 	 * 
-	 * 
-	 * 
+	 * @param host
+	 *            the host
 	 * @throws SukuException
+	 *             the suku exception
 	 */
 	public SukuKontrollerLocalImpl(Suku host) throws SukuException {
 		this.host = host;
@@ -49,6 +52,13 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		logger = Logger.getLogger(this.getClass().getName());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#getConnection(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void getConnection(String host, String dbname, String userid,
 			String passwd) throws SukuException {
@@ -58,19 +68,21 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	}
 
 	/**
-	 * local method for Junit
+	 * local method for Junit.
 	 */
 	public void resetConnection() {
 		this.server.resetConnection();
 	}
 
 	/**
-	 * get stored parameter from user preferences
+	 * get stored parameter from user preferences.
 	 * 
 	 * @param o
 	 *            (owner name)
 	 * @param key
+	 *            the key
 	 * @param def
+	 *            the def
 	 * @return value
 	 */
 	@Override
@@ -80,11 +92,14 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	}
 
 	/**
-	 * store value in user preferences
+	 * store value in user preferences.
 	 * 
 	 * @param o
+	 *            the o
 	 * @param key
+	 *            the key
 	 * @param value
+	 *            the value
 	 */
 	@Override
 	public void putPref(Object o, String key, String value) {
@@ -92,20 +107,33 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		sr.put(o.getClass().getName() + "." + key, value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#getSukuData(java.lang.String[])
+	 */
 	@Override
 	public SukuData getSukuData(String... params) throws SukuException {
 		return this.server.getSukuData(params);
 	}
 
 	/**
-	 * local method for Junit use only
+	 * local method for Junit use only.
 	 * 
 	 * @param filename
+	 *            the new local file
 	 */
 	public void setLocalFile(String filename) {
 		this.server.setOpenFile(filename);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#openLocalFile(java.lang.String)
+	 */
 	@Override
 	public boolean openLocalFile(String filter) {
 		// TODO Auto-generated method stub
@@ -151,12 +179,24 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#getSukuData(fi.kaila.suku.util
+	 * .pojo.SukuData, java.lang.String[])
+	 */
 	@Override
 	public SukuData getSukuData(SukuData request, String... params)
 			throws SukuException {
 		return this.server.getSukuData(request, params);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getFileLength()
+	 */
 	@Override
 	public long getFileLength() {
 
@@ -167,6 +207,11 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return 0;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getInputStream()
+	 */
 	@Override
 	public InputStream getInputStream() {
 		if (file != null) {
@@ -182,6 +227,11 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getFileName()
+	 */
 	@Override
 	public String getFileName() {
 		if (file != null) {
@@ -190,6 +240,12 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.kontroller.SukuKontroller#createLocalFile(java.lang.String)
+	 */
 	@Override
 	public boolean createLocalFile(String filter) {
 		Preferences sr = Preferences.userRoot();
@@ -236,6 +292,11 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getOutputStream()
+	 */
 	@Override
 	public OutputStream getOutputStream() {
 		if (file != null) {
@@ -251,6 +312,11 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#openFile(java.lang.String)
+	 */
 	@Override
 	public InputStream openFile(String path) {
 		if (path != null) {
@@ -275,6 +341,11 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.kontroller.SukuKontroller#getFilePath()
+	 */
 	@Override
 	public String getFilePath() {
 		String tmp = file.getAbsolutePath().replace("\\", "/");

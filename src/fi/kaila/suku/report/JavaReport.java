@@ -71,7 +71,10 @@ public class JavaReport extends JFrame implements ActionListener,
 	private ReportWorkerDialog parent = null;
 
 	/**
-	 * default constructor to initialize frame
+	 * default constructor to initialize frame.
+	 * 
+	 * @param parent
+	 *            the parent
 	 */
 	public JavaReport(ReportWorkerDialog parent) {
 		this.parent = parent;
@@ -132,7 +135,7 @@ public class JavaReport extends JFrame implements ActionListener,
 	private AbstractDocument doc;
 
 	/**
-	 * java styled report is created here
+	 * java styled report is created here.
 	 */
 	@Override
 	public void createReport() {
@@ -154,6 +157,13 @@ public class JavaReport extends JFrame implements ActionListener,
 		setVisible(true);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fi.kaila.suku.report.ReportInterface#addText(fi.kaila.suku.report.style
+	 * .BodyText)
+	 */
 	@Override
 	public void addText(BodyText bt) {
 		int alkulen = doc.getLength();
@@ -271,6 +281,11 @@ public class JavaReport extends JFrame implements ActionListener,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fi.kaila.suku.report.ReportInterface#closeReport()
+	 */
 	@Override
 	public void closeReport() {
 		if (reportClosed)
@@ -285,6 +300,12 @@ public class JavaReport extends JFrame implements ActionListener,
 	// repo.createReport();
 	// }
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
