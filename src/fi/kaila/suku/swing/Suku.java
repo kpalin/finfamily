@@ -944,7 +944,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			dbFont = Integer.parseInt(databaseViewFontSize);
 		} catch (NumberFormatException ne) {
-
+			// NumberFormatException ignored
 		}
 		Font fff = table.getFont();
 		Font ff = new Font(fff.getName(), Font.PLAIN, dbFont);
