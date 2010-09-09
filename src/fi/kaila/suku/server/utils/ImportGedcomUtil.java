@@ -45,10 +45,10 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  */
 public class ImportGedcomUtil {
 
-	private Connection con;
+	private final Connection con;
 
 	private ImportGedcomDialog runner = null;
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private enum GedSet {
 		Set_None, Set_Ascii, Set_Ansel, Set_Utf8, Set_Utf16le, Set_Utf16be
@@ -153,7 +153,7 @@ public class ImportGedcomUtil {
 			}
 
 			String fileName = Suku.kontroller.getFileName();
-			System.out.println("FromFile:" + fileName);
+			// System.out.println("FromFile:" + fileName);
 			ZipInputStream zipIn = null;
 			ZipEntry zipEntry = null;
 			String entryName = null;
@@ -173,8 +173,8 @@ public class ImportGedcomUtil {
 							baseFolder = entryName.substring(0, li + 1);
 						}
 						if (this.runner.setRunnerValue("+" + entryName)) {
-							throw new SukuException(
-									Resurses.getString("GEDCOM_CANCELLED"));
+							throw new SukuException(Resurses
+									.getString("GEDCOM_CANCELLED"));
 						}
 						break;
 					} else {
@@ -294,8 +294,8 @@ public class ImportGedcomUtil {
 											+ record.toString(false));
 									if (this.runner.setRunnerValue(sb
 											.toString())) {
-										throw new SukuException(
-												Resurses.getString("GEDCOM_CANCELLED"));
+										throw new SukuException(Resurses
+												.getString("GEDCOM_CANCELLED"));
 									}
 
 								}
@@ -383,8 +383,7 @@ public class ImportGedcomUtil {
 			Iterator<Map.Entry<String, GedcomLine>> ite = lineSet.iterator();
 			double indiIndex = 0;
 			while (ite.hasNext()) {
-				Map.Entry<String, GedcomLine> entry = (Map.Entry<String, GedcomLine>) ite
-						.next();
+				Map.Entry<String, GedcomLine> entry = ite.next();
 				GedcomLine rec = entry.getValue();
 				consumeGedcomRecord(rec);
 				StringBuilder sb = new StringBuilder();
@@ -393,8 +392,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(
-							Resurses.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(Resurses
+							.getString("GEDCOM_CANCELLED"));
 				}
 				indiIndex++;
 			}
@@ -409,8 +408,7 @@ public class ImportGedcomUtil {
 			Iterator<Map.Entry<String, GedcomLine>> ee = entries.iterator();
 			double famIndex = 0;
 			while (ee.hasNext()) {
-				Map.Entry<String, GedcomLine> entry = (Map.Entry<String, GedcomLine>) ee
-						.next();
+				Map.Entry<String, GedcomLine> entry = ee.next();
 				GedcomLine rec = entry.getValue();
 				consumeGedcomFam(rec);
 				StringBuilder sb = new StringBuilder();
@@ -418,8 +416,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(
-							Resurses.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(Resurses
+							.getString("GEDCOM_CANCELLED"));
 				}
 				famIndex++;
 			}
@@ -437,8 +435,7 @@ public class ImportGedcomUtil {
 			Iterator<Map.Entry<String, String>> iti = imgSet.iterator();
 
 			while (iti.hasNext()) {
-				Map.Entry<String, String> entryi = (Map.Entry<String, String>) iti
-						.next();
+				Map.Entry<String, String> entryi = iti.next();
 				String fn = entryi.getKey();
 
 				unknownLine.add(Resurses.getString("IMPORT_ZIP_NOT_USED")
@@ -505,8 +502,7 @@ public class ImportGedcomUtil {
 		Iterator<Map.Entry<String, GedcomFams>> ee = entries.iterator();
 
 		while (ee.hasNext()) {
-			Map.Entry<String, GedcomFams> entry = (Map.Entry<String, GedcomFams>) ee
-					.next();
+			Map.Entry<String, GedcomFams> entry = ee.next();
 
 			GedcomFams fam = entry.getValue();
 
@@ -809,8 +805,7 @@ public class ImportGedcomUtil {
 								if (rn.getDescription() != null) {
 									rn.setDescription(Utils.nv(rn
 											.getDescription())
-											+ " "
-											+ dparts[3]);
+											+ " " + dparts[3]);
 								} else {
 									rn.setDescription(dparts[3]);
 								}
@@ -1012,8 +1007,8 @@ public class ImportGedcomUtil {
 		}
 
 		PersonUtil u = new PersonUtil(con);
-		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber,
-				rels.toArray(new Relation[0]));
+		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber, rels
+				.toArray(new Relation[0]));
 		if (resu != null) {
 			unknownLine.add(record.toString() + ":" + resu);
 		}
@@ -1291,17 +1286,20 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("_CROFT")) {
 						notice.setCroft(detail.lineValue);
 					} else if (detail.tag.equals("PHON")) {
-						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-								: notice.getPrivateText() + ", Tel:"
-										+ detail.lineValue);
+						notice
+								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+										: notice.getPrivateText() + ", Tel:"
+												+ detail.lineValue);
 					} else if (detail.tag.equals("WWW")) {
-						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-								: notice.getPrivateText() + ", www:"
-										+ detail.lineValue);
+						notice
+								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+										: notice.getPrivateText() + ", www:"
+												+ detail.lineValue);
 					} else if (detail.tag.equals("FAX")) {
-						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-								: notice.getPrivateText() + ", Fax:"
-										+ detail.lineValue);
+						notice
+								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+										: notice.getPrivateText() + ", Fax:"
+												+ detail.lineValue);
 					} else if (detail.tag.equals("NOTE")) {
 						if (detail.lineValue.startsWith("@")
 								&& detail.lineValue.indexOf('@', 1) > 1) {
@@ -2287,6 +2285,7 @@ public class ImportGedcomUtil {
 		 * 
 		 * @see java.lang.Object#toString()
 		 */
+		@Override
 		public String toString() {
 			return toString(true);
 		}
