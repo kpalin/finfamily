@@ -544,7 +544,7 @@ public class Read2004XML extends DefaultHandler {
 			stm.executeUpdate(ADD_RELATIONNOTICE_SID);
 
 			if (this.urli.endsWith(".zip")) {
-
+				String gedFile = null;
 				isZipFile = true;
 
 				ZipEntry zipEntry = null;
@@ -559,14 +559,8 @@ public class Read2004XML extends DefaultHandler {
 							baseFolder = entryName.substring(0, li + 1);
 						}
 						xmlFile = copyToTempfile(zipIn, entryName);
-						// try {
-						// parser.parse(bis, this);
-						// } catch (SAXException se) {
-						// if (!se.getMessage().equals("ZIP")) {
-						// throw new SukuException(se);
-						// }
-						//
-						// }
+					} else if (entryName.toLowerCase().endsWith(".ged")) {
+						gedFile = entryName;
 					} else {
 						copyToTempfile(zipIn, entryName);
 					}
@@ -576,8 +570,12 @@ public class Read2004XML extends DefaultHandler {
 				if (xmlFile != null) {
 					parser.parse(xmlFile, this);
 				} else {
-					errorLine.add(Resurses.getString("GETSUKU_BACKUP_MISSING")
-							+ "\r\n");
+					errorLine.add(Resurses.getString("GETSUKU_BACKUP_MISSING"));
+					if (gedFile != null) {
+						errorLine.add(Resurses.getString("GETSUKU_TRY_GEDCOM")
+								+ " " + gedFile);
+					}
+
 				}
 
 			} else if (this.urli.endsWith(".gz")) {
