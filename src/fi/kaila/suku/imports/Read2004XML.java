@@ -1,9 +1,12 @@
 package fi.kaila.suku.imports;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,10 +19,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,6 +36,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.NameArray;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
@@ -71,6 +78,9 @@ public class Read2004XML extends DefaultHandler {
 
 	/** The last max aid. */
 	int lastMaxAid = 0;
+
+	/** The base folder. */
+	String baseFolder = "";
 
 	private String qName = null;
 	private StringBuffer currentChars = null;
@@ -436,7 +446,11 @@ public class Read2004XML extends DefaultHandler {
 	private HashMap<String, String> placeCollector = null;
 
 	private HashMap<String, String> conversionsChecker = null;
-
+	/** The images. */
+	LinkedHashMap<String, String> images = null;
+	/** The is zip file. */
+	boolean isZipFile = false;
+	ZipInputStream zipIn = null;
 	private Import2004Dialog runner = null;
 
 	/**
@@ -494,7 +508,7 @@ public class Read2004XML extends DefaultHandler {
 	public SukuData importFile() throws SukuException {
 
 		SukuData resp = new SukuData();
-
+		images = new LinkedHashMap<String, String>();
 		SAXParser parser = null;
 
 		SAXParserFactory dbfactory = SAXParserFactory.newInstance();
@@ -514,6 +528,7 @@ public class Read2004XML extends DefaultHandler {
 		}
 
 		try {
+
 			long started = System.currentTimeMillis();
 			GZIPInputStream gz = null;
 
@@ -528,7 +543,44 @@ public class Read2004XML extends DefaultHandler {
 			stm.executeUpdate(ADD_UNITNOTICE_SID);
 			stm.executeUpdate(ADD_RELATIONNOTICE_SID);
 
-			if (this.urli.endsWith(".gz")) {
+			if (this.urli.endsWith(".zip")) {
+
+				isZipFile = true;
+
+				ZipEntry zipEntry = null;
+				File xmlFile = null;
+				zipIn = new ZipInputStream(Suku.kontroller.getInputStream());
+				BufferedInputStream bis = new BufferedInputStream(zipIn);
+				while ((zipEntry = zipIn.getNextEntry()) != null) {
+					String entryName = zipEntry.getName();
+					if (entryName.toLowerCase().endsWith(".xml")) {
+						int li = entryName.replace('\\', '/').lastIndexOf('/');
+						if (li > 0) {
+							baseFolder = entryName.substring(0, li + 1);
+						}
+						xmlFile = copyToTempfile(zipIn, entryName);
+						// try {
+						// parser.parse(bis, this);
+						// } catch (SAXException se) {
+						// if (!se.getMessage().equals("ZIP")) {
+						// throw new SukuException(se);
+						// }
+						//
+						// }
+					} else {
+						copyToTempfile(zipIn, entryName);
+					}
+				}
+				bis.close();
+
+				if (xmlFile != null) {
+					parser.parse(xmlFile, this);
+				} else {
+					errorLine.add(Resurses.getString("GETSUKU_BACKUP_MISSING")
+							+ "\r\n");
+				}
+
+			} else if (this.urli.endsWith(".gz")) {
 				gz = new GZIPInputStream(new FileInputStream(this.urli));
 				parser.parse(gz, this);
 				gz.close();
@@ -857,6 +909,17 @@ public class Read2004XML extends DefaultHandler {
 		if (this.qName != null) {
 			this.qName = null;
 		}
+		// if (this.currentEle.equals(genealogTG)) {
+		// try {
+		// zipIn.closeEntry();
+		// } catch (IOException e) {
+		// logger.log(Level.WARNING, "", e);
+		// throw new SAXException("ZIP_INPUTSTREAM_CLOSE_FAILED");
+		//
+		// }
+		// throw new SAXException("ZIP");
+		// }
+
 		if (this.currentEle.equals(unitSourceTG)) {
 			String saux = this.currentChars.toString();
 			if (saux.length() > 0) {
@@ -1233,8 +1296,8 @@ public class Read2004XML extends DefaultHandler {
 						if (this.runner != null) {
 							if (this.runner.setRunnerValue("ConversionId: "
 									+ laskuriConversion)) {
-								throw new SAXException(
-										Resurses.getString("SUKU_CANCELLED"));
+								throw new SAXException(Resurses
+										.getString("SUKU_CANCELLED"));
 							}
 						}
 					} catch (SQLException e) {
@@ -1279,8 +1342,8 @@ public class Read2004XML extends DefaultHandler {
 							+ this.viewName);
 					if (this.runner != null) {
 						if (this.runner.setRunnerValue("ViewId: " + vid)) {
-							throw new SAXException(
-									Resurses.getString("SUKU_CANCELLED"));
+							throw new SAXException(Resurses
+									.getString("SUKU_CANCELLED"));
 						}
 					}
 
@@ -1360,11 +1423,11 @@ public class Read2004XML extends DefaultHandler {
 			if (noticeLanguageModifiedDate == null) {
 				pst.setNull(10, Types.TIMESTAMP);
 			} else {
-				pst.setTimestamp(10,
-						toTimestamp(this.noticeLanguageModifiedDate, false));
+				pst.setTimestamp(10, toTimestamp(
+						this.noticeLanguageModifiedDate, false));
 			}
-			pst.setTimestamp(11,
-					toTimestamp(this.noticeLanguageCreateDate, true));
+			pst.setTimestamp(11, toTimestamp(this.noticeLanguageCreateDate,
+					true));
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {
@@ -1400,11 +1463,11 @@ public class Read2004XML extends DefaultHandler {
 			if (relationLanguageModifiedDate == null) {
 				pst.setNull(8, Types.TIMESTAMP);
 			} else {
-				pst.setTimestamp(8,
-						toTimestamp(this.relationLanguageModifiedDate, false));
+				pst.setTimestamp(8, toTimestamp(
+						this.relationLanguageModifiedDate, false));
 			}
-			pst.setTimestamp(9,
-					toTimestamp(this.relationLanguageCreateDate, true));
+			pst.setTimestamp(9, toTimestamp(this.relationLanguageCreateDate,
+					true));
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {
@@ -1461,12 +1524,12 @@ public class Read2004XML extends DefaultHandler {
 			if (relationNoticeModifiedDate == null) {
 				pst.setNull(16, Types.TIMESTAMP);
 			} else {
-				pst.setTimestamp(16,
-						toTimestamp(this.relationNoticeModifiedDate, false));
+				pst.setTimestamp(16, toTimestamp(
+						this.relationNoticeModifiedDate, false));
 			}
 
-			pst.setTimestamp(17,
-					toTimestamp(this.relationNoticeCreateDate, true));
+			pst.setTimestamp(17, toTimestamp(this.relationNoticeCreateDate,
+					true));
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {
@@ -1539,8 +1602,8 @@ public class Read2004XML extends DefaultHandler {
 				if (this.relationModifiedDate == null) {
 					pst.setNull(6, Types.TIMESTAMP);
 				} else {
-					pst.setTimestamp(6,
-							toTimestamp(this.relationModifiedDate, false));
+					pst.setTimestamp(6, toTimestamp(this.relationModifiedDate,
+							false));
 				}
 				pst.setTimestamp(7, toTimestamp(this.relationCreateDate, true));
 				try {
@@ -1632,8 +1695,8 @@ public class Read2004XML extends DefaultHandler {
 					}
 					pst.setInt(5, surety);
 					pst.setNull(6, Types.TIMESTAMP);
-					pst.setTimestamp(7,
-							toTimestamp(this.relationCreateDate, true));
+					pst.setTimestamp(7, toTimestamp(this.relationCreateDate,
+							true));
 					try {
 						pst.executeUpdate();
 					} catch (SQLException se) {
@@ -1669,8 +1732,8 @@ public class Read2004XML extends DefaultHandler {
 					}
 					pst.setInt(5, surety);
 					pst.setNull(6, Types.TIMESTAMP);
-					pst.setTimestamp(7,
-							toTimestamp(this.relationCreateDate, true));
+					pst.setTimestamp(7, toTimestamp(this.relationCreateDate,
+							true));
 
 					try {
 						pst.executeUpdate();
@@ -1702,8 +1765,8 @@ public class Read2004XML extends DefaultHandler {
 						pst.setInt(2, rid);
 						pst.setString(3, "ADOP");
 						pst.setInt(4, 1); // rownumber
-						pst.setTimestamp(5,
-								toTimestamp(this.relationCreateDate, true));
+						pst.setTimestamp(5, toTimestamp(
+								this.relationCreateDate, true));
 						pst.executeUpdate();
 					}
 
@@ -1745,8 +1808,8 @@ public class Read2004XML extends DefaultHandler {
 
 					pst.setInt(5, surety);
 					pst.setNull(6, Types.TIMESTAMP);
-					pst.setTimestamp(7,
-							toTimestamp(this.relationCreateDate, true));
+					pst.setTimestamp(7, toTimestamp(this.relationCreateDate,
+							true));
 
 					try {
 						pst.executeUpdate();
@@ -1780,8 +1843,8 @@ public class Read2004XML extends DefaultHandler {
 					}
 					pst.setInt(5, surety);
 					pst.setNull(6, Types.TIMESTAMP);
-					pst.setTimestamp(7,
-							toTimestamp(this.relationCreateDate, true));
+					pst.setTimestamp(7, toTimestamp(this.relationCreateDate,
+							true));
 
 					try {
 						pst.executeUpdate();
@@ -1840,18 +1903,17 @@ public class Read2004XML extends DefaultHandler {
 						pst.setString(3, "MARR");
 						pst.setInt(4, 1); // rownumber
 						pst.setInt(5, 100);
-						pst.setString(
-								6,
-								langText(this.relationDescription, this.oldCode));
-						pst.setString(7,
-								langText(this.relationBegType, this.oldCode));
+						pst.setString(6, langText(this.relationDescription,
+								this.oldCode));
+						pst.setString(7, langText(this.relationBegType,
+								this.oldCode));
 						pst.setString(8, this.relationBegDatePrefix);
 						pst.setString(9, this.relationBegDateFrom);
 						pst.setString(10, this.relationBegDateTo);
-						pst.setString(11,
-								langText(this.relationBegPlace, this.oldCode));
-						pst.setString(12,
-								langText(this.relationNoteText, this.oldCode));
+						pst.setString(11, langText(this.relationBegPlace,
+								this.oldCode));
+						pst.setString(12, langText(this.relationNoteText,
+								this.oldCode));
 						if (this.relationSourceId != null) {
 							pst.setInt(13, idToInt(this.relationSourceId)); // langText(this.noticeSourceText,this.oldCode));
 						} else {
@@ -1861,8 +1923,8 @@ public class Read2004XML extends DefaultHandler {
 						pst.setString(14, this.relationSourceText);
 						pst.setString(15, this.relationPrivateText);
 						pst.setNull(16, Types.TIMESTAMP);
-						pst.setTimestamp(17,
-								toTimestamp(this.relationCreateDate, true));
+						pst.setTimestamp(17, toTimestamp(
+								this.relationCreateDate, true));
 						pst.executeUpdate();
 						laskuriRelations++;
 
@@ -1886,25 +1948,18 @@ public class Read2004XML extends DefaultHandler {
 									pst.setInt(1, rnid);
 									pst.setInt(2, rid);
 									pst.setString(3, toLangCode(langus[i]));
-									pst.setString(
-											4,
-											langText(this.relationBegType,
-													langus[i]));
-									pst.setString(
-											5,
+									pst.setString(4, langText(
+											this.relationBegType, langus[i]));
+									pst.setString(5,
 											langText(this.relationDescription,
 													langus[i]));
-									pst.setString(
-											6,
-											langText(this.relationBegPlace,
-													langus[i]));
-									pst.setString(
-											7,
-											langText(this.relationNoteText,
-													langus[i]));
+									pst.setString(6, langText(
+											this.relationBegPlace, langus[i]));
+									pst.setString(7, langText(
+											this.relationNoteText, langus[i]));
 									pst.setNull(8, Types.TIMESTAMP);
-									Timestamp now = new Timestamp(
-											System.currentTimeMillis());
+									Timestamp now = new Timestamp(System
+											.currentTimeMillis());
 									pst.setTimestamp(9, now);
 									// pstm.setString(9,
 									// langText(this.relationSourceText,langus[i]));
@@ -1959,8 +2014,8 @@ public class Read2004XML extends DefaultHandler {
 						pst.setNull(14, Types.VARCHAR);
 						pst.setNull(15, Types.VARCHAR);
 						pst.setNull(16, Types.TIMESTAMP);
-						pst.setTimestamp(17,
-								toTimestamp(this.relationCreateDate, true));
+						pst.setTimestamp(17, toTimestamp(
+								this.relationCreateDate, true));
 						pst.executeUpdate();
 
 						if (langus != null && langus.length > 1) {
@@ -1972,19 +2027,15 @@ public class Read2004XML extends DefaultHandler {
 									pst.setInt(1, rnid);
 									pst.setInt(2, rid);
 									pst.setString(3, toLangCode(langus[i]));
-									pst.setString(
-											4,
-											langText(this.relationEndType,
-													langus[i]));
+									pst.setString(4, langText(
+											this.relationEndType, langus[i]));
 									pst.setString(5, null);
-									pst.setString(
-											6,
-											langText(this.relationEndPlace,
-													langus[i]));
+									pst.setString(6, langText(
+											this.relationEndPlace, langus[i]));
 									pst.setString(7, null);
 									pst.setNull(8, Types.TIMESTAMP);
-									Timestamp now = new Timestamp(
-											System.currentTimeMillis());
+									Timestamp now = new Timestamp(System
+											.currentTimeMillis());
 									pst.setTimestamp(9, now);
 
 									pst.executeUpdate();
@@ -2080,7 +2131,9 @@ public class Read2004XML extends DefaultHandler {
 			if (noticeModifiedDate == null) {
 				pst.setNull(7, Types.TIMESTAMP);
 			} else {
-				pst.setTimestamp(7, toTimestamp(this.noticeModifiedDate, false));
+				pst
+						.setTimestamp(7, toTimestamp(this.noticeModifiedDate,
+								false));
 			}
 			pst.setTimestamp(8, toTimestamp(this.noticeCreateDate, true));
 			pst.executeUpdate();
@@ -2160,8 +2213,8 @@ public class Read2004XML extends DefaultHandler {
 			pst.setString(4, this.noticeDateFrom);
 			pst.setString(5, this.noticeDateTo);
 			pst.setString(6, langText(this.noticePlace, this.oldCode));
-			pst.setString(7,
-					extractCSVPart(this.noticeTag, this.noticeAddress, 0));
+			pst.setString(7, extractCSVPart(this.noticeTag, this.noticeAddress,
+					0));
 			pst.setString(8, this.noticePostalCode);
 			pst.setString(9, this.noticePostOffice);
 			pst.setString(10, this.noticeCountry);
@@ -2184,10 +2237,10 @@ public class Read2004XML extends DefaultHandler {
 			//
 
 			if (finFamilyVersion == null) {
-				pst.setString(15,
-						Utils.extractPatronyme(this.noticeGivenName, false));
-				pst.setString(16,
-						Utils.extractPatronyme(this.noticeGivenName, true));
+				pst.setString(15, Utils.extractPatronyme(this.noticeGivenName,
+						false));
+				pst.setString(16, Utils.extractPatronyme(this.noticeGivenName,
+						true));
 			} else {
 				pst.setString(15, this.noticeGivenName);
 				pst.setString(16, this.noticePatronym);
@@ -2202,12 +2255,12 @@ public class Read2004XML extends DefaultHandler {
 				pst.setNull(20, Types.INTEGER);
 			}
 
-			pst.setString(21,
-					extractCSVPart(this.noticeTag, this.noticeAddress, 1));
-			pst.setString(22,
-					extractCSVPart(this.noticeTag, this.noticeAddress, 2));
-			pst.setString(23,
-					extractCSVPart(this.noticeTag, this.noticeAddress, 3));
+			pst.setString(21, extractCSVPart(this.noticeTag,
+					this.noticeAddress, 1));
+			pst.setString(22, extractCSVPart(this.noticeTag,
+					this.noticeAddress, 2));
+			pst.setString(23, extractCSVPart(this.noticeTag,
+					this.noticeAddress, 3));
 
 			pst.setString(24, this.noticeSourceText);
 			pst.setString(25, this.noticePrivateText);
@@ -2255,69 +2308,69 @@ public class Read2004XML extends DefaultHandler {
 			}
 
 			if (this.noticeMediaFilename != null) {
-				if (this.databaseHasImages) {
-					FileInputStream fis;
+				File file = null;
+				FileInputStream fis;
+				if (isZipFile) {
+					String path = images.get(this.sukuMediaFolder + "/"
+							+ this.noticeMediaFilename);
+					file = new File(path);
+				} else if (this.databaseHasImages) {
+
 					logger.fine("Trying image file: " + this.databaseFolder
 							+ "/" + this.sukuMediaFolder + "/"
 							+ this.noticeMediaFilename);
 
-					File file = new File(this.databaseFolder + "/"
+					file = new File(this.databaseFolder + "/"
 							+ this.sukuMediaFolder + "/"
 							+ this.noticeMediaFilename);
-					if (file.exists() && file.isFile()) {
-						BufferedImage sourceImage = ImageIO.read(file);
-						if (sourceImage == null) {
-							String wrn = "Image file: " + this.databaseFolder
-									+ "/" + this.sukuMediaFolder + "/"
-									+ this.noticeMediaFilename
-									+ " read failed!!";
-							logger.warning(wrn);
-							errorLine.add(wrn);
-						} else {
-							int mediaWidth = sourceImage.getWidth(null);
-							int mediaHeight = sourceImage.getHeight(null);
-							try {
-								fis = new FileInputStream(file);
-								PreparedStatement ps = this.con
-										.prepareStatement(UPDATE_IMAGE_DATA);
-
-								ps.setBinaryStream(1, fis, (int) file.length());
-								ps.setInt(2, mediaWidth);
-								ps.setInt(3, mediaHeight);
-								ps.setInt(4, pnid);
-								ps.executeUpdate();
-								ps.close();
-								fis.close();
-							} catch (FileNotFoundException e) {
-								String wrn = "Image file "
-										+ this.noticeMediaFilename
-										+ " not found";
-								logger.warning(wrn);
-								errorLine.add(wrn);
-								e.printStackTrace();
-							} catch (IOException e) {
-								String wrn = "Image file "
-										+ this.noticeMediaFilename + ":"
-										+ e.getMessage();
-								logger.log(Level.WARNING, "Image file "
-										+ this.noticeMediaFilename, e);
-
-								errorLine.add(wrn);
-								e.printStackTrace();
-							}
-						}
-						// int mediaType = sourceImage.getType();
-						// System.out.println("kuva: " +
-						// this.noticeMediaFilename + " = " + mediaWidth +
-						// "/" + mediaHeight );
-					} else {
-						String wrn = "Image file " + this.noticeMediaFilename
-								+ " is missing";
+				}
+				if (file != null && file.exists() && file.isFile()) {
+					BufferedImage sourceImage = ImageIO.read(file);
+					if (sourceImage == null) {
+						String wrn = "Image file: " + this.databaseFolder + "/"
+								+ this.sukuMediaFolder + "/"
+								+ this.noticeMediaFilename + " read failed!!";
 						logger.warning(wrn);
 						errorLine.add(wrn);
+					} else {
+						int mediaWidth = sourceImage.getWidth(null);
+						int mediaHeight = sourceImage.getHeight(null);
+						try {
+							fis = new FileInputStream(file);
+							PreparedStatement ps = this.con
+									.prepareStatement(UPDATE_IMAGE_DATA);
+
+							ps.setBinaryStream(1, fis, (int) file.length());
+							ps.setInt(2, mediaWidth);
+							ps.setInt(3, mediaHeight);
+							ps.setInt(4, pnid);
+							ps.executeUpdate();
+							ps.close();
+							fis.close();
+						} catch (FileNotFoundException e) {
+							String wrn = "Image file "
+									+ this.noticeMediaFilename + " not found";
+							logger.warning(wrn);
+							errorLine.add(wrn);
+							e.printStackTrace();
+						} catch (IOException e) {
+							String wrn = "Image file "
+									+ this.noticeMediaFilename + ":"
+									+ e.getMessage();
+							logger.log(Level.WARNING, "Image file "
+									+ this.noticeMediaFilename, e);
+
+							errorLine.add(wrn);
+							e.printStackTrace();
+						}
 					}
+					// int mediaType = sourceImage.getType();
+					// System.out.println("kuva: " +
+					// this.noticeMediaFilename + " = " + mediaWidth +
+					// "/" + mediaHeight );
 				} else {
-					String wrn = "Image folder for " + this.noticeMediaFilename
+
+					String wrn = "Image file " + this.noticeMediaFilename
 							+ " is missing";
 					logger.warning(wrn);
 					errorLine.add(wrn);
@@ -2337,19 +2390,19 @@ public class Read2004XML extends DefaultHandler {
 						pst.setString(4, toLangCode(langus[i]));
 
 						pst.setString(5, langText(this.noticeType, langus[i]));
-						pst.setString(6,
-								langText(this.noticeDescription, langus[i]));
+						pst.setString(6, langText(this.noticeDescription,
+								langus[i]));
 
 						pst.setString(7, langText(this.noticePlace, langus[i]));
-						pst.setString(8,
-								langText(this.noticeNoteText, langus[i]));
-						pst.setString(9,
-								langText(this.noticeMediaTitle, langus[i]));
+						pst.setString(8, langText(this.noticeNoteText,
+								langus[i]));
+						pst.setString(9, langText(this.noticeMediaTitle,
+								langus[i]));
 
 						pst.setNull(10, Types.TIMESTAMP);
 
-						Timestamp now = new Timestamp(
-								System.currentTimeMillis());
+						Timestamp now = new Timestamp(System
+								.currentTimeMillis());
 						pst.setTimestamp(11, now);
 
 						pst.executeUpdate();
@@ -2495,14 +2548,16 @@ public class Read2004XML extends DefaultHandler {
 					pst.setInt(2, pnid);
 					pst.setString(3, "NAME");
 					pst.setString(4, this.unitPrivacy);
-					pst.setString(5,
-							Utils.extractPatronyme(this.unitGivenName, false));
-					pst.setString(6,
-							Utils.extractPatronyme(this.unitGivenName, true));
+					pst.setString(5, Utils.extractPatronyme(this.unitGivenName,
+							false));
+					pst.setString(6, Utils.extractPatronyme(this.unitGivenName,
+							true));
 					pst.setString(7, this.unitPrefix);
 					pst.setString(8, this.unitSurName);
 					pst.setString(9, this.unitPostfix);
-					pst.setTimestamp(10, toTimestamp(this.unitCreateDate, true));
+					pst
+							.setTimestamp(10, toTimestamp(this.unitCreateDate,
+									true));
 					pst.executeUpdate();
 					pst.close();
 					logger.fine("UnitName: " + this.unitId + "/"
@@ -2527,8 +2582,8 @@ public class Read2004XML extends DefaultHandler {
 						sb.append(this.unitPostfix);
 					}
 					if (this.runner.setRunnerValue(sb.toString())) {
-						throw new SAXException(
-								Resurses.getString("SUKU_CANCELLED"));
+						throw new SAXException(Resurses
+								.getString("SUKU_CANCELLED"));
 					}
 
 				} catch (SQLException e) {
@@ -2768,8 +2823,8 @@ public class Read2004XML extends DefaultHandler {
 							}
 
 							sb.append(tuloste);
-							this.nameCollector.put(tnimi.toString(),
-									tnimi.toString());
+							this.nameCollector.put(tnimi.toString(), tnimi
+									.toString());
 						}
 					}
 				}
@@ -2896,6 +2951,38 @@ public class Read2004XML extends DefaultHandler {
 
 		Timestamp tms = new Timestamp(dd.getTime());
 		return tms;
+	}
+
+	private File copyToTempfile(ZipInputStream zipIn, String imgName)
+			throws IOException, FileNotFoundException, SukuException {
+		int ldot = imgName.lastIndexOf(".");
+		String imgSuffix = null;
+		if (ldot > 0 && ldot > (imgName.length() - 6)) {
+			imgSuffix = imgName.substring(ldot);
+		}
+
+		if (baseFolder.length() > 0) {
+			if (imgName.substring(0, baseFolder.length()).equalsIgnoreCase(
+					baseFolder)) {
+				imgName = imgName.substring(baseFolder.length());
+			}
+		}
+		if (this.runner.setRunnerValue(imgName)) {
+			throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+		}
+		File tf = File.createTempFile("finFam", imgSuffix);
+		BufferedOutputStream fos = new BufferedOutputStream(
+				new FileOutputStream(tf));
+		int dd = 0;
+		while ((dd = zipIn.read()) >= 0) {
+			fos.write(dd);
+		}
+		tf.deleteOnExit();
+		fos.close();
+
+		images.put(imgName.replace('\\', '/'), tf.getPath());
+		zipIn.closeEntry();
+		return tf;
 	}
 
 }
