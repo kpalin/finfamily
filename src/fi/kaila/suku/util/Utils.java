@@ -415,8 +415,8 @@ public class Utils {
 					if (ref == null) {
 						ref = new PersonInTables(member.getSubPid(m));
 						ref.references.add(Long.valueOf(tab.getTableNo()));
-						personReferences.put(
-								Integer.valueOf(member.getSubPid(m)), ref);
+						personReferences.put(Integer.valueOf(member
+								.getSubPid(m)), ref);
 					} else {
 						ref.references.add(tab.getTableNo());
 					}
@@ -431,9 +431,8 @@ public class Utils {
 						if (ref == null) {
 							ref = new PersonInTables(spouseMember.getPid());
 							ref.asParents.add(Long.valueOf(tab.getTableNo()));
-							personReferences
-									.put(Integer.valueOf(spouseMember.getPid()),
-											ref);
+							personReferences.put(Integer.valueOf(spouseMember
+									.getPid()), ref);
 						} else {
 							ref.asParents.add(tab.getTableNo());
 						}
@@ -441,8 +440,8 @@ public class Utils {
 							ref = personReferences.get(spouseMember
 									.getSubPid(m));
 							if (ref == null) {
-								ref = new PersonInTables(
-										spouseMember.getSubPid(m));
+								ref = new PersonInTables(spouseMember
+										.getSubPid(m));
 								ref.references.add(Long.valueOf(tab
 										.getTableNo()));
 								personReferences.put(Integer
@@ -491,8 +490,8 @@ public class Utils {
 					if (ref == null) {
 						ref = new PersonInTables(member.getSubPid(m));
 						ref.references.add(Long.valueOf(tab.getTableNo()));
-						personReferences.put(
-								Integer.valueOf(member.getSubPid(m)), ref);
+						personReferences.put(Integer.valueOf(member
+								.getSubPid(m)), ref);
 					} else {
 						ref.references.add(tab.getTableNo());
 					}
@@ -690,6 +689,45 @@ public class Utils {
 			types = new SukuTypesModel();
 		}
 		return types;
+	}
+
+	/**
+	 * 
+	 * filenames in the backup is prefixed by a number (numbers) like
+	 * 
+	 * 76_myImage.jpg
+	 * 
+	 * of 76_456_myImage.jpg
+	 * 
+	 * The tidying removes the number and returns myImage.jpg
+	 * 
+	 * @param name
+	 *            raw filename
+	 * @return tidy file name
+	 */
+	public static String tidyFileName(String name) {
+
+		if (name == null)
+			return null;
+		int idx = 0;
+		int point = name.lastIndexOf(".");
+		if (point < 0)
+			return name;
+		while ((idx = name.indexOf("_")) > 0) {
+
+			point = name.lastIndexOf(".");
+			if (idx >= point)
+				return name;
+
+			try {
+				Integer.parseInt(name.substring(0, idx));
+				name = name.substring(idx + 1);
+			} catch (NumberFormatException ne) {
+				return name;
+			}
+
+		}
+		return name;
 	}
 
 }

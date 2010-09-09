@@ -2219,7 +2219,7 @@ public class Read2004XML extends DefaultHandler {
 			pst.setString(11, this.noticeEmail);
 			// String t1 = langText(this.noticeNoteText,this.oldCode);
 			pst.setString(12, langText(this.noticeNoteText, this.oldCode));
-			pst.setString(13, this.noticeMediaFilename);
+			pst.setString(13, Utils.tidyFileName(this.noticeMediaFilename));
 			pst.setString(14, langText(this.noticeMediaTitle, this.oldCode));
 			// private static final String UPDATE_UNIT_NOTICE =
 			// "update UnitNotice "

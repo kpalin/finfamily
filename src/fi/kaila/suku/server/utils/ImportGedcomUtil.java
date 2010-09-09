@@ -1524,8 +1524,9 @@ public class ImportGedcomUtil {
 					int lastdir = item.lineValue.replace('\\', '/')
 							.lastIndexOf('/');
 					if (lastdir > 0) {
-						notice.setMediaFilename(item.lineValue
-								.substring(lastdir + 1));
+						notice.setMediaFilename(Utils
+								.tidyFileName(item.lineValue
+										.substring(lastdir + 1)));
 					}
 
 					if (imgSize > 0) {
