@@ -82,12 +82,12 @@ import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
+import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.dialog.SelectSchema;
 import fi.kaila.suku.swing.dialog.SettingsDialog;
 import fi.kaila.suku.swing.dialog.SukuPad;
 import fi.kaila.suku.swing.dialog.ToolsDialog;
 import fi.kaila.suku.swing.dialog.ViewMgrWindow;
-import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.panel.PersonView;
 import fi.kaila.suku.swing.panel.SukuTabPane;
 import fi.kaila.suku.swing.util.SukuPopupMenu;
@@ -400,40 +400,40 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mImport = new JMenu(Resurses.getString("IMPORT"));
 		this.mFile.add(mImport);
 
-		this.mImport2004 = new JMenuItem(Resurses
-				.getString(Resurses.IMPORT_SUKU));
+		this.mImport2004 = new JMenuItem(
+				Resurses.getString(Resurses.IMPORT_SUKU));
 		mImport.add(this.mImport2004);
 		this.mImport2004.setActionCommand(Resurses.IMPORT_SUKU);
 		this.mImport2004.addActionListener(this);
 
-		this.mImportGedcom = new JMenuItem(Resurses
-				.getString(Resurses.IMPORT_GEDCOM));
+		this.mImportGedcom = new JMenuItem(
+				Resurses.getString(Resurses.IMPORT_GEDCOM));
 		mImport.add(this.mImportGedcom);
 		this.mImportGedcom.setActionCommand(Resurses.IMPORT_GEDCOM);
 		this.mImportGedcom.addActionListener(this);
 
-		this.mImportOther = new JMenuItem(Resurses
-				.getString(Resurses.IMPORT_OTHER));
+		this.mImportOther = new JMenuItem(
+				Resurses.getString(Resurses.IMPORT_OTHER));
 		mImport.add(this.mImportOther);
 		this.mImportOther.setActionCommand(Resurses.IMPORT_OTHER);
 		this.mImportOther.addActionListener(this);
 
 		mExport = new JMenu(Resurses.getString("EXPORT"));
 		this.mFile.add(mExport);
-		this.mExportGedcom = new JMenuItem(Resurses
-				.getString(Resurses.EXPORT_GEDCOM));
+		this.mExportGedcom = new JMenuItem(
+				Resurses.getString(Resurses.EXPORT_GEDCOM));
 		mExport.add(this.mExportGedcom);
 		this.mExportGedcom.setActionCommand(Resurses.EXPORT_GEDCOM);
 		this.mExportGedcom.addActionListener(this);
 
-		this.mExportBackup = new JMenuItem(Resurses
-				.getString(Resurses.EXPORT_BACKUP));
+		this.mExportBackup = new JMenuItem(
+				Resurses.getString(Resurses.EXPORT_BACKUP));
 		mExport.add(this.mExportBackup);
 		this.mExportBackup.setActionCommand(Resurses.EXPORT_BACKUP);
 		this.mExportBackup.addActionListener(this);
 
-		this.mNewDatabase = new JMenuItem(Resurses
-				.getString("SCHEMA_INITIALIZE"));
+		this.mNewDatabase = new JMenuItem(
+				Resurses.getString("SCHEMA_INITIALIZE"));
 		this.mFile.add(this.mNewDatabase);
 		this.mNewDatabase.setActionCommand("SCHEMA_INITIALIZE");
 		this.mNewDatabase.addActionListener(this);
@@ -450,8 +450,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mQuery.setActionCommand(Resurses.QUERY);
 		this.mQuery.addActionListener(this);
 
-		this.mNewPerson = new JMenuItem(Resurses
-				.getString("TOOLBAR.NEWPERSON.TOOLTIP"));
+		this.mNewPerson = new JMenuItem(
+				Resurses.getString("TOOLBAR.NEWPERSON.TOOLTIP"));
 		this.mFile.add(this.mNewPerson);
 		this.mNewPerson.setActionCommand(Resurses.TOOLBAR_NEWPERSON_ACTION);
 		this.mNewPerson.addActionListener(this);
@@ -461,8 +461,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mOpenPerson.setActionCommand(Resurses.MENU_OPEN_PERSON);
 		this.mOpenPerson.addActionListener(this);
 
-		this.mPrintPerson = new JMenuItem(Resurses
-				.getString(Resurses.PRINT_PERSON));
+		this.mPrintPerson = new JMenuItem(
+				Resurses.getString(Resurses.PRINT_PERSON));
 		this.mFile.add(this.mPrintPerson);
 		this.mPrintPerson.setActionCommand(Resurses.PRINT_PERSON);
 		this.mPrintPerson.addActionListener(this);
@@ -478,8 +478,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mLista.addActionListener(this);
 
 		this.mFile.addSeparator();
-		this.mDisconnect = new JMenuItem(Resurses
-				.getString(Resurses.DISCONNECT));
+		this.mDisconnect = new JMenuItem(
+				Resurses.getString(Resurses.DISCONNECT));
 		this.mFile.add(this.mDisconnect);
 		this.mDisconnect.setActionCommand(Resurses.DISCONNECT);
 		this.mDisconnect.addActionListener(this);
@@ -491,8 +491,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		this.mHiski = new JMenu("Hiski");
 		this.menubar.add(this.mHiski);
-		this.mImportHiski = new JMenuItem(Resurses
-				.getString(Resurses.IMPORT_HISKI));
+		this.mImportHiski = new JMenuItem(
+				Resurses.getString(Resurses.IMPORT_HISKI));
 		this.mHiski.add(this.mImportHiski);
 		this.mImportHiski.setActionCommand(Resurses.IMPORT_HISKI);
 		this.mImportHiski.addActionListener(this);
@@ -514,8 +514,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mDbUpdate.setActionCommand(Resurses.UPDATEDB);
 		this.mDbUpdate.addActionListener(this);
 
-		this.mGroupMgr = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_GROUP_MGR"));
+		this.mGroupMgr = new JMenuItem(
+				Resurses.getString("MENU_TOOLS_GROUP_MGR"));
 		this.mTools.add(this.mGroupMgr);
 		this.mGroupMgr.setActionCommand("MENU_TOOLS_GROUP_MGR");
 		this.mGroupMgr.addActionListener(this);
@@ -527,8 +527,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		JMenu load = new JMenu(Resurses.getString("MENU_TOOLS_LOAD"));
 		mTools.add(load);
-		mLoadCoordinates = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_LOAD_COORDINATES"));
+		mLoadCoordinates = new JMenuItem(
+				Resurses.getString("MENU_TOOLS_LOAD_COORDINATES"));
 		load.add(mLoadCoordinates);
 		mLoadCoordinates.setActionCommand("MENU_TOOLS_LOAD_COORDINATES");
 		mLoadCoordinates.addActionListener(this);
@@ -541,28 +541,28 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		JMenu cnv = new JMenu(Resurses.getString("MENU_TOOLS_CONVERSIONS"));
 		this.mTools.add(cnv);
 
-		mLoadConversions = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_LOAD_CONVERSIONS"));
+		mLoadConversions = new JMenuItem(
+				Resurses.getString("MENU_TOOLS_LOAD_CONVERSIONS"));
 		cnv.add(mLoadConversions);
 		mLoadConversions.setActionCommand("MENU_TOOLS_LOAD_CONVERSIONS");
 		mLoadConversions.addActionListener(this);
 
-		mStoreConversions = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_STORE_CONVERSIONS"));
+		mStoreConversions = new JMenuItem(
+				Resurses.getString("MENU_TOOLS_STORE_CONVERSIONS"));
 		cnv.add(mStoreConversions);
 		mStoreConversions.setActionCommand("MENU_TOOLS_STORE_CONVERSIONS");
 		mStoreConversions.addActionListener(this);
 
-		mStoreAllConversions = new JMenuItem(Resurses
-				.getString("MENU_TOOLS_STORE_ALL_CONVERSIONS"));
+		mStoreAllConversions = new JMenuItem(
+				Resurses.getString("MENU_TOOLS_STORE_ALL_CONVERSIONS"));
 		cnv.add(mStoreAllConversions);
 		mStoreAllConversions
 				.setActionCommand("MENU_TOOLS_STORE_ALL_CONVERSIONS");
 		mStoreAllConversions.addActionListener(this);
 		mTools.addSeparator();
 		if (!isWebApp) {
-			mListDatabases = new JMenuItem(Resurses
-					.getString("MENU_TOOLS_LIST_DATABASES"));
+			mListDatabases = new JMenuItem(
+					Resurses.getString("MENU_TOOLS_LIST_DATABASES"));
 			mTools.add(mListDatabases);
 			mListDatabases.setActionCommand("MENU_TOOLS_LIST_DATABASES");
 			mListDatabases.addActionListener(this);
@@ -570,8 +570,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		this.mHelp = new JMenu(Resurses.getString(Resurses.HELP));
 		this.menubar.add(this.mHelp);
-		JMenuItem swUpdate = new JMenuItem(Resurses
-				.getString(Resurses.SW_UPDATE));
+		JMenuItem swUpdate = new JMenuItem(
+				Resurses.getString(Resurses.SW_UPDATE));
 		this.mHelp.add(swUpdate);
 		swUpdate.setActionCommand(Resurses.SW_UPDATE);
 		swUpdate.addActionListener(this);
@@ -617,9 +617,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 
 			tQueryButton = makeNavigationButton(Resurses.TOOLBAR_QUERY_IMAGE,
-					Resurses.TOOLBAR_QUERY_ACTION, Resurses
-							.getString("TOOLBAR.QUERY.TOOLTIP"), Resurses
-							.getString("TOOLBAR.QUERY.ALTTEXT"));
+					Resurses.TOOLBAR_QUERY_ACTION,
+					Resurses.getString("TOOLBAR.QUERY.TOOLTIP"),
+					Resurses.getString("TOOLBAR.QUERY.ALTTEXT"));
 
 			this.toolbar.add(tQueryButton);
 
@@ -627,41 +627,41 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			tSubjectButton = makeNavigationButton(
 					Resurses.TOOLBAR_SUBJECT_DOWN_IMAGE,
 					Resurses.TOOLBAR_SUBJECT_ON_IMAGE,
-					Resurses.TOOLBAR_SUBJECT_DOWN_ACTION, Resurses
-							.getString("TOOLBAR.SUBJECT.TOOLTIP"), Resurses
-							.getString("TOOLBAR.SUBJECT.ALTTEXT"));
+					Resurses.TOOLBAR_SUBJECT_DOWN_ACTION,
+					Resurses.getString("TOOLBAR.SUBJECT.TOOLTIP"),
+					Resurses.getString("TOOLBAR.SUBJECT.ALTTEXT"));
 			this.toolbar.add(tSubjectButton);
 
 			this.toolbar.addSeparator();
 
 			tSubjectPButton = makeNavigationButton(
 					Resurses.TOOLBAR_SUBJECT_UP_IMAGE,
-					Resurses.TOOLBAR_SUBJECT_UP_ACTION, Resurses
-							.getString("TOOLBAR.SUBJECTP.TOOLTIP"), Resurses
-							.getString("TOOLBAR.SUBJECTP.ALTTEXT"));
+					Resurses.TOOLBAR_SUBJECT_UP_ACTION,
+					Resurses.getString("TOOLBAR.SUBJECTP.TOOLTIP"),
+					Resurses.getString("TOOLBAR.SUBJECTP.ALTTEXT"));
 			tSubjectPButton.setEnabled(false);
 			this.toolbar.add(tSubjectPButton);
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
 			tPersonButton = makeNavigationButton(Resurses.TOOLBAR_PERSON_IMAGE,
-					Resurses.TOOLBAR_NEWPERSON_ACTION, Resurses
-							.getString("TOOLBAR.NEWPERSON.TOOLTIP"), Resurses
-							.getString("TOOLBAR.NEWPERSON.ALTTEXT"));
+					Resurses.TOOLBAR_NEWPERSON_ACTION,
+					Resurses.getString("TOOLBAR.NEWPERSON.TOOLTIP"),
+					Resurses.getString("TOOLBAR.NEWPERSON.ALTTEXT"));
 
 			this.toolbar.add(tPersonButton);
 
 			tMapButton = makeNavigationButton(Resurses.TOOLBAR_MAP_IMAGE,
-					Resurses.TOOLBAR_MAP_ACTION, Resurses
-							.getString("TOOLBAR.MAP.TOOLTIP"), Resurses
-							.getString("TOOLBAR.MAP.ALTTEXT"));
+					Resurses.TOOLBAR_MAP_ACTION,
+					Resurses.getString("TOOLBAR.MAP.TOOLTIP"),
+					Resurses.getString("TOOLBAR.MAP.ALTTEXT"));
 
 			this.toolbar.add(tMapButton);
 
 			tRemovePerson = makeNavigationButton(
 					Resurses.TOOLBAR_REMPERSON_IMAGE,
-					Resurses.TOOLBAR_REMPERSON_ACTION, Resurses
-							.getString("TOOLBAR.REMPERSON.TOOLTIP"), Resurses
-							.getString("TOOLBAR.REMPERSON.ALTTEXT"));
+					Resurses.TOOLBAR_REMPERSON_ACTION,
+					Resurses.getString("TOOLBAR.REMPERSON.TOOLTIP"),
+					Resurses.getString("TOOLBAR.REMPERSON.ALTTEXT"));
 
 			this.toolbar.add(tRemovePerson);
 
@@ -669,8 +669,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			tNoticesButton = makeNavigationButton("Tietojaksot24",
 					"Tietojaksot24_nega", Resurses.TOOLBAR_NOTICES_ACTION,
-					Resurses.getString("TOOLBAR.NOTICES.TOOLTIP"), Resurses
-							.getString("TOOLBAR.NOTICES.ALTTEXT"));
+					Resurses.getString("TOOLBAR.NOTICES.TOOLTIP"),
+					Resurses.getString("TOOLBAR.NOTICES.ALTTEXT"));
 
 			String tmp = kontroller.getPref(this, Resurses.NOTICES_BUTTON,
 					"false");
@@ -680,9 +680,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.toolbar.add(tNoticesButton);
 
 			tNoteButton = makeNavigationButton("Teksti24", "Teksti24_nega",
-					Resurses.TOOLBAR_NOTE_ACTION, Resurses
-							.getString("TOOLBAR.NOTE.TOOLTIP"), Resurses
-							.getString("TOOLBAR.NOTE.ALTTEXT"));
+					Resurses.TOOLBAR_NOTE_ACTION,
+					Resurses.getString("TOOLBAR.NOTE.TOOLTIP"),
+					Resurses.getString("TOOLBAR.NOTE.ALTTEXT"));
 			tmp = kontroller.getPref(this, Resurses.TOOLBAR_NOTE_ACTION,
 					"false");
 			if (tmp.equals("true")) {
@@ -692,8 +692,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			tAddressButton = makeNavigationButton("showAddress",
 					"showAddress_nega", Resurses.TOOLBAR_ADDRESS_ACTION,
-					Resurses.getString("TOOLBAR.ADDRESS.TOOLTIP"), Resurses
-							.getString("TOOLBAR.ADDRESS.ALTTEXT"));
+					Resurses.getString("TOOLBAR.ADDRESS.TOOLTIP"),
+					Resurses.getString("TOOLBAR.ADDRESS.ALTTEXT"));
 			tmp = kontroller.getPref(this, Resurses.TOOLBAR_ADDRESS_ACTION,
 					"false");
 			if (tmp.equals("true")) {
@@ -702,9 +702,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.toolbar.add(tAddressButton);
 
 			tFarmButton = makeNavigationButton("talo", "talo_nega",
-					Resurses.TOOLBAR_FARM_ACTION, Resurses
-							.getString("TOOLBAR.FARM.TOOLTIP"), Resurses
-							.getString("TOOLBAR.FARM.ALTTEXT"));
+					Resurses.TOOLBAR_FARM_ACTION,
+					Resurses.getString("TOOLBAR.FARM.TOOLTIP"),
+					Resurses.getString("TOOLBAR.FARM.ALTTEXT"));
 
 			tmp = kontroller.getPref(this, Resurses.TOOLBAR_FARM_ACTION,
 					"false");
@@ -715,9 +715,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.toolbar.add(tFarmButton);
 
 			tImageButton = makeNavigationButton("kamera", "kamera_nega",
-					Resurses.TOOLBAR_IMAGE_ACTION, Resurses
-							.getString("TOOLBAR.IMAGE.TOOLTIP"), Resurses
-							.getString("TOOLBAR.IMAGE.ALTTEXT"));
+					Resurses.TOOLBAR_IMAGE_ACTION,
+					Resurses.getString("TOOLBAR.IMAGE.TOOLTIP"),
+					Resurses.getString("TOOLBAR.IMAGE.ALTTEXT"));
 			tmp = kontroller.getPref(this, Resurses.TOOLBAR_IMAGE_ACTION,
 					"false");
 			if (tmp.equals("true")) {
@@ -727,8 +727,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			tPrivateButton = makeNavigationButton("showPrivate",
 					"showPrivate_nega", Resurses.TOOLBAR_PRIVATE_ACTION,
-					Resurses.getString("TOOLBAR.PRIVATE.TOOLTIP"), Resurses
-							.getString("TOOLBAR.PRIVATE.ALTTEXT"));
+					Resurses.getString("TOOLBAR.PRIVATE.TOOLTIP"),
+					Resurses.getString("TOOLBAR.PRIVATE.ALTTEXT"));
 			tmp = kontroller.getPref(this, Resurses.TOOLBAR_PRIVATE_ACTION,
 					"false");
 			if (tmp.equals("true")) {
@@ -737,9 +737,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.toolbar.add(tPrivateButton);
 			this.toolbar.addSeparator(new Dimension(20, 30));
 			tAddNotice = makeNavigationButton(Resurses.TOOLBAR_ADDNOTICE_IMAGE,
-					Resurses.TOOLBAR_ADDNOTICE_ACTION, Resurses
-							.getString("TOOLBAR.ADDNOTICE.TOOLTIP"), Resurses
-							.getString("TOOLBAR.ADDNOTICE.ALTTEXT"));
+					Resurses.TOOLBAR_ADDNOTICE_ACTION,
+					Resurses.getString("TOOLBAR.ADDNOTICE.TOOLTIP"),
+					Resurses.getString("TOOLBAR.ADDNOTICE.ALTTEXT"));
 
 			this.toolbar.add(tAddNotice);
 
@@ -1302,8 +1302,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			cdlg.rememberDatabase(false);
 
-			JOptionPane.showMessageDialog(this, e2[0], Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e2[0],
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			this.statusPanel.setText(e2[0]);
 			e3.printStackTrace();
 			this.isConnected = 0;
@@ -1480,8 +1481,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					// repoLangList = rlang.generalArray;
 				}
 
-				JOptionPane.showMessageDialog(this, resu, Resurses
-						.getString(Resurses.SUKU),
+				JOptionPane.showMessageDialog(this, resu,
+						Resurses.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
 			} else if (cmd.equals("SCHEMA_INITIALIZE")) {
 
@@ -1515,9 +1516,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				if (resp.resuCount > 0) {
 					// if (schema.isExistingSchema()) {
 
-					int resu = JOptionPane.showConfirmDialog(this, Resurses
-							.getString("CONFIRM_NEWDB"), Resurses
-							.getString(Resurses.SUKU),
+					int resu = JOptionPane.showConfirmDialog(this,
+							Resurses.getString("CONFIRM_NEWDB"),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE);
 					if (resu != JOptionPane.YES_OPTION) {
@@ -1541,21 +1542,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 									"path=resources/excel/TypesExcel.xls",
 									"page=types");
 
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("CREATED_NEWDB"), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("CREATED_NEWDB"),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.INFORMATION_MESSAGE);
 					resetIntellisens();
 					isConnected = 2;
 					enableCommands();
 					setTitle(null);
 				} catch (SukuException e1) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString(Resurses.NEWDB), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString(Resurses.NEWDB),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.WARNING, Resurses
-							.getString(Resurses.NEWDB), e1);
+					logger.log(Level.WARNING,
+							Resurses.getString(Resurses.NEWDB), e1);
 
 					e1.printStackTrace();
 				}
@@ -1564,21 +1565,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				SukuData scm = kontroller.getSukuData("cmd=schema", "type=get");
 				SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
 				if (resp.resuCount > 0) {
-					int answer = JOptionPane.showConfirmDialog(this, Resurses
-							.getString("SCHEMA_NOT_EMPTY")
-							+ " ["
-							+ scm.generalArray[0]
-							+ "] "
-							+ Resurses.getString("SCHEMA_PERSONCOUNT")
-							+ "= "
-							+ resp.resuCount
-							+ " "
-							+ Resurses.getString("DELETE_DATA_OK"), Resurses
-							.getString(Resurses.SUKU),
+					int answer = JOptionPane.showConfirmDialog(
+							this,
+							Resurses.getString("SCHEMA_NOT_EMPTY") + " ["
+									+ scm.generalArray[0] + "] "
+									+ Resurses.getString("SCHEMA_PERSONCOUNT")
+									+ "= " + resp.resuCount + " "
+									+ Resurses.getString("DELETE_DATA_OK"),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					if (answer == 1) {
-						throw new SukuException(Resurses
-								.getString("SCHEMA_NOT_EMPTY"));
+						throw new SukuException(
+								Resurses.getString("SCHEMA_NOT_EMPTY"));
 					}
 				}
 				kontroller.getSukuData("cmd=schema", "type=drop", "name="
@@ -1610,9 +1608,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				// int isele = table.getSelectedRow();
 				int isele = selection[0];
 				if (isele < 0) {
-					JOptionPane.showMessageDialog(this, Resurses
-							.getString("MESSAGE_NO_PERSON_TO_DELETE"), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("MESSAGE_NO_PERSON_TO_DELETE"),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					return;
 
@@ -1623,11 +1621,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				PersonShortData p = tableMap.get(row.getPid());
 
-				int resu = JOptionPane.showConfirmDialog(this, Resurses
-						.getString("CONFIRM_DELETE")
-						+ " " + p.getAlfaName(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
+				int resu = JOptionPane
+						.showConfirmDialog(
+								this,
+								Resurses.getString("CONFIRM_DELETE") + " "
+										+ p.getAlfaName(),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
 				if (resu == JOptionPane.YES_OPTION) {
 
 					try {
@@ -1685,8 +1686,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				isConnected = 2;
 				enableCommands();
 			} else if (cmd.equals(Resurses.MENU_OPEN_PERSON)) {
-				String textPid = JOptionPane.showInputDialog(this, Resurses
-						.getString("DIALOG_GIVE_PID"));
+				String textPid = JOptionPane.showInputDialog(this,
+						Resurses.getString("DIALOG_GIVE_PID"));
 				// .showMessageDialog(this, Resurses
 				// .getString(Resurses.PGSQL_STOP)
 				// + ":" + "OK");
@@ -1699,12 +1700,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						if (res.pers != null) {
 							showPerson(pid);
 						} else {
-							JOptionPane.showMessageDialog(this, Resurses
-									.getString("DIALOG_PID_NOT_EXISTS"));
+							JOptionPane
+									.showMessageDialog(this, Resurses
+											.getString("DIALOG_PID_NOT_EXISTS"));
 						}
 					} catch (NumberFormatException ne) {
-						JOptionPane.showMessageDialog(this, Resurses
-								.getString("DIALOG_BAD_PID"));
+						JOptionPane.showMessageDialog(this,
+								Resurses.getString("DIALOG_BAD_PID"));
 					}
 
 				}
@@ -1885,8 +1887,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				}
 				sb.append("\n");
 				sb.append(cdlg.getResult());
-				JOptionPane.showMessageDialog(this, sb.toString(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, sb.toString(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 		} catch (SukuException e) {
@@ -1980,8 +1983,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			resp = Suku.kontroller.getSukuData("cmd=get", "type=dbstatistics",
 					"user=" + user, "password=" + pass, "host=" + host);
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.INFORMATION_MESSAGE);
 			e.printStackTrace();
 			return;
 
@@ -2015,13 +2019,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			kontroller.getSukuData("cmd=excel", "page=conversions",
 					"type=export", "all=" + doAll);
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString("EXPORTED_CONVERSIONS"), Resurses
-					.getString(Resurses.SUKU), JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString("EXPORTED_CONVERSIONS"),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.INFORMATION_MESSAGE);
 
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 
@@ -2034,14 +2040,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				kontroller.getSukuData("cmd=excel", "page=conversions",
 						"type=import");
 
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("IMPORTED_CONVERSIONS"), Resurses
-						.getString(Resurses.SUKU),
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("IMPORTED_CONVERSIONS"),
+						Resurses.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}
@@ -2080,8 +2087,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			} catch (SukuException e1) {
 
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e1.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			ImportGedcomDialog dlg;
@@ -2140,14 +2148,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (openedFile) {
 				kontroller.getSukuData("cmd=excel", "page=types");
 
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("IMPORTED_TYPES"), Resurses
-						.getString(Resurses.SUKU),
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("IMPORTED_TYPES"),
+						Resurses.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 
@@ -2159,14 +2168,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (openedFile) {
 				kontroller.getSukuData("cmd=excel", "page=coordinates");
 
-				JOptionPane.showMessageDialog(this, Resurses
-						.getString("IMPORTED_COORDINATES"), Resurses
-						.getString(Resurses.SUKU),
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("IMPORTED_COORDINATES"),
+						Resurses.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}
@@ -2296,12 +2306,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			personView.displayNewPersonPane(pid);
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString(Resurses.TAB_PERSON)
-					+ ":" + e.getMessage());
-			logger
-					.log(Level.SEVERE, "Failed to create person [" + pid + "]",
-							e);
+			JOptionPane.showMessageDialog(
+					this,
+					Resurses.getString(Resurses.TAB_PERSON) + ":"
+							+ e.getMessage());
+			logger.log(Level.SEVERE, "Failed to create person [" + pid + "]", e);
 			e.printStackTrace();
 		}
 	}
@@ -2415,9 +2424,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString(Resurses.ADMIN)
-					+ ":" + e.getMessage());
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString(Resurses.ADMIN) + ":" + e.getMessage());
 
 		}
 
@@ -2518,9 +2526,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		} catch (SukuException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString(Resurses.SHOWINMAP)
-					+ ":" + e.getMessage());
+			JOptionPane.showMessageDialog(
+					this,
+					Resurses.getString(Resurses.SHOWINMAP) + ":"
+							+ e.getMessage());
 
 		}
 
@@ -2700,14 +2709,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			initSorter(crit);
 		} catch (SukuException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString(Resurses.QUERY)
-					+ ":" + e1.getMessage());
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString(Resurses.QUERY) + ":" + e1.getMessage());
 		} catch (UnsupportedEncodingException ue) {
 			ue.printStackTrace();
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString(Resurses.QUERY)
-					+ ":" + ue.getMessage());
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString(Resurses.QUERY) + ":" + ue.getMessage());
 		}
 	}
 
@@ -2835,8 +2842,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		} catch (SukuException ee) {
 			if (isConnected > 1) {
-				JOptionPane.showMessageDialog(this, ee.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, ee.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				ee.printStackTrace();
 			}
 
@@ -2856,9 +2864,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			setTitle(null);
 		} catch (SukuException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(this, Resurses
-					.getString(Resurses.DISCONNECT)
-					+ ":" + e1.getMessage());
+			JOptionPane.showMessageDialog(
+					this,
+					Resurses.getString(Resurses.DISCONNECT) + ":"
+							+ e1.getMessage());
 		}
 	}
 
@@ -2893,8 +2902,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				dlg = new Import2004Dialog(this, kontroller);
 			} catch (SukuException ex) {
 				logger.log(Level.WARNING, "Import failed", ex);
-				JOptionPane.showMessageDialog(this, ex.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, ex.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -2927,8 +2937,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				queryDb();
 			}
 		} catch (SukuException e1) {
-			JOptionPane.showMessageDialog(this, e1.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e1.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			e1.printStackTrace();
 		}
 	}
