@@ -2152,13 +2152,13 @@ public abstract class CommonReport {
 						}
 						if (addDot) {
 
-							if ("|OCCU|EDUC|".indexOf(tag) > 0) {
+							if ("|OCCU|EDUC|TITL|".indexOf(tag) > 0) {
 								String nxttag = null;
 								if (j < notices.length - 1) {
 									nxttag = notices[j + 1].getTag();
 								}
 								if (nxttag != null) {
-									if ("|OCCU|EDUC|".indexOf(nxttag) > 0) {
+									if ("|OCCU|EDUC|TITL|".indexOf(nxttag) > 0) {
 										bt.addText(", ");
 									} else {
 										bt.addText(". ");
