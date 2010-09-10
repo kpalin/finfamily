@@ -61,7 +61,7 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  */
 public abstract class CommonReport {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/** The caller. */
 	protected ReportWorkerDialog caller;
@@ -71,7 +71,8 @@ public abstract class CommonReport {
 
 	/** The tables. */
 	protected Vector<ReportUnit> tables = new Vector<ReportUnit>();
-
+	/** The tables in a hashmap. */
+	protected HashMap<Long, ReportUnit> tabMap = new HashMap<Long, ReportUnit>();
 	/** The repo writer. */
 	protected ReportInterface repoWriter;
 
@@ -81,13 +82,13 @@ public abstract class CommonReport {
 	/** The text references. */
 	protected HashMap<String, PersonInTables> textReferences = null;
 
-	private HashMap<Integer, Integer> mapper = new HashMap<Integer, Integer>();
+	private final HashMap<Integer, Integer> mapper = new HashMap<Integer, Integer>();
 
-	private HashMap<String, PlaceInTables> places = new HashMap<String, PlaceInTables>();
+	private final HashMap<String, PlaceInTables> places = new HashMap<String, PlaceInTables>();
 
-	private LinkedHashMap<String, Integer> refs = new LinkedHashMap<String, Integer>();
+	private final LinkedHashMap<String, Integer> refs = new LinkedHashMap<String, Integer>();
 
-	private Vector<ImageNotice> imgNotices = new Vector<ImageNotice>();
+	private final Vector<ImageNotice> imgNotices = new Vector<ImageNotice>();
 	private int referencePid = 0;
 
 	private int imageNumber = 0;
@@ -122,8 +123,7 @@ public abstract class CommonReport {
 				.entrySet();
 		Iterator<Map.Entry<Integer, PersonInTables>> eex = entriesx.iterator();
 		while (eex.hasNext()) {
-			Map.Entry<Integer, PersonInTables> entrx = (Map.Entry<Integer, PersonInTables>) eex
-					.next();
+			Map.Entry<Integer, PersonInTables> entrx = eex.next();
 			PersonInTables pit = entrx.getValue();
 			vv.add(pit);
 		}
@@ -132,8 +132,7 @@ public abstract class CommonReport {
 				.entrySet();
 		Iterator<Map.Entry<String, PersonInTables>> eey = entriesy.iterator();
 		while (eey.hasNext()) {
-			Map.Entry<String, PersonInTables> entry = (Map.Entry<String, PersonInTables>) eey
-					.next();
+			Map.Entry<String, PersonInTables> entry = eey.next();
 			PersonInTables pit = entry.getValue();
 			vv.add(pit);
 		}
@@ -153,8 +152,7 @@ public abstract class CommonReport {
 		Set<Map.Entry<String, PlaceInTables>> entriesx = places.entrySet();
 		Iterator<Map.Entry<String, PlaceInTables>> eex = entriesx.iterator();
 		while (eex.hasNext()) {
-			Map.Entry<String, PlaceInTables> entrx = (Map.Entry<String, PlaceInTables>) eex
-					.next();
+			Map.Entry<String, PlaceInTables> entrx = eex.next();
 			PlaceInTables pit = entrx.getValue();
 			vv.add(pit);
 		}
@@ -178,8 +176,7 @@ public abstract class CommonReport {
 		Set<Map.Entry<String, Integer>> entriesx = refs.entrySet();
 		Iterator<Map.Entry<String, Integer>> eex = entriesx.iterator();
 		while (eex.hasNext()) {
-			Map.Entry<String, Integer> entrx = (Map.Entry<String, Integer>) eex
-					.next();
+			Map.Entry<String, Integer> entrx = eex.next();
 			String src = entrx.getKey();
 
 			vv.add(src);
@@ -310,8 +307,6 @@ public abstract class CommonReport {
 	 */
 	protected void createDescendantTable(int idx, ReportUnit tab) {
 
-		boolean fromAfterHeader = false;
-
 		BodyText bt = null;
 		ReportTableMember subjectmember = tab.getParent().get(0);
 		SukuData pdata = null;
@@ -423,22 +418,26 @@ public abstract class CommonReport {
 		String fromTable = "";
 		String fromSubTable = "";
 		PersonInTables ref;
-		if (fromAfterHeader) {
-			bt = new TableSubHeaderText();
-
-			ref = personReferences.get(tab.getPid());
-			if (ref != null) {
-				fromTable = ref.getReferences(tab.getTableNo(), false, true,
-						false, tableOffset);
-			}
-
-			if (fromTable.length() > 0) {
-				bt.addText(typesTable.getTextValue("FROMTABLE") + " "
-						+ fromTable);
-			}
-
-			repoWriter.addText(bt);
-		}
+		// if (fromAfterHeader) {
+		// bt = new TableSubHeaderText();
+		//
+		// ref = personReferences.get(tab.getPid());
+		// if (ref != null) {
+		// fromTable = ref.getReferences(tab.getTableNo(), false, true,
+		// false, tableOffset);
+		// }
+		//
+		// if (fromTable.length() > 0) {
+		//
+		//
+		//
+		//
+		// bt.addText(typesTable.getTextValue("FROMTABLE") + " "
+		// + fromTable);
+		// }
+		//
+		// repoWriter.addText(bt);
+		// }
 
 		bt = new MainPersonText();
 		if (genText.length() > 0) {
@@ -448,20 +447,83 @@ public abstract class CommonReport {
 
 		printName(bt, pdata.persLong, 2);
 
-		if (!fromAfterHeader) {
+		// if (!fromAfterHeader) {
 
-			ref = personReferences.get(tab.getPid());
-			if (ref != null) {
-				fromTable = ref.getReferences(tab.getTableNo(), false, true,
-						false, tableOffset);
-			}
-
-			if (fromTable.length() > 0) {
-				bt.addText("(" + typesTable.getTextValue("FROMTABLE") + " "
-						+ fromTable + "). ");
-			}
-
+		ref = personReferences.get(tab.getPid());
+		if (ref != null) {
+			fromTable = ref.getReferences(tab.getTableNo(), false, true, false,
+					tableOffset);
 		}
+
+		if (fromTable.length() > 0) {
+			String parts[] = fromTable.split(",");
+
+			bt.addText("(");
+			for (int i = 0; i < parts.length; i++) {
+				if (i > 0) {
+					bt.addText(", ");
+				}
+				try {
+					long refTab = Long.parseLong(parts[i]);
+					ReportUnit pare = tabMap.get(refTab);
+					if (pare == null) {
+						logger.severe("parents tab " + refTab + " not found");
+					} else {
+						// StringBuilder sbb = new StringBuilder();
+						ReportTableMember rm = pare.getParent().get(0);
+						if (rm.getSex().equals("M")) {
+							bt.addText(typesTable.getTextValue("Father"));
+						} else {
+							bt.addText(typesTable.getTextValue("Mother"));
+						}
+						bt.addText(": ");
+						int ppid = rm.getPid();
+						SukuData ppdata = caller.getKontroller().getSukuData(
+								"cmd=person", "pid=" + ppid, "mode=short",
+								"lang=" + Resurses.getLanguage());
+
+						if (ppdata.pers != null && ppdata.pers.length > 0) {
+
+							if (ppdata.pers[0].getGivenname() != null) {
+								printGivenname(bt,
+										ppdata.pers[0].getGivenname(), false);
+								if (ppdata.pers[0].getPrefix() != null
+										|| ppdata.pers[0].getSurname() != null
+										|| ppdata.pers[0].getPostfix() != null) {
+									bt.addText(" ");
+								}
+								if (ppdata.pers[0].getPrefix() != null) {
+									bt.addText(ppdata.pers[0].getPrefix() + " ");
+								}
+								if (ppdata.pers[0].getSurname() != null) {
+									bt.addText(ppdata.pers[0].getSurname());
+								}
+								if (ppdata.pers[0].getPostfix() != null) {
+									bt.addText(" "
+											+ ppdata.pers[0].getPostfix());
+								}
+								bt.addText(" ");
+							}
+							bt.addText(typesTable.getTextValue("FROMTABLE")
+									.toLowerCase() + " " + refTab);
+
+						}
+
+					}
+
+				} catch (NumberFormatException ne) {
+					// not expected here i.e. program error
+					logger.log(Level.WARNING, "pare fetch", ne);
+
+				} catch (SukuException e) {
+					logger.log(Level.WARNING, "pare fetch", e);
+				}
+			}
+
+			bt.addText("). ");
+		}
+
+		// }
 
 		printNotices(bt, notices, 2, tab.getTableNo() + tableOffset);
 
@@ -2089,7 +2151,26 @@ public abstract class CommonReport {
 							}
 						}
 						if (addDot) {
-							bt.addText(". ");
+
+							if ("|OCCU|EDUC|".indexOf(tag) > 0) {
+								String nxttag = null;
+								if (j < notices.length - 1) {
+									nxttag = notices[j + 1].getTag();
+								}
+								if (nxttag != null) {
+									if ("|OCCU|EDUC|".indexOf(nxttag) > 0) {
+										bt.addText(", ");
+									} else {
+										bt.addText(". ");
+									}
+								} else {
+									bt.addText(". ");
+								}
+
+							} else {
+
+								bt.addText(". ");
+							}
 							if (caller.showOnSeparateLines()) {
 
 								repoWriter.addText(bt);
@@ -2378,7 +2459,7 @@ public abstract class CommonReport {
 						if (!prevGivenname.equals(nv(nn.getGivenname()))) {
 							prevGivenname = nv(nn.getGivenname());
 
-							printGivenname(bt, prevGivenname);
+							printGivenname(bt, prevGivenname, true);
 							if (!prevGivenname.isEmpty()) {
 								wasName = true;
 							}
@@ -2433,8 +2514,14 @@ public abstract class CommonReport {
 		bt.addText(". ");
 	}
 
-	private void printGivenname(BodyText bt, String prevGivenname) {
+	private void printGivenname(BodyText bt, String prevGivenname,
+			boolean useBoldInfo) {
 		String[] nameParts = prevGivenname.split(" ");
+		boolean doBold = caller.showBoldNames();
+		if (!useBoldInfo) {
+			doBold = false;
+		}
+
 		for (int k = 0; k < nameParts.length; k++) {
 			String namePart = nameParts[k];
 			String startChar = "";
@@ -2452,7 +2539,7 @@ public abstract class CommonReport {
 
 			}
 			if (!startChar.isEmpty()) {
-				bt.addText(startChar, caller.showBoldNames(), false);
+				bt.addText(startChar, doBold, false);
 			}
 			String[] subParts = namePart.split("-");
 
@@ -2462,8 +2549,7 @@ public abstract class CommonReport {
 				if (astidx > 0) {
 
 					if (astidx == namePart.length() - 1) {
-						bt.addText(namePart.substring(0, astidx),
-								caller.showBoldNames(),
+						bt.addText(namePart.substring(0, astidx), doBold,
 								caller.showUnderlineNames());
 					} else {
 
@@ -2471,13 +2557,12 @@ public abstract class CommonReport {
 							if (bstidx == namePart.length() - 2) {
 
 								bt.addText(namePart.substring(0, bstidx),
-										caller.showBoldNames(),
-										caller.showUnderlineNames());
+										doBold, caller.showUnderlineNames());
 							}
 						}
 					}
 				} else {
-					bt.addText(namePart, caller.showBoldNames(), false);
+					bt.addText(namePart, doBold, false);
 				}
 			} else {
 
@@ -2485,25 +2570,24 @@ public abstract class CommonReport {
 					String subPart = subParts[kk];
 					int cstidx = subPart.indexOf("*");
 					if (kk > 0) {
-						bt.addText("-", caller.showBoldNames(), false);
+						bt.addText("-", doBold, false);
 					}
 					if (cstidx == subPart.length() - 1) {
 
-						bt.addText(subPart.substring(0, cstidx),
-								caller.showBoldNames(),
+						bt.addText(subPart.substring(0, cstidx), doBold,
 								caller.showUnderlineNames());
 
 					} else {
-						bt.addText(subPart, caller.showBoldNames(), false);
+						bt.addText(subPart, doBold, false);
 					}
 				}
 			}
 
 			if (!endChar.isEmpty()) {
-				bt.addText(endChar, caller.showBoldNames(), false);
+				bt.addText(endChar, doBold, false);
 			}
 			if (k != nameParts.length - 1) {
-				bt.addText(" ", caller.showBoldNames(), false);
+				bt.addText(" ", doBold, false);
 			}
 		}
 	}

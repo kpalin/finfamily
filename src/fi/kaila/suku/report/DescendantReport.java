@@ -24,7 +24,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  */
 public class DescendantReport extends CommonReport {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Constructor for Descendant report.
@@ -97,6 +97,13 @@ public class DescendantReport extends CommonReport {
 			personReferences = Utils.getDescendantToistot(tables);
 
 			if (tables.size() > 0) {
+
+				for (int i = 0; i < tables.size(); i++) {
+					ReportUnit tt = tables.get(i);
+					if (tt != null) {
+						tabMap.put(tt.getTableNo(), tt);
+					}
+				}
 
 				repoWriter.createReport();
 				createReport();
