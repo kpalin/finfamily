@@ -177,7 +177,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private TaskIndex taskIndex;
 	private TaskSureties taskSureties;
 	private TaskAddresses taskAddresses;
-	private ReportWorkerDialog self;
+	private final ReportWorkerDialog self;
 
 	private boolean endSuccess = true;
 
@@ -209,6 +209,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private JCheckBox commonNumberImages = null;
 	private JCheckBox commonSeparateImages = null;
 	private JCheckBox commonBendNames = null;
+	private JCheckBox commonIncludeFarm = null;
 	private JCheckBox commonSeparateNotices = null;
 	private ButtonGroup commonDateFormatGroup = null;
 	private ButtonGroup commonSourcesFormatGroup = null;
@@ -261,7 +262,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private static final int tabw = 300;
 
 	private Vector<String> repos = null;
-	private Suku parent;
+	private final Suku parent;
 
 	/**
 	 * Constructor.
@@ -404,6 +405,15 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	public boolean isBendPlaces() {
 		return commonBendNames.isSelected();
+	}
+
+	/**
+	 * Check if village, farm and croft is to be shown
+	 * 
+	 * @return true if they are to be shown
+	 */
+	public boolean isShowVillageFarm() {
+		return commonIncludeFarm.isSelected();
 	}
 
 	/**
@@ -609,30 +619,35 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		commonBendNames.setBounds(x4, y1 + 110, 160, 20);
 		add(commonBendNames);
 
+		commonIncludeFarm = new JCheckBox(
+				Resurses.getString("REPORT.INCLUDEFARM"), true);
+		commonIncludeFarm.setBounds(x4, y1 + 132, 160, 20);
+		add(commonIncludeFarm);
+
 		commonSeparateNotices = new JCheckBox(
 				Resurses.getString("REPORT.SEPARATENOTICES"), true);
-		commonSeparateNotices.setBounds(x4, y1 + 132, 160, 20);
+		commonSeparateNotices.setBounds(x4, y1 + 154, 160, 20);
 		add(commonSeparateNotices);
 
 		commonDateFormatGroup = new ButtonGroup();
 
 		commonNamesBold = new JCheckBox(Resurses.getString("REPORT.NAME.BOLD"));
-		commonNamesBold.setBounds(x4, y1 + 154, 160, 20);
+		commonNamesBold.setBounds(x4, y1 + 176, 160, 20);
 		add(commonNamesBold);
 
 		commonNamesUnderline = new JCheckBox(
 				Resurses.getString("REPORT.NAME.UNDERLINE"));
-		commonNamesUnderline.setBounds(x4, y1 + 176, 160, 20);
+		commonNamesUnderline.setBounds(x4, y1 + 198, 160, 20);
 		add(commonNamesUnderline);
 
 		commonWithAddress = new JCheckBox(
 				Resurses.getString("REPORT.WITHADDERSS"), true);
-		commonWithAddress.setBounds(x4, y1 + 198, 160, 20);
+		commonWithAddress.setBounds(x4, y1 + 220, 160, 20);
 		add(commonWithAddress);
 
 		spouseData = new ButtonGroup();
 
-		int rtypy = y1 + 220;
+		int rtypy = y1 + 250;
 		pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.DESC.SPOUSE")));
@@ -983,6 +998,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			boolean numberImages = false;
 			boolean separateImages = false;
 			boolean bendNames = false;
+			boolean includeFarm = false;
 			boolean withImages = false;
 			boolean separateNotices = false;
 			boolean boldNames = false;
@@ -1019,6 +1035,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					underlineNames = true;
 				} else if (vx[0].equals("address")) {
 					withAddress = true;
+				} else if (vx[0].equals("farm")) {
+					includeFarm = true;
 				} else if (vx[0].equals("nameIndex")) {
 					indexNames = true;
 				} else if (vx[0].equals("placeIndex")) {
@@ -1099,6 +1117,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			commonNumberImages.setSelected(numberImages);
 			commonSeparateImages.setSelected(separateImages);
 			commonBendNames.setSelected(bendNames);
+			commonIncludeFarm.setSelected(includeFarm);
 			commonWithImages.setSelected(withImages);
 			commonSeparateNotices.setSelected(separateNotices);
 			commonNamesBold.setSelected(boldNames);
@@ -1242,6 +1261,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		if (commonBendNames.getSelectedObjects() != null) {
 			v.add("bend=true");
+		}
+		if (commonIncludeFarm.getSelectedObjects() != null) {
+			v.add("farm=true");
 		}
 		if (commonNumberImages.getSelectedObjects() != null) {
 			v.add("imagenumber=true");

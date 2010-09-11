@@ -1974,8 +1974,10 @@ public abstract class CommonReport {
 							}
 						}
 
-						if (nn.getVillage() != null || nn.getFarm() != null
-								|| nn.getCroft() != null) {
+						if (caller.isShowVillageFarm()
+								&& (nn.getVillage() != null
+										|| nn.getFarm() != null || nn
+										.getCroft() != null)) {
 							if (addSpace) {
 								bt.addText(" ");
 								addSpace = false;
