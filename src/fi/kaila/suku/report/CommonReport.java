@@ -1974,6 +1974,37 @@ public abstract class CommonReport {
 							}
 						}
 
+						if (nn.getVillage() != null || nn.getFarm() != null
+								|| nn.getCroft() != null) {
+							if (addSpace) {
+								bt.addText(" ");
+								addSpace = false;
+							}
+							bt.addText("(");
+							if (nn.getVillage() != null) {
+								bt.addText(nn.getVillage());
+								addSpace = true;
+							}
+							if (nn.getFarm() != null) {
+								if (addSpace) {
+									bt.addText(" ");
+									addSpace = true;
+								}
+								bt.addText(nn.getFarm());
+								addSpace = true;
+							}
+							if (nn.getCroft() != null) {
+								if (addSpace) {
+									bt.addText(" ");
+									addSpace = true;
+								}
+								bt.addText(nn.getCroft());
+
+							}
+							bt.addText(")");
+							addSpace = true;
+						}
+
 						if (nn.getState() != null) {
 							if (addSpace) {
 								bt.addText(",");
