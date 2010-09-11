@@ -440,7 +440,8 @@ public class ExcelImporter {
 					String b1 = bc1.getContents();
 					String c1 = cc1.getContents();
 
-					if (placeName != null && b1 != null && c1 != null) {
+					if (placeName != null && b1 != null && c1 != null
+							&& !b1.isEmpty() && !c1.isEmpty()) {
 
 						String b2 = b1.replace(',', '.');
 						placeLongitude = Double.parseDouble(b2);
