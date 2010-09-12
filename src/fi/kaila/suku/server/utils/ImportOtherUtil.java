@@ -25,16 +25,16 @@ import fi.kaila.suku.util.pojo.SukuData;
  * @author kalle
  */
 public class ImportOtherUtil {
-	private Connection con;
+	private final Connection con;
 
 	private ImportOtherDialog runner = null;
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private String schema = null;
 	private int viewId = -1;
 	private String viewName = null;
 
-	private LinkedHashMap<Integer, Integer> pidmap = new LinkedHashMap<Integer, Integer>();
+	private final LinkedHashMap<Integer, Integer> pidmap = new LinkedHashMap<Integer, Integer>();
 
 	/**
 	 * Constructor with connection.
@@ -216,8 +216,7 @@ public class ImportOtherUtil {
 		Set<Map.Entry<String, Integer>> entriesx = ridpidmap.entrySet();
 		Iterator<Map.Entry<String, Integer>> eex = entriesx.iterator();
 		while (eex.hasNext()) {
-			Map.Entry<String, Integer> entrx = (Map.Entry<String, Integer>) eex
-					.next();
+			Map.Entry<String, Integer> entrx = eex.next();
 			String key = entrx.getKey();
 
 			Integer newrid = entrx.getValue();
@@ -336,9 +335,7 @@ public class ImportOtherUtil {
 			throw new SQLException("Sequence unitseq error");
 		}
 		rs.close();
-		stm.close();
 
-		stm = con.createStatement();
 		rs = stm.executeQuery("select nextval('unitnoticeseq')");
 
 		if (rs.next()) {
@@ -348,7 +345,7 @@ public class ImportOtherUtil {
 			throw new SQLException("Sequence unitnoticeseq error");
 		}
 		rs.close();
-		stm.close();
+
 		if (viewId < 0) {
 			sql = "select pid from " + schema + ".unit order by pid";
 			pst = con.prepareStatement(sql);
@@ -370,7 +367,6 @@ public class ImportOtherUtil {
 
 		}
 		rs.close();
-		pst.close();
 
 		sql = "SELECT setval('unitseq'," + npid + ")";
 		rs = stm.executeQuery(sql);
@@ -417,8 +413,7 @@ public class ImportOtherUtil {
 		int newpids[] = new int[pidmap.size()];
 
 		while (eex.hasNext()) {
-			Map.Entry<Integer, Integer> entrx = (Map.Entry<Integer, Integer>) eex
-					.next();
+			Map.Entry<Integer, Integer> entrx = eex.next();
 			Integer newpid = entrx.getValue(); // here is pid in this db
 			Integer prevpid = entrx.getKey(); // and this is import db
 
@@ -475,6 +470,7 @@ public class ImportOtherUtil {
 			maxvid = rs.getInt(1);
 		}
 		rs.close();
+		stm.close();
 		maxvid++;
 		String viewName = Resurses.getString("IMPORTED_VIEW") + " "
 				+ this.viewName + " [" + maxvid + "]";
