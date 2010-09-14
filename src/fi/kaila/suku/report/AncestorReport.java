@@ -19,13 +19,13 @@ import fi.kaila.suku.util.pojo.SukuData;
 /**
  * <h1>Ancestor report creator</h1>
  * 
- * The descendant report structure is creted here.
+ * The ancestor report structure is created here.
  * 
  * @author Kalle
  */
 public class AncestorReport extends CommonReport {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Constructor for Ancestor report.
@@ -75,19 +75,14 @@ public class AncestorReport extends CommonReport {
 					Resurses.getString(Resurses.CREATE_REPORT) + ":"
 							+ e.getMessage());
 		}
-		// FIXME: vlist can be null in here
-		if (vlist.resu != null) {
+
+		if (vlist != null && vlist.resu != null) {
 			JOptionPane.showMessageDialog(caller,
 					Resurses.getString(Resurses.CREATE_REPORT) + " ["
 							+ vlist.resu + "]");
 			return;
 		}
 		tables = vlist.tables;
-
-		// for (int i = 0; i < tables.size(); i++) {
-		// ReportUnit cu = tables.get(i);
-		// logger.info("anc:" + cu);
-		// }
 
 		if (tables.size() > 0) {
 			personReferences = Utils.getDescendantToistot(tables);
@@ -213,9 +208,8 @@ public class AncestorReport extends CommonReport {
 				}
 			}
 
-			// FIXME: mtab can be null in here
-			createAncestorTable(i, ftab, mtab,
-					(ftab != null) ? ftab.getTableNo() : mtab.getTableNo());
+			createAncestorTable(i, ftab, mtab, tab.getTableNo());
+			// (ftab != null) ? ftab.getTableNo() : mtab.getTableNo());
 			// tabno = tab.getTableNo();
 			// System.out.println("TAB: " + tabno);
 			i++;

@@ -35,10 +35,10 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  */
 public class ExportGedcomUtil {
 
-	private Connection con;
+	private final Connection con;
 
 	private ExportGedcomDialog runner = null;
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private int viewId = 0;
 	private int surety = 100;
@@ -162,8 +162,7 @@ public class ExportGedcomUtil {
 			Iterator<Map.Entry<Integer, MinimumIndividual>> eex = unitss
 					.iterator();
 			while (eex.hasNext()) {
-				Map.Entry<Integer, MinimumIndividual> unitx = (Map.Entry<Integer, MinimumIndividual>) eex
-						.next();
+				Map.Entry<Integer, MinimumIndividual> unitx = eex.next();
 				MinimumIndividual pit = unitx.getValue();
 				curreCount++;
 
@@ -188,8 +187,7 @@ public class ExportGedcomUtil {
 
 			Iterator<Map.Entry<String, MinimumFamily>> ffx = fss.iterator();
 			while (ffx.hasNext()) {
-				Map.Entry<String, MinimumFamily> fx = (Map.Entry<String, MinimumFamily>) ffx
-						.next();
+				Map.Entry<String, MinimumFamily> fx = ffx.next();
 				MinimumFamily fix = fx.getValue();
 
 				writeFam(zip, fix, langCode);
@@ -784,7 +782,7 @@ public class ExportGedcomUtil {
 					+ "dateprefix,fromdate,todate,coalesce(l.place,r.place) as place,"
 					+ "coalesce(l.notetext,r.notetext) as notetext,sourcetext "
 					+ "from relationnotice as r left join relationlanguage as l "
-					+ "on r.rnid = l.rnid and l.langcode = '?' where r.rid=? "
+					+ "on r.rnid = l.rnid and l.langcode = ? where r.rid=? "
 					+ "order by noticerow ";
 
 			pst = con.prepareStatement(sql);

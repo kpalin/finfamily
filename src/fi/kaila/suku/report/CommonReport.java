@@ -1450,6 +1450,7 @@ public abstract class CommonReport {
 			//
 			boolean isMale = true;
 			String parentText;
+
 			if (ftab != null && mtab != null) {
 				while (true) {
 					if (isMale) {
@@ -1464,8 +1465,69 @@ public abstract class CommonReport {
 
 					Vector<ReportTableMember> other = new Vector<ReportTableMember>();
 
+					for (int i = 0; i < tab.getParent().size(); i++) {
+						ReportTableMember mem = tab.getParent().get(i);
+
+						boolean addMe = true;
+
+						if (mem.getPid() == ftab.getPid()
+								|| mem.getPid() == mtab.getPid()) {
+							addMe = false;
+						}
+
+						if (addMe) {
+							other.add(mem);
+						}
+					}
+
+					for (int ichil = 0; ichil < other.size(); ichil++) {
+						if (ichil == 0) {
+							bt = new ChildHeaderText();
+							bt.addText(parentText);
+							bt.addText(" ");
+							if (other.size() > 1) {
+								bt.addText(typesTable.getTextValue("SPOUSES")
+										.toLowerCase());
+							} else {
+								bt.addText(typesTable.getTextValue(
+										(isMale) ? "WIFE" : "HUSB")
+										.toLowerCase());
+							}
+							bt.addText(":");
+							repoWriter.addText(bt);
+
+						}
+						bt = new ChildListText();
+						childMember = other.get(ichil);
+
+						try {
+							cdata = caller.getKontroller()
+									.getSukuData("cmd=person",
+											"pid=" + childMember.getPid());
+
+							notices = cdata.persLong.getNotices();
+
+							printName(bt, cdata.persLong,
+									(toTable.isEmpty() ? 2 : 3));
+							addChildReference(ftab, mtab, tab.getPid(),
+									typesTable.getTextValue("TABLE"), bt, 0);
+							printNotices(bt, notices, tab.getPid(),
+									tab.getTableNo());
+
+							if (bt.getCount() > 0) {
+								repoWriter.addText(bt);
+
+							}
+						} catch (SukuException e1) {
+							logger.log(Level.WARNING, "SukuException", e1);
+						}
+					}
+
+					other = new Vector<ReportTableMember>();
+
 					for (int i = 0; i < tab.getChild().size(); i++) {
 						ReportTableMember mem = tab.getChild().get(i);
+
 						boolean addMe = true;
 
 						for (int j = 0; j < full.size(); j++) {
@@ -1523,9 +1585,7 @@ public abstract class CommonReport {
 							}
 
 							notices = cdata.persLong.getNotices();
-							// if (!pareTxt.isEmpty()) {
-							// bt.addText(pareTxt);
-							// }
+
 							if (adopTag != null) {
 								bt.addText("("
 										+ typesTable.getTextValue(adopTag)
@@ -1537,10 +1597,6 @@ public abstract class CommonReport {
 									typesTable.getTextValue("TABLE"), bt, 0);
 							printNotices(bt, notices, tab.getPid(),
 									tab.getTableNo());
-
-							// else {
-
-							// }
 
 							if (bt.getCount() > 0) {
 								repoWriter.addText(bt);
