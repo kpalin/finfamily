@@ -43,7 +43,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	public Vector<Long> references = new Vector<Long>();
 
 	// private Vector<Long> asOwners = new Vector<Long>();
-	private LinkedHashMap<Long, Long> asOwners = new LinkedHashMap<Long, Long>();
+	private final LinkedHashMap<Long, Long> asOwners = new LinkedHashMap<Long, Long>();
 
 	// /**
 	// * persons from note text fields i.e. from list of refNames
@@ -249,7 +249,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 				sb.append(",");
 			sb.append("" + references.get(i));
 		}
-		sb.append(")");
+		sb.append(")\n");
 		return sb.toString();
 	}
 

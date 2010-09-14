@@ -383,7 +383,7 @@ public class Utils {
 	 * @param tables
 	 *            Vector that contains all tables for report
 	 * @return a HashMap containing a list of all persons in report with
-	 *         information on tables where they exis
+	 *         information on tables where they exist
 	 */
 	public static HashMap<Integer, PersonInTables> getDescendantToistot(
 			Vector<ReportUnit> tables) {
@@ -415,8 +415,8 @@ public class Utils {
 					if (ref == null) {
 						ref = new PersonInTables(member.getSubPid(m));
 						ref.references.add(Long.valueOf(tab.getTableNo()));
-						personReferences.put(Integer.valueOf(member
-								.getSubPid(m)), ref);
+						personReferences.put(
+								Integer.valueOf(member.getSubPid(m)), ref);
 					} else {
 						ref.references.add(tab.getTableNo());
 					}
@@ -431,8 +431,9 @@ public class Utils {
 						if (ref == null) {
 							ref = new PersonInTables(spouseMember.getPid());
 							ref.asParents.add(Long.valueOf(tab.getTableNo()));
-							personReferences.put(Integer.valueOf(spouseMember
-									.getPid()), ref);
+							personReferences
+									.put(Integer.valueOf(spouseMember.getPid()),
+											ref);
 						} else {
 							ref.asParents.add(tab.getTableNo());
 						}
@@ -440,8 +441,8 @@ public class Utils {
 							ref = personReferences.get(spouseMember
 									.getSubPid(m));
 							if (ref == null) {
-								ref = new PersonInTables(spouseMember
-										.getSubPid(m));
+								ref = new PersonInTables(
+										spouseMember.getSubPid(m));
 								ref.references.add(Long.valueOf(tab
 										.getTableNo()));
 								personReferences.put(Integer
@@ -490,8 +491,8 @@ public class Utils {
 					if (ref == null) {
 						ref = new PersonInTables(member.getSubPid(m));
 						ref.references.add(Long.valueOf(tab.getTableNo()));
-						personReferences.put(Integer.valueOf(member
-								.getSubPid(m)), ref);
+						personReferences.put(
+								Integer.valueOf(member.getSubPid(m)), ref);
 					} else {
 						ref.references.add(tab.getTableNo());
 					}

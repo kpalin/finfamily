@@ -14,7 +14,7 @@ public class TableSubHeaderText extends BodyText {
 	public TableSubHeaderText() {
 		fontName = FONT_SERIF;
 		fontSize = 12;
-		paraAlignment = ALIGN_CENTER;
+		paraAlignment = ALIGN_LEFT;
 		paraSpacingAfter = 12;
 	}
 }

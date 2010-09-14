@@ -86,11 +86,12 @@ public class AncestorReport extends CommonReport {
 
 		if (tables.size() > 0) {
 			personReferences = Utils.getDescendantToistot(tables);
-
+			initPersonTables();
 			repoWriter.createReport();
 			if (order.equals("ESPOLIN")) {
 				createEspolinReport();
 			} else {
+
 				if (caller.getAncestorPane().getAllBranches()) {
 					createFullStradoReport(vlist.reportUnits);
 				} else {

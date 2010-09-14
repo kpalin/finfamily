@@ -223,7 +223,7 @@
             <w:rsid w:val = "006E337B"/>
             <w:pPr>
                 <w:spacing w:before = "240" w:after = "240"/>
-                <w:jc w:val = "center"/>
+                <w:jc w:val = "left"/>
             </w:pPr>
             <w:rPr>
                 <wx:font wx:val = "Times New Roman"/>
@@ -237,7 +237,7 @@
             <w:rsid w:val = "000E6FBF"/>
             <w:pPr>
                 <w:spacing w:after = "240"/>
-                <w:jc w:val = "center"/>
+                <w:jc w:val = "left"/>
             </w:pPr>
             <w:rPr>
                 <wx:font wx:val = "Times New Roman"/>

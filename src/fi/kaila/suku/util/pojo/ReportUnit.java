@@ -23,8 +23,8 @@ public class ReportUnit implements Serializable {
 	private int pageNo = 0;
 	private int gen = 0;
 
-	private Vector<ReportTableMember> asParent = new Vector<ReportTableMember>();
-	private Vector<ReportTableMember> asChild = new Vector<ReportTableMember>();
+	private final Vector<ReportTableMember> asParent = new Vector<ReportTableMember>();
+	private final Vector<ReportTableMember> asChild = new Vector<ReportTableMember>();
 
 	/**
 	 * Gets the parent.
@@ -174,6 +174,7 @@ public class ReportUnit implements Serializable {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 
 		StringBuilder sb = new StringBuilder();
@@ -206,7 +207,7 @@ public class ReportUnit implements Serializable {
 				}
 			}
 		}
-
+		sb.append("\n");
 		return sb.toString();
 	}
 
