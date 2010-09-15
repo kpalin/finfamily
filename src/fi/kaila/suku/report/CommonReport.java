@@ -324,7 +324,7 @@ public abstract class CommonReport {
 		BodyText bt = null;
 		ReportTableMember subjectmember = tab.getParent().get(0);
 		SukuData pdata = null;
-		// boolean forceSpouseNum = false;
+		boolean forceSpouseNum = false;
 		StringBuilder tabOwner = new StringBuilder();
 		int tableOffset = caller.getDescendantPane().getStartTable();
 		if (tableOffset > 1) {
@@ -565,6 +565,23 @@ public abstract class CommonReport {
 		//
 		// spouse list
 		//
+		// do we have a child who's parents are not here
+		for (int ix = 0; ix < tab.getChild().size(); ix++) {
+			ReportTableMember chi = tab.getChild().get(ix);
+			int jx = 0;
+			for (jx = 1; jx < tab.getParent().size(); jx++) {
+				ReportTableMember chip = tab.getParent().get(jx);
+				if (chi.getOtherParentPid() == chip.getPid()) {
+					break;
+				}
+
+			}
+			if (jx == tab.getParent().size()) {
+				forceSpouseNum = true;
+				break;
+			}
+
+		}
 
 		ReportTableMember spouseMember;
 		for (int ispou = 1; ispou < tab.getParent().size(); ispou++) {
@@ -573,8 +590,8 @@ public abstract class CommonReport {
 			int spouNum = 0;
 			if (tab.getParent().size() > 2) {
 				spouNum = ispou;
-				// } else if (forceSpouseNum) {
-				// spouNum = 1;
+			} else if (forceSpouseNum) {
+				spouNum = 1;
 			}
 
 			try {
@@ -647,15 +664,18 @@ public abstract class CommonReport {
 						if (pareMember.getPid() == bid) {
 							if (tab.getParent().size() > 2) {
 								pareTxt = "" + isp + ": ";
+							} else if (forceSpouseNum) {
+								pareTxt = "" + isp + ": ";
 							} else {
 								pareTxt = "";
 							}
 							break;
 						}
 					}
-				} else if (tab.getParent().size() == 2) {
-					pareTxt = "0: ";
 				}
+				// else if (tab.getParent().size() == 2) {
+				// pareTxt = "0: ";
+				// }
 				// check if child is adopted
 				StringBuilder adopTag = new StringBuilder();
 

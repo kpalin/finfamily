@@ -52,7 +52,7 @@ public class ReportUtil {
 	//
 	private HashMap<Integer, ReportTableMember> females = null;
 
-	private HashMap<Integer, ReportTableMember> pidmap = new HashMap<Integer, ReportTableMember>();
+	private final HashMap<Integer, ReportTableMember> pidmap = new HashMap<Integer, ReportTableMember>();
 
 	/** The person references. */
 	HashMap<Integer, PersonInTables> personReferences = null;
@@ -571,6 +571,10 @@ public class ReportUtil {
 		int childno = 0;
 		PreparedStatement adopstm = con
 				.prepareStatement("select count(*) from relationnotice where tag='ADOP' and rid = ?");
+
+		PreparedStatement pareStm = con
+				.prepareStatement("select * from parent where aid=? and bid <> ? ");
+
 		String adoptext = "";
 		if (!adopted) {
 			adoptext = "and r.tag is null";
@@ -584,17 +588,19 @@ public class ReportUtil {
 		stm.setInt(1, pid);
 
 		rs = stm.executeQuery();
-
+		// TODO
 		while (rs.next()) {
 			int bid = rs.getInt("bid");
 			String csex = rs.getString("sex");
 
 			int rid = rs.getInt(3);
 			boolean isAdopted = isChildRelationAdopted(adopstm, rid);
+			int otherParentPid = getParentPid(pareStm, bid, pid);
 			member = new ReportTableMember();
 			member.setPid(bid);
 			member.setSex(csex);
 			member.setRowNo(spousenum + childno);
+			member.setOtherParentPid(otherParentPid);
 			member.setTag("CHIL");
 			if (isAdopted) {
 				member.setRelTag("ADOP");
@@ -609,6 +615,20 @@ public class ReportUtil {
 
 		return unit;
 
+	}
+
+	private int getParentPid(PreparedStatement pst, int bid, int pid)
+			throws SQLException {
+		pst.setInt(1, bid);
+		pst.setInt(2, pid);
+		ResultSet rs = pst.executeQuery();
+		int parePid = 0;
+		while (rs.next()) {
+			parePid = rs.getInt("bid");
+			break;
+		}
+		rs.close();
+		return parePid;
 	}
 
 	private boolean isChildRelationAdopted(PreparedStatement pst, int rid)

@@ -76,8 +76,8 @@ public class ReportTableMember implements Serializable {
 	private int pidOrder = 0;
 
 	private ReportTableMember[] spouses = null;
-
-	private Vector<Long> alsoAsChild = new Vector<Long>();
+	private int otherParentPid = 0;
+	private final Vector<Long> alsoAsChild = new Vector<Long>();
 
 	private Vector<SubPersonMember> subs = new Vector<SubPersonMember>();
 
@@ -391,9 +391,10 @@ public class ReportTableMember implements Serializable {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("pid[" + pid + "/" + myTable + "]");
+		sb.append("pid[" + pid + "/" + myTable + "/" + otherParentPid + "]");
 
 		for (int i = 0; i < subs.size(); i++) {
 			sb.append("\n  " + subs.get(i).toString());
@@ -423,13 +424,21 @@ public class ReportTableMember implements Serializable {
 		return spouses;
 	}
 
+	public void setOtherParentPid(int otherParentPid) {
+		this.otherParentPid = otherParentPid;
+	}
+
+	public int getOtherParentPid() {
+		return otherParentPid;
+	}
+
 	/**
 	 * Container for persons ancestors Used for not relative spouse andcestors
 	 * or not relative child ancestor numbering as in Stradoniz numbering scema
-	 * father=2, mother = 3, fathersfather 4 etc.
+	 * father=2, mother = 3, fathers father 4 etc.
 	 */
-	@SuppressWarnings("unchecked")
-	class SubPersonMember implements Comparable {
+
+	class SubPersonMember implements Comparable<SubPersonMember> {
 		private int pid = 0;
 		private String sex = null;
 		private long stradoNum = 0;
@@ -482,24 +491,21 @@ public class ReportTableMember implements Serializable {
 		 * 
 		 * @see java.lang.Object#toString()
 		 */
+		@Override
 		public String toString() {
 			return "sub[" + pid + "/" + sex + "/" + stradoNum + "]";
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Comparable#compareTo(java.lang.Object)
-		 */
 		@Override
-		public int compareTo(Object arg) {
-			SubPersonMember oth = (SubPersonMember) arg;
+		public int compareTo(SubPersonMember oth) {
+
 			long othernum = oth.stradoNum;
 			if (stradoNum < othernum)
 				return -1;
 			if (stradoNum > othernum)
 				return 1;
 			return 0;
+
 		}
 	}
 
