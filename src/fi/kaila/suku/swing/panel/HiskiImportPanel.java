@@ -38,6 +38,7 @@ import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
+import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -119,7 +120,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private String pvm2Name = null;
 	private int personCount = 0;
 	private String eventId = null;
-	private Suku suku;
+	private final Suku suku;
 
 	private DocumentBuilderFactory factory = null;
 	private DocumentBuilder bld = null;
@@ -138,9 +139,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 	}
 
-	private String[] sexes = new String[4];
+	private final String[] sexes = new String[4];
 
-	private int[] hiskiPid = { 0, 0, 0 };
+	private final int[] hiskiPid = { 0, 0, 0 };
 
 	// private String [] sukuName = {null,null,null};
 	/** The y. */
@@ -699,7 +700,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private void uploadHaudatutToDb() {
 		SukuData kast = new SukuData();
 		String hiskiSource = "Hiski haudatut [" + eventId + "]";
-		kast.persons = new PersonLongData[personCount];
+		kast.persons = new PersonLongData[1];
 		Vector<UnitNotice> notices = null;
 
 		String kdate = eventFirstDate.getText();
@@ -736,6 +737,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					sex = "U";
 					break;
 				default:
+					if (hiskiPid[0] > 0) {
+						PersonShortData curpers = this.suku
+								.getPerson(hiskiPid[0]);
+						if (curpers != null) {
+							sex = curpers.getSex();
+							break;
+						}
+					}
 					JOptionPane.showMessageDialog(this,
 							Resurses.getString("ERROR_MISSINGSEX"));
 					return;
@@ -1817,11 +1826,12 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		for (int i = parts.length - 1; i >= 0; i--) {
 			if (sb.length() == 0) { // year
 				sb.append(parts[i]);
-				if (parts.length == 3 && parts[0].equals("")
-						&& parts[1].equals(""))
+				if (parts.length == 3
+						&& (parts[0].equals("") || parts[0].equals("0"))
+						&& (parts[1].equals("") || parts[1].equals("0")))
 					break;
 			} else {
-				if (i == 0 && parts[i].equals("")) {
+				if (i == 0 && parts[i].equals("") || parts[i].equals("0")) {
 					// if date missing dont add it
 				} else {
 					String aux = "00" + parts[i];

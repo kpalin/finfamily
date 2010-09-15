@@ -187,6 +187,10 @@ public class SukuRow {
 		// fullIdx = idx;
 		// System.out.println("get(" + idx+") : fullIdx = " + fullIdx);
 
+		if (person.getSex() == null) {
+			System.out.println("nulli");
+		}
+
 		if (idx == crit.getColIndex(Resurses.COLUMN_T_SEX)) {
 			// case SukuModel.TSEX_COL: //return this.sex ;
 			if (person.getSex().equals("M")) {
