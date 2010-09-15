@@ -719,6 +719,13 @@ public class ExportBackupUtil {
 				endEnd = todate;
 				endPlace = place;
 			}
+			if (tag.equals("ADOP")) {
+				// add suku 2004 adoption description too
+
+				Element descEle = document.createElement("description");
+				descEle.setTextContent("adoption");
+				rootElement.appendChild(descEle);
+			}
 
 			createRelationLanguageElements(document, nEle, rnid);
 

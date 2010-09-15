@@ -297,7 +297,7 @@
                 <wx:font wx:val = "Times New Roman"/>
             </w:rPr>
            <w:pPr>
-                 <w:ind w:left="113" w:hanging="113"/>
+                 <w:ind w:left="113" />
            </w:pPr>
             
         </w:style>

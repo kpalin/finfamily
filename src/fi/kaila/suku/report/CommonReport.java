@@ -324,6 +324,7 @@ public abstract class CommonReport {
 		BodyText bt = null;
 		ReportTableMember subjectmember = tab.getParent().get(0);
 		SukuData pdata = null;
+		// boolean forceSpouseNum = false;
 		StringBuilder tabOwner = new StringBuilder();
 		int tableOffset = caller.getDescendantPane().getStartTable();
 		if (tableOffset > 1) {
@@ -352,15 +353,6 @@ public abstract class CommonReport {
 				}
 			}
 		}
-
-		// PersonInTables pt = personReferences.get(subjectmember.getPid());
-		// if (pt == null) {
-		// logger.warning("Missing reference for " + subjectmember.getPid());
-		// } else {
-		// if (tab.getTableNo() > 0) {
-		// pt.addOwner(tab.getTableNo());
-		// }
-		// }
 
 		UnitNotice[] xnotices = pdata.persLong.getNotices();
 
@@ -581,7 +573,8 @@ public abstract class CommonReport {
 			int spouNum = 0;
 			if (tab.getParent().size() > 2) {
 				spouNum = ispou;
-
+				// } else if (forceSpouseNum) {
+				// spouNum = 1;
 			}
 
 			try {
@@ -652,57 +645,60 @@ public abstract class CommonReport {
 					for (int isp = 1; isp < tab.getParent().size(); isp++) {
 						pareMember = tab.getParent().get(isp);
 						if (pareMember.getPid() == bid) {
-							if (tab.getParent().size() <= 2) {
-								pareTxt = "";
-							} else {
+							if (tab.getParent().size() > 2) {
 								pareTxt = "" + isp + ": ";
+							} else {
+								pareTxt = "";
 							}
 							break;
 						}
-
 					}
+				} else if (tab.getParent().size() == 2) {
+					pareTxt = "0: ";
 				}
 				// check if child is adopted
 				StringBuilder adopTag = new StringBuilder();
 
 				for (int i = 0; i < cdata.relations.length; i++) {
 					if (ownerTag.equals(cdata.relations[i].getTag())) {
-
-						if (cdata.relations[i].getNotices() != null) {
-							for (int j = 0; j < cdata.relations[i].getNotices().length; j++) {
-								RelationNotice rn = cdata.relations[i]
-										.getNotices()[j];
-								String aux = rn.getTag();
-								if ("ADOP".equals(aux)) {
-									if (adopTag.length() > 0) {
-										adopTag.append(", ");
-									}
-									String tmp = rn.getType();
-									if (tmp == null) {
-										adopTag.append(typesTable
-												.getTextValue(aux));
-									} else {
-										adopTag.append(rn.getType());
-									}
-								} else {
-									if ("NOTE".equals(aux)
-											&& rn.getNoteText() != null) {
+						if (tab.getPid() == cdata.relations[i].getRelative()) {
+							if (cdata.relations[i].getNotices() != null) {
+								for (int j = 0; j < cdata.relations[i]
+										.getNotices().length; j++) {
+									RelationNotice rn = cdata.relations[i]
+											.getNotices()[j];
+									String aux = rn.getTag();
+									if ("ADOP".equals(aux)) {
 										if (adopTag.length() > 0) {
 											adopTag.append(", ");
 										}
-										adopTag.append(rn.getNoteText());
-									} else if ("SOUR".equals(aux)
-											&& rn.getSource() != null) {
-										String srcFormat = caller
-												.getSourceFormat();
-										if (!ReportWorkerDialog.SET_NO
-												.equals(srcFormat)) {
+										String tmp = rn.getType();
+										if (tmp == null) {
+											adopTag.append(typesTable
+													.getTextValue(aux));
+										} else {
+											adopTag.append(rn.getType());
+										}
+									} else {
+										if ("NOTE".equals(aux)
+												&& rn.getNoteText() != null) {
+											if (adopTag.length() > 0) {
+												adopTag.append(", ");
+											}
+											adopTag.append(rn.getNoteText());
+										} else if ("SOUR".equals(aux)
+												&& rn.getSource() != null) {
+											String srcFormat = caller
+													.getSourceFormat();
+											if (!ReportWorkerDialog.SET_NO
+													.equals(srcFormat)) {
 
-											String src = rn.getSource();
+												String src = rn.getSource();
 
-											String srcText = addSource(false,
-													srcFormat, src);
-											adopTag.append(srcText);
+												String srcText = addSource(
+														false, srcFormat, src);
+												adopTag.append(srcText);
+											}
 										}
 									}
 								}
@@ -777,8 +773,9 @@ public abstract class CommonReport {
 								+ toTable + ". ", true, false);
 					}
 				}
-				repoWriter.addText(bt);
-
+				if (bt.getCount() > 0) {
+					repoWriter.addText(bt);
+				}
 				// else {
 				if (childMember.getSpouses() != null
 						&& childMember.getSpouses().length > 0) {
