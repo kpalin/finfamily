@@ -493,10 +493,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 		if (cmd.equals(Resurses.CLOSE)) {
 			suku.HiskiFormClosing();
-			// if(parent != null) {
-			// parent.HiskiFormClosing();
-			// }
-			// this.setVisible(false);
+
 		} else if (cmd.equals(Resurses.GET_HISKI)) {
 
 			fetchFromHiski();

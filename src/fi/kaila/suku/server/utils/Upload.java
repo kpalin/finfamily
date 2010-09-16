@@ -40,10 +40,6 @@ public class Upload {
 			throws SQLException {
 
 		SukuData respons = new SukuData();
-		// first update pid values in LongPerson and Relation
-		// if pid = 0 => get next pid. no relations
-		// if pid < 0 => get next pid and use same pid both for unit and
-		// relation
 
 		respons.pidArray = new int[families.persons.length];
 		for (int i = 0; i < respons.pidArray.length; i++) {
@@ -166,15 +162,6 @@ public class Upload {
 
 		if (families.relations == null)
 			return respons;
-		// create table Relation (
-		// RID integer not null, -- Relation Id
-		// PID integer not null references Unit(PID), -- Unit/Person Id
-		// surety integer not null default 100, -- surety indicator
-		// tag varchar, -- tag of relation
-		// RelationRow integer, -- row of relation at person
-		// Modified timestamp, -- timestamp modified
-		// CreateDate timestamp not null default now() -- timestamp created
-		// ) with oids;
 
 		String sqlrn = "insert into relationnotice (rnid,rid,noticerow,tag,relationtype,"
 				+ "description,fromdate,place,notetext,sourcetext) values (?,?,?,?,?, ?,?,?,?,?) ";
@@ -188,8 +175,6 @@ public class Upload {
 		for (int i = 0; i < families.relations.length; i++) {
 			Relation rel = families.relations[i];
 
-			// System.out.println("rrr:" + rel.getPid() + "/" +
-			// rel.getRelative()+ "/" + rel.getTag());
 			rid = nextSeq(con, "relationseq");
 
 			pstm.setInt(1, rid);
