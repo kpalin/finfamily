@@ -81,9 +81,9 @@ public class Upload {
 			}
 		}
 		for (int i = 0; i < respons.pidArray.length; i++) {
-			if (families.persons[i].getPid() <= 0) {
+			if (families.persons[i].getPid() <= 0 && respons.pidArray[i] <= 0) {
 				respons.pidArray[i] = nextSeq(con, "unitseq");
-			} else {
+			} else if (families.persons[i].getPid() > 0) {
 				respons.pidArray[i] = families.persons[i].getPid();
 			}
 		}

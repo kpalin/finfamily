@@ -577,6 +577,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				sex = "U";
 				break;
 			default:
+				if (hiskiPid[i] > 0) {
+					PersonShortData curpers = this.suku.getPerson(hiskiPid[i]);
+					if (curpers != null) {
+						sex = curpers.getSex();
+						break;
+					}
+				}
 				JOptionPane.showMessageDialog(this,
 						Resurses.getString("ERROR_MISSINGSEX"));
 				return;
@@ -1164,6 +1171,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				sex = "U";
 				break;
 			default:
+				if (hiskiPid[i] > 0) {
+					PersonShortData curpers = this.suku.getPerson(hiskiPid[i]);
+					if (curpers != null) {
+						sex = curpers.getSex();
+						break;
+					}
+				}
 				JOptionPane.showMessageDialog(this,
 						Resurses.getString("ERROR_MISSINGSEX"));
 				return;
@@ -1437,7 +1451,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 		sb.append("hiski?fi+t");
 
-		String hiskiNumStr = this.hiskiNumber.getText();
+		String hiskiNumStr = this.hiskiNumber.getText().trim();
 
 		int hiskiNum = 0;
 		Document doc = null;
