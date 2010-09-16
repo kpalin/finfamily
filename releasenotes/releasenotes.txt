@@ -2,6 +2,10 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 780 on 16 sep 2010
+
+* fixed hiski import issues
+
 Release 775 on 15 sep 2010
 
 * fix to export for suku2004
