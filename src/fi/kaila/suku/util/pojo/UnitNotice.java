@@ -263,8 +263,8 @@ public class UnitNotice implements Serializable {
 	/**
 	 * reset modifeid flag.
 	 */
-	public void resetModified() {
-		toBeUpdated = false;
+	public void setModified(boolean value) {
+		toBeUpdated = value;
 	}
 
 	/**

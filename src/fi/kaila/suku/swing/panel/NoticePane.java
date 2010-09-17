@@ -54,7 +54,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger;
+	private final Logger logger;
 
 	/** The move to left. */
 	JButton moveToLeft;
@@ -1143,8 +1143,10 @@ public class NoticePane extends JPanel implements ActionListener,
 			}
 
 		} else if (cmd.equals("<")) {
+			notice.setModified(true);
 			personView.moveSelectedPane(-1);
 		} else if (cmd.equals(">")) {
+			notice.setModified(true);
 			personView.moveSelectedPane(+1);
 		}
 		if (cmd.equals("DATA_ADDNAME")) {
@@ -1348,11 +1350,11 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	}
 
-	private int lcol = 75;
+	private final int lcol = 75;
 	private int lwidth = 300;
 	// private int rwidth = 70;
 	private int rcol = lwidth + lcol + 5;
-	private int lbuttoncol = 240;
+	private final int lbuttoncol = 240;
 
 	/*
 	 * (non-Javadoc)

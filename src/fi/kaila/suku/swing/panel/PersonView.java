@@ -58,7 +58,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	/** The types. */
 	static String types[] = null;
 
-	private Vector<SukuTabPane> paneTabs = new Vector<SukuTabPane>();
+	private final Vector<SukuTabPane> paneTabs = new Vector<SukuTabPane>();
 
 	/**
 	 * Gets the suku.
@@ -347,7 +347,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 					SukuData chnged = null;
 
-					chnged = main.updatePersonStructure();
+					chnged = main.checkIfPersonStructureChanged();
 					if (chnged == null)
 						return;
 
@@ -884,24 +884,24 @@ public class PersonView extends JPanel implements ChangeListener {
 
 	}
 
-	/**
-	 * update notices from mainpane.
-	 */
-	public void updateNotices() {
-		int midx = getMainPaneIndex();
-
-		PersonMainPane main = null;
-
-		if (midx > 0) {
-			main = (PersonMainPane) paneTabs.get(midx).pnl;
-		}
-
-		if (main != null) {
-			main.updateNameNotices();
-			main.updateRestNotices();
-		}
-
-	}
+	// /**
+	// * update notices from mainpane.
+	// */
+	// public void updateNotices() {
+	// int midx = getMainPaneIndex();
+	//
+	// PersonMainPane main = null;
+	//
+	// if (midx > 0) {
+	// main = (PersonMainPane) paneTabs.get(midx).pnl;
+	// }
+	//
+	// if (main != null) {
+	// main.updateNameNotices();
+	// main.updateRestNotices();
+	// }
+	//
+	// }
 
 	/**
 	 * move noticepane from.

@@ -31,9 +31,9 @@ import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTextArea;
 import fi.kaila.suku.util.SukuTextField;
+import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.SukuTypesModel;
 import fi.kaila.suku.util.Utils;
-import fi.kaila.suku.util.SukuTextField.Field;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
@@ -62,7 +62,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 	private JCheckBox privacy;
 	private String[] sextexts = { "Mies", "Nainen", "Tuntematon" };
-	private String[] sexes = { "M", "F", "U" };
+	private final String[] sexes = { "M", "F", "U" };
 	private ButtonGroup sexGroup = null;
 	// private JComboBox sex;
 	private JPanel sexr;
@@ -102,6 +102,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	private JLabel createdLbl;
 	private JLabel modifiedLbl;
 
+	private final boolean listPanels = false;
 	private int personPid = 0;
 
 	/** The pers long. */
@@ -406,19 +407,19 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		notetext.setEnabled(noteCount <= 1);
 	}
 
-	private int lcol = 75;
+	private final int lcol = 75;
 
-	private int rwidth = 70;
+	private final int rwidth = 70;
 	// private int rcol = lwidth+lcol+10;
 
-	private int gnlen = 150;
-	private int postlen = 60;
-	private int surlen = 240;
-	private int datelen = 80;
-	private int colbet = 2;
-	private int placlen = 213;
-	private int rcol = lcol + datelen + placlen + colbet * 2; // 460; //
-	private int biglen = datelen + placlen + colbet * 2 + rwidth * 2;
+	private final int gnlen = 150;
+	private final int postlen = 60;
+	private final int surlen = 240;
+	private final int datelen = 80;
+	private final int colbet = 2;
+	private final int placlen = 213;
+	private final int rcol = lcol + datelen + placlen + colbet * 2; // 460; //
+	private final int biglen = datelen + placlen + colbet * 2 + rwidth * 2;
 
 	private void initMe() {
 
@@ -827,9 +828,12 @@ public class PersonMainPane extends JPanel implements ActionListener,
 				try {
 					if (persLong == null)
 						return;
+
+					updateNameNotices();
+					updateRestNotices();
 					SukuData chnged = null;
 					try {
-						chnged = updatePersonStructure();
+						chnged = checkIfPersonStructureChanged();
 						if (chnged == null)
 							return;
 					} catch (SukuDateException ee) {
@@ -843,8 +847,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					if (chnged.resu != null) {
 
 						int askresu = JOptionPane.showConfirmDialog(this,
-								Resurses.getString("ASK_SAVE_PERSON"), Resurses
-										.getString(Resurses.SUKU),
+								Resurses.getString("ASK_SAVE_PERSON"),
+								Resurses.getString(Resurses.SUKU),
 								JOptionPane.YES_NO_OPTION,
 								JOptionPane.QUESTION_MESSAGE);
 						if (askresu == JOptionPane.YES_OPTION) {
@@ -865,8 +869,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					logger.log(Level.WARNING, "CLOSE:" + e1.getMessage());
 					return;
 				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(this, e1.toString(), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(this, e1.toString(),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					logger.log(Level.WARNING, "Closing person", e1);
 
@@ -876,15 +880,20 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			} else if (cmd.equals(Resurses.UPDATE)) {
 				try {
 
-					SukuData chnged = null;
-					try {
-						chnged = updatePersonStructure();
-						if (chnged == null)
-							return;
-					} catch (SukuDateException ee) {
-						JOptionPane.showMessageDialog(this, ee.getMessage());
-						return;
-					}
+					// SukuData chnged = null;
+					// try {
+					// chnged = checkIfPersonStructureChanged();
+					// if (chnged == null)
+					// return;
+					// } catch (SukuDateException ee) {
+					// JOptionPane.showMessageDialog(this, ee.getMessage());
+					// return;
+					// }
+
+					updateNameNotices();
+					updateRestNotices();
+
+					listNoticePanels();
 
 					SukuData resp = updatePerson(false);
 					personView.closeMainPane(true);
@@ -904,8 +913,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					logger.log(Level.WARNING, "CLOSE:" + e1.getMessage());
 					return;
 				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(this, e1.toString(), Resurses
-							.getString(Resurses.SUKU),
+					JOptionPane.showMessageDialog(this, e1.toString(),
+							Resurses.getString(Resurses.SUKU),
 							JOptionPane.ERROR_MESSAGE);
 					logger.log(Level.WARNING, "Closing person", e1);
 
@@ -929,11 +938,13 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	 * @throws SukuDateException
 	 *             the suku date exception
 	 */
-	SukuData updatePersonStructure() throws SukuDateException {
+	SukuData checkIfPersonStructureChanged() throws SukuDateException {
 		if (persLong == null)
 			return null;
+		// listNoticePanels();
 		SukuData resp = null;
-		personView.updateNotices();
+		// personView.updateNotices();
+		listNoticePanels();
 		int noticeFirst = personView.getFirstNoticeIndex();
 		int tabCount = personView.getTabCount();
 
@@ -1001,6 +1012,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			un.add(pane.notice);
 
 		}
+
 		verifyLocalPersonDates();
 		SukuData req = new SukuData();
 
@@ -1047,8 +1059,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					"name=notice");
 			notorder = resp.generalArray;
 		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-					.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.WARNING, "get settings", e);
 			return null;
 
@@ -1098,7 +1111,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	 */
 	SukuData updatePerson(boolean force) throws SukuDateException {
 
-		SukuData req = updatePersonStructure();
+		SukuData req = checkIfPersonStructureChanged();
 		SukuData resp = null;
 
 		if (req != null && (req.resu != null || force)) {
@@ -1126,7 +1139,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					if (unn != null) {
 
 						for (int i = 0; i < unn.length; i++) {
-							unn[i].resetModified();
+							unn[i].setModified(false);
 							UnitLanguage[] ull = unn[i].getLanguages();
 							if (ull != null) {
 								for (int j = 0; j < ull.length; j++) {
@@ -1158,8 +1171,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 				return resp;
 			} catch (SukuException e) {
-				JOptionPane.showMessageDialog(this, e.getMessage(), Resurses
-						.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 
 				e.printStackTrace();
 			}
@@ -1274,6 +1288,40 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		} else {
 			// System.out.println("Ei kosketa nimijuttuun");
 		}
+
+	}
+
+	/**
+	 * used for debugging to check sync of main and notices
+	 */
+	@SuppressWarnings("unused")
+	private void listNoticePanels() {
+		if (!listPanels)
+			return;
+		int midx = personView.getMainPaneIndex();
+		int noteCount = personView.getTabCount();
+		for (int i = midx + 2; i < noteCount; i++) {
+			SukuTabPane sp = personView.getPane(i);
+
+			if (sp.pnl instanceof NoticePane) {
+				NoticePane pane = (NoticePane) sp.pnl;
+
+				System.out.println("nn:tag " + i + ":" + pane.notice.getTag());
+
+				System.out.println("nn:desc" + i + ":"
+						+ pane.notice.getDescription() + "/"
+						+ pane.description.getText());
+				System.out.println("nn:givn" + i + ":"
+						+ pane.notice.getGivenname() + "/"
+						+ pane.givenname.getText());
+				System.out.println("nn:surn" + i + ":"
+						+ pane.notice.getSurname() + "/"
+						+ pane.surname.getText());
+				System.out.println("-------------");
+				// skipNextState = false;
+			}
+
+		}
 	}
 
 	/**
@@ -1386,32 +1434,32 @@ public class PersonMainPane extends JPanel implements ActionListener,
 				pane.setToBeDeleted(birtDate.getText().isEmpty()
 						&& birtPlace.getText().isEmpty(), true);
 				pane.date.setTextFromDate(birtDate.getText());
-				pane.place.setText(birtPlace.getText());
+				pane.place.setText(birtPlace.getText().trim());
 			}
 			if (chrCount == 1 && tag.equals("CHR")) {
 				pane.setToBeDeleted(chrDate.getText().isEmpty()
 						&& chrPlace.getText().isEmpty(), true);
 				pane.date.setTextFromDate(chrDate.getText());
-				pane.place.setText(chrPlace.getText());
+				pane.place.setText(chrPlace.getText().trim());
 			}
 			if (deatCount == 1 && tag.equals("DEAT")) {
 				pane.setToBeDeleted(deatDate.getText().isEmpty()
 						&& deatPlace.getText().isEmpty(), true);
 				pane.date.setTextFromDate(deatDate.getText());
-				pane.place.setText(deatPlace.getText());
+				pane.place.setText(deatPlace.getText().trim());
 			}
 			if (buriCount == 1 && tag.equals("BURI")) {
 				pane.setToBeDeleted(buriDate.getText().isEmpty()
 						&& buriPlace.getText().isEmpty(), true);
 				pane.date.setTextFromDate(buriDate.getText());
-				pane.place.setText(buriPlace.getText());
+				pane.place.setText(buriPlace.getText().trim());
 			}
 			if (tag.equals("OCCU")) {
 				if (pane.notice.isToBeDeleted() || occuIndex >= occus.length) {
-					pane.setToBeDeleted(true, true);
+					pane.setToBeDeleted(true, false);
 				} else {
 					pane.setToBeDeleted(occus[occuIndex].equals(""), true);
-					pane.description.setText(occus[occuIndex]);
+					pane.description.setText(occus[occuIndex].trim());
 				}
 				occuIndex++;
 			}
@@ -1509,12 +1557,12 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			int deathYear = shortie.getDeatYear();
 			if (birthYear > 0 && deathYear > 0) {
 				if (birthYear > deathYear) {
-					throw new SukuDateException(Resurses
-							.getString("ERROR_DEAT_BEF_BIRT"));
+					throw new SukuDateException(
+							Resurses.getString("ERROR_DEAT_BEF_BIRT"));
 				}
 				if (deathYear > birthYear + 150) {
-					throw new SukuDateException(Resurses
-							.getString("ERROR_TOO_OLD"));
+					throw new SukuDateException(
+							Resurses.getString("ERROR_TOO_OLD"));
 				}
 
 			}
