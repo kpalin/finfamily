@@ -52,33 +52,33 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JTextField surname;
-	private JTextField givenname;
-	private JTextField patronyme;
+	private final JTextField surname;
+	private final JTextField givenname;
+	private final JTextField patronyme;
 
-	private JTextField birtFromDate;
-	private JTextField birtToDate;
-	private JTextField birtPlace;
+	private final JTextField birtFromDate;
+	private final JTextField birtToDate;
+	private final JTextField birtPlace;
 
-	private JTextField deatFromDate;
-	private JTextField deatToDate;
-	private JTextField deatPlace;
+	private final JTextField deatFromDate;
+	private final JTextField deatToDate;
+	private final JTextField deatPlace;
 
-	private DateTextField createdFromDate;
+	private final DateTextField createdFromDate;
 
-	private DateTextField createdToDate;
+	private final DateTextField createdToDate;
 
-	private JComboBox viewList;
+	private final JComboBox viewList;
 	private String[] viewArray = null;
-	private JTextField viewGroup;
+	private final JTextField viewGroup;
 	private String preferredView = null;
 
-	private JTextField place;
-	private JComboBox noticeList;
-	private JCheckBox noticeExist;
-	private JComboBox sex;
-	private SukuSuretyField surety;
-	private JTextField fullText;
+	private final JTextField place;
+	private final JComboBox noticeList;
+	private final JCheckBox noticeExist;
+	private final JComboBox sex;
+	private final SukuSuretyField surety;
+	private final JTextField fullText;
 
 	/** The colpanel. */
 	JPanel colpanel;
@@ -107,12 +107,13 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	/** The text panel. */
 	JPanel textPanel;
 
-	private JButton ok;
-	private JButton reset;
+	private final JButton ok;
+	private final JButton reset;
 
-	private char[] sexcodes = { 0, 'M', 'F', 'U' };
+	private final char[] sexcodes = { 0, 'M', 'F', 'U' };
 
-	private ColTable[] coltables = { new ColTable(Resurses.COLUMN_T_SEX, true),
+	private final ColTable[] coltables = {
+			new ColTable(Resurses.COLUMN_T_SEX, true),
 			new ColTable(Resurses.COLUMN_T_ISMARR, true),
 			new ColTable(Resurses.COLUMN_T_ISCHILD, true),
 			new ColTable(Resurses.COLUMN_T_ISPARE, true),
@@ -128,7 +129,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			new ColTable(Resurses.COLUMN_T_REFN, false),
 			new ColTable(Resurses.COLUMN_T_PID, false) };
 
-	private ColTable[] proptables = {
+	private final ColTable[] proptables = {
 			new ColTable(Resurses.COLUMN_T_ALL_NAMES, true),
 			new ColTable(Resurses.COLUMN_T_BIRT_CHR, true),
 			new ColTable(Resurses.COLUMN_T_DEAT_BURI, true) };
@@ -560,6 +561,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 450, d.height / 2 - 300, 900, y + 100);
 		getRootPane().setDefaultButton(this.ok);
+
 	}
 
 	/**
@@ -723,6 +725,12 @@ public class SearchCriteria extends JDialog implements ActionListener {
 					&& preferredIndex < viewList.getItemCount() - 1) {
 				viewList.setSelectedIndex(preferredIndex + 1);
 			}
+
+			String sn = surname.getText();
+			if (!sn.isEmpty()) {
+				surname.selectAll();
+			}
+			surname.requestFocusInWindow();
 
 		} catch (SukuException e) {
 			//
@@ -1229,8 +1237,8 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		private JTextField createdDate;
-		private JCalendarButton calDate;
+		private final JTextField createdDate;
+		private final JCalendarButton calDate;
 
 		/**
 		 * Instantiates a new date text field.
