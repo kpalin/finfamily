@@ -1311,6 +1311,15 @@ public class PersonMainPane extends JPanel implements ActionListener,
 				System.out.println("nn:desc" + i + ":"
 						+ pane.notice.getDescription() + "/"
 						+ pane.description.getText());
+				try {
+					System.out.println("nn:date" + i + ":"
+							+ pane.notice.getFromDate() + "/"
+							+ pane.date.getFromDate());
+				} catch (SukuDateException e) {
+					System.out.println("dateex:" + e.getMessage());
+				}
+				System.out.println("nn:plac" + i + ":" + pane.notice.getPlace()
+						+ "/" + pane.place.getText());
 				System.out.println("nn:givn" + i + ":"
 						+ pane.notice.getGivenname() + "/"
 						+ pane.givenname.getText());
@@ -1388,6 +1397,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					&& (!birtDate.getText().isEmpty() || !birtPlace.getText()
 							.isEmpty())) {
 				insertNamePane(idx++, "BIRT");
+				birtCount++;
 			}
 		}
 		if (chrDate.isEnabled()) {
@@ -1395,6 +1405,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					&& (!chrDate.getText().isEmpty() || !chrPlace.getText()
 							.isEmpty())) {
 				insertNamePane(idx++, "CHR");
+				chrCount++;
 			}
 		}
 		if (deatDate.isEnabled()) {
@@ -1402,6 +1413,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					&& (!deatDate.getText().isEmpty() || !deatPlace.getText()
 							.isEmpty())) {
 				insertNamePane(idx++, "DEAT");
+				deatCount++;
 			}
 		}
 		if (buriDate.isEnabled()) {
@@ -1409,6 +1421,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					&& (!buriDate.getText().isEmpty() || !buriPlace.getText()
 							.isEmpty())) {
 				insertNamePane(idx++, "BURI");
+				buriCount++;
 			}
 		}
 		if (occupation.isEnabled()) {

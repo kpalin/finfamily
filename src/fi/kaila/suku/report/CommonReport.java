@@ -1963,12 +1963,13 @@ public abstract class CommonReport {
 		boolean addSpace = false;
 		boolean addDot = false;
 		String tag;
-
+		String occuTypes = "|OCCU|EDUC|TITL|";
 		if (notices.length > 0 && caller.showOnSeparateLines()) {
 
 			repoWriter.addText(bt);
 		}
 
+		boolean forceOccuUpperCase = true;
 		for (int j = 0; j < notices.length; j++) {
 			UnitNotice nn = notices[j];
 			addSpace = false;
@@ -2008,7 +2009,16 @@ public abstract class CommonReport {
 							} else {
 								if (addSpace)
 									bt.addText(" ");
-								bt.addText(nn.getDescription());
+								String desc = nn.getDescription();
+								if (occuTypes.indexOf(nn.getTag()) > 0
+										&& forceOccuUpperCase) {
+									if (desc.length() > 1) {
+										desc = desc.substring(0, 1)
+												.toUpperCase()
+												+ desc.substring(1);
+									}
+								}
+								bt.addText(desc);
 								addSpace = true;
 								addDot = true;
 							}
@@ -2280,24 +2290,28 @@ public abstract class CommonReport {
 						}
 						if (addDot) {
 
-							if ("|OCCU|EDUC|TITL|".indexOf(tag) > 0) {
+							if (occuTypes.indexOf(tag) > 0) {
 								String nxttag = null;
 								if (j < notices.length - 1) {
 									nxttag = notices[j + 1].getTag();
 								}
 								if (nxttag != null) {
-									if ("|OCCU|EDUC|TITL|".indexOf(nxttag) > 0) {
+									if (occuTypes.indexOf(nxttag) > 0) {
 										bt.addText(", ");
+										forceOccuUpperCase = false;
 									} else {
 										bt.addText(". ");
+										forceOccuUpperCase = false;
 									}
 								} else {
 									bt.addText(". ");
+									forceOccuUpperCase = false;
 								}
 
 							} else {
 
 								bt.addText(". ");
+								forceOccuUpperCase = false;
 							}
 							if (caller.showOnSeparateLines()) {
 
