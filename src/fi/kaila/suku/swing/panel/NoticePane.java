@@ -1690,7 +1690,7 @@ public class NoticePane extends JPanel implements ActionListener,
 					noteHeight += 120;
 				}
 				if (!farmShow) {
-					noteHeight += 100;
+					noteHeight += 60;
 				}
 				noteLoc = new Rectangle(lcol, lrivi, lwidth, noteHeight);
 				scrollNote.setBounds(noteLoc);
@@ -1740,7 +1740,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			surLbl.setVisible(false);
 			postLbl.setVisible(false);
 		}
-
+		lrivi += 5;
 		sourceLbl.setBounds(10, lrivi, 70, 20);
 		scrollSource.setBounds(lcol, lrivi, lwidth, 60);
 		boolean privateShow = mustPrivate;
