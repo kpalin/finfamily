@@ -2315,6 +2315,7 @@ public class Read2004XML extends DefaultHandler {
 					for (String tmp : namelist) {
 						asn.append(tmp);
 					}
+					namelist = null;
 				}
 				// sn.append("}");
 				NameArray asp = new NameArray();
@@ -2334,6 +2335,7 @@ public class Read2004XML extends DefaultHandler {
 					for (String tmp : placelist) {
 						asp.append(tmp);
 					}
+					placelist = null;
 				}
 				// sp.append("}");
 
