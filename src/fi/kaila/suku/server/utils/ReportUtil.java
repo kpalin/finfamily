@@ -792,7 +792,7 @@ public class ReportUtil {
 		PreparedStatement stm;
 		ResultSet rs;
 
-		sql = "select bid,relationrow,tag,r.surety from spouse where aid=? order by relationrow";
+		sql = "select bid,relationrow,tag,surety from spouse_all where aid=? order by relationrow";
 		stm = con.prepareStatement(sql);
 		stm.setInt(1, pid);
 		rs = stm.executeQuery();
@@ -804,7 +804,7 @@ public class ReportUtil {
 		rs.close();
 		stm.close();
 
-		sql = "select bid,relationrow,tag,r.surety from child where aid=? order by relationrow";
+		sql = "select bid,relationrow,tag,surety from child_all where aid=? order by relationrow";
 		stm = con.prepareStatement(sql);
 		stm.setInt(1, pid);
 		rs = stm.executeQuery();
