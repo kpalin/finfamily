@@ -1291,7 +1291,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notice = new UnitNotice("synt".equals(pvm1Name) ? "BIRT"
 							: "CHR");
 					notice.setFromDate(dat);
-					notice.setVillage(eventFarm.getText());
+					notice.setPlace(srk.getText());
+					notice.setVillage(eventVillage.getText());
 					notice.setFarm(eventFarm.getText());
 					notice.setSource(hiskiSource);
 					noticesChild.add(notice);
@@ -1302,7 +1303,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notice = new UnitNotice("synt".equals(pvm2Name) ? "BIRT"
 							: "CHR");
 					notice.setFromDate(dat);
-					notice.setVillage(eventFarm.getText());
+					notice.setPlace(srk.getText());
+					notice.setVillage(eventVillage.getText());
 					notice.setFarm(eventFarm.getText());
 					notice.setSource(hiskiSource);
 					noticesChild.add(notice);
