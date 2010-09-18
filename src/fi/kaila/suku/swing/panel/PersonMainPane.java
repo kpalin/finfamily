@@ -114,15 +114,15 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	/**
 	 * Instantiates a new person main pane.
 	 * 
-	 * @param peronView
-	 *            the peron view
+	 * @param personView
+	 *            the person view
 	 * @param pid
 	 *            the pid
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public PersonMainPane(PersonView peronView, int pid) throws SukuException {
-		this.personView = peronView;
+	public PersonMainPane(PersonView personView, int pid) throws SukuException {
+		this.personView = personView;
 
 		SukuTypesModel types = Utils.typeInstance();
 
