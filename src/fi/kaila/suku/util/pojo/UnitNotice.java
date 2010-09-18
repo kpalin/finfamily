@@ -1116,7 +1116,7 @@ public class UnitNotice implements Serializable {
 	private String nv(String text) {
 		if (text == null)
 			return "";
-		return text.trim();
+		return text;
 	}
 
 	private String vn(String text) {
