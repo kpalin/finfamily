@@ -93,7 +93,8 @@ public class Read2004XML extends DefaultHandler {
 	/** The error line. */
 	Vector<String> errorLine = new Vector<String>();
 	private volatile String currentStatus = null;
-
+	private Vector<String> namelist = null;
+	private Vector<String> placelist = null;
 	/** The cdf. */
 	SimpleDateFormat cdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -222,6 +223,10 @@ public class Read2004XML extends DefaultHandler {
 	private static final String noticeDateEndTG = "|genealog|units|unit|notices|notice|date|end";
 	private static final String noticeDescriptTG = "|genealog|units|unit|notices|notice|description";
 	private static final String noticeNoteTextTG = "|genealog|units|unit|notices|notice|notetext";
+	private static final String noticeNamelistTG = "|genealog|units|unit|notices|notice|namelist";
+	private static final String noticeNamelistNameTG = "|genealog|units|unit|notices|notice|namelist|name";
+	private static final String noticePlacelistTG = "|genealog|units|unit|notices|notice|placelist";
+	private static final String noticePlacelistPlaceTG = "|genealog|units|unit|notices|notice|placelist|place";
 	private static final String noticePlaceTG = "|genealog|units|unit|notices|notice|place";
 	private static final String noticeGivenNameTG = "|genealog|units|unit|notices|notice|name|givenname";
 	private static final String noticeFirstNameTG = "|genealog|units|unit|notices|notice|name|firstname";
@@ -743,6 +748,10 @@ public class Read2004XML extends DefaultHandler {
 			this.noticeLanguage = attributes.getValue("langcode");
 			this.noticeLanguageModifiedDate = attributes.getValue("modified");
 			this.noticeLanguageCreateDate = attributes.getValue("created");
+		} else if (this.currentEle.equals(noticeNamelistTG)) {
+			namelist = new Vector<String>();
+		} else if (this.currentEle.equals(noticePlacelistTG)) {
+			placelist = new Vector<String>();
 		} else if (this.currentEle.equals(relationTG)) {
 			this.relationIdA = attributes.getValue("unitida");
 			this.relationIdB = attributes.getValue("unitidb");
@@ -944,6 +953,7 @@ public class Read2004XML extends DefaultHandler {
 		if (this.currentEle.equals(unitPostfixTG)) {
 			this.unitPostfix = this.currentChars.toString();
 		}
+
 		if (this.currentEle.equals(unitNameTG)) {
 			insertUnitName();
 		}
@@ -958,6 +968,18 @@ public class Read2004XML extends DefaultHandler {
 		}
 		if (this.currentEle.equals(noticeDescriptTG)) {
 			this.noticeDescription = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeNamelistNameTG)) {
+			String tmp = this.currentChars.toString();
+			if (!tmp.isEmpty()) {
+				namelist.add(tmp);
+			}
+		}
+		if (this.currentEle.equals(noticePlacelistPlaceTG)) {
+			String tmp = this.currentChars.toString();
+			if (!tmp.isEmpty()) {
+				placelist.add(tmp);
+			}
 		}
 		if (this.currentEle.equals(noticeDateStartTG)) {
 			this.noticeDateFrom = this.currentChars.toString();
@@ -2278,7 +2300,9 @@ public class Read2004XML extends DefaultHandler {
 			pst.executeUpdate();
 			pst.close();
 
-			if (this.placeCollector.size() > 0 || this.nameCollector.size() > 0) {
+			if (this.placeCollector.size() > 0 || this.nameCollector.size() > 0
+					|| (this.namelist != null && this.namelist.size() > 0)
+					|| (this.placelist != null && this.placelist.size() > 0)) {
 
 				NameArray asn = new NameArray();
 				Iterator<String> it = this.nameCollector.keySet().iterator();
@@ -2287,7 +2311,11 @@ public class Read2004XML extends DefaultHandler {
 					asn.append(it.next());
 
 				}
-
+				if (namelist != null) {
+					for (String tmp : namelist) {
+						asn.append(tmp);
+					}
+				}
 				// sn.append("}");
 				NameArray asp = new NameArray();
 
@@ -2301,6 +2329,11 @@ public class Read2004XML extends DefaultHandler {
 					// }
 					asp.append(it.next());
 					// sp.append("\""+it.next()+"\"");
+				}
+				if (placelist != null) {
+					for (String tmp : placelist) {
+						asp.append(tmp);
+					}
 				}
 				// sp.append("}");
 
