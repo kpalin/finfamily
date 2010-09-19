@@ -933,7 +933,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						SukuModel.SUKU_ROW);
 				if (row == null)
 					return null;
-				return row.getTodo();
+				return row.getUnkn();
 			}
 		};
 
@@ -978,6 +978,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				if (colid.equals(Resurses.COLUMN_T_ISCHILD)
 						|| colid.equals(Resurses.COLUMN_T_ISMARR)
 						|| colid.equals(Resurses.COLUMN_T_ISPARE)
+						|| colid.equals(Resurses.COLUMN_T_UNKN)
 						|| colid.equals(Resurses.COLUMN_T_SEX)) {
 					cc.setMaxWidth(35);
 				}
@@ -1019,6 +1020,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		int i;
 		int curre = 0;
 
+		@SuppressWarnings("rawtypes")
 		Comparator sukucompa;
 		for (i = 0; i < crit.getColTableCount(); i++) {
 			ColTable col = crit.getColTable(i);

@@ -1627,7 +1627,18 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 						// TODO:
 					} else if (eleName.equals("srk")) {
 						srkNo.setText(ele.getAttribute("nro"));
-						srk.setText(ele.getTextContent());
+						// TODO katsotaan kieli
+						String ll = Resurses.getLanguage();
+						String tmp = ele.getTextContent();
+						int llidx = tmp.indexOf("-");
+						if (llidx > 0) {
+							if (ll.equals("sv") && llidx < tmp.length() + 1) {
+								tmp = tmp.substring(llidx + 1).trim();
+							} else {
+								tmp = tmp.substring(0, llidx).trim();
+							}
+						}
+						srk.setText(tmp);
 					} else if (eleName.equals("tapahtumatunniste")) {
 						eventId = ele.getAttribute("id");
 					} else if (eleName.equals("pvm")) {

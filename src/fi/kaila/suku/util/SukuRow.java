@@ -236,11 +236,11 @@ public class SukuRow {
 			// crit.getColIndex(Resurses.COLUMN_T_SURNAME)){
 			//
 			// return this.surName;
-		} else if (idx == crit.getColIndex(Resurses.COLUMN_T_TODO)) {
+		} else if (idx == crit.getColIndex(Resurses.COLUMN_T_UNKN)) {
 
-			if (!person.getTodo())
+			if (!person.getUnkn())
 				return "";
-			return "*"; // this.todo;
+			return "*"; // this.unkn;
 		} else if (idx == crit.getColIndex(Resurses.COLUMN_T_PATRONYME)) {
 
 			return person.getPatronym();
@@ -315,8 +315,8 @@ public class SukuRow {
 	 * 
 	 * @return the todo text
 	 */
-	public String getTodo() {
-		return (getPerson().getTodo()) ? "*" : "";
+	public String getUnkn() {
+		return (getPerson().getUnkn()) ? "*" : "";
 	}
 
 	/**

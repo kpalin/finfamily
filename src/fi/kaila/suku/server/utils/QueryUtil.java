@@ -390,14 +390,11 @@ public class QueryUtil {
 
 			PersonShortData perso = null;
 
-			// PersonShortData dao;
-
 			Statement stm = this.con.createStatement();
 			ResultSet rs = stm.executeQuery(sql.toString());
-			// persMap = new HashMap<Integer, PersonShortData>();
 			int currentPid = 0;
 			int pid;
-			// String dbutag; //5
+
 			String dbntag; // 6
 			String dbgivenname; // 7
 			String dbpatronym; // 8
@@ -455,33 +452,9 @@ public class QueryUtil {
 								dbsurname, dbpostfix);
 					}
 
-					// if (dbntag.equals("NAME") && perso.getNameCount()>0) {
-					//
-					// perso.setNameTag(dbntag);
-					// perso.setGivenname(dbgivenname);
-					// perso.setPatronym(dbpatronym);
-					// perso.setPrefix(dbprefix);
-					// perso.setSurname(dbsurname);
-					// perso.setPostfix(dbpostfix);
-					//
-					// } else if (dbntag.equals("NAME")
-					// && perso.getNameTag() != null) {
-					//
-					// StringBuilder sb = new StringBuilder();
-					// if (perso.getMorenames() != null) {
-					// sb.append(perso.getMorenames());
-					// sb.append(";");
-					// }
-					// if (dbprefix != null) {
-					// sb.append(dbprefix);
-					// sb.append(" ");
-					// }
-					// if (dbsurname != null) {
-					// sb.append(dbsurname);
-					// }
-					// perso.setMorenames(sb.toString());
-					// }
-
+					if (dbntag.equals("UNKN")) {
+						perso.setUnkn(true);
+					}
 					if (dbntag.equals("OCCU")) {
 						perso.setOccupation(dbdescription);
 					}

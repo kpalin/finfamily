@@ -150,7 +150,7 @@ public class Resurses {
 	public static final String COLUMN_T_ISPARE = "T_ISPARE";
 
 	/** Full column for TO-DO. */
-	public static final String COLUMN_T_TODO = "T_TODO";
+	public static final String COLUMN_T_UNKN = "T_UNKN";
 
 	/** Full column for NAME. */
 	public static final String COLUMN_T_NAME = "T_NAME";

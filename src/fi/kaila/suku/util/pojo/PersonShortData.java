@@ -52,8 +52,8 @@ public class PersonShortData implements Serializable, Transferable,
 	private String bCountry = null;
 	private String dPlace = null;
 	private String dCountry = null;
-	private String chred = null;
-	private String buried = null;
+	private final String chred = null;
+	private final String buried = null;
 	private String occu = null;
 	private String mediaTitle = null;
 	private String mediaFilename = null;
@@ -61,14 +61,14 @@ public class PersonShortData implements Serializable, Transferable,
 	private int marrCount = 0;
 	private int childCount = 0;
 	private int pareCount = 0;
-	private boolean hasTodo = false;
+	private boolean hasUnkn = false;
 	private byte[] imageData = null;
 
 	private transient BufferedImage image = null;
-	private String imageName = null;
+	private final String imageName = null;
 	private Utils.PersonSource dragSource = null;
 
-	private HashMap<String, String> tagMap = new HashMap<String, String>();
+	private final HashMap<String, String> tagMap = new HashMap<String, String>();
 	/**
 	 * Used by Relatives pane
 	 */
@@ -304,8 +304,8 @@ public class PersonShortData implements Serializable, Transferable,
 	 * @param hasTodo
 	 *            i.e. a notice with tag Todo
 	 */
-	public void setTodo(boolean hasTodo) {
-		this.hasTodo = hasTodo;
+	public void setUnkn(boolean hasUnkn) {
+		this.hasUnkn = hasUnkn;
 	}
 
 	/**
@@ -559,7 +559,7 @@ public class PersonShortData implements Serializable, Transferable,
 				+ "as n on u.pid = n.pid ");
 		if (!withAllTags) {
 			sql.append("and n.tag in "
-					+ "('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU') ");
+					+ "('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU','UNKN') ");
 		}
 		sql.append("and n.surety >= 80 where u.pid = ? ");
 		sql.append("order by n.noticerow ");
@@ -629,7 +629,9 @@ public class PersonShortData implements Serializable, Transferable,
 					if ("OCCU".equals(tag)) {
 						this.occu = rs.getString(13);
 					}
-
+					if ("UNKN".equals(tag)) {
+						hasUnkn = true;
+					}
 					if ("PHOT".equals(tag)) {
 						this.mediaDataNotice = rs.getInt(14);
 						this.mediaFilename = rs.getString(16);
@@ -1035,8 +1037,8 @@ public class PersonShortData implements Serializable, Transferable,
 	 * 
 	 * @return true if To do notice exists
 	 */
-	public boolean getTodo() {
-		return this.hasTodo;
+	public boolean getUnkn() {
+		return this.hasUnkn;
 	}
 
 	/**
@@ -1407,11 +1409,11 @@ public class PersonShortData implements Serializable, Transferable,
 
 		/**  */
 		private static final long serialVersionUID = 1L;
-		private String shGivenname;
-		private String shPatronyme;
-		private String shPrefix;
-		private String shSurname;
-		private String shPostfix;
+		private final String shGivenname;
+		private final String shPatronyme;
+		private final String shPrefix;
+		private final String shSurname;
+		private final String shPostfix;
 
 		ShortName(String given, String patro, String pre, String sur,
 				String postf) {

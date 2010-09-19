@@ -5,6 +5,9 @@ At least for now releases follow the Subversion revision numbers. Numbers in the
 Release 794 on 18 sep 2010
 
 * reset name and place list after use
+
+Reset 792 on 18 sep 2010
+
 * fixed restore of name and placelist
 * modified default order of notices
 * added place to hiski kastetut import

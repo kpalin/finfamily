@@ -117,7 +117,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			new ColTable(Resurses.COLUMN_T_ISMARR, true),
 			new ColTable(Resurses.COLUMN_T_ISCHILD, true),
 			new ColTable(Resurses.COLUMN_T_ISPARE, true),
-			new ColTable(Resurses.COLUMN_T_TODO, true),
+			new ColTable(Resurses.COLUMN_T_UNKN, true),
 			new ColTable(Resurses.COLUMN_T_NAME, true),
 			new ColTable(Resurses.COLUMN_T_PATRONYME, true),
 			new ColTable(Resurses.COLUMN_T_BIRT, true),
