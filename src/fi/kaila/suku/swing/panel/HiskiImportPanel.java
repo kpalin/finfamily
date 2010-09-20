@@ -146,11 +146,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	// private String [] sukuName = {null,null,null};
 	/** The y. */
 	int y = 20;
-
+	int rh = 80;
 	/** The buttony. */
 	int buttony = 60;
 
 	private void initMe() {
+		int ydiff = 24;
+		int ylabdiff = 20;
+		rh = ydiff * 3 + 10;
 
 		setLayout(null);
 
@@ -181,7 +184,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		add(srk);
 		srk.setBounds(360, y, 150, 20);
 
-		y += 30;
+		y += ydiff;
 
 		this.hiskiNumber = new JTextField();
 		add(this.hiskiNumber);
@@ -203,7 +206,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		add(eventLastDate);
 		eventLastDate.setBounds(435, y, 75, 20);
 
-		y += 30;
+		y += ydiff;
 		buttony = y;
 		lbl = new JLabel(Resurses.getString("HISKI_VILLAGEFARM"));
 		add(lbl);
@@ -217,7 +220,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		add(eventFarm);
 		eventFarm.setBounds(360, y, 150, 20);
 
-		y += 30;
+		y += ydiff;
 
 		lbl = new JLabel(Resurses.getString("HISKI_HUOM"));
 		add(lbl);
@@ -227,7 +230,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		add(eventReason);
 		eventReason.setBounds(200, y, 310, 20);
 
-		y += 30;
+		y += ydiff;
 		//
 		// eventRemark = new JTextField();
 		// add(eventRemark);
@@ -242,7 +245,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		add(eventUserComment);
 		eventUserComment.setBounds(200, y, 310, 20);
 
-		y += 30;
+		y += ydiff;
 		lbl = new JLabel(Resurses.getString("HISKI_ORIG"));
 		add(lbl);
 		lbl.setBounds(520, y, 120, 20);
@@ -250,14 +253,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		add(eventOrigComment);
 		eventOrigComment.setBounds(200, y, 310, 20);
 
-		y += 30;
+		y += ydiff;
 		lbl = new JLabel(Resurses.getString("HISKI_MUUT"));
 		add(lbl);
 		lbl.setBounds(520, y, 120, 20);
 		eventNote = new JTextField();
 		add(eventNote);
 		eventNote.setBounds(200, y, 310, 20);
-		y += 30;
+		y += ydiff;
 		lbl = new JLabel(Resurses.getString("HISKI_MISTAMINNE"));
 		add(lbl);
 		lbl.setBounds(520, y, 120, 20);
@@ -270,7 +273,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		add(eventTo);
 		eventTo.setBounds(360, y, 150, 20);
 
-		y += 30;
+		y += ydiff;
 
 		eventExtraType = new JLabel(Resurses.getString("DATA_BIRT"));
 		add(eventExtraType);
@@ -282,7 +285,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		eventExtraDate.setVisible(false);
 		initHiskiPersons(0);
 
-		y += 30;
+		y += ylabdiff;
 
 		lbl = new JLabel(Resurses.getString("HISKI_TYPEOCCU"));
 		add(lbl);
@@ -310,7 +313,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
 
-		y += 20;
+		y += ylabdiff;
 
 		this.getHiski = new JButton(Resurses.getString(Resurses.GET_HISKI));
 		// this.ok.setDefaultCapable(true);
@@ -319,7 +322,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		this.getHiski.addActionListener(this);
 		this.getHiski.setBounds(40, buttony, 150, 24);
 
-		buttony += 30;
+		buttony += ydiff;
 		this.close = new JButton(Resurses.getString(Resurses.CLOSE));
 		// this.ok.setDefaultCapable(true);
 		add(this.close);
@@ -327,7 +330,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		this.close.addActionListener(this);
 		this.close.setBounds(40, buttony, 150, 24);
 
-		buttony += 30;
+		buttony += ydiff;
 		upload = new JButton(Resurses.getString(Resurses.HISKI_UPLOAD));
 		// this.ok.setDefaultCapable(true);
 		add(upload);
@@ -335,7 +338,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		upload.addActionListener(this);
 		upload.setBounds(40, buttony, 150, 24);
 
-		buttony += 30;
+		buttony += ydiff;
 		normalize = new JButton(Resurses.getString(Resurses.HISKI_NORMALIZE));
 		// this.ok.setDefaultCapable(true);
 		add(normalize);
@@ -343,7 +346,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		normalize.addActionListener(this);
 		normalize.setBounds(40, buttony, 150, 24);
 
-		buttony += 30;
+		buttony += ydiff;
 		showInBrowser = new JButton(Resurses.getString(Resurses.HISKI_BROWSER));
 		// this.ok.setDefaultCapable(true);
 		add(showInBrowser);
@@ -372,7 +375,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		pReason = new JTextField[luku];
 
 		int i = 0;
-		int rh = 100;
+
 		for (i = 0; i < luku; i++) {
 
 			pSukuPid[i] = new JLabel();
@@ -1624,10 +1627,10 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					String eleName = ele.getNodeName();
 
 					if (eleName == null) {
-						// TODO:
+						// shouldn't come here anyway
 					} else if (eleName.equals("srk")) {
 						srkNo.setText(ele.getAttribute("nro"));
-						// TODO katsotaan kieli
+
 						String ll = Resurses.getLanguage();
 						String tmp = ele.getTextContent();
 						int llidx = tmp.indexOf("-");
