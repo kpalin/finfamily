@@ -362,6 +362,7 @@ public class PersonUtil {
 					pstUpdRow.setInt(2, pnid);
 					pstUpdRow.executeUpdate();
 				}
+
 			}
 		} catch (SQLException e) {
 			// e.printStackTrace();
@@ -1292,6 +1293,123 @@ public class PersonUtil {
 
 		return null;
 
+	}
+
+	public void updateNoticesOrder(PersonLongData longPerson)
+			throws SQLException {
+
+		String sql = "update unitnotice set noticerow = ? where pnid = ?";
+		if (longPerson == null || longPerson.getNotices() == null)
+			return;
+		PreparedStatement pst = con.prepareStatement(sql);
+
+		for (int i = 0; i < longPerson.getNotices().length; i++) {
+			pst.setInt(1, i + 1);
+			pst.setInt(2, longPerson.getNotices()[i].getPnid());
+			pst.executeUpdate();
+		}
+		pst.close();
+
+	}
+
+	/**
+	 * get various settings from db
+	 * 
+	 * @param index
+	 * @param type
+	 * @param name
+	 * @return
+	 */
+	public SukuData getSettings(String index, String type, String name) {
+		SukuData res = new SukuData();
+		try {
+			if ("query".equals(type)) {
+				String sql = "select settingname,settingvalue from SukuSettings "
+						+ "where settingtype = '"
+						+ type
+						+ "' order by settingindex ";
+				Vector<String> v = new Vector<String>();
+
+				Statement stm = con.createStatement();
+				ResultSet rs = stm.executeQuery(sql);
+				while (rs.next()) {
+					v.add(rs.getString(1) + "=" + rs.getString(2));
+				}
+				rs.close();
+				stm.close();
+
+				res.generalArray = v.toArray(new String[0]);
+
+			} else if (name == null && index != null) {
+				int settingIndex = 0;
+				try {
+					settingIndex = Integer.parseInt(index);
+				} catch (NumberFormatException ne) {
+					// NumberFormatException ignored
+				}
+				String sql = "select settingindex,settingvalue "
+						+ "from sukusettings where settingtype = ? and settingname = 'name' "
+						+ "order by settingindex ";
+				String[] vv = new String[12];
+
+				PreparedStatement pst = con.prepareStatement(sql);
+				pst.setString(1, type);
+				ResultSet rs = pst.executeQuery();
+				while (rs.next()) {
+					int idx = rs.getInt(1);
+					String nam = rs.getString(2);
+
+					if (idx >= 0 && idx < 12) {
+						vv[idx] = nam;
+					}
+
+				}
+				rs.close();
+				pst.close();
+				res.generalArray = vv;
+				String vx[] = new String[2];
+				res.vvTypes = new Vector<String[]>();
+
+				sql = "select settingname,settingvalue from SukuSettings "
+						+ "where settingtype = ? and settingindex = ? ";
+				pst = con.prepareStatement(sql);
+				pst.setString(1, type);
+				pst.setInt(2, settingIndex);
+				rs = pst.executeQuery();
+				while (rs.next()) {
+					vx = new String[2];
+					vx[0] = rs.getString(1);
+					vx[1] = rs.getString(2);
+					res.vvTypes.add(vx);
+				}
+				rs.close();
+				pst.close();
+
+			} else {
+
+				String sql = "select settingvalue "
+						+ "from sukusettings where settingtype = '" + type
+						+ "' " + "and settingname = '" + name + "' "
+						+ "order by settingindex ";
+
+				Statement stm = con.createStatement();
+				ResultSet rs = stm.executeQuery(sql);
+				Vector<String> setv = new Vector<String>();
+				while (rs.next()) {
+
+					String val = rs.getString(1);
+					setv.add(val);
+
+				}
+				rs.close();
+				stm.close();
+				res.generalArray = setv.toArray(new String[0]);
+			}
+		} catch (SQLException e) {
+			res.resu = e.getMessage();
+			e.printStackTrace();
+		}
+		return res;
 	}
 
 }

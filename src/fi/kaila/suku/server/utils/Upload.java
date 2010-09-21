@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationNotice;
@@ -35,9 +36,10 @@ public class Upload {
 	 * @return null
 	 * @throws SQLException
 	 *             the sQL exception
+	 * @throws SukuException
 	 */
 	public static SukuData uploadFamilies(Connection con, SukuData families)
-			throws SQLException {
+			throws SQLException, SukuException {
 
 		SukuData respons = new SukuData();
 
@@ -84,21 +86,34 @@ public class Upload {
 			}
 		}
 
+		// SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
+		// "type=order",
+		// "name=notice");
+
+		PersonUtil pu = new PersonUtil(con);
+		SukuData orderdata = pu.getSettings(null, "order", "notice");
+		String orders[] = new String[orderdata.generalArray.length + 1];
+		orders[0] = "NAME";
+		for (int i = 1; i < orders.length; i++) {
+			orders[i] = orderdata.generalArray[i - 1];
+		}
 		String sql = "insert into Unit (pid,tag,privacy,groupid,sex,sourcetext,privatetext,userrefn) "
 				+ "values (?,?,?,?, ?,?,?,?)";
 		String sqlnotice = "insert into unitnotice (pid,pnid,surety,noticerow,tag,noticetype,description,fromdate,"
 				+ "place,village,farm,notetext,prefix,surname,givenname,patronym,postfix,sourcetext,RefNames) "
-				+ "values (?,?,80,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?,?,?) ";
+				+ "values (?,?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?,?,?) ";
 
+		String sqlrow = "select max(noticerow) from unitnotice where pid = ?";
 		PreparedStatement pstm = con.prepareStatement(sql);
 		PreparedStatement pstmn = con.prepareStatement(sqlnotice);
-
+		int surety = 80;
+		int rowno = 1;
 		for (int i = 0; i < families.persons.length; i++) {
 
 			PersonLongData person = families.persons[i];
 			if (person != null) {
 				if (person.getPid() <= 0) {
-
+					surety = 80;
 					person.setPid(respons.pidArray[i]);
 					pstm.setInt(1, person.getPid());
 					pstm.setString(2, person.getTag());
@@ -114,6 +129,17 @@ public class Upload {
 						logger.warning("Update of Unit " + person.getPid()
 								+ " result " + lukuri + " rows");
 					}
+				} else {
+					surety = 60;
+					PreparedStatement pstmr = con.prepareStatement(sqlrow);
+					pstmr.setInt(1, person.getPid());
+					ResultSet rs = pstmr.executeQuery();
+					if (rs.next()) {
+						rowno = rs.getInt(1) + 1;
+					}
+					rs.close();
+					pstmr.close();
+
 				}
 
 				UnitNotice[] nots = person.getNotices();
@@ -124,29 +150,30 @@ public class Upload {
 					pstmn.setInt(1, person.getPid());
 
 					pstmn.setInt(2, nextSeq(con, "unitnoticeseq"));
-					pstmn.setInt(3, j + 1);
-					pstmn.setString(4, n.getTag());
-					pstmn.setString(5, n.getNoticeType());
-					pstmn.setString(6, n.getDescription());
-					pstmn.setString(7, n.getFromDate());
-					pstmn.setString(8, n.getPlace());
-					pstmn.setString(9, n.getVillage());
-					pstmn.setString(10, n.getFarm());
-					pstmn.setString(11, n.getNoteText());
-					pstmn.setString(12, n.getPrefix());
-					pstmn.setString(13, n.getSurname());
-					pstmn.setString(14, n.getGivenname());
-					pstmn.setString(15, n.getPatronym());
-					pstmn.setString(16, n.getPostfix());
-					pstmn.setString(17, n.getSource());
+					pstmn.setInt(3, surety);
+					pstmn.setInt(4, j + rowno);
+					pstmn.setString(5, n.getTag());
+					pstmn.setString(6, n.getNoticeType());
+					pstmn.setString(7, n.getDescription());
+					pstmn.setString(8, n.getFromDate());
+					pstmn.setString(9, n.getPlace());
+					pstmn.setString(10, n.getVillage());
+					pstmn.setString(11, n.getFarm());
+					pstmn.setString(12, n.getNoteText());
+					pstmn.setString(13, n.getPrefix());
+					pstmn.setString(14, n.getSurname());
+					pstmn.setString(15, n.getGivenname());
+					pstmn.setString(16, n.getPatronym());
+					pstmn.setString(17, n.getPostfix());
+					pstmn.setString(18, n.getSource());
 
 					if (n.getRefNames() == null) {
-						pstmn.setNull(18, Types.ARRAY);
+						pstmn.setNull(19, Types.ARRAY);
 					} else {
 
 						Array xx = con
 								.createArrayOf("varchar", n.getRefNames());
-						pstmn.setArray(18, xx);
+						pstmn.setArray(19, xx);
 
 					}
 
@@ -158,6 +185,31 @@ public class Upload {
 					}
 				}
 			}
+			/** put notices in correct order still */
+
+			PersonUtil u = new PersonUtil(con);
+			SukuData fam = u.getFullPerson(person.getPid(), null);
+
+			Vector<UnitNotice> nns = new Vector<UnitNotice>();
+			StringBuilder sb = new StringBuilder();
+			for (int k = 0; k < orders.length; k++) {
+				for (UnitNotice n : fam.persLong.getNotices()) {
+					if (n.getTag().equals(orders[k])) {
+						nns.add(n);
+						sb.append("|" + orders[k]);
+					}
+				}
+			}
+			// now the ones that should be orderer are ordered
+			// now add the rest to the end
+
+			for (UnitNotice n : fam.persLong.getNotices()) {
+				if (sb.toString().indexOf(n.getTag()) < 0) {
+					nns.add(n);
+				}
+			}
+			fam.persLong.setNotices(nns.toArray(new UnitNotice[0]));
+			pu.updateNoticesOrder(fam.persLong);
 		}
 
 		if (families.relations == null)
@@ -170,68 +222,95 @@ public class Upload {
 
 		sql = "insert into relation (rid,pid,surety,tag,relationrow) values (?,?,80,?,?) ";
 
+		String relaQuery = "select 1 from relation a inner join relation b on a.rid=b.rid "
+				+ "where a.pid=? and a.tag=? and b.pid=? and b.tag=?  ";
+
+		PreparedStatement relaSt = con.prepareStatement(relaQuery);
 		pstm = con.prepareStatement(sql);
 		int rid;
 		for (int i = 0; i < families.relations.length; i++) {
 			Relation rel = families.relations[i];
 
-			rid = nextSeq(con, "relationseq");
-
-			pstm.setInt(1, rid);
-			pstm.setInt(2, rel.getPid());
-			if ("FATH".equals(rel.getTag()) || "MOTH".equals(rel.getTag())) {
-				pstm.setString(3, rel.getTag());
-			} else if ("HUSB".equals(rel.getTag())
-					|| "WIFE".equals(rel.getTag())) {
-				pstm.setString(3, rel.getTag());
+			if (rel.getTag().equals("WIFE")) {
+				relaSt.setInt(1, rel.getPid());
+				relaSt.setString(2, "WIFE");
+				relaSt.setInt(3, rel.getRelative());
+				relaSt.setString(4, "HUSB");
+			} else {
+				if (rel.getTag().equals("FATH")) {
+					relaSt.setString(2, "FATH");
+				} else {
+					relaSt.setString(2, "MOTH");
+				}
+				relaSt.setInt(1, rel.getPid());
+				relaSt.setInt(3, rel.getRelative());
+				relaSt.setString(4, "CHIL");
 			}
-			pstm.setInt(4, 1);
-			int luk = pstm.executeUpdate();
-			if (luk != 1) {
-				logger.warning("Update of Relation " + rel.getPid()
-						+ " result " + luk + " rows");
+			ResultSet rrs = relaSt.executeQuery();
+			boolean foundrela = false;
+			if (rrs.next()) {
+				foundrela = true;
 			}
+			rrs.close();
 
-			pstm.setInt(1, rid);
-			pstm.setInt(2, rel.getRelative());
-			if ("FATH".equals(rel.getTag()) || "MOTH".equals(rel.getTag())) {
-				pstm.setString(3, "CHIL");
-			} else if ("HUSB".equals(rel.getTag())) {
-				pstm.setString(3, "WIFE");
-			} else if ("WIFE".equals(rel.getTag())) {
-				pstm.setString(3, "HUSB");
-			}
-			pstm.setInt(4, 1);
-			luk = pstm.executeUpdate();
-			if (luk != 1) {
-				logger.warning("Update of Relation " + rel.getRelative()
-						+ " result " + luk + " rows");
-			}
+			if (!foundrela) {
+				rid = nextSeq(con, "relationseq");
 
-			int rnid = nextSeq(con, "relationnoticeseq");
+				pstm.setInt(1, rid);
+				pstm.setInt(2, rel.getPid());
+				if ("FATH".equals(rel.getTag()) || "MOTH".equals(rel.getTag())) {
+					pstm.setString(3, rel.getTag());
+				} else if ("HUSB".equals(rel.getTag())
+						|| "WIFE".equals(rel.getTag())) {
+					pstm.setString(3, rel.getTag());
+				}
+				pstm.setInt(4, 1);
+				int luk = pstm.executeUpdate();
+				if (luk != 1) {
+					logger.warning("Update of Relation " + rel.getPid()
+							+ " result " + luk + " rows");
+				}
 
-			RelationNotice[] noti = rel.getNotices();
-			if (noti != null) {
-				for (int j = 0; j < noti.length; j++) {
-					pstmn.setInt(1, rnid);
-					pstmn.setInt(2, rid);
-					pstmn.setInt(3, j + 1);
-					pstmn.setString(4, noti[j].getTag());
-					pstmn.setString(5, noti[j].getType());
-					pstmn.setString(6, noti[j].getDescription());
-					pstmn.setString(7, noti[j].getFromDate());
-					pstmn.setString(8, noti[j].getPlace());
-					pstmn.setString(9, noti[j].getNoteText());
-					pstmn.setString(10, noti[j].getSource());
-					luk = pstmn.executeUpdate();
-					if (luk != 1) {
-						logger.warning("Insert to RelationNotice "
-								+ rel.getRelative() + " result " + luk
-								+ " rows");
+				pstm.setInt(1, rid);
+				pstm.setInt(2, rel.getRelative());
+				if ("FATH".equals(rel.getTag()) || "MOTH".equals(rel.getTag())) {
+					pstm.setString(3, "CHIL");
+				} else if ("HUSB".equals(rel.getTag())) {
+					pstm.setString(3, "WIFE");
+				} else if ("WIFE".equals(rel.getTag())) {
+					pstm.setString(3, "HUSB");
+				}
+				pstm.setInt(4, 1);
+				luk = pstm.executeUpdate();
+				if (luk != 1) {
+					logger.warning("Update of Relation " + rel.getRelative()
+							+ " result " + luk + " rows");
+				}
+
+				int rnid = nextSeq(con, "relationnoticeseq");
+
+				RelationNotice[] noti = rel.getNotices();
+				if (noti != null) {
+					for (int j = 0; j < noti.length; j++) {
+						pstmn.setInt(1, rnid);
+						pstmn.setInt(2, rid);
+						pstmn.setInt(3, j + 1);
+						pstmn.setString(4, noti[j].getTag());
+						pstmn.setString(5, noti[j].getType());
+						pstmn.setString(6, noti[j].getDescription());
+						pstmn.setString(7, noti[j].getFromDate());
+						pstmn.setString(8, noti[j].getPlace());
+						pstmn.setString(9, noti[j].getNoteText());
+						pstmn.setString(10, noti[j].getSource());
+						luk = pstmn.executeUpdate();
+						if (luk != 1) {
+							logger.warning("Insert to RelationNotice "
+									+ rel.getRelative() + " result " + luk
+									+ " rows");
+						}
 					}
 				}
 			}
-
 		}
 
 		return respons;

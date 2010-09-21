@@ -520,7 +520,7 @@ public class PersonShortData implements Serializable, Transferable,
 	 *             the suku exception
 	 */
 	public PersonShortData(Connection con, int pid) throws SukuException {
-		helpConstruct(con, pid, false);
+		helpConstruct(con, pid, true);
 	}
 
 	/**
@@ -561,7 +561,8 @@ public class PersonShortData implements Serializable, Transferable,
 			sql.append("and n.tag in "
 					+ "('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU','UNKN') ");
 		}
-		sql.append("and n.surety >= 80 where u.pid = ? ");
+		// sql.append("and n.surety >= 80 where u.pid = ? ");
+		sql.append("where u.pid = ? ");
 		sql.append("order by n.noticerow ");
 
 		PreparedStatement pstm;

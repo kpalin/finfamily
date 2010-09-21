@@ -1473,7 +1473,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		int lrivi = 10;
 		typeLbl.setBounds(10, lrivi, 70, 20);
 
-		noticeType.setBounds(lcol, lrivi, 150, 20);
+		noticeType.setBounds(lcol, lrivi, lwidth * 90 / 100, 20);
 		// noteTextLang.setBounds(lcol + lwidth - 150, lrivi, 150, 20);
 		lrivi += 24;
 		descLbl.setBounds(10, lrivi, 70, 20);

@@ -35,6 +35,7 @@ import fi.kaila.suku.util.local.LocalDatabaseUtility;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.RelationShortData;
 import fi.kaila.suku.util.pojo.SukuData;
+import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
  * Serverpään mm tietokantaa käsittelevä.
@@ -257,8 +258,8 @@ public class SukuServerImpl implements SukuServer {
 			rs = pstm.executeQuery();
 			while (rs.next()) {
 				RelationShortData rel = new RelationShortData(pid,
-						rs.getInt(1), rs.getInt(2), rs.getString(3), rs
-								.getInt(5));
+						rs.getInt(1), rs.getInt(2), rs.getString(3),
+						rs.getInt(5));
 				String adop = rs.getString(4);
 				if (adop != null) {
 					rel.setAdopted(adop);
@@ -310,8 +311,8 @@ public class SukuServerImpl implements SukuServer {
 			rs = pstm.executeQuery();
 			while (rs.next()) {
 				RelationShortData rel = new RelationShortData(pid,
-						rs.getInt(1), rs.getInt(2), rs.getString(3), rs
-								.getInt(5));
+						rs.getInt(1), rs.getInt(2), rs.getString(3),
+						rs.getInt(5));
 				String adop = rs.getString(4);
 				if (adop != null) {
 					rel.setAdopted(adop);
@@ -435,8 +436,9 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("get")) {
 			fam = executeCmdGet(map, cmd, fam);
 		} else if (cmd.equals("getsettings")) {
-			fam = getSettings(map.get("index"), map.get("type"), map
-					.get("name"));
+			PersonUtil pu = new PersonUtil(con);
+			fam = pu.getSettings(map.get("index"), map.get("type"),
+					map.get("name"));
 		} else if (cmd.equals("group")) {
 			fam = executeCmdGroup(request, map);
 		} else if (cmd.equals("import")) {
@@ -543,8 +545,8 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData executeCmdUpdatesettings(SukuData request,
 			HashMap<String, String> map) {
 
-		return updateSettings(request, map.get("index"), map.get("type"), map
-				.get("name"));
+		return updateSettings(request, map.get("index"), map.get("type"),
+				map.get("name"));
 	}
 
 	private SukuData executeCmdVirtual(HashMap<String, String> map, SukuData fam) {
@@ -614,13 +616,13 @@ public class SukuServerImpl implements SukuServer {
 				int viewId = Integer.parseInt(viewno);
 				if (key.equals("pidarray")) {
 					// add pids to view
-					fam = vv.addViewUnits(viewId, request.pidArray, (empty
-							.equalsIgnoreCase("true")));
+					fam = vv.addViewUnits(viewId, request.pidArray,
+							(empty.equalsIgnoreCase("true")));
 
 				} else if (key.toLowerCase().startsWith("desc")) {
 					fam = vv.addViewDesc(viewId, Integer.parseInt(pidg), gen,
-							(key.toUpperCase().equals("DESC_SPOUSES")), (empty
-									.equalsIgnoreCase("true")));
+							(key.toUpperCase().equals("DESC_SPOUSES")),
+							(empty.equalsIgnoreCase("true")));
 				} else if (key.toLowerCase().equals("anc")) {
 					fam = vv.addViewAnc(viewId, Integer.parseInt(pidg), gen,
 							(empty.equalsIgnoreCase("true")));
@@ -666,6 +668,23 @@ public class SukuServerImpl implements SukuServer {
 			if (fam.resultPid > 0) {
 				PersonShortData psp = new PersonShortData(this.con,
 						fam.resultPid);
+				if (request != null && request.persLong != null
+						&& request.persLong.getNotices() != null) {
+					boolean addname = false;
+					for (int i = 0; i < request.persLong.getNotices().length; i++) {
+						UnitNotice n = request.persLong.getNotices()[i];
+						if (n.getTag().equals("NAME")) {
+							if (addname) {
+								psp.addName(n.getSurname(), n.getPatronym(),
+										n.getPrefix(), n.getSurname(),
+										n.getPostfix());
+							} else {
+								addname = true;
+							}
+						}
+					}
+				}
+
 				fam.pers = new PersonShortData[1];
 				fam.pers[0] = psp;
 			}
@@ -884,8 +903,8 @@ public class SukuServerImpl implements SukuServer {
 					fam = grp.addSelectedGroups(request.pidArray, group);
 				} else if (key.startsWith("DESC") && pidg != null) {
 					int pidb = Integer.parseInt(pidg);
-					fam = grp.addDescendantsToGroup(pidb, group, gen, (!key
-							.equals("DESC")));
+					fam = grp.addDescendantsToGroup(pidb, group, gen,
+							(!key.equals("DESC")));
 				} else if (key.equals("ANC") && pidg != null) {
 					int pidb = Integer.parseInt(pidg);
 					fam = grp.addAncestorsToGroup(pidb, group, gen);
@@ -980,8 +999,8 @@ public class SukuServerImpl implements SukuServer {
 		if (type == null || type.equals("import")) {
 			fam = importExcelData(path, page);
 		} else if (type.equals("export")) {
-			fam = exportExcelData(path, page, lang, (all != null && all
-					.equals("true")) ? true : false);
+			fam = exportExcelData(path, page, lang,
+					(all != null && all.equals("true")) ? true : false);
 		} else {
 			fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
 		}
@@ -1009,8 +1028,8 @@ public class SukuServerImpl implements SukuServer {
 					map.get("pid"));
 		} else if ("anc".equals(map.get("type"))) {
 
-			fam = createAncTables(map.get("order"), map.get("generations"), map
-					.get("family"), map.get("pid"));
+			fam = createAncTables(map.get("order"), map.get("generations"),
+					map.get("family"), map.get("pid"));
 
 		} else {
 			fam.resu = Resurses.getString("GETSUKU_BAD_REPORT_TYPE");
@@ -1856,98 +1875,6 @@ public class SukuServerImpl implements SukuServer {
 		return dat;
 	}
 
-	private SukuData getSettings(String index, String type, String name) {
-		SukuData res = new SukuData();
-		try {
-			if ("query".equals(type)) {
-				String sql = "select settingname,settingvalue from SukuSettings "
-						+ "where settingtype = '"
-						+ type
-						+ "' order by settingindex ";
-				Vector<String> v = new Vector<String>();
-
-				Statement stm = con.createStatement();
-				ResultSet rs = stm.executeQuery(sql);
-				while (rs.next()) {
-					v.add(rs.getString(1) + "=" + rs.getString(2));
-				}
-				rs.close();
-				stm.close();
-
-				res.generalArray = v.toArray(new String[0]);
-
-			} else if (name == null && index != null) {
-				int settingIndex = 0;
-				try {
-					settingIndex = Integer.parseInt(index);
-				} catch (NumberFormatException ne) {
-					// NumberFormatException ignored
-				}
-				String sql = "select settingindex,settingvalue "
-						+ "from sukusettings where settingtype = ? and settingname = 'name' "
-						+ "order by settingindex ";
-				String[] vv = new String[12];
-
-				PreparedStatement pst = con.prepareStatement(sql);
-				pst.setString(1, type);
-				ResultSet rs = pst.executeQuery();
-				while (rs.next()) {
-					int idx = rs.getInt(1);
-					String nam = rs.getString(2);
-
-					if (idx >= 0 && idx < 12) {
-						vv[idx] = nam;
-					}
-
-				}
-				rs.close();
-				pst.close();
-				res.generalArray = vv;
-				String vx[] = new String[2];
-				res.vvTypes = new Vector<String[]>();
-
-				sql = "select settingname,settingvalue from SukuSettings "
-						+ "where settingtype = ? and settingindex = ? ";
-				pst = con.prepareStatement(sql);
-				pst.setString(1, type);
-				pst.setInt(2, settingIndex);
-				rs = pst.executeQuery();
-				while (rs.next()) {
-					vx = new String[2];
-					vx[0] = rs.getString(1);
-					vx[1] = rs.getString(2);
-					res.vvTypes.add(vx);
-				}
-				rs.close();
-				pst.close();
-
-			} else {
-
-				String sql = "select settingvalue "
-						+ "from sukusettings where settingtype = '" + type
-						+ "' " + "and settingname = '" + name + "' "
-						+ "order by settingindex ";
-
-				Statement stm = con.createStatement();
-				ResultSet rs = stm.executeQuery(sql);
-				Vector<String> setv = new Vector<String>();
-				while (rs.next()) {
-
-					String val = rs.getString(1);
-					setv.add(val);
-
-				}
-				rs.close();
-				stm.close();
-				res.generalArray = setv.toArray(new String[0]);
-			}
-		} catch (SQLException e) {
-			res.resu = e.getMessage();
-			e.printStackTrace();
-		}
-		return res;
-	}
-
 	private SukuData getTypes(String langu) {
 		SukuData res = new SukuData();
 		String vx[];
@@ -2116,18 +2043,13 @@ public class SukuServerImpl implements SukuServer {
 		return resdat;
 	}
 
-	// private SukuData getReportLanguages() {
-	// SukuData resdat = new SukuData();
-	//
-	// try {
-	// resdat.generalArray = Upload.getReportLanguages(con);
-	// } catch (SQLException e) {
-	// resdat.resu = e.getMessage();
-	// }
-	//
-	// return resdat;
-	// }
-
+	/**
+	 * Upload hiski family to database
+	 * 
+	 * @param family
+	 * @return
+	 * @throws SukuException
+	 */
 	private SukuData uploadFamily(SukuData family) throws SukuException {
 
 		SukuData resdat = new SukuData();

@@ -1967,6 +1967,7 @@ public abstract class CommonReport {
 		boolean addDot = false;
 		String tag;
 		String occuTypes = "|OCCU|EDUC|TITL|";
+		int minSurety = caller.showMinSurety();
 		if (notices.length > 0 && caller.showOnSeparateLines()) {
 
 			repoWriter.addText(bt);
@@ -1979,8 +1980,9 @@ public abstract class CommonReport {
 			addDot = false;
 			tag = nn.getTag();
 			if (!tag.equals("NAME")) {
-				if (nn.getPrivacy() == null
-						|| nn.getPrivacy().equals(Resurses.PRIVACY_TEXT)) {
+				if ((nn.getPrivacy() == null || nn.getPrivacy().equals(
+						Resurses.PRIVACY_TEXT))
+						&& nn.getSurety() >= minSurety) {
 					if ((typesTable.isType(tag, colType))) {
 
 						if (typesTable.isType(tag, 1)) {
@@ -2547,7 +2549,7 @@ public abstract class CommonReport {
 		int nameCount = 0;
 		String prevGivenname = "";
 		UnitNotice[] notices = persLong.getNotices();
-
+		int minSurety = caller.showMinSurety();
 		boolean isDead = false;
 		for (int j = 0; j < notices.length; j++) {
 			UnitNotice nn = notices[j];
@@ -2576,8 +2578,9 @@ public abstract class CommonReport {
 		for (int j = 0; j < notices.length; j++) {
 			UnitNotice nn = notices[j];
 			if (nn.getTag().equals("NAME")) {
-				if (nn.getPrivacy() == null
-						|| nn.getPrivacy().equals(Resurses.PRIVACY_TEXT)) {
+				if ((nn.getPrivacy() == null || nn.getPrivacy().equals(
+						Resurses.PRIVACY_TEXT))
+						&& nn.getSurety() >= minSurety) {
 					if ((typesTable.isType("NAME", colType) || nameCount == 0)) {
 
 						if (nameCount > 0 && nn.getNoticeType() == null) {

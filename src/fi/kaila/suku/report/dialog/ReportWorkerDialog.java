@@ -66,6 +66,7 @@ import fi.kaila.suku.report.ReportInterface;
 import fi.kaila.suku.report.XmlReport;
 import fi.kaila.suku.swing.ISuku;
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
@@ -218,6 +219,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private JCheckBox commonNamesBold = null;
 	private JCheckBox commonNamesUnderline = null;
 	private JCheckBox commonWithAddress = null;
+
+	private SukuSuretyField commonSurety;
 
 	private JCheckBox commonIndexNames = null;
 	private JCheckBox commonIndexPlaces = null;
@@ -489,6 +492,15 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * Min surety level to include in the report (where supported)
+	 * 
+	 * @return surety level
+	 */
+	public int showMinSurety() {
+		return commonSurety.getSurety();
+	}
+
+	/**
 	 * Gets the date format.
 	 * 
 	 * @return date format selected
@@ -537,7 +549,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private void initMe() {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension sz = new Dimension(d.width - 200, d.height - 150);
-		sz = new Dimension(800, 600);
+		sz = new Dimension(1000, 600);
 		int footery = sz.height - 125;
 		setBounds((d.width - sz.width) / 2, (d.height - sz.height) / 2,
 				sz.width, sz.height);
@@ -645,15 +657,23 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		commonWithAddress.setBounds(x4, y1 + 220, 160, 20);
 		add(commonWithAddress);
 
+		lb = new JLabel(Resurses.getString("REPORT.SURETY"));
+		lb.setBounds(x4, y1 + 242, 160, 20);
+		add(lb);
+
+		commonSurety = new SukuSuretyField();
+		commonSurety.setBounds(x4, y1 + 262, 160, 20);
+		add(commonSurety);
+
 		spouseData = new ButtonGroup();
 
-		int rtypy = y1 + 250;
+		int rtypy = y1;// + 250;
 		pane = new JPanel();
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.DESC.SPOUSE")));
 		pane.setLayout(new GridLayout(0, 1));
 
-		pane.setBounds(x4 - 5, rtypy, 160, 120);
+		pane.setBounds(x4 + 200, rtypy, 160, 120);
 
 		JRadioButton radio = new JRadioButton(
 				Resurses.getString("REPORT.DESC.SPOUSE.NONE"));
@@ -1004,6 +1024,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			boolean boldNames = false;
 			boolean underlineNames = false;
 			boolean withAddress = false;
+			int surety = 100;
 			boolean indexNames = false;
 			boolean indexPlaces = false;
 			boolean indexYears = false;
@@ -1035,6 +1056,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					underlineNames = true;
 				} else if (vx[0].equals("address")) {
 					withAddress = true;
+
 				} else if (vx[0].equals("farm")) {
 					includeFarm = true;
 				} else if (vx[0].equals("nameIndex")) {
@@ -1055,7 +1077,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						ii = 0;
 					}
 					reportTypePane.setSelectedIndex(ii);
+				} else if (vx[0].equals("surety")) {
+					surety = 100;
+					try {
+						surety = Integer.parseInt(vx[1]);
+					} catch (NumberFormatException ne) {
 
+					}
 				} else if (vx[0].equals("format")) {
 					int formIdx;
 					try {
@@ -1123,6 +1151,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			commonNamesBold.setSelected(boldNames);
 			commonNamesUnderline.setSelected(underlineNames);
 			commonWithAddress.setSelected(withAddress);
+			commonSurety.setSurety(surety);
 			commonIndexNames.setSelected(indexNames);
 			commonIndexPlaces.setSelected(indexPlaces);
 			commonIndexYears.setSelected(indexYears);
@@ -1300,6 +1329,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		if (commonIndexYears.getSelectedObjects() != null) {
 			v.add("yearsIndex=true");
 		}
+		v.add("surety=" + commonSurety.getSurety());
+
 		v.add("reportIndex=" + reportTypePane.getSelectedIndex());
 		if (pers != null) {
 			v.add("descgen=" + descendantPanel.getGenerations());

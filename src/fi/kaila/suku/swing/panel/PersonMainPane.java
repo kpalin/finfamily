@@ -101,7 +101,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	private JLabel refnLbl;
 	private JLabel createdLbl;
 	private JLabel modifiedLbl;
-
+	/** set true for debug output */
 	private final boolean listPanels = false;
 	private int personPid = 0;
 
@@ -889,7 +889,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					// JOptionPane.showMessageDialog(this, ee.getMessage());
 					// return;
 					// }
-
+					listNoticePanels();
 					updateNameNotices();
 					updateRestNotices();
 
@@ -1510,7 +1510,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 						lastCheckedIndex++;
 						UnitNotice t = unotices.remove(i);
 						unotices.insertElementAt(t, lastCheckedIndex);
-						if (!tag.equals(t.getTag())) {
+						if (tag.equals(t.getTag())) {
 							hasSorted = true;
 						}
 					} else {
