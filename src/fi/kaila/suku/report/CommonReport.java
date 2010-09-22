@@ -224,40 +224,71 @@ public abstract class CommonReport {
 			for (ImageNotice inoti : imgNotices) {
 
 				UnitNotice nn = inoti.nn;
-				ImageText imagetx = new ImageText();
-				BufferedImage img = nn.getMediaImage();
 
-				if (img != null) {
-					double imh = img.getHeight();
-					double imw = img.getWidth();
-					double newh = 300;
-					double neww = 300;
+				if (caller.showImages()) {
+					ImageText imagetx = new ImageText();
+					BufferedImage img = nn.getMediaImage();
 
-					if (imh <= newh) {
-						if (imw <= neww) {
-							newh = imh;
-							neww = imw;
+					if (img != null) {
+						double imh = img.getHeight();
+						double imw = img.getWidth();
+						double newh = 300;
+						double neww = 300;
 
+						if (imh <= newh) {
+							if (imw <= neww) {
+								newh = imh;
+								neww = imw;
+
+							} else {
+								newh = imh * (neww / imw);
+								neww = imw;
+							}
 						} else {
-							newh = imh * (neww / imw);
-							neww = imw;
+							neww = imw * (newh / imh);
 						}
-					} else {
-						neww = imw * (newh / imh);
+
+						Image imgs = img.getScaledInstance((int) neww,
+								(int) newh, Image.SCALE_DEFAULT);
+
+						imagetx.setImage(imgs, nn.getMediaData(),
+								img.getWidth(), img.getHeight(),
+								nn.getMediaFilename(), nn.getMediaTitle(),
+								nn.getTag());
+						imagetx.addText("");
 					}
 
-					Image imgs = img.getScaledInstance((int) neww, (int) newh,
-							Image.SCALE_DEFAULT);
+					imagetx.addText(Resurses.getReportString("INDEX_IMAGE"));
+					imagetx.addText(" " + inoti.imgNumber + " ");
+					imagetx.addText(Resurses.getReportString("TABLE"));
+					imagetx.addText(" " + inoti.tabNo);
+					imagetx.addText(". ");
+					if (nn.getMediaTitle() != null) {
+						imagetx.addText(nn.getMediaTitle());
+						imagetx.addText(". ");
+					}
 
-					imagetx.setImage(imgs, nn.getMediaData(), img.getWidth(),
-							img.getHeight(), nn.getMediaFilename(),
-							nn.getMediaTitle(), nn.getTag());
-					imagetx.addText("");
-				}
-				if (nn.getMediaTitle() != null) {
-					imagetx.addText(nn.getMediaTitle());
-				}
+					repoWriter.addText(imagetx);
+					if (nn.getNoteText() != null) {
+						printText(bt, nn.getNoteText());
+					}
 
+				} else {
+					bt.addText(Resurses.getReportString("INDEX_IMAGE"));
+					bt.addText(" " + inoti.imgNumber + " ");
+					bt.addText(Resurses.getReportString("TABLE"));
+					bt.addText(" " + inoti.tabNo);
+					bt.addText(". ");
+					if (nn.getMediaTitle() != null) {
+						bt.addText(nn.getMediaTitle());
+						bt.addText(". ");
+					}
+
+					repoWriter.addText(bt);
+					if (nn.getNoteText() != null) {
+						printText(bt, nn.getNoteText());
+					}
+				}
 				// if (img != null) {
 				//
 				// imagetx.setImage(img, nn.getMediaData(), img.getWidth(),
@@ -265,22 +296,6 @@ public abstract class CommonReport {
 				// .getMediaTitle(), nn.getTag());
 				// imagetx.addText("");
 				// }
-
-				imagetx.addText(Resurses.getReportString("INDEX_IMAGE"));
-				imagetx.addText(" " + inoti.imgNumber + " ");
-				imagetx.addText(Resurses.getReportString("TABLE"));
-				imagetx.addText(" " + inoti.tabNo);
-				imagetx.addText(". ");
-				if (nn.getMediaTitle() != null) {
-					imagetx.addText(nn.getMediaTitle());
-					imagetx.addText(". ");
-				}
-
-				repoWriter.addText(bt);
-				repoWriter.addText(imagetx);
-				if (nn.getNoteText() != null) {
-					printText(bt, nn.getNoteText());
-				}
 
 				repoWriter.addText(bt);
 
@@ -2135,8 +2150,7 @@ public abstract class CommonReport {
 							}
 							bt.addText(nn.getCountry());
 						}
-						if (tag.startsWith("PHOT") && caller.showImages()
-								&& caller.isSeparateImages()) {
+						if (tag.startsWith("PHOT") && caller.isSeparateImages()) {
 							if (addSpace) {
 								addSpace = true;
 							}
@@ -2167,47 +2181,49 @@ public abstract class CommonReport {
 							//
 							// } else {
 
-							ImageText imagetx = new ImageText();
-							BufferedImage img = nn.getMediaImage();
-							if (img != null) {
-								double imh = img.getHeight();
-								double imw = img.getWidth();
-								double newh = 300;
-								double neww = 300;
+							if (caller.showImages()) {
+								ImageText imagetx = new ImageText();
+								BufferedImage img = nn.getMediaImage();
+								if (img != null) {
+									double imh = img.getHeight();
+									double imw = img.getWidth();
+									double newh = 300;
+									double neww = 300;
 
-								// Dimension xx = caller.getImageMaxSize();
+									// Dimension xx = caller.getImageMaxSize();
 
-								if (imh <= newh) {
-									if (imw <= neww) {
-										newh = imh;
-										neww = imw;
+									if (imh <= newh) {
+										if (imw <= neww) {
+											newh = imh;
+											neww = imw;
 
+										} else {
+											newh = imh * (neww / imw);
+											neww = imw;
+										}
 									} else {
-										newh = imh * (neww / imw);
-										neww = imw;
+										neww = imw * (newh / imh);
 									}
-								} else {
-									neww = imw * (newh / imh);
+
+									Image imgs = img.getScaledInstance(
+											(int) neww, (int) newh,
+											Image.SCALE_DEFAULT);
+
+									imagetx.setImage(imgs, nn.getMediaData(),
+											img.getWidth(), img.getHeight(),
+											nn.getMediaFilename(),
+											nn.getMediaTitle(), nn.getTag());
+									imagetx.addText("");
 								}
+								if (nn.getMediaTitle() != null) {
+									imagetx.addText(nn.getMediaTitle());
+								}
+								if (imagetx.getCount() > 0) {
+									repoWriter.addText(bt);
+									repoWriter.addText(imagetx);
 
-								Image imgs = img.getScaledInstance((int) neww,
-										(int) newh, Image.SCALE_DEFAULT);
-
-								imagetx.setImage(imgs, nn.getMediaData(),
-										img.getWidth(), img.getHeight(),
-										nn.getMediaFilename(),
-										nn.getMediaTitle(), nn.getTag());
-								imagetx.addText("");
+								}
 							}
-							if (nn.getMediaTitle() != null) {
-								imagetx.addText(nn.getMediaTitle());
-							}
-							if (imagetx.getCount() > 0) {
-								repoWriter.addText(bt);
-								repoWriter.addText(imagetx);
-
-							}
-
 							// }
 
 							if (nn.getNoteText() != null) {
@@ -2320,17 +2336,29 @@ public abstract class CommonReport {
 										bt.addText(", ");
 										forceOccuUpperCase = false;
 									} else {
-										bt.addText(". ");
+										if (!bt.endsWithText(".")) {
+
+											bt.addText(". ");
+										} else {
+											bt.addText(" ");
+										}
 										forceOccuUpperCase = true;
 									}
 								} else {
-									bt.addText(". ");
+									if (!bt.endsWithText(".")) {
+										bt.addText(". ");
+									} else {
+										bt.addText(" ");
+									}
 									forceOccuUpperCase = true;
 								}
 
 							} else {
-
-								bt.addText(". ");
+								if (!bt.endsWithText(".")) {
+									bt.addText(". ");
+								} else {
+									bt.addText(" ");
+								}
 								forceOccuUpperCase = true;
 							}
 							if (caller.showOnSeparateLines()) {

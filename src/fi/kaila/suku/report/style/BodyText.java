@@ -246,6 +246,19 @@ public class BodyText {
 		return t.isItalic;
 	}
 
+	public boolean endsWithText(String suffix) {
+
+		StringBuilder sb = new StringBuilder();
+
+		for (Text t : txt) {
+			sb.append(t.text);
+		}
+		if (sb.toString().trim().endsWith(suffix)) {
+			return true;
+		}
+		return false;
+	}
+
 	private class Text {
 		String text;
 		boolean isBold = false;
