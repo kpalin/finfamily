@@ -1458,7 +1458,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				return;
 			}
 			if (cmd.equals(Resurses.WIKI)) {
-				String updateSite = "http://www.sukuohjelmisto.fi";
+				String updateSite = Resurses.getString("WIKI_URL");
 				Utils.openExternalFile(updateSite);
 				return;
 			}

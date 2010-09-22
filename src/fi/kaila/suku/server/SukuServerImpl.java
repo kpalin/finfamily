@@ -1585,6 +1585,7 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData getVirtualPerson(int pid) {
 		SukuData resp = new SukuData();
 		resp.pidArray = new int[3];
+		resp.pidArray[0] = resp.pidArray[1] = resp.pidArray[2] = 0;
 
 		String sql = "select tag,count(*) from relation where pid = ? "
 				+ " group by tag";
@@ -1599,13 +1600,13 @@ public class SukuServerImpl implements SukuServer {
 				String rtag = prs.getString(1);
 
 				if (rtag.equals("HUSB") || rtag.equals("WIFE")) {
-					resp.pidArray[1] = prs.getInt(2);
+					resp.pidArray[1] += prs.getInt(2);
 
 				} else if (rtag.equals("CHIL")) {
-					resp.pidArray[0] = prs.getInt(2);
+					resp.pidArray[0] += prs.getInt(2);
 
 				} else if (rtag.equals("MOTH") || rtag.equals("FATH")) {
-					resp.pidArray[2] = prs.getInt(2);
+					resp.pidArray[2] += prs.getInt(2);
 
 				}
 
