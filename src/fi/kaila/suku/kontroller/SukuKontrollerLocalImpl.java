@@ -11,10 +11,12 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import fi.kaila.suku.server.SukuServer;
 import fi.kaila.suku.server.SukuServerImpl;
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.SukuData;
 
@@ -273,6 +275,16 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		String filename = f.getAbsolutePath();
 		if (filename == null)
 			return false;
+		if (f.exists()) {
+			int answer = JOptionPane.showConfirmDialog(host,
+					Resurses.getString("FILE_EXISTS") + " [" + filename
+							+ "] \n" + Resurses.getString("FILE_OVERWRITE"),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.YES_NO_OPTION);
+			if (answer != JOptionPane.YES_OPTION) {
+				return false;
+			}
+		}
 		if (filters.length == 1) {
 			if (!filename.toLowerCase().endsWith(filters[0].toLowerCase())) {
 				filename += "." + filters[0];
