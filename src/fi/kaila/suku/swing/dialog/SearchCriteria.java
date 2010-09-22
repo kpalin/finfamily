@@ -591,6 +591,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		try {
 			SukuTypesModel typesModel = Utils.typeInstance();
+			typesModel.initTypes();
 			noticeList.removeAllItems();
 			// String[] names = new String[typesModel.getTypesTagsCount()];
 			noticeList.addItem("");

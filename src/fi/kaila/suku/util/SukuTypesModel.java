@@ -20,14 +20,22 @@ public class SukuTypesModel extends AbstractTableModel {
 	private String[] typesTags = null;
 	private String[] typesValues = null;
 	private Object[][] typesData = null;
-	private HashMap<String, Integer> typeTexts = new HashMap<String, Integer>();
-	private HashMap<String, String> typeRule = new HashMap<String, String>();
+	private final HashMap<String, Integer> typeTexts = new HashMap<String, Integer>();
+	private final HashMap<String, String> typeRule = new HashMap<String, String>();
 
 	/**
 	 * Instantiates a new suku types model.
 	 */
 	SukuTypesModel() {
 
+		initTypes();
+
+	}
+
+	/**
+	 * init the types data
+	 */
+	public void initTypes() {
 		try {
 			SukuData reposet = Suku.kontroller.getSukuData("cmd=get",
 					"type=types", "lang=" + Resurses.getLanguage());
@@ -78,12 +86,11 @@ public class SukuTypesModel extends AbstractTableModel {
 
 			e.printStackTrace();
 		}
-
 	}
 
 	private static final long serialVersionUID = 1L;
 
-	private String[] columnNames = { "Tietojakso", "Nimi", "Päähenkilö",
+	private final String[] columnNames = { "Tietojakso", "Nimi", "Päähenkilö",
 			"Lapsi", "Muu", "Paikkahakemisto", "Teksti" };
 
 	/*
@@ -109,6 +116,7 @@ public class SukuTypesModel extends AbstractTableModel {
 	 * 
 	 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
 	 */
+	@Override
 	public String getColumnName(int col) {
 		return columnNames[col];
 	}
@@ -132,6 +140,7 @@ public class SukuTypesModel extends AbstractTableModel {
 	 * 
 	 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
 	 */
+	@Override
 	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
@@ -144,6 +153,7 @@ public class SukuTypesModel extends AbstractTableModel {
 	 * 
 	 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
 	 */
+	@Override
 	public boolean isCellEditable(int row, int col) {
 		// Note that the data/cell address is constant,
 		// no matter where the cell appears on screen.
@@ -163,6 +173,7 @@ public class SukuTypesModel extends AbstractTableModel {
 	 * @see javax.swing.table.AbstractTableModel#setValueAt(java.lang.Object,
 	 * int, int)
 	 */
+	@Override
 	public void setValueAt(Object value, int row, int col) {
 
 		typesData[row][col] = value;

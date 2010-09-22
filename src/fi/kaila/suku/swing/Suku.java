@@ -1275,6 +1275,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.table.clearSelection();
 			// this.personView.reset();
 			this.tableMap.clear();
+			this.table.updateUI();
+			this.scrollPane.updateUI();
 			disconnectDb();
 		}
 		this.isConnected = 0;

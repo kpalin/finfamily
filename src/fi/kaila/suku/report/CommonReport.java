@@ -2016,12 +2016,13 @@ public abstract class CommonReport {
 								if (addSpace)
 									bt.addText(" ");
 								String desc = nn.getDescription();
-								if (occuTypes.indexOf(nn.getTag()) > 0
-										&& forceOccuUpperCase) {
-									if (desc.length() > 1) {
-										desc = desc.substring(0, 1)
-												.toUpperCase()
-												+ desc.substring(1);
+								if (occuTypes.indexOf(nn.getTag()) > 0) {
+									if (forceOccuUpperCase) {
+										if (desc.length() > 1) {
+											desc = desc.substring(0, 1)
+													.toUpperCase()
+													+ desc.substring(1);
+										}
 									}
 								}
 								bt.addText(desc);
@@ -2320,17 +2321,17 @@ public abstract class CommonReport {
 										forceOccuUpperCase = false;
 									} else {
 										bt.addText(". ");
-										forceOccuUpperCase = false;
+										forceOccuUpperCase = true;
 									}
 								} else {
 									bt.addText(". ");
-									forceOccuUpperCase = false;
+									forceOccuUpperCase = true;
 								}
 
 							} else {
 
 								bt.addText(". ");
-								forceOccuUpperCase = false;
+								forceOccuUpperCase = true;
 							}
 							if (caller.showOnSeparateLines()) {
 
