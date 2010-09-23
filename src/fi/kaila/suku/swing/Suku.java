@@ -1567,6 +1567,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			} else if (cmd.equals("SCHEMA_DROP")) {
 				SukuData scm = kontroller.getSukuData("cmd=schema", "type=get");
+				if (scm.generalArray[0].equals("public")) {
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("SCHEMA_PUBLIC_NOT_DROPPED"),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
 				SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
 				if (resp.resuCount > 0) {
 					int answer = JOptionPane.showConfirmDialog(
