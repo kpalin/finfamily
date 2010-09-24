@@ -173,8 +173,8 @@ public class ImportGedcomUtil {
 							baseFolder = entryName.substring(0, li + 1);
 						}
 						if (this.runner.setRunnerValue("+" + entryName)) {
-							throw new SukuException(Resurses
-									.getString("GEDCOM_CANCELLED"));
+							throw new SukuException(
+									Resurses.getString("GEDCOM_CANCELLED"));
 						}
 						break;
 					} else {
@@ -294,8 +294,8 @@ public class ImportGedcomUtil {
 											+ record.toString(false));
 									if (this.runner.setRunnerValue(sb
 											.toString())) {
-										throw new SukuException(Resurses
-												.getString("GEDCOM_CANCELLED"));
+										throw new SukuException(
+												Resurses.getString("GEDCOM_CANCELLED"));
 									}
 
 								}
@@ -392,8 +392,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(Resurses
-							.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(
+							Resurses.getString("GEDCOM_CANCELLED"));
 				}
 				indiIndex++;
 			}
@@ -416,8 +416,8 @@ public class ImportGedcomUtil {
 				int intprose = (int) prose;
 				sb.append("" + intprose + ";" + rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(Resurses
-							.getString("GEDCOM_CANCELLED"));
+					throw new SukuException(
+							Resurses.getString("GEDCOM_CANCELLED"));
 				}
 				famIndex++;
 			}
@@ -805,7 +805,8 @@ public class ImportGedcomUtil {
 								if (rn.getDescription() != null) {
 									rn.setDescription(Utils.nv(rn
 											.getDescription())
-											+ " " + dparts[3]);
+											+ " "
+											+ dparts[3]);
 								} else {
 									rn.setDescription(dparts[3]);
 								}
@@ -1007,8 +1008,8 @@ public class ImportGedcomUtil {
 		}
 
 		PersonUtil u = new PersonUtil(con);
-		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber, rels
-				.toArray(new Relation[0]));
+		String resu = u.insertGedcomRelations(husbandNumber, wifeNumber,
+				rels.toArray(new Relation[0]));
 		if (resu != null) {
 			unknownLine.add(record.toString() + ":" + resu);
 		}
@@ -1173,7 +1174,9 @@ public class ImportGedcomUtil {
 							}
 						} else if (detail.tag.equals("GIVN")) {
 
-							if (!notice.getGivenname().equals(detail.lineValue)) {
+							if (notice.getGivenname() != null
+									&& !notice.getGivenname().equals(
+											detail.lineValue)) {
 								if (privSource.length() > 0) {
 									privSource.append(";");
 								}
@@ -1181,7 +1184,9 @@ public class ImportGedcomUtil {
 								unknownLine.add(detail.toString());
 							}
 						} else if (detail.tag.equals("SURN")) {
-							if (!notice.getSurname().equals(detail.lineValue)) {
+							if (notice.getSurname() != null
+									&& !notice.getSurname().equals(
+											detail.lineValue)) {
 								if (privSource.length() > 0) {
 									privSource.append(";");
 								}
@@ -1286,20 +1291,17 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("_CROFT")) {
 						notice.setCroft(detail.lineValue);
 					} else if (detail.tag.equals("PHON")) {
-						notice
-								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-										: notice.getPrivateText() + ", Tel:"
-												+ detail.lineValue);
+						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+								: notice.getPrivateText() + ", Tel:"
+										+ detail.lineValue);
 					} else if (detail.tag.equals("WWW")) {
-						notice
-								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-										: notice.getPrivateText() + ", www:"
-												+ detail.lineValue);
+						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+								: notice.getPrivateText() + ", www:"
+										+ detail.lineValue);
 					} else if (detail.tag.equals("FAX")) {
-						notice
-								.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
-										: notice.getPrivateText() + ", Fax:"
-												+ detail.lineValue);
+						notice.setPrivateText(notice.getPrivateText() == null ? detail.lineValue
+								: notice.getPrivateText() + ", Fax:"
+										+ detail.lineValue);
 					} else if (detail.tag.equals("NOTE")) {
 						if (detail.lineValue.startsWith("@")
 								&& detail.lineValue.indexOf('@', 1) > 1) {
