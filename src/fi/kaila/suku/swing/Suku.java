@@ -1322,15 +1322,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (schema == null) {
 				schemas.setVisible(true);
 
-				schema = schemas.getSchema();
-				if (schema == null) {
-					this.isConnected = 1;
-					enableCommands();
-					return;
-				}
 			}
-
-			kontroller.getSukuData("cmd=schema", "type=set", "name=" + schema);
 
 			SukuData dblist = kontroller.getSukuData("cmd=dblista");
 
@@ -1346,6 +1338,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				kontroller.putPref(cdlg, "DBNAMES", sb.toString());
 			}
+			schema = schemas.getSchema();
+			if (schema == null) {
+				this.isConnected = 1;
+				enableCommands();
+				return;
+			}
+
+			kontroller.getSukuData("cmd=schema", "type=set", "name=" + schema);
 
 			// copy report languages here to static
 			Locale reportLocale = new Locale("fi");
@@ -1358,7 +1358,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
 					"type=needle", "name=needle");
-
+			needle.removeAllElements();
 			if (resp.generalArray != null) {
 
 				for (int i = 0; i < resp.generalArray.length; i++) {
@@ -1479,10 +1479,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 									"path=resources/excel/TypesExcel.xls",
 									"page=types");
 
-					//
-					// SukuData rlang = kontroller
-					// .getSukuData("cmd=repolanguages");
-					// repoLangList = rlang.generalArray;
 				}
 
 				JOptionPane.showMessageDialog(this, resu,
@@ -1562,7 +1558,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					logger.log(Level.WARNING,
 							Resurses.getString(Resurses.NEWDB), e1);
 
-					e1.printStackTrace();
 				}
 
 			} else if (cmd.equals("SCHEMA_DROP")) {
@@ -1830,14 +1825,22 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_UP_ACTION)) {
 				if (needle.size() > 0) {
-					String[] subjes = null;
-
-					subjes = new String[needle.size()];
-					for (int i = 0; i < needle.size(); i++) {
+					Vector<String> subvec = new Vector<String>();
+					// String[] subjes = null;
+					HashMap<String, String> submap = new HashMap<String, String>();
+					// subjes = new String[needle.size()];
+					// for (int i = 0; i < needle.size(); i++) {
+					for (int i = needle.size() - 1; i >= 0; i--) {
 						String[] dbl = needle.get(i).split(";");
-						subjes[i] = dbl[1];
+						// subjes[i] = dbl[1];
+						if (submap.put(dbl[1], dbl[1]) == null) {
+							subvec.insertElementAt(dbl[1], 0);
+						} else {
+							needle.remove(i);
+						}
 					}
-
+					submap.clear();
+					String[] subjes = subvec.toArray(new String[0]);
 					Object par = JOptionPane.showInputDialog(personView,
 							Resurses.getString("SELECT_PERSON")
 
@@ -2861,6 +2864,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 		}
+		needle.removeAllElements();
 		isConnected = 0;
 		try {
 

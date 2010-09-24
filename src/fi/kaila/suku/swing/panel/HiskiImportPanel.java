@@ -96,6 +96,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private JLabel eventExtraType;
 	private SukuDateField eventExtraDate;
 
+	private PersonLongData[] hpers = null;
+
 	private JLabel[] pNumero;
 	private String[] pTypeName;
 	private JLabel[] pType;
@@ -357,6 +359,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	}
 
 	private void initHiskiPersons(int luku) {
+		hpers = new PersonLongData[luku];
 		pNumero = new JLabel[luku];
 		pSukuPid = new JLabel[luku];
 		pSukuName = new JLabel[luku];
@@ -502,6 +505,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			fetchFromHiski();
 
 		} else if (cmd.equals(Resurses.HISKI_UPLOAD)) {
+
 			if ("kastetut".equals(bookName)) {
 				uploadKastetutToDb();
 			} else if ("vihityt".equals(bookName)) {
@@ -511,6 +515,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			} else if ("umuutt".equals(bookName) || "smuutt".equals(bookName)) {
 				uploadMuuttaneetToDb();
 			}
+			resetHiskiPids();
 		} else if (cmd.equals(Resurses.HISKI_NORMALIZE)) {
 
 			for (int i = 0; i < pNumero.length; i++) {
@@ -1535,15 +1540,20 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				pType[pidx].setText(theType);
 				boolean showMenu = true;
 				if ("isa".equals(theType)) {
+
 					pSex[pidx].setSelectedIndex(1);
 					pSex[pidx].setEnabled(false);
 				} else if ("aiti".equals(theType)) {
+
 					pSex[pidx].setSelectedIndex(2);
 					pSex[pidx].setEnabled(false);
+
 				} else if ("mies".equals(theType)) {
+
 					pSex[pidx].setSelectedIndex(1);
 					pSex[pidx].setEnabled(false);
 				} else if ("vaimo".equals(theType)) {
+
 					pSex[pidx].setSelectedIndex(2);
 					pSex[pidx].setEnabled(false);
 				} else if ("omainen".equals(theType)) {
@@ -1709,6 +1719,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					}
 				}
 			}
+
 		}
 	}
 
