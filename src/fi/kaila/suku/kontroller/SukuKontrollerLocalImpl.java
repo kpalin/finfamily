@@ -29,15 +29,13 @@ import fi.kaila.suku.util.pojo.SukuData;
  */
 public class SukuKontrollerLocalImpl implements SukuKontroller {
 
-	private static Preferences sr = null;// Preferences.userRoot();
+	private static Preferences sr = null;
 
 	private SukuServer server = null;
 	private static Logger logger = null;
 
 	private File file = null;
 	private Suku host = null;
-
-	// private File outFile = null;
 
 	/**
 	 * Instantiates a new suku kontroller local impl.

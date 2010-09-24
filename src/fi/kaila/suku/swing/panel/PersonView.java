@@ -293,7 +293,9 @@ public class PersonView extends JPanel implements ChangeListener {
 			// JOptionPane.showMessageDialog(this, ee.getMessage());
 			return;
 		}
+
 		displayPersonPane(pid);
+
 	}
 
 	/**

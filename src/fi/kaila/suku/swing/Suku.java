@@ -284,6 +284,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private int activePersonPid = 0;
 	private boolean isWebApp = false;
 
+	private static final int needleSize = 4;
+
 	/**
 	 * FinFamily main program entry point when used as standard Swing
 	 * application.
@@ -806,6 +808,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			@Override
 			public void windowClosing(WindowEvent e) {
 				e.getClass();
+				disconnectDb();
 				personView.askAndClosePerson();
 
 				System.exit(0);
@@ -1830,16 +1833,26 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					HashMap<String, String> submap = new HashMap<String, String>();
 					// subjes = new String[needle.size()];
 					// for (int i = 0; i < needle.size(); i++) {
-					for (int i = needle.size() - 1; i >= 0; i--) {
-						String[] dbl = needle.get(i).split(";");
-						// subjes[i] = dbl[1];
-						if (submap.put(dbl[1], dbl[1]) == null) {
-							subvec.insertElementAt(dbl[1], 0);
+					int i = 0;
+					while (needle.size() > i) {
+						String dbx = needle.get(i);
+						String dbs[] = dbx.split(";");
+
+						if (submap.put(dbx, dbx) == null) {
+							subvec.add(dbs[1]);
+							i++;
 						} else {
 							needle.remove(i);
 						}
+
+						if (subvec.size() > needleSize) {
+							break;
+						}
+
 					}
+
 					submap.clear();
+
 					String[] subjes = subvec.toArray(new String[0]);
 					Object par = JOptionPane.showInputDialog(personView,
 							Resurses.getString("SELECT_PERSON")
@@ -1850,6 +1863,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 					if (par != null) {
 						int subrow = -1;
+
 						for (int j = 0; j < subjes.length; j++) {
 
 							if (par == subjes[j]) {
@@ -1859,8 +1873,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 						}
 						if (subrow >= 0) {
+
 							String[] dbl = needle.get(subrow).split(";");
 							showPerson(Integer.parseInt(dbl[0]));
+
+							needle.insertElementAt(dbl[0] + ";" + dbl[1], 0);
+
 						}
 					}
 				}
@@ -2147,11 +2165,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		needle.insertElementAt(dd, 0);
 
 		for (int i = needle.size() - 1; i > 0; i--) {
-			String[] dbl = needle.get(i).split(";");
-			int dblid = Integer.parseInt(dbl[0]);
-			if (pp.getPid() == dblid || i >= maxNeedle) {
+			if (i > 4) {
 				needle.remove(i);
-
+			} else {
+				String[] dbl = needle.get(i).split(";");
+				int dblid = Integer.parseInt(dbl[0]);
+				if (pp.getPid() == dblid || i >= maxNeedle) {
+					needle.remove(i);
+				}
 			}
 		}
 		tSubjectPButton.setEnabled(true);
@@ -2326,7 +2347,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					Resurses.getString(Resurses.TAB_PERSON) + ":"
 							+ e.getMessage());
 			logger.log(Level.SEVERE, "Failed to create person [" + pid + "]", e);
-			e.printStackTrace();
+
 		}
 	}
 
@@ -2816,22 +2837,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return ss;
 	}
 
-	// public void appendToDbview(PersonShortData p){
-	// PersonShortData ret = appendToLocalview(p);
-	// if (ret != null) {
-	// // for ( int i = 0;i < this.databaseWindowPersons.length;i++) {
-	// // int cpid = this.databaseWindowPersons[i].getPid();
-	// // if (cpid == p.getPid()){
-	// // SukuRow row = new SukuRow(this,this.tableModel,p);
-	// // this.tableModel.setValueAt(row, i, SukuModel.SUKU_ROW);
-	// // }
-	// // }
-	// //
-	// }
-	// this.table.updateUI();
-	// this.scrollPane.updateUI();
-	// }
-
 	private PersonShortData appendToLocalview(PersonShortData p) {
 		int key = p.getPid();
 		PersonShortData ret = this.tableMap.put(key, p);
@@ -2845,6 +2850,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void disconnectDb() {
 
+		if (isConnected == 0)
+			return;
 		SukuData request = new SukuData();
 		request.generalArray = needle.toArray(new String[0]);
 
@@ -2867,10 +2874,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		needle.removeAllElements();
 		isConnected = 0;
 		try {
-
+			this.personView.reset();
 			this.tableModel.resetModel(); // clear contents of table first
 			table.getRowSorter().modelStructureChanged();
-			this.personView.reset();
+
 			kontroller.getSukuData("cmd=logout");
 			this.databaseWindowPersons = null;
 			this.table.updateUI();
