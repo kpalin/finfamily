@@ -98,7 +98,7 @@ public class SukuServerImpl implements SukuServer {
 			String passwd) throws SukuException {
 		this.dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
 				+ userid;
-		logger.fine("Connection: " + this.dbConne + ";schema: " + this.schema);
+		logger.info("Connection: " + this.dbConne + ";schema: " + this.schema);
 		if (passwd != null && !passwd.isEmpty()) {
 
 			this.dbConne += "&password=" + passwd;
@@ -110,9 +110,11 @@ public class SukuServerImpl implements SukuServer {
 			stm.executeUpdate("set search_path to " + this.schema);
 			stm.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Connection: " + this.dbConne
+					+ ";schema: " + this.schema, e);
+
 			if (stm == null) {
-				throw new SukuException("db=" + dbname + " does not exist ");
+				throw new SukuException("db=" + dbname + ": " + e.getMessage());
 			} else {
 				try {
 					stm.executeUpdate("set search_path to public");
