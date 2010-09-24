@@ -20,7 +20,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -496,211 +495,6 @@ public class ImportGedcomUtil {
 	 * 
 	 * 
 	 */
-	private void consumeFams() {
-		// TODO could this still be used or should it be deleted
-		Set<Map.Entry<String, GedcomFams>> entries = gedFams.entrySet();
-		Iterator<Map.Entry<String, GedcomFams>> ee = entries.iterator();
-
-		while (ee.hasNext()) {
-			Map.Entry<String, GedcomFams> entry = ee.next();
-
-			GedcomFams fam = entry.getValue();
-
-			int spouseRow = 0;
-			if (fam.fams.size() > 1) {
-				// System.out.println("DO FAM for " + fam.id);
-
-				for (int i = 0; i < fam.fams.size(); i++) {
-
-					GedcomLine lin = fam.fams.get(i);
-
-					GedcomLine ff = gedFamMap.get(lin.lineValue);
-					if (ff != null) {
-						// System.out.println("FAM " + i + " with " + ff);
-
-						//
-						// now lets get the other spouse from ff
-						//
-						String spouseId = null;
-						for (int j = 0; j < ff.lines.size(); j++) {
-							GedcomLine fff = ff.lines.get(j);
-							if (fff.tag.equals("HUSB")
-									|| fff.tag.equals("WIFE")) {
-								// if (!fff.lineValue.equals(fam.id)) {
-								if (!fam.id.equals(fff.lineValue)) {
-									spouseId = fff.lineValue;
-									break;
-								}
-							}
-						}
-						if (spouseId != null) {
-							GedcomPidEle pele = this.gedPid.get(spouseId);
-							if (pele != null) {
-								int spousePid = pele.pid;
-								spouseRow++;
-
-								updateSpouseRow(fam.pid, spousePid, spouseRow);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		for (int i = 0; i < gedAdopt.size(); i++) {
-
-			// FIXME: Integer is incompatible with expected argument type String
-			// Note: This method is no longer used and will probably be removed
-			// anyway
-			GedcomLine line = gedAdopt.get(i);
-			for (int j = 0; j < line.lines.size(); j++) {
-				GedcomLine item = line.lines.get(j);
-				if (item.tag.equals("FAMC")) {// check the FAMC case here
-					GedcomLine detail = null;
-					for (int k = 0; k < item.lines.size(); k++) {
-						detail = item.lines.get(k);
-						// detail tag
-					}
-					// System.out.println("ADOPT1:" + line.toString());
-					// System.out.println("ADOPT2:" + item.toString());
-					// System.out.println("ADOPT3:" + detail.toString());
-					GedcomPidEle pele = this.gedPid.get(line.lineValue);
-					if (pele != null) {
-
-						GedcomLine ff = gedFamMap.get(item.lineValue); // get
-						// fam
-						// id
-						if (ff != null) {
-
-							for (int ii = 0; ii < ff.lines.size(); ii++) {
-								GedcomLine fff = ff.lines.get(ii);
-								String pareId = null;
-								if (detail == null) {
-									if (fff.tag.equals("HUSB")
-											|| fff.tag.equals("WIFE")) {
-										pareId = fff.lineValue;
-									}
-								} else if ("FATH".equals(detail.lineValue)) {
-									if (fff.tag.equals("HUSB")) {
-										pareId = fff.lineValue;
-									}
-								} else if ("MOTH".equals(detail.lineValue)) {
-									if (fff.tag.equals("WIFE")) {
-										pareId = fff.lineValue;
-									}
-								}
-								if (pareId != null) {
-
-									// System.out.println("LL:" + line.lineValue
-									// + "/" + pareId);
-									GedcomPidEle cele = this.gedPid
-											.get(line.lineValue);
-									GedcomPidEle fmele = this.gedPid
-											.get(pareId);
-
-									insertAdoptedNotice(cele.pid, fmele.pid);
-
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private void insertAdoptedNotice(int childpid, int parepid) {
-
-		Statement stm = null;
-		PreparedStatement pst = null;
-		try {
-			stm = con.createStatement();
-			ResultSet rs = stm
-					.executeQuery("select nextval('RelationNoticeSeq')");
-			int rnid = 0;
-			int rid = 0;
-			if (rs.next()) {
-				rnid = rs.getInt(1);
-			} else {
-				throw new SQLException("Sequence relationseq error");
-			}
-			rs.close();
-
-			String sql = "select rid from parent where aid=? and bid = ? and tag in ('FATH','MOTH')";
-			pst = con.prepareStatement(sql);
-			pst.setInt(1, childpid);
-			pst.setInt(2, parepid);
-			rs = pst.executeQuery();
-			while (rs.next()) {
-				rid = rs.getInt(1);
-			}
-			rs.close();
-			if (rnid > 0 && rid > 0) {
-
-				sql = "insert into relationnotice (rnid,rid,noticerow,tag) values (?,?,1,'ADOP')";
-				pst = con.prepareStatement(sql);
-				pst.setInt(1, rnid);
-				pst.setInt(2, rid);
-				pst.executeUpdate();
-				pst.close();
-			} else {
-				logger.warning("adopted rid = " + rid + " and rnid = " + rnid
-						+ " failed");
-			}
-			// pst = con.prepareStatement(insSql);
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		} finally {
-			if (stm != null) {
-				try {
-					stm.close();
-				} catch (SQLException ignored) {
-					// SQLException ignored
-				}
-			}
-			if (pst != null) {
-				try {
-					pst.close();
-				} catch (SQLException ignored) {
-					// SQLException ignored
-				}
-			}
-		}
-
-	}
-
-	private void updateSpouseRow(int pid, int spousePid, int spouseRow) {
-		String sql = "update relation set relationrow = ? "
-				+ "where pid = ? and rid in (select rid from spouse where aid = ? and bid = ?)";
-
-		PreparedStatement pst = null;
-		try {
-			pst = con.prepareStatement(sql);
-
-			pst.setInt(1, spouseRow);
-			pst.setInt(2, pid);
-			pst.setInt(3, pid);
-			pst.setInt(4, spousePid);
-			int resu = pst.executeUpdate();
-			if (resu != 1) {
-				logger.warning("Spouse row update for pid [" + pid
-						+ "], spousepid [" + spousePid
-						+ "] reulted in update of [" + resu + "] lines.");
-			}
-
-		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Spouse row update failed", e);
-		} finally {
-			if (pst != null) {
-				try {
-					pst.close();
-				} catch (SQLException ignored) {
-					// SQLException ignored
-				}
-			}
-		}
-	}
 
 	private void consumeGedcomFam(GedcomLine record) {
 
@@ -812,7 +606,8 @@ public class ImportGedcomUtil {
 								}
 							}
 						}
-
+					} else if (detail.tag.equals("CHAN")) {
+					} else if (detail.tag.equals("CREA")) {
 					} else {
 						unknownLine.add(detail.toString());
 					}
@@ -901,6 +696,8 @@ public class ImportGedcomUtil {
 						}
 					}
 				}
+			} else if (line.tag.equals("CHAN")) {
+			} else if (line.tag.equals("CREA")) {
 			} else {
 				unknownLine.add(line.toString());
 			}
@@ -1202,6 +999,8 @@ public class ImportGedcomUtil {
 							}
 						} else if (detail.tag.equals("TYPE")) {
 							notice.setNoticeType(detail.lineValue);
+						} else if (detail.tag.equals("CREA")) {
+						} else if (detail.tag.equals("CHAN")) {
 						} else {
 							unknownLine.add(detail.toString());
 						}
@@ -1247,6 +1046,8 @@ public class ImportGedcomUtil {
 					String src = extractGedcomSource(noti);
 					pers.setSource(src);
 				}
+			} else if (noti.tag.equals("CHAN")) {
+			} else if (noti.tag.equals("CREA")) {
 			} else if (noti.tag.equals("ADOP")) {
 
 				noti.lineValue = record.id;
@@ -1350,6 +1151,8 @@ public class ImportGedcomUtil {
 					} else if (detail.tag.equals("OBJE")) {
 
 						extractMultimedia(notice, detail);
+					} else if (detail.tag.equals("CHAN")) {
+					} else if (detail.tag.equals("CREA")) {
 					} else {
 						unknownLine.add(detail.toString());
 					}
