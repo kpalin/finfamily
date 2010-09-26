@@ -481,7 +481,7 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("schema")) {
 			executeCmdSchema(map, fam);
 		} else if (cmd.equals("sql")) {
-			fam = executeCmdSql(map, fam);
+			fam = executeCmdSql(request, map, fam);
 		} else if (cmd.equals("unitCount")) {
 			fam = getUnitCount();
 		} else if (cmd.equals("update")) {
@@ -514,15 +514,24 @@ public class SukuServerImpl implements SukuServer {
 		return fam;
 	}
 
-	private SukuData executeCmdSql(HashMap<String, String> map, SukuData fam) {
+	private SukuData executeCmdSql(SukuData request,
+			HashMap<String, String> map, SukuData fam) {
 		String type = map.get("type");
-		String sql = map.get("command");
+
+		String sql = null;
+
 		SukuData resp = new SukuData();
+
+		if (request == null || request.generalText == null) {
+			resp.resu = "sql command missing";
+			return resp;
+		}
+		sql = request.generalText;
 
 		if (type == null || !type.equals("select")) {
 			resp.resu = Resurses.getString("SQL_ILLEGAL_COMMAND");
 		} else {
-			if (type.toLowerCase().startsWith("select ")) {
+			if (!sql.toLowerCase().startsWith("select ")) {
 				resp.resu = Resurses.getString("SQL_ILLEGAL_COMMAND");
 
 			} else {
@@ -539,7 +548,7 @@ public class SukuServerImpl implements SukuServer {
 					int numberOfColumns = rsMetaData.getColumnCount();
 					String[] hdrs = new String[numberOfColumns];
 					for (int i = 0; i < numberOfColumns; i++) {
-						hdrs[i] = rsMetaData.getColumnName(i);
+						hdrs[i] = rsMetaData.getColumnName(i + 1);
 					}
 					resp.vvTexts.add(hdrs);
 					while (rs.next()) {
