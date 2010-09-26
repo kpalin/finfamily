@@ -135,16 +135,21 @@ public class DescendantLista extends CommonReport {
 
 			int col = 0;
 			int tagcol = 5;
+			for (col = 0; col < tname.size() + 32; col++) {
+				wsh.setColumnView(col, 5);
+			}
 			for (col = 0; col < tname.size(); col++) {
 				label = new Label(tagcol + col, 0, tname.get(col));
 				sheet.addCell(label);
-				wsh.setColumnView(col, 5);
 			}
+
 			col += tagcol;
 			int genpids[] = new int[64];
+			int genspids[] = new int[64];
 			String gensex[] = new String[64];
 			for (int i = 0; i < genpids.length; i++) {
 				genpids[i] = 0;
+				genspids[i] = 0;
 				gensex[i] = "U";
 			}
 			Vector<ListPerson> lpp = new Vector<ListPerson>();
@@ -176,9 +181,10 @@ public class DescendantLista extends CommonReport {
 							// lpp.add(lspouses.get(mymp));
 							// lspouses.remove(mymp);
 							// }
-							lpp.add(lspouses.get(mymp));
+							ListPerson lps = lspouses.get(mymp);
+							lpp.add(lps);
 							lspouses.remove(mymp);
-
+							genspids[lps.gene] = lps.ps.getPid();
 						}
 
 					}
@@ -198,7 +204,11 @@ public class DescendantLista extends CommonReport {
 					lpp.add(lp);
 					genpids[lp.gene] = lp.ps.getPid();
 					gensex[lp.gene] = lp.ps.getSex();
-
+					if (lp.gene > 0
+							&& lp.ps.getFatherPid() != genspids[lp.gene - 1]
+							&& lp.ps.getMotherPid() != genspids[lp.gene - 1]) {
+						lp.noParent = true;
+					}
 				}
 			}
 
@@ -207,7 +217,7 @@ public class DescendantLista extends CommonReport {
 				int gen = lpp.get(i).gene;
 				PersonShortData pp = lpp.get(i).ps;
 				String text = lpp.get(i).tag;
-
+				boolean noPare = lpp.get(i).noParent;
 				number = new Number(0, i + 1, i);
 				sheet.addCell(number);
 
@@ -249,7 +259,10 @@ public class DescendantLista extends CommonReport {
 						sheet.addCell(label);
 					}
 				}
-
+				if (noPare) {
+					label = new Label(coln - 1, i + 1, "?", italic10bold);
+					sheet.addCell(label);
+				}
 				StringBuilder sb = new StringBuilder();
 				sb.append(pp.getAlfaName());
 				if (bdate != null) {
@@ -324,6 +337,7 @@ public class DescendantLista extends CommonReport {
 		PersonShortData ps = null;
 		int gene = 0;
 		String tag = null;
+		boolean noParent = false;
 
 		ListPerson(PersonShortData ps, int gene, String tag) {
 			this.ps = ps;
