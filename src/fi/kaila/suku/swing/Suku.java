@@ -170,6 +170,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private final boolean testEnabled = true;
+
 	/**
 	 * Application version moved to class fi.kaila.suku.ant.AntVersion
 	 */
@@ -530,7 +532,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mViewMgr.addActionListener(this);
 
 		this.mTestMe = new JMenuItem(Resurses.getString("MENU_TOOLS_TEST"));
-		this.mTools.add(this.mTestMe);
+		if (testEnabled) {
+			this.mTools.add(this.mTestMe);
+		}
 		this.mTestMe.setActionCommand("MENU_TOOLS_TEST");
 		this.mTestMe.addActionListener(this);
 
