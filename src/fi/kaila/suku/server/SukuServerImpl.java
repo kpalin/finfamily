@@ -332,7 +332,13 @@ public class SukuServerImpl implements SukuServer {
 			PersonShortData p = new PersonShortData(this.con, pid);
 			pv.add(p);
 
-			sql = "select tag,count(*) from relation where pid=? group by tag";
+			// sql =
+			// "select tag,count(*) from relation where pid=? group by tag";
+
+			sql = "select a.tag,b.pid bid "
+					+ "from relation as a inner join relation as b on a.rid=b.rid "
+					+ "where a.pid=? ";
+
 			pstm = this.con.prepareStatement(sql);
 
 			for (int i = 0; i < fam.rels.length; i++) {
@@ -349,6 +355,8 @@ public class SukuServerImpl implements SukuServer {
 					rs = pstm.executeQuery();
 					int cc = 0;
 					int pc = 0;
+					int fid = 0;
+					int mid = 0;
 					while (rs.next()) {
 						String tag = rs.getString(1);
 						int cnt = rs.getInt(2);
@@ -356,14 +364,22 @@ public class SukuServerImpl implements SukuServer {
 							cc += cnt;
 						} else if (tag.equals("FATH")) {
 							pc += cnt;
+							if (fid == 0) {
+								fid = rs.getInt(3);
+							}
 						} else if (tag.equals("MOTH")) {
 							pc += cnt;
+							if (mid == 0) {
+								mid = rs.getInt(3);
+							}
 						}
 
 					}
 					rs.close();
 					p.setChildCount(cc);
 					p.setPareCount(pc);
+					p.setFatherPid(fid);
+					p.setMotherPid(mid);
 
 					pv.add(p);
 				}

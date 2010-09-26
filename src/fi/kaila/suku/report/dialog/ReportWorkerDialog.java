@@ -1220,7 +1220,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 				String order = descendantPanel.getTableOrder().getSelection()
 						.getActionCommand();
-				if (order.equals("REPORT.LISTA.DESCLISTA")) {
+				if (order.equals("REPORT.LISTA.DESCLISTA")
+						&& reportTypePane.getSelectedIndex() == 0) {
 					taskLista = new TaskLista();
 					taskLista.addPropertyChangeListener(this);
 					taskLista.execute();

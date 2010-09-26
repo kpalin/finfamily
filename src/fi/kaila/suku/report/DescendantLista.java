@@ -46,7 +46,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  */
 public class DescendantLista extends CommonReport {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Construcor for Descendant report.
@@ -66,6 +66,7 @@ public class DescendantLista extends CommonReport {
 	/**
 	 * execute the report.
 	 */
+	@Override
 	public void executeReport() {
 		SukuData vlist = null;
 
@@ -97,7 +98,7 @@ public class DescendantLista extends CommonReport {
 			}
 		}
 
-		logger.info("Descendant lista");
+		logger.info("Descendant lista for [" + caller.getPid() + "]");
 
 		try {
 
@@ -130,18 +131,82 @@ public class DescendantLista extends CommonReport {
 			sheet.addCell(label);
 			label = new Label(4, 0, "Refn");
 			sheet.addCell(label);
+			WritableSheet wsh = sheet;
+
 			int col = 0;
 			int tagcol = 5;
 			for (col = 0; col < tname.size(); col++) {
 				label = new Label(tagcol + col, 0, tname.get(col));
 				sheet.addCell(label);
+				wsh.setColumnView(col, 5);
 			}
 			col += tagcol;
-			Number number;
+			int genpids[] = new int[64];
+			String gensex[] = new String[64];
+			for (int i = 0; i < genpids.length; i++) {
+				genpids[i] = 0;
+				gensex[i] = "U";
+			}
+			Vector<ListPerson> lpp = new Vector<ListPerson>();
+			Vector<ListPerson> lspouses = new Vector<ListPerson>();
 			for (int i = 0; i < vlist.pidArray.length; i++) {
-				int gen = vlist.pidArray[i];
-				PersonShortData pp = vlist.pers[i];
-				String text = vlist.generalArray[i];
+				ListPerson lp = new ListPerson(vlist.pers[i],
+						vlist.pidArray[i], vlist.generalArray[i]);
+				if (lp.tag.equals("WIFE") || lp.tag.equals("HUSB")) {
+					lspouses.add(lp);
+				} else {
+					int mymp = -1;
+					if (lp.gene > 0) {
+
+						for (mymp = 0; mymp < lspouses.size(); mymp++) {
+							ListPerson ppp = lspouses.get(mymp);
+							int morsa = lp.ps.getFatherPid();
+							if (gensex[lp.gene - 1].equals("M")) {
+								morsa = lp.ps.getMotherPid();
+							}
+							if (morsa == ppp.ps.getPid()) {
+								// this is my mother
+								break;
+							}
+						}
+						if (mymp >= 0 && mymp < lspouses.size()) {
+							// first flush all other
+							// while (lspouses.size() > mymp) {
+							//
+							// lpp.add(lspouses.get(mymp));
+							// lspouses.remove(mymp);
+							// }
+							lpp.add(lspouses.get(mymp));
+							lspouses.remove(mymp);
+
+						}
+
+					}
+
+					// first flush all spouses for the generation
+					for (mymp = 0; mymp < lspouses.size(); mymp++) {
+						ListPerson ppp = lspouses.get(mymp);
+						if (ppp.gene >= lp.gene)
+							break;
+					}
+					while (lspouses.size() > mymp) {
+
+						lpp.add(lspouses.get(mymp));
+						lspouses.remove(mymp);
+					}
+
+					lpp.add(lp);
+					genpids[lp.gene] = lp.ps.getPid();
+					gensex[lp.gene] = lp.ps.getSex();
+
+				}
+			}
+
+			Number number;
+			for (int i = 0; i < lpp.size(); i++) {
+				int gen = lpp.get(i).gene;
+				PersonShortData pp = lpp.get(i).ps;
+				String text = lpp.get(i).tag;
 
 				number = new Number(0, i + 1, i);
 				sheet.addCell(number);
@@ -248,4 +313,24 @@ public class DescendantLista extends CommonReport {
 		// not implemented here
 
 	}
+
+	/**
+	 * Temp Storage for one person info
+	 * 
+	 * @author kalle
+	 * 
+	 */
+	class ListPerson {
+		PersonShortData ps = null;
+		int gene = 0;
+		String tag = null;
+
+		ListPerson(PersonShortData ps, int gene, String tag) {
+			this.ps = ps;
+			this.gene = gene;
+			this.tag = tag;
+		}
+
+	}
+
 }

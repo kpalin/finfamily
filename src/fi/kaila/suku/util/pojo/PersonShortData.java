@@ -61,6 +61,8 @@ public class PersonShortData implements Serializable, Transferable,
 	private int marrCount = 0;
 	private int childCount = 0;
 	private int pareCount = 0;
+	private int fatherPid = 0;
+	private int motherPid = 0;
 	private boolean hasUnkn = false;
 	private byte[] imageData = null;
 
@@ -530,17 +532,17 @@ public class PersonShortData implements Serializable, Transferable,
 	 *            the con
 	 * @param pid
 	 *            the pid
-	 * @param withAllTags
-	 *            the with all tags
+	 * @param withParentIds
+	 *            the id's of parents
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public PersonShortData(Connection con, int pid, boolean withAllTags)
+	public PersonShortData(Connection con, int pid, boolean withParentIds)
 			throws SukuException {
-		helpConstruct(con, pid, withAllTags);
+		helpConstruct(con, pid, withParentIds);
 	}
 
-	private void helpConstruct(Connection con, int pid, boolean withAllTags)
+	private void helpConstruct(Connection con, int pid, boolean withParentIds)
 			throws SukuException {
 		this.pid = pid;
 		// this.famType = famType;
@@ -557,17 +559,25 @@ public class PersonShortData implements Serializable, Transferable,
 				+ "n.pnid,n.mediadata,n.mediafilename,n.mediatitle ");
 		sql.append("from unit as u left join unitnotice "
 				+ "as n on u.pid = n.pid ");
-		if (!withAllTags) {
-			sql.append("and n.tag in "
-					+ "('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU','UNKN') ");
-		}
+		// if (!withAllTags) {
+		// sql.append("and n.tag in "
+		// + "('BIRT','DEAT','CHR','BURI','NAME','PHOT','OCCU','UNKN') ");
+		// }
 		// sql.append("and n.surety >= 80 where u.pid = ? ");
 		sql.append("where u.pid = ? ");
 		sql.append("order by n.noticerow ");
 
+		String ppsql = "select a.tag,b.pid "
+				+ "from relation as a inner join relation as b on a.rid=b.rid and a.pid <> b.pid "
+				+ "where a.pid=? ";
+		PreparedStatement ppstm = null;
+
 		PreparedStatement pstm;
 
 		try {
+
+			ppstm = con.prepareStatement(ppsql);
+
 			pstm = con.prepareStatement(sql.toString());
 			pstm.setInt(1, pid);
 			ResultSet rs = pstm.executeQuery();
@@ -587,27 +597,6 @@ public class PersonShortData implements Serializable, Transferable,
 
 						sn.add(nn);
 					}
-					// if (this.nameTag == null && "NAME".equals(tag)
-					// && this.givenname == null && this.patronym == null
-					// && this.prefix == null && this.surname == null
-					// && this.postfix == null) {
-					// this.givenname = rs.getString(6);
-					// this.patronym = rs.getString(7);
-					// this.prefix = rs.getString(8);
-					// this.surname = rs.getString(9);
-					// this.postfix = rs.getString(10);
-					// this.nameTag = tag;
-					// } else if (this.nameTag != null && "NAME".equals(tag)) {
-					// String restname = rs.getString(9);
-					// if (restname != null) {
-					// if (this.morenames == null) {
-					// this.morenames = restname;
-					// } else {
-					// this.morenames += ";";
-					// this.morenames += restname;
-					// }
-					// }
-					// }
 
 					if (tag.equals("BIRT") || tag.equals("CHR")) {
 
@@ -644,10 +633,33 @@ public class PersonShortData implements Serializable, Transferable,
 					tagMap.put(tag, tag);
 
 				}
+				if (withParentIds) {
+					ppstm.setInt(1, pid);
+					ResultSet pprs = ppstm.executeQuery();
+					int fid = 0;
+					int mid = 0;
+					while (pprs.next()) {
+						String ttag = pprs.getString(1);
+						if (ttag.equals("FATH")) {
+							if (fid == 0) {
+								fid = pprs.getInt(2);
+							}
+						}
+						if (ttag.equals("MOTH")) {
+							if (mid == 0) {
+								mid = pprs.getInt(2);
+							}
+						}
+					}
+					this.fatherPid = fid;
+					this.motherPid = mid;
+					pprs.close();
+				}
+
 			}
 			rs.close();
 			pstm.close();
-
+			ppstm.close();
 			names = sn.toArray(new ShortName[0]);
 		} catch (Exception e) {
 			throw new SukuException(e);
@@ -1404,6 +1416,22 @@ public class PersonShortData implements Serializable, Transferable,
 	 */
 	public int getSurety() {
 		return surety;
+	}
+
+	public void setFatherPid(int fatherPid) {
+		this.fatherPid = fatherPid;
+	}
+
+	public int getFatherPid() {
+		return fatherPid;
+	}
+
+	public void setMotherPid(int motherPid) {
+		this.motherPid = motherPid;
+	}
+
+	public int getMotherPid() {
+		return motherPid;
 	}
 
 	private class ShortName implements Serializable {
