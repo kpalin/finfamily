@@ -1,7 +1,6 @@
 package fi.kaila.suku.report;
 
 import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,8 +14,6 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
-import jxl.write.biff.RowsExceededException;
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
@@ -170,17 +167,12 @@ public class DescendantLista extends CommonReport {
 								morsa = lp.ps.getMotherPid();
 							}
 							if (morsa == ppp.ps.getPid()) {
-								// this is my mother
+								// this is my "mother"
 								break;
 							}
 						}
 						if (mymp >= 0 && mymp < lspouses.size()) {
-							// first flush all other
-							// while (lspouses.size() > mymp) {
-							//
-							// lpp.add(lspouses.get(mymp));
-							// lspouses.remove(mymp);
-							// }
+
 							ListPerson lps = lspouses.get(mymp);
 							lpp.add(lps);
 							lspouses.remove(mymp);
@@ -196,14 +188,15 @@ public class DescendantLista extends CommonReport {
 							break;
 					}
 					while (lspouses.size() > mymp) {
-
-						lpp.add(lspouses.get(mymp));
-						lspouses.remove(mymp);
+						int lasidx = lspouses.size() - 1;
+						lpp.add(lspouses.get(lasidx));
+						lspouses.remove(lasidx);
 					}
 
 					lpp.add(lp);
 					genpids[lp.gene] = lp.ps.getPid();
 					gensex[lp.gene] = lp.ps.getSex();
+
 					if (lp.gene > 0
 							&& lp.ps.getFatherPid() != genspids[lp.gene - 1]
 							&& lp.ps.getMotherPid() != genspids[lp.gene - 1]) {
@@ -283,13 +276,6 @@ public class DescendantLista extends CommonReport {
 				sheet.addCell(label);
 			}
 
-			// Label label = new Label(0, 2, "A label record");
-			// sheet.addCell(label);
-			//
-			// Number number = new Number(3, 4, 3.1459);
-			// sheet.addCell(number);
-			//
-
 			// All sheets and cells added. Now write out the workbook
 			workbook.write();
 			workbook.close();
@@ -297,15 +283,20 @@ public class DescendantLista extends CommonReport {
 
 			String report = Suku.kontroller.getFilePath();
 			Utils.openExternalFile(report);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RowsExceededException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (WriteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "descendant lista", e);
+			JOptionPane.showMessageDialog(
+					caller,
+					Resurses.getString("REPORT.LISTA.DESCLISTA") + ":"
+							+ e.getMessage());
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// } catch (RowsExceededException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// } catch (WriteException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
 		}
 
 		// repoWriter.createReport();

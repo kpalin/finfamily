@@ -42,25 +42,26 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 	private static final String OK = "OK";
 	private static final String CANCEL = "CANCEL";
 
-	private JLabel textContent;
-	private JButton ok;
-	private JButton cancel;
-	private JTextField fileName;
-	private JLabel timeEstimate;
-	private JComboBox viewList;
+	private final JLabel textContent;
+	private final JButton ok;
+	private final JButton cancel;
+	private final JTextField fileName;
+	private final JLabel timeEstimate;
+	private final JComboBox viewList;
 	private String[] viewArray = null;
 	private String viewName = null;
-	private JComboBox langList;
-	private JComboBox charsetList;
-	private JCheckBox includeImages;
-	private SukuSuretyField surety;
+	private final JComboBox langList;
+	private final JComboBox charsetList;
+	private final JCheckBox includeImages;
+	private final SukuSuretyField surety;
 	private String zipName = "nemo";
 	private String langCode = null;
 	private String langName = null;
 	private String[] langCodes = null;
 	private String[] langNames = null;
-	private String[] charsetNames = { "", "Ascii", "Ansel", "UTF-8", "UTF-16" };
-	private JProgressBar progressBar;
+	private final String[] charsetNames = { "", "Ascii", "Ansel", "UTF-8",
+			"UTF-16" };
+	private final JProgressBar progressBar;
 	private Task task = null;
 
 	/**
@@ -74,7 +75,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 	private Suku owner = null;
 	private static ExportGedcomDialog runner = null;
-	private SukuData gedcomResult = null;
+	private final SukuData gedcomResult = null;
 	private String dbName = null;
 
 	/**
@@ -334,19 +335,18 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 					v.add("charid=" + charidx);
 					String[] auxes = v.toArray(new String[0]);
 					SukuData resp = Suku.kontroller.getSukuData(auxes);
-
-					OutputStream fos = Suku.kontroller.getOutputStream();
-
-					String tekst = "GEDCOM EXPORT";
-
-					byte[] buffi = null;
-					if (resp.buffer != null) {
-						buffi = resp.buffer;
-					} else {
-						buffi = tekst.getBytes();
-					}
-
 					try {
+						OutputStream fos = Suku.kontroller.getOutputStream();
+
+						String tekst = "GEDCOM EXPORT";
+
+						byte[] buffi = null;
+						if (resp.buffer != null) {
+							buffi = resp.buffer;
+						} else {
+							buffi = tekst.getBytes();
+						}
+
 						fos.write(buffi);
 						fos.close();
 					} catch (IOException e) {

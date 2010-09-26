@@ -1,5 +1,6 @@
 package fi.kaila.suku.kontroller;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -154,8 +155,9 @@ public interface SukuKontroller {
 	 * <h1>Local file management</h1>.
 	 * 
 	 * @return created local file as an output stream
+	 * @throws FileNotFoundException
 	 */
-	public OutputStream getOutputStream();
+	public OutputStream getOutputStream() throws FileNotFoundException;
 
 	/**
 	 * Opening a named local file In webstart the file is read from a

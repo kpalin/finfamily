@@ -308,15 +308,10 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	 * @see fi.kaila.suku.kontroller.SukuKontroller#getOutputStream()
 	 */
 	@Override
-	public OutputStream getOutputStream() {
+	public OutputStream getOutputStream() throws FileNotFoundException {
 		if (file != null) {
-			try {
-				return new FileOutputStream(file);
-			} catch (FileNotFoundException e) {
-				logger.log(Level.WARNING,
-						"Failed to get output stream for file", e);
 
-			}
+			return new FileOutputStream(file);
 
 		}
 		return null;

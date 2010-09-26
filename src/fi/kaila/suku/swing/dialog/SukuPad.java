@@ -98,16 +98,17 @@ public class SukuPad extends JDialog implements ActionListener {
 		} else if (cmd.equals("SAVE_AS")) {
 			boolean isFile = Suku.kontroller.createLocalFile("txt");
 			if (isFile) {
-				OutputStream fos = Suku.kontroller.getOutputStream();
-
-				String tekst;
-				if (java.io.File.pathSeparatorChar == ';') {
-					tekst = txtArea.getText().replaceAll("\n", "\r\n");
-				} else {
-					tekst = txtArea.getText();
-				}
-				byte[] buffi = tekst.getBytes();
 				try {
+					OutputStream fos = Suku.kontroller.getOutputStream();
+
+					String tekst;
+					if (java.io.File.pathSeparatorChar == ';') {
+						tekst = txtArea.getText().replaceAll("\n", "\r\n");
+					} else {
+						tekst = txtArea.getText();
+					}
+					byte[] buffi = tekst.getBytes();
+
 					fos.write(buffi);
 					fos.close();
 				} catch (IOException e) {
