@@ -359,21 +359,23 @@ public class SukuServerImpl implements SukuServer {
 					int mid = 0;
 					while (rs.next()) {
 						String tag = rs.getString(1);
-						int cnt = rs.getInt(2);
+
 						if (tag.equals("CHIL")) {
-							cc += cnt;
+							cc++;
+
 						} else if (tag.equals("FATH")) {
-							pc += cnt;
+							pc++;
+
 							if (fid == 0) {
-								fid = rs.getInt(3);
+								fid = rs.getInt(2);
 							}
 						} else if (tag.equals("MOTH")) {
-							pc += cnt;
+							pc++;
+
 							if (mid == 0) {
-								mid = rs.getInt(3);
+								mid = rs.getInt(2);
 							}
 						}
-
 					}
 					rs.close();
 					p.setChildCount(cc);
