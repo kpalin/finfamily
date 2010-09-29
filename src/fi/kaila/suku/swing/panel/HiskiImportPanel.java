@@ -96,7 +96,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private JLabel eventExtraType;
 	private SukuDateField eventExtraDate;
 
-	private PersonLongData[] hpers = null;
+	// private PersonLongData[] hpers = null;
 
 	private JLabel[] pNumero;
 	private String[] pTypeName;
@@ -144,7 +144,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	private final String[] sexes = new String[4];
 
 	private final int[] hiskiPid = { 0, 0, 0 };
-
+	private final PersonShortData[] hiskiPers = { null, null, null };
 	// private String [] sukuName = {null,null,null};
 	/** The y. */
 	int y = 20;
@@ -359,7 +359,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	}
 
 	private void initHiskiPersons(int luku) {
-		hpers = new PersonLongData[luku];
+		// hpers = new PersonLongData[luku];
 		pNumero = new JLabel[luku];
 		pSukuPid = new JLabel[luku];
 		pSukuName = new JLabel[luku];
@@ -461,6 +461,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			hiskiPid[i] = 0;
 			pSukuName[i].setText("");
 			pSukuPid[i].setText("");
+			hiskiPers[i] = null;
 
 		}
 	}
@@ -475,12 +476,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	 * @param nimi
 	 *            the nimi
 	 */
-	public void setHiskiPid(int idx, int pid, String nimi) {
+	public void setHiskiPerson(int idx, PersonShortData pers) {
 		if (idx >= 0 && idx < hiskiPid.length) {
-			hiskiPid[idx] = pid;
+			hiskiPers[idx] = pers;
+			hiskiPid[idx] = pers.getPid();
 			// sukuName[idx]=nimi;
-			pSukuPid[idx].setText("" + pid);
-			pSukuName[idx].setText(nimi);
+			pSukuPid[idx].setText("" + pers.getPid());
+			pSukuName[idx].setText(pers.getAlfaName(true));
+
 		}
 	}
 
@@ -1177,12 +1180,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				sex = "U";
 				break;
 			default:
-				if (hiskiPid[i] > 0) {
-					PersonShortData curpers = this.suku.getPerson(hiskiPid[i]);
-					if (curpers != null) {
-						sex = curpers.getSex();
-						break;
-					}
+				if (hiskiPers[i] != null) {
+					sex = hiskiPers[i].getSex();
+					break;
 				}
 				JOptionPane.showMessageDialog(this,
 						Resurses.getString("ERROR_MISSINGSEX"));

@@ -519,15 +519,24 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData executeCmdSql(SukuData request,
 			HashMap<String, String> map, SukuData fam) {
 		String type = map.get("type");
-
+		String vidt = map.get("vid");
 		String sql = null;
-
+		int vid = -1;
 		SukuData resp = new SukuData();
 
 		if (request == null || request.generalText == null) {
 			resp.resu = "sql command missing";
 			return resp;
 		}
+		if (vidt != null) {
+			try {
+				vid = Integer.parseInt(vidt);
+			} catch (NumberFormatException ne) {
+				resp.resu = ne.getMessage();
+				return resp;
+			}
+		}
+
 		sql = request.generalText;
 
 		if (type == null || !type.equals("select")) {
@@ -537,32 +546,47 @@ public class SukuServerImpl implements SukuServer {
 				resp.resu = Resurses.getString("SQL_ILLEGAL_COMMAND");
 
 			} else {
-				resp.vvTexts = new Vector<String[]>();
+
 				Statement stm;
-				ResultSet rs;
+
 				try {
 					stm = con.createStatement();
 
-					rs = stm.executeQuery(sql);
+					if (vid > 0) {
+						String empty = map.get("empty");
+						if (empty != null && empty.equals("true")) {
+							stm.executeUpdate("delete from viewunits where vid = "
+									+ vid);
 
-					ResultSetMetaData rsMetaData = rs.getMetaData();
-
-					int numberOfColumns = rsMetaData.getColumnCount();
-					String[] hdrs = new String[numberOfColumns];
-					for (int i = 0; i < numberOfColumns; i++) {
-						hdrs[i] = rsMetaData.getColumnName(i + 1);
-					}
-					resp.vvTexts.add(hdrs);
-					while (rs.next()) {
-						String[] cols = new String[numberOfColumns];
-						for (int i = 0; i < numberOfColumns; i++) {
-							cols[i] = rs.getString(i + 1);
 						}
-						resp.vvTexts.add(cols);
-					}
-					rs.close();
-					stm.close();
 
+						String sqlIns = "insert into viewunits (vid,pid)  select "
+								+ vid + "," + sql.substring(7);
+						stm.executeUpdate(sqlIns);
+					} else {
+						resp.vvTexts = new Vector<String[]>();
+						ResultSet rs;
+						rs = stm.executeQuery(sql);
+
+						ResultSetMetaData rsMetaData = rs.getMetaData();
+
+						int numberOfColumns = rsMetaData.getColumnCount();
+						String[] hdrs = new String[numberOfColumns];
+						for (int i = 0; i < numberOfColumns; i++) {
+							hdrs[i] = rsMetaData.getColumnName(i + 1);
+						}
+						resp.vvTexts.add(hdrs);
+						while (rs.next()) {
+							String[] cols = new String[numberOfColumns];
+							for (int i = 0; i < numberOfColumns; i++) {
+								cols[i] = rs.getString(i + 1);
+							}
+							resp.vvTexts.add(cols);
+						}
+						rs.close();
+
+					}
+					stm.close();
 				} catch (SQLException e) {
 					resp.resu = e.getMessage();
 				}

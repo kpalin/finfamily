@@ -204,7 +204,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 * @param nimi
 	 *            the nimi
 	 */
-	public void setHiskiPid(int idx, int pid, String nimi) {
+	public void setHiskiPerson(int idx, PersonShortData pers) {
 		HiskiImportPanel hiskiPanel = null;
 
 		for (int i = 0; i < paneTabs.size(); i++) {
@@ -215,7 +215,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			}
 		}
 		if (hiskiPanel != null) {
-			hiskiPanel.setHiskiPid(idx, pid, nimi);
+			hiskiPanel.setHiskiPerson(idx, pers);
 		}
 	}
 

@@ -3471,9 +3471,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					//
 				} else if (cmd.startsWith("HISKI") && cmd.length() > 5) {
 					int hiskino = Integer.parseInt(cmd.substring(5));
-					personView.setHiskiPid(hiskino,
-							(pop.getPerson() == null ? 0 : pop.getPerson()
-									.getPid()), pop.getPerson().getAlfaName());
+					personView.setHiskiPerson(hiskino, pop.getPerson());
+
 				} else if (cmd.equals(Resurses.CREATE_REPORT)) {
 					createReport(pop.getPerson());
 				} else if (cmd.equals(Resurses.TAB_PERSON)) {
