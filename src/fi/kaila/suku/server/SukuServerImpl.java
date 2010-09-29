@@ -551,8 +551,11 @@ public class SukuServerImpl implements SukuServer {
 
 				try {
 					stm = con.createStatement();
+					ResultSet rs = stm.executeQuery(sql);
 
-					if (vid > 0) {
+					ResultSetMetaData rsMetaData = rs.getMetaData();
+
+					if (vid > 0 && rsMetaData.getColumnCount() == 1) {
 						String empty = map.get("empty");
 						if (empty != null && empty.equals("true")) {
 							stm.executeUpdate("delete from viewunits where vid = "
@@ -565,10 +568,6 @@ public class SukuServerImpl implements SukuServer {
 						stm.executeUpdate(sqlIns);
 					} else {
 						resp.vvTexts = new Vector<String[]>();
-						ResultSet rs;
-						rs = stm.executeQuery(sql);
-
-						ResultSetMetaData rsMetaData = rs.getMetaData();
 
 						int numberOfColumns = rsMetaData.getColumnCount();
 						String[] hdrs = new String[numberOfColumns];
@@ -583,9 +582,9 @@ public class SukuServerImpl implements SukuServer {
 							}
 							resp.vvTexts.add(cols);
 						}
-						rs.close();
 
 					}
+					rs.close();
 					stm.close();
 				} catch (SQLException e) {
 					resp.resu = e.getMessage();
