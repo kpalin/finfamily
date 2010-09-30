@@ -410,9 +410,9 @@ public class QueryUtil {
 			String dbmediatitle; // 17
 			String dbCountry; // 18
 			String rtag;
-			int marriages;
-			int children;
-			int parents;
+			int marriages = 0;
+			int children = 0;
+			int parents = 0;
 
 			while (rs.next()) {
 				pid = rs.getInt(1);
@@ -499,31 +499,48 @@ public class QueryUtil {
 			if (needsRelativeInfo) {
 
 				StringBuilder relSQL = new StringBuilder();
-				relSQL.append("select tag,pid,count(*) from relation where pid in "
-						+ "(select pid  from unit u ");
+				// relSQL.append("select tag,pid,count(*) from relation where pid in "
+				// + "(select pid  from unit u ");
+				// relSQL.append(fromSQL);
+				// relSQL.append(") group by pid,tag order by pid");
+				// select a.tag,a.pid aid,b.pid bid
+				// from relation as a inner join relation as b on a.rid = b.rid
+				// and a.pid <> b.pid
+				// where a.pid in (select pid from unit u )
+				relSQL.append("select a.tag,a.pid aid,b.pid bid ");
+				relSQL.append("from relation as a inner join relation as b on a.rid = b.rid and a.pid <> b.pid ");
 				relSQL.append(fromSQL);
-				relSQL.append(") group by pid,tag order by pid");
+				relSQL.append("order by a.pid");
 				logger.fine("Relative sql: " + relSQL.toString());
 				PreparedStatement pstm = this.con.prepareStatement(relSQL
 						.toString());
 				ResultSet prs = pstm.executeQuery();
+
 				while (prs.next()) {
 					rtag = prs.getString(1);
-					int rpid = prs.getInt(2);
-					PersonShortData rp = persMap.get(rpid);
+					int aid = prs.getInt(2);
+					int bid = prs.getInt(3);
+
+					PersonShortData rp = persMap.get(aid);
 					if (rp != null) {
 
 						if (rtag.equals("HUSB") || rtag.equals("WIFE")) {
-							marriages = prs.getInt(3);
-							marriages += rp.getMarrCount();
-							rp.setMarrCount(marriages);
+
+							rp.setMarrCount(rp.getMarrCount() + 1);
 						} else if (rtag.equals("CHIL")) {
-							children = prs.getInt(3);
-							rp.setChildCount(children);
+
+							rp.setChildCount(rp.getChildCount() + 1);
 						} else if (rtag.equals("MOTH") || rtag.equals("FATH")) {
-							parents = prs.getInt(3);
-							parents += rp.getPareCount();
-							rp.setPareCount(parents);
+							if (rtag.equals("MOTH")) {
+								if (rp.getMotherPid() == 0) {
+									rp.setMotherPid(bid);
+								}
+							} else {
+								if (rp.getFatherPid() == 0) {
+									rp.setFatherPid(bid);
+								}
+							}
+							rp.setPareCount(rp.getPareCount() + 1);
 						}
 					}
 				}

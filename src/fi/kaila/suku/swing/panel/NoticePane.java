@@ -1653,11 +1653,11 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			noteLbl.setBounds(10, lrivi, 70, 20);
 
-			noteLoc = new Rectangle(lcol, lrivi, lwidth, 424);
+			noteLoc = new Rectangle(lcol, lrivi, lwidth, 344);
 
 			scrollNote.setBounds(noteLoc);
 			image.setVisible(false);
-			lrivi += 428;
+			lrivi += 348;
 
 			addLabel.setBounds(10, listY1, 70, 42);
 			listaName.setBounds(lcol, listY1, 200, 20);

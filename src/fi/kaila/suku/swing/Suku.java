@@ -170,7 +170,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private final boolean testEnabled = true;
+	private final boolean testEnabled = false;
 
 	/**
 	 * Application version moved to class fi.kaila.suku.ant.AntVersion
