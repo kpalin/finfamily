@@ -2,6 +2,10 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 824 on 28 sep 2010
+
+* Refactored Hiski kastetut import
+
 Release 820 on 28 sep 2010
 
 * descendant lista (excel) improvements
