@@ -511,7 +511,7 @@ public class QueryUtil {
 				relSQL.append("from relation as u inner join relation as b on u.rid = b.rid and u.pid <> b.pid ");
 				relSQL.append(fromSQL);
 				relSQL.append("order by u.pid");
-				logger.info("Relative sql: " + relSQL.toString());
+				logger.fine("Relative sql: " + relSQL.toString());
 				PreparedStatement pstm = this.con.prepareStatement(relSQL
 						.toString());
 				ResultSet prs = pstm.executeQuery();
