@@ -507,7 +507,7 @@ public class QueryUtil {
 				// from relation as a inner join relation as b on a.rid = b.rid
 				// and a.pid <> b.pid
 				// where a.pid in (select pid from unit u )
-				relSQL.append("select u.tag,u.pid  aid,b.pid bid ");
+				relSQL.append("select u.tag,u.pid  ,b.pid  ");
 				relSQL.append("from relation as u inner join relation as b on u.rid = b.rid and u.pid <> b.pid ");
 				relSQL.append(fromSQL);
 				relSQL.append("order by u.pid");
