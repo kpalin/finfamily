@@ -2055,6 +2055,7 @@ public abstract class CommonReport {
 							addSpace = true;
 							addDot = true;
 						}
+
 						if (nn.getPlace() != null
 								|| (nn.getTag().equals("RESI") && nn
 										.getPostOffice() != null)) {
@@ -2136,7 +2137,7 @@ public abstract class CommonReport {
 
 						if (nn.getState() != null) {
 							if (addSpace) {
-								bt.addText(",");
+								bt.addText(", ");
 								addSpace = true;
 								addDot = true;
 							}
@@ -2144,7 +2145,7 @@ public abstract class CommonReport {
 						}
 						if (nn.getCountry() != null) {
 							if (addSpace) {
-								bt.addText(",");
+								bt.addText(", ");
 								addSpace = true;
 								addDot = true;
 							}
@@ -2440,6 +2441,7 @@ public abstract class CommonReport {
 						sb.delete(0, sb.length());
 						wasNl = false;
 					} else {
+						sb.append(' ');
 						wasNl = true;
 					}
 				} else {
