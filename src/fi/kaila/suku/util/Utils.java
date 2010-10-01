@@ -636,7 +636,7 @@ public class Utils {
 	public static void openExternalFile(String url) {
 		try {
 
-			String os = System.getProperties().getProperty("os.name");
+			String os = System.getProperty("os.name");
 			// System.out.println("OS:" + os);
 			if (os.toLowerCase().indexOf("windows") >= 0) {
 

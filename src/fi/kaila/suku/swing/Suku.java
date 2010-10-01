@@ -314,7 +314,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			if (args.length != 1 || !args[0].equals("web")) {
 
-				os = System.getProperties().getProperty("os.name");
+				os = System.getProperty("os.name");
 				if (args.length > 0 && !args[0].equals("$1")) {
 					// if you want to experiment with another look and feel you
 					// can
