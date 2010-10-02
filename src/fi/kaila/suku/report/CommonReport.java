@@ -614,7 +614,8 @@ public abstract class CommonReport {
 
 			try {
 
-				printSpouse(tab, bt, spouseMember, spouNum, tableOffset);
+				printSpouse(tab.getTableNo(), tab.getPid(), bt, spouseMember,
+						spouNum, tableOffset);
 
 			} catch (SukuException e1) {
 				logger.log(Level.WARNING, "background reporting", e1);
@@ -827,8 +828,8 @@ public abstract class CommonReport {
 
 						}
 
-						printSpouse(tab, bt, childSpouseMember, spouNum,
-								tableOffset);
+						printSpouse(tab.getTableNo(), childMember.getPid(), bt,
+								childSpouseMember, spouNum, tableOffset);
 
 					}
 				}
@@ -853,14 +854,14 @@ public abstract class CommonReport {
 	}
 
 	/**
-	 * @param tab
+	 * @param tabMember
 	 * @param bt
 	 * @param spouseMember
 	 * @param spouNum
 	 * @return
 	 * @throws SukuException
 	 */
-	private void printSpouse(ReportUnit tab, BodyText bt,
+	private void printSpouse(long tabNo, int memberPid, BodyText bt,
 			ReportTableMember spouseMember, int spouNum, int tableOffset)
 			throws SukuException {
 		UnitNotice[] notices;
@@ -880,7 +881,7 @@ public abstract class CommonReport {
 		if (sdata.relations != null) {
 			boolean isMarrTag = false;
 			for (int i = 0; i < sdata.relations.length; i++) {
-				if (sdata.relations[i].getRelative() == tab.getPid()) {
+				if (sdata.relations[i].getRelative() == memberPid) {
 
 					if (sdata.relations[i].getNotices() != null) {
 						rnn = sdata.relations[i].getNotices();
@@ -913,20 +914,19 @@ public abstract class CommonReport {
 			}
 
 			bt.addText("- ");
-			bt.addText(spouType);
+			bt.addText(spouType); // TODO kkkkkkkkkkkkkkkk
 			bt.addText(" ");
 
 			fromTable = "";
 			int typesColumn = 2;
 			refs = personReferences.get(spouseMember.getPid());
 			if (refs != null) {
-				typesColumn = refs.getTypesColumn(tab.getTableNo(), true, true,
-						false);
+				typesColumn = refs.getTypesColumn(tabNo, true, true, false);
 			}
 
 			notices = sdata.persLong.getNotices();
 			printName(bt, sdata.persLong, typesColumn);
-			printNotices(bt, notices, typesColumn, tab.getTableNo());
+			printNotices(bt, notices, typesColumn, tabNo);
 
 			if (rnn != null) {
 				for (int i = 0; i < rnn.length; i++) {
@@ -941,8 +941,8 @@ public abstract class CommonReport {
 			}
 
 			if (refs != null) {
-				fromTable = refs.getReferences(tab.getTableNo(), true, true,
-						false, tableOffset);
+				fromTable = refs.getReferences(tabNo, true, true, false,
+						tableOffset);
 				if (fromTable.length() > 0) {
 					bt.addText(typesTable.getTextValue("ALSO") + " "
 							+ fromTable + ". ", true, false);
@@ -963,14 +963,14 @@ public abstract class CommonReport {
 					"pid=" + spouseMember.getSubPid(i));
 			notices = sub.persLong.getNotices();
 			printName(bt, sub.persLong, 4);
-			printNotices(bt, notices, 4, tab.getTableNo());
+			printNotices(bt, notices, 4, tabNo);
 
 			fromTable = "";
 
 			refs = personReferences.get(spouseMember.getSubPid(i));
 			if (refs != null) {
-				fromTable = refs.getReferences(tab.getTableNo(), true, true,
-						true, tableOffset);
+				fromTable = refs.getReferences(tabNo, true, true, true,
+						tableOffset);
 
 				String[] froms = fromTable.split(",");
 				StringBuilder fromsTable = new StringBuilder();

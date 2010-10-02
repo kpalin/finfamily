@@ -410,9 +410,6 @@ public class QueryUtil {
 			String dbmediatitle; // 17
 			String dbCountry; // 18
 			String rtag;
-			int marriages = 0;
-			int children = 0;
-			int parents = 0;
 
 			while (rs.next()) {
 				pid = rs.getInt(1);
