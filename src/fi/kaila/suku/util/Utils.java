@@ -162,6 +162,38 @@ public class Utils {
 	}
 
 	/**
+	 * convert dbdate date mont part to int.
+	 * 
+	 * @param dbDate
+	 *            the db date
+	 * @param trimDate
+	 *            the trim date
+	 * @return in text format
+	 */
+	public static int textDateMonth(String dbDate) {
+		if (dbDate == null)
+			return 0;
+		if (dbDate.length() == 4) {
+			return 0;
+		}
+		int m = 0;
+		String mm = null;
+		if (dbDate.length() == 6) {
+			mm = dbDate.substring(4);
+		} else if (dbDate.length() == 8) {
+			mm = dbDate.substring(4, 6);
+		}
+		try {
+			// y = Integer.parseInt(yy);
+			m = Integer.parseInt(mm);
+		} catch (NumberFormatException ne) {
+			// NumberFormatException ignored
+		}
+
+		return m;
+	}
+
+	/**
 	 * Db try date.
 	 * 
 	 * @param textDate

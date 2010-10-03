@@ -269,6 +269,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private SukuMapInterface suomi = null;
 	private GroupMgrWindow groupWin = null;
 	private ViewMgrWindow viewWin = null;
+	private GenStat genStat = null;
 	// private HiskiImporter hiski=null;
 	private LocalAdminUtilities adminUtilities = null;
 
@@ -2585,6 +2586,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							+ e.getMessage());
 
 		}
+
+	}
+
+	private void displayGenStats() {
+		PersonShortData ppp[] = new PersonShortData[tableMap.size()];
+		Set<Map.Entry<Integer, PersonShortData>> entriesx = tableMap.entrySet();
+		Iterator<Map.Entry<Integer, PersonShortData>> eex = entriesx.iterator();
+		int i = 0;
+		while (eex.hasNext()) {
+			Map.Entry<Integer, PersonShortData> entrx = eex.next();
+			ppp[i++] = entrx.getValue();
+		}
+
+		if (ppp.length == 0)
+			return;
+
+		this.genStat = new GenStat(this, ppp);
 
 	}
 
