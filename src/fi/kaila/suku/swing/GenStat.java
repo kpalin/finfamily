@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
@@ -24,8 +26,11 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonShortData;
+import fi.kaila.suku.util.pojo.PlaceLocationData;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * Shows genealogical statistics.
@@ -45,6 +50,7 @@ public class GenStat extends JFrame implements ActionListener {
 	private JFreeChart sexChart;
 	private JFreeChart marriedVsSingleChart;
 	private JFreeChart birthAndDeathMothsChart;
+	private JFreeChart firstNamesChart;
 	private PersonShortData[] persons = null;
 
 	/**
@@ -74,6 +80,8 @@ public class GenStat extends JFrame implements ActionListener {
 		statCombo.addItem(Resurses.getString("STAT_MARRIED_VS_SINGLE"));
 		statCombo.addItem(Resurses.getString("STAT_BIRTH_MONTHS"));
 		statCombo.addItem(Resurses.getString("STAT_DEATH_MONTHS"));
+		statCombo.addItem(Resurses.getString("STAT_BIRTH_PLACES"));
+		statCombo.addItem(Resurses.getString("STAT_DEATH_PLACES"));
 
 		statCombo.setActionCommand(Resurses.SHOWGRID);
 		statCombo.addActionListener(this);
@@ -352,19 +360,17 @@ public class GenStat extends JFrame implements ActionListener {
 		int x, x0 = 0, x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0, x10 = 0, x11 = 0, x12 = 0;
 		// add the chart to a panel...
 		final DefaultCategoryDataset dataset1 = new DefaultCategoryDataset();
+
+		String caption;
 		if (birth) {
-			birthAndDeathMothsChart = ChartFactory.createBarChart(
-					Resurses.getString("STAT_BIRTH_MONTHS"),
-					Resurses.getString("STAT_MONTHS"),
-					Resurses.getString("STAT_PIECES"), dataset1,
-					PlotOrientation.VERTICAL, true, true, false);
+			caption = Resurses.getString("STAT_BIRTH_MONTHS");
 		} else {
-			birthAndDeathMothsChart = ChartFactory.createBarChart(
-					Resurses.getString("STAT_DEATH_MONTHS"),
-					Resurses.getString("STAT_MONTHS"),
-					Resurses.getString("STAT_PIECES"), dataset1,
-					PlotOrientation.VERTICAL, true, true, false);
+			caption = Resurses.getString("STAT_DEATH_MONTHS");
 		}
+		birthAndDeathMothsChart = ChartFactory.createBarChart(caption,
+				Resurses.getString("STAT_MONTHS"),
+				Resurses.getString("STAT_PIECES"), dataset1,
+				PlotOrientation.VERTICAL, true, true, false);
 
 		chartPanel.setChart(birthAndDeathMothsChart);
 
@@ -441,6 +447,160 @@ public class GenStat extends JFrame implements ActionListener {
 		dataset1.addValue(x12, Resurses.getString("STAT_DEC"), "");
 	}
 
+	private void statBirthDeathPlaces(boolean birth) {
+
+		// add the chart to a panel...
+		final DefaultCategoryDataset dataset1 = new DefaultCategoryDataset();
+
+		String caption;
+		if (birth) {
+			caption = Resurses.getString("STAT_BIRTH_PLACES");
+		} else {
+			caption = Resurses.getString("STAT_DEATH_PLACES");
+		}
+		firstNamesChart = ChartFactory.createBarChart(caption,
+				Resurses.getString("STAT_PLACES"),
+				Resurses.getString("STAT_PIECES"), dataset1,
+				PlotOrientation.VERTICAL, true, true, false);
+
+		chartPanel.setChart(firstNamesChart);
+
+		// get a reference to the plot for further customisation...
+		final CategoryPlot plot = firstNamesChart.getCategoryPlot();
+		plot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
+
+		// change the auto tick unit selection to integer units only...
+		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+		HashMap<String, String> ccodes = new HashMap<String, String>();
+		try {
+			SukuData countdata = Suku.kontroller.getSukuData("cmd=get",
+					"type=ccodes");
+
+			for (String nxt : countdata.generalArray) {
+				if (nxt != null) {
+					String parts[] = nxt.split(";");
+					if (parts.length == 2) {
+						ccodes.put(parts[0], parts[1]);
+					}
+				}
+			}
+		} catch (SukuException e1) {
+			// Do nothing
+		}
+
+		HashMap<String, PlaceLocationData> paikat = new HashMap<String, PlaceLocationData>();
+		int idx;
+		String paikka;
+		String maa;
+		String ccode;
+		String defaultCountry = Resurses.getDefaultCountry();
+		PlaceLocationData place;
+
+		for (idx = 0; idx < persons.length; idx++) {
+			if (birth) {
+				paikka = persons[idx].getBirtPlace();
+			} else {
+				paikka = persons[idx].getDeatPlace();
+			}
+			if (paikka != null) {
+
+				if (birth) {
+					maa = persons[idx].getBirthCountry();
+				} else {
+					maa = persons[idx].getDeatCountry();
+				}
+				if (maa != null)
+					maa = maa.toUpperCase();
+
+				if (maa == null) {
+					ccode = defaultCountry;
+				} else {
+					ccode = ccodes.get(maa.toUpperCase());
+					if (ccode == null) {
+						ccode = defaultCountry;
+					}
+				}
+				place = paikat.get(paikka.toUpperCase() + ";" + ccode);
+				if (place == null) {
+					place = new PlaceLocationData(paikka, ccode);
+
+					paikat.put(paikka.toUpperCase() + ";" + ccode, place);
+				} else {
+					place.increment();
+				}
+			}
+		}
+
+		SukuData request = new SukuData();
+		request.places = new PlaceLocationData[paikat.size()];
+
+		Iterator<String> it = paikat.keySet().iterator();
+		idx = 0;
+		while (it.hasNext()) {
+			request.places[idx] = paikat.get(it.next());
+			idx++;
+		}
+
+		int x = request.places.length;
+		quicksort(request.places, 0, x - 1);
+
+		int y = 10;
+		if (x > 10) {
+			y = x - 10;
+		} else {
+			y = x;
+		}
+
+		for (int xx = y; xx < x; xx++) {
+			dataset1.addValue(request.places[xx].getCount(),
+					request.places[xx].getName(), "");
+		}
+	}
+
+	/**
+	 * Quicksort.
+	 * 
+	 * @param array
+	 *            the array
+	 * @param left
+	 *            the left
+	 * @param right
+	 *            the right
+	 */
+	public static void quicksort(PlaceLocationData array[], int left, int right) {
+		int leftIdx = left;
+		int rightIdx = right;
+		PlaceLocationData temp;
+
+		if (right - left + 1 > 1) {
+			int pivot = (left + right) / 2;
+			while ((leftIdx <= pivot) && (rightIdx >= pivot)) {
+				while ((array[leftIdx].getCount() < array[pivot].getCount())
+						&& (leftIdx <= pivot)) {
+					leftIdx = leftIdx + 1;
+				}
+				while ((array[rightIdx].getCount() > array[pivot].getCount())
+						&& (rightIdx >= pivot)) {
+					rightIdx = rightIdx - 1;
+				}
+				temp = array[leftIdx];
+				array[leftIdx] = array[rightIdx];
+				array[rightIdx] = temp;
+				leftIdx = leftIdx + 1;
+				rightIdx = rightIdx - 1;
+				if (leftIdx - 1 == pivot) {
+					pivot = rightIdx = rightIdx + 1;
+				} else if (rightIdx + 1 == pivot) {
+					pivot = leftIdx = leftIdx - 1;
+				}
+			}
+			quicksort(array, left, pivot - 1);
+			quicksort(array, pivot + 1, right);
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -468,6 +628,12 @@ public class GenStat extends JFrame implements ActionListener {
 			break;
 		case 5:
 			statBirthAndDeathMoths(false);
+			break;
+		case 6:
+			statBirthDeathPlaces(true);
+			break;
+		case 7:
+			statBirthDeathPlaces(false);
 			break;
 		}
 		this.chartPanel.repaint();
