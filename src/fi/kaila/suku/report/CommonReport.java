@@ -248,25 +248,25 @@ public abstract class CommonReport {
 							neww = imw * (newh / imh);
 						}
 
+						StringBuilder sm = new StringBuilder();
+						sm.append(Resurses.getReportString("TABLE")
+								.toLowerCase());
+						sm.append(" ");
+						sm.append(inoti.tabNo);
+						sm.append(". ");
+						sm.append(nn.getMediaTitle());
+
 						Image imgs = img.getScaledInstance((int) neww,
 								(int) newh, Image.SCALE_DEFAULT);
 
 						imagetx.setImage(imgs, nn.getMediaData(),
 								img.getWidth(), img.getHeight(),
-								nn.getMediaFilename(), nn.getMediaTitle(),
+								nn.getMediaFilename(), sm.toString(),
 								nn.getTag());
 						imagetx.addText("");
-					}
 
-					imagetx.addText(Resurses.getReportString("INDEX_IMAGE"));
-					imagetx.addText(" " + inoti.imgNumber + " ");
-					imagetx.addText(Resurses.getReportString("TABLE"));
-					imagetx.addText(" " + inoti.tabNo);
-					imagetx.addText(". ");
-					if (nn.getMediaTitle() != null) {
-						imagetx.addText(nn.getMediaTitle());
-						imagetx.addText(". ");
 					}
+					repoWriter.addText(imagetx);
 
 					repoWriter.addText(imagetx);
 					if (nn.getNoteText() != null) {
@@ -274,14 +274,16 @@ public abstract class CommonReport {
 					}
 
 				} else {
-					bt.addText(Resurses.getReportString("INDEX_IMAGE"));
-					bt.addText(" " + inoti.imgNumber + " ");
-					bt.addText(Resurses.getReportString("TABLE"));
-					bt.addText(" " + inoti.tabNo);
-					bt.addText(". ");
+					bt.addText(Resurses.getReportString("INDEX_IMAGE"), true,
+							false);
+					bt.addText(" " + inoti.imgNumber + " ", true, false);
+					bt.addText(Resurses.getReportString("TABLE").toLowerCase(),
+							true, false);
+					bt.addText(" " + inoti.tabNo, true, false);
+					bt.addText(". ", true, false);
 					if (nn.getMediaTitle() != null) {
-						bt.addText(nn.getMediaTitle());
-						bt.addText(". ");
+						bt.addText(nn.getMediaTitle(), true, false);
+						bt.addText(". ", true, false);
 					}
 
 					repoWriter.addText(bt);
