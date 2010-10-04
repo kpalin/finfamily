@@ -41,6 +41,7 @@ public class GenStat extends JFrame implements ActionListener {
 	private JComboBox statCombo;
 	private ChartPanel chartPanel;
 	private JFreeChart noOfChildrenChart;
+	private JFreeChart ChildrenVsNoChildrenChart;
 	private JFreeChart sexChart;
 	private JFreeChart marriedVsSingleChart;
 	private JFreeChart birthAndDeathMothsChart;
@@ -68,6 +69,7 @@ public class GenStat extends JFrame implements ActionListener {
 		statCombo = new JComboBox();
 
 		statCombo.addItem(Resurses.getString("STAT_NO_OF_CHILDREN"));
+		statCombo.addItem(Resurses.getString("STAT_CHILDREN_VS_NO_CHILDREN"));
 		statCombo.addItem(Resurses.getString("STAT_SEX"));
 		statCombo.addItem(Resurses.getString("STAT_MARRIED_VS_SINGLE"));
 		statCombo.addItem(Resurses.getString("STAT_BIRTH_MONTHS"));
@@ -141,7 +143,7 @@ public class GenStat extends JFrame implements ActionListener {
 	}
 
 	private void statNoOfChildren() {
-		int x, x0 = 0, x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0, x10 = 0, x11 = 0, x12 = 0, x13 = 0, x14 = 0, x15 = 0, x16 = 0, x17 = 0, x18 = 0, x19 = 0, x20 = 0, xx = 0;
+		int x, x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0, x10 = 0, x11 = 0, x12 = 0, x13 = 0, x14 = 0, x15 = 0, x16 = 0, x17 = 0, x18 = 0, x19 = 0, x20 = 0, xx = 0;
 
 		// add the chart to a panel...
 		final DefaultCategoryDataset dataset1 = new DefaultCategoryDataset();
@@ -165,7 +167,7 @@ public class GenStat extends JFrame implements ActionListener {
 			x = this.persons[xy].getChildCount();
 			switch (x) {
 			case 0:
-				x0++;
+				// Do nothing
 				break;
 			case 1:
 				x1++;
@@ -230,7 +232,6 @@ public class GenStat extends JFrame implements ActionListener {
 			}
 			//
 		}
-		dataset1.addValue(x0, "0", "");
 		dataset1.addValue(x1, "1", "");
 		dataset1.addValue(x2, "2", "");
 		dataset1.addValue(x3, "3", "");
@@ -252,6 +253,36 @@ public class GenStat extends JFrame implements ActionListener {
 		dataset1.addValue(x19, "19", "");
 		dataset1.addValue(x20, "20", "");
 		dataset1.addValue(xx, ">20", "");
+
+	}
+
+	private void statChildrenVsNoChildren() {
+		int x0 = 0, x1 = 0;
+		int x;
+
+		// add the chart to a panel...
+		final DefaultPieDataset dataset = new DefaultPieDataset();
+		ChildrenVsNoChildrenChart = ChartFactory.createPieChart(
+				Resurses.getString("STAT_CHILDREN_VS_NO_CHILDREN"), dataset,
+				false, true, false);
+
+		chartPanel.setChart(ChildrenVsNoChildrenChart);
+
+		final PiePlot plot = (PiePlot) ChildrenVsNoChildrenChart.getPlot();
+		plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
+				"{0}: {2} ({1} " + Resurses.getString("STAT_PIECES") + " )"));
+		plot.setNoDataMessage(Resurses.getString("STAT_NO_DATA"));
+
+		for (int xy = 0; xy < this.persons.length; xy++) {
+			x = this.persons[xy].getChildCount();
+			if (x == 0) {
+				x0++;
+			} else {
+				x1++;
+			}
+		}
+		dataset.setValue(Resurses.getString("STAT_NO_CHILDREN"), x0);
+		dataset.setValue(Resurses.getString("STAT_CHILDREN"), x1);
 
 	}
 
@@ -424,15 +455,18 @@ public class GenStat extends JFrame implements ActionListener {
 			statNoOfChildren();
 			break;
 		case 1:
-			statSex();
+			statChildrenVsNoChildren();
 			break;
 		case 2:
-			statMarriedVsSingle();
+			statSex();
 			break;
 		case 3:
-			statBirthAndDeathMoths(true);
+			statMarriedVsSingle();
 			break;
 		case 4:
+			statBirthAndDeathMoths(true);
+			break;
+		case 5:
 			statBirthAndDeathMoths(false);
 			break;
 		}
