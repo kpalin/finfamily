@@ -85,7 +85,6 @@ import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.dialog.SelectSchema;
 import fi.kaila.suku.swing.dialog.SettingsDialog;
-import fi.kaila.suku.swing.dialog.SqlCommandDialog;
 import fi.kaila.suku.swing.dialog.SukuPad;
 import fi.kaila.suku.swing.dialog.ToolsDialog;
 import fi.kaila.suku.swing.dialog.ViewMgrWindow;
@@ -170,7 +169,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private final boolean testEnabled = false;
+	private final boolean testEnabled = true;
 
 	/**
 	 * Application version moved to class fi.kaila.suku.ant.AntVersion
@@ -1481,8 +1480,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 			if (cmd.equals("MENU_TOOLS_TEST")) {
-				SqlCommandDialog sql = new SqlCommandDialog(this);
-				sql.setVisible(true);
+				displayGenStats();
+				// SqlCommandDialog sql = new SqlCommandDialog(this);
+				// sql.setVisible(true);
 			}
 
 			if (cmd.equals(Resurses.UPDATEDB)) {
