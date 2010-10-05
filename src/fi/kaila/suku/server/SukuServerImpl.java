@@ -335,7 +335,7 @@ public class SukuServerImpl implements SukuServer {
 			// sql =
 			// "select tag,count(*) from relation where pid=? group by tag";
 
-			sql = "select a.tag,b.pid bid "
+			sql = "select a.tag,b.pid "
 					+ "from relation as a inner join relation as b on a.rid=b.rid "
 					+ "where a.pid=? ";
 
