@@ -1,6 +1,5 @@
 package fi.kaila.suku.swing;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -46,13 +45,6 @@ public class GenStat extends JFrame implements ActionListener {
 	private GenStat me;
 	private JComboBox statCombo;
 	private ChartPanel chartPanel;
-	private JFreeChart noOfChildrenChart;
-	private JFreeChart ChildrenVsNoChildrenChart;
-	private JFreeChart sexChart;
-	private JFreeChart marriedVsSingleChart;
-	private JFreeChart birthAndDeathMothsChart;
-	private JFreeChart birthAndDeathPlacesChart;
-	private JFreeChart firstAndLastNamesChart;
 	private PersonShortData[] persons = null;
 
 	/**
@@ -90,7 +82,7 @@ public class GenStat extends JFrame implements ActionListener {
 		statCombo.setActionCommand(Resurses.SHOWGRID);
 		statCombo.addActionListener(this);
 
-		chartPanel = new ChartPanel(noOfChildrenChart);
+		chartPanel = new ChartPanel(null);
 		statNoOfChildren();
 
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -137,7 +129,7 @@ public class GenStat extends JFrame implements ActionListener {
 																		GroupLayout.DEFAULT_SIZE,
 																		Short.MAX_VALUE)))));
 
-		setSize(new Dimension(700, 700));
+		this.pack();
 
 		setVisible(true);
 
@@ -155,11 +147,11 @@ public class GenStat extends JFrame implements ActionListener {
 	}
 
 	private void statNoOfChildren() {
-		int x, x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0, x10 = 0, x11 = 0, x12 = 0, x13 = 0, x14 = 0, x15 = 0, x16 = 0, x17 = 0, x18 = 0, x19 = 0, x20 = 0, xx = 0;
+		int x, x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0, x10 = 0, x11 = 0, x12 = 0, x13 = 0, x14 = 0, x15 = 0, xx = 0;
 
 		// add the chart to a panel...
 		final DefaultCategoryDataset dataset1 = new DefaultCategoryDataset();
-		noOfChildrenChart = ChartFactory.createBarChart(
+		final JFreeChart noOfChildrenChart = ChartFactory.createBarChart(
 				Resurses.getString("STAT_NO_OF_CHILDREN"),
 				Resurses.getString("STAT_CHILDREN"),
 				Resurses.getString("STAT_PIECES"), dataset1,
@@ -177,72 +169,60 @@ public class GenStat extends JFrame implements ActionListener {
 
 		for (int xy = 0; xy < this.persons.length; xy++) {
 			x = this.persons[xy].getChildCount();
-			switch (x) {
-			case 0:
-				// Do nothing
-				break;
-			case 1:
-				x1++;
-				break;
-			case 2:
-				x2++;
-				break;
-			case 3:
-				x3++;
-				break;
-			case 4:
-				x4++;
-				break;
-			case 5:
-				x5++;
-				break;
-			case 6:
-				x6++;
-				break;
-			case 7:
-				x7++;
-				break;
-			case 8:
-				x8++;
-				break;
-			case 9:
-				x9++;
-				break;
-			case 10:
-				x10++;
-				break;
-			case 11:
-				x11++;
-				break;
-			case 12:
-				x12++;
-				break;
-			case 13:
-				x13++;
-				break;
-			case 14:
-				x14++;
-				break;
-			case 15:
-				x15++;
-				break;
-			case 16:
-				x16++;
-				break;
-			case 17:
-				x17++;
-				break;
-			case 18:
-				x18++;
-				break;
-			case 19:
-				x19++;
-				break;
-			case 20:
-				x20++;
-				break;
+			if (x < 16) {
+				switch (x) {
+				case 0:
+					// Do nothing
+					break;
+				case 1:
+					x1++;
+					break;
+				case 2:
+					x2++;
+					break;
+				case 3:
+					x3++;
+					break;
+				case 4:
+					x4++;
+					break;
+				case 5:
+					x5++;
+					break;
+				case 6:
+					x6++;
+					break;
+				case 7:
+					x7++;
+					break;
+				case 8:
+					x8++;
+					break;
+				case 9:
+					x9++;
+					break;
+				case 10:
+					x10++;
+					break;
+				case 11:
+					x11++;
+					break;
+				case 12:
+					x12++;
+					break;
+				case 13:
+					x13++;
+					break;
+				case 14:
+					x14++;
+					break;
+				case 15:
+					x15++;
+					break;
+				}
+			} else {
+				xx++;
 			}
-			//
 		}
 		dataset1.addValue(x1, "1", "");
 		dataset1.addValue(x2, "2", "");
@@ -259,13 +239,7 @@ public class GenStat extends JFrame implements ActionListener {
 		dataset1.addValue(x13, "13", "");
 		dataset1.addValue(x14, "14", "");
 		dataset1.addValue(x15, "15", "");
-		dataset1.addValue(x16, "16", "");
-		dataset1.addValue(x17, "17", "");
-		dataset1.addValue(x18, "18", "");
-		dataset1.addValue(x19, "19", "");
-		dataset1.addValue(x20, "20", "");
-		dataset1.addValue(xx, ">20", "");
-
+		dataset1.addValue(xx, ">15", "");
 	}
 
 	private void statChildrenVsNoChildren() {
@@ -274,9 +248,10 @@ public class GenStat extends JFrame implements ActionListener {
 
 		// add the chart to a panel...
 		final DefaultPieDataset dataset = new DefaultPieDataset();
-		ChildrenVsNoChildrenChart = ChartFactory.createPieChart(
-				Resurses.getString("STAT_CHILDREN_VS_NO_CHILDREN"), dataset,
-				false, true, false);
+		final JFreeChart ChildrenVsNoChildrenChart = ChartFactory
+				.createPieChart(
+						Resurses.getString("STAT_CHILDREN_VS_NO_CHILDREN"),
+						dataset, false, true, false);
 
 		chartPanel.setChart(ChildrenVsNoChildrenChart);
 
@@ -304,8 +279,8 @@ public class GenStat extends JFrame implements ActionListener {
 
 		// add the chart to a panel...
 		final DefaultPieDataset dataset2 = new DefaultPieDataset();
-		sexChart = ChartFactory.createPieChart(Resurses.getString("STAT_SEX"),
-				dataset2, false, true, false);
+		final JFreeChart sexChart = ChartFactory.createPieChart(
+				Resurses.getString("STAT_SEX"), dataset2, false, true, false);
 
 		chartPanel.setChart(sexChart);
 
@@ -336,7 +311,7 @@ public class GenStat extends JFrame implements ActionListener {
 
 		// add the chart to a panel...
 		final DefaultPieDataset dataset = new DefaultPieDataset();
-		marriedVsSingleChart = ChartFactory.createPieChart(
+		final JFreeChart marriedVsSingleChart = ChartFactory.createPieChart(
 				Resurses.getString("STAT_MARRIED_VS_SINGLE"), dataset, false,
 				true, false);
 
@@ -371,8 +346,8 @@ public class GenStat extends JFrame implements ActionListener {
 		} else {
 			caption = Resurses.getString("STAT_DEATH_MONTHS");
 		}
-		birthAndDeathMothsChart = ChartFactory.createBarChart(caption,
-				Resurses.getString("STAT_MONTHS"),
+		final JFreeChart birthAndDeathMothsChart = ChartFactory.createBarChart(
+				caption, Resurses.getString("STAT_MONTHS"),
 				Resurses.getString("STAT_PIECES"), dataset1,
 				PlotOrientation.VERTICAL, true, true, false);
 
@@ -462,10 +437,10 @@ public class GenStat extends JFrame implements ActionListener {
 		} else {
 			caption = Resurses.getString("STAT_DEATH_PLACES");
 		}
-		birthAndDeathPlacesChart = ChartFactory.createBarChart(caption,
-				Resurses.getString("STAT_PLACES"),
-				Resurses.getString("STAT_PIECES"), dataset1,
-				PlotOrientation.VERTICAL, true, true, false);
+		final JFreeChart birthAndDeathPlacesChart = ChartFactory
+				.createBarChart(caption, Resurses.getString("STAT_PLACES"),
+						Resurses.getString("STAT_PIECES"), dataset1,
+						PlotOrientation.VERTICAL, true, true, false);
 
 		chartPanel.setChart(birthAndDeathPlacesChart);
 
@@ -574,8 +549,8 @@ public class GenStat extends JFrame implements ActionListener {
 		} else {
 			caption = Resurses.getString("STAT_LAST_NAMES");
 		}
-		firstAndLastNamesChart = ChartFactory.createBarChart(caption,
-				Resurses.getString("STAT_NAMES"),
+		final JFreeChart firstAndLastNamesChart = ChartFactory.createBarChart(
+				caption, Resurses.getString("STAT_NAMES"),
 				Resurses.getString("STAT_PIECES"), dataset1,
 				PlotOrientation.VERTICAL, true, true, false);
 
@@ -765,7 +740,7 @@ public class GenStat extends JFrame implements ActionListener {
 		this.chartPanel.repaint();
 	}
 
-	private class NameData implements Serializable {
+	private static class NameData implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 		private String name = null;
