@@ -1524,12 +1524,15 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					// Utils.openExternalFile(repo);
 					// }
 					// }
+				} else {
+					self.setVisible(false);
 				}
 			}
 
 			if (dr != null) {
 				try {
 					dr.getWriter().closeReport();
+
 				} catch (SukuException e) {
 					JOptionPane.showMessageDialog(null, e.getMessage(),
 							Resurses.getString(Resurses.SUKU),

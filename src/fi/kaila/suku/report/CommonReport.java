@@ -266,7 +266,6 @@ public abstract class CommonReport {
 						imagetx.addText("");
 
 					}
-					repoWriter.addText(imagetx);
 
 					repoWriter.addText(imagetx);
 					if (nn.getNoteText() != null) {

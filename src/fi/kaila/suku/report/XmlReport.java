@@ -63,7 +63,7 @@ public class XmlReport implements ReportInterface {
 	private Dimension maxImageSize = new Dimension(0, 0);
 	private Dimension maxPersonImageSize = new Dimension(0, 0);
 	private int translatorIdx;
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/** The image counter. */
 	int imageCounter = 0;
@@ -368,7 +368,7 @@ public class XmlReport implements ReportInterface {
 				} else if (bt.isBold(i)) {
 					currStyle = "b";
 				} else if (bt.isUnderline(i)) {
-					currStyle = "ul";
+					currStyle = "u";
 				} else if (bt.isBold(i) && bt.isItalic(i)) {
 					currStyle = "bi";
 				} else if (bt.isBold(i) && bt.isUnderline(i)) {
