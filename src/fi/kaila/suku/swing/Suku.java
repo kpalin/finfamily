@@ -85,6 +85,7 @@ import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.dialog.SelectSchema;
 import fi.kaila.suku.swing.dialog.SettingsDialog;
+import fi.kaila.suku.swing.dialog.SqlCommandDialog;
 import fi.kaila.suku.swing.dialog.SukuPad;
 import fi.kaila.suku.swing.dialog.ToolsDialog;
 import fi.kaila.suku.swing.dialog.ViewMgrWindow;
@@ -169,7 +170,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private final boolean testEnabled = true;
+	private final boolean testEnabled = false;
 
 	/**
 	 * Application version moved to class fi.kaila.suku.ant.AntVersion
@@ -212,6 +213,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mSettings;
 	private JMenuItem mGroupMgr;
 	private JMenuItem mViewMgr;
+	private JMenuItem mStatistics;
 	private JMenuItem mTestMe;
 	private JMenuItem mLoadCoordinates;
 	private JMenuItem mLoadTypes;
@@ -530,6 +532,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mTools.add(this.mViewMgr);
 		this.mViewMgr.setActionCommand("MENU_TOOLS_VIEW_MGR");
 		this.mViewMgr.addActionListener(this);
+
+		this.mStatistics = new JMenuItem(Resurses.getString("MENU_TOOLS_STAT"));
+		this.mTools.add(this.mStatistics);
+		this.mStatistics.setActionCommand("MENU_TOOLS_STAT");
+		this.mStatistics.addActionListener(this);
 
 		this.mTestMe = new JMenuItem(Resurses.getString("MENU_TOOLS_TEST"));
 		if (testEnabled) {
@@ -1479,12 +1486,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				return;
 			}
 
-			if (cmd.equals("MENU_TOOLS_TEST")) {
+			if (cmd.equals("MENU_TOOLS_STAT")) {
 				displayGenStats();
-				// SqlCommandDialog sql = new SqlCommandDialog(this);
-				// sql.setVisible(true);
-			}
 
+			}
+			if (cmd.equals("MENU_TOOLS_TEST")) {
+
+				SqlCommandDialog sql = new SqlCommandDialog(this);
+				sql.setVisible(true);
+			}
 			if (cmd.equals(Resurses.UPDATEDB)) {
 				SukuData resp = kontroller.getSukuData("cmd=initdb",
 						"path=/sql/dbupdates.sql");
@@ -2803,6 +2813,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		int key = p.getPid();
 		PersonShortData ret = this.tableMap.put(key, p);
+
+		int midx = personView.getMainPaneIndex();
+		SukuTabPane tp = personView.getPane(midx);
+		if (tp.getPid() == key) {
+			personView.closeMainPane(true);
+		}
 
 		SukuData resp = kontroller.getSukuData("cmd=virtual", "type=counts",
 				"pid=" + key);

@@ -222,12 +222,13 @@ public class Upload {
 
 		sql = "insert into relation (rid,pid,surety,tag,relationrow) values (?,?,80,?,?) ";
 
-		String relaQuery = "select 1 from relation a inner join relation b on a.rid=b.rid "
+		String relaQuery = "select a.rid from relation a inner join relation b on a.rid=b.rid "
 				+ "where a.pid=? and a.tag=? and b.pid=? and b.tag=?  ";
 
 		PreparedStatement relaSt = con.prepareStatement(relaQuery);
 		pstm = con.prepareStatement(sql);
 		int rid;
+		int foundrid = 0;
 		for (int i = 0; i < families.relations.length; i++) {
 			Relation rel = families.relations[i];
 
@@ -247,13 +248,14 @@ public class Upload {
 				relaSt.setString(4, "CHIL");
 			}
 			ResultSet rrs = relaSt.executeQuery();
-			boolean foundrela = false;
+
 			if (rrs.next()) {
-				foundrela = true;
+				foundrid = rrs.getInt(1);
+
 			}
 			rrs.close();
-
-			if (!foundrela) {
+			relaSt.close();
+			if (foundrid == 0) {
 				rid = nextSeq(con, "relationseq");
 
 				pstm.setInt(1, rid);
@@ -310,7 +312,60 @@ public class Upload {
 						}
 					}
 				}
+			} else { // relation already exists. check relation notice still
+				// we're only interested in MARR
+
+				boolean addMarr = false;
+				if (rel.getNotices() != null) {
+					for (RelationNotice rn : rel.getNotices()) {
+						if (rn.getTag().equals("MARR")) {
+							addMarr = true;
+						}
+					}
+					if (addMarr) {
+						String sqlrela = "select count(*) from relationnotice where rid = ? and tag = 'MARR'";
+						PreparedStatement relas = con.prepareStatement(sqlrela);
+						relas.setInt(1, foundrid);
+						ResultSet rrela = relas.executeQuery();
+						boolean isMarried = false;
+						if (rrela.next()) {
+							if (rrela.getInt(1) > 0) {
+								isMarried = true;
+							}
+						}
+						rrela.close();
+						relas.close();
+						if (!isMarried) {
+							int rnid = nextSeq(con, "relationnoticeseq");
+
+							RelationNotice[] noti = rel.getNotices();
+							if (noti != null) {
+								for (int j = 0; j < noti.length; j++) {
+									pstmn.setInt(1, rnid);
+									pstmn.setInt(2, foundrid);
+									pstmn.setInt(3, j + 1);
+									pstmn.setString(4, noti[j].getTag());
+									pstmn.setString(5, noti[j].getType());
+									pstmn.setString(6, noti[j].getDescription());
+									pstmn.setString(7, noti[j].getFromDate());
+									pstmn.setString(8, noti[j].getPlace());
+									pstmn.setString(9, noti[j].getNoteText());
+									pstmn.setString(10, noti[j].getSource());
+									int luk = pstmn.executeUpdate();
+									if (luk != 1) {
+										logger.warning("Insert to RelationNotice "
+												+ rel.getRelative()
+												+ " result " + luk + " rows");
+									}
+								}
+							}
+
+						}
+					}
+				}
 			}
+			pstm.close();
+			pstmn.close();
 		}
 
 		return respons;

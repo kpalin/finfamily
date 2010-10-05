@@ -20,13 +20,13 @@ public class SukuPopupMenu {
 	private static SukuPopupMenu me = null;
 
 	private JPopupMenu pMenu = null;
-	private JMenuItem pShowPerson;
-	private JMenuItem pShowRelatives;
-	private JMenuItem pShowFamily;
-	private JMenuItem pMainPerson;
+	private final JMenuItem pShowPerson;
+	private final JMenuItem pShowRelatives;
+	private final JMenuItem pShowFamily;
+	private final JMenuItem pMainPerson;
 	// private JMenuItem pPersonView;
-	private JMenuItem pCopy;
-	private JMenuItem pNeedle;
+	private final JMenuItem pCopy;
+	private final JMenuItem pNeedle;
 	// private JMenuItem pPaste;
 	private JMenu pHiskiConnect = null;
 	private JMenuItem[] pHiskiPerson = null;
@@ -55,9 +55,12 @@ public class SukuPopupMenu {
 	 * @param b
 	 *            the b
 	 */
-	public void enableHiskiPerson(int idx, boolean b) {
+	public void enableHiskiPerson(int idx, boolean b, String name) {
 		if (idx >= 0 && idx < pHiskiPerson.length) {
 			pHiskiPerson[idx].setVisible(b);
+			if (name != null) {
+				pHiskiPerson[idx].setText(name + " [" + idx + "]");
+			}
 		}
 	}
 

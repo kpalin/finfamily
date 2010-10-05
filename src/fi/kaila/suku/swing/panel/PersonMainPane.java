@@ -1130,26 +1130,27 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					personView.getSuku().updatePerson(shh);
 
 					//
-					// now reset the toBeUpdate value
+					// now reset the toBeUpdate value if persLong exists
 					//
-					persLong.resetModified();
+					if (persLong != null) {
+						persLong.resetModified();
 
-					UnitNotice[] unn = persLong.getNotices();
+						UnitNotice[] unn = persLong.getNotices();
 
-					if (unn != null) {
+						if (unn != null) {
 
-						for (int i = 0; i < unn.length; i++) {
-							unn[i].setModified(false);
-							UnitLanguage[] ull = unn[i].getLanguages();
-							if (ull != null) {
-								for (int j = 0; j < ull.length; j++) {
-									ull[j].resetModified();
+							for (int i = 0; i < unn.length; i++) {
+								unn[i].setModified(false);
+								UnitLanguage[] ull = unn[i].getLanguages();
+								if (ull != null) {
+									for (int j = 0; j < ull.length; j++) {
+										ull[j].resetModified();
+									}
 								}
 							}
 						}
 					}
 				}
-
 				Relation[] rr = req.relations;
 				if (rr != null) {
 					for (int i = 0; i < rr.length; i++) {
