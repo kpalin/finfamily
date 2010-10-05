@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -50,7 +51,8 @@ public class GenStat extends JFrame implements ActionListener {
 	private JFreeChart sexChart;
 	private JFreeChart marriedVsSingleChart;
 	private JFreeChart birthAndDeathMothsChart;
-	private JFreeChart firstNamesChart;
+	private JFreeChart birthAndDeathPlacesChart;
+	private JFreeChart firstAndLastNamesChart;
 	private PersonShortData[] persons = null;
 
 	/**
@@ -82,6 +84,8 @@ public class GenStat extends JFrame implements ActionListener {
 		statCombo.addItem(Resurses.getString("STAT_DEATH_MONTHS"));
 		statCombo.addItem(Resurses.getString("STAT_BIRTH_PLACES"));
 		statCombo.addItem(Resurses.getString("STAT_DEATH_PLACES"));
+		statCombo.addItem(Resurses.getString("STAT_FIRST_NAMES"));
+		statCombo.addItem(Resurses.getString("STAT_LAST_NAMES"));
 
 		statCombo.setActionCommand(Resurses.SHOWGRID);
 		statCombo.addActionListener(this);
@@ -458,15 +462,15 @@ public class GenStat extends JFrame implements ActionListener {
 		} else {
 			caption = Resurses.getString("STAT_DEATH_PLACES");
 		}
-		firstNamesChart = ChartFactory.createBarChart(caption,
+		birthAndDeathPlacesChart = ChartFactory.createBarChart(caption,
 				Resurses.getString("STAT_PLACES"),
 				Resurses.getString("STAT_PIECES"), dataset1,
 				PlotOrientation.VERTICAL, true, true, false);
 
-		chartPanel.setChart(firstNamesChart);
+		chartPanel.setChart(birthAndDeathPlacesChart);
 
 		// get a reference to the plot for further customisation...
-		final CategoryPlot plot = firstNamesChart.getCategoryPlot();
+		final CategoryPlot plot = birthAndDeathPlacesChart.getCategoryPlot();
 		plot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
 
 		// change the auto tick unit selection to integer units only...
@@ -559,6 +563,80 @@ public class GenStat extends JFrame implements ActionListener {
 		}
 	}
 
+	private void statFirstLastNames(boolean birth) {
+
+		// add the chart to a panel...
+		final DefaultCategoryDataset dataset1 = new DefaultCategoryDataset();
+
+		String caption;
+		if (birth) {
+			caption = Resurses.getString("STAT_FIRST_NAMES");
+		} else {
+			caption = Resurses.getString("STAT_LAST_NAMES");
+		}
+		firstAndLastNamesChart = ChartFactory.createBarChart(caption,
+				Resurses.getString("STAT_NAMES"),
+				Resurses.getString("STAT_PIECES"), dataset1,
+				PlotOrientation.VERTICAL, true, true, false);
+
+		chartPanel.setChart(firstAndLastNamesChart);
+
+		// get a reference to the plot for further customisation...
+		final CategoryPlot plot = firstAndLastNamesChart.getCategoryPlot();
+		plot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
+
+		// change the auto tick unit selection to integer units only...
+		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+		int idx;
+		String sname;
+		NameData name = null;
+		HashMap<String, NameData> snames = new HashMap<String, NameData>();
+		NameData[] names = null;
+
+		for (idx = 0; idx < persons.length; idx++) {
+			if (birth) {
+				sname = persons[idx].getGivenname(0);
+			} else {
+				sname = persons[idx].getSurname(0);
+			}
+			name = snames.get(sname);
+			if (sname != null) {
+				if (name == null) {
+					name = new NameData(sname);
+
+					snames.put(sname, name);
+				} else {
+					name.increment();
+				}
+			}
+		}
+
+		names = new NameData[snames.size()];
+
+		Iterator<String> it = snames.keySet().iterator();
+		idx = 0;
+		while (it.hasNext()) {
+			names[idx] = snames.get(it.next());
+			idx++;
+		}
+
+		int x = names.length;
+		quicksortnames(names, 0, x - 1);
+
+		int y = 10;
+		if (x > 10) {
+			y = x - 10;
+		} else {
+			y = x;
+		}
+
+		for (int xx = y; xx < x; xx++) {
+			dataset1.addValue(names[xx].getCount(), names[xx].getName(), "");
+		}
+	}
+
 	/**
 	 * Quicksort.
 	 * 
@@ -601,6 +679,48 @@ public class GenStat extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Quicksort.
+	 * 
+	 * @param array
+	 *            the array
+	 * @param left
+	 *            the left
+	 * @param right
+	 *            the right
+	 */
+	public static void quicksortnames(NameData array[], int left, int right) {
+		int leftIdx = left;
+		int rightIdx = right;
+		NameData temp;
+
+		if (right - left + 1 > 1) {
+			int pivot = (left + right) / 2;
+			while ((leftIdx <= pivot) && (rightIdx >= pivot)) {
+				while ((array[leftIdx].getCount() < array[pivot].getCount())
+						&& (leftIdx <= pivot)) {
+					leftIdx = leftIdx + 1;
+				}
+				while ((array[rightIdx].getCount() > array[pivot].getCount())
+						&& (rightIdx >= pivot)) {
+					rightIdx = rightIdx - 1;
+				}
+				temp = array[leftIdx];
+				array[leftIdx] = array[rightIdx];
+				array[rightIdx] = temp;
+				leftIdx = leftIdx + 1;
+				rightIdx = rightIdx - 1;
+				if (leftIdx - 1 == pivot) {
+					pivot = rightIdx = rightIdx + 1;
+				} else if (rightIdx + 1 == pivot) {
+					pivot = leftIdx = leftIdx - 1;
+				}
+			}
+			quicksortnames(array, left, pivot - 1);
+			quicksortnames(array, pivot + 1, right);
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -635,8 +755,39 @@ public class GenStat extends JFrame implements ActionListener {
 		case 7:
 			statBirthDeathPlaces(false);
 			break;
+		case 8:
+			statFirstLastNames(true);
+			break;
+		case 9:
+			statFirstLastNames(false);
+			break;
 		}
 		this.chartPanel.repaint();
+	}
+
+	private class NameData implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+		private String name = null;
+		private int counter = 0;
+
+		public NameData(String place) {
+			this.name = place;
+			this.counter = 1;
+
+		}
+
+		public void increment() {
+			this.counter++;
+		}
+
+		public String getName() {
+			return this.name;
+		}
+
+		public int getCount() {
+			return this.counter;
+		}
 	}
 
 }
