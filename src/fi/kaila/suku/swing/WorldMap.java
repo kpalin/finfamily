@@ -166,22 +166,20 @@ public class WorldMap extends JFrame implements ActionListener,
 	 */
 	public void displayMap(PlaceLocationData[] places) {
 		this.places = places;
+		int x = this.places.length;
+		quicksort(this.places, 0, x - 1);
 		StringBuilder sb = new StringBuilder();
 
-		for (int xx = 0; xx < places.length; xx++) {
-			if (places[xx].getLatitude() == 0) {
-				sb.append(places[xx].getName() + "(" + places[xx].getCount()
-						+ ")\n");
+		for (int xx = 0; xx < x; xx++) {
+			if (this.places[xx].getLatitude() == 0) {
+				sb.append(this.places[xx].getName() + "("
+						+ this.places[xx].getCount() + ")\n");
+			} else {
+				this.currentPlaces.addItem(makeObj(this.places[xx].getName()
+						+ "(" + this.places[xx].getCount() + ")"));
 			}
 		}
 		missingPlacesList.setText(sb.toString());
-
-		for (int xx = 0; xx < places.length; xx++) {
-			if (places[xx].getLatitude() > 0) {
-				this.currentPlaces.addItem(makeObj(places[xx].getName() + "("
-						+ places[xx].getCount() + ")"));
-			}
-		}
 	}
 
 	private Object makeObj(final String item) {
@@ -190,6 +188,50 @@ public class WorldMap extends JFrame implements ActionListener,
 				return item;
 			}
 		};
+	}
+
+	/**
+	 * Quicksort.
+	 * 
+	 * @param array
+	 *            the array
+	 * @param left
+	 *            the left
+	 * @param right
+	 *            the right
+	 */
+	private static void quicksort(PlaceLocationData array[], int left, int right) {
+		int leftIdx = left;
+		int rightIdx = right;
+		PlaceLocationData temp;
+
+		if (right - left + 1 > 1) {
+			int pivot = (left + right) / 2;
+			while ((leftIdx <= pivot) && (rightIdx >= pivot)) {
+				while ((array[leftIdx].getName().compareTo(
+						array[pivot].getName()) < 0)
+						&& (leftIdx <= pivot)) {
+					leftIdx = leftIdx + 1;
+				}
+				while ((array[rightIdx].getName().compareTo(
+						array[pivot].getName()) > 0)
+						&& (rightIdx >= pivot)) {
+					rightIdx = rightIdx - 1;
+				}
+				temp = array[leftIdx];
+				array[leftIdx] = array[rightIdx];
+				array[rightIdx] = temp;
+				leftIdx = leftIdx + 1;
+				rightIdx = rightIdx - 1;
+				if (leftIdx - 1 == pivot) {
+					pivot = rightIdx = rightIdx + 1;
+				} else if (rightIdx + 1 == pivot) {
+					pivot = leftIdx = leftIdx - 1;
+				}
+			}
+			quicksort(array, left, pivot - 1);
+			quicksort(array, pivot + 1, right);
+		}
 	}
 
 	/*

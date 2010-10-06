@@ -622,7 +622,7 @@ public class GenStat extends JFrame implements ActionListener {
 	 * @param right
 	 *            the right
 	 */
-	public static void quicksort(PlaceLocationData array[], int left, int right) {
+	private static void quicksort(PlaceLocationData array[], int left, int right) {
 		int leftIdx = left;
 		int rightIdx = right;
 		PlaceLocationData temp;
@@ -664,7 +664,7 @@ public class GenStat extends JFrame implements ActionListener {
 	 * @param right
 	 *            the right
 	 */
-	public static void quicksortnames(NameData array[], int left, int right) {
+	private static void quicksortnames(NameData array[], int left, int right) {
 		int leftIdx = left;
 		int rightIdx = right;
 		NameData temp;
