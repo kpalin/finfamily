@@ -254,7 +254,7 @@ public class Upload {
 
 			}
 			rrs.close();
-			relaSt.close();
+
 			if (foundrid == 0) {
 				rid = nextSeq(con, "relationseq");
 
@@ -364,10 +364,11 @@ public class Upload {
 					}
 				}
 			}
-			pstm.close();
-			pstmn.close();
-		}
 
+		}
+		pstm.close();
+		pstmn.close();
+		relaSt.close();
 		return respons;
 
 	}

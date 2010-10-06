@@ -2815,11 +2815,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		PersonShortData ret = this.tableMap.put(key, p);
 
 		int midx = personView.getMainPaneIndex();
-		SukuTabPane tp = personView.getPane(midx);
-		if (tp.getPid() == key) {
-			personView.closeMainPane(true);
+		if (midx > 0) {
+			SukuTabPane tp = personView.getPane(midx);
+			if (tp.getPid() == key) {
+				personView.closeMainPane(true);
+			}
 		}
-
 		SukuData resp = kontroller.getSukuData("cmd=virtual", "type=counts",
 				"pid=" + key);
 
