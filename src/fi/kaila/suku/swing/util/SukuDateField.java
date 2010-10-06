@@ -92,6 +92,13 @@ public class SukuDateField extends JPanel {
 		return Utils.dbDate(dateFrom.getText());
 	}
 
+	public String getDatePrefText() {
+		int idx = datePref.getSelectedIndex();
+		if (idx <= 0)
+			return null;
+		return (String) datePref.getSelectedItem();
+	}
+
 	/**
 	 * Checks if is plain.
 	 * 

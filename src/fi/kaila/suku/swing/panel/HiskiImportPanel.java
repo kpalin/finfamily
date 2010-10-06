@@ -143,8 +143,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 	private final String[] sexes = new String[4];
 
-	private final int[] hiskiPid = { 0, 0, 0 };
-	private final PersonShortData[] hiskiPers = { null, null, null };
+	private int[] hiskiPid = { 0, 0, 0 };
+	private PersonShortData[] hiskiPers = { null, null, null };
 	// private String [] sukuName = {null,null,null};
 	/** The y. */
 	int y = 20;
@@ -360,6 +360,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 	private void initHiskiPersons(int luku) {
 		// hpers = new PersonLongData[luku];
+		hiskiPid = new int[luku];
+		hiskiPers = new PersonShortData[luku];
 		pNumero = new JLabel[luku];
 		pSukuPid = new JLabel[luku];
 		pSukuName = new JLabel[luku];
@@ -380,7 +382,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		int i = 0;
 
 		for (i = 0; i < luku; i++) {
-
+			hiskiPid[i] = 0;
+			hiskiPers[i] = null;
 			pSukuPid[i] = new JLabel();
 			add(pSukuPid[i]);
 			pSukuPid[i].setBounds(150, y + i * rh, 100, 20);
@@ -459,14 +462,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	public void resetHiskiPids() {
 		for (int i = 0; i < hiskiPid.length; i++) {
 			hiskiPid[i] = 0;
-			if (pSukuName.length > i) {
-				pSukuName[i].setText("");
-			}
-			if (pSukuPid.length > i) {
-				pSukuPid[i].setText("");
-			}
+			pSukuName[i].setText("");
+			pSukuPid[i].setText("");
 			hiskiPers[i] = null;
-
 		}
 	}
 
@@ -578,6 +576,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			String farm = null;
 			UnitNotice notice;
 			String sex = null;
+			StringBuilder hbh = new StringBuilder();
 			switch (pSex[i].getSelectedIndex()) {
 			case 1:
 				sex = "M";
@@ -603,9 +602,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 			if ("muuttaja".equals(aux)) {
 				int muuttaja = -1 - i;
-				if (hiskiPid[0] > 0)
-					muuttaja = hiskiPid[0];
-
+				if (hiskiPid[i] > 0) {
+					muuttaja = hiskiPid[i];
+				}
 				kast.persons[i] = new PersonLongData(muuttaja, "INDI", sex);
 				kast.persons[i].setSource(hiskiSource);
 				occu = pOccu[i].getText();
@@ -620,21 +619,44 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 				suku = pSurname[i].getText();
 				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
-					notice = new UnitNotice("NAME");
-					notice.setGivenname(etu);
-					notice.setPatronym(patro);
-					notice.setSurname(suku);
-					notice.setSource(hiskiSource);
-					notices.add(notice);
+					if (kast.persons[i].getPid() > 0) {
+						if (hbh.length() > 0) {
+							hbh.append("\n");
+						}
+						hbh.append(Resurses.getString("HISKI_NAME"));
+						hbh.append(":");
+						if (!etu.isEmpty()) {
+							hbh.append(" ");
+							hbh.append(etu);
+						}
+						if (!patro.isEmpty()) {
+							hbh.append(" ");
+							hbh.append(patro);
+						}
+						if (!suku.isEmpty()) {
+							hbh.append(" ");
+							hbh.append(suku);
+						}
+						hbh.append("\n");
+					} else {
+
+						notice = new UnitNotice("NAME");
+						notice.setGivenname(etu);
+						notice.setPatronym(patro);
+						notice.setSurname(suku);
+						notice.setSource(hiskiSource);
+						notices.add(notice);
+					}
 				}
-				// age = pAge[i].getText();
-				// text = pReason[i].getText();
-				// if (age.length() > 0) {
-				// text += ";" + age;
-				// }
 
 				village = eventVillage.getText();
+				if (village.equals("-")) {
+					village = "";
+				}
 				farm = eventFarm.getText();
+				if (farm.equals("-")) {
+					farm = "";
+				}
 
 				if (kdate.length() > 0) {
 
@@ -661,6 +683,64 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notices.add(notice);
 				}
 
+				notice = new UnitNotice("HISKI");
+				if (!kdate.isEmpty()) {
+					noteBuf.append(eventFirstType.getText());
+					noteBuf.append(" ");
+					noteBuf.append(Utils.textDate(toDbDate(kdate), false));
+					noteBuf.append("\n");
+				}
+				if (!hdate.isEmpty()) {
+					noteBuf.append(eventLastType.getText());
+					noteBuf.append(" ");
+					noteBuf.append(Utils.textDate(toDbDate(hdate), false));
+					noteBuf.append("\n");
+				}
+
+				if (!village.isEmpty()) {
+					notice.setVillage(village);
+				}
+				if (!farm.isEmpty()) {
+					notice.setFarm(farm);
+				}
+
+				String tmp = eventReason.getText();
+				if (!tmp.isEmpty()) {
+					noteBuf.append(Resurses.getString("HISKI_HUOM"));
+					noteBuf.append(": ");
+					noteBuf.append(tmp);
+					noteBuf.append(".\n");
+				}
+				tmp = eventOrigComment.getText();
+				if (!tmp.isEmpty()) {
+					noteBuf.append(Resurses.getString("HISKI_ORIG"));
+					noteBuf.append(": ");
+					noteBuf.append(tmp);
+					noteBuf.append(".\n");
+				}
+				tmp = eventUserComment.getText();
+				if (!tmp.isEmpty()) {
+					noteBuf.append(Resurses.getString("HISKI_OMA"));
+					noteBuf.append(": ");
+					noteBuf.append(tmp);
+					noteBuf.append(".\n");
+				}
+				tmp = this.eventNote.getText();
+				if (!tmp.isEmpty()) {
+					noteBuf.append(Resurses.getString("HISKI_MUUT"));
+					noteBuf.append(": ");
+					noteBuf.append(tmp);
+					noteBuf.append(".\n");
+				}
+
+				hbh.append(noteBuf);
+
+				if (hbh.length() > 0) {
+					notice.setNoteText(hbh.toString());
+				}
+				notice.setSource(hiskiSource);
+				notices.add(notice);
+
 				if (notices.size() > 0) {
 					kast.persons[i].setNotices(notices
 							.toArray(new UnitNotice[0]));
@@ -669,37 +749,6 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				addOtherPersonToText(refs, noteBuf, i);
 			}
 
-		}
-
-		String aux = eventOrigComment.getText();
-		if (!aux.isEmpty()) {
-			noteBuf.append(Resurses.getString("HISKI_ORIG"));
-			noteBuf.append(": ");
-			noteBuf.append(aux);
-			noteBuf.append(". ");
-		}
-		aux = eventUserComment.getText();
-		if (!aux.isEmpty()) {
-			noteBuf.append(Resurses.getString("HISKI_OMA"));
-			noteBuf.append(": ");
-			noteBuf.append(aux);
-			noteBuf.append(". ");
-		}
-		if (noteBuf.length() > 0 && kast.persons.length > 0) {
-
-			notices = new Vector<UnitNotice>();
-			for (int i = 0; i < kast.persons[0].getNotices().length; i++) {
-				notices.add(kast.persons[0].getNotices()[i]);
-			}
-
-			UnitNotice note = new UnitNotice("NOTE");
-			note.setNoteText(noteBuf.toString());
-			note.setSource(hiskiSource);
-			if (refs.size() > 0) {
-				note.setRefNames(refs.toArray(new String[0]));
-			}
-			notices.add(note);
-			kast.persons[0].setNotices(notices.toArray(new UnitNotice[0]));
 		}
 
 		try {
@@ -725,7 +774,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		String kdate = eventFirstDate.getText();
 
 		String hdate = eventLastDate.getText();
-		String reason = eventReason.getText();
+		// String reason = eventReason.getText();
 		String aux;
 		notices = new Vector<UnitNotice>();
 		Vector<String> refs = new Vector<String>();
@@ -737,12 +786,12 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			String etu;
 			String patro;
 			String suku;
-
+			String reason;
 			String village;
 			String farm = null;
 			UnitNotice notice;
 			String sex = null;
-
+			StringBuilder hbh = new StringBuilder();
 			if ("vainaja".equals(type)) {
 
 				switch (pSex[i].getSelectedIndex()) {
@@ -756,9 +805,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					sex = "U";
 					break;
 				default:
-					if (hiskiPid[0] > 0) {
+					if (hiskiPid[i] > 0) {
 						PersonShortData curpers = this.suku
-								.getPerson(hiskiPid[0]);
+								.getPerson(hiskiPid[i]);
 						if (curpers != null) {
 							sex = curpers.getSex();
 							break;
@@ -770,9 +819,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 
 				int vainaa = -1 - i;
-				if (hiskiPid[0] > 0)
-					vainaa = hiskiPid[0];
-
+				if (hiskiPid[i] > 0) {
+					vainaa = hiskiPid[i];
+				}
 				kast.persons[i] = new PersonLongData(vainaa, "INDI", sex);
 
 				kast.persons[i].setSource(hiskiSource);
@@ -784,6 +833,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					notice.setSource(hiskiSource);
 					notices.add(notice);
 				}
+				reason = pReasonFarm[i].getText();
 				etu = pGivenname[i].getText();
 				patro = pPatronym[i].getText();
 				aux = pAgeVillage[i].getText();
@@ -797,32 +847,88 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 				suku = pSurname[i].getText();
 				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
-					notice = new UnitNotice("NAME");
-					notice.setGivenname(etu);
-					notice.setPatronym(patro);
-					notice.setSurname(suku);
-					notice.setSource(hiskiSource);
-					notices.add(notice);
+					if (kast.persons[i].getPid() > 0) {
+						if (hbh.length() > 0) {
+							hbh.append("\n");
+						}
+						hbh.append(Resurses.getString("HISKI_NAME"));
+						hbh.append(":");
+						if (!etu.isEmpty()) {
+							hbh.append(" ");
+							hbh.append(etu);
+						}
+						if (!patro.isEmpty()) {
+							hbh.append(" ");
+							hbh.append(patro);
+						}
+						if (!suku.isEmpty()) {
+							hbh.append(" ");
+							hbh.append(suku);
+						}
+						hbh.append("\n");
+					} else {
+
+						notice = new UnitNotice("NAME");
+						notice.setGivenname(etu);
+						notice.setPatronym(patro);
+						notice.setSurname(suku);
+						notice.setSource(hiskiSource);
+						notices.add(notice);
+					}
 				}
 
 				village = eventVillage.getText();
 				farm = eventFarm.getText();
+				village = eventVillage.getText();
+				if (village.equals("-")) {
+					village = "";
+				}
+				farm = eventFarm.getText();
+				if (farm.equals("-")) {
+					farm = "";
+				}
+				boolean hasDeath = false;
+				boolean hasBirth = false;
+				if (hiskiPid[i] > 0) {
+					if (hiskiPers[i].getDeatDate() != null) {
+						hasDeath = true;
+					}
+					if (hiskiPers[i].getBirtDate() != null) {
+						hasBirth = true;
+					}
 
+				}
 				if (kdate.length() > 0 || !reason.isEmpty()) {
+					if (hasDeath) {
+						hbh.append(Resurses.getString("CRITERIA.DEAT"));
+						hbh.append(" ");
+						hbh.append(Utils.textDate(kdate, false));
+						hbh.append(" ");
+						hbh.append(srk.getText());
+						if (!village.isEmpty()) {
+							hbh.append(" ");
+							hbh.append(village);
+						}
+						if (!farm.isEmpty()) {
+							hbh.append(" ");
+							hbh.append(farm);
+						}
+						hbh.append("\n");
+					} else {
+						notice = new UnitNotice("DEAT");
+						if (!reason.isEmpty()) {
+							notice.setDescription(reason);
+						}
+						if (kdate.length() > 0) {
+							notice.setFromDate(toDbDate(kdate));
+							notice.setPlace(srk.getText());
+							notice.setVillage(village);
+							notice.setFarm(farm);
 
-					notice = new UnitNotice("DEAT");
-					if (!reason.isEmpty()) {
-						notice.setDescription(reason);
+							notice.setSource(hiskiSource);
+						}
+						notices.add(notice);
 					}
-					if (kdate.length() > 0) {
-						notice.setFromDate(toDbDate(kdate));
-						notice.setPlace(srk.getText());
-						notice.setVillage(village);
-						notice.setFarm(farm);
-
-						notice.setSource(hiskiSource);
-					}
-					notices.add(notice);
 				}
 				if (hdate.length() > 0) {
 
@@ -844,44 +950,85 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 
 				if (bdate != null && !bdate.isEmpty()) {
-					notice = new UnitNotice("BIRT");
-					notice.setFromDate(bdate);
-					notice.setDatePrefix(eventExtraDate.getDatePrefTag());
-					notice.setSource(hiskiSource);
-					notices.add(notice);
+					if (hasBirth) {
+						hbh.append(Resurses.getString("CRITERIA.BIRT"));
+						hbh.append(": ");
+						String bprefix = eventExtraDate.getDatePrefText();
+						if (bprefix != null) {
+
+							hbh.append(bprefix);
+							hbh.append(" ");
+						}
+
+						hbh.append(Utils.textDate(bdate, false));
+						hbh.append("\n");
+					} else {
+
+						notice = new UnitNotice("BIRT");
+						notice.setFromDate(bdate);
+						notice.setDatePrefix(eventExtraDate.getDatePrefTag());
+						notice.setSource(hiskiSource);
+						notices.add(notice);
+					}
 				}
+				notice = new UnitNotice("HISKI");
+
+				notice.setNoticeType(eventLastType.getText());
+				if (eventLastDate.getText().length() > 0) {
+					notice.setFromDate(toDbDate(kdate));
+				}
+				if (!village.isEmpty()) {
+					notice.setVillage(village);
+				}
+				if (!farm.isEmpty()) {
+					notice.setFarm(farm);
+				}
+
+				String tmp = eventReason.getText();
+				if (!tmp.isEmpty()) {
+					noteBuf.append(Resurses.getString("HISKI_HUOM"));
+					noteBuf.append(": ");
+					noteBuf.append(tmp);
+					noteBuf.append(".\n");
+				}
+				tmp = eventOrigComment.getText();
+				if (!tmp.isEmpty()) {
+					noteBuf.append(Resurses.getString("HISKI_ORIG"));
+					noteBuf.append(": ");
+					noteBuf.append(tmp);
+					noteBuf.append(".\n");
+				}
+				tmp = eventUserComment.getText();
+				if (!tmp.isEmpty()) {
+					noteBuf.append(Resurses.getString("HISKI_OMA"));
+					noteBuf.append(": ");
+					noteBuf.append(tmp);
+					noteBuf.append(".\n");
+				}
+				tmp = this.eventNote.getText();
+				if (!tmp.isEmpty()) {
+					noteBuf.append(Resurses.getString("HISKI_MUUT"));
+					noteBuf.append(": ");
+					noteBuf.append(tmp);
+					noteBuf.append(".\n");
+				}
+
+				hbh.append(noteBuf);
+
+				if (hbh.length() > 0) {
+					notice.setNoteText(hbh.toString());
+				}
+				notice.setSource(hiskiSource);
+				notices.add(notice);
 
 			} else {
 
 				addOtherPersonToText(refs, noteBuf, i);
 
 			}
-		}
-		aux = eventOrigComment.getText();
-		if (!aux.isEmpty()) {
-			noteBuf.append(Resurses.getString("HISKI_ORIG"));
-			noteBuf.append(": ");
-			noteBuf.append(aux);
-			noteBuf.append(". ");
-		}
-		aux = eventUserComment.getText();
-		if (!aux.isEmpty()) {
-			noteBuf.append(Resurses.getString("HISKI_OMA"));
-			noteBuf.append(": ");
-			noteBuf.append(aux);
-			noteBuf.append(". ");
-		}
-		if (noteBuf.length() > 0) {
-			UnitNotice note = new UnitNotice("NOTE");
-			note.setNoteText(noteBuf.toString());
-			note.setSource(hiskiSource);
-			if (refs.size() > 0) {
-				note.setRefNames(refs.toArray(new String[0]));
-			}
-			notices.add(note);
-		}
-		if (notices.size() > 0) {
-			kast.persons[0].setNotices(notices.toArray(new UnitNotice[0]));
+
+			kast.persons[i].setNotices(notices.toArray(new UnitNotice[0]));
+
 		}
 
 		try {
@@ -1069,6 +1216,14 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 				village = pAgeVillage[i].getText();
 				farm = pReasonFarm[i].getText();
+				village = eventVillage.getText();
+				if (village.equals("-")) {
+					village = "";
+				}
+				farm = eventFarm.getText();
+				if (farm.equals("-")) {
+					farm = "";
+				}
 				// kylä / talo
 
 				if (eventFirstDate.getText().length() > 0) {
@@ -1688,20 +1843,23 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			eventFarm.setEnabled(false);
 			eventFrom.setEnabled(false);
 			eventTo.setEnabled(false);
-
+			eventReason.setEnabled(false);
 			if (bookName.equals("kastetut")) {
 				eventVillage.setEnabled(true);
 				eventFarm.setEnabled(true);
+				eventReason.setEnabled(true);
 			} else if (bookName.equals("vihityt")) {
-
+				eventReason.setEnabled(true);
 			} else if (bookName.equals("haudatut")) {
 				eventVillage.setEnabled(true);
 				eventFarm.setEnabled(true);
+
 			} else {
 				eventVillage.setEnabled(true);
 				eventFarm.setEnabled(true);
 				eventFrom.setEnabled(true);
 				eventTo.setEnabled(true);
+				eventReason.setEnabled(true);
 			}
 
 			NodeList henkNodes = docEle.getElementsByTagName("henkilo");

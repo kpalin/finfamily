@@ -99,9 +99,9 @@ public class Upload {
 		}
 		String sql = "insert into Unit (pid,tag,privacy,groupid,sex,sourcetext,privatetext,userrefn) "
 				+ "values (?,?,?,?, ?,?,?,?)";
-		String sqlnotice = "insert into unitnotice (pid,pnid,surety,noticerow,tag,noticetype,description,fromdate,"
+		String sqlnotice = "insert into unitnotice (pid,pnid,surety,noticerow,tag,noticetype,description,dateprefix,fromdate,"
 				+ "place,village,farm,notetext,prefix,surname,givenname,patronym,postfix,sourcetext,RefNames) "
-				+ "values (?,?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?,?,?) ";
+				+ "values (?,?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?) ";
 
 		String sqlrow = "select max(noticerow) from unitnotice where pid = ?";
 		PreparedStatement pstm = con.prepareStatement(sql);
@@ -155,25 +155,26 @@ public class Upload {
 					pstmn.setString(5, n.getTag());
 					pstmn.setString(6, n.getNoticeType());
 					pstmn.setString(7, n.getDescription());
-					pstmn.setString(8, n.getFromDate());
-					pstmn.setString(9, n.getPlace());
-					pstmn.setString(10, n.getVillage());
-					pstmn.setString(11, n.getFarm());
-					pstmn.setString(12, n.getNoteText());
-					pstmn.setString(13, n.getPrefix());
-					pstmn.setString(14, n.getSurname());
-					pstmn.setString(15, n.getGivenname());
-					pstmn.setString(16, n.getPatronym());
-					pstmn.setString(17, n.getPostfix());
-					pstmn.setString(18, n.getSource());
+					pstmn.setString(8, n.getDatePrefix());
+					pstmn.setString(9, n.getFromDate());
+					pstmn.setString(10, n.getPlace());
+					pstmn.setString(11, n.getVillage());
+					pstmn.setString(12, n.getFarm());
+					pstmn.setString(13, n.getNoteText());
+					pstmn.setString(14, n.getPrefix());
+					pstmn.setString(15, n.getSurname());
+					pstmn.setString(16, n.getGivenname());
+					pstmn.setString(17, n.getPatronym());
+					pstmn.setString(18, n.getPostfix());
+					pstmn.setString(19, n.getSource());
 
 					if (n.getRefNames() == null) {
-						pstmn.setNull(19, Types.ARRAY);
+						pstmn.setNull(20, Types.ARRAY);
 					} else {
 
 						Array xx = con
 								.createArrayOf("varchar", n.getRefNames());
-						pstmn.setArray(19, xx);
+						pstmn.setArray(20, xx);
 
 					}
 
