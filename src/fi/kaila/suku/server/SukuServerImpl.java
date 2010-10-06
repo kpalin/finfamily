@@ -1306,7 +1306,7 @@ public class SukuServerImpl implements SukuServer {
 		Vector<String> result = new Vector<String>();
 
 		for (int i = 0; i < lista.size(); i++) {
-			result.add(lista.get(i));
+
 			String constring = "jdbc:postgresql://" + host + "/" + lista.get(i)
 					+ "?user=" + user;
 			logger.fine("Connection: " + constring);
@@ -1314,109 +1314,134 @@ public class SukuServerImpl implements SukuServer {
 
 				constring += "&password=" + password;
 			}
+			Vector<String> sv = new Vector<String>();
 			Connection mycon = null;
 			try {
 				mycon = DriverManager.getConnection(constring);
-
-				sql = "select * from sukuvariables";
+				result.add("==========================");
+				String sqls = "select * from pg_namespace where nspname not like 'pg%' and nspname <> 'information_schema' ";
 
 				stm = mycon.createStatement();
-				ResultSet rs = stm.executeQuery(sql);
-				while (rs.next()) {
-					result.add("    " + Resurses.getString("DB_OWNER") + " ["
-							+ rs.getString("owner_name") + "]");
-
-					Timestamp ts = rs.getTimestamp("createdate");
-
-					result.add("    " + Resurses.getString("DB_CREATED") + " ["
-							+ ts.toString() + "]");
+				ResultSet rss = stm.executeQuery(sqls);
+				while (rss.next()) {
+					sv.add(rss.getString(1));
 				}
-				rs.close();
-				stm.close();
+				rss.close();
+				for (int j = 0; j < sv.size(); j++) {
 
-				sql = "select count(*) from unit";
+					try {
+						String schema = sv.get(j);
+						result.add(lista.get(i) + ":" + schema);
+						sql = "select * from " + schema + ".sukuvariables";
 
-				stm = mycon.createStatement();
-				rs = stm.executeQuery(sql);
-				while (rs.next()) {
-					result.add("    " + Resurses.getString("DB_UNIT_COUNT")
-							+ " [" + rs.getInt(1) + "]");
-				}
-				rs.close();
-				stm.close();
-				sql = "select max(coalesce(modified,createdate)) as maxi from unitnotice";
+						ResultSet rs = stm.executeQuery(sql);
+						while (rs.next()) {
+							result.add("    " + Resurses.getString("DB_OWNER")
+									+ " [" + rs.getString("owner_name") + "]");
 
-				stm = mycon.createStatement();
-				rs = stm.executeQuery(sql);
-				while (rs.next()) {
-					Timestamp ts = rs.getTimestamp("maxi");
-					if (ts != null) {
-						result.add("    "
-								+ Resurses.getString("DB_UNIT_LATESTCHANGE")
-								+ " [" + ts.toString() + "]");
+							Timestamp ts = rs.getTimestamp("createdate");
+
+							result.add("    "
+									+ Resurses.getString("DB_CREATED") + " ["
+									+ ts.toString() + "]");
+						}
+						rs.close();
+
+						sql = "select count(*) from " + schema + ".unit";
+
+						stm = mycon.createStatement();
+						rs = stm.executeQuery(sql);
+						while (rs.next()) {
+							result.add("    "
+									+ Resurses.getString("DB_UNIT_COUNT")
+									+ " [" + rs.getInt(1) + "]");
+						}
+						rs.close();
+
+						sql = "select max(coalesce(modified,createdate)) as maxi from "
+								+ schema + ".unitnotice";
+
+						stm = mycon.createStatement();
+						rs = stm.executeQuery(sql);
+						while (rs.next()) {
+							Timestamp ts = rs.getTimestamp("maxi");
+							if (ts != null) {
+								result.add("    "
+										+ Resurses
+												.getString("DB_UNIT_LATESTCHANGE")
+										+ " [" + ts.toString() + "]");
+							}
+						}
+						rs.close();
+
+						// rs =
+						// stm.executeQuery("select count(*) from unitnotice");
+						// while (rs.next()) {
+						// sb.append("unitnotice [");
+						// sb.append(rs.getInt(1));
+						// sb.append("]; ");
+						// }
+						// rs.close();
+						//
+						// rs =
+						// stm.executeQuery("select count(*) from unitlanguage");
+						// while (rs.next()) {
+						// sb.append("unitlanguage [");
+						// sb.append(rs.getInt(1));
+						// sb.append("]; ");
+						// }
+						// rs.close();
+						//
+						// rs =
+						// stm.executeQuery("select count(*) from relation");
+						// while (rs.next()) {
+						// sb.append("relation [");
+						// sb.append(rs.getInt(1));
+						// sb.append("]; ");
+						// }
+						// rs.close();
+						//
+						// rs =
+						// stm.executeQuery("select count(*) from relationnotice");
+						// while (rs.next()) {
+						// sb.append("relationnotice [");
+						// sb.append(rs.getInt(1));
+						// sb.append("]; ");
+						// }
+						// rs.close();
+						//
+						// rs =
+						// stm.executeQuery("select count(*) from relationlanguage");
+						// while (rs.next()) {
+						// sb.append("relationlanguage [");
+						// sb.append(rs.getInt(1));
+						// sb.append("]; ");
+						// }
+						// rs.close();
+						//
+						// rs =
+						// stm.executeQuery("select count(*) from conversions");
+						// while (rs.next()) {
+						// sb.append("conversions [");
+						// sb.append(rs.getInt(1));
+						// sb.append("]; ");
+						// }
+						// rs.close();
+						//
+						// rs = stm.executeQuery("select count(*) from views");
+						// while (rs.next()) {
+						// sb.append("views [");
+						// sb.append(rs.getInt(1));
+						// sb.append("]; ");
+						// }
+						// rs.close();
+
+						// ///////////////////////
+					} catch (SQLException ee) {
+						result.add(ee.getMessage());
+						ee.printStackTrace();
 					}
 				}
-				rs.close();
-				stm.close();
-				// rs = stm.executeQuery("select count(*) from unitnotice");
-				// while (rs.next()) {
-				// sb.append("unitnotice [");
-				// sb.append(rs.getInt(1));
-				// sb.append("]; ");
-				// }
-				// rs.close();
-				//
-				// rs = stm.executeQuery("select count(*) from unitlanguage");
-				// while (rs.next()) {
-				// sb.append("unitlanguage [");
-				// sb.append(rs.getInt(1));
-				// sb.append("]; ");
-				// }
-				// rs.close();
-				//
-				// rs = stm.executeQuery("select count(*) from relation");
-				// while (rs.next()) {
-				// sb.append("relation [");
-				// sb.append(rs.getInt(1));
-				// sb.append("]; ");
-				// }
-				// rs.close();
-				//
-				// rs = stm.executeQuery("select count(*) from relationnotice");
-				// while (rs.next()) {
-				// sb.append("relationnotice [");
-				// sb.append(rs.getInt(1));
-				// sb.append("]; ");
-				// }
-				// rs.close();
-				//
-				// rs =
-				// stm.executeQuery("select count(*) from relationlanguage");
-				// while (rs.next()) {
-				// sb.append("relationlanguage [");
-				// sb.append(rs.getInt(1));
-				// sb.append("]; ");
-				// }
-				// rs.close();
-				//
-				// rs = stm.executeQuery("select count(*) from conversions");
-				// while (rs.next()) {
-				// sb.append("conversions [");
-				// sb.append(rs.getInt(1));
-				// sb.append("]; ");
-				// }
-				// rs.close();
-				//
-				// rs = stm.executeQuery("select count(*) from views");
-				// while (rs.next()) {
-				// sb.append("views [");
-				// sb.append(rs.getInt(1));
-				// sb.append("]; ");
-				// }
-				// rs.close();
-				stm.close();
-
-				// ///////////////////////
 
 			} catch (SQLException e) {
 				result.add(e.getMessage());
@@ -1425,6 +1450,7 @@ public class SukuServerImpl implements SukuServer {
 			} finally {
 				if (mycon != null) {
 					try {
+						stm.close();
 						mycon.close();
 					} catch (SQLException e) {
 						e.printStackTrace();
