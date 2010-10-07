@@ -44,6 +44,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -225,8 +226,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mListDatabases;
 	// private JMenuItem mStopPgsql;
 	// private JMenuItem mStartPgsql;
-	private JMenu mHiski;
-	private JMenuItem mImportHiski;
+	private JMenu mActions;
+	private JCheckBoxMenuItem mImportHiski;
 	private JMenu mHelp;
 	private JMenuItem mAbout;
 	private JToolBar toolbar;
@@ -238,6 +239,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	// private JButton tSubjectName;
 	private JButton tMapButton;
 	private JButton tRemovePerson;
+	private JButton tHiskiPane;
 	private JButton tAddNotice;
 	private JButton tNoteButton;
 	private JButton tAddressButton;
@@ -497,13 +499,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mExit.setActionCommand(Resurses.EXIT);
 		this.mExit.addActionListener(this);
 
-		this.mHiski = new JMenu("Hiski");
-		this.menubar.add(this.mHiski);
-		this.mImportHiski = new JMenuItem(
+		this.mActions = new JMenu(Resurses.getString("MENU_ACTIONS"));
+		this.menubar.add(this.mActions);
+		this.mImportHiski = new JCheckBoxMenuItem(
 				Resurses.getString(Resurses.IMPORT_HISKI));
-		this.mHiski.add(this.mImportHiski);
+		this.mActions.add(this.mImportHiski);
 		this.mImportHiski.setActionCommand(Resurses.IMPORT_HISKI);
 		this.mImportHiski.addActionListener(this);
+		String tmp = kontroller.getPref(this, Resurses.IMPORT_HISKI, "false");
+		if (tmp.equals("true")) {
+			mImportHiski.setSelected(true);
+		}
 
 		this.mTools = new JMenu(Resurses.getString("TOOLS"));
 		this.menubar.add(this.mTools);
@@ -687,13 +693,24 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
 
+			tHiskiPane = makeNavigationButton("hiski", Resurses.IMPORT_HISKI,
+					Resurses.getString("TOOLBAR.HISKI.TOOLTIP"),
+					Resurses.getString("TOOLBAR.HISKI.ALTTEXT"));
+			this.toolbar.add(tHiskiPane);
+
+			tmp = kontroller.getPref(this, Resurses.IMPORT_HISKI, "false");
+			if (tmp.equals("true")) {
+				tHiskiPane.setSelected(true);
+			}
+
+			this.toolbar.addSeparator(new Dimension(20, 30));
+
 			tNoticesButton = makeNavigationButton("Tietojaksot24",
 					"Tietojaksot24_nega", Resurses.TOOLBAR_NOTICES_ACTION,
 					Resurses.getString("TOOLBAR.NOTICES.TOOLTIP"),
 					Resurses.getString("TOOLBAR.NOTICES.ALTTEXT"));
 
-			String tmp = kontroller.getPref(this, Resurses.NOTICES_BUTTON,
-					"false");
+			tmp = kontroller.getPref(this, Resurses.NOTICES_BUTTON, "false");
 			if (tmp.equals("true")) {
 				tNoticesButton.setSelected(true);
 			}
@@ -1766,8 +1783,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				exportGedcom();
 			} else if (cmd.equals(Resurses.EXPORT_BACKUP)) {
 				createFamilyBackup();
-			} else if (cmd.equals(Resurses.IMPORT_HISKI)) {
-				importFromHiski();
 			} else if (cmd.equals("MENU_TOOLS_GROUP_MGR")) {
 				openGroupWin();
 			} else if (cmd.equals("MENU_TOOLS_VIEW_MGR")) {
@@ -1812,7 +1827,23 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				activePersonPid = 0;
 				showPerson(activePersonPid);
+			} else if (cmd.equals(Resurses.IMPORT_HISKI)) {
+				boolean isDown = true;
+				if (e.getSource() == tHiskiPane) {
+					boolean theButt = !tHiskiPane.isSelected();
 
+					isDown = theButt;
+					// System.out.println("nappula " + isDown);
+				} else {
+					boolean theMenu = mImportHiski.isSelected();
+
+					isDown = theMenu;
+					// System.out.println("valikko " + isDown);
+				}
+				mImportHiski.setSelected(isDown);
+				tHiskiPane.setSelected(isDown);
+				kontroller.putPref(this, Resurses.IMPORT_HISKI, "" + isDown);
+				importFromHiski(isDown);
 			} else if (cmd.equals(Resurses.TOOLBAR_NOTE_ACTION)) {
 				boolean theButt = !tNoteButton.isSelected();
 				tNoteButton.setSelected(theButt);
@@ -2359,9 +2390,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
-	private void importFromHiski() {
-
-		personView.displayHiskiPane();
+	private void importFromHiski(boolean theButt) {
+		if (theButt) {
+			personView.displayHiskiPane();
+		} else {
+			HiskiFormClosing();
+		}
 
 	}
 

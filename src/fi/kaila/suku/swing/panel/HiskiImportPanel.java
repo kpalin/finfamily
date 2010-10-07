@@ -69,7 +69,6 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	/** The m grid. */
 	JMenuItem mGrid;
 
-	private JButton close;
 	private JButton getHiski;
 	private JTextField hiskiNumber;
 	private JButton upload;
@@ -325,14 +324,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		this.getHiski.setBounds(40, buttony, 150, 24);
 
 		buttony += ydiff;
-		this.close = new JButton(Resurses.getString(Resurses.CLOSE));
-		// this.ok.setDefaultCapable(true);
-		add(this.close);
-		this.close.setActionCommand(Resurses.CLOSE);
-		this.close.addActionListener(this);
-		this.close.setBounds(40, buttony, 150, 24);
 
-		buttony += ydiff;
 		upload = new JButton(Resurses.getString(Resurses.HISKI_UPLOAD));
 		// this.ok.setDefaultCapable(true);
 		add(upload);
@@ -502,10 +494,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		if (cmd == null)
 			return;
 
-		if (cmd.equals(Resurses.CLOSE)) {
-			suku.HiskiFormClosing();
-
-		} else if (cmd.equals(Resurses.GET_HISKI)) {
+		if (cmd.equals(Resurses.GET_HISKI)) {
 
 			fetchFromHiski();
 
