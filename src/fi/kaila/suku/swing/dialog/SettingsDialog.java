@@ -64,6 +64,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	 *             the suku exception
 	 */
 	public SettingsDialog(JFrame owner) throws SukuException {
+		super(owner, Resurses.getString("SETTINGS"), true);
 		this.owner = owner;
 		setLayout(null);
 		int x = 20;
@@ -212,10 +213,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		getContentPane().add(this.ok);
 		this.ok.setActionCommand(Resurses.OK);
 		this.ok.addActionListener(this);
-		this.ok.setBounds(120, 220, 100, 24);
+		this.ok.setBounds(330, 220, 100, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 250, d.height / 2 - 150, 500, 300);
+		setBounds(d.width / 2 - 250, d.height / 2 - 150, 470, 300);
 		getRootPane().setDefaultButton(this.ok);
 
 	}
