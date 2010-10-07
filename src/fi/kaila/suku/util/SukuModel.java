@@ -100,7 +100,7 @@ public class SukuModel implements TableModel {
 	 * The contents of the table is in this vector The vector contains row
 	 * vectors
 	 */
-	private Vector<SukuRow> tab = new Vector<SukuRow>();
+	private final Vector<SukuRow> tab = new Vector<SukuRow>();
 
 	private SukuRow row;
 
@@ -267,11 +267,7 @@ public class SukuModel implements TableModel {
 	 * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
 	 */
 	public void setValueAt(Object arg0, int argr, int argc) {
-		// if (argc == SUKU_ROW) {
-		// this.tab.remove(argr);
-		// this.tab.insertElementAt((SukuRow)arg0,argr);
-		//
-		// }
+
 		if (argr < getRowCount()) {
 			this.row = this.tab.get(argr);
 			this.row.set(argc, arg0);
@@ -279,7 +275,7 @@ public class SukuModel implements TableModel {
 			this.row = new SukuRow(suku);
 			this.row.set(argc, arg0);
 			this.tab.add(this.row);
-			// VRAEmulator.this.table.addNotify();
+
 		}
 	}
 

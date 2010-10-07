@@ -609,7 +609,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mAbout.setActionCommand(Resurses.ABOUT);
 		this.mAbout.addActionListener(this);
 
-		popupListener = new PopupListener();
+		popupListener = new PopupListener(this);
 		SukuPopupMenu pop = SukuPopupMenu.getInstance();
 		pop.addActionListener(popupListener);
 
@@ -2889,6 +2889,24 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return ss;
 	}
 
+	public void deletePerson(int pid) {
+		PersonShortData ss = tableMap.get(pid);
+		if (ss != null) {
+
+			for (int i = 0; i < tableModel.getRowCount(); i++) {
+				SukuRow rr = (SukuRow) tableModel.getValueAt(i, -1);
+				if (rr.getPid() == ss.getPid()) {
+					tableModel.removeRow(i);
+					tableMap.remove(ss);
+					table.updateUI();
+					scrollPane.updateUI();
+					break;
+				}
+			}
+
+		}
+	}
+
 	private PersonShortData appendToLocalview(PersonShortData p) {
 		int key = p.getPid();
 		PersonShortData ret = this.tableMap.put(key, p);
@@ -3419,6 +3437,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	class PopupListener extends MouseAdapter implements ActionListener {
 
 		private SukuRow activeRow = null;
+		private Suku parent = null;
+
+		public PopupListener(Suku suku) {
+			parent = suku;
+		}
 
 		/*
 		 * (non-Javadoc)
@@ -3484,7 +3507,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					try {
 						personView.setTextForPerson(pop.getPerson());
 					} catch (SukuException e1) {
-						JOptionPane.showMessageDialog(null, "SHOW PERSON: "
+						JOptionPane.showMessageDialog(parent, "SHOW PERSON: "
 								+ pop.getPerson().getAlfaName() + " error "
 								+ e1.getMessage());
 						e1.printStackTrace();
@@ -3507,6 +3530,55 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				} else if (cmd.startsWith("HISKI") && cmd.length() > 5) {
 					int hiskino = Integer.parseInt(cmd.substring(5));
 					personView.setHiskiPerson(hiskino, pop.getPerson());
+				} else if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
+
+					PersonShortData p = pop.getPerson();
+					int resu = JOptionPane.showConfirmDialog(
+							parent,
+							Resurses.getString("CONFIRM_DELETE") + " "
+									+ p.getAlfaName(),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					if (resu == JOptionPane.YES_OPTION) {
+
+						try {
+							SukuData result = Suku.kontroller.getSukuData(
+									"cmd=delete", "pid=" + p.getPid());
+							if (result.resu != null) {
+								JOptionPane.showMessageDialog(parent,
+										result.resu,
+										Resurses.getString(Resurses.SUKU),
+										JOptionPane.ERROR_MESSAGE);
+								logger.log(Level.WARNING, result.resu);
+								return;
+							}
+
+							int key = p.getPid();
+
+							PersonShortData ret = getPerson(key);
+							if (ret != null) {
+								// this says the person is in db view
+								deletePerson(key);
+							}
+							int midx = personView.getMainPaneIndex();
+							if (midx > 1) {
+								int mpid = personView.getPane(midx).getPid();
+
+								personView.closeMainPane(mpid != p.getPid());
+								personView.refreshRelativesPane();
+
+							}
+
+						} catch (SukuException e1) {
+							JOptionPane.showMessageDialog(parent,
+									e1.getMessage(),
+									Resurses.getString(Resurses.SUKU),
+									JOptionPane.ERROR_MESSAGE);
+							logger.log(Level.WARNING, e1.getMessage(), e1);
+							e1.printStackTrace();
+						}
+					}
 
 				} else if (cmd.equals(Resurses.CREATE_REPORT)) {
 					createReport(pop.getPerson());

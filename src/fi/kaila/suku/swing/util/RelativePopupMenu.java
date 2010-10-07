@@ -21,16 +21,17 @@ public class RelativePopupMenu {
 
 	private JPopupMenu pMenu = null;
 
-	private JMenuItem pPerson;
-	private JMenuItem pRelatives;
-	private JMenuItem pShowPerson;
-	private JMenuItem pShowFamily;
-	private JMenuItem pShowReport;
+	private final JMenuItem pPerson;
+	private final JMenuItem pRelatives;
+	private final JMenuItem pShowPerson;
+	private final JMenuItem pShowFamily;
+	private final JMenuItem pShowReport;
+	private final JMenuItem pDeletePerson;
 	// private JMenuItem pPaste;
 	// private JMenuItem pPasteBefore;
 	// private JMenuItem pPasteAfter;
-	private JMenu pParent;
-	private JMenuItem[] pAddParent;
+	private final JMenu pParent;
+	private final JMenuItem[] pAddParent;
 
 	private void addActionListener(ActionListener l) {
 
@@ -39,6 +40,7 @@ public class RelativePopupMenu {
 		pShowFamily.addActionListener(l);
 		pShowPerson.addActionListener(l);
 		pShowReport.addActionListener(l);
+		pDeletePerson.addActionListener(l);
 		// pPaste.addActionListener(l);
 		// pPasteBefore.addActionListener(l);
 		// pPasteAfter.addActionListener(l);
@@ -138,11 +140,18 @@ public class RelativePopupMenu {
 		// pShowFamily.addActionListener(popupListener);
 		pShowFamily.setActionCommand(Resurses.TAB_FAMILY);
 		pMenu.add(pShowFamily);
-		pMenu.addSeparator();
 		pShowReport = new JMenuItem(Resurses.getString(Resurses.CREATE_REPORT));
 		// pShowFamily.addActionListener(popupListener);
 		pShowReport.setActionCommand(Resurses.CREATE_REPORT);
 		pMenu.add(pShowReport);
+
+		pDeletePerson = new JMenuItem(
+				Resurses.getString(Resurses.CREATE_REPORT));
+		// pShowFamily.addActionListener(popupListener);
+		pDeletePerson.setActionCommand(Resurses.CREATE_REPORT);
+		pMenu.add(pDeletePerson);
+
+		pMenu.addSeparator();
 
 		// pPasteBefore = new
 		// JMenuItem(Resurses.getString(Resurses.MENU_PASTE));

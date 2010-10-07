@@ -420,6 +420,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 		PersonMainPane main = (PersonMainPane) paneTabs.get(mainIdx).pnl;
 		if (main != null) {
+
 			PersonShortData ps = new PersonShortData(main.persLong);
 
 			getSuku().setTitle(

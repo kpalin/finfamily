@@ -24,6 +24,7 @@ public class SukuPopupMenu {
 	private final JMenuItem pShowRelatives;
 	private final JMenuItem pShowFamily;
 	private final JMenuItem pMainPerson;
+	private final JMenuItem pDeletePerson;
 	// private JMenuItem pPersonView;
 	private final JMenuItem pCopy;
 	private final JMenuItem pNeedle;
@@ -84,6 +85,7 @@ public class SukuPopupMenu {
 		pShowRelatives.addActionListener(l);
 		pMainPerson.addActionListener(l);
 		pShowFamily.addActionListener(l);
+		pDeletePerson.addActionListener(l);
 		// pPersonView.addActionListener(l);
 		pCopy.addActionListener(l);
 		pNeedle.addActionListener(l);
@@ -162,6 +164,12 @@ public class SukuPopupMenu {
 		// pShowFamily.addActionListener(popupListener);
 		pShowFamily.setActionCommand(Resurses.TAB_FAMILY);
 		pMenu.add(pShowFamily);
+
+		pDeletePerson = new JMenuItem(
+				Resurses.getString("TOOLBAR.REMPERSON.TOOLTIP"));
+		// pShowFamily.addActionListener(popupListener);
+		pDeletePerson.setActionCommand(Resurses.TOOLBAR_REMPERSON_ACTION);
+		pMenu.add(pDeletePerson);
 
 		pMenu.addSeparator();
 		pCopy = new JMenuItem(Resurses.getString(Resurses.MENU_COPY));

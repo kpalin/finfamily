@@ -19,6 +19,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
+import fi.kaila.suku.util.pojo.SukuData;
 
 /**
  * The listener interface for receiving relativePopup events. The class that is
@@ -35,7 +36,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 	/**
 		 * 
 		 */
-	private RelativesPane relativesPane;
+	private final RelativesPane relativesPane;
 
 	/**
 	 * Instantiates a new relative popup listener.
@@ -89,6 +90,97 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 				relativesPane.personView.getSuku().createReport(
 						relativesPane.pop.getMousePerson());
 
+			}
+			if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
+
+				PersonShortData p = relativesPane.pop.getMousePerson();
+				int resu = JOptionPane
+						.showConfirmDialog(
+								this.relativesPane.personView,
+								Resurses.getString("CONFIRM_DELETE") + " "
+										+ p.getAlfaName(),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
+				if (resu == JOptionPane.YES_OPTION) {
+
+					try {
+						SukuData result = Suku.kontroller.getSukuData(
+								"cmd=delete", "pid=" + p.getPid());
+						if (result.resu != null) {
+							JOptionPane.showMessageDialog(
+									this.relativesPane.personView, result.resu,
+									Resurses.getString(Resurses.SUKU),
+									JOptionPane.ERROR_MESSAGE);
+							logger.log(Level.WARNING, result.resu);
+							return;
+						}
+
+						int midx = this.relativesPane.personView
+								.getMainPaneIndex();
+						if (midx > 0) {
+							int mpid = this.relativesPane.personView.getPane(
+									midx).getPid();
+
+							this.relativesPane.personView
+									.closeMainPane(mpid != p.getPid());
+
+							int key = p.getPid();
+
+							PersonShortData ret = this.relativesPane.personView
+									.getSuku().getPerson(key);
+							if (ret != null) {
+								// this says the person is in db view
+								System.out.println(ret);
+								this.relativesPane.personView.getSuku()
+										.deletePerson(key);
+							}
+						}
+						// this.tableMap.put(key, p);
+
+						// int mainpaneidx =
+						// this.relativesPane.personView.getMainPaneIndex();
+						// if (mainpaneidx > 1) {
+						// SukuTabPane pane =
+						// this.relativesPane.personView.getPane(mainpaneidx);
+						// if (p.getPid() == pane.getPid()) {
+						// personView.closeMainPane(false);
+						// }
+						// int mainpaneidx = personView.getMainPaneIndex();
+						// if (mainpaneidx > 1) {
+						// SukuTabPane pane = personView.getPane(mainpaneidx);
+						// if (p.getPid() == pane.getPid()) {
+						// personView.closeMainPane(false);
+						// } else {
+						// personView.refreshRelativesPane();
+						//
+						// }
+						// }
+						//
+						// for (int i = 0; i < needle.size(); i++) {
+						// String[] dbl = needle.get(i).split(";");
+						// int dblid = Integer.parseInt(dbl[0]);
+						// if (p.getPid() == dblid) {
+						// needle.remove(i);
+						// break;
+						// }
+						// }
+						// tSubjectPButton.setEnabled(needle.size() > 0);
+						//
+						// tableModel.removeRow(isele);
+						// table.getRowSorter().modelStructureChanged();
+						// table.updateUI();
+						// scrollPane.updateUI();
+
+					} catch (SukuException e1) {
+						JOptionPane.showMessageDialog(
+								this.relativesPane.personView, e1.getMessage(),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.ERROR_MESSAGE);
+						logger.log(Level.WARNING, e1.getMessage(), e1);
+						e1.printStackTrace();
+					}
+				}
 			}
 			if (showTable == null) {
 				return;
@@ -163,6 +255,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 	 * 
 	 * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mousePressed(MouseEvent e) {
 		// maybeShowPopup(e);
 	}
@@ -172,6 +265,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 	 * 
 	 * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		maybeShowPopup(e);
 	}

@@ -43,12 +43,12 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Vector<TableShortData> tabs = new Vector<TableShortData>();
+	private final Vector<TableShortData> tabs = new Vector<TableShortData>();
 
-	private Vector<FamilyParentRelationIndex> pareRels = new Vector<FamilyParentRelationIndex>();
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Vector<FamilyParentRelationIndex> pareRels = new Vector<FamilyParentRelationIndex>();
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-	private PersonView parent;
+	private final PersonView parent;
 
 	/**
 	 * Instantiates a new family panel.
@@ -144,13 +144,14 @@ public class FamilyPanel extends JPanel implements MouseListener,
 					cp.y - 10),
 					new Point(pp.x + dp.width / 2, pp.y + dp.height),
 					rel.getSurety());
-
 		}
-
 		gg.setColor(Color.black);
 		gg.setStroke(new BasicStroke(2));
 		for (int i = tabs.size() - 1; i >= 0; i--) {
 			TableShortData t = tabs.get(i);
+			if (t == null || t.getSubject() == null
+					|| t.getSubject().getSex() == null)
+				return;
 			Color color = null;
 			if (t.getSubject().getSex().equals("M")) {
 				color = Color.blue;

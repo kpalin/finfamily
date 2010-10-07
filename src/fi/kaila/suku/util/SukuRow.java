@@ -24,29 +24,7 @@ public class SukuRow {
 
 	/** The suku. */
 	Suku suku = null;
-	// String refn=null;
-	// String tsex=null; // col 0
-	//
-	// // BufferedImage sex = null;
-	//
-	// // String name=null; // col 1
-	// String patro=null;
-	// String givenName=null; // col 1.?
-	// String prefix = null;
-	// String surName = null;
-	// String morenames = null;
-	//
-	// String birthDate=null; // col 2
-	// String birtPlace=null;
-	// String deatDate=null; // col 3
-	// String deatPlace=null;
-	// String occupation=null;
-	// String group=null;
-	// int pid=0;
-	// int marrc = 0;
-	// int childc = 0;
-	// int parec = 0;
-	// boolean todo;
+
 	//
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(SukuRow.class.getName());
@@ -66,36 +44,6 @@ public class SukuRow {
 		this.suku = suku;
 		this.pid = person.getPid();
 	}
-
-	// String refn,String sex,String group,
-	// int marrc,int chilc, int parec,boolean todo,
-	// String prefix,String surName, String givenName,String patro,String
-	// morenames,
-	// String birthDate,String birtPlace,String deatDate,String deatPlace,
-	// String occupation,int pid){
-	// //this.model = model;
-	// this.refn= refn;
-	// this.tsex=sex;
-	// this.prefix=prefix;
-	// this.surName=surName;
-	// this.givenName = givenName;
-	// this.morenames = morenames;
-	// this.patro = patro;
-	// this.birthDate = birthDate;
-	// this.birtPlace = birtPlace;
-	// this.deatDate = deatDate;
-	// this.deatPlace = deatPlace;
-	// this.occupation = occupation;
-	// this.group = group;
-	//
-	// this.pid=pid;
-	// this.marrc = marrc;
-	// this.childc = chilc;
-	// this.parec = parec;
-	// this.todo = todo;
-	// this.pid=pid;
-	// logger.fine("Contrs: " + todo + "/" + surName + "/" + givenName);
-	// }
 
 	/**
 	 * Instantiates a new suku row.

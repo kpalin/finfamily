@@ -728,6 +728,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		Relation[] relations = null;
 		PersonShortData[] persons = null;
 		personPid = pid;
+
 		if (pid == 0) {
 			persLong = new PersonLongData(0, "INDI", "M");
 			persLong.setNotices(new UnitNotice[0]);
