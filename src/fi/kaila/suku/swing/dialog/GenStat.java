@@ -1,15 +1,14 @@
-package fi.kaila.suku.swing;
+package fi.kaila.suku.swing.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -25,6 +24,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
@@ -37,12 +37,10 @@ import fi.kaila.suku.util.pojo.SukuData;
  * 
  * @author halonmi
  */
-public class GenStat extends JFrame implements ActionListener {
+public class GenStat extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private ISuku parent;
-	private GenStat me;
 	private JComboBox statCombo;
 	private ChartPanel chartPanel;
 	private PersonShortData[] persons = null;
@@ -50,14 +48,13 @@ public class GenStat extends JFrame implements ActionListener {
 	/**
 	 * Constructor.
 	 * 
-	 * @param parent
-	 *            the parent
+	 * @param owner
+	 *            the owner
 	 * @param persons
 	 *            the persons
 	 */
-	public GenStat(ISuku parent, PersonShortData[] persons) {
-		this.parent = parent;
-		this.me = this;
+	public GenStat(JFrame owner, PersonShortData[] persons) {
+		super(owner, Resurses.getString("MENU_TOOLS_STAT"), true);
 		this.persons = persons;
 		initMe();
 	}
@@ -131,19 +128,6 @@ public class GenStat extends JFrame implements ActionListener {
 
 		this.pack();
 
-		setVisible(true);
-
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-
-				if (parent != null) {
-					parent.SukuFormClosing(me);
-				}
-				e.getClass();
-
-			}
-		});
 	}
 
 	private void statNoOfChildren() {

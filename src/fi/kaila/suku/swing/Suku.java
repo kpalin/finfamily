@@ -81,6 +81,7 @@ import fi.kaila.suku.kontroller.SukuKontrollerWebstartImpl;
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
+import fi.kaila.suku.swing.dialog.GenStat;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
@@ -272,7 +273,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private SukuMapInterface suomi = null;
 	private GroupMgrWindow groupWin = null;
 	private ViewMgrWindow viewWin = null;
-	private GenStat genStat = null;
 	// private HiskiImporter hiski=null;
 	private LocalAdminUtilities adminUtilities = null;
 
@@ -2646,7 +2646,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		if (ppp.length == 0)
 			return;
 
-		this.genStat = new GenStat(this, ppp);
+		GenStat genStat = new GenStat(this, ppp);
+		genStat.setVisible(true);
 
 	}
 
