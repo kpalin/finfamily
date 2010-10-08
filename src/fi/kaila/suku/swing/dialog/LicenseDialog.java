@@ -12,6 +12,9 @@ import javax.swing.JTextArea;
 
 import fi.kaila.suku.util.Resurses;
 
+/**
+ * The Class LicenseDialog.
+ */
 public class LicenseDialog extends JDialog implements ActionListener {
 	/**
 	 * 
@@ -21,7 +24,7 @@ public class LicenseDialog extends JDialog implements ActionListener {
 	private JTextArea aboutArea;
 
 	/**
-	 * Instantiates a new about dialog.
+	 * Instantiates a new license dialog.
 	 * 
 	 * @param owner
 	 *            the owner
