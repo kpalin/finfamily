@@ -2539,8 +2539,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			ppp[i++] = entrx.getValue();
 		}
 
-		if (ppp.length == 0)
+		if (ppp.length == 0) {
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString("STAT_MAKE_QUERY_FIRST"),
+					Resurses.getString("STAT_FOR_YOUR_INFORMATION"),
+					JOptionPane.INFORMATION_MESSAGE);
 			return;
+		}
 		if (this.suomi == null) {
 
 			if (Suku.kontroller.getPref(this, "USE_OPEN_STREETMAP", "false")
@@ -2643,8 +2648,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			ppp[i++] = entrx.getValue();
 		}
 
-		if (ppp.length == 0)
+		if (ppp.length == 0) {
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString("STAT_MAKE_QUERY_FIRST"),
+					Resurses.getString("STAT_FOR_YOUR_INFORMATION"),
+					JOptionPane.INFORMATION_MESSAGE);
 			return;
+		}
 
 		GenStat genStat = new GenStat(this, ppp);
 		genStat.setVisible(true);
