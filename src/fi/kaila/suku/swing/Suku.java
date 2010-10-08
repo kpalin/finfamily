@@ -83,6 +83,7 @@ import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
 import fi.kaila.suku.swing.dialog.GenStat;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
+import fi.kaila.suku.swing.dialog.LicenseDialog;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.dialog.SelectSchema;
@@ -1493,8 +1494,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				return;
 			}
 			if (cmd.equals(Resurses.LICENSE)) {
-				String updateSite = "http://en.wikipedia.org/wiki/BSD_licenses";
-				Utils.openExternalFile(updateSite);
+				LicenseDialog license = new LicenseDialog(this);
+				license.setVisible(true);
 				return;
 			}
 			if (cmd.equals(Resurses.WIKI)) {

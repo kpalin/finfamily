@@ -40,7 +40,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 *            the owner
 	 */
 	public AboutDialog(JFrame owner) {
-		super(owner, Resurses.getString("ABOUT"));
+		super(owner, Resurses.getString("ABOUT"), true);
 		logger = Logger.getLogger(this.getClass().getName());
 		setLayout(null);
 
@@ -103,12 +103,13 @@ public class AboutDialog extends JDialog implements ActionListener {
 
 		JButton ok = new JButton(OK);
 		getContentPane().add(ok);
-		ok.setBounds(250, 230, 100, 24);
+		ok.setBounds(480, 235, 100, 24);
 		ok.addActionListener(this);
 		ok.setDefaultCapable(true);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 200, d.height / 2 - 200, 600, 300);
+		setResizable(false);
 
 		getRootPane().setDefaultButton(ok);
 	}
