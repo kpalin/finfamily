@@ -455,40 +455,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mDropSchema.addActionListener(this);
 
 		this.mFile.addSeparator();
-
-		this.mQuery = new JMenuItem(Resurses.getString(Resurses.QUERY));
-		this.mFile.add(this.mQuery);
-		this.mQuery.setActionCommand(Resurses.QUERY);
-		this.mQuery.addActionListener(this);
-
-		this.mNewPerson = new JMenuItem(
-				Resurses.getString("TOOLBAR.NEWPERSON.TOOLTIP"));
-		this.mFile.add(this.mNewPerson);
-		this.mNewPerson.setActionCommand(Resurses.TOOLBAR_NEWPERSON_ACTION);
-		this.mNewPerson.addActionListener(this);
-
-		this.mOpenPerson = new JMenuItem(Resurses.getString("MENU_OPEN_PERSON"));
-		this.mFile.add(this.mOpenPerson);
-		this.mOpenPerson.setActionCommand(Resurses.MENU_OPEN_PERSON);
-		this.mOpenPerson.addActionListener(this);
-
-		this.mPrintPerson = new JMenuItem(
-				Resurses.getString(Resurses.PRINT_PERSON));
-		this.mFile.add(this.mPrintPerson);
-		this.mPrintPerson.setActionCommand(Resurses.PRINT_PERSON);
-		this.mPrintPerson.addActionListener(this);
-
-		this.mShowInMap = new JMenuItem(Resurses.getString(Resurses.SHOWINMAP));
-		this.mFile.add(this.mShowInMap);
-		this.mShowInMap.setActionCommand(Resurses.SHOWINMAP);
-		this.mShowInMap.addActionListener(this);
-
-		mLista = new JMenuItem(Resurses.getString(Resurses.MENU_LISTA));
-		mFile.add(mLista);
-		mLista.setActionCommand(Resurses.MENU_LISTA);
-		mLista.addActionListener(this);
-
-		this.mFile.addSeparator();
 		this.mDisconnect = new JMenuItem(
 				Resurses.getString(Resurses.DISCONNECT));
 		this.mFile.add(this.mDisconnect);
@@ -502,6 +468,46 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		this.mActions = new JMenu(Resurses.getString("MENU_ACTIONS"));
 		this.menubar.add(this.mActions);
+
+		this.mQuery = new JMenuItem(Resurses.getString(Resurses.QUERY));
+		this.mActions.add(this.mQuery);
+		this.mQuery.setActionCommand(Resurses.QUERY);
+		this.mQuery.addActionListener(this);
+
+		this.mNewPerson = new JMenuItem(
+				Resurses.getString("TOOLBAR.NEWPERSON.TOOLTIP"));
+		this.mActions.add(this.mNewPerson);
+		this.mNewPerson.setActionCommand(Resurses.TOOLBAR_NEWPERSON_ACTION);
+		this.mNewPerson.addActionListener(this);
+
+		this.mOpenPerson = new JMenuItem(Resurses.getString("MENU_OPEN_PERSON"));
+		this.mActions.add(this.mOpenPerson);
+		this.mOpenPerson.setActionCommand(Resurses.MENU_OPEN_PERSON);
+		this.mOpenPerson.addActionListener(this);
+
+		this.mPrintPerson = new JMenuItem(
+				Resurses.getString(Resurses.PRINT_PERSON));
+		this.mActions.add(this.mPrintPerson);
+		this.mPrintPerson.setActionCommand(Resurses.PRINT_PERSON);
+		this.mPrintPerson.addActionListener(this);
+
+		this.mShowInMap = new JMenuItem(Resurses.getString(Resurses.SHOWINMAP));
+		this.mActions.add(this.mShowInMap);
+		this.mShowInMap.setActionCommand(Resurses.SHOWINMAP);
+		this.mShowInMap.addActionListener(this);
+
+		this.mStatistics = new JMenuItem(Resurses.getString("MENU_TOOLS_STAT"));
+		this.mActions.add(this.mStatistics);
+		this.mStatistics.setActionCommand("MENU_TOOLS_STAT");
+		this.mStatistics.addActionListener(this);
+
+		mLista = new JMenuItem(Resurses.getString(Resurses.MENU_LISTA));
+		mActions.add(mLista);
+		mLista.setActionCommand(Resurses.MENU_LISTA);
+		mLista.addActionListener(this);
+
+		this.mActions.addSeparator();
+
 		this.mImportHiski = new JCheckBoxMenuItem(
 				Resurses.getString(Resurses.IMPORT_HISKI));
 		this.mActions.add(this.mImportHiski);
@@ -539,11 +545,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mTools.add(this.mViewMgr);
 		this.mViewMgr.setActionCommand("MENU_TOOLS_VIEW_MGR");
 		this.mViewMgr.addActionListener(this);
-
-		this.mStatistics = new JMenuItem(Resurses.getString("MENU_TOOLS_STAT"));
-		this.mTools.add(this.mStatistics);
-		this.mStatistics.setActionCommand("MENU_TOOLS_STAT");
-		this.mStatistics.addActionListener(this);
 
 		this.mTestMe = new JMenuItem(Resurses.getString("MENU_TOOLS_TEST"));
 		if (testEnabled) {
