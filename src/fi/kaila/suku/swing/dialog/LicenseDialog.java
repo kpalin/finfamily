@@ -38,10 +38,12 @@ public class LicenseDialog extends JDialog implements ActionListener {
 		aboutArea.setLineWrap(true);
 
 		add(aboutArea);
-		aboutArea.setBounds(20, 20, 750, 460);
+		aboutArea.setBounds(20, 20, 750, 500);
 
 		StringBuilder about = new StringBuilder();
 
+		about.append("Software License Agreement (BSD License)\n");
+		about.append("\n");
 		about.append("Copyright 2010 Kaarle Kaila. All rights reserved.\n");
 		about.append("\n");
 		about.append("Redistribution and use in source and binary forms, with or without modification, are\n");
@@ -72,12 +74,12 @@ public class LicenseDialog extends JDialog implements ActionListener {
 
 		JButton ok = new JButton(OK);
 		getContentPane().add(ok);
-		ok.setBounds(670, 500, 100, 24);
+		ok.setBounds(670, 540, 100, 24);
 		ok.addActionListener(this);
 		ok.setDefaultCapable(true);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 400, d.height / 2 - 400, 800, 570);
+		setBounds(d.width / 2 - 400, d.height / 2 - 400, 800, 610);
 		setResizable(false);
 
 		getRootPane().setDefaultButton(ok);
