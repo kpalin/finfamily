@@ -53,37 +53,38 @@ public class AboutDialog extends JDialog implements ActionListener {
 
 		StringBuilder about = new StringBuilder();
 
-		String aux = "Java Version: " + System.getProperty("java.version")
-				+ " from " + System.getProperty("java.vendor");
-		logger.info(aux);
-		about.append("- " + aux + "\n");
-		about.append("- os.name: " + System.getProperty("os.name") + "\n");
-		aux = Resurses.getString(Resurses.ABOUT_SUKU_VERSION) + " = "
-				+ AntVersion.antVersion;
-		logger.info(aux);
-		about.append("- " + aux);
+		about.append(Resurses.getString(Resurses.ABOUT_SUKU_VERSION));
+		about.append(": ");
+		about.append(AntVersion.antVersion);
+		about.append("\n");
+		about.append("\n");
+		about.append("Java Version: ");
+		about.append(System.getProperty("java.version"));
+		about.append(" from ");
+		about.append(System.getProperty("java.vendor"));
+		about.append("\n");
+		about.append("OS: ");
+		about.append(System.getProperty("os.name"));
 		about.append("\n");
 
 		if (Suku.serverVersion != null) {
-			aux = Resurses.getString(Resurses.ABOUT_SERVER_VERSION) + " = "
-					+ Suku.serverVersion;
-			about.append("- " + aux);
+			about.append(Resurses.getString(Resurses.ABOUT_SERVER_VERSION));
+			about.append(": ");
+			about.append(Suku.serverVersion);
 			about.append("\n");
-			logger.info(aux);
 		}
 
 		if (Suku.postServerVersion != null) {
 
-			aux = Resurses.getString(Resurses.ABOUT_DB_VERSION) + " = "
-					+ Suku.postServerVersion;
-			about.append("- " + aux);
+			about.append(Resurses.getString(Resurses.ABOUT_DB_VERSION));
+			about.append(": ");
+			about.append(Suku.postServerVersion);
 			about.append("\n");
-			logger.info(aux);
 		}
 		if (Suku.serverVersion != null) {
-			aux = Resurses.getString(Resurses.ABOUT_SERVER_VERSION) + " = "
-					+ Suku.serverVersion;
-			about.append("- " + aux);
+			about.append(Resurses.getString(Resurses.ABOUT_SERVER_VERSION));
+			about.append(": ");
+			about.append(Suku.serverVersion);
 			about.append("\n");
 		}
 		SukuData stats = null;
@@ -97,8 +98,11 @@ public class AboutDialog extends JDialog implements ActionListener {
 				stats.resu = "no connection";
 			}
 		}
-		logger.info(stats.resu);
-		about.append(Resurses.getString("DBSTATS") + ": " + stats.resu);
+		about.append("\n");
+		about.append(Resurses.getString("DBSTATS"));
+		about.append(": ");
+		about.append(stats.resu);
+		logger.info(about.toString());
 		aboutArea.setText(about.toString());
 
 		JButton ok = new JButton(OK);
