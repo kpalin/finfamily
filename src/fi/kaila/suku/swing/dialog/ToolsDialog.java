@@ -109,6 +109,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
 		setBounds(d.width / 2 - 170, d.height / 2 - 250, 340, 500);
+		setResizable(false);
 		setLayout(null);
 
 		int y = 30;
@@ -214,8 +215,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		this.ok.setBounds(10, y, 100, 24);
 		this.ok.setActionCommand(SORT);
 		this.ok.addActionListener(this);
-		// this.ok.setDefaultCapable(true);
-		// getRootPane().setDefaultButton(this.ok);
+		getRootPane().setDefaultButton(this.ok);
 
 		this.cancel = new JButton(Resurses.getString(CANCEL));
 		nsort.add(this.cancel);

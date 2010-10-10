@@ -55,6 +55,7 @@ public class OwnerDialog extends JDialog implements ActionListener {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
 		setBounds(d.width / 2 - 210, d.height / 2 - 230, 420, 460);
+		setResizable(false);
 		setLayout(null);
 
 		int y = 30;
@@ -156,6 +157,7 @@ public class OwnerDialog extends JDialog implements ActionListener {
 		update.setBounds(100, y, 160, 24);
 		update.setActionCommand("DIALOG_UPDATE");
 		update.addActionListener(this);
+		getRootPane().setDefaultButton(update);
 
 		this.cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(this.cancel);

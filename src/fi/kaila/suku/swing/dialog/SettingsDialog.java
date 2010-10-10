@@ -217,6 +217,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 250, d.height / 2 - 150, 470, 300);
+		setResizable(false);
 		getRootPane().setDefaultButton(this.ok);
 
 	}

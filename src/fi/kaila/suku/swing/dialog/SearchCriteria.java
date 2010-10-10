@@ -315,7 +315,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	 *            of dialog
 	 */
 	private SearchCriteria(JFrame owner) {
-		super(owner, Resurses.getString(Resurses.CRITERIA_CAPTION), true);
+		super(owner, Resurses.getString(Resurses.QUERY), true);
 		me = this;
 		setLayout(null);
 		int y = 20;
@@ -544,7 +544,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		y = 460;
 
-		this.ok = new JButton(Resurses.OK);
+		this.ok = new JButton(Resurses.getString("CRITERIA_MAKE_QUERY"));
 		// this.ok.setDefaultCapable(true);
 		getContentPane().add(this.ok);
 		this.ok.setActionCommand(Resurses.OK);
@@ -560,6 +560,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 450, d.height / 2 - 300, 900, y + 100);
+		setResizable(false);
 		getRootPane().setDefaultButton(this.ok);
 
 	}
