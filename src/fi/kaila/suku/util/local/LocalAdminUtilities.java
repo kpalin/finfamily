@@ -184,35 +184,45 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 		pdlg.setVisible(true);
 		postPassword = pdlg.getPassword();
 
-		// this.postPassword =
-		// JOptionPane.showInputDialog(Resurses.getString(Resurses.CONNEADMIN));
-		String[] datalista;
-		String[] userlista;
-		try {
-			Connection con = getConnection();
-			datalista = LocalDatabaseUtility.getListOfDatabases(con);
-			// this.dblista.removeAll();
-			this.dblista.setListData(datalista);
+		if (postPassword != null && !postPassword.isEmpty()) {
+			// this.postPassword =
+			// JOptionPane.showInputDialog(Resurses.getString(Resurses.CONNEADMIN));
+			String[] datalista;
+			String[] userlista;
+			try {
+				Connection con = getConnection();
+				datalista = LocalDatabaseUtility.getListOfDatabases(con);
+				// this.dblista.removeAll();
+				this.dblista.setListData(datalista);
 
-			userlista = LocalDatabaseUtility.getListOfUsers(con);
-			this.userCombo.removeAllItems();
-			for (int i = 0; i < userlista.length; i++) {
-				this.userCombo.addItem(userlista[i]);
+				userlista = LocalDatabaseUtility.getListOfUsers(con);
+				this.userCombo.removeAllItems();
+				for (int i = 0; i < userlista.length; i++) {
+					this.userCombo.addItem(userlista[i]);
 
+				}
+
+				con.close();
+
+				this.mNewUser.setEnabled(true);
+				this.mNewDatabase.setEnabled(true);
+				this.mChangePassword.setEnabled(true);
+				this.mDropDatabase.setEnabled(true);
+
+				return true;
+
+			} catch (Exception e1) {
+				postPassword = null;
+				JOptionPane
+						.showMessageDialog(this, "Error: " + e1.getMessage());
+				return false;
 			}
-
-			con.close();
-
-			this.mNewUser.setEnabled(true);
-			this.mNewDatabase.setEnabled(true);
-			this.mChangePassword.setEnabled(true);
-			this.mDropDatabase.setEnabled(true);
-
-			return true;
-
-		} catch (Exception e1) {
+		} else {
 			postPassword = null;
-			JOptionPane.showMessageDialog(this, "Error: " + e1.getMessage());
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString("CONNEADMIN"),
+					Resurses.getString("STAT_FOR_YOUR_INFORMATION"),
+					JOptionPane.INFORMATION_MESSAGE);
 			return false;
 		}
 

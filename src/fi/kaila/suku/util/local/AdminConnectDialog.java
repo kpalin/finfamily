@@ -73,6 +73,8 @@ public class AdminConnectDialog extends JDialog implements ActionListener {
 		cancel.addActionListener(this);
 
 		setBounds(d.width / 2 - 200, d.height / 2 - 100, 400, y + 70);
+		setResizable(false);
+
 	}
 
 	//
@@ -87,12 +89,7 @@ public class AdminConnectDialog extends JDialog implements ActionListener {
 		String cmd = e.getActionCommand();
 
 		if (cmd.equals(CANCEL)) {
-
-			setVisible(false);
-			return;
-		}
-		if (cmd.equals(OK)) {
-			// TODO:
+			this.password.setText("");
 		}
 		setVisible(false);
 

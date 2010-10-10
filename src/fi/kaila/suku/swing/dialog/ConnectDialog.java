@@ -174,6 +174,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 
 		}
 		setBounds(d.width / 2 - 200, d.height / 2 - 100, 380, y + 80);
+		setResizable(false);
 
 	}
 
