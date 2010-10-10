@@ -1,6 +1,7 @@
 package fi.kaila.suku.swing.dialog;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,9 +37,11 @@ public class LicenseDialog extends JDialog implements ActionListener {
 		aboutArea = new JTextArea();
 		aboutArea.setEditable(false);
 		aboutArea.setLineWrap(true);
+		Font font = new Font("Verdana", Font.PLAIN, 10);
+		aboutArea.setFont(font);
 
 		add(aboutArea);
-		aboutArea.setBounds(20, 20, 750, 500);
+		aboutArea.setBounds(20, 20, 600, 400);
 
 		StringBuilder about = new StringBuilder();
 
@@ -74,12 +77,12 @@ public class LicenseDialog extends JDialog implements ActionListener {
 
 		JButton ok = new JButton(OK);
 		getContentPane().add(ok);
-		ok.setBounds(670, 540, 100, 24);
+		ok.setBounds(520, 430, 100, 24);
 		ok.addActionListener(this);
 		ok.setDefaultCapable(true);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 400, d.height / 2 - 400, 800, 610);
+		setBounds(d.width / 2 - 325, d.height / 2 - 250, 650, 500);
 		setResizable(false);
 
 		getRootPane().setDefaultButton(ok);
