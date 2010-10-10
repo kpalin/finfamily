@@ -197,12 +197,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mExportGedcom;
 	private JMenuItem mExportBackup;
 	private JMenuItem mQuery;
+	private JMenuItem mSubjectDown;
+	private JMenuItem mSubjectUp;
 	private JMenuItem mConnect;
 	private JMenuItem mNewDatabase;
 	private JMenuItem mDropSchema;
 	private JMenuItem mDisconnect;
 	private JMenuItem mPrintPerson;
 	private JMenuItem mNewPerson;
+	private JMenuItem mRemPerson;
 	private JMenuItem mOpenPerson;
 	private JMenuItem mLista;
 	// private JMenuItem mTestSave;
@@ -394,6 +397,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		this.menubar = new JMenuBar();
 		setJMenuBar(this.menubar);
+
+		// File menu
+
 		this.mFile = new JMenu(Resurses.getString(Resurses.FILE));
 		this.menubar.add(this.mFile);
 
@@ -468,6 +474,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mExit.setActionCommand(Resurses.EXIT);
 		this.mExit.addActionListener(this);
 
+		// Actions menu
+
 		this.mActions = new JMenu(Resurses.getString("MENU_ACTIONS"));
 		this.menubar.add(this.mActions);
 
@@ -476,11 +484,44 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mQuery.setActionCommand(Resurses.QUERY);
 		this.mQuery.addActionListener(this);
 
+		this.mActions.addSeparator();
+
+		this.mSubjectDown = new JMenuItem(
+				Resurses.getString("TOOLBAR.SUBJECT.TOOLTIP"));
+		this.mActions.add(this.mSubjectDown);
+		this.mSubjectDown
+				.setActionCommand(Resurses.TOOLBAR_SUBJECT_DOWN_ACTION);
+		this.mSubjectDown.addActionListener(this);
+
+		this.mSubjectUp = new JMenuItem(
+				Resurses.getString("TOOLBAR.SUBJECTP.TOOLTIP"));
+		this.mActions.add(this.mSubjectUp);
+		this.mSubjectUp.setActionCommand(Resurses.TOOLBAR_SUBJECT_UP_ACTION);
+		this.mSubjectUp.addActionListener(this);
+
+		this.mActions.addSeparator();
+
 		this.mNewPerson = new JMenuItem(
 				Resurses.getString("TOOLBAR.NEWPERSON.TOOLTIP"));
 		this.mActions.add(this.mNewPerson);
 		this.mNewPerson.setActionCommand(Resurses.TOOLBAR_NEWPERSON_ACTION);
 		this.mNewPerson.addActionListener(this);
+
+		this.mImportHiski = new JCheckBoxMenuItem(
+				Resurses.getString(Resurses.IMPORT_HISKI));
+		this.mActions.add(this.mImportHiski);
+		this.mImportHiski.setActionCommand(Resurses.IMPORT_HISKI);
+		this.mImportHiski.addActionListener(this);
+		String tmp = kontroller.getPref(this, Resurses.IMPORT_HISKI, "false");
+		if (tmp.equals("true")) {
+			mImportHiski.setSelected(true);
+		}
+
+		this.mRemPerson = new JMenuItem(
+				Resurses.getString("TOOLBAR.REMPERSON.TOOLTIP"));
+		this.mActions.add(this.mRemPerson);
+		this.mRemPerson.setActionCommand(Resurses.TOOLBAR_REMPERSON_ACTION);
+		this.mRemPerson.addActionListener(this);
 
 		this.mOpenPerson = new JMenuItem(Resurses.getString("MENU_OPEN_PERSON"));
 		this.mActions.add(this.mOpenPerson);
@@ -493,6 +534,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mPrintPerson.setActionCommand(Resurses.PRINT_PERSON);
 		this.mPrintPerson.addActionListener(this);
 
+		this.mActions.addSeparator();
+
 		this.mShowInMap = new JMenuItem(Resurses.getString(Resurses.SHOWINMAP));
 		this.mActions.add(this.mShowInMap);
 		this.mShowInMap.setActionCommand(Resurses.SHOWINMAP);
@@ -503,22 +546,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mStatistics.setActionCommand("MENU_TOOLS_STAT");
 		this.mStatistics.addActionListener(this);
 
+		this.mActions.addSeparator();
+
 		mLista = new JMenuItem(Resurses.getString(Resurses.MENU_LISTA));
 		mActions.add(mLista);
 		mLista.setActionCommand(Resurses.MENU_LISTA);
 		mLista.addActionListener(this);
 
-		this.mActions.addSeparator();
-
-		this.mImportHiski = new JCheckBoxMenuItem(
-				Resurses.getString(Resurses.IMPORT_HISKI));
-		this.mActions.add(this.mImportHiski);
-		this.mImportHiski.setActionCommand(Resurses.IMPORT_HISKI);
-		this.mImportHiski.addActionListener(this);
-		String tmp = kontroller.getPref(this, Resurses.IMPORT_HISKI, "false");
-		if (tmp.equals("true")) {
-			mImportHiski.setSelected(true);
-		}
+		// Tools menu
 
 		this.mTools = new JMenu(Resurses.getString("TOOLS"));
 		this.menubar.add(this.mTools);
@@ -599,6 +634,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 
 		// Help menu
+
 		this.mHelp = new JMenu(Resurses.getString(Resurses.HELP));
 
 		this.menubar.add(this.mHelp);
@@ -672,8 +708,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					Resurses.getString("TOOLBAR.SUBJECT.ALTTEXT"));
 			this.toolbar.add(tSubjectButton);
 
-			this.toolbar.addSeparator();
-
 			tSubjectPButton = makeNavigationButton(
 					Resurses.TOOLBAR_SUBJECT_UP_IMAGE,
 					Resurses.TOOLBAR_SUBJECT_UP_ACTION,
@@ -690,12 +724,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.add(tPersonButton);
 
-			tMapButton = makeNavigationButton(Resurses.TOOLBAR_MAP_IMAGE,
-					Resurses.TOOLBAR_MAP_ACTION,
-					Resurses.getString("TOOLBAR.MAP.TOOLTIP"),
-					Resurses.getString("TOOLBAR.MAP.ALTTEXT"));
+			tHiskiPane = makeNavigationButton("hiski", Resurses.IMPORT_HISKI,
+					Resurses.getString("TOOLBAR.HISKI.TOOLTIP"),
+					Resurses.getString("TOOLBAR.HISKI.ALTTEXT"));
+			this.toolbar.add(tHiskiPane);
 
-			this.toolbar.add(tMapButton);
+			tmp = kontroller.getPref(this, Resurses.IMPORT_HISKI, "false");
+			if (tmp.equals("true")) {
+				tHiskiPane.setSelected(true);
+			}
 
 			tRemovePerson = makeNavigationButton(
 					Resurses.TOOLBAR_REMPERSON_IMAGE,
@@ -707,15 +744,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
 
-			tHiskiPane = makeNavigationButton("hiski", Resurses.IMPORT_HISKI,
-					Resurses.getString("TOOLBAR.HISKI.TOOLTIP"),
-					Resurses.getString("TOOLBAR.HISKI.ALTTEXT"));
-			this.toolbar.add(tHiskiPane);
+			tMapButton = makeNavigationButton(Resurses.TOOLBAR_MAP_IMAGE,
+					Resurses.TOOLBAR_MAP_ACTION,
+					Resurses.getString("TOOLBAR.MAP.TOOLTIP"),
+					Resurses.getString("TOOLBAR.MAP.ALTTEXT"));
 
-			tmp = kontroller.getPref(this, Resurses.IMPORT_HISKI, "false");
-			if (tmp.equals("true")) {
-				tHiskiPane.setSelected(true);
-			}
+			this.toolbar.add(tMapButton);
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
 
@@ -1814,13 +1848,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						kontroller, null);
 
 				dlg.setVisible(true);
-			}
-
-			else if (cmd.equals(Resurses.SHOWINMAP)) {
+			} else if (cmd.equals(Resurses.SHOWINMAP)) {
 				displayMap();
-			}
-
-			else if (cmd.equals(Resurses.QUERY)) {
+			} else if (cmd.equals(Resurses.QUERY)) {
 				queryDb();
 			} else if (cmd.equals(Resurses.TOOLBAR_NEWPERSON_ACTION)) {
 
@@ -1830,7 +1860,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					PersonShortData pp = tableMap.get(activePersonPid);
 					if (pp != null) {
 						addToNeedle(pp);
-
 					}
 				}
 
