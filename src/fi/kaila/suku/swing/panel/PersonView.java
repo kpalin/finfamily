@@ -765,19 +765,25 @@ public class PersonView extends JPanel implements ChangeListener {
 	 * print contents of database draft.
 	 */
 	public void testMe() {
-		// this.famPanel.setPreferredSize(new Dimension(1200, 1600));
 		PersonTextPane textPerson = (PersonTextPane) paneTabs.get(1).pnl;
-		try {
-			textPerson.print();
-		} catch (PrinterException e) {
-			logger.log(Level.WARNING, "printing database draft", e);
-			JOptionPane.showMessageDialog(this, "PRINT ERROR",
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+		if (textPerson.getText().length() > 0) {
+			try {
+				textPerson.print();
+			} catch (PrinterException e) {
+				logger.log(Level.WARNING, "printing database draft", e);
+				JOptionPane.showMessageDialog(this, "PRINT ERROR",
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
 
+			}
+			FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
+			famPanel.updateUI();
+		} else {
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString("DATABASE_DRAFT_WINDOW_IS_EMPTY"),
+					Resurses.getString("STAT_FOR_YOUR_INFORMATION"),
+					JOptionPane.INFORMATION_MESSAGE);
 		}
-		FamilyPanel famPanel = (FamilyPanel) paneTabs.get(0).pnl;
-		famPanel.updateUI();
 
 	}
 

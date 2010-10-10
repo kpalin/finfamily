@@ -22,9 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
 
 import fi.kaila.suku.swing.Suku;
@@ -64,17 +61,6 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 	private JProgressBar progressBar;
 	private Task task;
-
-	private JTextField name;
-	private JTextField address;
-	private JTextField postalCode;
-	private JTextField postOffice;
-	private JTextField state;
-	private JTextField country;
-	private JTextField email;
-	private JTextField web;
-	private JTextArea text;
-	private JButton update;
 
 	/**
 	 * Gets the runner.
@@ -116,18 +102,17 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	 *            the owner
 	 */
 	public ToolsDialog(Suku owner) {
-		super(owner, Resurses.getString("DIALOG_PROPERTIES"), true);
+		super(owner, Resurses.getString("MENU_TOOLS_DBWORK"), true);
 		this.owner = owner;
 		runner = this;
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-		setBounds(d.width / 2 - 350, d.height / 2 - 250, 700, 500);
+		setBounds(d.width / 2 - 170, d.height / 2 - 250, 340, 500);
 		setLayout(null);
 
 		int y = 30;
 		JPanel nsort = new JPanel();
-		JPanel props = new JPanel();
 		String[] notorder = null;
 		try {
 			SukuTypesModel types = Utils.typeInstance();
@@ -168,18 +153,12 @@ public class ToolsDialog extends JDialog implements ActionListener,
 			}
 
 			nsort.setLayout(null);
-			nsort.setBounds(400, 0, 280, 450);
+			nsort.setBounds(10, 0, 300, 450);
 
 			nsort.setBorder(BorderFactory.createTitledBorder(Resurses
 					.getString("DIALOG_SORT_NOTICES")));
 			getContentPane().add(nsort);
-			props.setLayout(null);
-			props.setBounds(10, 0, 380, 450);
 
-			props.setBorder(BorderFactory.createTitledBorder(Resurses
-					.getString("DIALOG_OWNER")));
-
-			getContentPane().add(props);
 			JLabel lbl = new JLabel(Resurses.getString("DIALOG_NONSORT"));
 			nsort.add(lbl);
 			lbl.setBounds(10, y, 120, 20);
@@ -219,7 +198,6 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 		y += 30;
 		textContent = new JLabel(Resurses.getString("DIALOG_SORTINFO"));
-
 		nsort.add(textContent);
 		this.textContent.setBounds(10, y, 300, 40);
 		y += 30;
@@ -247,105 +225,6 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 		this.task = null;
 
-		SukuData resp = new SukuData();
-		try {
-			resp = Suku.kontroller.getSukuData("cmd=variables", "type=get");
-		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(
-					this,
-					Resurses.getString("DIALOG_UPDATE_DB") + ":"
-							+ e.getMessage(),
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
-			resp.generalArray = new String[10];
-
-		}
-		notorder = resp.generalArray;
-
-		y = 20;
-
-		JLabel lbl = new JLabel(Resurses.getString("DATA_NAME"));
-		props.add(lbl);
-		lbl.setBounds(10, y, 80, 20);
-
-		name = new JTextField(Utils.nv(resp.generalArray[0]));
-		props.add(name);
-		name.setBounds(90, y, 280, 20);
-		y += 24;
-		lbl = new JLabel(Resurses.getString("DATA_ADDRESS"));
-		props.add(lbl);
-		lbl.setBounds(10, y, 80, 20);
-
-		address = new JTextField(Utils.nv(resp.generalArray[1]));
-		props.add(address);
-		address.setBounds(90, y, 280, 20);
-
-		y += 24;
-		lbl = new JLabel(Resurses.getString("DATA_POSTCODE"));
-		props.add(lbl);
-		lbl.setBounds(90, y, 80, 20);
-		lbl = new JLabel(Resurses.getString("DATA_POSTOFF"));
-		props.add(lbl);
-		lbl.setBounds(190, y, 80, 20);
-		y += 20;
-		postalCode = new JTextField(Utils.nv(resp.generalArray[2]));
-		props.add(postalCode);
-		postalCode.setBounds(90, y, 85, 20);
-		postOffice = new JTextField(Utils.nv(resp.generalArray[3]));
-		props.add(postOffice);
-		postOffice.setBounds(180, y, 190, 20);
-
-		y += 24;
-
-		lbl = new JLabel(Resurses.getString("DATA_STATE"));
-		props.add(lbl);
-		lbl.setBounds(90, y, 80, 20);
-		lbl = new JLabel(Resurses.getString("DATA_COUNTRY"));
-		props.add(lbl);
-		lbl.setBounds(190, y, 80, 20);
-		y += 20;
-		state = new JTextField(Utils.nv(resp.generalArray[4]));
-		props.add(state);
-		state.setBounds(90, y, 85, 20);
-		country = new JTextField(Utils.nv(resp.generalArray[5]));
-		props.add(country);
-		country.setBounds(180, y, 190, 20);
-
-		y += 24;
-		lbl = new JLabel(Resurses.getString("DATA_EMAIL"));
-		props.add(lbl);
-		lbl.setBounds(10, y, 80, 20);
-
-		email = new JTextField(Utils.nv(resp.generalArray[6]));
-		props.add(email);
-		email.setBounds(90, y, 280, 20);
-
-		y += 24;
-		lbl = new JLabel(Resurses.getString("DIALOG_WWW"));
-		props.add(lbl);
-		lbl.setBounds(10, y, 80, 20);
-
-		web = new JTextField(Utils.nv(resp.generalArray[7]));
-		props.add(web);
-		web.setBounds(90, y, 280, 20);
-		y += 24;
-		lbl = new JLabel(Resurses.getString("DATA_NOTE"));
-		props.add(lbl);
-		lbl.setBounds(10, y, 80, 20);
-		text = new JTextArea(Utils.nv(resp.generalArray[8]));
-		text.setLineWrap(true);
-		JScrollPane scrollPrivate = new JScrollPane(text,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-		props.add(scrollPrivate);
-		scrollPrivate.setBounds(90, y, 280, 150);
-		y += 160;
-		update = new JButton(Resurses.getString("DIALOG_UPDATE"));
-		props.add(update);
-		update.setBounds(90, y, 160, 24);
-		update.setActionCommand("DIALOG_UPDATE");
-		update.addActionListener(this);
 	}
 
 	/*
@@ -380,30 +259,6 @@ public class ToolsDialog extends JDialog implements ActionListener,
 			task.addPropertyChangeListener(this);
 			task.execute();
 
-		} else if (cmd.equals("DIALOG_UPDATE")) {
-
-			try {
-
-				SukuData req = new SukuData();
-				req.generalArray = new String[9];
-				req.generalArray[0] = Utils.vn(name.getText());
-				req.generalArray[1] = Utils.vn(address.getText());
-				req.generalArray[2] = Utils.vn(postalCode.getText());
-				req.generalArray[3] = Utils.vn(postOffice.getText());
-				req.generalArray[4] = Utils.vn(state.getText());
-				req.generalArray[5] = Utils.vn(country.getText());
-				req.generalArray[6] = Utils.vn(email.getText());
-				req.generalArray[7] = Utils.vn(web.getText());
-				req.generalArray[8] = Utils.vn(text.getText());
-
-				SukuData resp = Suku.kontroller.getSukuData(req,
-						"cmd=variables", "type=update");
-				setVisible(false);
-			} catch (SukuException ee) {
-				JOptionPane.showMessageDialog(this, ee.getMessage(),
-						Resurses.getString(Resurses.SUKU),
-						JOptionPane.ERROR_MESSAGE);
-			}
 		} else if (cmd.equals(CANCEL)) {
 			if (this.task == null) {
 
@@ -633,7 +488,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-
+		// Doesn't do anything just now
 	}
 
 	/*
@@ -643,7 +498,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-
+		// Doesn't do anything just now
 	}
 
 	/*
@@ -653,7 +508,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-
+		// Doesn't do anything just now
 	}
 
 	/*
@@ -664,7 +519,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-
+		// Doesn't do anything just now
 	}
 
 }

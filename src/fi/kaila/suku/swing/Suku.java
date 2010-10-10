@@ -84,6 +84,7 @@ import fi.kaila.suku.swing.dialog.ConnectDialog;
 import fi.kaila.suku.swing.dialog.GenStat;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
 import fi.kaila.suku.swing.dialog.LicenseDialog;
+import fi.kaila.suku.swing.dialog.OwnerDialog;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
 import fi.kaila.suku.swing.dialog.SelectSchema;
@@ -224,6 +225,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mStoreAllConversions;
 	private JMenuItem mStoreConversions;
 	private JMenuItem mDbWork;
+	private JMenuItem mOwner;
 	private JMenuItem mDbUpdate;
 	private JMenuItem mListDatabases;
 	// private JMenuItem mStopPgsql;
@@ -596,21 +598,31 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			mListDatabases.addActionListener(this);
 		}
 
+		// Help menu
 		this.mHelp = new JMenu(Resurses.getString(Resurses.HELP));
+
 		this.menubar.add(this.mHelp);
 		JMenuItem swUpdate = new JMenuItem(
 				Resurses.getString(Resurses.SW_UPDATE));
 		this.mHelp.add(swUpdate);
 		swUpdate.setActionCommand(Resurses.SW_UPDATE);
 		swUpdate.addActionListener(this);
+
 		JMenuItem lic = new JMenuItem(Resurses.getString(Resurses.LICENSE));
 		this.mHelp.add(lic);
 		lic.setActionCommand(Resurses.LICENSE);
 		lic.addActionListener(this);
+
 		JMenuItem wiki = new JMenuItem(Resurses.getString(Resurses.WIKI));
 		this.mHelp.add(wiki);
 		wiki.setActionCommand(Resurses.WIKI);
 		wiki.addActionListener(this);
+
+		this.mOwner = new JMenuItem(Resurses.getString("MENU_OWNER_INFO"));
+		this.mHelp.add(this.mOwner);
+		this.mOwner.setActionCommand("MENU_OWNER_INFO");
+		this.mOwner.addActionListener(this);
+
 		this.mHelp.addSeparator();
 		this.mAbout = new JMenuItem(Resurses.getString(Resurses.ABOUT));
 		this.mHelp.add(this.mAbout);
@@ -1640,20 +1652,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						+ scm.generalArray[0]);
 				disconnectDb();
 
-			}
-
-			else if (cmd.equals("MENU_TOOLS_DBWORK")) {
-
+			} else if (cmd.equals("MENU_TOOLS_DBWORK")) {
 				executeDbWork();
+			} else if (cmd.equals("MENU_OWNER_INFO")) {
+				showOwnerInformation();
 			} else if (cmd.equals("MENU_TOOLS_LIST_DATABASES")) {
 				listDatabaseStatistics();
-			}
-
-			else if (cmd.equals("MENU_COPY")) {
+			} else if (cmd.equals("MENU_COPY")) {
 				System.out.println("EDIT-COPY by ctrl/c");
-			}
-
-			else if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
+			} else if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
 
 				int[] selection = table.getSelectedRows();
 				for (int i = 0; i < selection.length; i++) {
@@ -2316,6 +2323,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void executeDbWork() {
 		ToolsDialog dlg = new ToolsDialog(this);
+		dlg.setVisible(true);
+	}
+
+	private void showOwnerInformation() {
+		OwnerDialog dlg = new OwnerDialog(this);
 		dlg.setVisible(true);
 	}
 
