@@ -3104,6 +3104,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return ss;
 	}
 
+	/**
+	 * Delete person.
+	 * 
+	 * @param pid
+	 *            the pid
+	 */
 	public void deletePerson(int pid) {
 		PersonShortData ss = tableMap.get(pid);
 		if (ss != null) {
@@ -3361,7 +3367,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
-
+		// Does nothing.
 	}
 
 	/**
@@ -3372,7 +3378,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	@Override
 	public void menuCanceled(MenuEvent e) {
-
+		// Does nothing.
 	}
 
 	/**
@@ -3383,7 +3389,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	@Override
 	public void menuDeselected(MenuEvent e) {
-
+		// Does nothing.
 	}
 
 	/**
@@ -3500,7 +3506,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// System.out.println("ENTER: " + e);
-
+		// Does nothing.
 	}
 
 	/**
@@ -3512,7 +3518,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// System.out.println("EXIT: " + e);
-
+		// Does nothing.
 	}
 
 	/**
@@ -3523,7 +3529,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
-
+		// Does nothing.
 	}
 
 	/**
@@ -3534,7 +3540,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
+		// Does nothing.
 		//
 		// if (e.getButton()== MouseEvent.BUTTON3 && e.getClickCount()==1){
 		//
@@ -3563,7 +3569,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
-		//
+		// Does nothing.
 	}
 
 	/**
@@ -3576,7 +3582,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	public void keyReleased(KeyEvent e) {
 		// int ii = this.table.getSelectedRow();
 		// System.out.println("KKK: " + ii );
-
+		// Does nothing.
 	}
 
 	/**
@@ -3588,7 +3594,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// System.out.println("KTYP:" + e);
-
+		// Does nothing.
 	}
 
 	/**
@@ -3599,7 +3605,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-
+		// Does nothing.
 	}
 
 	/**
@@ -3610,6 +3616,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		// Does nothing.
 	}
 
 	/**
@@ -3660,6 +3667,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		private SukuRow activeRow = null;
 		private Suku parent = null;
 
+		/**
+		 * Instantiates a new popup listener.
+		 * 
+		 * @param suku
+		 *            the suku
+		 */
 		public PopupListener(Suku suku) {
 			parent = suku;
 		}
