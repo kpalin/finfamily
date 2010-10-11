@@ -425,6 +425,22 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.mAdmin.setActionCommand(Resurses.ADMIN);
 			this.mAdmin.addActionListener(this);
 		}
+
+		this.mFile.addSeparator();
+
+		this.mNewDatabase = new JMenuItem(
+				Resurses.getString("SCHEMA_INITIALIZE"));
+		this.mFile.add(this.mNewDatabase);
+		this.mNewDatabase.setActionCommand("SCHEMA_INITIALIZE");
+		this.mNewDatabase.addActionListener(this);
+
+		this.mDropSchema = new JMenuItem(Resurses.getString("SCHEMA_DROP"));
+		this.mFile.add(this.mDropSchema);
+		this.mDropSchema.setActionCommand("SCHEMA_DROP");
+		this.mDropSchema.addActionListener(this);
+
+		this.mFile.addSeparator();
+
 		mImport = new JMenu(Resurses.getString("IMPORT"));
 		this.mFile.add(mImport);
 
@@ -460,18 +476,16 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mExportBackup.setActionCommand(Resurses.EXPORT_BACKUP);
 		this.mExportBackup.addActionListener(this);
 
-		this.mNewDatabase = new JMenuItem(
-				Resurses.getString("SCHEMA_INITIALIZE"));
-		this.mFile.add(this.mNewDatabase);
-		this.mNewDatabase.setActionCommand("SCHEMA_INITIALIZE");
-		this.mNewDatabase.addActionListener(this);
+		this.mFile.addSeparator();
 
-		this.mDropSchema = new JMenuItem(Resurses.getString("SCHEMA_DROP"));
-		this.mFile.add(this.mDropSchema);
-		this.mDropSchema.setActionCommand("SCHEMA_DROP");
-		this.mDropSchema.addActionListener(this);
+		this.mPrintPerson = new JMenuItem(
+				Resurses.getString(Resurses.PRINT_PERSON));
+		this.mFile.add(this.mPrintPerson);
+		this.mPrintPerson.setActionCommand(Resurses.PRINT_PERSON);
+		this.mPrintPerson.addActionListener(this);
 
 		this.mFile.addSeparator();
+
 		this.mDisconnect = new JMenuItem(
 				Resurses.getString(Resurses.DISCONNECT));
 		this.mFile.add(this.mDisconnect);
@@ -536,12 +550,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mActions.add(this.mOpenPerson);
 		this.mOpenPerson.setActionCommand(Resurses.MENU_OPEN_PERSON);
 		this.mOpenPerson.addActionListener(this);
-
-		this.mPrintPerson = new JMenuItem(
-				Resurses.getString(Resurses.PRINT_PERSON));
-		this.mActions.add(this.mPrintPerson);
-		this.mPrintPerson.setActionCommand(Resurses.PRINT_PERSON);
-		this.mPrintPerson.addActionListener(this);
 
 		this.mActions.addSeparator();
 
