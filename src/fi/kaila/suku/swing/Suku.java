@@ -216,6 +216,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mAdmin;
 	// private JMenu mEdit;
 	// private JMenuItem mCopy;
+
+	private JMenu mShow;
+	private JCheckBoxMenuItem mShowNotices;
+	private JCheckBoxMenuItem mShowNote;
+	private JCheckBoxMenuItem mShowAddress;
+	private JCheckBoxMenuItem mShowFarm;
+	private JCheckBoxMenuItem mShowImage;
+	private JCheckBoxMenuItem mShowPrivate;
+
 	private JMenu mTools;
 	private JMenuItem mSettings;
 	private JMenuItem mGroupMgr;
@@ -552,6 +561,73 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mActions.add(mLista);
 		mLista.setActionCommand(Resurses.MENU_LISTA);
 		mLista.addActionListener(this);
+
+		// Show menu
+
+		this.mShow = new JMenu(Resurses.getString("MENU_SHOW"));
+		this.menubar.add(this.mShow);
+
+		this.mShowNotices = new JCheckBoxMenuItem(
+				Resurses.getString("TOOLBAR.NOTICES.TOOLTIP"));
+		this.mShow.add(this.mShowNotices);
+		this.mShowNotices.setActionCommand(Resurses.TOOLBAR_NOTICES_ACTION);
+		this.mShowNotices.addActionListener(this);
+		tmp = kontroller.getPref(this, Resurses.NOTICES_BUTTON, "false");
+		if (tmp.equals("true")) {
+			mShowNotices.setSelected(true);
+		}
+
+		this.mShowNote = new JCheckBoxMenuItem(
+				Resurses.getString("TOOLBAR.NOTE.TOOLTIP"));
+		this.mShow.add(this.mShowNote);
+		this.mShowNote.setActionCommand(Resurses.TOOLBAR_NOTE_ACTION);
+		this.mShowNote.addActionListener(this);
+		tmp = kontroller.getPref(this, Resurses.TOOLBAR_NOTE_ACTION, "false");
+		if (tmp.equals("true")) {
+			mShowNote.setSelected(true);
+		}
+
+		this.mShowAddress = new JCheckBoxMenuItem(
+				Resurses.getString("TOOLBAR.ADDRESS.TOOLTIP"));
+		this.mShow.add(this.mShowAddress);
+		this.mShowAddress.setActionCommand(Resurses.TOOLBAR_ADDRESS_ACTION);
+		this.mShowAddress.addActionListener(this);
+		tmp = kontroller
+				.getPref(this, Resurses.TOOLBAR_ADDRESS_ACTION, "false");
+		if (tmp.equals("true")) {
+			mShowAddress.setSelected(true);
+		}
+
+		this.mShowFarm = new JCheckBoxMenuItem(
+				Resurses.getString("TOOLBAR.FARM.TOOLTIP"));
+		this.mShow.add(this.mShowFarm);
+		this.mShowFarm.setActionCommand(Resurses.TOOLBAR_FARM_ACTION);
+		this.mShowFarm.addActionListener(this);
+		tmp = kontroller.getPref(this, Resurses.TOOLBAR_FARM_ACTION, "false");
+		if (tmp.equals("true")) {
+			mShowFarm.setSelected(true);
+		}
+
+		this.mShowImage = new JCheckBoxMenuItem(
+				Resurses.getString("TOOLBAR.IMAGE.TOOLTIP"));
+		this.mShow.add(this.mShowImage);
+		this.mShowImage.setActionCommand(Resurses.TOOLBAR_IMAGE_ACTION);
+		this.mShowImage.addActionListener(this);
+		tmp = kontroller.getPref(this, Resurses.TOOLBAR_IMAGE_ACTION, "false");
+		if (tmp.equals("true")) {
+			mShowImage.setSelected(true);
+		}
+
+		this.mShowPrivate = new JCheckBoxMenuItem(
+				Resurses.getString("TOOLBAR.PRIVATE.TOOLTIP"));
+		this.mShow.add(this.mShowPrivate);
+		this.mShowPrivate.setActionCommand(Resurses.TOOLBAR_PRIVATE_ACTION);
+		this.mShowPrivate.addActionListener(this);
+		tmp = kontroller
+				.getPref(this, Resurses.TOOLBAR_PRIVATE_ACTION, "false");
+		if (tmp.equals("true")) {
+			mShowPrivate.setSelected(true);
+		}
 
 		// Tools menu
 
@@ -1869,49 +1945,85 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				boolean isDown = true;
 				if (e.getSource() == tHiskiPane) {
 					boolean theButt = !tHiskiPane.isSelected();
-
 					isDown = theButt;
-					// System.out.println("nappula " + isDown);
 				} else {
 					boolean theMenu = mImportHiski.isSelected();
-
 					isDown = theMenu;
-					// System.out.println("valikko " + isDown);
 				}
 				mImportHiski.setSelected(isDown);
 				tHiskiPane.setSelected(isDown);
 				kontroller.putPref(this, Resurses.IMPORT_HISKI, "" + isDown);
 				importFromHiski(isDown);
 			} else if (cmd.equals(Resurses.TOOLBAR_NOTE_ACTION)) {
-				boolean theButt = !tNoteButton.isSelected();
-				tNoteButton.setSelected(theButt);
+				boolean isDown = true;
+				if (e.getSource() == tNoteButton) {
+					boolean theButt = !tNoteButton.isSelected();
+					isDown = theButt;
+				} else {
+					boolean theMenu = mShowNote.isSelected();
+					isDown = theMenu;
+				}
+				mShowNote.setSelected(isDown);
+				tNoteButton.setSelected(isDown);
 				personView.resizeNoticePanes();
 				kontroller.putPref(this, Resurses.TOOLBAR_NOTE_ACTION, ""
-						+ theButt);
+						+ isDown);
 			} else if (cmd.equals(Resurses.TOOLBAR_ADDRESS_ACTION)) {
-				boolean theButt = !tAddressButton.isSelected();
-				tAddressButton.setSelected(theButt);
+				boolean isDown = true;
+				if (e.getSource() == tAddressButton) {
+					boolean theButt = !tAddressButton.isSelected();
+					isDown = theButt;
+				} else {
+					boolean theMenu = mShowAddress.isSelected();
+					isDown = theMenu;
+				}
+				mShowAddress.setSelected(isDown);
+				tAddressButton.setSelected(isDown);
 				personView.resizeNoticePanes();
 				kontroller.putPref(this, Resurses.TOOLBAR_ADDRESS_ACTION, ""
-						+ theButt);
+						+ isDown);
 			} else if (cmd.equals(Resurses.TOOLBAR_FARM_ACTION)) {
-				boolean theButt = !tFarmButton.isSelected();
-				tFarmButton.setSelected(theButt);
+				boolean isDown = true;
+				if (e.getSource() == tFarmButton) {
+					boolean theButt = !tFarmButton.isSelected();
+					isDown = theButt;
+				} else {
+					boolean theMenu = mShowFarm.isSelected();
+					isDown = theMenu;
+				}
+				mShowFarm.setSelected(isDown);
+				tFarmButton.setSelected(isDown);
 				personView.resizeNoticePanes();
 				kontroller.putPref(this, Resurses.TOOLBAR_FARM_ACTION, ""
-						+ theButt);
+						+ isDown);
 			} else if (cmd.equals(Resurses.TOOLBAR_IMAGE_ACTION)) {
-				boolean theButt = !tImageButton.isSelected();
-				tImageButton.setSelected(theButt);
+				boolean isDown = true;
+				if (e.getSource() == tImageButton) {
+					boolean theButt = !tImageButton.isSelected();
+					isDown = theButt;
+				} else {
+					boolean theMenu = mShowImage.isSelected();
+					isDown = theMenu;
+				}
+				mShowImage.setSelected(isDown);
+				tImageButton.setSelected(isDown);
 				personView.resizeNoticePanes();
 				kontroller.putPref(this, Resurses.TOOLBAR_IMAGE_ACTION, ""
-						+ theButt);
+						+ isDown);
 			} else if (cmd.equals(Resurses.TOOLBAR_PRIVATE_ACTION)) {
-				boolean theButt = !tPrivateButton.isSelected();
-				tPrivateButton.setSelected(theButt);
+				boolean isDown = true;
+				if (e.getSource() == tPrivateButton) {
+					boolean theButt = !tPrivateButton.isSelected();
+					isDown = theButt;
+				} else {
+					boolean theMenu = mShowPrivate.isSelected();
+					isDown = theMenu;
+				}
+				mShowPrivate.setSelected(isDown);
+				tPrivateButton.setSelected(isDown);
 				personView.resizeNoticePanes();
 				kontroller.putPref(this, Resurses.TOOLBAR_PRIVATE_ACTION, ""
-						+ theButt);
+						+ isDown);
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_DOWN_ACTION)) {
 
 				if (activePersonPid > 0) {
@@ -1980,11 +2092,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					}
 				}
 			} else if (cmd.equals(Resurses.TOOLBAR_NOTICES_ACTION)) {
-				boolean notiButt = !tNoticesButton.isSelected();
-				tNoticesButton.setSelected(notiButt);
+				boolean isDown = true;
+				if (e.getSource() == tNoticesButton) {
+					boolean theButt = !tNoticesButton.isSelected();
+					isDown = theButt;
+				} else {
+					boolean theMenu = mShowNotices.isSelected();
+					isDown = theMenu;
+				}
+				mShowNotices.setSelected(isDown);
+				tNoticesButton.setSelected(isDown);
 				personView.resizeNoticePanes();
-				kontroller
-						.putPref(this, Resurses.NOTICES_BUTTON, "" + notiButt);
+				kontroller.putPref(this, Resurses.NOTICES_BUTTON, "" + isDown);
 				personView.showNotices(tNoticesButton.isSelected());
 				showAddNoticeButton();
 			} else if (cmd.equals(Resurses.TOOLBAR_ADDNOTICE_ACTION)) {
@@ -3290,6 +3409,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		tQueryButton.setEnabled(isConnected == 2);
 		mImportHiski.setEnabled(isConnected == 2);
 		mNewPerson.setEnabled(isConnected == 2);
+		mShowNotices.setEnabled(isConnected == 2);
+		mShowNote.setEnabled(isConnected == 2);
+		mShowAddress.setEnabled(isConnected == 2);
+		mShowFarm.setEnabled(isConnected == 2);
+		mShowImage.setEnabled(isConnected == 2);
+		mShowPrivate.setEnabled(isConnected == 2);
 		mDbWork.setEnabled(isConnected == 2);
 		mDbUpdate.setEnabled(isConnected == 2);
 		tPersonButton.setEnabled(isConnected == 2);
