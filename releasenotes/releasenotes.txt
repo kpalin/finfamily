@@ -2,6 +2,11 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 850 on 12 oct 2010
+
+* Usability changes to menu and dialogs
+* Refactoring of hiski import
+
 Release 850 on 7 oct 2010
 
 * Hiski pane opening/closing refactored

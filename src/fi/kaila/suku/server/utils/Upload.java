@@ -145,7 +145,7 @@ public class Upload {
 
 				}
 
-				String sqlrow = "select pnid,noticerow,sourcetext from unitnotice "
+				String sqlrow = "select pnid,noticerow,notetext from unitnotice "
 						+ "where pid = ? and tag='HISKI' order by noticerow desc limit 1";
 				PreparedStatement pstmr = con.prepareStatement(sqlrow);
 				pstmr.setInt(1, person.getPid());
@@ -157,7 +157,7 @@ public class Upload {
 				}
 				rs.close();
 				pstmr.close();
-				String hupdate = "update unitnotice set sourcetext = ? where pnid = ?";
+				String hupdate = "update unitnotice set notetext = ? where pnid = ?";
 
 				UnitNotice[] nots = person.getNotices();
 
@@ -166,10 +166,10 @@ public class Upload {
 					if (n.getTag().equals("HISKI") && hiskipnid > 0) {
 						if (hiskiText != null) {
 							hiskiText += "\n\n" + n.getSource();
-
+							hiskiText += "\n" + n.getNoteText();
 						} else {
-
-							hiskiText += n.getSource();
+							hiskiText = n.getSource();
+							hiskiText += "\n" + n.getNoteText();
 						}
 						PreparedStatement pstmh = con.prepareStatement(hupdate);
 						pstmh.setString(1, hiskiText);
@@ -181,7 +181,7 @@ public class Upload {
 						int unitpnid = nextSeq(con, "unitnoticeseq");
 						if (n.getTag().equals("HISKI")) {
 							hiskipnid = unitpnid;
-							hiskiText = n.getSource();
+							hiskiText = n.getNoteText();
 						}
 						pstmn.setInt(2, unitpnid);
 						pstmn.setInt(3, surety);

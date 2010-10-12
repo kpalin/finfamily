@@ -89,7 +89,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	private SukuTextField buriPlace;
 	private SukuTextField occupation;
 
-	private JTextArea notetext;
+	private SukuTextArea notetext;
 	private SukuTextArea source;
 	private JTextArea privateText;
 
@@ -636,7 +636,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		lbl = new JLabel(Resurses.getString("DATA_NOTE"));
 		add(lbl);
 		lbl.setBounds(10, rivi, 100, 20);
-		notetext = new JTextArea();
+		notetext = new SukuTextArea();
 		notetext.setLineWrap(true);
 		notetext.setWrapStyleWord(true);
 		scrollNote = new JScrollPane(notetext,

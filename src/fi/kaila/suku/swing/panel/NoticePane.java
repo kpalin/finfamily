@@ -192,7 +192,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	JLabel mediaTitleLbl;
 
 	/** The note text. */
-	JTextArea noteText;
+	SukuTextArea noteText;
 
 	/** The media filename. */
 	JTextField mediaFilename;
@@ -478,7 +478,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		email = new JTextField();
 		add(email);
 
-		noteText = new JTextArea();
+		noteText = new SukuTextArea();
 		noteText.setLineWrap(true);
 		noteText.setWrapStyleWord(true);
 		scrollNote = new JScrollPane(noteText,
@@ -1743,9 +1743,9 @@ public class NoticePane extends JPanel implements ActionListener,
 		lrivi += 5;
 		int sheight = 60;
 		sourceLbl.setBounds(10, lrivi, 70, 20);
-		if (notice.getTag().equals("HISKI")) {
-			sheight = 180;
-		}
+		// if (notice.getTag().equals("HISKI")) {
+		// sheight = 180;
+		// }
 		scrollSource.setBounds(lcol, lrivi, lwidth, sheight);
 		boolean privateShow = mustPrivate;
 		if (mustPrivate) {

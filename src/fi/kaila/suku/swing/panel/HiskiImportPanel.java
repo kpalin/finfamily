@@ -723,8 +723,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 
 				hbh.append(noteBuf);
-
-				notice.setSource(hiskiSource + "\n" + hbh.toString());
+				notice.setNoteText(hiskiSource + "\n" + hbh.toString());
+				notice.setSource(hiskiSource);
 				notices.add(notice);
 
 				if (notices.size() > 0) {
@@ -999,8 +999,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 
 				hbh.append(noteBuf);
-
-				notice.setSource(hiskiSource + "\n" + hbh.toString());
+				notice.setSource(hiskiSource);
+				notice.setNoteText(hiskiSource + "\n" + hbh.toString());
 
 				notices.add(notice);
 
@@ -1269,7 +1269,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				hbp.append(noteBuf);
 
 				if (hbp.length() > 0) {
-					notice.setNoteText(hbp.toString());
+					notice.setNoteText(hiskiSource + "\n" + hbp.toString());
 				}
 				notice.setSource(hiskiSource);
 				notices.add(notice);
@@ -1485,8 +1485,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 				if (hbp.length() > 0) {
 					notice = new UnitNotice("HISKI");
-
-					notice.setSource(hiskiSource + "\n" + hbp.toString());
+					notice.setNoteText(hiskiSource + "\n" + hbp.toString());
+					notice.setSource(hiskiSource);
 					notices.add(notice);
 				}
 				if (notices.size() > 0) {
@@ -1639,6 +1639,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		}
 		if (noteBuf.length() > 0) {
 			UnitNotice note = new UnitNotice("HISKI");
+
 			note.setSource(hiskiSource + "\n" + noteBuf.toString());
 			if (refs.size() > 0) {
 				note.setRefNames(refs.toArray(new String[0]));
