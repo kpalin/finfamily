@@ -103,13 +103,15 @@ public class Upload {
 				+ "place,village,farm,notetext,prefix,surname,givenname,patronym,postfix,sourcetext,RefNames) "
 				+ "values (?,?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?) ";
 
-		String sqlrow = "select max(noticerow) from unitnotice where pid = ?";
 		PreparedStatement pstm = con.prepareStatement(sql);
 		PreparedStatement pstmn = con.prepareStatement(sqlnotice);
-		int surety = 80;
-		int rowno = 1;
-		for (int i = 0; i < families.persons.length; i++) {
 
+		for (int i = 0; i < families.persons.length; i++) {
+			int surety = 80;
+			int rowno = 1;
+
+			int hiskipnid = 0;
+			String hiskiText = null;
 			PersonLongData person = families.persons[i];
 			if (person != null) {
 				if (person.getPid() <= 0) {
@@ -131,6 +133,7 @@ public class Upload {
 					}
 				} else {
 					surety = 60;
+					String sqlrow = "select max(noticerow) from unitnotice where pid = ?";
 					PreparedStatement pstmr = con.prepareStatement(sqlrow);
 					pstmr.setInt(1, person.getPid());
 					ResultSet rs = pstmr.executeQuery();
@@ -142,47 +145,79 @@ public class Upload {
 
 				}
 
+				String sqlrow = "select pnid,noticerow,sourcetext from unitnotice "
+						+ "where pid = ? and tag='HISKI' order by noticerow desc limit 1";
+				PreparedStatement pstmr = con.prepareStatement(sqlrow);
+				pstmr.setInt(1, person.getPid());
+				ResultSet rs = pstmr.executeQuery();
+				if (rs.next()) {
+					hiskipnid = rs.getInt(1);
+					// hiskiRow = rs.getInt(2);
+					hiskiText = rs.getString(3);
+				}
+				rs.close();
+				pstmr.close();
+				String hupdate = "update unitnotice set sourcetext = ? where pnid = ?";
+
 				UnitNotice[] nots = person.getNotices();
 
 				for (int j = 0; j < nots.length; j++) {
 					UnitNotice n = nots[j];
+					if (n.getTag().equals("HISKI") && hiskipnid > 0) {
+						if (hiskiText != null) {
+							hiskiText += "\n\n" + n.getSource();
 
-					pstmn.setInt(1, person.getPid());
+						} else {
 
-					pstmn.setInt(2, nextSeq(con, "unitnoticeseq"));
-					pstmn.setInt(3, surety);
-					pstmn.setInt(4, j + rowno);
-					pstmn.setString(5, n.getTag());
-					pstmn.setString(6, n.getNoticeType());
-					pstmn.setString(7, n.getDescription());
-					pstmn.setString(8, n.getDatePrefix());
-					pstmn.setString(9, n.getFromDate());
-					pstmn.setString(10, n.getPlace());
-					pstmn.setString(11, n.getVillage());
-					pstmn.setString(12, n.getFarm());
-					pstmn.setString(13, n.getNoteText());
-					pstmn.setString(14, n.getPrefix());
-					pstmn.setString(15, n.getSurname());
-					pstmn.setString(16, n.getGivenname());
-					pstmn.setString(17, n.getPatronym());
-					pstmn.setString(18, n.getPostfix());
-					pstmn.setString(19, n.getSource());
+							hiskiText += n.getSource();
+						}
+						PreparedStatement pstmh = con.prepareStatement(hupdate);
+						pstmh.setString(1, hiskiText);
+						pstmh.setInt(2, hiskipnid);
+						pstmh.executeUpdate();
 
-					if (n.getRefNames() == null) {
-						pstmn.setNull(20, Types.ARRAY);
 					} else {
+						pstmn.setInt(1, person.getPid());
+						int unitpnid = nextSeq(con, "unitnoticeseq");
+						if (n.getTag().equals("HISKI")) {
+							hiskipnid = unitpnid;
+							hiskiText = n.getSource();
+						}
+						pstmn.setInt(2, unitpnid);
+						pstmn.setInt(3, surety);
+						pstmn.setInt(4, j + rowno);
+						pstmn.setString(5, n.getTag());
+						pstmn.setString(6, n.getNoticeType());
+						pstmn.setString(7, n.getDescription());
+						pstmn.setString(8, n.getDatePrefix());
+						pstmn.setString(9, n.getFromDate());
+						pstmn.setString(10, n.getPlace());
+						pstmn.setString(11, n.getVillage());
+						pstmn.setString(12, n.getFarm());
+						pstmn.setString(13, n.getNoteText());
+						pstmn.setString(14, n.getPrefix());
+						pstmn.setString(15, n.getSurname());
+						pstmn.setString(16, n.getGivenname());
+						pstmn.setString(17, n.getPatronym());
+						pstmn.setString(18, n.getPostfix());
+						pstmn.setString(19, n.getSource());
 
-						Array xx = con
-								.createArrayOf("varchar", n.getRefNames());
-						pstmn.setArray(20, xx);
+						if (n.getRefNames() == null) {
+							pstmn.setNull(20, Types.ARRAY);
+						} else {
 
-					}
+							Array xx = con.createArrayOf("varchar",
+									n.getRefNames());
+							pstmn.setArray(20, xx);
 
-					int lukuri = pstmn.executeUpdate();
-					if (lukuri != 1) {
-						logger.warning("Update of UnitNotice "
-								+ person.getPid() + " result " + lukuri
-								+ " rows");
+						}
+
+						int lukuri = pstmn.executeUpdate();
+						if (lukuri != 1) {
+							logger.warning("Update of UnitNotice "
+									+ person.getPid() + " result " + lukuri
+									+ " rows");
+						}
 					}
 				}
 			}

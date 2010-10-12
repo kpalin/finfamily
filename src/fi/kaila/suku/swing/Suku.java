@@ -535,9 +535,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mActions.add(this.mImportHiski);
 		this.mImportHiski.setActionCommand(Resurses.IMPORT_HISKI);
 		this.mImportHiski.addActionListener(this);
+		boolean openHiskiWhenReady = false;
 		String tmp = kontroller.getPref(this, Resurses.IMPORT_HISKI, "false");
 		if (tmp.equals("true")) {
 			mImportHiski.setSelected(true);
+			openHiskiWhenReady = true;
 		}
 
 		this.mRemPerson = new JMenuItem(
@@ -958,6 +960,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			setIconImage(icon);
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		}
+		if (openHiskiWhenReady) {
+			importFromHiski(true);
 		}
 		logger.info("FinFamily [" + Resurses.getLanguage() + "] Version "
 				+ AntVersion.antVersion + " - Java Version: "

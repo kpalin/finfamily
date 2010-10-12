@@ -610,7 +610,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					if (kast.persons[i].getPid() > 0) {
 						if (hbh.length() > 0) {
-							hbh.append("\n");
+							hbh.append(".\n");
 						}
 						hbh.append(Resurses.getString("HISKI_NAME"));
 						hbh.append(":");
@@ -626,7 +626,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							hbh.append(" ");
 							hbh.append(suku);
 						}
-						hbh.append("\n");
+						hbh.append(".\n");
 					} else {
 
 						notice = new UnitNotice("NAME");
@@ -677,13 +677,13 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					noteBuf.append(eventFirstType.getText());
 					noteBuf.append(" ");
 					noteBuf.append(Utils.textDate(toDbDate(kdate), false));
-					noteBuf.append("\n");
+					noteBuf.append(".\n");
 				}
 				if (!hdate.isEmpty()) {
 					noteBuf.append(eventLastType.getText());
 					noteBuf.append(" ");
 					noteBuf.append(Utils.textDate(toDbDate(hdate), false));
-					noteBuf.append("\n");
+					noteBuf.append(".\n");
 				}
 
 				if (!village.isEmpty()) {
@@ -724,10 +724,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 				hbh.append(noteBuf);
 
-				if (hbh.length() > 0) {
-					notice.setNoteText(hbh.toString());
-				}
-				notice.setSource(hiskiSource);
+				notice.setSource(hiskiSource + "\n" + hbh.toString());
 				notices.add(notice);
 
 				if (notices.size() > 0) {
@@ -838,7 +835,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					if (kast.persons[i].getPid() > 0) {
 						if (hbh.length() > 0) {
-							hbh.append("\n");
+							hbh.append(".\n");
 						}
 						hbh.append(Resurses.getString("HISKI_NAME"));
 						hbh.append(":");
@@ -854,7 +851,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							hbh.append(" ");
 							hbh.append(suku);
 						}
-						hbh.append("\n");
+						hbh.append(".\n");
 					} else {
 
 						notice = new UnitNotice("NAME");
@@ -902,7 +899,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							hbh.append(" ");
 							hbh.append(farm);
 						}
-						hbh.append("\n");
+						hbh.append(".\n");
 					} else {
 						notice = new UnitNotice("DEAT");
 						if (!reason.isEmpty()) {
@@ -950,7 +947,6 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 						}
 
 						hbh.append(Utils.textDate(bdate, false));
-						hbh.append("\n");
 					} else {
 
 						notice = new UnitNotice("BIRT");
@@ -1004,10 +1000,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 				hbh.append(noteBuf);
 
-				if (hbh.length() > 0) {
-					notice.setNoteText(hbh.toString());
-				}
-				notice.setSource(hiskiSource);
+				notice.setSource(hiskiSource + "\n" + hbh.toString());
+
 				notices.add(notice);
 
 			} else {
@@ -1177,7 +1171,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					if (kast.persons[i].getPid() > 0) {
 						if (hbp.length() > 0) {
-							hbp.append("\n");
+							hbp.append(".\n");
 						}
 						hbp.append(Resurses.getString("HISKI_NAME"));
 						hbp.append(":");
@@ -1217,7 +1211,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 				if (eventFirstDate.getText().length() > 0) {
 					if (hbp.length() > 0) {
-						hbp.append("\n");
+						hbp.append(".\n");
 					}
 					hbp.append(eventFirstType.getText());
 					hbp.append(": ");
@@ -1270,7 +1264,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					noteBuf.append(".\n");
 				}
 				if (hbp.length() > 0) {
-					hbp.append("\n");
+					hbp.append(".\n");
 				}
 				hbp.append(noteBuf);
 
@@ -1404,7 +1398,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					if (kast.persons[i].getPid() > 0) {
 						if (hbp.length() > 0) {
-							hbp.append("\n");
+							hbp.append(".\n");
 						}
 						hbp.append(Resurses.getReportString("HISKI_NAME"));
 						hbp.append(":");
@@ -1467,7 +1461,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 							if (auxdate != null && !auxdate.isEmpty()) {
 								if (kast.persons[i].getPid() > 0) {
 									if (hbp.length() > 0) {
-										hbp.append("\n");
+										hbp.append(".\n");
 									}
 									hbp.append(Resurses
 											.getReportString("HISKI_BIRT"));
@@ -1491,8 +1485,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 				if (hbp.length() > 0) {
 					notice = new UnitNotice("HISKI");
-					notice.setNoteText(hbp.toString());
-					notice.setSource(hiskiSource);
+
+					notice.setSource(hiskiSource + "\n" + hbp.toString());
 					notices.add(notice);
 				}
 				if (notices.size() > 0) {
@@ -1514,7 +1508,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (!etu.isEmpty() || !patro.isEmpty() || !suku.isEmpty()) {
 					if (kast.persons[childIdx].getPid() > 0) {
 						if (noteBuf.length() > 0) {
-							noteBuf.append("\n");
+							noteBuf.append(".\n");
 						}
 						noteBuf.append(Resurses.getString("HISKI_NAME"));
 						noteBuf.append(":");
@@ -1544,7 +1538,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 					if (kast.persons[i].getPid() > 0) {
 						if (noteBuf.length() > 0) {
-							noteBuf.append("\n");
+							noteBuf.append(".\n");
 						}
 						noteBuf.append(Resurses.getString("HISKI_" + pvm1Name));
 						noteBuf.append(":");
@@ -1576,7 +1570,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (dat != null) {
 					if (kast.persons[i].getPid() > 0) {
 						if (noteBuf.length() > 0) {
-							noteBuf.append("\n");
+							noteBuf.append(".\n");
 						}
 						noteBuf.append(Resurses.getString("HISKI_" + pvm2Name));
 						noteBuf.append(":");
@@ -1645,8 +1639,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		}
 		if (noteBuf.length() > 0) {
 			UnitNotice note = new UnitNotice("HISKI");
-			note.setNoteText(noteBuf.toString());
-			note.setSource(hiskiSource);
+			note.setSource(hiskiSource + "\n" + noteBuf.toString());
 			if (refs.size() > 0) {
 				note.setRefNames(refs.toArray(new String[0]));
 			}
@@ -1713,6 +1706,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		eventReason.setText("");
 		eventUserComment.setText("");
 		eventOrigComment.setText("");
+		eventNote.setText("");
 
 		for (int i = 0; i < pNumero.length; i++) {
 

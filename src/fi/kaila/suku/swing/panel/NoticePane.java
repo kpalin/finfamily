@@ -1741,11 +1741,15 @@ public class NoticePane extends JPanel implements ActionListener,
 			postLbl.setVisible(false);
 		}
 		lrivi += 5;
+		int sheight = 60;
 		sourceLbl.setBounds(10, lrivi, 70, 20);
-		scrollSource.setBounds(lcol, lrivi, lwidth, 60);
+		if (notice.getTag().equals("HISKI")) {
+			sheight = 180;
+		}
+		scrollSource.setBounds(lcol, lrivi, lwidth, sheight);
 		boolean privateShow = mustPrivate;
 		if (mustPrivate) {
-			lrivi += 64;
+			lrivi += + +sheight;
 			privateLbl.setBounds(10, lrivi, 70, 42);
 			scrollPrivate.setBounds(lcol, lrivi, lwidth, 60);
 		}
