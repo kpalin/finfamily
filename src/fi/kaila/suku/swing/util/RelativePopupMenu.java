@@ -146,9 +146,9 @@ public class RelativePopupMenu {
 		pMenu.add(pShowReport);
 
 		pDeletePerson = new JMenuItem(
-				Resurses.getString(Resurses.CREATE_REPORT));
+				Resurses.getString("TOOLBAR.REMPERSON.TOOLTIP"));
 		// pShowFamily.addActionListener(popupListener);
-		pDeletePerson.setActionCommand(Resurses.CREATE_REPORT);
+		pDeletePerson.setActionCommand(Resurses.TOOLBAR_REMPERSON_ACTION);
 		pMenu.add(pDeletePerson);
 
 		pMenu.addSeparator();
