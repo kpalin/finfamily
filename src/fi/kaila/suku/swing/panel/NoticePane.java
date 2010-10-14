@@ -1220,6 +1220,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			try {
 				verifyUnitNotice();
+				main.updatePerson(false);
 			} catch (SukuDateException se) {
 				JOptionPane.showMessageDialog(this, se.getMessage(),
 						Resurses.getString(Resurses.SUKU),
@@ -1228,9 +1229,11 @@ public class NoticePane extends JPanel implements ActionListener,
 			}
 
 			try {
-				personView.closePersonPane(false);
-				personView.displayPersonPane(personPid);
+
 				personView.closeMainPane(true);
+				// personView.closePersonPane(false);
+				// personView.displayPersonPane(personPid);
+				// personView.closeMainPane(true);
 
 			} catch (SukuException e1) {
 				JOptionPane.showMessageDialog(this, e1.toString(),

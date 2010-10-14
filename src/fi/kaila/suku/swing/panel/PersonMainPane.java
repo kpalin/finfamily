@@ -890,11 +890,11 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					// JOptionPane.showMessageDialog(this, ee.getMessage());
 					// return;
 					// }
-					listNoticePanels();
+					debugNoticePanels();
 					updateNameNotices();
 					updateRestNotices();
 
-					listNoticePanels();
+					debugNoticePanels();
 
 					SukuData resp = updatePerson(false);
 					personView.closeMainPane(true);
@@ -945,7 +945,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		// listNoticePanels();
 		SukuData resp = null;
 		// personView.updateNotices();
-		listNoticePanels();
+		debugNoticePanels();
 		int noticeFirst = personView.getFirstNoticeIndex();
 		int tabCount = personView.getTabCount();
 
@@ -1297,7 +1297,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	 * used for debugging to check sync of main and notices
 	 */
 	@SuppressWarnings("unused")
-	private void listNoticePanels() {
+	private void debugNoticePanels() {
 		if (!listPanels)
 			return;
 		int midx = personView.getMainPaneIndex();

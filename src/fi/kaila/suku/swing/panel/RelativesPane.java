@@ -359,6 +359,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			private static final long serialVersionUID = 1L;
 
+			@Override
 			public boolean canImport(TransferHandler.TransferSupport info) {
 				// we only import PersonShortData
 				if (!info.isDataFlavorSupported(PersonShortData
@@ -389,6 +390,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 				return true;
 			}
 
+			@Override
 			public boolean importData(TransferHandler.TransferSupport info) {
 				if (!info.isDrop()) {
 					return false;
@@ -418,6 +420,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 				return false;
 			}
 
+			@Override
 			public int getSourceActions(JComponent c) {
 				return COPY;
 			}
@@ -438,6 +441,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			private static final long serialVersionUID = 1L;
 
+			@Override
 			public boolean canImport(TransferHandler.TransferSupport info) {
 				// we only import PersonShortData
 
@@ -468,6 +472,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 				return true;
 			}
 
+			@Override
 			public boolean importData(TransferHandler.TransferSupport info) {
 				if (!info.isDrop()) {
 					return false;
@@ -520,6 +525,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 				return false;
 			}
 
+			@Override
 			protected Transferable createTransferable(JComponent c) {
 				if (c instanceof JTable) {
 					JTable t = (JTable) c;
@@ -536,6 +542,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			}
 
+			@Override
 			public int getSourceActions(JComponent c) {
 				return COPY;
 			}
@@ -556,6 +563,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 			private static final long serialVersionUID = 1L;
 
+			@Override
 			public boolean canImport(TransferHandler.TransferSupport info) {
 				// we only import PersonShortData
 
@@ -586,6 +594,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 				return true;
 			}
 
+			@Override
 			public boolean importData(TransferHandler.TransferSupport info) {
 				if (!info.isDrop()) {
 					return false;
@@ -635,10 +644,12 @@ public class RelativesPane extends JPanel implements ActionListener,
 				return false;
 			}
 
+			@Override
 			public int getSourceActions(JComponent c) {
 				return COPY;
 			}
 
+			@Override
 			protected Transferable createTransferable(JComponent c) {
 				if (c instanceof JTable) {
 					JTable t = (JTable) c;
@@ -1499,6 +1510,17 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 		checkActiveRelationSurety();
 
+		if (e.getSource() == spouTab) {
+			pareTab.clearSelection();
+			chilTab.clearSelection();
+		} else if (e.getSource() == chilTab) {
+			spouTab.clearSelection();
+			pareTab.clearSelection();
+		} else if (e.getSource() == pareTab) {
+			spouTab.clearSelection();
+			chilTab.clearSelection();
+		}
+
 		if (e.getSource() == spouTab || e.getSource() == chilTab
 				|| e.getSource() == pareTab) {
 			if (e.getSource() == chilTab) {
@@ -1548,9 +1570,57 @@ public class RelativesPane extends JPanel implements ActionListener,
 		else if (e.getSource() == noticeTab && activeRelation != null) {
 			int ii = noticeTab.getSelectedRow();
 			// System.out.println("Avataan tietojakso " + ii);
-			boolean bb = openRelaNotice(ii);
+			boolean bb = false;
+			// private boolean openRelaNotice(int ii) {
+			RelationNotice rn = notices.list.get(ii);
+
+			RelationDialog lan = new RelationDialog(personView.getSuku());
+
+			Rectangle r = personView.getSuku().getDbWindow();
+
+			lan.setBounds(r);
+			lan.setRelation(rn);
+			lan.showMe();
+			lan.setVisible(true);
+			if (rn.isToBeDeleted() && rn.getRnid() == 0) {
+				int rnnlen = activeRelation.getNotices().length;
+				if (rnnlen <= 0) {
+					activeRelation.setNotices(new RelationNotice[0]);
+				} else {
+					RelationNotice[] rnn = new RelationNotice[rnnlen - 1];
+					int j = 0;
+					for (int i = 0; i < rnnlen; i++) {
+						if (i != ii) {
+							rnn[j++] = activeRelation.getNotices()[i];
+						}
+					}
+					activeRelation.setNotices(rnn);
+				}
+
+				notices.list.remove(ii);
+				//
+				noticeTab.updateUI();
+				return;
+			}
+
+			try {
+				lan.updateData();
+
+			} catch (SukuDateException ee) {
+				JOptionPane.showMessageDialog(this, ee.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
+			}
+			if (rn.isToBeUpdated()) {
+				bb = true;
+			}
+
+			// boolean bb = openRelaNotice(ii);
 			if (bb) {
+
 				activeRelation.setToBeUpdated(true);
+				noticeTab.updateUI();
+
 			}
 
 		}
@@ -1567,30 +1637,6 @@ public class RelativesPane extends JPanel implements ActionListener,
 			activeRelation.setSurety(sure);
 			activeRelation.setToBeUpdated(true);
 		}
-
-	}
-
-	private boolean openRelaNotice(int ii) {
-		RelationNotice rn = notices.list.get(ii);
-
-		RelationDialog lan = new RelationDialog(personView.getSuku());
-
-		Rectangle r = personView.getSuku().getDbWindow();
-
-		lan.setBounds(r);
-		lan.setRelation(rn);
-		lan.showMe();
-		lan.setVisible(true);
-
-		try {
-			return lan.updateData();
-
-		} catch (SukuDateException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(),
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
-		}
-		return false;
 
 	}
 
