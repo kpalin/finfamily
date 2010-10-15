@@ -573,7 +573,7 @@ public class PersonUtil {
 													.getBirtDate() == null
 											|| rfm.getShortPerson()
 													.getBirtDate().isEmpty()) {
-										ffvec.insertElementAt(newrel, j);
+										ffvec.add(j, newrel);
 										newrel = null;
 										break;
 									} else {
@@ -583,7 +583,7 @@ public class PersonUtil {
 												.compareTo(
 														rfm.getShortPerson()
 																.getBirtDate()) < 0) {
-											ffvec.insertElementAt(newrel, j);
+											ffvec.add(j, newrel);
 											newrel = null;
 											break;
 										}

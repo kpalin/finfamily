@@ -425,7 +425,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 					"schema=" + selectedSchema);
 			viewIds = new int[views.generalArray.length];
 			viewNames = new String[views.generalArray.length];
-			viewList.removeAllElements();
+			viewList.clear();
 			for (int i = 0; i < views.generalArray.length; i++) {
 				String[] parts = views.generalArray[i].split(";");
 				if (parts.length == 2) {

@@ -357,7 +357,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 								lastCheckedIndex++;
 								if (k > lastCheckedIndex) {
 									UnitNotice t = un.remove(k);
-									un.insertElementAt(t, lastCheckedIndex);
+									un.add(lastCheckedIndex, t);
 									hasSorted = true;
 								}
 							} else {

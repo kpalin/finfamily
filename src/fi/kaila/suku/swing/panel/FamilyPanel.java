@@ -269,8 +269,8 @@ public class FamilyPanel extends JPanel implements MouseListener,
 	 * empty the graph.
 	 */
 	public void resetTable() {
-		tabs.removeAllElements();
-		pareRels.removeAllElements();
+		tabs.clear();
+		pareRels.clear();
 	}
 
 	/**

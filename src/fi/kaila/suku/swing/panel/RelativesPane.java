@@ -199,9 +199,9 @@ public class RelativesPane extends JPanel implements ActionListener,
 		me.relations = relas;
 		me.pers = pers;
 		me.persMap = new HashMap<Integer, PersonShortData>();
-		me.parents.list.removeAllElements();
-		me.spouses.list.removeAllElements();
-		me.children.list.removeAllElements();
+		me.parents.list.clear();
+		me.spouses.list.clear();
+		me.children.list.clear();
 		me.relaPane.setVisible(false);
 
 		PersonShortData psd = new PersonShortData(longPers);
@@ -1232,7 +1232,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		if (newRow < 0) {
 			children.list.add(rel);
 		} else {
-			children.list.insertElementAt(rel, newRow);
+			children.list.add(newRow, rel);
 
 		}
 
@@ -1345,7 +1345,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		// }
 
 		if (row >= 0 && row < spouses.list.size()) {
-			spouses.list.insertElementAt(rel, row);
+			spouses.list.add(row, rel);
 		} else {
 			spouses.list.add(rel);
 		}
@@ -1409,7 +1409,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		if (parents.list.size() == 0 || tag.equals("MOTH")) {
 			parents.list.add(rel);
 		} else {
-			parents.list.insertElementAt(rel, 0);
+			parents.list.add(0, rel);
 		}
 		pareTab.updateUI();
 	}
@@ -1542,7 +1542,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 				// System.out.println("puolisolta tuli riviltä " + ii);
 				activeRelation = spouses.list.get(ii);
 			}
-			notices.list.removeAllElements();
+			notices.list.clear();
 			relaPane.setVisible(true);
 			spouseName.setText(activeRelation.getShortPerson().getAlfaName());
 			noticeScroll.setVisible(true);

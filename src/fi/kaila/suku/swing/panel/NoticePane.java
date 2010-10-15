@@ -1166,12 +1166,12 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			if (gv.isEmpty()) {
 				if (listaSelectedName >= 0) {
-					namesVector.removeElementAt(listaSelectedName);
+					namesVector.remove(listaSelectedName);
 				}
 			} else {
 				if (listaSelectedName >= 0) {
-					namesVector.removeElementAt(listaSelectedName);
-					namesVector.insertElementAt(gv, listaSelectedName);
+					namesVector.remove(listaSelectedName);
+					namesVector.add(listaSelectedName, gv);
 				} else {
 					namesVector.add(gv);
 				}
@@ -1190,13 +1190,13 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			if (pl.isEmpty()) {
 				if (listaSelectedPlace >= 0) {
-					placesVector.removeElementAt(listaSelectedPlace);
+					placesVector.remove(listaSelectedPlace);
 				}
 			} else {
 
 				if (listaSelectedPlace >= 0) {
-					placesVector.removeElementAt(listaSelectedPlace);
-					placesVector.insertElementAt(pl, listaSelectedPlace);
+					placesVector.remove(listaSelectedPlace);
+					placesVector.add(listaSelectedPlace, pl);
 				} else {
 					placesVector.add(pl);
 				}

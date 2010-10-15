@@ -1517,7 +1517,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					if (i > lastCheckedIndex) {
 						lastCheckedIndex++;
 						UnitNotice t = unotices.remove(i);
-						unotices.insertElementAt(t, lastCheckedIndex);
+						unotices.add(lastCheckedIndex, t);
 						if (tag.equals(t.getTag())) {
 							hasSorted = true;
 						}

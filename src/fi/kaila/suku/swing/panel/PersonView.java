@@ -127,7 +127,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 *            the index
 	 */
 	public void insertTab(SukuTabPane pane, int index) {
-		paneTabs.insertElementAt(pane, index);
+		paneTabs.add(index, pane);
 		boolean isNotice = pane.pnl instanceof NoticePane;
 		if (!isNotice || getSuku().isShowNotices()) {
 
@@ -166,7 +166,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 */
 	public void movePane(int from, int to) {
 		SukuTabPane t = paneTabs.remove(from);
-		paneTabs.insertElementAt(t, to);
+		paneTabs.add(to, t);
 	}
 
 	/**
@@ -948,7 +948,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		paneTabs.remove(isele);
 		tabbedPane.remove(isele);
 
-		paneTabs.insertElementAt(pane, toIdx);
+		paneTabs.add(toIdx, pane);
 		tabbedPane.insertTab(pane.title, null, pane, pane.tip, toIdx);
 		setSelectedIndex(toIdx);
 

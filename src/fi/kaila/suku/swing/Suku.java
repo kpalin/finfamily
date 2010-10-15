@@ -1533,7 +1533,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			SukuData resp = Suku.kontroller.getSukuData("cmd=getsettings",
 					"type=needle", "name=needle");
-			needle.removeAllElements();
+			needle.clear();
 			if (resp.generalArray != null) {
 
 				for (int i = 0; i < resp.generalArray.length; i++) {
@@ -2104,7 +2104,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							if (res.pers != null) {
 								showPerson(pid);
 
-								needle.insertElementAt(dbl[0] + ";" + dbl[1], 0);
+								needle.add(0, dbl[0] + ";" + dbl[1]);
 							} else {
 								JOptionPane
 										.showMessageDialog(
@@ -2404,7 +2404,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		String dd = "" + pp.getPid() + ";" + pp.getAlfaName(true) + " "
 				+ Utils.nv4(pp.getBirtDate()) + "-"
 				+ Utils.nv4(pp.getDeatDate());
-		needle.insertElementAt(dd, 0);
+		needle.add(0, dd);
 
 		for (int i = needle.size() - 1; i > 0; i--) {
 			if (i > 4) {
@@ -3170,7 +3170,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 		}
-		needle.removeAllElements();
+		needle.clear();
 		isConnected = 0;
 		try {
 			this.personView.reset();

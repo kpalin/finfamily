@@ -21,7 +21,7 @@ public class NameArray implements Array {
 	 */
 	@Override
 	public void free() throws SQLException {
-		v.removeAllElements();
+		v.clear();
 
 	}
 
