@@ -174,7 +174,9 @@ public class ExportGedcomUtil {
 				double prose = (curreCount * 100) / allCount;
 				int intprose = (int) prose;
 				StringBuilder sbb = new StringBuilder();
-				sbb.append("" + intprose + ";" + shortie.getAlfaName());
+				sbb.append(intprose);
+				sbb.append(";");
+				sbb.append(shortie.getAlfaName());
 				if (this.runner.setRunnerValue(sbb.toString())) {
 					throw new SukuException(
 							Resurses.getString("GEDCOM_CANCELLED"));
@@ -744,8 +746,12 @@ public class ExportGedcomUtil {
 						}
 					}
 
-					sb.append("" + currLevel + " " + currTag + " "
-							+ chap.substring(0, last + 1) + "\r\n");
+					sb.append(currLevel);
+					sb.append(" ");
+					sb.append(currTag);
+					sb.append(" ");
+					sb.append(chap.substring(0, last + 1));
+					sb.append("\r\n");
 
 					chap = chap.substring(last + 1);
 					currLevel = level + 1;

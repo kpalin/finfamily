@@ -168,7 +168,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 				if (references.get(i) != table) {
 					if (sx.length() > 0)
 						sx.append(",");
-					sx.append("" + (references.get(i) + tableOffset));
+					sx.append((references.get(i) + tableOffset));
 				}
 			}
 		}
@@ -205,7 +205,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 				sb.append(",");
 			}
 			addComma = true;
-			sb.append("" + x);
+			sb.append(x);
 		}
 		return sb.toString();
 	}

@@ -522,7 +522,7 @@ public class AncestorTableReport extends CommonReport {
 					}
 
 				}
-				tabpage.append("" + ipp.page);
+				tabpage.append(ipp.page);
 				ipprevious = ipp;
 			}
 			workbook.write();

@@ -1783,7 +1783,7 @@ public abstract class CommonReport {
 						sb.append(",");
 					}
 					addComma = true;
-					sb.append("" + toPrintTable(pif, true));
+					sb.append(toPrintTable(pif, true));
 				}
 			}
 		}

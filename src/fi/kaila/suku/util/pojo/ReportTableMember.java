@@ -217,7 +217,7 @@ public class ReportTableMember implements Serializable {
 		for (int i = 0; i < alsoAsChild.size(); i++) {
 			if (sb.length() > 0)
 				sb.append(",");
-			sb.append("" + alsoAsChild.get(i));
+			sb.append(alsoAsChild.get(i));
 		}
 		return sb.toString();
 	}

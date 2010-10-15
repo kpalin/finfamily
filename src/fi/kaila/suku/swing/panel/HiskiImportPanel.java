@@ -1772,7 +1772,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		sb.append("" + hiskiNum);
+		sb.append(hiskiNum);
 		hiskiBrowserUrl = sb.toString();
 		sb.append("+xml");
 
