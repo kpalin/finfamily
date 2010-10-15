@@ -165,7 +165,7 @@ public class SukuSenser implements MouseListener {
 		sens.setBounds(rs);
 		String txt = parent.getText();
 		if (txt.length() > 0) {
-			model.removeAllElements();
+			model.clear();
 			switch (fld) {
 			case Fld_Place:
 				for (int i = 0; i < paikat.length; i++) {
@@ -253,7 +253,7 @@ public class SukuSenser implements MouseListener {
 	public void getSens(SukuTextField parent) {
 		if (model.size() > 0) {
 			parent.setText(model.get(0));
-			model.removeAllElements();
+			model.clear();
 		}
 		sens.setVisible(false);
 	}

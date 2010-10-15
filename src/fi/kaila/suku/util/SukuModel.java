@@ -132,7 +132,7 @@ public class SukuModel implements TableModel {
 	 * 
 	 */
 	public void resetModel() {
-		this.tab.removeAllElements();
+		this.tab.clear();
 		// = new Vector<SukuRow>();
 		// initModel();
 	}

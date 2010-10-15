@@ -117,7 +117,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 
 	private void drawSubject(Graphics g, Color color) {
 		g.setFont(textFont);
-		personAreas.removeAllElements();
+		personAreas.clear();
 
 		Dimension d = getSize(g);
 
@@ -213,7 +213,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		if (famMember.size() == 0)
 			return;
 		g.setFont(textFont);
-		personAreas.removeAllElements();
+		personAreas.clear();
 		Dimension d = getSize(g);
 
 		int sujet = 0;
@@ -714,8 +714,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	 *            the new subject
 	 */
 	public void setSubject(PersonShortData subject) {
-		famMember.removeAllElements();
-		famMemRel.removeAllElements();
+		famMember.clear();
+		famMemRel.clear();
 		famMember.add(subject);
 		famMemRel.add(new RelationShortData(0, 0, 0, null, 0));
 		spouseIdx = 1;
