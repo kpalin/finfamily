@@ -737,6 +737,11 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		} else {
 			SukuData plong = Suku.kontroller.getSukuData("cmd=person", "pid="
 					+ pid);
+			if (plong.persLong == null) {
+				throw new SukuException(
+						Resurses.getString("ERROR_PERSON_NOT_EXISTS") + "["
+								+ pid + "]");
+			}
 			persLong = plong.persLong;
 			relations = plong.relations;
 			persons = plong.pers;
@@ -811,6 +816,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			personView.addTab(new SukuTabPane(nimi, pane, tag));
 
 		}
+
 	}
 
 	/*

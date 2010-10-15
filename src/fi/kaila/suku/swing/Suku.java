@@ -1887,9 +1887,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						if (res.pers != null) {
 							showPerson(pid);
 						} else {
-							JOptionPane
-									.showMessageDialog(this, Resurses
-											.getString("DIALOG_PID_NOT_EXISTS"));
+							JOptionPane.showMessageDialog(this,
+									Resurses.getString("DIALOG_PID_NOT_EXISTS")
+											+ " [" + pid + "]");
 						}
 					} catch (NumberFormatException ne) {
 						JOptionPane.showMessageDialog(this,
@@ -2064,6 +2064,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							subvec.add(dbs[1]);
 							i++;
 						} else {
+
 							needle.remove(i);
 						}
 
@@ -2097,9 +2098,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						if (subrow >= 0) {
 
 							String[] dbl = needle.get(subrow).split(";");
-							showPerson(Integer.parseInt(dbl[0]));
+							int pid = Integer.parseInt(dbl[0]);
+							SukuData res = Suku.kontroller.getSukuData(
+									"cmd=person", "pid=" + pid);
+							if (res.pers != null) {
+								showPerson(pid);
 
-							needle.insertElementAt(dbl[0] + ";" + dbl[1], 0);
+								needle.insertElementAt(dbl[0] + ";" + dbl[1], 0);
+							} else {
+								JOptionPane
+										.showMessageDialog(
+												this,
+												Resurses.getString("DIALOG_PID_NOT_EXISTS")
+														+ " [" + pid + "]");
+								needle.remove(subrow);
+							}
 
 						}
 					}
@@ -2574,18 +2587,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
-	private void showPerson(int pid) {
-		try {
-
-			personView.displayNewPersonPane(pid);
-		} catch (SukuException e) {
-			JOptionPane.showMessageDialog(
-					this,
-					Resurses.getString(Resurses.TAB_PERSON) + ":"
-							+ e.getMessage());
-			logger.log(Level.SEVERE, "Failed to create person [" + pid + "]", e);
-
-		}
+	private void showPerson(int pid) throws SukuException {
+		personView.displayNewPersonPane(pid);
 	}
 
 	/**
@@ -3822,15 +3825,30 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				} else if (cmd.equals(Resurses.CREATE_REPORT)) {
 					createReport(pop.getPerson());
 				} else if (cmd.equals(Resurses.TAB_PERSON)) {
+					int pid = pop.getPerson().getPid();
+					try {
+						showPerson(pid);
+					} catch (SukuException e1) {
 
-					showPerson(pop.getPerson().getPid());
+						JOptionPane.showMessageDialog(parent, e1.getMessage());
+						logger.log(Level.SEVERE, "Failed to create person ["
+								+ pid + "]", e);
+
+					}
 
 					// setTitle(pop.getPerson().getAlfaName() + " "
 					// + nv4(pop.getPerson().getBirtDate()) + "-" +
 					// nv4(pop.getPerson().getDeatDate()));
 
 				} else if (cmd.equals(Resurses.TAB_RELATIVES)) {
-					showPerson(pop.getPerson().getPid());
+					int pid = pop.getPerson().getPid();
+					try {
+						showPerson(pid);
+					} catch (SukuException e1) {
+						JOptionPane.showMessageDialog(parent, e1.getMessage());
+						logger.log(Level.SEVERE, "Failed to create person ["
+								+ pid + "]", e);
+					}
 
 					int midx = personView.getMainPaneIndex();
 					if (midx >= 2) {
