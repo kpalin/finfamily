@@ -27,7 +27,6 @@ public class AddNotice extends JDialog implements MouseListener {
 	/** The koko map. */
 	HashMap<String, String> kokoMap = new HashMap<String, String>();
 
-	private JScrollPane kokoScroll;
 	private JList koko;
 
 	/** The koko tags. */
@@ -72,7 +71,7 @@ public class AddNotice extends JDialog implements MouseListener {
 
 		koko = new JList(kokoLista);
 		koko.addMouseListener(this);
-		kokoScroll = new JScrollPane(koko);
+		JScrollPane kokoScroll = new JScrollPane(koko);
 		getContentPane().add(kokoScroll);
 		kokoScroll.setBounds(10, 10, 120, 340);
 

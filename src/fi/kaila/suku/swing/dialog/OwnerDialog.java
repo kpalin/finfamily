@@ -30,8 +30,6 @@ public class OwnerDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private static final String CANCEL = "CANCEL";
 
-	private JButton cancel;
-
 	private JTextField name;
 	private JTextField address;
 	private JTextField postalCode;
@@ -41,7 +39,6 @@ public class OwnerDialog extends JDialog implements ActionListener {
 	private JTextField email;
 	private JTextField web;
 	private JTextArea text;
-	private JButton update;
 
 	/**
 	 * Instantiates a new tools dialog.
@@ -152,18 +149,18 @@ public class OwnerDialog extends JDialog implements ActionListener {
 		getContentPane().add(scrollPrivate);
 		scrollPrivate.setBounds(90, y, 280, 150);
 		y += 170;
-		update = new JButton(Resurses.getString("DIALOG_UPDATE"));
+		JButton update = new JButton(Resurses.getString("DIALOG_UPDATE"));
 		getContentPane().add(update);
 		update.setBounds(100, y, 160, 24);
 		update.setActionCommand("DIALOG_UPDATE");
 		update.addActionListener(this);
 		getRootPane().setDefaultButton(update);
 
-		this.cancel = new JButton(Resurses.getString(CANCEL));
-		getContentPane().add(this.cancel);
-		this.cancel.setBounds(270, y, 100, 24);
-		this.cancel.setActionCommand(CANCEL);
-		this.cancel.addActionListener(this);
+		JButton cancel = new JButton(Resurses.getString(CANCEL));
+		getContentPane().add(cancel);
+		cancel.setBounds(270, y, 100, 24);
+		cancel.setActionCommand(CANCEL);
+		cancel.addActionListener(this);
 	}
 
 	/*

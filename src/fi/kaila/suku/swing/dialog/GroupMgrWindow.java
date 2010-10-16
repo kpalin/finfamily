@@ -91,13 +91,11 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 	ButtonGroup removes = null;
 	private Suku parent = null;
 	private JButton close = null;
-	private JPanel removeGroup = null;
 	private JButton remove = null;
 	private JComboBox viewlist = null;
 
 	/** The addes. */
 	ButtonGroup addes = null;
-	private JPanel addGroup = null;
 	private JButton add = null;
 	private JLabel addedCount = null;
 	private JRadioButton addDescendant = null;
@@ -176,7 +174,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		// lbl.setBounds(10,53,200,20);
 		JRadioButton formd;
 
-		addGroup = new JPanel();
+		JPanel addGroup = new JPanel();
 		add(addGroup);
 		addGroup.setBounds(10, yy, 260, 300);
 		addGroup.setBorder(BorderFactory.createTitledBorder(
@@ -238,7 +236,7 @@ public class GroupMgrWindow extends JDialog implements ActionListener {
 		addGroup.add(addedCount);
 		addedCount.setBounds(140, 270, 110, 20);
 
-		removeGroup = new JPanel();
+		JPanel removeGroup = new JPanel();
 		add(removeGroup);
 		removeGroup.setBounds(300, yy, 260, 300);
 		removeGroup.setBorder(BorderFactory.createTitledBorder(

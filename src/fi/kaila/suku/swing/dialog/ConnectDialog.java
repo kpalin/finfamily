@@ -37,8 +37,6 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	private JTextField userid = null;
 	private JTextField password = null;
 	private JCheckBox rememberPwd = null;
-	private JButton ok;
-	private JButton cancel;
 	private boolean isRemote;
 	private boolean okPressed = false;
 	private boolean rememberDatabase = false;
@@ -113,7 +111,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		// isRemote.setBounds(120,y,200,20);
 
 		y += 40;
-		ok = new JButton(Resurses.getString(OK));
+		JButton ok = new JButton(Resurses.getString(OK));
 		getContentPane().add(ok);
 		ok.setBounds(100, y, 100, 24);
 		ok.setActionCommand(OK);
@@ -121,7 +119,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 		ok.setDefaultCapable(true);
 		getRootPane().setDefaultButton(ok);
 
-		cancel = new JButton(Resurses.getString(CANCEL));
+		JButton cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(cancel);
 		cancel.setBounds(220, y, 100, 24);
 		cancel.setActionCommand(CANCEL);

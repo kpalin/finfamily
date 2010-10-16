@@ -31,7 +31,6 @@ public class AboutDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private static final String OK = "OK";
 	private static Logger logger = null;
-	private JTextArea aboutArea;
 
 	/**
 	 * Instantiates a new about dialog.
@@ -44,7 +43,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		logger = Logger.getLogger(this.getClass().getName());
 		setLayout(null);
 
-		aboutArea = new JTextArea();
+		JTextArea aboutArea = new JTextArea();
 		aboutArea.setEditable(false);
 		aboutArea.setLineWrap(true);
 

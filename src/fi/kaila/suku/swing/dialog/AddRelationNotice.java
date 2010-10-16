@@ -27,7 +27,6 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 	/** The koko map. */
 	HashMap<String, String> kokoMap = new HashMap<String, String>();
 
-	private JScrollPane kokoScroll;
 	private JList koko;
 
 	/** The koko lista. */
@@ -87,7 +86,7 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 
 		koko = new JList(kokoLista);
 		koko.addMouseListener(this);
-		kokoScroll = new JScrollPane(koko);
+		JScrollPane kokoScroll = new JScrollPane(koko);
 		getContentPane().add(kokoScroll);
 		kokoScroll.setBounds(10, 10, 120, 80);
 

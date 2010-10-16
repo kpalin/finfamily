@@ -99,8 +99,6 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 	private RelationNotice rela = null;
 
-	private ButtonGroup languageGroup = null;
-
 	// FIXME: This declares a volatile reference to an array, which might not be
 	// what you want. With a volatile reference to an array, reads and writes of
 	// the reference to the array are treated as volatile, but the array
@@ -143,7 +141,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 		langLbl = new JLabel(Resurses.getString("DATA_LANG_PAGE"));
 		add(langLbl);
 
-		languageGroup = new ButtonGroup();
+		ButtonGroup languageGroup = new ButtonGroup();
 
 		int lcnt = Suku.getRepoLanguageCount();
 		langxx = new JRadioButton[lcnt];

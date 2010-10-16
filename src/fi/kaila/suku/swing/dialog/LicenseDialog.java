@@ -22,7 +22,6 @@ public class LicenseDialog extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final String OK = "OK";
-	private JTextArea aboutArea;
 
 	/**
 	 * Instantiates a new license dialog.
@@ -34,7 +33,7 @@ public class LicenseDialog extends JDialog implements ActionListener {
 		super(owner, Resurses.getString("LICENSE"), true);
 		setLayout(null);
 
-		aboutArea = new JTextArea();
+		JTextArea aboutArea = new JTextArea();
 		aboutArea.setEditable(false);
 		aboutArea.setLineWrap(true);
 		Font font = new Font("Verdana", Font.PLAIN, 10);

@@ -77,8 +77,6 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	// public String [] texts = null;
 	private UnitLanguage[] languages = null;
 
-	private ButtonGroup languageGroup = null;
-
 	/** The langxx. */
 	JRadioButton[] langxx;
 
@@ -95,7 +93,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		JLabel lbll = new JLabel(Resurses.getString("DATA_LANG_PAGE"));
 		add(lbll);
 		lbll.setBounds(10, 5, 75, 20);
-		languageGroup = new ButtonGroup();
+		ButtonGroup languageGroup = new ButtonGroup();
 
 		int lcnt = Suku.getRepoLanguageCount();
 		langxx = new JRadioButton[lcnt];
