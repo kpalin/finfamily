@@ -44,7 +44,6 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private JLabel timeEstimate;
 
 	private SukuKontroller kontroller = null;
-	private String fileNameDescription = "";
 	private String importFileName = null;
 	private JProgressBar progressBar;
 	private Task task = null;
@@ -360,13 +359,14 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 			}
 		} else {
 			if (juttu.startsWith("+")) {
+				String fileNameDescription = "";
 				if (juttu.equals("+")) {
-					this.fileNameDescription = "";
+					fileNameDescription = "";
 				} else {
-					this.fileNameDescription = "!" + juttu.substring(1);
+					fileNameDescription = "!" + juttu.substring(1);
 				}
-				this.fileName.setText(this.importFileName
-						+ this.fileNameDescription);
+				this.fileName
+						.setText(this.importFileName + fileNameDescription);
 			} else {
 				textContent.setText(juttu);
 
