@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -33,8 +32,6 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@SuppressWarnings("unused")
-	private Logger logger = Logger.getLogger(this.getName());
 
 	private JComboBox loca = null;
 	private JComboBox repolang = null;
@@ -45,14 +42,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
 
-	private JButton ok;
-
-	private String[] locatexts = null;
 	private String[] locas = null;
-	private String[] dateFormats = null;
 	private String[] dateCodes = null;
-	private int dateIndex = 0;
-	private int locaIndex = 0;
 	private JFrame owner = null;
 
 	/**
@@ -74,11 +65,12 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		// "page=languages");
 
 		// ExcelBundle.getBundle("excel/FinFamily", "Report", new Locale("fi"));
-		locatexts = ExcelBundle.getLangNames();
+		String[] locatexts = ExcelBundle.getLangNames();
 		locas = ExcelBundle.getLangCodes();
 		// Resurses.getString("LOCALIZAT_TEXTS").split(";");
 		// locas = Resurses.getString("LOCALIZAT_CODES").split(";");
-		dateFormats = Resurses.getString("LOCALIZAT_DATEFORMATS").split(";");
+		String[] dateFormats = Resurses.getString("LOCALIZAT_DATEFORMATS")
+				.split(";");
 		dateCodes = Resurses.getString("LOCALIZAT_DATECODES").split(";");
 		boolean openStreetMap = false;
 		if (Suku.kontroller.getPref(owner, "USE_OPEN_STREETMAP", "false")
@@ -99,7 +91,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		loca.setBounds(x, y, 200, 20);
 
 		String prevloca = Suku.kontroller.getPref(owner, Resurses.LOCALE, "fi");
-		locaIndex = 0;
+		int locaIndex = 0;
 		for (int i = 0; i < locas.length; i++) {
 			if (prevloca.equals(locas[i])) {
 				locaIndex = i;
@@ -199,7 +191,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		dbFontSize.setBounds(x + 210, y, 80, 20);
 
 		prevloca = Suku.kontroller.getPref(owner, Resurses.DATEFORMAT, "FI");
-		dateIndex = 0;
+		int dateIndex = 0;
 		for (int i = 0; i < dateFormats.length; i++) {
 			if (prevloca.equals(dateCodes[i])) {
 				dateIndex = i;
@@ -208,17 +200,17 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 		dateFormat.setSelectedIndex(dateIndex);
 
-		this.ok = new JButton(Resurses.OK);
+		JButton ok = new JButton(Resurses.OK);
 		// this.ok.setDefaultCapable(true);
-		getContentPane().add(this.ok);
-		this.ok.setActionCommand(Resurses.OK);
-		this.ok.addActionListener(this);
-		this.ok.setBounds(330, 220, 100, 24);
+		getContentPane().add(ok);
+		ok.setActionCommand(Resurses.OK);
+		ok.addActionListener(this);
+		ok.setBounds(330, 220, 100, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 250, d.height / 2 - 150, 470, 300);
 		setResizable(false);
-		getRootPane().setDefaultButton(this.ok);
+		getRootPane().setDefaultButton(ok);
 
 	}
 
