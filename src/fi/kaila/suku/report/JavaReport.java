@@ -57,13 +57,7 @@ public class JavaReport extends JFrame implements ActionListener,
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JMenuBar menubar;
-	private JMenu mFile;
-	private JMenuItem mPrint;
-	private JMenuItem mExit;
-
 	private JTextPane text;
-	private JScrollPane textScroll;
 
 	private Logger logger = Logger.getLogger(this.getName());
 
@@ -85,27 +79,28 @@ public class JavaReport extends JFrame implements ActionListener,
 
 		setLayout(new BorderLayout());
 
-		this.menubar = new JMenuBar();
-		setJMenuBar(this.menubar);
-		this.mFile = new JMenu(Resurses.getString(Resurses.FILE));
-		this.menubar.add(this.mFile);
+		JMenuBar menubar = new JMenuBar();
+		setJMenuBar(menubar);
+		JMenu mFile = new JMenu(Resurses.getString(Resurses.FILE));
+		menubar.add(mFile);
 
-		this.mPrint = new JMenuItem(Resurses.getString(Resurses.PRINT_REPORT));
-		this.mFile.add(this.mPrint);
-		this.mPrint.setActionCommand(Resurses.PRINT_REPORT);
-		this.mPrint.addActionListener(this);
+		JMenuItem mPrint = new JMenuItem(
+				Resurses.getString(Resurses.PRINT_REPORT));
+		mFile.add(mPrint);
+		mPrint.setActionCommand(Resurses.PRINT_REPORT);
+		mPrint.addActionListener(this);
 
-		this.mFile.addSeparator();
-		this.mExit = new JMenuItem(Resurses.getString(Resurses.EXIT));
-		this.mFile.add(this.mExit);
-		this.mExit.setActionCommand(Resurses.EXIT);
-		this.mExit.addActionListener(this);
+		mFile.addSeparator();
+		JMenuItem mExit = new JMenuItem(Resurses.getString(Resurses.EXIT));
+		mFile.add(mExit);
+		mExit.setActionCommand(Resurses.EXIT);
+		mExit.addActionListener(this);
 
 		// this.textPerson = new PersonPane();
 
 		this.text = new JTextPane();
-		this.textScroll = new JScrollPane(this.text);
-		add(this.textScroll);
+		JScrollPane textScroll = new JScrollPane(this.text);
+		add(textScroll);
 
 		// setLayout(null);
 		// setLocation(200, 200);
