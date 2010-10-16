@@ -1448,9 +1448,15 @@ public class SukuServerImpl implements SukuServer {
 				e.printStackTrace();
 
 			} finally {
-				if (mycon != null) {
+				if (stm != null) {
 					try {
 						stm.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				if (mycon != null) {
+					try {
 						mycon.close();
 					} catch (SQLException e) {
 						e.printStackTrace();
