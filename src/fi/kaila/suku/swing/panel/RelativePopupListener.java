@@ -54,7 +54,6 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 
 	private JTable showTable = null;
 
-	private PersonShortData showNewPerson = null;
 	private int pasteAtRow = -1;
 	private static Relation showRela = null;
 
@@ -278,6 +277,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 			return;
 
 		String asRelative = null;
+		PersonShortData showNewPerson = null;
 		try {
 			showNewPerson = (PersonShortData) Suku.sukuObject;
 

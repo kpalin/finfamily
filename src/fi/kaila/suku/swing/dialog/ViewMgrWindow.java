@@ -94,7 +94,6 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 	ButtonGroup removes = null;
 	private Suku parent = null;
 	private JButton close = null;
-	private JPanel removeViewGroup = null;
 	private JButton remove = null;
 	private JButton removeView = null;
 	private JComboBox viewlist = null;
@@ -102,7 +101,6 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 	/** The addes. */
 	ButtonGroup addes = null;
-	private JPanel addViewGroup = null;
 	private JButton addView = null;
 	private JButton add = null;
 	private JLabel addedCount = null;
@@ -178,7 +176,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 
 		JRadioButton formd;
 
-		addViewGroup = new JPanel();
+		JPanel addViewGroup = new JPanel();
 		add(addViewGroup);
 		addViewGroup.setBounds(10, yy, 280, 300);
 
@@ -238,7 +236,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 		addViewGroup.add(addedCount);
 		addedCount.setBounds(140, 270, 110, 20);
 
-		removeViewGroup = new JPanel();
+		JPanel removeViewGroup = new JPanel();
 		add(removeViewGroup);
 		removeViewGroup.setBounds(300, yy, 280, 300);
 		removeViewGroup.setBorder(BorderFactory.createTitledBorder(

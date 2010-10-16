@@ -29,7 +29,6 @@ public class SukuPopupMenu {
 	private final JMenuItem pCopy;
 	private final JMenuItem pNeedle;
 	// private JMenuItem pPaste;
-	private JMenu pHiskiConnect = null;
 	private JMenuItem[] pHiskiPerson = null;
 
 	private JMenuItem pReport = null;
@@ -186,7 +185,7 @@ public class SukuPopupMenu {
 		pMenu.add(pNeedle);
 		pMenu.addSeparator();
 		pHiskiPerson = new JMenuItem[30];
-		pHiskiConnect = new JMenu(Resurses.getString("HISKI_CONNECT"));
+		JMenu pHiskiConnect = new JMenu(Resurses.getString("HISKI_CONNECT"));
 		pMenu.add(pHiskiConnect);
 		for (int i = 0; i < 30; i++) {
 			pHiskiPerson[i] = new JMenuItem(Resurses.getString("HISKI_PERSON")

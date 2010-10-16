@@ -154,8 +154,6 @@ public class RelativesPane extends JPanel implements ActionListener,
 	/** The modified. */
 	JTextField modified = null;
 
-	private RelativePopupListener popupListener = null;
-
 	/** woman icon for database list. */
 	public static ImageIcon womanIcon = null;
 
@@ -198,7 +196,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		me.longPers = longPers;
 		me.relations = relas;
 		me.pers = pers;
-		me.persMap = new HashMap<Integer, PersonShortData>();
+		HashMap<Integer, PersonShortData> persMap = new HashMap<Integer, PersonShortData>();
 		me.parents.list.clear();
 		me.spouses.list.clear();
 		me.children.list.clear();
@@ -210,13 +208,13 @@ public class RelativesPane extends JPanel implements ActionListener,
 				+ ((psd.getDeatYear() == 0) ? "" : " - " + psd.getDeatYear());
 		me.subject.setText(tmp);
 		for (int i = 0; i < me.pers.length; i++) {
-			me.persMap.put(pers[i].getPid(), pers[i]);
+			persMap.put(pers[i].getPid(), pers[i]);
 		}
 
 		for (int i = 0; i < me.relations.length; i++) {
 			Relation r = me.relations[i];
 			if (r.getTag().equals("FATH") || r.getTag().equals("MOTH")) {
-				PersonShortData pp = me.persMap.get(r.getRelative());
+				PersonShortData pp = persMap.get(r.getRelative());
 				r.setShortPerson(pp);
 				pp.setAdopted(r.getAdopted());
 				me.parents.list.add(r);
@@ -227,7 +225,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		for (int i = 0; i < me.relations.length; i++) {
 			Relation r = me.relations[i];
 			if (r.getTag().equals("HUSB") || r.getTag().equals("WIFE")) {
-				PersonShortData pp = me.persMap.get(r.getRelative());
+				PersonShortData pp = persMap.get(r.getRelative());
 				r.setShortPerson(pp);
 				me.spouses.list.add(r);
 				pp.setParentPid(pp.getPid());
@@ -238,7 +236,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 			Relation r = me.relations[i];
 			if (r.getTag().equals("CHIL")) {
 
-				PersonShortData pp = me.persMap.get(r.getRelative());
+				PersonShortData pp = persMap.get(r.getRelative());
 				r.setShortPerson(pp);
 				pp.setAdopted(r.getAdopted());
 				me.children.list.add(r);
@@ -282,7 +280,6 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 	}
 
-	private HashMap<Integer, PersonShortData> persMap = null;// new
 	// HashMap<Integer,PersonShortData>
 	// ();
 	/** The pop. */
@@ -336,7 +333,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		add(subject);
 		subject.setBackground(Color.green);
 
-		popupListener = new RelativePopupListener(this);
+		RelativePopupListener popupListener = new RelativePopupListener(this);
 		pop = RelativePopupMenu.getInstance(popupListener);
 
 		subject.addMouseListener(popupListener);

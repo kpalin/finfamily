@@ -51,12 +51,9 @@ public class ToolsDialog extends JDialog implements ActionListener,
 
 	private JLabel textContent;
 	private JButton ok;
-	private JButton cancel;
 
-	private JScrollPane kokoScroll;
 	private JList koko;
 
-	private JScrollPane settiScroll;
 	private JList setti;
 
 	private JProgressBar progressBar;
@@ -171,13 +168,13 @@ public class ToolsDialog extends JDialog implements ActionListener,
 			y += 20;
 			koko = new JList(kokoLista);
 			koko.addMouseListener(this);
-			kokoScroll = new JScrollPane(koko);
+			JScrollPane kokoScroll = new JScrollPane(koko);
 			nsort.add(kokoScroll);
 			kokoScroll.setBounds(10, y, 120, 200);
 
 			setti = new JList(settiLista);
 			setti.addMouseListener(this);
-			settiScroll = new JScrollPane(setti);
+			JScrollPane settiScroll = new JScrollPane(setti);
 			nsort.add(settiScroll);
 			settiScroll.setBounds(150, y, 120, 200);
 			y += 206;
@@ -217,11 +214,11 @@ public class ToolsDialog extends JDialog implements ActionListener,
 		this.ok.addActionListener(this);
 		getRootPane().setDefaultButton(this.ok);
 
-		this.cancel = new JButton(Resurses.getString(CANCEL));
-		nsort.add(this.cancel);
-		this.cancel.setBounds(140, y, 100, 24);
-		this.cancel.setActionCommand(CANCEL);
-		this.cancel.addActionListener(this);
+		JButton cancel = new JButton(Resurses.getString(CANCEL));
+		nsort.add(cancel);
+		cancel.setBounds(140, y, 100, 24);
+		cancel.setActionCommand(CANCEL);
+		cancel.addActionListener(this);
 
 		this.task = null;
 
