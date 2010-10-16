@@ -58,7 +58,6 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 	private String createdView = null;
 	private int createdViewId = 0;
 	private JProgressBar progressBar;
-	private Task task = null;
 	private JLabel timeEstimate;
 	private JLabel textContent;
 	private String errorMessage = null;
@@ -316,7 +315,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 			this.copyAndComp.setEnabled(false);
 
 			// we create new instances as needed.
-			task = new Task();
+			Task task = new Task();
 			task.addPropertyChangeListener(this);
 			task.execute();
 
