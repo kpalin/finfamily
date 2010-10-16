@@ -107,9 +107,6 @@ public class SearchCriteria extends JDialog implements ActionListener {
 	/** The text panel. */
 	JPanel textPanel;
 
-	private final JButton ok;
-	private final JButton reset;
-
 	private final char[] sexcodes = { 0, 'M', 'F', 'U' };
 
 	private final ColTable[] coltables = {
@@ -544,24 +541,24 @@ public class SearchCriteria extends JDialog implements ActionListener {
 
 		y = 460;
 
-		this.ok = new JButton(Resurses.getString("CRITERIA_MAKE_QUERY"));
+		JButton ok = new JButton(Resurses.getString("CRITERIA_MAKE_QUERY"));
 		// this.ok.setDefaultCapable(true);
-		getContentPane().add(this.ok);
-		this.ok.setActionCommand(Resurses.OK);
-		this.ok.addActionListener(this);
-		this.ok.setBounds(560, y, 140, 24);
+		getContentPane().add(ok);
+		ok.setActionCommand(Resurses.OK);
+		ok.addActionListener(this);
+		ok.setBounds(560, y, 140, 24);
 
-		this.reset = new JButton(Resurses.getString(Resurses.RESET));
+		JButton reset = new JButton(Resurses.getString(Resurses.RESET));
 		// this.ok.setDefaultCapable(true);
-		getContentPane().add(this.reset);
-		this.reset.setActionCommand(Resurses.RESET);
-		this.reset.addActionListener(this);
-		this.reset.setBounds(710, y, 140, 24);
+		getContentPane().add(reset);
+		reset.setActionCommand(Resurses.RESET);
+		reset.addActionListener(this);
+		reset.setBounds(710, y, 140, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 450, d.height / 2 - 300, 900, y + 100);
 		setResizable(false);
-		getRootPane().setDefaultButton(this.ok);
+		getRootPane().setDefaultButton(ok);
 
 	}
 
@@ -1240,7 +1237,6 @@ public class SearchCriteria extends JDialog implements ActionListener {
 		 */
 		private static final long serialVersionUID = 1L;
 		private final JTextField createdDate;
-		private final JCalendarButton calDate;
 
 		/**
 		 * Instantiates a new date text field.
@@ -1249,7 +1245,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			this.setLayout(null);
 			this.createdDate = new JTextField();
 			this.add(createdDate);
-			this.calDate = new JCalendarButton();
+			JCalendarButton calDate = new JCalendarButton();
 			this.add(calDate);
 
 			calDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -1275,9 +1271,9 @@ public class SearchCriteria extends JDialog implements ActionListener {
 				}
 			});
 
-			Dimension dd = this.calDate.getPreferredSize();
+			Dimension dd = calDate.getPreferredSize();
 			this.createdDate.setBounds(0, 0, 155, dd.height);
-			this.calDate.setBounds(160, 0, dd.width, dd.height);
+			calDate.setBounds(160, 0, dd.width, dd.height);
 
 		}
 

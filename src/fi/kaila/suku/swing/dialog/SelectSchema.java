@@ -37,8 +37,6 @@ public class SelectSchema extends JDialog implements ActionListener,
 	private JTextField schema = null;
 	private boolean okSelected = false;
 	private JList scList = null;
-	private JButton ok;
-	private JButton cancel;
 	private String postDb = "Koedatabase";
 	private String[] schemaList = null;
 
@@ -120,20 +118,20 @@ public class SelectSchema extends JDialog implements ActionListener,
 		scroll.setBounds(10, y + 20, 200, 100);
 
 		y += 140;
-		this.ok = new JButton(Resurses.getString("OK"));
-		getContentPane().add(this.ok);
-		this.ok.setBounds(30, y, 80, 24);
-		this.ok.setActionCommand("OK");
-		this.ok.addActionListener(this);
-		this.ok.setDefaultCapable(true);
+		JButton ok = new JButton(Resurses.getString("OK"));
+		getContentPane().add(ok);
+		ok.setBounds(30, y, 80, 24);
+		ok.setActionCommand("OK");
+		ok.addActionListener(this);
+		ok.setDefaultCapable(true);
 
-		getRootPane().setDefaultButton(this.ok);
+		getRootPane().setDefaultButton(ok);
 
-		this.cancel = new JButton(Resurses.getString("CANCEL"));
-		getContentPane().add(this.cancel);
-		this.cancel.setBounds(120, y, 80, 24);
-		this.cancel.setActionCommand("CANCEL");
-		this.cancel.addActionListener(this);
+		JButton cancel = new JButton(Resurses.getString("CANCEL"));
+		getContentPane().add(cancel);
+		cancel.setBounds(120, y, 80, 24);
+		cancel.setActionCommand("CANCEL");
+		cancel.addActionListener(this);
 		getRootPane().setDefaultButton(ok);
 	}
 
