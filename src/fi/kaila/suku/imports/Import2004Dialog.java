@@ -65,9 +65,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	private JButton ok;
 	private JButton cancel;
 
-	private String langS[];
 	private String oldLangS[];
-	private String selectedOldLang = null;
 
 	private SukuData xmlResult = null;
 
@@ -124,13 +122,10 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 		String apu[] = lanlist.split(";");
 
-		this.langS = new String[apu.length / 3];
 		this.oldLangS = new String[apu.length / 3];
 		String langNames[] = new String[apu.length / 3];
 		int j = 0;
 		for (int i = 0; i < apu.length / 3; i++) {
-
-			this.langS[i] = apu[j++];
 			this.oldLangS[i] = apu[j++];
 			langNames[i] = apu[j++];
 		}
@@ -202,17 +197,18 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		String selectedOldLang = null;
 		String cmd = e.getActionCommand();
 		if (cmd.equals(OK)) {
 			int indx = this.lista.getSelectedIndex();
 
-			this.selectedOldLang = this.oldLangS[indx];
+			selectedOldLang = this.oldLangS[indx];
 
 			this.ok.setEnabled(false);
 
 			// we create new instances as needed.
 			task = new Task();
-			task.lang = this.selectedOldLang;
+			task.lang = selectedOldLang;
 			task.addPropertyChangeListener(this);
 			task.execute();
 
