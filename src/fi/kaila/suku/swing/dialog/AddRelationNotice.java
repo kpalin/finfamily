@@ -109,7 +109,7 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -132,7 +132,7 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -142,7 +142,7 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -152,7 +152,7 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -163,7 +163,7 @@ public class AddRelationNotice extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-
+		// Not used
 	}
 
 }

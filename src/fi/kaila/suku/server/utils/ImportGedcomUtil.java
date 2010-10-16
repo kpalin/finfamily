@@ -609,7 +609,9 @@ public class ImportGedcomUtil {
 							}
 						}
 					} else if (detail.tag.equals("CHAN")) {
+						// TODO:
 					} else if (detail.tag.equals("CREA")) {
+						// TODO:
 					} else {
 						unknownLine.add(detail.toString());
 					}
@@ -699,7 +701,9 @@ public class ImportGedcomUtil {
 					}
 				}
 			} else if (line.tag.equals("CHAN")) {
+				// TODO:
 			} else if (line.tag.equals("CREA")) {
+				// TODO:
 			} else {
 				unknownLine.add(line.toString());
 			}
@@ -1002,7 +1006,9 @@ public class ImportGedcomUtil {
 						} else if (detail.tag.equals("TYPE")) {
 							notice.setNoticeType(detail.lineValue);
 						} else if (detail.tag.equals("CREA")) {
+							// TODO:
 						} else if (detail.tag.equals("CHAN")) {
+							// TODO:
 						} else {
 							unknownLine.add(detail.toString());
 						}
@@ -1049,7 +1055,9 @@ public class ImportGedcomUtil {
 					pers.setSource(src);
 				}
 			} else if (noti.tag.equals("CHAN")) {
+				// TODO:
 			} else if (noti.tag.equals("CREA")) {
+				// TODO:
 			} else if (noti.tag.equals("ADOP")) {
 
 				noti.lineValue = record.id;
@@ -1154,7 +1162,9 @@ public class ImportGedcomUtil {
 
 						extractMultimedia(notice, detail);
 					} else if (detail.tag.equals("CHAN")) {
+						// TODO:
 					} else if (detail.tag.equals("CREA")) {
+						// TODO:
 					} else {
 						unknownLine.add(detail.toString());
 					}

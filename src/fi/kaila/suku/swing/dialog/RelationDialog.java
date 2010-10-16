@@ -587,7 +587,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -599,7 +599,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -695,7 +695,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -706,7 +706,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void menuCanceled(MenuEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -718,7 +718,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void menuDeselected(MenuEvent arg0) {
-
+		// Not used
 	}
 
 	/*

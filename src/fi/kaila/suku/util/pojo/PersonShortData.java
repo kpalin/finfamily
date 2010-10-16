@@ -389,7 +389,7 @@ public class PersonShortData implements Serializable, Transferable,
 	 * Instantiates a new person short data.
 	 */
 	public PersonShortData() {
-
+		// TODO:
 	}
 
 	/**

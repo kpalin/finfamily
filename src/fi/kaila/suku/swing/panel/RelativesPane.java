@@ -1427,7 +1427,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -1439,7 +1439,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -1492,7 +1492,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -1644,7 +1644,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -1654,7 +1654,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -1699,7 +1699,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
+		// Not used
 	}
 
 	/**

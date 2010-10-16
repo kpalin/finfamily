@@ -343,7 +343,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -355,7 +355,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -444,7 +444,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
-
+		// Not used
 	}
 
 }

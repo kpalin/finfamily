@@ -1082,7 +1082,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					try {
 						surety = Integer.parseInt(vx[1]);
 					} catch (NumberFormatException ne) {
-
+						// ignored
 					}
 				} else if (vx[0].equals("format")) {
 					int formIdx;

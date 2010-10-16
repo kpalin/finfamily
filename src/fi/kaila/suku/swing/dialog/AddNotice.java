@@ -106,7 +106,7 @@ public class AddNotice extends JDialog implements MouseListener {
 	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -116,7 +116,7 @@ public class AddNotice extends JDialog implements MouseListener {
 	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -126,7 +126,7 @@ public class AddNotice extends JDialog implements MouseListener {
 	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -137,7 +137,7 @@ public class AddNotice extends JDialog implements MouseListener {
 	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-
+		// Not used
 	}
 
 }

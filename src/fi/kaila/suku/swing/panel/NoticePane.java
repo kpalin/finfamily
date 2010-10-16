@@ -1338,7 +1338,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
-
+		// Not used
 	}
 
 	/*
@@ -1350,7 +1350,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentMoved(ComponentEvent arg0) {
-
+		// Not used
 	}
 
 	private final int lcol = 75;
@@ -1774,7 +1774,7 @@ public class NoticePane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentShown(ComponentEvent arg0) {
-
+		// Not used
 	}
 
 	/*
