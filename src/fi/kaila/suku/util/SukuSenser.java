@@ -23,7 +23,6 @@ import fi.kaila.suku.util.SukuTextField.Field;
 public class SukuSenser implements MouseListener {
 
 	private JWindow sens;
-	private JScrollPane scroller;
 	private JList lista;
 	private Vector<String> model;
 
@@ -32,7 +31,7 @@ public class SukuSenser implements MouseListener {
 		model = new Vector<String>();
 
 		lista = new JList(model);
-		scroller = new JScrollPane(lista);
+		JScrollPane scroller = new JScrollPane(lista);
 
 		// lista.addListSelectionListener(this);
 		lista.addMouseListener(this);

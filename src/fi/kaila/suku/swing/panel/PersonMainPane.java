@@ -407,19 +407,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		notetext.setEnabled(noteCount <= 1);
 	}
 
-	private final int lcol = 75;
-
-	private final int rwidth = 70;
 	// private int rcol = lwidth+lcol+10;
-
-	private final int gnlen = 150;
-	private final int postlen = 60;
-	private final int surlen = 240;
-	private final int datelen = 80;
-	private final int colbet = 2;
-	private final int placlen = 213;
-	private final int rcol = lcol + datelen + placlen + colbet * 2; // 460; //
-	private final int biglen = datelen + placlen + colbet * 2 + rwidth * 2;
 
 	private void initMe() {
 
@@ -428,6 +416,17 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		JLabel lbl;
 		int rivi = 10;
 		int rrivi = 30;
+
+		int lcol = 75;
+		int rwidth = 70;
+		int gnlen = 150;
+		int postlen = 60;
+		int surlen = 240;
+		int datelen = 80;
+		int colbet = 2;
+		int placlen = 213;
+		int rcol = lcol + datelen + placlen + colbet * 2; // 460; //
+		int biglen = datelen + placlen + colbet * 2 + rwidth * 2;
 
 		privacy = new JCheckBox(Resurses.getString("DATA_PRIVACY"));
 		privacy.setBounds(rcol, rrivi, 100, 20);
@@ -1618,6 +1617,10 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		int postlen = 60;
 		int surlen = 240;
 		int placlen = 213;
+
+		int datelen = 80;
+		int colbet = 2;
+		int biglen = datelen + placlen + colbet * 2 + rwidth * 2;
 		// System.out.println("LEVEYS: "+currSize.width);
 		if (currSize.width > 525) {
 
@@ -1741,7 +1744,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentHidden(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -1753,7 +1756,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentMoved(ComponentEvent e) {
-
+		// Not used
 	}
 
 	/*
@@ -1776,6 +1779,6 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	 */
 	@Override
 	public void componentShown(ComponentEvent e) {
-
+		// Not used
 	}
 }

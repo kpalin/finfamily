@@ -33,8 +33,6 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 	private JTextField userid = null;
 	private JTextField password = null;
 	private JTextField verifyPassword = null;
-	private JButton ok;
-	private JButton cancel;
 
 	/**
 	 * Constructor for dialog.
@@ -80,7 +78,7 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 		verifyPassword.setBounds(120, y, 200, 20);
 
 		y += 40;
-		ok = new JButton(Resurses.getString(OK));
+		JButton ok = new JButton(Resurses.getString(OK));
 		getContentPane().add(ok);
 		ok.setBounds(110, y, 100, 24);
 		ok.setActionCommand(OK);
@@ -89,7 +87,7 @@ public class LocalUserAdmin extends JDialog implements ActionListener {
 
 		getRootPane().setDefaultButton(ok);
 
-		cancel = new JButton(Resurses.getString(CANCEL));
+		JButton cancel = new JButton(Resurses.getString(CANCEL));
 		getContentPane().add(cancel);
 		cancel.setBounds(230, y, 100, 24);
 		cancel.setActionCommand(CANCEL);
