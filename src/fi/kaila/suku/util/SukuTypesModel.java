@@ -61,18 +61,18 @@ public class SukuTypesModel extends AbstractTableModel {
 				String tag = reposet.vvTypes.get(i)[0];
 				typesTags[i] = tag;
 				typesData[i][0] = reposet.vvTypes.get(i)[1];
-				typesData[i][1] = Boolean.valueOf(false);
+				typesData[i][1] = Boolean.FALSE;
 				if ("|BIRT|DEAT|CHR|BURI|NAME|".indexOf(tag) > 0) {
-					typesData[i][1] = Boolean.valueOf(true);
+					typesData[i][1] = Boolean.TRUE;
 				}
-				typesData[i][2] = Boolean.valueOf(true);
-				typesData[i][3] = Boolean.valueOf(false);
-				typesData[i][4] = Boolean.valueOf(false);
+				typesData[i][2] = Boolean.TRUE;
+				typesData[i][3] = Boolean.FALSE;
+				typesData[i][4] = Boolean.FALSE;
 				if ("|BIRT|DEAT|OCCU|".indexOf(tag) > 0) {
-					typesData[i][3] = Boolean.valueOf(true);
-					typesData[i][4] = Boolean.valueOf(true);
+					typesData[i][3] = Boolean.TRUE;
+					typesData[i][4] = Boolean.TRUE;
 				}
-				typesData[i][5] = Boolean.valueOf(false);
+				typesData[i][5] = Boolean.FALSE;
 				typesData[i][6] = reposet.vvTypes.get(i)[2];
 				if (typesData[i][6] == null) {
 					typesData[i][6] = reposet.vvTypes.get(i)[1];
