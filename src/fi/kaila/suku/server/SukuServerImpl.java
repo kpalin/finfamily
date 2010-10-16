@@ -45,7 +45,6 @@ import fi.kaila.suku.util.pojo.UnitNotice;
 public class SukuServerImpl implements SukuServer {
 
 	private final String dbDriver = "org.postgresql.Driver";
-	private String dbConne = "jdbc:postgresql://localhost/sukuproto?user=kalle&password=kalle";
 	private Connection con = null;
 	private String schema = null;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
@@ -96,22 +95,23 @@ public class SukuServerImpl implements SukuServer {
 	@Override
 	public void getConnection(String host, String dbname, String userid,
 			String passwd) throws SukuException {
-		this.dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
+		String dbConne = "jdbc:postgresql://localhost/sukuproto?user=kalle&password=kalle";
+		dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
 				+ userid;
-		logger.info("Connection: " + this.dbConne + ";schema: " + this.schema);
+		logger.info("Connection: " + dbConne + ";schema: " + this.schema);
 		if (passwd != null && !passwd.isEmpty()) {
 
-			this.dbConne += "&password=" + passwd;
+			dbConne += "&password=" + passwd;
 		}
 		Statement stm = null;
 		try {
-			this.con = DriverManager.getConnection(this.dbConne);
+			this.con = DriverManager.getConnection(dbConne);
 			stm = this.con.createStatement();
 			stm.executeUpdate("set search_path to " + this.schema);
 			stm.close();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Connection: " + this.dbConne
-					+ ";schema: " + this.schema, e);
+			logger.log(Level.WARNING, "Connection: " + dbConne + ";schema: "
+					+ this.schema, e);
 
 			if (stm == null) {
 				throw new SukuException("db=" + dbname + ": " + e.getMessage());
