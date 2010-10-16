@@ -16,7 +16,6 @@ import java.util.Comparator;
  * @author Kalle
  * 
  */
-@SuppressWarnings("unchecked")
 public class SukuDateComparator implements Comparator {
 
 	/*

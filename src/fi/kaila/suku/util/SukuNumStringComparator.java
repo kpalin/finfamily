@@ -7,7 +7,6 @@ import java.util.Comparator;
  * 
  * @author Kalle
  */
-@SuppressWarnings("unchecked")
 public class SukuNumStringComparator implements Comparator {
 
 	/*
