@@ -2770,14 +2770,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					Vector<PersonInTables> vv = dr.getPersonReferences();
 					// new Vector<PersonInTables>();
 					float runnervalue = 0;
-					float mapsize = dr.getPersonReferences().size();
+					float mapsize = vv.size();
 					// while (ee.hasNext()) {
 					// Map.Entry<Integer, PersonInTables> entry =
 					// (Map.Entry<Integer, PersonInTables>) ee
 					// .next();
 					//
 					// PersonInTables pit = entry.getValue();
-					for (int j = 0; j < vv.size(); j++) {
+					for (int j = 0; j < mapsize; j++) {
 						PersonInTables pit = vv.get(j);
 						// vv.add(pit);
 						if (pit.shortPerson == null) {
