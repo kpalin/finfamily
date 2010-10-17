@@ -1196,8 +1196,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 
 		if (cmd.equals(ACTION_INDEX)) {
-			if (!isLoadingTheSettings && settingsName.getSelectedIndex() >= 0) {
-				settingsIndex = settingsName.getSelectedIndex();
+			int selectedIndex = settingsName.getSelectedIndex();
+			if (!isLoadingTheSettings && selectedIndex >= 0) {
+				settingsIndex = selectedIndex;
 				loadReportSettings();
 
 			}

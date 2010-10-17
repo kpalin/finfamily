@@ -1775,10 +1775,11 @@ public abstract class CommonReport {
 
 		StringBuilder sb = new StringBuilder();
 
-		if (ref.getOwnerArray().length > 0) {
+		Long ownerArray[] = ref.getOwnerArray();
+		if (ownerArray.length > 0) {
 
 			boolean addComma = false;
-			for (Long pif : ref.getOwnerArray()) {
+			for (Long pif : ownerArray) {
 				if (pif != momTable && pif != dadTable) {
 					if (addComma) {
 						sb.append(",");
