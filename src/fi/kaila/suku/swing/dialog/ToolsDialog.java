@@ -50,14 +50,14 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	private static final String SORT = "NOTICES.SORT";
 	private static final String CANCEL = "CANCEL";
 
-	private JLabel textContent;
-	private JButton ok;
+	private final JLabel textContent;
+	private final JButton ok;
 
 	private JList koko;
 
 	private JList setti;
 
-	private JProgressBar progressBar;
+	private final JProgressBar progressBar;
 	private Task task;
 
 	/**
@@ -100,7 +100,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 	 *            the owner
 	 */
 	public ToolsDialog(Suku owner) {
-		super(owner, Resurses.getString("MENU_TOOLS_DBWORK"), true);
+		super(owner, Resurses.getString("MENU_NOTICES_ORDER"), true);
 		this.owner = owner;
 		runner = this;
 

@@ -647,12 +647,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mSettings.setActionCommand(Resurses.SETTINGS);
 		this.mSettings.addActionListener(this);
 
-		JMenu auxCommands = new JMenu(Resurses.getString("IMPORT"));
+		JMenu auxCommands = new JMenu(Resurses.getString("MENU_TOOLS_DBWORK"));
 		this.mTools.add(auxCommands);
 
-		this.mDbWork = new JMenuItem(Resurses.getString("MENU_TOOLS_DBWORK"));
+		this.mDbWork = new JMenuItem(Resurses.getString("MENU_NOTICES_ORDER"));
 		auxCommands.add(this.mDbWork);
-		this.mDbWork.setActionCommand("MENU_TOOLS_DBWORK");
+		this.mDbWork.setActionCommand("MENU_NOTICES_ORDER");
 		this.mDbWork.addActionListener(this);
 
 		this.mExecSql = new JMenuItem(Resurses.getString("MENU_TOOLS_SQL"));
@@ -1111,7 +1111,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				return row.getUnkn();
 			}
 		};
-
+		table.getTableHeader().setReorderingAllowed(false);
 		String databaseViewFontSize = Suku.kontroller.getPref(this,
 				"DB_VIEW_FONTSIZE", "11");
 		int dbFont = 10;
@@ -1648,6 +1648,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				SqlCommandDialog sql = new SqlCommandDialog(this);
 				sql.setVisible(true);
+
+				// if (viewWin == null) {
+				// viewWin = new ViewMgrWindow(this);
+				// viewWin.setVisible(true);
+				// } else {
+				// viewWin.initViewlist();
+				// viewWin.setVisible(true);
+				// }
+
 			}
 			if (cmd.equals(Resurses.UPDATEDB)) {
 				SukuData resp = kontroller.getSukuData("cmd=initdb",
@@ -1775,7 +1784,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						+ scm.generalArray[0]);
 				disconnectDb();
 
-			} else if (cmd.equals("MENU_TOOLS_DBWORK")) {
+			} else if (cmd.equals("MENU_NOTICES_ORDER")) {
 				executeDbWork();
 			} else if (cmd.equals("MENU_OWNER_INFO")) {
 				showOwnerInformation();

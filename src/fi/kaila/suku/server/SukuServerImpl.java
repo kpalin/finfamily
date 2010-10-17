@@ -566,7 +566,8 @@ public class SukuServerImpl implements SukuServer {
 
 						String sqlIns = "insert into viewunits (vid,pid)  select "
 								+ vid + "," + sql.substring(7);
-						stm.executeUpdate(sqlIns);
+						resp.resuCount = stm.executeUpdate(sqlIns);
+
 					} else {
 						resp.vvTexts = new Vector<String[]>();
 

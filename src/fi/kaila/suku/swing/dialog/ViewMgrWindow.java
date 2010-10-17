@@ -125,7 +125,7 @@ public class ViewMgrWindow extends JDialog implements ActionListener {
 	 *             the suku exception
 	 */
 	public ViewMgrWindow(Suku parent) throws SukuException {
-		super(parent, Resurses.getString("DIALOG_VIEW_MGR"), false);
+		super(parent, Resurses.getString("DIALOG_VIEW_MGR"), true);
 		this.parent = parent;
 
 		initMe();
