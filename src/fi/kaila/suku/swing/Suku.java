@@ -175,8 +175,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private final boolean testEnabled = false;
-
 	/**
 	 * Application version moved to class fi.kaila.suku.ant.AntVersion
 	 */
@@ -231,7 +229,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mGroupMgr;
 	private JMenuItem mViewMgr;
 	private JMenuItem mStatistics;
-	private JMenuItem mTestMe;
+	private JMenuItem mExecSql;
 	private JMenuItem mLoadCoordinates;
 	private JMenuItem mLoadTypes;
 	private JMenuItem mLoadConversions;
@@ -649,10 +647,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mSettings.setActionCommand(Resurses.SETTINGS);
 		this.mSettings.addActionListener(this);
 
+		JMenu auxCommands = new JMenu(Resurses.getString("IMPORT"));
+		this.mTools.add(auxCommands);
+
 		this.mDbWork = new JMenuItem(Resurses.getString("MENU_TOOLS_DBWORK"));
-		this.mTools.add(this.mDbWork);
+		auxCommands.add(this.mDbWork);
 		this.mDbWork.setActionCommand("MENU_TOOLS_DBWORK");
 		this.mDbWork.addActionListener(this);
+
+		this.mExecSql = new JMenuItem(Resurses.getString("MENU_TOOLS_SQL"));
+		auxCommands.add(this.mExecSql);
+		this.mExecSql.setActionCommand("MENU_TOOLS_SQL");
+		this.mExecSql.addActionListener(this);
 
 		this.mDbUpdate = new JMenuItem(Resurses.getString(Resurses.UPDATEDB));
 		this.mTools.add(this.mDbUpdate);
@@ -669,13 +675,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mTools.add(this.mViewMgr);
 		this.mViewMgr.setActionCommand("MENU_TOOLS_VIEW_MGR");
 		this.mViewMgr.addActionListener(this);
-
-		this.mTestMe = new JMenuItem(Resurses.getString("MENU_TOOLS_TEST"));
-		if (testEnabled) {
-			this.mTools.add(this.mTestMe);
-		}
-		this.mTestMe.setActionCommand("MENU_TOOLS_TEST");
-		this.mTestMe.addActionListener(this);
 
 		JMenu load = new JMenu(Resurses.getString("MENU_TOOLS_LOAD"));
 		mTools.add(load);
@@ -1645,7 +1644,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				displayGenStats();
 
 			}
-			if (cmd.equals("MENU_TOOLS_TEST")) {
+			if (cmd.equals("MENU_TOOLS_SQL")) {
 
 				SqlCommandDialog sql = new SqlCommandDialog(this);
 				sql.setVisible(true);
