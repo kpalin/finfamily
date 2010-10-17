@@ -1,7 +1,7 @@
 package fi.kaila.suku.report;
 
 import java.io.BufferedOutputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,8 +84,8 @@ public class DescendantLista extends CommonReport {
 		}
 		SukuTypesModel types = Utils.typeInstance();
 		int alltags = types.getTypesTagsCount();
-		Vector<String> tname = new Vector<String>();
-		Vector<String> ttag = new Vector<String>();
+		ArrayList<String> tname = new ArrayList<String>();
+		ArrayList<String> ttag = new ArrayList<String>();
 
 		for (int i = 0; i < alltags; i++) {
 			String tag = typesTable.getTypesTag(i);
@@ -149,8 +149,8 @@ public class DescendantLista extends CommonReport {
 				genspids[i] = 0;
 				gensex[i] = "U";
 			}
-			Vector<ListPerson> lpp = new Vector<ListPerson>();
-			Vector<ListPerson> lspouses = new Vector<ListPerson>();
+			ArrayList<ListPerson> lpp = new ArrayList<ListPerson>();
+			ArrayList<ListPerson> lspouses = new ArrayList<ListPerson>();
 			for (int i = 0; i < vlist.pidArray.length; i++) {
 				ListPerson lp = new ListPerson(vlist.pers[i],
 						vlist.pidArray[i], vlist.generalArray[i]);

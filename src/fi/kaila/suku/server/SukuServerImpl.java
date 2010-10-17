@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -178,7 +179,7 @@ public class SukuServerImpl implements SukuServer {
 			sql = "select vid,name from " + schema + ".views order by name";
 		}
 
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 		try {
 			PreparedStatement pstm = this.con.prepareStatement(sql);
 			ResultSet rs = pstm.executeQuery();
@@ -209,7 +210,7 @@ public class SukuServerImpl implements SukuServer {
 				+ "and rn.tag='MARR') left join relationNotice as rd on s.rid = rd.rid  "
 				+ "and rd.tag='DIV' where s.aid = ? order by s.relationrow ";
 
-		Vector<RelationShortData> v = new Vector<RelationShortData>();
+		ArrayList<RelationShortData> v = new ArrayList<RelationShortData>();
 		try {
 			PreparedStatement pstm = this.con.prepareStatement(sql);
 
@@ -281,7 +282,7 @@ public class SukuServerImpl implements SukuServer {
 
 				for (int i = begChil; i < endChil; i++) {
 					sql = "select bid,tag from parent_all where aid =? ";
-					Vector<Integer> parents = new Vector<Integer>();
+					ArrayList<Integer> parents = new ArrayList<Integer>();
 					pstm = this.con.prepareStatement(sql);
 					RelationShortData relsho = v.get(i);
 					pstm.setInt(1, relsho.getRelationPid());
@@ -327,7 +328,7 @@ public class SukuServerImpl implements SukuServer {
 
 			RelationShortData[] dt = new RelationShortData[0];
 			fam.rels = v.toArray(dt);
-			Vector<PersonShortData> pv = new Vector<PersonShortData>();
+			ArrayList<PersonShortData> pv = new ArrayList<PersonShortData>();
 
 			PersonShortData p = new PersonShortData(this.con, pid);
 			pv.add(p);
@@ -1127,7 +1128,7 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData getCountryList() {
 		SukuData res = new SukuData();
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 
 		try {
 			String sql = "select a.countrycode,a.placename,b.othername"
@@ -1166,7 +1167,7 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData getCountryCodes() {
 		SukuData res = new SukuData();
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 
 		try {
 			String sql = "select a.countrycode,a.placename,b.othername"
@@ -1275,7 +1276,7 @@ public class SukuServerImpl implements SukuServer {
 		SukuData response = new SukuData();
 		String sql = "select datname from pg_database where datname not in ('postgres','template1','template0') order by datname ";
 
-		Vector<String> lista = new Vector<String>();
+		ArrayList<String> lista = new ArrayList<String>();
 		Statement stm = null;
 		try {
 			stm = con.createStatement();
@@ -1303,7 +1304,7 @@ public class SukuServerImpl implements SukuServer {
 			}
 		}
 
-		Vector<String> result = new Vector<String>();
+		ArrayList<String> result = new ArrayList<String>();
 
 		for (int i = 0; i < lista.size(); i++) {
 
@@ -1314,7 +1315,7 @@ public class SukuServerImpl implements SukuServer {
 
 				constring += "&password=" + password;
 			}
-			Vector<String> sv = new Vector<String>();
+			ArrayList<String> sv = new ArrayList<String>();
 			Connection mycon = null;
 			try {
 				mycon = DriverManager.getConnection(constring);
@@ -1557,12 +1558,12 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData getIntelliSensData() {
 		SukuData res = new SukuData();
 		res.vvTexts = new Vector<String[]>();
-		Vector<String> vPlaces = new Vector<String>();
-		Vector<String> vGivennames = new Vector<String>();
-		Vector<String> vPatronymes = new Vector<String>();
-		Vector<String> vSurnames = new Vector<String>();
-		Vector<String> vDescriptions = new Vector<String>();
-		Vector<String> vTypes = new Vector<String>();
+		ArrayList<String> vPlaces = new ArrayList<String>();
+		ArrayList<String> vGivennames = new ArrayList<String>();
+		ArrayList<String> vPatronymes = new ArrayList<String>();
+		ArrayList<String> vSurnames = new ArrayList<String>();
+		ArrayList<String> vDescriptions = new ArrayList<String>();
+		ArrayList<String> vTypes = new ArrayList<String>();
 		// Vector<String> vGroupd = new Vector<String>();
 		try {
 			String sql = "select place,count(*) from unitnotice "
@@ -1705,7 +1706,7 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData getVirtualRelatives(int pid) {
 		SukuData resp = new SukuData();
-		Vector<Integer> relas = new Vector<Integer>();
+		ArrayList<Integer> relas = new ArrayList<Integer>();
 
 		String sql = "select b.pid from relation as a inner join relation as b on a.rid=b.rid where  b.pid<>a.pid and a.pid=? ";
 		PreparedStatement pstm;
@@ -1905,7 +1906,7 @@ public class SukuServerImpl implements SukuServer {
 			sql = "select bid from child where aid = " + pid;
 		}
 
-		Vector<Integer> vxv = new Vector<Integer>();
+		ArrayList<Integer> vxv = new ArrayList<Integer>();
 
 		try {
 			Statement stm = con.createStatement();

@@ -13,9 +13,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -458,7 +458,7 @@ public class PersonShortData implements Serializable, Transferable,
 	}
 
 	/**
-	 * Copy constuctor.
+	 * Copy constructor.
 	 * 
 	 * @param lon
 	 *            the PersonLongData to construct the short object from
@@ -467,7 +467,7 @@ public class PersonShortData implements Serializable, Transferable,
 
 		pid = lon.getPid();
 		sex = lon.getSex();
-		Vector<ShortName> sn = new Vector<ShortName>();
+		ArrayList<ShortName> sn = new ArrayList<ShortName>();
 
 		for (int i = 0; i < lon.getNotices().length; i++) {
 			UnitNotice n = lon.getNotices()[i];
@@ -546,7 +546,7 @@ public class PersonShortData implements Serializable, Transferable,
 			throws SukuException {
 		this.pid = pid;
 		// this.famType = famType;
-		Vector<ShortName> sn = new Vector<ShortName>();
+		ArrayList<ShortName> sn = new ArrayList<ShortName>();
 		// int nameIdx = 0;
 		// this.givenname = this.patronym = this.prefix = this.surname =
 		// this.postfix = null;

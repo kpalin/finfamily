@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -500,7 +501,7 @@ public class ImportGedcomUtil {
 
 	private void consumeGedcomFam(GedcomLine record) {
 
-		Vector<Relation> rels = new Vector<Relation>();
+		ArrayList<Relation> rels = new ArrayList<Relation>();
 		Relation rel = null;
 		Relation crel;
 		int ownerPid = 0;
@@ -513,7 +514,7 @@ public class ImportGedcomUtil {
 		GedcomPidEle bid = null;
 		GedcomPidEle cid = null;
 
-		Vector<RelationNotice> relNotice = new Vector<RelationNotice>();
+		ArrayList<RelationNotice> relNotice = new ArrayList<RelationNotice>();
 		for (int i = 0; i < record.lines.size(); i++) {
 			if (record.lines.get(i).tag.equals("HUSB")) {
 				lineHusb = record.lines.get(i);
@@ -877,7 +878,7 @@ public class ImportGedcomUtil {
 
 	private void consumeGedcomIndi(GedcomLine record) throws SukuException {
 		PersonLongData pers = new PersonLongData(0, "INDI", "U");
-		Vector<UnitNotice> notices = new Vector<UnitNotice>();
+		ArrayList<UnitNotice> notices = new ArrayList<UnitNotice>();
 		GedcomFams f = new GedcomFams();
 		f.id = record.id;
 		pers.setUserRefn(record.id);
@@ -2118,7 +2119,7 @@ public class ImportGedcomUtil {
 		public String toString(boolean withLevels) {
 			StringBuilder sb = new StringBuilder();
 			if (level > 0) {
-				Vector<String> stack = new Vector<String>();
+				ArrayList<String> stack = new ArrayList<String>();
 				GedcomLine pareLine = this.parent;
 				while (pareLine != null) {
 					if (pareLine.id != null) {

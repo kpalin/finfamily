@@ -2,6 +2,7 @@ package fi.kaila.suku.report;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -161,7 +162,7 @@ public abstract class CommonReport {
 	 */
 	public PlaceInTables[] getPlaceReferences() {
 
-		Vector<PlaceInTables> vv = new Vector<PlaceInTables>();
+		ArrayList<PlaceInTables> vv = new ArrayList<PlaceInTables>();
 
 		Set<Map.Entry<String, PlaceInTables>> entriesx = places.entrySet();
 		Iterator<Map.Entry<String, PlaceInTables>> eex = entriesx.iterator();
@@ -185,7 +186,7 @@ public abstract class CommonReport {
 	 */
 	public String[] getSourceList() {
 
-		Vector<String> vv = new Vector<String>();
+		ArrayList<String> vv = new ArrayList<String>();
 
 		Set<Map.Entry<String, Integer>> entriesx = refs.entrySet();
 		Iterator<Map.Entry<String, Integer>> eex = entriesx.iterator();
@@ -1400,7 +1401,7 @@ public abstract class CommonReport {
 			if (tab == null) {
 				tab = mtab;
 			}
-			Vector<ReportTableMember> full = new Vector<ReportTableMember>();
+			ArrayList<ReportTableMember> full = new ArrayList<ReportTableMember>();
 
 			for (int i = 0; i < tab.getChild().size(); i++) {
 				ReportTableMember mem = tab.getChild().get(i);
@@ -1508,7 +1509,7 @@ public abstract class CommonReport {
 						isMale = true;
 					}
 
-					Vector<ReportTableMember> other = new Vector<ReportTableMember>();
+					ArrayList<ReportTableMember> other = new ArrayList<ReportTableMember>();
 
 					for (int i = 0; i < tab.getParent().size(); i++) {
 						ReportTableMember mem = tab.getParent().get(i);
@@ -1568,7 +1569,7 @@ public abstract class CommonReport {
 						}
 					}
 
-					other = new Vector<ReportTableMember>();
+					other = new ArrayList<ReportTableMember>();
 
 					for (int i = 0; i < tab.getChild().size(); i++) {
 						ReportTableMember mem = tab.getChild().get(i);
@@ -2425,7 +2426,7 @@ public abstract class CommonReport {
 			return 0;
 
 		StringBuilder sb = new StringBuilder();
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 		boolean wasWhite = false;
 		boolean wasNl = true;
 		for (int i = 0; i < text.length(); i++) {

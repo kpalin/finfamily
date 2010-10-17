@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -277,7 +278,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		int buriCount = 0;
 		int occuCount = 0;
 		int noteCount = 0;
-		Vector<String> occuVec = new Vector<String>();
+		ArrayList<String> occuVec = new ArrayList<String>();
 		int noticeFirst = personView.getFirstNoticeIndex();
 		int noticeCount = personView.getTabCount();
 		for (int i = noticeFirst; i < noticeCount; i++) {
@@ -1023,7 +1024,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		SukuData req = new SukuData();
 
 		if (relas != null) {
-			Vector<Relation> rel = new Vector<Relation>();
+			ArrayList<Relation> rel = new ArrayList<Relation>();
 			for (int i = 0; i < relas.parents.list.size(); i++) {
 				Relation r = relas.parents.list.get(i);
 				if (r.isToBeDeleted() || r.isToBeUpdated()) {

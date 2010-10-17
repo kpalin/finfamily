@@ -12,6 +12,7 @@ import java.beans.PropertyChangeListener;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -1265,7 +1266,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		Suku.kontroller.putPref(this, Resurses.SETTING_IDX, "" + settingsIndex);
 
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 		String type = "report";
 		if (pers == null) {
 			type = "lista";

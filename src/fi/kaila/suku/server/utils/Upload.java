@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.util.SukuException;
@@ -226,7 +226,7 @@ public class Upload {
 			PersonUtil u = new PersonUtil(con);
 			SukuData fam = u.getFullPerson(person.getPid(), null);
 
-			Vector<UnitNotice> nns = new Vector<UnitNotice>();
+			ArrayList<UnitNotice> nns = new ArrayList<UnitNotice>();
 			StringBuilder sb = new StringBuilder();
 			for (int k = 0; k < orders.length; k++) {
 				for (UnitNotice n : fam.persLong.getNotices()) {
@@ -462,7 +462,7 @@ public class Upload {
 	public static String[] getReportLanguages(Connection con)
 			throws SQLException {
 		Statement stm = con.createStatement();
-		Vector<String> ll = new Vector<String>();
+		ArrayList<String> ll = new ArrayList<String>();
 		ResultSet rs = stm
 				.executeQuery("select langcode||';'||name from texts where tag='LANGUAGE'");
 		String tmp;

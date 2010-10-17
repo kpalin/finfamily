@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Vector;
@@ -541,7 +542,7 @@ public class PersonUtil {
 							}
 
 							ffmm = getFullPerson(r.getRelative(), null);
-							Vector<Relation> ffvec = new Vector<Relation>();
+							ArrayList<Relation> ffvec = new ArrayList<Relation>();
 							Relation newrel = null;
 							for (int j = 0; j < ffmm.relations.length; j++) {
 								Relation rfm = ffmm.relations[j];
@@ -914,10 +915,10 @@ public class PersonUtil {
 
 	public SukuData getFullPerson(int pid, String lang) throws SukuException {
 		SukuData pers = new SukuData();
-		Vector<UnitNotice> nvec = new Vector<UnitNotice>();
+		ArrayList<UnitNotice> nvec = new ArrayList<UnitNotice>();
 
-		Vector<Relation> rels = new Vector<Relation>();
-		Vector<RelationNotice> relNotices = null;
+		ArrayList<Relation> rels = new ArrayList<Relation>();
+		ArrayList<RelationNotice> relNotices = null;
 		try {
 			String sql = "select * from unit where pid = ? ";
 			PreparedStatement pstm = con.prepareStatement(sql);
@@ -969,7 +970,7 @@ public class PersonUtil {
 				pers.persLong.setNotices(nvec.toArray(new UnitNotice[0]));
 
 				if (lang == null) {
-					Vector<UnitLanguage> lvec = new Vector<UnitLanguage>();
+					ArrayList<UnitLanguage> lvec = new ArrayList<UnitLanguage>();
 					UnitLanguage langnotice;
 					sql = "select * from unitlanguage where pid = ? order by pnid,langcode";
 
@@ -1017,7 +1018,7 @@ public class PersonUtil {
 				String tag;
 				Relation rel = null;
 
-				Vector<Integer> relpids = new Vector<Integer>();
+				ArrayList<Integer> relpids = new ArrayList<Integer>();
 				LinkedHashMap<Integer, Relation> relmap = new LinkedHashMap<Integer, Relation>();
 				while (rs.next()) {
 					rid = rs.getInt(1);
@@ -1044,7 +1045,7 @@ public class PersonUtil {
 				rid = 0;
 				RelationNotice rnote = null;
 
-				relNotices = new Vector<RelationNotice>();
+				relNotices = new ArrayList<RelationNotice>();
 				while (rs.next()) {
 					rid = rs.getInt("rid");
 					if (rid != curid) {
@@ -1055,7 +1056,7 @@ public class PersonUtil {
 						}
 						relNotices = null;
 						curid = rid;
-						relNotices = new Vector<RelationNotice>();
+						relNotices = new ArrayList<RelationNotice>();
 					}
 
 					rnote = new RelationNotice(rs.getInt("rnid"), rid,
@@ -1096,7 +1097,7 @@ public class PersonUtil {
 					if (pers.relations[i].getNotices() != null) {
 						for (int j = 0; j < pers.relations[i].getNotices().length; j++) {
 							RelationNotice rn = pers.relations[i].getNotices()[j];
-							Vector<RelationLanguage> rl = new Vector<RelationLanguage>();
+							ArrayList<RelationLanguage> rl = new ArrayList<RelationLanguage>();
 
 							sql = "select rnid,rid,langcode,relationtype,description,place,notetext,modified,createdate "
 									+ "from relationLanguage where rnid = ?";
@@ -1128,7 +1129,7 @@ public class PersonUtil {
 				}
 
 				if (lang == null) {
-					Vector<PersonShortData> pv = new Vector<PersonShortData>();
+					ArrayList<PersonShortData> pv = new ArrayList<PersonShortData>();
 					HashMap<Integer, Integer> testPid = new HashMap<Integer, Integer>();
 					for (int i = 0; i < relpids.size(); i++) {
 						Integer test = relpids.get(i);
@@ -1328,7 +1329,7 @@ public class PersonUtil {
 						+ "where settingtype = '"
 						+ type
 						+ "' order by settingindex ";
-				Vector<String> v = new Vector<String>();
+				ArrayList<String> v = new ArrayList<String>();
 
 				Statement stm = con.createStatement();
 				ResultSet rs = stm.executeQuery(sql);
@@ -1394,7 +1395,7 @@ public class PersonUtil {
 
 				Statement stm = con.createStatement();
 				ResultSet rs = stm.executeQuery(sql);
-				Vector<String> setv = new Vector<String>();
+				ArrayList<String> setv = new ArrayList<String>();
 				while (rs.next()) {
 
 					String val = rs.getString(1);

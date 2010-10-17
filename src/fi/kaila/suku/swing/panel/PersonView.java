@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.print.PrinterException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -605,9 +606,9 @@ public class PersonView extends JPanel implements ChangeListener {
 
 			reqDim = table.getSize(gg);
 
-			Vector<RelationShortData> grands = new Vector<RelationShortData>();
+			ArrayList<RelationShortData> grands = new ArrayList<RelationShortData>();
 
-			Vector<TableShortData> parents = new Vector<TableShortData>();
+			ArrayList<TableShortData> parents = new ArrayList<TableShortData>();
 
 			int fcount = table.getFatherCount();
 			int mcount = table.getMotherCount();

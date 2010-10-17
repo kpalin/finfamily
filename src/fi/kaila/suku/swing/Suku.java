@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -2050,7 +2051,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			} else if (cmd.equals(Resurses.TOOLBAR_SUBJECT_UP_ACTION)) {
 				if (needle.size() > 0) {
-					Vector<String> subvec = new Vector<String>();
+					ArrayList<String> subvec = new ArrayList<String>();
 					// String[] subjes = null;
 					HashMap<String, String> submap = new HashMap<String, String>();
 					// subjes = new String[needle.size()];
@@ -2944,7 +2945,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			}
 
-			Vector<String> v = new Vector<String>();
+			ArrayList<String> v = new ArrayList<String>();
 			v.add("cmd=plist");
 			for (i = 0; i < crit.getFieldCount(); i++) {
 				if (crit.getCriteriaField(i) != null

@@ -1,6 +1,7 @@
 package fi.kaila.suku.report;
 
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -181,7 +182,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 * @return comma separated list of owners
 	 */
 	public Long[] getOwnerArray() {
-		Vector<Long> kk = new Vector<Long>();
+		ArrayList<Long> kk = new ArrayList<Long>();
 		Iterator<Long> ki = asOwners.keySet().iterator();
 
 		while (ki.hasNext()) {

@@ -8,13 +8,13 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
@@ -438,7 +438,7 @@ public class SukuServlet extends HttpServlet {
 			filename = this.uploadFolder + ui.getUserId() + "/" + filename;
 		}
 
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 		if (cmd != null)
 			v.add("cmd=" + cmd);
 		if (pid != null)

@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -488,7 +489,7 @@ public class ExportGedcomUtil {
 
 	private String addAdoptionEvents(int pid) throws SQLException {
 		StringBuilder sb = new StringBuilder();
-		Vector<AdoptionElement> adops = new Vector<AdoptionElement>();
+		ArrayList<AdoptionElement> adops = new ArrayList<AdoptionElement>();
 		String sql = "select p.pid as rpid,n.rid,n.surety,n.tag,n.relationtype,n.description,"
 				+ "n.dateprefix,n.fromdate,n.todate,n.place,n.notetext,n.sourcetext "
 				+ "from relationnotice as n "
@@ -499,7 +500,7 @@ public class ExportGedcomUtil {
 		PreparedStatement pst = con.prepareStatement(sql);
 		pst.setInt(1, pid);
 		ResultSet rs = pst.executeQuery();
-		Vector<RelationNotice> relNotices = new Vector<RelationNotice>();
+		ArrayList<RelationNotice> relNotices = new ArrayList<RelationNotice>();
 
 		while (rs.next()) {
 			RelationNotice rnote = new RelationNotice(rs.getInt("rpid"),
@@ -683,7 +684,7 @@ public class ExportGedcomUtil {
 
 	private String getNoteStructure(int level, String tag, String text,
 			int emptyMax) {
-		Vector<String> ss = new Vector<String>();
+		ArrayList<String> ss = new ArrayList<String>();
 
 		int linelen = 73;
 

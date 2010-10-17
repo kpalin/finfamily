@@ -1,9 +1,9 @@
 package fi.kaila.suku.util;
 
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -565,7 +565,7 @@ public class Resurses {
 			myself = new Resurses();
 		}
 
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 
 		v.add("cmd=savesettings");
 		v.add("type=country");

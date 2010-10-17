@@ -2,7 +2,7 @@ package fi.kaila.suku.util;
 
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -202,7 +202,7 @@ public class SukuTypesTable extends JTable {
 
 		Suku.kontroller.putPref(this, Resurses.SETTING_IDX, "" + settingsIndex);
 
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 
 		v.add("cmd=savesettings");
 		v.add("type=" + type);

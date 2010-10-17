@@ -7,6 +7,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -1108,9 +1109,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 		Vector<String> refs = new Vector<String>();
 
-		Vector<UnitNotice> noticesMan = new Vector<UnitNotice>();
-		Vector<UnitNotice> noticesWoman = new Vector<UnitNotice>();
-		Vector<UnitNotice> notices;
+		ArrayList<UnitNotice> noticesMan = new ArrayList<UnitNotice>();
+		ArrayList<UnitNotice> noticesWoman = new ArrayList<UnitNotice>();
+		ArrayList<UnitNotice> notices;
 		for (int i = 0; i < personCount; i++) {
 			String aux = pType[i].getText();
 			String occu;
@@ -1290,7 +1291,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			vaimoId = kast.persons[naisIdx].getPid();
 		}
 
-		Vector<Relation> relations = new Vector<Relation>();
+		ArrayList<Relation> relations = new ArrayList<Relation>();
 		Relation rel;
 
 		RelationNotice[] rNotices = new RelationNotice[1];
@@ -1334,7 +1335,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		// StringBuilder privBuf = new StringBuilder();
 		Vector<UnitNotice> notices = null;
 		int childIdx = -1;
-		Vector<UnitNotice> noticesChild = new Vector<UnitNotice>();
+		ArrayList<UnitNotice> noticesChild = new ArrayList<UnitNotice>();
 
 		for (int i = 0; i < personCount; i++) {
 			String aux = pType[i].getText();
@@ -1648,7 +1649,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		}
 		kast.persons[childIdx].setNotices(noticesChild
 				.toArray(new UnitNotice[0]));
-		Vector<Relation> relations = new Vector<Relation>();
+		ArrayList<Relation> relations = new ArrayList<Relation>();
 		Relation rel;
 		if (isaId < 0 || lapsiId < 0) {
 			rel = new Relation(0, lapsiId, isaId, "FATH", hiskiSurety, null,

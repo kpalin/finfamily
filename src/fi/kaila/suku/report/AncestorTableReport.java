@@ -2,9 +2,9 @@ package fi.kaila.suku.report;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -97,9 +97,9 @@ public class AncestorTableReport extends CommonReport {
 			ReportUnit ru = tables.get(j);
 			tabMap.put(ru.getTableNo(), ru);
 		}
-		Vector<ReportUnit> tabNext = new Vector<ReportUnit>();
+		ArrayList<ReportUnit> tabNext = new ArrayList<ReportUnit>();
 
-		Vector<IndexPerson> ipers = new Vector<IndexPerson>();
+		ArrayList<IndexPerson> ipers = new ArrayList<IndexPerson>();
 		String proband = "ANC_SUBJECT";
 		try {
 

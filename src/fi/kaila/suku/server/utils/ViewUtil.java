@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -126,7 +126,7 @@ public class ViewUtil {
 			stm.setInt(1, pid);
 			ResultSet rs = stm.executeQuery();
 
-			Vector<String> vv = new Vector<String>();
+			ArrayList<String> vv = new ArrayList<String>();
 
 			while (rs.next()) {
 				vv.add(rs.getString("name"));
@@ -210,7 +210,7 @@ public class ViewUtil {
 	public SukuData addViewDesc(int viewId, int pid, String gent,
 			boolean withSpouses, boolean emptyView) throws SukuException {
 		SukuData resp = new SukuData();
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		resp.resuCount = 0;
 		int gen = 0;
 		if (gent != null && !gent.isEmpty()) {
@@ -388,7 +388,7 @@ public class ViewUtil {
 	public SukuData addViewAnc(int viewId, int pid, String gent,
 			boolean emptyView) throws SukuException {
 		SukuData resp = new SukuData();
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		resp.resuCount = 0;
 		int gen = 0;
 		if (gent != null && !gent.isEmpty()) {

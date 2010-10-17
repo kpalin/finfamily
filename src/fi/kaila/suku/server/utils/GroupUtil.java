@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +45,7 @@ public class GroupUtil {
 	 */
 	public SukuData removeAllGroups() throws SukuException {
 		SukuData resp = new SukuData();
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		try {
 			Statement stm = con.createStatement();
 			ResultSet rs = stm
@@ -89,7 +89,7 @@ public class GroupUtil {
 	public SukuData removeSelectedGroups(int[] pids) throws SukuException {
 		SukuData resp = new SukuData();
 
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		try {
 			PreparedStatement stm = con
 					.prepareStatement("update unit set groupid = null where pid = ? and groupid is not null");
@@ -130,7 +130,7 @@ public class GroupUtil {
 	public SukuData removeViewGroups(int viewid) throws SukuException {
 		SukuData resp = new SukuData();
 
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		try {
 			PreparedStatement stm = con
 					.prepareStatement("select pid from unit "
@@ -182,7 +182,7 @@ public class GroupUtil {
 	public SukuData removeGroup(String group) throws SukuException {
 		SukuData resp = new SukuData();
 
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		try {
 			PreparedStatement stm = con
 					.prepareStatement("select pid from unit where groupid = ? ");
@@ -233,7 +233,7 @@ public class GroupUtil {
 			throws SukuException {
 		SukuData resp = new SukuData();
 
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		try {
 			PreparedStatement stm = con
 					.prepareStatement("update unit set groupid = ? where pid = ? and groupid is null");
@@ -276,7 +276,7 @@ public class GroupUtil {
 	public SukuData addViewGroups(int vid, String group) throws SukuException {
 		SukuData resp = new SukuData();
 
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		try {
 			PreparedStatement stm = con
 					.prepareStatement("select pid from unit "
@@ -335,7 +335,7 @@ public class GroupUtil {
 			boolean includeSpouses) throws SukuException {
 		SukuData resp = new SukuData();
 		resp.resuCount = 0;
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		int gen = 0;
 		if (gent != null && !gent.isEmpty()) {
 			gen = Integer.parseInt(gent);
@@ -438,7 +438,7 @@ public class GroupUtil {
 			throws SukuException {
 		SukuData resp = new SukuData();
 		resp.resuCount = 0;
-		Vector<Integer> pidv = new Vector<Integer>();
+		ArrayList<Integer> pidv = new ArrayList<Integer>();
 		int gen = 0;
 		if (gent != null && !gent.isEmpty()) {
 			gen = Integer.parseInt(gent);

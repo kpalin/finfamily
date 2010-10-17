@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -110,7 +111,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		SukuData schemas = Suku.kontroller.getSukuData("cmd=schema",
 				"type=count");
 
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 		for (int i = 0; i < schemas.generalArray.length; i++) {
 			if (!schemas.generalArray[i].equals(schema)) {
 				v.add(schemas.generalArray[i]);
@@ -287,7 +288,7 @@ public class ImportOtherDialog extends JDialog implements ActionListener,
 		if (activator == null)
 			return;
 
-		Vector<String> parms = new Vector<String>();
+		ArrayList<String> parms = new ArrayList<String>();
 		parms.add("cmd=compare");
 		if (this.dates.isSelected()) {
 			parms.add("dates=true");

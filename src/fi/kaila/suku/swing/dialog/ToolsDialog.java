@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -336,7 +337,7 @@ public class ToolsDialog extends JDialog implements ActionListener,
 				}
 				PersonLongData persLong = plong.persLong;
 
-				Vector<UnitNotice> un = new Vector<UnitNotice>();
+				ArrayList<UnitNotice> un = new ArrayList<UnitNotice>();
 				for (int j = 0; j < persLong.getNotices().length; j++) {
 					un.add(persLong.getNotices()[j]);
 				}

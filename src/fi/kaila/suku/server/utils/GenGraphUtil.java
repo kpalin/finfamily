@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -51,8 +52,8 @@ public class GenGraphUtil {
 	public SukuData getGengraphData(int pid, String lang) throws SukuException {
 		SukuData fam = new SukuData();
 		Relation rela;
-		Vector<PersonShortData> persons = new Vector<PersonShortData>();
-		Vector<Relation> relas = new Vector<Relation>();
+		ArrayList<PersonShortData> persons = new ArrayList<PersonShortData>();
+		ArrayList<Relation> relas = new ArrayList<Relation>();
 		// LinkedHashMap<Integer,ReportUnit> ru = new
 		// LinkedHashMap<Integer,ReportUnit>();
 		// LinkedHashMap<Integer, PersonShortData> pu = new

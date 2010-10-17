@@ -5,8 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.util.Resurses;
@@ -54,7 +54,7 @@ public class QueryUtil {
 
 		String[] pari;
 		String decod;
-		Vector<PersonShortData> personList = new Vector<PersonShortData>();
+		ArrayList<PersonShortData> personList = new ArrayList<PersonShortData>();
 		HashMap<Integer, PersonShortData> persMap = new HashMap<Integer, PersonShortData>();
 		int idx;
 

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -784,7 +785,7 @@ public class ReportUtil {
 
 	private void insertIntoDescendantLista(int pid, int gen)
 			throws SQLException, SukuException {
-		Vector<RelationShortData> rr = new Vector<RelationShortData>();
+		ArrayList<RelationShortData> rr = new ArrayList<RelationShortData>();
 		descListaCounter++;
 		this.runner.setRunnerValue(Resurses.getString("REPORT.LISTA.DESCLISTA")
 				+ " [" + descListaCounter + "/" + gen + "] ");

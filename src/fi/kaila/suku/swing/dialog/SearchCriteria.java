@@ -7,8 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -1094,7 +1094,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 				tbl.setCurrentState(bvalue);
 			}
 
-			Vector<String> v = new Vector<String>();
+			ArrayList<String> v = new ArrayList<String>();
 			String tmpDate;
 			v.add("patronyme=" + patronyme.getText());
 			v.add("surname=" + surname.getText());

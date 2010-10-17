@@ -3,8 +3,8 @@ package fi.kaila.suku.swing.panel;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -137,8 +137,8 @@ public class PersonTextPane extends JTextPane {
 		StyleConstants.setFontSize(redForte, 12);
 		StyleConstants.setForeground(redForte, Color.red);
 
-		Vector<String> sources = new Vector<String>();
-		Vector<String> privateTexts = new Vector<String>();
+		ArrayList<String> sources = new ArrayList<String>();
+		ArrayList<String> privateTexts = new ArrayList<String>();
 
 		try {
 			boolean t = false; // for debugging resurses
