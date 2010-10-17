@@ -2,6 +2,13 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 895 on 17 oct 2010
+
+* Improvements of managing of relative notices
+* Fixes to needle manager
+* DropDown menu fix
+* Added sql function to tools
+
 Release 870 on 12 oct 2010
 
 * Usability changes to menu and dialogs
