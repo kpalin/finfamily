@@ -151,14 +151,17 @@ public class SukuRow {
 
 			// case SukuModel.TNAME_COL:
 			sb = new StringBuilder();
-			if (person.getAlfaName(false) != null) {
-				sb.append(person.getAlfaName(false) + " ");
+			String alfaName = person.getAlfaName(false);
+			if (alfaName != null) {
+				sb.append(alfaName);
+				sb.append(" ");
 			}
 
 			if (crit.isPropertySet(Resurses.COLUMN_T_ALL_NAMES)) {
-				if (person.getMorenames() != null) {
+				String moreNames = person.getMorenames();
+				if (moreNames != null) {
 					sb.append(";");
-					sb.append(person.getMorenames());
+					sb.append(moreNames);
 				}
 			}
 
