@@ -3135,8 +3135,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				SukuRow rr = (SukuRow) tableModel.getValueAt(i, -1);
 				if (rr.getPid() == ss.getPid()) {
 					tableModel.removeRow(i);
-					// FIXME: Should ss be pid?
-					tableMap.remove(ss);
+					tableMap.remove(pid);
 					table.updateUI();
 					scrollPane.updateUI();
 					break;
