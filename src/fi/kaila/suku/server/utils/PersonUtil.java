@@ -129,6 +129,52 @@ public class PersonUtil {
 						logger.warning("Person updated for pid " + pid
 								+ "  gave result " + lukuri);
 					}
+
+					// update relation as b set tag='FATH'
+					// where b.rid in (select a.rid from relation as a where
+					// a.pid = 53 and a.pid <> b.rid and a.tag='CHIL')
+					// and tag='MOTH'
+					String apara = null;
+					String bpara = null;
+					String cpara = null;
+					String dpara = null;
+					if (req.persLong.getSex().equals("M")) {
+						apara = "FATH";
+						bpara = "MOTH";
+						cpara = "HUSB";
+						dpara = "WIFE";
+					} else if (req.persLong.getSex().equals("F")) {
+						bpara = "FATH";
+						apara = "MOTH";
+						dpara = "HUSB";
+						cpara = "WIFE";
+					}
+					if (apara != null) {
+						String sqlParent = "update relation as b set tag=? "
+								+ "where b.rid in (select a.rid from relation as a "
+								+ "where a.pid = ? and a.pid <> b.rid and a.tag='CHIL')	"
+								+ "and tag=?";
+						PreparedStatement ppare = con
+								.prepareStatement(sqlParent);
+						ppare.setString(1, apara);
+						ppare.setInt(2, req.persLong.getPid());
+						ppare.setString(3, bpara);
+						int resup = ppare.executeUpdate();
+						logger.fine("updated count for person parent= " + resup);
+
+						String sqlSpouse = "update relation as b set tag=? "
+								+ "where b.rid in (select a.rid "
+								+ "from relation as a where a.pid = ? and a.pid <> b.pid "
+								+ "and a.tag in ('HUSB','WIFE')) and tag=?";
+
+						ppare = con.prepareStatement(sqlSpouse);
+						ppare.setString(1, cpara);
+						ppare.setInt(2, req.persLong.getPid());
+						ppare.setString(3, dpara);
+						resup = ppare.executeUpdate();
+						logger.fine("updated count for person spouse= " + resup);
+
+					}
 				}
 
 			} else {

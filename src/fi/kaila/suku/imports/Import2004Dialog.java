@@ -60,20 +60,20 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 
 	private static final String OK = "OK";
 	private static final String CANCEL = "CANCEL";
-	private JComboBox lista;
-	private JLabel textContent;
-	private JButton ok;
-	private JButton cancel;
+	private final JComboBox lista;
+	private final JLabel textContent;
+	private final JButton ok;
+	private final JButton cancel;
 
-	private String oldLangS[];
+	private final String oldLangS[];
 
 	private SukuData xmlResult = null;
 
 	private SukuKontroller kontroller = null;
 
-	private JProgressBar progressBar;
+	private final JProgressBar progressBar;
 
-	private JLabel timeEstimate;
+	private final JLabel timeEstimate;
 	private Task task = null;
 
 	/**
@@ -126,6 +126,7 @@ public class Import2004Dialog extends JDialog implements ActionListener,
 		String langNames[] = new String[apu.length / 3];
 		int j = 0;
 		for (int i = 0; i < apu.length / 3; i++) {
+			j++;
 			this.oldLangS[i] = apu[j++];
 			langNames[i] = apu[j++];
 		}
