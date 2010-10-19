@@ -1493,6 +1493,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				if (notices.size() > 0) {
 					kast.persons[i].setNotices(notices
 							.toArray(new UnitNotice[0]));
+				} else {
+					kast.persons[i].setPid(0);
 				}
 			} else if ("lapsi".equals(aux)) {
 				childIdx = i;
@@ -1649,14 +1651,24 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		}
 		kast.persons[childIdx].setNotices(noticesChild
 				.toArray(new UnitNotice[0]));
+
+		if (kast.persons[0].getNotices() == null) {
+			isaId = 0;
+		}
+		if (kast.persons[1].getNotices() == null) {
+			aitiId = 0;
+		}
+		if (kast.persons[2].getNotices() == null) {
+			lapsiId = 0;
+		}
 		ArrayList<Relation> relations = new ArrayList<Relation>();
 		Relation rel;
-		if (isaId < 0 || lapsiId < 0) {
+		if (isaId != 0 && lapsiId != 0 && (isaId < 0 || lapsiId < 0)) {
 			rel = new Relation(0, lapsiId, isaId, "FATH", hiskiSurety, null,
 					null);
 			relations.add(rel);
 		}
-		if (aitiId < 0 || lapsiId < 0) {
+		if (aitiId != 0 && lapsiId != 0 && (aitiId < 0 || lapsiId < 0)) {
 			rel = new Relation(0, lapsiId, aitiId, "MOTH", hiskiSurety, null,
 					null);
 			relations.add(rel);
@@ -1674,7 +1686,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			SukuData response = Suku.kontroller.getSukuData(kast, "cmd=upload");
 
 			for (int i = 0; i < response.pers.length; i++) {
-				suku.updatePerson(response.pers[i]);
+				if (response.pers[i].getSex() != null) {
+					suku.updatePerson(response.pers[i]);
+				}
 			}
 
 		} catch (SukuException e) {

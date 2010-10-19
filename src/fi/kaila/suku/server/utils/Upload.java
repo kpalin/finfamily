@@ -58,7 +58,7 @@ public class Upload {
 
 					if (curPid > 0) {
 						respons.pidArray[i] = curPid;
-					} else {
+					} else if (curPid < 0) {
 						respons.pidArray[i] = nextSeq(con, "unitseq");
 					}
 
@@ -79,7 +79,10 @@ public class Upload {
 			}
 		}
 		for (int i = 0; i < respons.pidArray.length; i++) {
-			if (families.persons[i].getPid() <= 0 && respons.pidArray[i] <= 0) {
+			if (families.persons[i].getPid() == 0) {
+
+			} else if (families.persons[i].getPid() <= 0
+					&& respons.pidArray[i] <= 0) {
 				respons.pidArray[i] = nextSeq(con, "unitseq");
 			} else if (families.persons[i].getPid() > 0) {
 				respons.pidArray[i] = families.persons[i].getPid();
@@ -113,7 +116,8 @@ public class Upload {
 			int hiskipnid = 0;
 			String hiskiText = null;
 			PersonLongData person = families.persons[i];
-			if (person != null) {
+
+			if (person != null && person.getNotices() != null) {
 				if (person.getPid() <= 0) {
 					surety = 80;
 					person.setPid(respons.pidArray[i]);
@@ -220,32 +224,34 @@ public class Upload {
 						}
 					}
 				}
-			}
-			/** put notices in correct order still */
 
-			PersonUtil u = new PersonUtil(con);
-			SukuData fam = u.getFullPerson(person.getPid(), null);
+				/** put notices in correct order still */
 
-			ArrayList<UnitNotice> nns = new ArrayList<UnitNotice>();
-			StringBuilder sb = new StringBuilder();
-			for (int k = 0; k < orders.length; k++) {
-				for (UnitNotice n : fam.persLong.getNotices()) {
-					if (n.getTag().equals(orders[k])) {
-						nns.add(n);
-						sb.append("|" + orders[k]);
+				PersonUtil u = new PersonUtil(con);
+				SukuData fam = u.getFullPerson(person.getPid(), null);
+
+				ArrayList<UnitNotice> nns = new ArrayList<UnitNotice>();
+				StringBuilder sb = new StringBuilder();
+				for (int k = 0; k < orders.length; k++) {
+					for (UnitNotice n : fam.persLong.getNotices()) {
+						if (n.getTag().equals(orders[k])) {
+							nns.add(n);
+							sb.append("|" + orders[k]);
+						}
 					}
 				}
-			}
-			// now the ones that should be orderer are ordered
-			// now add the rest to the end
 
-			for (UnitNotice n : fam.persLong.getNotices()) {
-				if (sb.toString().indexOf(n.getTag()) < 0) {
-					nns.add(n);
+				// now the ones that should be orderer are ordered
+				// now add the rest to the end
+
+				for (UnitNotice n : fam.persLong.getNotices()) {
+					if (sb.toString().indexOf(n.getTag()) < 0) {
+						nns.add(n);
+					}
 				}
+				fam.persLong.setNotices(nns.toArray(new UnitNotice[0]));
+				pu.updateNoticesOrder(fam.persLong);
 			}
-			fam.persLong.setNotices(nns.toArray(new UnitNotice[0]));
-			pu.updateNoticesOrder(fam.persLong);
 		}
 
 		if (families.relations == null)
