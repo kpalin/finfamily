@@ -249,17 +249,17 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-
+		// not used
 	}
 
 	@Override
 	public void componentShown(ComponentEvent e) {
-
+		// not used
 	}
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
-
+		// not used
 	}
 
 }
