@@ -454,8 +454,7 @@ public class SukuServlet extends HttpServlet {
 		Iterator<Map.Entry<String, String>> it = entries.iterator();
 
 		while (it.hasNext()) {
-			Map.Entry<String, String> entry = (Map.Entry<String, String>) it
-					.next();
+			Map.Entry<String, String> entry = it.next();
 			v.add(entry.getKey().toString() + "=" + entry.getValue().toString());
 		}
 

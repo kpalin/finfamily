@@ -61,7 +61,7 @@ public class PlaceInTables implements Comparable<PlaceInTables> {
 		Iterator<Map.Entry<Long, Long>> eex = entriesx.iterator();
 		int i = 0;
 		while (eex.hasNext()) {
-			Map.Entry<Long, Long> entrx = (Map.Entry<Long, Long>) eex.next();
+			Map.Entry<Long, Long> entrx = eex.next();
 			Long pit = entrx.getValue();
 			temp[i++] = pit;
 		}

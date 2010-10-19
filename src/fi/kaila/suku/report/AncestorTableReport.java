@@ -186,7 +186,7 @@ public class AncestorTableReport extends CommonReport {
 				WritableSheet sheet = workbook.createSheet("P " + xpage,
 						sheetCount + 1);
 
-				WritableSheet wsh = (WritableSheet) sheet;
+				WritableSheet wsh = sheet;
 
 				wsh.setColumnView(0, 2);
 				wsh.setColumnView(1, 4);
