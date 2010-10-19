@@ -184,6 +184,10 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 					}
 
 					outputTable = new JTable(rowData, columnNames);
+					errorField.setText(Resurses
+							.getString("MENU_TOOLS_SQL_COUNT")
+							+ " = "
+							+ rowData.size());
 					outputTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 					TableColumnModel tc = outputTable.getColumnModel();
 					TableColumn cc;
