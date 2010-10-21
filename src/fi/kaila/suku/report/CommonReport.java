@@ -326,7 +326,8 @@ public abstract class CommonReport {
 
 	protected void createPidTable(int idx, int[] pidCount) {
 		BodyText bt = new TableHeaderText();
-		bt.addText("PID-Table " + pidCount[idx]);
+		bt.addText(Resurses.getString("REPORT.LISTA.TABLE") + " "
+				+ pidCount[idx]);
 		repoWriter.addText(bt);
 
 		SukuData pdata = null;
@@ -354,15 +355,16 @@ public abstract class CommonReport {
 			}
 			if (nn.getMediaFilename() != null) {
 				pidPrefix++;
-				String nnn = "0000" + pidPrefix;
-				nn.setMediaFilename(nnn.substring(nnn.length() - 4) + "_"
-						+ nn.getMediaFilename());
+				// String nnn = "0000" + pidPrefix;
+				// nn.setMediaFilename(nnn.substring(nnn.length() - 4) + "_"
+				// + nn.getMediaFilename());
 			}
 			String xxx = nn.getMediaTitle();
 			if (xxx == null) {
 				xxx = "";
 			}
-			nn.setMediaTitle("[" + nn.getMediaFilename() + "] " + xxx);
+			nn.setMediaTitle("[" + pidPrefix + "_" + nn.getMediaFilename()
+					+ "] " + xxx);
 
 		}
 		float prose = (idx * 100f) / pidCount.length;
