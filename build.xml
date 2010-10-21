@@ -197,7 +197,7 @@ public class AntVersion {
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{68611E54-42B6-437B-9857-411678FE2E68}
 AppName=FinFamily
-AppVerName=FinFamily 10.-3.${app.version}
+AppVerName=FinFamily 11.-3.${app.version}
 AppPublisher=KK-Software
 AppPublisherURL=http://www.sukuohjelmisto.fi
 AppSupportURL=http://www.sukuohjelmisto.fi
