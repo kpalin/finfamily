@@ -4,7 +4,7 @@
   </condition>
   <property name="app.name" value="suku"/>
 
-  <property name="build.home" value="${basedir}/build"/>
+ <property name="build.home" value="${basedir}/build"/>
   <property name="resources.home" value="${basedir}/resources"/>
   <property name="dist.home" value="${basedir}/dist"/>
   <property name="docs.home" value="${basedir}/docs"/>
@@ -244,6 +244,7 @@ Filename: "{app}\Suku.exe"; Description: "{cm:LaunchProgram,FinFamily}"; Flags: 
     <mkdir dir="${build.home}/classes"/>
 
     <javac   source="1.6" destdir="${build.home}/classes" 
+	includeantruntime="false"
 		debug="yes" encoding="UTF-8">
 		 <src path="${src.home}" />
 		  <src path="${junit.home}" />
