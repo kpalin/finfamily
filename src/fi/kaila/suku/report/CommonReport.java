@@ -2704,10 +2704,20 @@ public abstract class CommonReport {
 							}
 						} else if (nn.getNoticeType() != null) {
 							if (nameCount > 0) {
-								bt.addText(", ");
+								if (!nn.getNoticeType().equals("/")
+										&& !nn.getNoticeType().equals("(")) {
+									bt.addText(", ");
+									bt.addText(nn.getNoticeType());
+									bt.addText(" ");
+								} else {
+									if (nn.getNoticeType().equals("(")) {
+										bt.addText(" ");
+									}
+									bt.addText(nn.getNoticeType());
+
+								}
 							}
-							bt.addText(nn.getNoticeType());
-							bt.addText(" ");
+
 						}
 						boolean wasName = false;
 						if (!prevGivenname.equals(nv(nn.getGivenname()))) {
@@ -2752,6 +2762,10 @@ public abstract class CommonReport {
 									false);
 						}
 
+						if (nn.getNoticeType() != null
+								&& nn.getNoticeType().equals("(")) {
+							bt.addText(")");
+						}
 					}
 					nameCount++;
 				}
