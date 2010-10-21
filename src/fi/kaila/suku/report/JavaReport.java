@@ -59,7 +59,7 @@ public class JavaReport extends JFrame implements ActionListener,
 
 	private JTextPane text;
 
-	private Logger logger = Logger.getLogger(this.getName());
+	private final Logger logger = Logger.getLogger(this.getName());
 
 	private boolean reportClosed = true;
 	private ReportWorkerDialog parent = null;
@@ -173,12 +173,12 @@ public class JavaReport extends JFrame implements ActionListener,
 			StyleConstants.setBold(myStyle, bt.isBold(j));
 			StyleConstants.setUnderline(myStyle, bt.isUnderline(j));
 			StyleConstants.setItalic(myStyle, bt.isItalic(j));
-
+			String imgTitle = "";
 			if (bt.getImage() != null && j == 0) {
 				ImageText it = (ImageText) bt;
 				int imgWidth = it.getWidth();
 				int imgHeight = it.getHeight();
-
+				imgTitle = it.getImageTitle();
 				Dimension maxSize = parent.getImageMaxSize();
 
 				if (it.isPersonImage()) {
@@ -246,7 +246,7 @@ public class JavaReport extends JFrame implements ActionListener,
 			StyleConstants.setFontSize(myStyle, (int) (bt.getFontSize() * 1.2));
 			StyleConstants.setBold(myStyle, bt.isBold(j));
 			StyleConstants.setUnderline(myStyle, bt.isUnderline(j));
-
+			appendString(imgTitle, myStyle);
 		}
 
 		appendString("\n", myStyle);

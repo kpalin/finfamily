@@ -241,25 +241,26 @@ public class XmlReport implements ReportInterface {
 			imageCounter++;
 			imgName = "" + imageCounter + "_" + it.getImageName();
 			File ff = new File(folder + "/" + imgName);
+			if (it.getData() != null) {
+				FileOutputStream fos;
+				try {
 
-			FileOutputStream fos;
-			try {
+					if (translatorIdx == 1) {
+						img = convertTo64(it);
 
-				if (translatorIdx == 1) {
-					img = convertTo64(it);
+					} else {
 
-				} else {
-					fos = new FileOutputStream(ff);
-					fos.write(it.getData());
-					fos.close();
+						fos = new FileOutputStream(ff);
+						fos.write(it.getData());
+						fos.close();
+					}
+
+				} catch (FileNotFoundException e) {
+					logger.log(Level.WARNING, "Image", e);
+				} catch (IOException e) {
+					logger.log(Level.WARNING, "Image", e);
 				}
-
-			} catch (FileNotFoundException e) {
-				logger.log(Level.WARNING, "Image", e);
-			} catch (IOException e) {
-				logger.log(Level.WARNING, "Image", e);
 			}
-
 		}
 
 		ele = doc.createElement("chapter");

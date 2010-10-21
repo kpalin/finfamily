@@ -322,6 +322,62 @@ public abstract class CommonReport {
 		this.repoWriter = repoWriter;
 	}
 
+	private int pidPrefix = 0;
+
+	protected void createPidTable(int idx, int[] pidCount) {
+		BodyText bt = new TableHeaderText();
+		bt.addText("PID-Table " + pidCount[idx]);
+		repoWriter.addText(bt);
+
+		SukuData pdata = null;
+		StringBuilder tabOwner = new StringBuilder();
+
+		try {
+			pdata = caller.getKontroller().getSukuData("cmd=person",
+					"pid=" + pidCount[idx], "lang=" + Resurses.getLanguage());
+		} catch (SukuException e1) {
+			logger.log(Level.WARNING, "background reporting", e1);
+			JOptionPane.showMessageDialog(caller, e1.getMessage());
+			return;
+		}
+
+		UnitNotice[] notices = pdata.persLong.getNotices();
+
+		for (int j = 0; j < notices.length; j++) {
+			UnitNotice nn = notices[j];
+			if (nn.getTag().equals("NAME")) {
+				tabOwner.append(nn.getSurname());
+				if (tabOwner.length() > 0)
+					tabOwner.append(" ");
+				tabOwner.append(nn.getGivenname());
+				// break;
+			}
+			if (nn.getMediaFilename() != null) {
+				pidPrefix++;
+				String nnn = "0000" + pidPrefix;
+				nn.setMediaFilename(nnn.substring(nnn.length() - 4) + "_"
+						+ nn.getMediaFilename());
+			}
+			String xxx = nn.getMediaTitle();
+			if (xxx == null) {
+				xxx = "";
+			}
+			nn.setMediaTitle("[" + nn.getMediaFilename() + "] " + xxx);
+
+		}
+		float prose = (idx * 100f) / pidCount.length;
+		caller.setRunnerValue("" + (int) prose + ";" + tabOwner);
+
+		bt = new MainPersonText();
+		printName(bt, pdata.persLong, 2);
+		repoWriter.addText(bt);
+
+		printNotices(bt, notices, 2, 0);
+		// bt = new BodyText();
+		// bt.addText("");
+		// repoWriter.addText(bt);
+	}
+
 	/**
 	 * create table for descendant report
 	 * 
@@ -2219,9 +2275,9 @@ public abstract class CommonReport {
 											nn.getMediaTitle(), nn.getTag());
 									imagetx.addText("");
 								}
-								if (nn.getMediaTitle() != null) {
-									imagetx.addText(nn.getMediaTitle());
-								}
+								// if (nn.getMediaTitle() != null) {
+								// imagetx.addText(nn.getMediaTitle());
+								// }
 								if (imagetx.getCount() > 0) {
 									repoWriter.addText(bt);
 									repoWriter.addText(imagetx);

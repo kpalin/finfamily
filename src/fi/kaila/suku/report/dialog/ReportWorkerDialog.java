@@ -60,12 +60,12 @@ import fi.kaila.suku.report.CommonReport;
 import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
 import fi.kaila.suku.report.GenGraphReport;
+import fi.kaila.suku.report.ImagesLista;
 import fi.kaila.suku.report.JavaReport;
 import fi.kaila.suku.report.PersonInTables;
 import fi.kaila.suku.report.PlaceInTables;
 import fi.kaila.suku.report.ReportInterface;
 import fi.kaila.suku.report.XmlReport;
-import fi.kaila.suku.swing.ISuku;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.swing.util.SukuSuretyField;
 import fi.kaila.suku.util.Resurses;
@@ -329,7 +329,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * 
 	 * @return Suku main program
 	 */
-	public ISuku getSukuParent() {
+	public Suku getSukuParent() {
 		return parent;
 	}
 
@@ -565,7 +565,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			settingsIndex = 0;
 		}
 		if (pers == null) {
-			lb = new JLabel("UNDER CONSTRUCTION");
+			lb = new JLabel(Resurses.getString("REPORT.LISTAT"));
 		} else {
 			lb = new JLabel(this.pers.getAlfaName(true));
 		}
@@ -846,23 +846,29 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			listaGroup = new ButtonGroup();
 
 			JRadioButton listad = new JRadioButton(
-					Resurses.getString("REPORT.LISTA.PERSONCARDS"));
+					Resurses.getString("REPORT.LISTA.IMAGELIST"));
 			listaPanel.add(listad);
 			listad.setBounds(10, 20, 200, 20);
+			listad.setActionCommand("REPORT.LISTA.IMAGELIST");
+			listaGroup.add(listad);
+			listad = new JRadioButton(
+					Resurses.getString("REPORT.LISTA.PERSONCARDS"));
+			listaPanel.add(listad);
+			listad.setBounds(10, 44, 200, 20);
 			listad.setActionCommand("REPORT.LISTA.PERSONCARDS");
 			listaGroup.add(listad);
 
 			listad = new JRadioButton(
 					Resurses.getString("REPORT.LISTA.SURETIES"));
 			listaPanel.add(listad);
-			listad.setBounds(10, 44, 200, 20);
+			listad.setBounds(10, 68, 200, 20);
 			listad.setActionCommand("REPORT.LISTA.SURETIES");
 			listaGroup.add(listad);
 
 			listad = new JRadioButton(
 					Resurses.getString("REPORT.LISTA.ADDRESSES"));
 			listaPanel.add(listad);
-			listad.setBounds(10, 68, 200, 20);
+			listad.setBounds(10, 92, 200, 20);
 			listad.setActionCommand("REPORT.LISTA.ADDRESSES");
 			listaGroup.add(listad);
 
@@ -1241,8 +1247,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				}
 				listSele = listaGroup.getSelection().getActionCommand();
 				if (listSele != null) {
-
-					if (listSele.equals("REPORT.LISTA.PERSONCARDS")) {
+					if (listSele.equals("REPORT.LISTA.IMAGELIST")) {
+						task = new Task();
+						task.addPropertyChangeListener(this);
+						task.execute();
+					} else if (listSele.equals("REPORT.LISTA.PERSONCARDS")) {
 						taskCards = new TaskCards();
 						taskCards.addPropertyChangeListener(this);
 						taskCards.execute();
@@ -1444,8 +1453,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					repo = new JavaReport(runner);
 				} else {
 					try {
-						repo = new XmlReport(runner, reportFormatidx,
-								self.pers.getAlfaName(true));
+						if (self.pers == null) {
+							repo = new XmlReport(runner, reportFormatidx,
+									Resurses.getString("REPORT.LISTAT"));
+						} else {
+							repo = new XmlReport(runner, reportFormatidx,
+									self.pers.getAlfaName(true));
+						}
 					} catch (SukuException se) {
 						JOptionPane.showMessageDialog(runner, se.getMessage(),
 								Resurses.getString(Resurses.SUKU),
@@ -1459,8 +1473,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				setProgress(0);
 
 				if (reportTypePane.getSelectedIndex() == 0) {
-					tabOffset = self.getDescendantPane().getStartTable();
-					dr = new DescendantReport(self, typesTable, repo);
+					if (self.getDescendantPane() == null) {
+						dr = new ImagesLista(self, typesTable, repo);
+					} else {
+						tabOffset = self.getDescendantPane().getStartTable();
+						dr = new DescendantReport(self, typesTable, repo);
+					}
 				} else if (reportTypePane.getSelectedIndex() == 1) {
 					tabOffset = 0;
 					String order = getAncestorPane().getNumberingFormat()
