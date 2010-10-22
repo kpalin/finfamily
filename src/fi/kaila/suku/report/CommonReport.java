@@ -249,20 +249,49 @@ public abstract class CommonReport {
 							neww = imw * (newh / imh);
 						}
 
+						/*
+						 * String imgTitle = ""; if (caller.isNumberingImages())
+						 * { imgTitle = Resurses .getReportString("INDEX_IMAGE")
+						 * + " " + imageNumber + ". "; } if (nn.getMediaTitle()
+						 * != null) { imgTitle += nn.getMediaTitle(); } String
+						 * xxx = "0000" + imageNumber; String imgNamePrefix =
+						 * xxx.substring(xxx .length() - 4) + "_";
+						 * imagetx.setImage( imgs, nn.getMediaData(),
+						 * img.getWidth(), img.getHeight(), imgNamePrefix +
+						 * nn.getMediaFilename(), imgTitle, nn.getTag());
+						 */
+
+						String imgTitle = "";
+						if (caller.isNumberingImages()) {
+							imgTitle = Resurses.getReportString("INDEX_IMAGE")
+									+ " " + inoti.imgNumber + ". ";
+						}
+						if (nn.getMediaTitle() != null) {
+							imgTitle += nn.getMediaTitle();
+						}
+						String xxx = "0000" + inoti.imgNumber;
+						String imgNamePrefix = xxx.substring(xxx.length() - 4)
+								+ "_";
+
 						StringBuilder sm = new StringBuilder();
+						sm.append(Resurses.getReportString("INDEX_IMAGE"));
+						sm.append(" ");
+						sm.append(inoti.imgNumber);
+						sm.append(" (");
 						sm.append(Resurses.getReportString("TABLE")
 								.toLowerCase());
 						sm.append(" ");
 						sm.append(inoti.tabNo);
-						sm.append(". ");
-						sm.append(nn.getMediaTitle());
-
+						sm.append("). ");
+						if (nn.getMediaTitle() != null) {
+							sm.append(nn.getMediaTitle());
+						}
 						Image imgs = img.getScaledInstance((int) neww,
 								(int) newh, Image.SCALE_DEFAULT);
 
 						imagetx.setImage(imgs, nn.getMediaData(),
-								img.getWidth(), img.getHeight(),
-								nn.getMediaFilename(), sm.toString(),
+								img.getWidth(), img.getHeight(), imgNamePrefix
+										+ nn.getMediaFilename(), sm.toString(),
 								nn.getTag());
 						imagetx.addText("");
 
@@ -322,11 +351,9 @@ public abstract class CommonReport {
 		this.repoWriter = repoWriter;
 	}
 
-	private int pidPrefix = 0;
-
 	protected void createPidTable(int idx, int[] pidCount) {
 		BodyText bt = new TableHeaderText();
-		bt.addText(Resurses.getString("REPORT.LISTA.TABLE") + " "
+		bt.addText(Resurses.getString("REPORT.LISTA.TABLE") + " Pid = "
 				+ pidCount[idx]);
 		repoWriter.addText(bt);
 
@@ -353,18 +380,11 @@ public abstract class CommonReport {
 				tabOwner.append(nn.getGivenname());
 				// break;
 			}
-			if (nn.getMediaFilename() != null) {
-				pidPrefix++;
-				// String nnn = "0000" + pidPrefix;
-				// nn.setMediaFilename(nnn.substring(nnn.length() - 4) + "_"
-				// + nn.getMediaFilename());
-			}
+
 			String xxx = nn.getMediaTitle();
 			if (xxx == null) {
 				xxx = "";
 			}
-			nn.setMediaTitle("[" + pidPrefix + "_" + nn.getMediaFilename()
-					+ "] " + xxx);
 
 		}
 		float prose = (idx * 100f) / pidCount.length;
@@ -2270,11 +2290,27 @@ public abstract class CommonReport {
 									Image imgs = img.getScaledInstance(
 											(int) neww, (int) newh,
 											Image.SCALE_DEFAULT);
-
-									imagetx.setImage(imgs, nn.getMediaData(),
-											img.getWidth(), img.getHeight(),
-											nn.getMediaFilename(),
-											nn.getMediaTitle(), nn.getTag());
+									imageNumber++;
+									String imgTitle = "";
+									if (caller.isNumberingImages()) {
+										imgTitle = Resurses
+												.getReportString("INDEX_IMAGE")
+												+ " " + imageNumber + ". ";
+									}
+									if (nn.getMediaTitle() != null) {
+										imgTitle += nn.getMediaTitle();
+									}
+									String xxx = "0000" + imageNumber;
+									String imgNamePrefix = xxx.substring(xxx
+											.length() - 4) + "_";
+									imagetx.setImage(
+											imgs,
+											nn.getMediaData(),
+											img.getWidth(),
+											img.getHeight(),
+											imgNamePrefix
+													+ nn.getMediaFilename(),
+											imgTitle, nn.getTag());
 									imagetx.addText("");
 								}
 								// if (nn.getMediaTitle() != null) {

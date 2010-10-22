@@ -66,7 +66,7 @@ public class XmlReport implements ReportInterface {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/** The image counter. */
-	int imageCounter = 0;
+	// int imageCounter = 0;
 	private boolean reportClosed = false;
 	private boolean debugState = false;
 	private ReportWorkerDialog parent;
@@ -238,8 +238,8 @@ public class XmlReport implements ReportInterface {
 			imgHeight = it.getHeight();
 			imgTitle = it.getImageTitle();
 			isPersonImage = it.isPersonImage();
-			imageCounter++;
-			imgName = "" + imageCounter + "_" + it.getImageName();
+			// imageCounter++;
+			imgName = /* "" + imageCounter + "_" + */it.getImageName();
 			File ff = new File(folder + "/" + imgName);
 			if (it.getData() != null) {
 				FileOutputStream fos;
@@ -276,9 +276,9 @@ public class XmlReport implements ReportInterface {
 		if (imgName != null) {
 			ele.setAttribute("image", imgName);
 			ele.setAttribute("title", imgTitle);
-			if (parent.isNumberingImages()) {
-				ele.setAttribute("imageNo", "" + imageCounter);
-			}
+			// if (parent.isNumberingImages()) {
+			// ele.setAttribute("imageNo", "" + imageCounter);
+			// }
 			ele.setAttribute("imageName", Resurses.getString("REPORT.IMAGE"));
 
 			Dimension maxSize = maxImageSize;

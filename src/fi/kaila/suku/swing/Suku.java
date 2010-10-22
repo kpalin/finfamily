@@ -1944,8 +1944,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				ReportWorkerDialog dlg = new ReportWorkerDialog(this,
 						kontroller, null);
-
 				dlg.setVisible(true);
+				for (String repo : dlg.getReportVector()) {
+					Utils.openExternalFile(repo);
+				}
+
 			} else if (cmd.equals(Resurses.SHOWINMAP)) {
 				displayMap();
 			} else if (cmd.equals(Resurses.QUERY)) {
