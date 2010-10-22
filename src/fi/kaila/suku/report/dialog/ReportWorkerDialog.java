@@ -846,10 +846,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			listaGroup = new ButtonGroup();
 
 			JRadioButton listad = new JRadioButton(
-					Resurses.getString("REPORT.LISTA.IMAGELIST"));
+					Resurses.getString("REPORT.LISTA.PIDLIST"));
 			listaPanel.add(listad);
 			listad.setBounds(10, 20, 200, 20);
-			listad.setActionCommand("REPORT.LISTA.IMAGELIST");
+			listad.setActionCommand("REPORT.LISTA.PIDLIST");
 			listaGroup.add(listad);
 			listad = new JRadioButton(
 					Resurses.getString("REPORT.LISTA.PERSONCARDS"));
@@ -1247,7 +1247,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				}
 				listSele = listaGroup.getSelection().getActionCommand();
 				if (listSele != null) {
-					if (listSele.equals("REPORT.LISTA.IMAGELIST")) {
+					if (listSele.equals("REPORT.LISTA.PIDLIST")) {
 						task = new Task();
 						task.addPropertyChangeListener(this);
 						task.execute();

@@ -353,7 +353,7 @@ public abstract class CommonReport {
 
 	protected void createPidTable(int idx, int[] pidCount) {
 		BodyText bt = new TableHeaderText();
-		bt.addText(Resurses.getString("REPORT.LISTA.TABLE") + " Pid = "
+		bt.addText(Resurses.getReportString("REPORT.LISTA.TABLE") + " Pid = "
 				+ pidCount[idx]);
 		repoWriter.addText(bt);
 

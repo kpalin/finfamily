@@ -44,11 +44,8 @@ public class ImagesLista extends CommonReport {
 	 */
 	@Override
 	public void executeReport() throws SukuException {
-		// SukuData vlist = null;
 
 		int pidArray[] = new int[caller.getSukuParent().getDatabaseRowCount()];
-		// PersonShortData[] shorts = new PersonShortData[caller.getSukuParent()
-		// .getDatabaseRowCount()];
 
 		for (int idx = 0; idx < pidArray.length; idx++) {
 			pidArray[idx] = caller.getSukuParent().getDatbasePerson(idx)
@@ -57,7 +54,6 @@ public class ImagesLista extends CommonReport {
 
 		logger.info("Lista repo");
 
-		// personReferences = new HashMap<Integer, PersonInTables>();
 		textReferences = new HashMap<String, PersonInTables>();
 		repoWriter.createReport();
 		for (int idx = 0; idx < pidArray.length; idx++) {
@@ -67,8 +63,6 @@ public class ImagesLista extends CommonReport {
 		repoWriter.closeReport();
 
 	}
-
-	// }
 
 	/**
 	 * Used to close / hide the report writer.
