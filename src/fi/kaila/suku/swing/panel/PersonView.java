@@ -721,13 +721,13 @@ public class PersonView extends JPanel implements ChangeListener {
 			for (int i = 0; i < parents.size(); i++) {
 				TableShortData tt = parents.get(i);
 				Point pp = tt.getLocation();
-				pp.y = gheight + 30;
+				pp.y = gheight + 60;
 				pp.x += pareAdd;
 				tt.setLocation(pp);
 			}
 
 			table.setLocation(new Point(rw / 2 - xw / 2 + 10, maxheight
-					+ gheight + y + 50));
+					+ gheight + y + 100));
 
 			famPanel.setPreferredSize(reqDim);
 

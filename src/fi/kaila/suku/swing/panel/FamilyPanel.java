@@ -147,16 +147,16 @@ public class FamilyPanel extends JPanel implements MouseListener,
 						cp.y - 10), new Point(pp.x + dp.width / 2, pp.y
 						+ dp.height), rel.getSurety());
 			} else {
-				drawSuretyLine(gg, new Point(pp.x + dp.width / 2, cp.y - 10),
-						new Point(pp.x + dp.width / 2, pp.y + dp.height),
+				drawSuretyLine(gg, new Point(pp.x + dp.width / 2, cp.y - 6 - i
+						* 4), new Point(pp.x + dp.width / 2, pp.y + dp.height),
 						rel.getSurety());
 
-				drawSuretyLine(gg, new Point(pp.x + dp.width / 2, cp.y - 10),
-						new Point(cp.x + dd.width / 2, cp.y - 10),
+				drawSuretyLine(gg, new Point(pp.x + dp.width / 2, cp.y - 6 - i
+						* 4), new Point(cp.x + dd.width / 2, cp.y - 6 - i * 4),
 						rel.getSurety());
 
 				drawSuretyLine(gg, new Point(cp.x + dd.width / 2, cp.y),
-						new Point(cp.x + dd.width / 2, cp.y - 10),
+						new Point(cp.x + dd.width / 2, cp.y - 6 - i * 4),
 						rel.getSurety());
 			}
 		}
