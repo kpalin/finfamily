@@ -118,7 +118,7 @@ public class DescendantLista extends CommonReport {
 			WritableCellFormat italic10bold = new WritableCellFormat(
 					arial10bold);
 
-			Label label = new Label(0, 0, "Num");
+			Label label = new Label(0, 0, "Pid");
 			sheet.addCell(label);
 			label = new Label(1, 0, "Gen");
 			sheet.addCell(label);
@@ -211,7 +211,7 @@ public class DescendantLista extends CommonReport {
 				PersonShortData pp = lpp.get(i).ps;
 				String text = lpp.get(i).tag;
 				boolean noPare = lpp.get(i).noParent;
-				number = new Number(0, i + 1, i);
+				number = new Number(0, i + 1, pp.getPid());
 				sheet.addCell(number);
 
 				number = new Number(1, i + 1, gen);
@@ -247,8 +247,10 @@ public class DescendantLista extends CommonReport {
 				// col++;
 
 				for (int jj = 0; jj < ttag.size(); jj++) {
-					if (pp.existsTag(ttag.get(jj))) {
-						label = new Label(jj + tagcol, i + 1, "XX");
+					String tagv = pp.tagValue(ttag.get(jj));
+					if (tagv != null) {
+
+						label = new Label(jj + tagcol, i + 1, tagv);
 						sheet.addCell(label);
 					}
 				}

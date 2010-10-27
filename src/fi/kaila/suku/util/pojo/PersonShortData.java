@@ -378,11 +378,11 @@ public class PersonShortData implements Serializable, Transferable,
 	 *            to query
 	 * @return true if person has tag, falks otherwise
 	 */
-	public boolean existsTag(String tag) {
+	public String tagValue(String tag) {
 		String tagx = tagMap.get(tag);
 		if (tagx == null)
-			return false;
-		return true;
+			return null;
+		return tagx;
 	}
 
 	/**
@@ -556,7 +556,7 @@ public class PersonShortData implements Serializable, Transferable,
 				+ "u.tag,n.tag,n.givenname,");
 		sql.append("n.patronym,n.prefix,n.surname,n.postfix,");
 		sql.append("n.fromdate,n.Place,n.Description,"
-				+ "n.pnid,n.mediadata,n.mediafilename,n.mediatitle ");
+				+ "n.pnid,n.mediadata,n.mediafilename,n.mediatitle,n.email ");
 		sql.append("from unit as u left join unitnotice "
 				+ "as n on u.pid = n.pid ");
 		// if (!withAllTags) {
@@ -582,6 +582,7 @@ public class PersonShortData implements Serializable, Transferable,
 			pstm.setInt(1, pid);
 			ResultSet rs = pstm.executeQuery();
 			String tag;
+			String content = "X";
 			while (rs.next()) {
 				if (this.sex == null) {
 					this.refn = rs.getString(2);
@@ -589,6 +590,7 @@ public class PersonShortData implements Serializable, Transferable,
 					this.group = rs.getString(3);
 				}
 				tag = rs.getString(5);
+				content = "XX";
 				if (tag != null) {
 					if (tag.equals("NAME")) {
 						ShortName nn = new ShortName(rs.getString(6),
@@ -606,7 +608,15 @@ public class PersonShortData implements Serializable, Transferable,
 							this.bPlace = rs.getString(12);
 						}
 					}
+					if (tag.equals("RESI")) {
+						content = rs.getString(18);
+						if (content != null) {
+							content = "@";
+						} else {
+							content = "XX";
+						}
 
+					}
 					if (tag.equals("DEAT") || tag.equals("BURI")) {
 
 						if (this.deatTag == null || tag.equals("DEAT")) {
@@ -630,7 +640,8 @@ public class PersonShortData implements Serializable, Transferable,
 							this.imageData = rs.getBytes(15);
 						}
 					}
-					tagMap.put(tag, tag);
+
+					tagMap.put(tag, content);
 
 				}
 				if (withParentIds) {
