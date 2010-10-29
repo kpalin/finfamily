@@ -2876,7 +2876,7 @@ public abstract class CommonReport {
 					if (kk > 0) {
 						bt.addText("-", doBold, false);
 					}
-					if (cstidx == subPart.length() - 1) {
+					if (cstidx >= 0 && cstidx == subPart.length() - 1) {
 
 						bt.addText(subPart.substring(0, cstidx), doBold,
 								caller.showUnderlineNames());
