@@ -571,7 +571,11 @@ public class Read2004XML extends DefaultHandler {
 					}
 				}
 				bis.close();
-
+				if (this.runner.setRunnerValue(Resurses
+						.getString("GETSUKU_INPUT_FINISHED"))) {
+					throw new SukuException(
+							Resurses.getString("GETSUKU_CANCELLED"));
+				}
 				if (xmlFile != null) {
 					parser.parse(xmlFile, this);
 				} else {
@@ -2095,6 +2099,10 @@ public class Read2004XML extends DefaultHandler {
 			throw new SAXException(e);
 		}
 
+		if (this.runner.setRunnerValue("Rid = " + this.rid)) {
+			throw new SAXException(Resurses.getString("GETSUKU_CANCELLED"));
+		}
+
 		this.relationDescription = null;
 		this.relationBegType = null;
 		this.relationBegDateFrom = null;
@@ -2522,6 +2530,11 @@ public class Read2004XML extends DefaultHandler {
 						+ " failed. count = " + resu);
 			}
 			pst.close();
+
+			if (this.runner.setRunnerValue("Pid = " + this.unitId)) {
+				throw new SAXException(Resurses.getString("GETSUKU_CANCELLED"));
+			}
+
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "update unit source failed", e);
 		}

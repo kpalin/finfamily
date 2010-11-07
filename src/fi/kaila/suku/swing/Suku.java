@@ -2496,6 +2496,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (viewWin == null) {
 				viewWin = new ViewMgrWindow(this);
 				viewWin.setVisible(true);
+				viewWin = null;
 			} else {
 				viewWin.initViewlist();
 				viewWin.setVisible(true);
