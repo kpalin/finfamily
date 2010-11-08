@@ -109,6 +109,7 @@ public class PersonUtil {
 
 		if (nn != null) {
 			String prevName = "";
+			String prevOccu = "";
 			for (int i = 0; i < nn.length; i++) {
 				if (nn[i].getTag().equals("NAME")) {
 					String thisName = Utils.nv(nn[i].getGivenname()) + "/"
@@ -125,6 +126,18 @@ public class PersonUtil {
 						return res;
 					}
 					prevName = thisName;
+
+				} else if (nn[i].getTag().equals("OCCU")) {
+					String thisOccu = Utils.nv(nn[i].getDescription());
+					if (thisOccu.equals(prevOccu)) {
+						String e = Resurses.getString("IDENTICAL_OCCU_ERROR")
+								+ " [" + req.persLong.getPid() + "] idx [" + i
+								+ "] = " + thisOccu;
+						logger.warning(e);
+						res.resu = e;
+						return res;
+					}
+					prevOccu = thisOccu;
 				}
 			}
 		}
