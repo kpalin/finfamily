@@ -15,7 +15,9 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
@@ -100,6 +102,33 @@ public class PersonUtil {
 
 		SukuData res = new SukuData();
 		UnitNotice[] nn = req.persLong.getNotices();
+
+		//
+		// lets make sure that two similar consecutive name notices cannot exist
+		//
+
+		if (nn != null) {
+			String prevName = "";
+			for (int i = 0; i < nn.length; i++) {
+				if (nn[i].getTag().equals("NAME")) {
+					String thisName = Utils.nv(nn[i].getGivenname()) + "/"
+							+ Utils.nv(nn[i].getPatronym()) + "/"
+							+ Utils.nv(nn[i].getPrefix()) + "/"
+							+ Utils.nv(nn[i].getSurname()) + "/"
+							+ Utils.nv(nn[i].getPostfix());
+					if (thisName.equals(prevName)) {
+						String e = Resurses.getString("IDENTICAL_NAMES_ERROR")
+								+ " [" + req.persLong.getPid() + "] idx [" + i
+								+ "] = " + thisName;
+						logger.warning(e);
+						res.resu = e;
+						return res;
+					}
+					prevName = thisName;
+				}
+			}
+		}
+
 		int pid = 0;
 		try {
 			Statement stm;
