@@ -36,7 +36,6 @@ import fi.kaila.suku.util.local.LocalDatabaseUtility;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.RelationShortData;
 import fi.kaila.suku.util.pojo.SukuData;
-import fi.kaila.suku.util.pojo.UnitNotice;
 
 /**
  * Serverpään mm tietokantaa käsittelevä.
@@ -722,23 +721,6 @@ public class SukuServerImpl implements SukuServer {
 			if (fam.resultPid > 0) {
 				PersonShortData psp = new PersonShortData(this.con,
 						fam.resultPid);
-				if (request != null && request.persLong != null
-						&& request.persLong.getNotices() != null) {
-					boolean addname = false;
-					for (int i = 0; i < request.persLong.getNotices().length; i++) {
-						UnitNotice n = request.persLong.getNotices()[i];
-						if (n.getTag().equals("NAME")) {
-							if (addname) {
-								psp.addName(n.getSurname(), n.getPatronym(),
-										n.getPrefix(), n.getSurname(),
-										n.getPostfix());
-							} else {
-								addname = true;
-							}
-						}
-					}
-				}
-
 				fam.pers = new PersonShortData[1];
 				fam.pers[0] = psp;
 			}
