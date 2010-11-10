@@ -767,6 +767,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		Vector<String> refs = new Vector<String>();
 		StringBuilder noteBuf = new StringBuilder();
 		StringBuilder privBuf = new StringBuilder();
+		int vainajaIdx = 0;
 		for (int i = 0; i < personCount; i++) {
 			String type = pType[i].getText();
 			String occu;
@@ -780,7 +781,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			String sex = null;
 			StringBuilder hbh = new StringBuilder();
 			if ("vainaja".equals(type)) {
-
+				vainajaIdx = i;
 				switch (pSex[i].getSelectedIndex()) {
 				case 1:
 					sex = "M";
@@ -1011,8 +1012,22 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 			}
 
-			kast.persons[i].setNotices(notices.toArray(new UnitNotice[0]));
+			if (noteBuf.length() > 0) {
 
+				notice = new UnitNotice("NOTE");
+
+				notice.setSource(hiskiSource);
+				if (refs.size() > 0) {
+					notice.setRefNames(refs.toArray(new String[0]));
+				}
+				notice.setNoteText(noteBuf.toString());
+
+				notices.add(notice);
+
+			}
+
+			kast.persons[vainajaIdx].setNotices(notices
+					.toArray(new UnitNotice[0]));
 		}
 
 		try {
@@ -1499,9 +1514,16 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			} else if ("lapsi".equals(aux)) {
 				childIdx = i;
 				lapsiId = -1 - i;
-				if (hiskiPid[2] > 0)
+				boolean lapsiBirth = false;
+
+				if (hiskiPid[2] > 0) {
 					lapsiId = hiskiPid[2];
 
+					if (hiskiPers[2].getBirtDate() != null) {
+						lapsiBirth = true;
+					}
+
+				}
 				kast.persons[childIdx] = new PersonLongData(lapsiId, "INDI",
 						sex);
 				kast.persons[childIdx].setSource(hiskiSource);
@@ -1539,7 +1561,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				String dat = toDbDate(eventFirstDate.getText());
 				if (dat != null) {
 
-					if (kast.persons[i].getPid() > 0) {
+					if (kast.persons[i].getPid() > 0 && lapsiBirth) {
 						if (noteBuf.length() > 0) {
 							noteBuf.append(".\n");
 						}
@@ -1642,8 +1664,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		}
 		if (noteBuf.length() > 0) {
 			UnitNotice note = new UnitNotice("HISKI");
-
-			note.setSource(hiskiSource + "\n" + noteBuf.toString());
+			note.setSource(hiskiSource);
+			note.setNoteText(noteBuf.toString());
 			if (refs.size() > 0) {
 				note.setRefNames(refs.toArray(new String[0]));
 			}
