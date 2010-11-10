@@ -2,6 +2,11 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 925 on 10 nov 2010
+
+* bugfixes to hiski haudatut and kastetut import
+' fix of double names in database view
+
 Release 922 on 8 nov 2010
 
 * Added check to prevent update of identical consecutive names
