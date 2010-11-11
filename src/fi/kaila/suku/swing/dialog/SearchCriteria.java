@@ -731,6 +731,14 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			}
 			surname.requestFocusInWindow();
 
+			if (!givenname.getText().isEmpty()) {
+				givenname.selectAll();
+			}
+
+			if (!patronyme.getText().isEmpty()) {
+				patronyme.selectAll();
+			}
+
 		} catch (SukuException e) {
 			//
 		}
