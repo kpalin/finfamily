@@ -3091,7 +3091,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		if (ret == null) {
 			SukuRow row = new SukuRow(this, this.tableModel, p);
 			tableModel.addRow(0, row);
-			table.getRowSorter().modelStructureChanged();
 
 		}
 		table.updateUI();
