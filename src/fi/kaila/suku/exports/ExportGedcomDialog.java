@@ -201,7 +201,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 		this.cancel.addActionListener(this);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-		setBounds(d.width / 2 - 300, d.height / 2 - 100, 600, y + 100);
+		setBounds(d.width / 2 - 320, d.height / 2 - 100, 640, y + 100);
 
 	}
 
