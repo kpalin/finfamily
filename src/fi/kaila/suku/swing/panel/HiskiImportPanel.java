@@ -513,10 +513,24 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			resetHiskiPids();
 		} else if (cmd.equals(Resurses.HISKI_NORMALIZE)) {
 
+			int dadIdx = -1;
+			int momIdx = -1;
+			int childIdx = -1;
+
 			for (int i = 0; i < pNumero.length; i++) {
 
 				// now lets just begin with conversting dr to dotter and s to
 				// son at end of patronym
+
+				String type = pType[i].getText();
+
+				if (type.equals("isa")) {
+					dadIdx = i;
+				} else if (type.equals("aiti")) {
+					momIdx = i;
+				} else if (type.equals("lapsi")) {
+					childIdx = i;
+				}
 
 				String patro = rPatronym[i].getText();
 
@@ -530,6 +544,40 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 
 				pPatronym[i].setText(patro);
+
+			}
+
+			//
+			// now lets try some patronym magic
+			//
+			if (pSex[childIdx].getSelectedIndex() > 0) {
+				if (childIdx >= 0) {
+					if (pPatronym[childIdx].getText().isEmpty()) {
+						String pareName = "";
+						String patroEnd = "son";
+						if (dadIdx >= 0) {
+							pareName = pGivenname[dadIdx].getText();
+						} else if (momIdx >= 0) {
+							pareName = pGivenname[momIdx].getText();
+							patroEnd = "dotter";
+						}
+						if (!pareName.isEmpty()) {
+							if (pareName.endsWith("s")) {
+								pPatronym[childIdx]
+										.setText(pareName + patroEnd);
+							} else {
+								pPatronym[childIdx].setText(pareName + "s"
+										+ patroEnd);
+							}
+						}
+					}
+					if (dadIdx >= 0) {
+						if (!pSurname[dadIdx].getText().isEmpty()) {
+							pSurname[childIdx].setText(pSurname[dadIdx]
+									.getText());
+						}
+					}
+				}
 
 			}
 
@@ -1316,7 +1364,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 			relations.add(rel);
 
 			rNotices[0] = new RelationNotice("MARR");
-			rNotices[0].setFromDate(marrDate);
+			rNotices[0].setFromDate(toDbDate(marrDate));
 			rNotices[0].setPlace(srk.getText());
 			rNotices[0].setSource(hiskiSource);
 			rel.setNotices(rNotices);
