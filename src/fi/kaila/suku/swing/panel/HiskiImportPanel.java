@@ -814,7 +814,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		notices = new Vector<UnitNotice>();
 		Vector<String> refs = new Vector<String>();
 		StringBuilder noteBuf = new StringBuilder();
-		StringBuilder privBuf = new StringBuilder();
+		// StringBuilder privBuf = new StringBuilder();
 		int vainajaIdx = 0;
 		for (int i = 0; i < personCount; i++) {
 			String type = pType[i].getText();
@@ -873,12 +873,23 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				etu = pGivenname[i].getText();
 				patro = pPatronym[i].getText();
 				aux = pAgeVillage[i].getText();
-				if (!aux.isEmpty()) {
-					privBuf.append(aux);
-				}
+				// if (!reason.isEmpty()) {
+				// if (hbh.length() > 0) {
+				// hbh.append(".\n");
+				// }
+				// hbh.append(Resurses.getString("HISKI_REASON"));
+				// hbh.append(" ");
+				// hbh.append(reason);
+				// }
 
 				if (!aux.isEmpty()) {
-					privBuf.append(aux);
+					if (hbh.length() > 0) {
+						hbh.append(".\n");
+					}
+					hbh.append(Resurses.getString("HISKI_IKA"));
+					hbh.append(": ");
+					hbh.append(aux);
+
 				}
 
 				suku = pSurname[i].getText();
@@ -936,6 +947,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 				}
 				if (kdate.length() > 0 || !reason.isEmpty()) {
 					if (hasDeath) {
+						if (hbh.length() > 0) {
+							hbh.append(".\n");
+						}
 						hbh.append(Resurses.getString("CRITERIA.DEAT"));
 						hbh.append(" ");
 						hbh.append(Utils.textDate(kdate, false));
@@ -987,6 +1001,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 
 				if (bdate != null && !bdate.isEmpty()) {
 					if (hasBirth) {
+						if (hbh.length() > 0) {
+							hbh.append(".\n");
+						}
 						hbh.append(Resurses.getString("CRITERIA.BIRT"));
 						hbh.append(": ");
 						String bprefix = eventExtraDate.getDatePrefText();
@@ -1047,7 +1064,9 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 					noteBuf.append(tmp);
 					noteBuf.append(".\n");
 				}
-
+				if (hbh.length() > 0) {
+					hbh.append(".\n");
+				}
 				hbh.append(noteBuf);
 				notice.setSource(hiskiSource);
 				notice.setNoteText(hiskiSource + "\n" + hbh.toString());
