@@ -205,6 +205,8 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	/** The image. */
 	MyImage image;
+	/** Image size */
+	JLabel imageDetail;
 
 	/** The giv lbl. */
 	JLabel givLbl;
@@ -428,8 +430,10 @@ public class NoticePane extends JPanel implements ActionListener,
 		}
 		privacy.setSelectedIndex(privacyIdx);
 		image = new MyImage();
-
 		add(image);
+
+		imageDetail = new JLabel();
+		add(imageDetail);
 
 		//
 		// left column creates first all fields
@@ -890,6 +894,13 @@ public class NoticePane extends JPanel implements ActionListener,
 						Image.SCALE_DEFAULT);
 
 				image.img = imgs;
+				int ih = img.getHeight();
+				int iw = img.getWidth();
+				int sz = notice.getMediaData().length;
+
+				imageDetail.setText("" + iw + "*" + ih + " (" + (sz / 1024)
+						+ " kb)");
+
 			}
 		} else {
 			image.img = null;
@@ -1470,9 +1481,9 @@ public class NoticePane extends JPanel implements ActionListener,
 		rrivi += 24;
 		privacy.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
-		rrNameList = rrivi;
-		image.setBounds(rcol, rrivi, rwidth * 2, 400);
-
+		rrNameList = rrivi + 30;
+		image.setBounds(rcol, rrivi + 20, rwidth * 2, 400);
+		imageDetail.setBounds(rcol, rrivi, rwidth * 2, 20);
 		int lrivi = 10;
 		typeLbl.setBounds(10, lrivi, 70, 20);
 
@@ -1660,6 +1671,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 			scrollNote.setBounds(noteLoc);
 			image.setVisible(false);
+			imageDetail.setVisible(false);
 			lrivi += 348;
 
 			addLabel.setBounds(10, listY1, 70, 42);
