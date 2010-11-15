@@ -611,9 +611,21 @@ public abstract class CommonReport {
 
 		fromTable = "";
 		ref = personReferences.get(tab.getPid());
+
+		//
+		// check references for table owner here
+		//
+		String childTables = "";
+
 		if (ref != null) {
+			childTables = ref.getReferences(tab.getTableNo(), false, true,
+					false, tableOffset);
 			fromTable = ref.getReferences(tab.getTableNo(), true, false, false,
 					tableOffset);
+			if (!childTables.isEmpty()) {
+				fromTable = "";// if as child then don't refer to as spouse
+				// spouse will be referred from the spouse
+			}
 		}
 		if (fromTable.length() == 0) {
 
@@ -621,9 +633,13 @@ public abstract class CommonReport {
 					tableOffset);
 		}
 		if (fromTable.length() > 0) {
-			bt.addText(
-					typesTable.getTextValue("ALSO") + " " + fromTable + ". ",
-					true, false);
+			if (childTables.isEmpty()) {
+				bt.addText(typesTable.getTextValue("ALSO") + " " + fromTable
+						+ ". ", true, false);
+			} else {
+				bt.addText(typesTable.getTextValue("ISFAMILY") + " "
+						+ fromTable + ". ", true, false);
+			}
 		}
 
 		if (bt.getCount() > 0) {
@@ -645,6 +661,12 @@ public abstract class CommonReport {
 				if (ref != null) {
 					fromTable = ref.getReferences(tab.getTableNo(), true, true,
 							true, tableOffset);
+					//
+					// here we add references to table owner parents
+					// Should come here only for report subject ancestors
+					// None should be part of the family (i.e. descendants of
+					// himself
+					//
 					if (fromTable.length() > 0) {
 						bt.addText(typesTable.getTextValue("ALSO") + " "
 								+ fromTable + ". ", true, false);
@@ -681,6 +703,9 @@ public abstract class CommonReport {
 
 		}
 
+		//
+		// spouse list is written here
+		//
 		ReportTableMember spouseMember;
 		for (int ispou = 1; ispou < tab.getParent().size(); ispou++) {
 			bt = new SpousePersonText();
@@ -734,6 +759,9 @@ public abstract class CommonReport {
 							tableOffset);
 					if (!toTable.isEmpty() && !ref.getOwnerString().isEmpty()) {
 						hasOwnTable = true;
+						if (childMember.getMyTable() > 0) {
+							toTable = "" + childMember.getMyTable();
+						}
 					}
 
 				}
@@ -870,7 +898,10 @@ public abstract class CommonReport {
 									fromsTable.append(froms[j]);
 								}
 							}
-
+							//
+							// this would be now a childs parent
+							// none should be related if we come here
+							//
 							if (fromsTable.length() > 0) {
 								bt.addText(typesTable.getTextValue("ALSO")
 										+ " " + fromsTable.toString() + ". ",
@@ -884,13 +915,10 @@ public abstract class CommonReport {
 				}
 
 				if (!toTable.isEmpty()) {
-					if (hasOwnTable) {
-						bt.addText(typesTable.getTextValue("TABLE") + " "
-								+ toTable + ". ", true, false);
-					} else {
-						bt.addText(typesTable.getTextValue("ALSO") + " "
-								+ toTable + ". ", true, false);
-					}
+					bt.addText(
+							typesTable.getTextValue(hasOwnTable ? "TABLE"
+									: "ALSO") + " " + toTable + ". ", true,
+							false);
 				}
 				if (bt.getCount() > 0) {
 					repoWriter.addText(bt);
@@ -994,14 +1022,33 @@ public abstract class CommonReport {
 			}
 
 			bt.addText("- ");
-			bt.addText(spouType); // TODO kkkkkkkkkkkkkkkk
+			bt.addText(spouType);
 			bt.addText(" ");
 
 			fromTable = "";
 			int typesColumn = 2;
+			boolean isRelated = false;
 			refs = personReferences.get(spouseMember.getPid());
 			if (refs != null) {
+
 				typesColumn = refs.getTypesColumn(tabNo, true, true, false);
+
+				String asChild = refs.getReferences(tabNo, false, true, false,
+						tableOffset);
+				if (!asChild.isEmpty()) {
+					isRelated = true;
+					typesColumn = 3;
+					fromTable = refs.getReferences(tabNo, true, false, false,
+							tableOffset);
+					if (fromTable.isEmpty()) {
+						fromTable = "" + asChild;
+					}
+
+				} else {
+					fromTable = refs.getReferences(tabNo, true, false, false,
+							tableOffset);
+				}
+
 			}
 
 			notices = sdata.persLong.getNotices();
@@ -1021,11 +1068,12 @@ public abstract class CommonReport {
 			}
 
 			if (refs != null) {
-				fromTable = refs.getReferences(tabNo, true, true, false,
-						tableOffset);
+
 				if (fromTable.length() > 0) {
-					bt.addText(typesTable.getTextValue("ALSO") + " "
-							+ fromTable + ". ", true, false);
+					bt.addText(
+							typesTable.getTextValue(isRelated ? "ISFAMILY"
+									: "ALSO") + " " + fromTable + ". ", true,
+							false);
 				}
 			}
 		}

@@ -2,6 +2,7 @@ package fi.kaila.suku.report;
 
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -145,31 +146,45 @@ public class PersonInTables implements Comparable<PersonInTables> {
 			boolean alsoChild, boolean alsoOther, int tableOffset) {
 		StringBuilder sx = new StringBuilder();
 
+		HashMap<Long, Long> icheck = new HashMap<Long, Long>();
 		if (alsoChild) {
 			for (int i = 0; i < asChildren.size(); i++) {
-				if (asChildren.get(i) != table) {
-					if (sx.length() > 0)
-						sx.append(",");
-					sx.append("" + (asChildren.get(i) + tableOffset));
+				long ll = asChildren.get(i);
+				Long lll = icheck.put(ll, ll);
+				if (lll == null) {
+					if (asChildren.get(i) != table) {
+						if (sx.length() > 0)
+							sx.append(",");
+						sx.append("" + (asChildren.get(i) + tableOffset));
+					}
 				}
 			}
 		}
 
 		if (alsoSpouse) {
 			for (int i = 0; i < asParents.size(); i++) {
-				if (asParents.get(i) != table) {
-					if (sx.length() > 0)
-						sx.append(",");
-					sx.append("" + (asParents.get(i) + tableOffset));
+				long ll = asParents.get(i);
+				Long lll = icheck.put(ll, ll);
+				if (lll == null) {
+
+					if (asParents.get(i) != table) {
+						if (sx.length() > 0)
+							sx.append(",");
+						sx.append("" + (asParents.get(i) + tableOffset));
+					}
 				}
 			}
 		}
 		if (alsoOther) {
 			for (int i = 0; i < references.size(); i++) {
-				if (references.get(i) != table) {
-					if (sx.length() > 0)
-						sx.append(",");
-					sx.append((references.get(i) + tableOffset));
+				long ll = references.get(i);
+				Long lll = icheck.put(ll, ll);
+				if (lll == null) {
+					if (references.get(i) != table) {
+						if (sx.length() > 0)
+							sx.append(",");
+						sx.append((references.get(i) + tableOffset));
+					}
 				}
 			}
 		}

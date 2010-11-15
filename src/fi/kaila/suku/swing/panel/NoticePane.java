@@ -1228,7 +1228,7 @@ public class NoticePane extends JPanel implements ActionListener,
 			SukuTabPane pan = personView.getPane(midx);
 			PersonMainPane main = (PersonMainPane) pan.pnl;
 			int personPid = main.getPersonPid();
-
+			logger.fine("MainPersonPid = [" + personPid + "]");
 			try {
 				verifyUnitNotice();
 				main.updatePerson(false);
