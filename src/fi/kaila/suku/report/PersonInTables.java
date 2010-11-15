@@ -47,6 +47,8 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	// private Vector<Long> asOwners = new Vector<Long>();
 	private final LinkedHashMap<Long, Long> asOwners = new LinkedHashMap<Long, Long>();
 
+	private long myTable = 0;
+
 	// /**
 	// * persons from note text fields i.e. from list of refNames
 	// */
@@ -295,5 +297,25 @@ public class PersonInTables implements Comparable<PersonInTables> {
 		return (Utils.nv(shortPerson.getBirtDate()).compareTo(Utils
 				.nv(o.shortPerson.getBirtDate())));
 
+	}
+
+	/**
+	 * @param myTable
+	 *            the myTable to set
+	 */
+	public void setMyTable(long myTable) {
+		if (this.myTable == 0) {
+			this.myTable = myTable;
+		} else {
+			System.out.println("Tries to set table for " + this.pid + " to "
+					+ myTable);
+		}
+	}
+
+	/**
+	 * @return the myTable
+	 */
+	public long getMyTable() {
+		return myTable;
 	}
 }

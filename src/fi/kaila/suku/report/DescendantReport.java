@@ -100,6 +100,15 @@ public class DescendantReport extends CommonReport {
 
 				for (int i = 0; i < tables.size(); i++) {
 					ReportUnit tt = tables.get(i);
+					int pid = tt.getPid();
+					PersonInTables ptt = personReferences.get(pid);
+					if (ptt != null) {
+						ptt.setMyTable(tt.getTableNo());
+					}
+				}
+
+				for (int i = 0; i < tables.size(); i++) {
+					ReportUnit tt = tables.get(i);
 					if (tt != null) {
 						tabMap.put(tt.getTableNo(), tt);
 					}

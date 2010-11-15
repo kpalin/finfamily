@@ -442,15 +442,16 @@ public abstract class CommonReport {
 		if (pdata.persLong == null)
 			return;
 
-		for (int i = 0; i < tab.getMemberCount(); i++) {
-			ReportTableMember mem = tab.getMember(i);
-			PersonInTables pt = personReferences.get(mem.getPid());
-			if (pt != null) {
-				if (tab.getTableNo() > 0) {
-					pt.addOwner(tab.getTableNo());
-				}
-			}
-		}
+		// for (int i = 0; i < tab.getMemberCount(); i++) {
+		// ReportTableMember mem = tab.getMember(i);
+		// PersonInTables pt = personReferences.get(mem.getPid());
+		//
+		// if (pt != null) {
+		// if (tab.getTableNo() > 0) {
+		// pt.addOwner(tab.getTableNo());
+		// }
+		// }
+		// }
 
 		UnitNotice[] xnotices = pdata.persLong.getNotices();
 
@@ -754,12 +755,14 @@ public abstract class CommonReport {
 				ref = personReferences.get(childMember.getPid());
 				toTable = "";
 				hasOwnTable = false;
+
 				if (ref != null) {
 					toTable = ref.getReferences(0, true, false, false,
 							tableOffset);
-					if (!toTable.isEmpty() && !ref.getOwnerString().isEmpty()) {
+					if (!toTable.isEmpty() && ref.getMyTable() > 0) {
 						hasOwnTable = true;
 						if (childMember.getMyTable() > 0) {
+
 							toTable = "" + childMember.getMyTable();
 						}
 					}
@@ -862,8 +865,8 @@ public abstract class CommonReport {
 					bt.addText("(" + adopTag.toString() + ")");
 				}
 
-				printName(bt, cdata.persLong, (toTable.isEmpty() ? 2 : 3));
-				printNotices(bt, notices, (toTable.isEmpty() ? 2 : 3),
+				printName(bt, cdata.persLong, (hasOwnTable ? 3 : 2));
+				printNotices(bt, notices, (hasOwnTable ? 3 : 2),
 						tab.getTableNo() + tableOffset);
 
 				if (childMember.getSubCount() > 0) {
@@ -915,10 +918,12 @@ public abstract class CommonReport {
 				}
 
 				if (!toTable.isEmpty()) {
-					bt.addText(
-							typesTable.getTextValue(hasOwnTable ? "TABLE"
-									: "ALSO") + " " + toTable + ". ", true,
-							false);
+					bt.addText(typesTable.getTextValue("TABLE") + " " + toTable
+							+ ". ", true, false);
+					// bt.addText(
+					// typesTable.getTextValue(hasOwnTable ? "TABLE"
+					// : "ALSO") + " " + toTable + ". ", true,
+					// false);
 				}
 				if (bt.getCount() > 0) {
 					repoWriter.addText(bt);
@@ -1037,7 +1042,9 @@ public abstract class CommonReport {
 						tableOffset);
 				if (!asChild.isEmpty()) {
 					isRelated = true;
-					typesColumn = 3;
+					if (refs.getMyTable() > 0) {
+						typesColumn = 3;
+					}
 					fromTable = refs.getReferences(tabNo, true, false, false,
 							tableOffset);
 					if (fromTable.isEmpty()) {
