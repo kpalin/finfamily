@@ -2,6 +2,11 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 935 on 15 nov 2010
+
+* Image size info to Notice pane added
+* Improvements to see also references for descendant report
+
 Release 930 on 11 nov 2010
 
 * sorting db window fix
