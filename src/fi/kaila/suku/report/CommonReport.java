@@ -1081,7 +1081,7 @@ public abstract class CommonReport {
 			repoWriter.addText(bt);
 		}
 
-		HashMap<String, Integer> submap = new HashMap<String, Integer>();
+		// HashMap<String, String> submap = new HashMap<String, String>();
 
 		for (int i = 0; i < spouseMember.getSubCount(); i++) {
 			bt = new SubPersonText();
@@ -1103,14 +1103,14 @@ public abstract class CommonReport {
 				String[] froms = fromTable.split(",");
 				StringBuilder fromsTable = new StringBuilder();
 				for (int j = 0; j < froms.length; j++) {
-					Integer mapx = submap.put(froms[j], subDad.length());
-					if (mapx == null || mapx == subDad.length()) {
-						if (j > 0) {
-							fromsTable.append(",");
-						}
-						fromsTable.append(froms[j]);
+					// String mapx = submap.put(froms[j], subDad);
+					// if (mapx == null || mapx.equals(subDad)) {
+					if (j > 0) {
+						fromsTable.append(",");
 					}
+					fromsTable.append(froms[j]);
 				}
+				// }
 				if (fromsTable.length() > 0) {
 					bt.addText(typesTable.getTextValue("ALSO") + " "
 							+ fromsTable.toString() + ". ", true, false);
