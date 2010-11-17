@@ -156,15 +156,20 @@ public class ReportUtil {
 
 		for (int i = 0; i < tables.size(); i++) {
 			ReportUnit unit = tables.get(i);
+			String sex = null;
 			for (int j = 0; j < unit.getChild().size(); j++) {
+
 				ReportTableMember member = unit.getChild().get(j);
+				if (j == 0) {
+					sex = member.getSex();
+				}
 				// HashMap<Integer,PersonInTables> personReferences
 				// long strado=2;
 				// if (unit.getMember(0).getSex().equals("M")){
 				// strado=3;
 				// }
 
-				addAncestorsToMember(member, 1, gen);
+				addAncestorsToMember(member, 1, gen, sex);
 				// spouse not a relative
 
 			}
@@ -190,7 +195,7 @@ public class ReportUtil {
 							true, false, 0);
 				}
 				if (fromTable.isEmpty()) {
-					addAncestorsToMember(member, 1, gen);
+					addAncestorsToMember(member, 1, gen, null);
 					// spouse not a relative
 				}
 			}
@@ -211,7 +216,7 @@ public class ReportUtil {
 									true, true, false, 0);
 						}
 						if (fromTable.isEmpty()) {
-							addAncestorsToMember(spouses[k], 1, gen);
+							addAncestorsToMember(spouses[k], 1, gen, null);
 							// spouse not a relative
 						}
 					}
@@ -221,19 +226,20 @@ public class ReportUtil {
 	}
 
 	private void addAncestorsToMember(ReportTableMember member, long strado,
-			int gen) throws SQLException {
+			int gen, String parentSex) throws SQLException {
 
 		int pid = member.getPid();
 		String sex = member.getSex();
 
-		addMemberParents(member, pid, strado, sex, 0, gen);
+		addMemberParents(member, pid, strado, sex, parentSex, 0, gen);
 
 		member.sortSubs();
 
 	}
 
 	private void addMemberParents(ReportTableMember member, int pid,
-			long strado, String sex, int gen, int maxGen) throws SQLException {
+			long strado, String sex, String parentSex, int gen, int maxGen)
+			throws SQLException {
 
 		String sql = "select p.aid,p.bid,p.tag "
 				+ "from parent as p left join relationnotice as r on p.rid=r.rid "
@@ -256,27 +262,40 @@ public class ReportUtil {
 			}
 		}
 		rs.close();
+
+		sql = "select p.tag from spouse as p where aid=? and bid=?";
+
+		stm = con.prepareStatement(sql);
+		stm.setInt(1, fatherPid);
+		stm.setInt(2, motherPid);
+
+		rs = stm.executeQuery();
+		tag = null;
+		while (rs.next()) {
+			tag = rs.getString(1);
+		}
+		rs.close();
 		stm.close();
 
-		if (fatherPid > 0) {
+		if ((parentSex == null || "F".equals(parentSex)) && fatherPid > 0) {
 			PersonInTables ref = null;
 			if (gen < 2) {
 				ref = personReferences.get(fatherPid);
 			}
 
-			if (ref == null) {
+			if (ref == null || tag == null) {
 				member.addSub(fatherPid, "M", strado * 2);
 			} else {
 				fatherPid = 0;
 			}
 		}
-		if (motherPid > 0) {
+		if ((parentSex == null || "M".equals(parentSex)) && motherPid > 0) {
 			PersonInTables ref = null;
 			if (gen < 2) {
 				ref = personReferences.get(motherPid);
 			}
 
-			if (ref == null) {
+			if (ref == null || tag == null) {
 				member.addSub(motherPid, "F", strado * 2 + 1);
 			} else {
 				motherPid = 0;
@@ -284,13 +303,15 @@ public class ReportUtil {
 
 		}
 
-		if (fatherPid > 0 && gen < maxGen - 1) {
-			addMemberParents(member, fatherPid, strado * 2, "M", gen + 1,
+		if ((parentSex == null || "F".equals(parentSex)) && fatherPid > 0
+				&& gen < maxGen - 1) {
+			addMemberParents(member, fatherPid, strado * 2, "M", null, gen + 1,
 					maxGen);
 		}
-		if (motherPid > 0 && gen < maxGen - 1) {
-			addMemberParents(member, motherPid, strado * 2 + 1, "F", gen + 1,
-					maxGen);
+		if ((parentSex == null || "M".equals(parentSex)) && motherPid > 0
+				&& gen < maxGen - 1) {
+			addMemberParents(member, motherPid, strado * 2 + 1, "F", null,
+					gen + 1, maxGen);
 		}
 
 	}
@@ -328,6 +349,7 @@ public class ReportUtil {
 		if (gen > generations) {
 			return nexttab;
 		}
+
 		// create a table for the child
 		ReportUnit unit = createOneTable(nexttab, chi, gen, adopted, true,
 				false);
@@ -355,7 +377,34 @@ public class ReportUtil {
 			return nexttab; // and continue at nexttab
 
 		}
+		boolean childrenAlreadyListed = false;
+		for (int i = 1; i < unit.getParent().size(); i++) {
+			ReportUnit spoUnits = unitMap.get(unit.getParent().get(i).getPid());
+			if (spoUnits != null) {
+				for (int k = 0; k < unit.getChild().size(); k++) {
+					ReportTableMember ktm = unit.getChild().get(k);
+					int j = 0;
+					for (j = 0; j < spoUnits.getChild().size(); j++) {
+						ReportTableMember stm = spoUnits.getChild().get(j);
+						if (stm.getPid() == ktm.getPid()) {
+							break;
+						}
+					}
+					if (j == spoUnits.getChild().size()) {
+						childrenAlreadyListed = false;
+						break;
+					}
+					childrenAlreadyListed = true;
+				}
 
+			} else {
+				break;
+			}
+
+		}
+		if (childrenAlreadyListed) {
+			return nexttab;
+		}
 		//
 		// check possible table of spouses
 		//
@@ -576,10 +625,10 @@ public class ReportUtil {
 		PreparedStatement pareStm = con
 				.prepareStatement("select * from parent where aid=? and bid <> ? ");
 
-		String adoptext = "";
-		if (!adopted) {
-			adoptext = "and r.tag is null";
-		}
+		// String adoptext = "";
+		// if (!adopted) {
+		// adoptext = "and r.tag is null";
+		// }
 
 		sql = "select c.bid,u.sex,c.rid "
 				+ "from (child as c inner join unit as u on c.bid=u.pid ) "

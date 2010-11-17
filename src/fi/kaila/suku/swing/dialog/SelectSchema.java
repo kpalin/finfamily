@@ -82,7 +82,7 @@ public class SelectSchema extends JDialog implements ActionListener,
 	private void constructMe(boolean allowNew) throws SukuException {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-		setBounds(d.width / 2 - 120, d.height / 2 - 140, 240, 240);
+		setBounds(d.width / 2 - 150, d.height / 2 - 170, 300, 340);
 		setLayout(null);
 		int y = 10;
 		if (postDb != null) {
@@ -115,9 +115,9 @@ public class SelectSchema extends JDialog implements ActionListener,
 
 		JScrollPane scroll = new JScrollPane(scList);
 		getContentPane().add(scroll);
-		scroll.setBounds(10, y + 20, 200, 100);
+		scroll.setBounds(10, y + 20, 240, 200);
 
-		y += 140;
+		y += 240;
 		JButton ok = new JButton(Resurses.getString("OK"));
 		getContentPane().add(ok);
 		ok.setBounds(30, y, 80, 24);
