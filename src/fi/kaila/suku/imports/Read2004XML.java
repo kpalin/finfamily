@@ -609,8 +609,9 @@ public class Read2004XML extends DefaultHandler {
 
 			stm.executeUpdate(UPDATE_UNIT_SOURCES);
 			stm.executeUpdate(UPDATE_NOTICE_SOURCES);
-			stm.executeUpdate(UPDATE_RELATION_SOURCES);
+
 			if (finFamilyVersion == null) {
+				stm.executeUpdate(UPDATE_RELATION_SOURCES);
 				stm.executeUpdate(UPDATE_GROUPS);
 			}
 			stm.executeUpdate(DROP_GROUPS);
@@ -1123,6 +1124,11 @@ public class Read2004XML extends DefaultHandler {
 		}
 		if (this.currentEle.equals(relationNoteTextTG)) {
 			this.relationNoteText = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(relationNoticeSourceTG)) {
+			if (this.currentChars.length() > 0) {
+				this.relationSourceText = this.currentChars.toString();
+			}
 		}
 		if (this.currentEle.equals(relationSourceTG)) {
 			if (this.currentChars.length() > 0) {

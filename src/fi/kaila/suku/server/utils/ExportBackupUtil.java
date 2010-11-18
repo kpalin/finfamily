@@ -217,7 +217,6 @@ public class ExportBackupUtil {
 
 		Statement stm = con.createStatement();
 		ResultSet rs;
-		Element conversionsEle = null;
 		rs = stm.executeQuery(sql);
 		String prevTag = "";
 		Element typeEle = null;
@@ -674,7 +673,7 @@ public class ExportBackupUtil {
 				dEle.appendChild(ele);
 				if (todate != null) {
 					ele = document.createElement("end");
-					ele.setTextContent(fromdate);
+					ele.setTextContent(todate);
 					dEle.appendChild(ele);
 				}
 			}
