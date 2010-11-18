@@ -115,7 +115,7 @@ public class Read2004XML extends DefaultHandler {
 
 	private static final String UPDATE_UNIT_NOTICE = "update UnitNotice "
 			+ "set noticetype=?,description=?,dateprefix=?,fromdate=?,todate=?,"
-			+ "place=?,address=?,postalcode=?,postoffice=?,country=?,email=?,"
+			+ "place=?,address=?,postalcode=?,postoffice=?,state=?,country=?,email=?,"
 			+ "notetext=?,mediafilename=?,mediatitle=?,givenname=?,patronym=?,prefix=?,"
 			+ "surname=?,postfix=?,SID=?,village=?,farm=?,croft=?,sourcetext=?,privatetext=? "
 			+ "where pnid=?";
@@ -228,6 +228,9 @@ public class Read2004XML extends DefaultHandler {
 	private static final String noticePlacelistTG = "|genealog|units|unit|notices|notice|placelist";
 	private static final String noticePlacelistPlaceTG = "|genealog|units|unit|notices|notice|placelist|place";
 	private static final String noticePlaceTG = "|genealog|units|unit|notices|notice|place";
+	private static final String noticeVillageTG = "|genealog|units|unit|notices|notice|village";
+	private static final String noticeFarmTG = "|genealog|units|unit|notices|notice|farm";
+	private static final String noticeCroftTG = "|genealog|units|unit|notices|notice|croft";
 	private static final String noticeGivenNameTG = "|genealog|units|unit|notices|notice|name|givenname";
 	private static final String noticeFirstNameTG = "|genealog|units|unit|notices|notice|name|firstname";
 	private static final String noticePatronymTG = "|genealog|units|unit|notices|notice|name|patronym";
@@ -241,6 +244,7 @@ public class Read2004XML extends DefaultHandler {
 	private static final String noticeAddressTG = "|genealog|units|unit|notices|notice|address|street";
 	private static final String noticePostalCodeTG = "|genealog|units|unit|notices|notice|address|postalcode";
 	private static final String noticePostOfficeTG = "|genealog|units|unit|notices|notice|address|postoffice";
+	private static final String noticeStateTG = "|genealog|units|unit|notices|notice|address|state";
 	private static final String noticeCountryTG = "|genealog|units|unit|notices|notice|address|country";
 	private static final String noticeEmailTG = "|genealog|units|unit|notices|notice|address|email";
 
@@ -344,9 +348,13 @@ public class Read2004XML extends DefaultHandler {
 	private String noticeDateFrom = null;
 	private String noticeDateTo = null;
 	private String noticePlace = null;
+	private String noticeVillage = null;
+	private String noticeFarm = null;
+	private String noticeCroft = null;
 	private String noticeAddress = null;
 	private String noticePostOffice = null;
 	private String noticePostalCode = null;
+	private String noticeState = null;
 	private String noticeCountry = null;
 	private String noticeEmail = null;
 	private String noticeNoteText = null;
@@ -994,6 +1002,16 @@ public class Read2004XML extends DefaultHandler {
 		if (this.currentEle.equals(noticePlaceTG)) {
 			this.noticePlace = this.currentChars.toString();
 		}
+		if (this.currentEle.equals(noticeVillageTG)) {
+			this.noticeVillage = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeFarmTG)) {
+			this.noticeFarm = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeCroftTG)) {
+			this.noticeCroft = this.currentChars.toString();
+		}
+
 		if (finFamilyVersion == null) {
 			if (this.currentEle.equals(noticeGivenNameTG)) {
 				this.noticeGivenName = this.currentChars.toString();
@@ -1043,6 +1061,9 @@ public class Read2004XML extends DefaultHandler {
 		}
 		if (this.currentEle.equals(noticePostOfficeTG)) {
 			this.noticePostOffice = this.currentChars.toString();
+		}
+		if (this.currentEle.equals(noticeStateTG)) {
+			this.noticeState = this.currentChars.toString();
 		}
 		if (this.currentEle.equals(noticeCountryTG)) {
 			this.noticeCountry = this.currentChars.toString();
@@ -2222,88 +2243,60 @@ public class Read2004XML extends DefaultHandler {
 			pst = this.con.prepareStatement(UPDATE_UNIT_NOTICE);
 
 			// this.pstm.setInt(1, unitPid);
-			// this.pstm.setInt(2, pnid);
-			// this.pstm.setString(3, this.noticeTag);
-			// this.pstm.setString(4, this.noticePrivacy);
-			// try {
-			// rowno = Integer.parseInt(this.noticeRow);
-			// } catch (NumberFormatException ne) {
-			// rowno = 0;
-			// errorLine.add(ne.getMessage() + " [Rownumber " + this.unitId
-			// + "/" + this.noticeRow + " is not numeric" + "]");
-			// // throw new SAXException();
-			// }
-			// this.pstm.setInt(5, rowno);
 
-			// try {
-			// if (this.noticeSurety != null) {
-			// suretyValue = Integer.parseInt(this.noticeSurety);
-			// } else {
-			// suretyValue = 100;
-			// }
-			// } catch (NumberFormatException ne) {
-			// suretyValue = 100;
-			// }
-			// this.pstm.setInt(6, suretyValue);
 			pst.setString(1, langText(this.noticeType, this.oldCode));
 			pst.setString(2, langText(this.noticeDescription, this.oldCode));
 			pst.setString(3, this.noticeDatePrefix);
 			pst.setString(4, this.noticeDateFrom);
 			pst.setString(5, this.noticeDateTo);
 			pst.setString(6, langText(this.noticePlace, this.oldCode));
+
 			pst.setString(7,
 					extractCSVPart(this.noticeTag, this.noticeAddress, 0));
 			pst.setString(8, this.noticePostalCode);
 			pst.setString(9, this.noticePostOffice);
-			pst.setString(10, this.noticeCountry);
-			pst.setString(11, this.noticeEmail);
+			pst.setString(10, this.noticeState);
+			pst.setString(11, this.noticeCountry);
+			pst.setString(12, this.noticeEmail);
 			// String t1 = langText(this.noticeNoteText,this.oldCode);
-			pst.setString(12, langText(this.noticeNoteText, this.oldCode));
-			pst.setString(13, Utils.tidyFileName(this.noticeMediaFilename));
-			pst.setString(14, langText(this.noticeMediaTitle, this.oldCode));
-			// private static final String UPDATE_UNIT_NOTICE =
-			// "update UnitNotice "
-			// +
-			// "set noticetype=?,description=?,dateprefix=?,fromdate=?,todate=?,"
-			// +
-			// "place=?,address=?,postalcode=?,postoffice=?,country=?,email=?,"
-			// +
-			// "notetext=?,mediafilename=?,mediatitle=?,givenname=?,patronym=?,prefix=?,"
-			// +
-			// "surname=?,postfix=?,SID=?,village=?,farm=?,croft=?,sourcetext=?,privatetext=? "
-			// + "where pnid=?";
-			//
+			pst.setString(13, langText(this.noticeNoteText, this.oldCode));
+			pst.setString(14, Utils.tidyFileName(this.noticeMediaFilename));
+			pst.setString(15, langText(this.noticeMediaTitle, this.oldCode));
 
 			if (finFamilyVersion == null) {
-				pst.setString(15,
-						Utils.extractPatronyme(this.noticeGivenName, false));
 				pst.setString(16,
+						Utils.extractPatronyme(this.noticeGivenName, false));
+				pst.setString(17,
 						Utils.extractPatronyme(this.noticeGivenName, true));
 			} else {
-				pst.setString(15, this.noticeGivenName);
-				pst.setString(16, this.noticePatronym);
+				pst.setString(16, this.noticeGivenName);
+				pst.setString(17, this.noticePatronym);
 
 			}
-			pst.setString(17, this.noticePrefix);
-			pst.setString(18, this.noticeSurname);
-			pst.setString(19, this.noticePostfix);
+			pst.setString(18, this.noticePrefix);
+			pst.setString(19, this.noticeSurname);
+			pst.setString(20, this.noticePostfix);
 			if (this.noticeSourceId != null) {
-				pst.setInt(20, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
+				pst.setInt(21, idToInt(this.noticeSourceId)); // langText(this.noticeSourceText,this.oldCode));
 			} else {
-				pst.setNull(20, Types.INTEGER);
+				pst.setNull(21, Types.INTEGER);
 			}
+			if (finFamilyVersion == null) {
+				pst.setString(22,
+						extractCSVPart(this.noticeTag, this.noticeAddress, 1));
+				pst.setString(23,
+						extractCSVPart(this.noticeTag, this.noticeAddress, 2));
+				pst.setString(24,
+						extractCSVPart(this.noticeTag, this.noticeAddress, 3));
+			} else {
+				pst.setString(22, this.noticeVillage);
+				pst.setString(23, this.noticeFarm);
+				pst.setString(24, this.noticeCroft);
+			}
+			pst.setString(25, this.noticeSourceText);
+			pst.setString(26, this.noticePrivateText);
 
-			pst.setString(21,
-					extractCSVPart(this.noticeTag, this.noticeAddress, 1));
-			pst.setString(22,
-					extractCSVPart(this.noticeTag, this.noticeAddress, 2));
-			pst.setString(23,
-					extractCSVPart(this.noticeTag, this.noticeAddress, 3));
-
-			pst.setString(24, this.noticeSourceText);
-			pst.setString(25, this.noticePrivateText);
-
-			pst.setInt(26, pnid);
+			pst.setInt(27, pnid);
 
 			pst.executeUpdate();
 			pst.close();
@@ -2473,9 +2466,13 @@ public class Read2004XML extends DefaultHandler {
 			this.noticeDateFrom = null;
 			this.noticeDateTo = null;
 			this.noticePlace = null;
+			this.noticeVillage = null;
+			this.noticeFarm = null;
+			this.noticeCroft = null;
 			this.noticeAddress = null;
 			this.noticePostOffice = null;
 			this.noticePostalCode = null;
+			this.noticeState = null;
 			this.noticeCountry = null;
 			this.noticeEmail = null;
 			this.noticeNoteText = null;
