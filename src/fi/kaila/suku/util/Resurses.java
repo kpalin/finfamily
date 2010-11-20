@@ -340,8 +340,14 @@ public class Resurses {
 	/** The Constant TOOLBAR_ADDNOTICE_IMAGE. */
 	public static final String TOOLBAR_ADDNOTICE_IMAGE = "tab_new";
 
+	/** The Constant TOOLBAR_DELETENOTICE_IMAGE. */
+	public static final String TOOLBAR_DELETENOTICE_IMAGE = "tab_delete";
+
 	/** The Constant TOOLBAR_ADDNOTICE_ACTION. */
 	public static final String TOOLBAR_ADDNOTICE_ACTION = "ADDNOTICE";
+
+	/** The Constant TOOLBAR_DELETENOTICE_ACTION. */
+	public static final String TOOLBAR_DELETENOTICE_ACTION = "DELETENOTICE";
 
 	/** The Constant TOOLBAR_NOTICES_ACTION. */
 	public static final String TOOLBAR_NOTICES_ACTION = "SHOW_NOTICES";

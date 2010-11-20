@@ -3,9 +3,7 @@ package fi.kaila.suku.swing.panel;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -27,12 +25,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import fi.kaila.suku.swing.Suku;
-import fi.kaila.suku.swing.dialog.AddNotice;
 import fi.kaila.suku.swing.dialog.LanguageDialog;
 import fi.kaila.suku.swing.util.SukuDateField;
 import fi.kaila.suku.swing.util.SukuSuretyField;
@@ -62,11 +58,12 @@ public class NoticePane extends JPanel implements ActionListener,
 	/** The move to right. */
 	JButton moveToRight;
 
-	/** The to delete. */
-	JButton toDelete;
-
-	/** The to add. */
-	JButton toAdd;
+	// /** The to delete. */
+	// JButton toDelete;
+	JLabel lblDeleted;
+	//
+	// /** The to add. */
+	// JButton toAdd;
 
 	/** The close. */
 	JButton close;
@@ -357,16 +354,18 @@ public class NoticePane extends JPanel implements ActionListener,
 		moveToRight.setActionCommand(">");
 		add(moveToRight);
 
-		toAdd = new JButton(Resurses.getString("DATA_ADD"));
-		toAdd.addActionListener(this);
-		toAdd.setActionCommand("ADD");
-		add(toAdd);
+		// toAdd = new JButton(Resurses.getString("DATA_ADD"));
+		// toAdd.addActionListener(this);
+		// toAdd.setActionCommand("ADD");
+		// add(toAdd);
+		//
+		// toDelete = new JButton(Resurses.getString("DATA_DELETE"));
+		// toDelete.addActionListener(this);
+		// toDelete.setActionCommand("DELETE");
+		// add(toDelete);
 
-		toDelete = new JButton(Resurses.getString("DATA_DELETE"));
-		toDelete.addActionListener(this);
-		toDelete.setActionCommand("DELETE");
-		add(toDelete);
-
+		lblDeleted = new JLabel();
+		add(lblDeleted);
 		close = new JButton(Resurses.getString(Resurses.CLOSE));
 		add(this.close);
 		close.setActionCommand(Resurses.CLOSE);
@@ -918,8 +917,9 @@ public class NoticePane extends JPanel implements ActionListener,
 	void setToBeDeleted(boolean value, boolean onlyEmptyNotice) {
 
 		if (!value) {
-			toDelete.setText(Resurses.getString("DATA_DELETE"));
-			toDelete.setEnabled(true);
+			// toDelete.setText(Resurses.getString("DATA_DELETE"));
+			// update.setEnabled(false);
+
 			notice.setToBeDeleted(false);
 		} else {
 			if (onlyEmptyNotice) {
@@ -928,13 +928,14 @@ public class NoticePane extends JPanel implements ActionListener,
 					return;
 				}
 			}
+			lblDeleted.setText(Resurses.getString("DATA_DELETED"));
 
-			toDelete.setText(Resurses.getString("DATA_DELETED"));
+			// toDelete.setText(Resurses.getString("DATA_DELETED"));
 			if (notice.getTag().equals("NOTE")) {
 				noteText.setText("");
 			}
 
-			toDelete.setEnabled(!value);
+			// toDelete.setEnabled(!value);
 			notice.setToBeDeleted(value);
 		}
 
@@ -1120,38 +1121,38 @@ public class NoticePane extends JPanel implements ActionListener,
 					}
 				}
 			}
-		} else if (cmd.equals("DELETE")) {
-			setToBeDeleted(true, false);
-		} else if (cmd.equals("ADD")) {
-			AddNotice an;
-			try {
-				an = new AddNotice(personView.getSuku());
-				Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-
-				an.setBounds(d.width / 2 - 300, d.height / 2 - 200, 300, 400);
-
-				Rectangle r = toAdd.getBounds();
-				Point pt = new Point(r.x, r.y);
-				SwingUtilities.convertPointToScreen(pt, this);
-				r.x = pt.x - 40;
-				r.y = pt.y + r.height;
-				r.height = 400;
-				r.width = 120;
-				an.setBounds(r);
-				an.setVisible(true);
-
-				if (an.getSelectedTag() != null) {
-					// System.out.println("Valittiin " + an.getSelectedTag());
-					personView.addNotice(-1, an.getSelectedTag());
-				}
-
-			} catch (SukuException e1) {
-				logger.log(Level.WARNING, "Add new dialog error", e1);
-				JOptionPane.showMessageDialog(this, e1.getMessage(),
-						Resurses.getString(Resurses.SUKU),
-						JOptionPane.ERROR_MESSAGE);
-
-			}
+			// // } else if (cmd.equals("DELETE")) {
+			// // setToBeDeleted(true, false);
+			// // } else if (cmd.equals("ADD")) {
+			// // AddNotice an;
+			// // try {
+			// // an = new AddNotice(personView.getSuku());
+			// // Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+			// //
+			// // an.setBounds(d.width / 2 - 300, d.height / 2 - 200, 300, 400);
+			// //
+			// // Rectangle r = toAdd.getBounds();
+			// // Point pt = new Point(r.x, r.y);
+			// // SwingUtilities.convertPointToScreen(pt, this);
+			// // r.x = pt.x - 40;
+			// // r.y = pt.y + r.height;
+			// // r.height = 400;
+			// // r.width = 120;
+			// // an.setBounds(r);
+			// // an.setVisible(true);
+			// //
+			// // if (an.getSelectedTag() != null) {
+			// // // System.out.println("Valittiin " + an.getSelectedTag());
+			// // personView.addNotice(-1, an.getSelectedTag());
+			// // }
+			//
+			// } catch (SukuException e1) {
+			// logger.log(Level.WARNING, "Add new dialog error", e1);
+			// JOptionPane.showMessageDialog(this, e1.getMessage(),
+			// Resurses.getString(Resurses.SUKU),
+			// JOptionPane.ERROR_MESSAGE);
+			//
+			// }
 
 		} else if (cmd.equals("<")) {
 			notice.setModified(true);
@@ -1454,16 +1455,17 @@ public class NoticePane extends JPanel implements ActionListener,
 			mustImage = true;
 		}
 		int rrNameList = 0;
-		int rrivi = 10;
+		int rrivi = 20;
 		moveToLeft.setBounds(rcol, rrivi, rwidth, 20);
 		moveToRight.setBounds(rcol + rwidth, rrivi, rwidth, 20);
 		rrivi += 24;
-		toAdd.setBounds(rcol, rrivi, rwidth, 20);
-		toDelete.setBounds(rcol + rwidth, rrivi, rwidth, 20);
-		rrivi += 24;
-		close.setBounds(rcol, rrivi, rwidth, 24);
-		update.setBounds(rcol + rwidth, rrivi, rwidth, 24);
-		rrivi += 24;
+		// toAdd.setBounds(rcol, rrivi, rwidth, 20);
+		// toDelete.setBounds(rcol + rwidth, rrivi, rwidth, 20);
+		// rrivi += 24;
+		lblDeleted.setBounds(rcol, 0, rwidth, 20);
+		close.setBounds(rcol, rrivi, rwidth, 36);
+		update.setBounds(rcol + rwidth, rrivi, rwidth, 36);
+		rrivi += 36;
 		noteTextLang.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
 		suretyLbl.setBounds(rcol, rrivi, 100, 20);

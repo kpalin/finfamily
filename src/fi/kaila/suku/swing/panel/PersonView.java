@@ -969,11 +969,20 @@ public class PersonView extends JPanel implements ChangeListener {
 
 		an.setVisible(true);
 		if (an.getSelectedTag() != null) {
-			// System.out.println("Valittiin " + an.getSelectedTag());
-			int nxt = tabbedPane.getTabCount();
-			setSelectedIndex(nxt - 1);
-			addNotice(nxt, an.getSelectedTag());
 
+			int isele = tabbedPane.getSelectedIndex();
+			int tcount = tabbedPane.getTabCount();
+			int mnotice = getMainPaneIndex();
+
+			if (isele > mnotice && isele < tcount) {
+				isele++;
+			} else {
+
+				// System.out.println("Valittiin " + an.getSelectedTag());
+				isele = tcount;
+				setSelectedIndex(isele - 1);
+			}
+			addNotice(isele, an.getSelectedTag());
 		}
 	}
 
@@ -1157,6 +1166,24 @@ public class PersonView extends JPanel implements ChangeListener {
 	public void setSelectedIndex(int tabIndex) {
 		// skipNextState = true;
 		tabbedPane.setSelectedIndex(tabIndex);
+	}
+
+	public void deleteNotice() {
+		int isele = tabbedPane.getSelectedIndex();
+
+		int mnotice = getMainPaneIndex();
+
+		if (isele > mnotice + 1) {
+			NoticePane pane = null;
+
+			Component pan = paneTabs.get(isele).pnl;
+			if (pan instanceof NoticePane) {
+				pane = (NoticePane) paneTabs.get(isele).pnl;
+				pane.setToBeDeleted(true, false);
+			}
+
+		}
+
 	}
 
 }

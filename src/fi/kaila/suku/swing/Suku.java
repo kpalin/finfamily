@@ -256,6 +256,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JButton tRemovePerson;
 	private JButton tHiskiPane;
 	private JButton tAddNotice;
+	private JButton tDeleteNotice;
 	private JButton tNoteButton;
 	private JButton tAddressButton;
 	private JButton tFarmButton;
@@ -913,6 +914,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					Resurses.getString("TOOLBAR.ADDNOTICE.ALTTEXT"));
 
 			this.toolbar.add(tAddNotice);
+
+			this.toolbar.addSeparator(new Dimension(20, 30));
+			tDeleteNotice = makeNavigationButton(
+					Resurses.TOOLBAR_DELETENOTICE_IMAGE,
+					Resurses.TOOLBAR_DELETENOTICE_ACTION,
+					Resurses.getString("TOOLBAR.DELETENOTICE.TOOLTIP"),
+					Resurses.getString("TOOLBAR.DELETENOTICE.ALTTEXT"));
+
+			this.toolbar.add(tDeleteNotice);
 
 		} catch (IOException e2) {
 			throw new SukuException("Failed to create toolbar", e2);
@@ -2146,6 +2156,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				showAddNoticeButton();
 			} else if (cmd.equals(Resurses.TOOLBAR_ADDNOTICE_ACTION)) {
 				personView.addNewNotice();
+
+			} else if (cmd.equals(Resurses.TOOLBAR_DELETENOTICE_ACTION)) {
+				personView.deleteNotice();
 			}
 
 		} catch (Throwable ex) {
@@ -3459,6 +3472,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		tSubjectButton.setEnabled(isConnected == 2);
 		if (isConnected != 2) {
 			tAddNotice.setEnabled(false);
+			tDeleteNotice.setEnabled(false);
 		}
 
 	}
@@ -3472,6 +3486,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		int mnotice = personView.getMainPaneIndex();
 		tAddNotice.setEnabled(isConnected == 2 && tNoticesButton.isSelected()
 				&& isele >= mnotice);
+		tDeleteNotice.setEnabled(isConnected == 2
+				&& tNoticesButton.isSelected() && isele >= mnotice + 2);
 
 	}
 
