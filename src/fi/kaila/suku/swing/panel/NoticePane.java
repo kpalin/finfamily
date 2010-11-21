@@ -1455,17 +1455,18 @@ public class NoticePane extends JPanel implements ActionListener,
 			mustImage = true;
 		}
 		int rrNameList = 0;
-		int rrivi = 20;
+		int rrivi = 10;
 		moveToLeft.setBounds(rcol, rrivi, rwidth, 20);
 		moveToRight.setBounds(rcol + rwidth, rrivi, rwidth, 20);
 		rrivi += 24;
 		// toAdd.setBounds(rcol, rrivi, rwidth, 20);
 		// toDelete.setBounds(rcol + rwidth, rrivi, rwidth, 20);
 		// rrivi += 24;
-		lblDeleted.setBounds(rcol, 0, rwidth, 20);
-		close.setBounds(rcol, rrivi, rwidth, 36);
-		update.setBounds(rcol + rwidth, rrivi, rwidth, 36);
-		rrivi += 36;
+		lblDeleted.setBounds(rcol, rrivi, rwidth, 20);
+		rrivi += 24;
+		close.setBounds(rcol, rrivi, rwidth, 24);
+		update.setBounds(rcol + rwidth, rrivi, rwidth, 26);
+		rrivi += 24;
 		noteTextLang.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
 		suretyLbl.setBounds(rcol, rrivi, 100, 20);
