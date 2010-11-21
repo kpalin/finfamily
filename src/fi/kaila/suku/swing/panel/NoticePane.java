@@ -1462,12 +1462,13 @@ public class NoticePane extends JPanel implements ActionListener,
 		// toAdd.setBounds(rcol, rrivi, rwidth, 20);
 		// toDelete.setBounds(rcol + rwidth, rrivi, rwidth, 20);
 		// rrivi += 24;
-		lblDeleted.setBounds(rcol, rrivi, rwidth, 20);
-		rrivi += 24;
+
 		close.setBounds(rcol, rrivi, rwidth, 24);
 		update.setBounds(rcol + rwidth, rrivi, rwidth, 26);
 		rrivi += 24;
 		noteTextLang.setBounds(rcol, rrivi, rwidth * 2, 20);
+		rrivi += 24;
+		lblDeleted.setBounds(rcol, rrivi, rwidth, 20);
 		rrivi += 24;
 		suretyLbl.setBounds(rcol, rrivi, 100, 20);
 		rrivi += 20;
