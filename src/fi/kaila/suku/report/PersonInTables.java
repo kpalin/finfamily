@@ -297,19 +297,72 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	public int compareTo(PersonInTables o) {
 		if (shortPerson == null || o.shortPerson == null)
 			return 0;
-		int cl = fiCollator.compare(Utils.nv(shortPerson.getSurname()),
+
+		// int cl = fiCollator.compare(Utils.nv(shortPerson.getSurname()),
+		// Utils.nv(o.shortPerson.getSurname()));
+
+		int cl = compareFF(Utils.nv(shortPerson.getSurname()),
 				Utils.nv(o.shortPerson.getSurname()));
 		if (cl != 0) {
 			return cl;
 		}
-		cl = fiCollator.compare(Utils.nv(shortPerson.getGivenname()),
+		// cl = fiCollator.compare(Utils.nv(shortPerson.getGivenname()),
+		// Utils.nv(o.shortPerson.getGivenname()));
+		cl = compareFF(Utils.nv(shortPerson.getGivenname()),
 				Utils.nv(o.shortPerson.getGivenname()));
+
 		if (cl != 0) {
 			return cl;
 		}
 		return (Utils.nv(shortPerson.getBirtDate()).compareTo(Utils
 				.nv(o.shortPerson.getBirtDate())));
+	}
 
+	private int compareFF(String uno, String duo) {
+
+		if (uno == null || duo == null)
+			return 0;
+
+		// String nuno = uno.trim().replace(' ', '!').replace('é', 'e');
+		// String nduo = duo.trim().replace(' ', '!').replace('é', 'e');
+		String nuno = collatable(uno.trim().toLowerCase());
+		String nduo = collatable(duo.trim().toLowerCase());
+		int compnresu = fiCollator.compare(nuno, nduo);
+
+		return compnresu;
+
+	}
+
+	private String collatable(String origin) {
+		if (origin == null)
+			return null;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < origin.length(); i++) {
+			char c = origin.charAt(i);
+
+			if ("ÀÁÂÃÄàáâãĀāĂăăă".indexOf(c) >= 0) {
+				sb.append('a');
+			} else if ("Çç".indexOf(c) >= 0) {
+				sb.append('c');
+			} else if ("ÈÉÊËèéêë".indexOf(c) >= 0) {
+				sb.append('e');
+			} else if ("ÌÍÎÏìíîï".indexOf(c) >= 0) {
+				sb.append('i');
+			} else if ("Ññ".indexOf(c) >= 0) {
+				sb.append('n');
+			} else if ("ÒÓÔÕòóôõ".indexOf(c) >= 0) {
+				sb.append('o');
+			} else if ("ÙÚÛÜùúûü".indexOf(c) >= 0) {
+				sb.append('u');
+			} else if ("Ýýÿ".indexOf(c) >= 0) {
+				sb.append('y');
+			} else if (c == ' ') {
+				sb.append('!');
+			} else {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
 	}
 
 	/**
