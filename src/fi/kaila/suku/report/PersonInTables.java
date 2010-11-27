@@ -63,11 +63,14 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	public PersonInTables(int pid) {
 		this.pid = pid;
 		if (fiCollator == null) {
-			Locale ll = new Locale(Resurses.getLanguage());
+			collateLangu = Resurses.getLanguage();
+			Locale ll = new Locale(collateLangu);
 			fiCollator = Collator.getInstance(ll);
 
 		}
 	}
+
+	private static String collateLangu = "";
 
 	/**
 	 * The report dialog contains a table with the names of the notices
@@ -323,10 +326,13 @@ public class PersonInTables implements Comparable<PersonInTables> {
 		if (uno == null || duo == null)
 			return 0;
 
-		// String nuno = uno.trim().replace(' ', '!').replace('é', 'e');
-		// String nduo = duo.trim().replace(' ', '!').replace('é', 'e');
-		String nuno = collatable(uno.trim().toLowerCase());
-		String nduo = collatable(duo.trim().toLowerCase());
+		String nuno = uno.trim().replace(' ', '!');
+		String nduo = duo.trim().replace(' ', '!');
+		if (collateLangu.equals("fi") || collateLangu.equals("sv")) {
+
+			nuno = collatable(nuno.toLowerCase());
+			nduo = collatable(nduo.toLowerCase());
+		}
 		int compnresu = fiCollator.compare(nuno, nduo);
 
 		return compnresu;
@@ -340,24 +346,25 @@ public class PersonInTables implements Comparable<PersonInTables> {
 		for (int i = 0; i < origin.length(); i++) {
 			char c = origin.charAt(i);
 
-			if ("ÀÁÂÃÄàáâãĀāĂăăă".indexOf(c) >= 0) {
+			if ("àáâãāăăă".indexOf(c) >= 0) {
 				sb.append('a');
-			} else if ("Çç".indexOf(c) >= 0) {
+			} else if ("ç".indexOf(c) >= 0) {
 				sb.append('c');
-			} else if ("ÈÉÊËèéêë".indexOf(c) >= 0) {
+			} else if ("èéêë".indexOf(c) >= 0) {
 				sb.append('e');
-			} else if ("ÌÍÎÏìíîï".indexOf(c) >= 0) {
+			} else if ("ìíîï".indexOf(c) >= 0) {
 				sb.append('i');
-			} else if ("Ññ".indexOf(c) >= 0) {
+			} else if ("ñ".indexOf(c) >= 0) {
 				sb.append('n');
-			} else if ("ÒÓÔÕòóôõ".indexOf(c) >= 0) {
+			} else if ("òóôõ".indexOf(c) >= 0) {
 				sb.append('o');
-			} else if ("ÙÚÛÜùúûü".indexOf(c) >= 0) {
+			} else if ("ùúûü".indexOf(c) >= 0) {
 				sb.append('u');
-			} else if ("Ýýÿ".indexOf(c) >= 0) {
+			} else if ("ýÿ".indexOf(c) >= 0) {
 				sb.append('y');
-			} else if (c == ' ') {
-				sb.append('!');
+			} else if (c == 'w') {
+				sb.append('v');
+
 			} else {
 				sb.append(c);
 			}
