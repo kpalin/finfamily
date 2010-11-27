@@ -2164,8 +2164,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		} catch (Throwable ex) {
 
 			logger.log(Level.WARNING, "Suku action", ex);
-			JOptionPane
-					.showMessageDialog(personView.getSuku(), ex.getMessage());
+			JOptionPane.showMessageDialog(personView.getSuku(), ex.toString());
 		}
 	}
 

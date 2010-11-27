@@ -1477,6 +1477,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						dr = new ImagesLista(self, typesTable, repo);
 					} else {
 						tabOffset = self.getDescendantPane().getStartTable();
+						if (tabOffset > 0)
+							tabOffset--;
 						dr = new DescendantReport(self, typesTable, repo);
 					}
 				} else if (reportTypePane.getSelectedIndex() == 1) {
@@ -2731,6 +2733,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 		/** The index tab offset. */
 		int indexTabOffset = 0;
+		boolean alla = true;
 
 		/*
 		 * (non-Javadoc)
@@ -2769,15 +2772,28 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					label = new Label(1, 0,
 							typesTable.getTextValue("INDEX_TABLES"), arial0bold);
 					sheet.addCell(label);
-					label = new Label(2, 0,
-							typesTable.getTextValue("INDEX_OTHERS"), arial0bold);
-					sheet.addCell(label);
 
-					label = new Label(3, 0,
+					label = new Label(2, 0,
 							typesTable.getTextValue("ANC_BIRT"), arial0bold);
 					sheet.addCell(label);
-					label = new Label(4, 0,
+					label = new Label(3, 0,
 							typesTable.getTextValue("ANC_DEAT"), arial0bold);
+					sheet.addCell(label);
+
+					label = new Label(4, 0,
+							typesTable.getTextValue("ANC_OWNER"), arial0bold);
+					sheet.addCell(label);
+
+					label = new Label(5, 0,
+							typesTable.getTextValue("ANC_SPOU"), arial0bold);
+					sheet.addCell(label);
+
+					label = new Label(6, 0,
+							typesTable.getTextValue("ANC_CHIL"), arial0bold);
+					sheet.addCell(label);
+
+					label = new Label(7, 0, typesTable.getTextValue("ANC_OTH"),
+							arial0bold);
 					sheet.addCell(label);
 
 					int row = 2;
@@ -2847,7 +2863,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						String mefe = pit.getReferences(0, false, false, true,
 								indexTabOffset);
 
-						if (pit.getOwnerArray().length > 0 || !mefe.isEmpty()) {
+						if (alla || pit.getOwnerArray().length > 0
+								|| !mefe.isEmpty()) {
 							label = new Label(0, row, ""
 									+ pit.shortPerson.getAlfaName(), arial0);
 							sheet.addCell(label);
@@ -2860,7 +2877,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 							// String ownerString = pit.getOwnerString();
 
-							if (pit.getOwnerString().isEmpty()) {
+							if (pit.getOwnerString(indexTabOffset).isEmpty()) {
 
 								if (refe.isEmpty()) {
 									refe = cefe;
@@ -2884,14 +2901,29 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							// label = new Label(1, row, "" + refe, arial0);
 							// sheet.addCell(label);
 
-							label = new Label(1, row,
-									"" + pit.getOwnerString(), arial0);
+							StringBuilder tstr = new StringBuilder();
+							if (!kefe.isEmpty()) {
+								tstr.append(kefe);
+							} else if (!pit.getOwnerString(indexTabOffset)
+									.isEmpty()) {
+								tstr.append(pit.getOwnerString(indexTabOffset));
+							}
+							if (tstr.length() == 0 && !cefe.isEmpty()) {
+								tstr.append(cefe);
+							}
+							if (!mefe.isEmpty()) {
+								if (tstr.length() > 0) {
+									tstr.append(", ");
+								}
+								tstr.append(mefe);
+							}
+
+							label = new Label(1, row, tstr.toString(), arial0);
 							sheet.addCell(label);
-							label = new Label(2, row, "" + mefe, arial0);
-							sheet.addCell(label);
+
 							if (pit.shortPerson.getBirtDate() != null) {
 								label = new Label(
-										3,
+										2,
 										row,
 										Utils.nv4(pit.shortPerson.getBirtDate()),
 										arial0);
@@ -2899,19 +2931,25 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							}
 							if (pit.shortPerson.getDeatDate() != null) {
 								label = new Label(
-										4,
+										3,
 										row,
 										Utils.nv4(pit.shortPerson.getDeatDate()),
 										arial0);
 								sheet.addCell(label);
 							}
 
-							// label = new Label(6, row, "" + pit.pid, arial0);
-							// sheet.addCell(label);
-							// label = new Label(7, row, "" + kefe, arial0);
-							// sheet.addCell(label);
-							// label = new Label(8, row, "" + cefe, arial0);
-							// sheet.addCell(label);
+							label = new Label(4, row,
+									pit.getOwnerString(indexTabOffset), arial0);
+							sheet.addCell(label);
+
+							label = new Label(5, row, kefe, arial0);
+							sheet.addCell(label);
+
+							label = new Label(6, row, cefe, arial0);
+							sheet.addCell(label);
+
+							label = new Label(7, row, mefe, arial0);
+							sheet.addCell(label);
 
 							float prose = (i * 100f) / pits.length;
 							setRunnerValue("" + (int) prose + ";"

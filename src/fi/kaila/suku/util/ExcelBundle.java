@@ -131,8 +131,6 @@ public class ExcelBundle {
 			int defCol = 1;
 			if (sheet != null) {
 				colCount = sheet.getColumns();
-				langCodes = new String[colCount - 1];
-				langNames = new String[colCount - 1];
 
 				rowCount = sheet.getRows();
 				header = new String[colCount];
@@ -147,6 +145,9 @@ public class ExcelBundle {
 					}
 
 				}
+				// colCount = col - 1;
+				langCodes = new String[colCount - 1];
+				langNames = new String[colCount - 1];
 
 				for (rivi = 0; rivi < rowCount; rivi++) {
 

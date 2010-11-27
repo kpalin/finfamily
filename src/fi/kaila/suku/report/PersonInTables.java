@@ -214,7 +214,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 * 
 	 * @return comma separated list of owners
 	 */
-	public String getOwnerString() {
+	public String getOwnerString(long tableOffset) {
 		boolean addComma = false;
 		StringBuilder sb = new StringBuilder();
 		Long[] xx = getOwnerArray();
@@ -223,7 +223,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 				sb.append(",");
 			}
 			addComma = true;
-			sb.append(x);
+			sb.append(x + tableOffset);
 		}
 		return sb.toString();
 	}

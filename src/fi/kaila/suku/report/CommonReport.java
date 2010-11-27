@@ -548,7 +548,7 @@ public abstract class CommonReport {
 				}
 				try {
 					long refTab = Long.parseLong(parts[i]);
-					ReportUnit pare = tabMap.get(refTab);
+					ReportUnit pare = tabMap.get(refTab - tableOffset);
 					if (pare == null) {
 						logger.severe("parents tab " + refTab + " not found");
 					} else {
@@ -771,7 +771,8 @@ public abstract class CommonReport {
 						}
 						if (childMember.getMyTable() > 0) {
 
-							toTable = "" + childMember.getMyTable();
+							toTable = ""
+									+ (childMember.getMyTable() + tableOffset);
 						}
 						if (hasSpouses) {
 							toTable = "";
@@ -1518,7 +1519,7 @@ public abstract class CommonReport {
 					if (ref != null) {
 						fromTable = "";
 						if (ref.getOwnerArray().length > 0) {
-							fromTable = "" + ref.getOwnerString();
+							fromTable = "" + ref.getOwnerString(0);
 						}
 						// fromTable = ref.getReferences(tab.getTableNo(), true,
 						// true, false);

@@ -95,6 +95,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		for (int i = 0; i < locas.length; i++) {
 			if (prevloca.equals(locas[i])) {
 				locaIndex = i;
+				break;
 			}
 		}
 		loca.setSelectedIndex(locaIndex);

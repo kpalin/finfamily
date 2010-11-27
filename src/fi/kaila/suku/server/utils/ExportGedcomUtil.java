@@ -252,6 +252,9 @@ public class ExportGedcomUtil {
 		StringBuilder sb = new StringBuilder();
 		sb.append("0 @I" + indi.gid + "@ INDI\r\n");
 		sb.append("1 SEX " + indi.sex + "\r\n");
+		if (persLong.getRefn() != null) {
+			sb.append("1 REFN " + persLong.getRefn() + "\r\n");
+		}
 		UnitNotice[] notices = persLong.getNotices();
 		for (int i = 0; i < notices.length; i++) {
 			if (notices[i].getTag().equals("NAME")
