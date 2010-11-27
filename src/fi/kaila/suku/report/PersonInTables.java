@@ -183,9 +183,19 @@ public class PersonInTables implements Comparable<PersonInTables> {
 				Long lll = icheck.put(ll, ll);
 				if (lll == null) {
 					if (references.get(i) != table) {
-						if (sx.length() > 0)
-							sx.append(",");
-						sx.append((references.get(i) + tableOffset));
+						long lxl = references.get(i);
+						int j = 0;
+						for (j = 0; j < asParents.size(); j++) {
+							if (asParents.get(j) != null) {
+								break;
+							}
+						}
+						if (j == asParents.size()) {
+							if (sx.length() > 0) {
+								sx.append(",");
+							}
+							sx.append((lxl + tableOffset));
+						}
 					}
 				}
 			}
