@@ -2798,51 +2798,42 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					int row = 2;
 
-					// Set<Map.Entry<Integer, PersonInTables>> entries = dr
-					// .getPersonReferences().entrySet();
-					// Iterator<Map.Entry<Integer, PersonInTables>> ee = entries
-					// .iterator();
 					Vector<PersonInTables> vv = dr.getPersonReferences();
-					// new Vector<PersonInTables>();
+
 					float runnervalue = 0;
 					float mapsize = vv.size();
-					// while (ee.hasNext()) {
-					// Map.Entry<Integer, PersonInTables> entry =
-					// (Map.Entry<Integer, PersonInTables>) ee
-					// .next();
-					//
-					// PersonInTables pit = entry.getValue();
+
 					for (int j = 0; j < mapsize; j++) {
 						PersonInTables pit = vv.get(j);
 						// vv.add(pit);
-						if (pit.shortPerson == null) {
-							SukuData resp = Suku.kontroller.getSukuData(
-									"cmd=person", "mode=short", "pid="
-											+ pit.pid);
+						if (pit.shortPerson != null) {
+							System.out.println("oli jo");
+						}
+						SukuData resp = Suku.kontroller.getSukuData(
+								"cmd=person", "mode=short", "pid=" + pit.pid);
 
-							if (resp.pers != null) {
-								pit.shortPerson = resp.pers[0];
+						if (resp.pers != null) {
+							pit.shortPerson = resp.pers[0];
 
-								for (int i = 1; i < pit.shortPerson
-										.getNameCount(); i++) {
-									PersonInTables pitt = new PersonInTables(
-											pit.shortPerson.getPid());
-									pitt.asChildren = pit.asChildren;
-									Long[] aa = pit.getOwnerArray();
-									for (Long a : aa) {
-										pitt.addOwner(a);
-									}
-
-									pitt.asParents = pit.asParents;
-									PersonShortData p = pit.shortPerson;
-									PersonShortData alias = new PersonShortData(
-											p.getPid(), p.getGivenname(i),
-											p.getPatronym(i), p.getPrefix(i),
-											p.getSurname(i), p.getPostfix(i),
-											p.getBirtDate(), p.getDeatDate());
-									pitt.shortPerson = alias;
-									// vv.add(pitt);
+							for (int i = 1; i < pit.shortPerson.getNameCount(); i++) {
+								PersonInTables pitt = new PersonInTables(
+										pit.shortPerson.getPid());
+								pitt.asChildren = pit.asChildren;
+								pitt.references = pit.references;
+								Long[] aa = pit.getOwnerArray();
+								for (Long a : aa) {
+									pitt.addOwner(a);
 								}
+
+								pitt.asParents = pit.asParents;
+								PersonShortData p = pit.shortPerson;
+								PersonShortData alias = new PersonShortData(
+										p.getPid(), p.getGivenname(i),
+										p.getPatronym(i), p.getPrefix(i),
+										p.getSurname(i), p.getPostfix(i),
+										p.getBirtDate(), p.getDeatDate());
+								pitt.shortPerson = alias;
+								vv.add(pitt);
 
 							}
 

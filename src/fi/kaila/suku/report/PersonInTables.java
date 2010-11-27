@@ -62,7 +62,11 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	 */
 	public PersonInTables(int pid) {
 		this.pid = pid;
+		if (fiCollator == null) {
+			Locale ll = new Locale(Resurses.getLanguage());
+			fiCollator = Collator.getInstance(ll);
 
+		}
 	}
 
 	/**
@@ -282,8 +286,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 	}
 
 	/** collator according to language. */
-	public static Collator fiCollator = Collator.getInstance(new Locale(
-			Resurses.getLanguage()));
+	public static Collator fiCollator = null;
 
 	/*
 	 * (non-Javadoc)
