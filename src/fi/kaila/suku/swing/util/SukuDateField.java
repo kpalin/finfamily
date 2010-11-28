@@ -1,5 +1,8 @@
 package fi.kaila.suku.swing.util;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,7 +17,7 @@ import fi.kaila.suku.util.Utils;
  * 
  * @author Kalle
  */
-public class SukuDateField extends JPanel {
+public class SukuDateField extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -39,6 +42,7 @@ public class SukuDateField extends JPanel {
 		String dateprex[] = Resurses.getString("DATE_PREFS").split(";");
 		datePref = new JComboBox(dateprex);
 		add(datePref);
+		datePref.addActionListener(this);
 		dateFrom = new JTextField();
 		add(dateFrom);
 		datePost = new JLabel("TO");
@@ -193,6 +197,26 @@ public class SukuDateField extends JPanel {
 			dateTo.setVisible(false);
 		}
 
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e != null && e.getSource() == datePref) {
+
+			int idx = datePref.getSelectedIndex();
+			if (idx == 4) {
+				datePost.setText(Resurses.getString("DATE_TO"));
+				dateTo.setVisible(true);
+			} else if (idx == 5) {
+				datePost.setText(Resurses.getString("DATE_AND"));
+				dateTo.setVisible(true);
+			} else {
+				datePost.setText("");
+				dateTo.setText("");
+				dateTo.setVisible(false);
+			}
+
+		}
 	}
 
 }
