@@ -532,94 +532,91 @@ public abstract class CommonReport {
 
 		if (pdata.persLong.getPrivacy() == null) {
 			printName(bt, pdata.persLong, 2);
+		} else {
+			printNameNn(bt);
+		}
+		ref = personReferences.get(tab.getPid());
+		if (ref != null) {
+			fromTable = ref.getReferences(tab.getTableNo(), false, true, false,
+					tableOffset);
+		}
 
-			ref = personReferences.get(tab.getPid());
-			if (ref != null) {
-				fromTable = ref.getReferences(tab.getTableNo(), false, true,
-						false, tableOffset);
-			}
+		if (fromTable.length() > 0) {
+			String parts[] = fromTable.split(",");
 
-			if (fromTable.length() > 0) {
-				String parts[] = fromTable.split(",");
-
-				bt.addText("(");
-				for (int i = 0; i < parts.length; i++) {
-					if (i > 0) {
-						bt.addText(", ");
-					}
-					try {
-						long refTab = Long.parseLong(parts[i]);
-						ReportUnit pare = tabMap.get(refTab - tableOffset);
-						if (pare == null) {
-							logger.severe("parents tab " + refTab
-									+ " not found");
+			bt.addText("(");
+			for (int i = 0; i < parts.length; i++) {
+				if (i > 0) {
+					bt.addText(", ");
+				}
+				try {
+					long refTab = Long.parseLong(parts[i]);
+					ReportUnit pare = tabMap.get(refTab - tableOffset);
+					if (pare == null) {
+						logger.severe("parents tab " + refTab + " not found");
+					} else {
+						// StringBuilder sbb = new StringBuilder();
+						ReportTableMember rm = pare.getParent().get(0);
+						if (rm.getSex().equals("M")) {
+							bt.addText(typesTable.getTextValue("Father"));
 						} else {
-							// StringBuilder sbb = new StringBuilder();
-							ReportTableMember rm = pare.getParent().get(0);
-							if (rm.getSex().equals("M")) {
-								bt.addText(typesTable.getTextValue("Father"));
-							} else {
-								bt.addText(typesTable.getTextValue("Mother"));
+							bt.addText(typesTable.getTextValue("Mother"));
+						}
+						bt.addText(": ");
+						int ppid = rm.getPid();
+						SukuData ppdata = caller.getKontroller().getSukuData(
+								"cmd=person", "pid=" + ppid, "mode=short",
+								"lang=" + Resurses.getLanguage());
+
+						if (ppdata.pers != null && ppdata.pers.length > 0) {
+							if (ppdata.pers[0].getPrivacy() != null) {
+								ppdata.pers[0] = new PersonShortData(
+										ppdata.pers[0].getPid(), "N.N.", null,
+										null, null, null, null, null);
+
 							}
-							bt.addText(": ");
-							int ppid = rm.getPid();
-							SukuData ppdata = caller.getKontroller()
-									.getSukuData("cmd=person", "pid=" + ppid,
-											"mode=short",
-											"lang=" + Resurses.getLanguage());
-
-							if (ppdata.pers != null && ppdata.pers.length > 0) {
-								if (ppdata.pers[0].getPrivacy() == null) {
-									if (ppdata.pers[0].getGivenname() != null) {
-										printGivenname(bt,
-												ppdata.pers[0].getGivenname(),
-												false);
-										if (ppdata.pers[0].getPrefix() != null
-												|| ppdata.pers[0].getSurname() != null
-												|| ppdata.pers[0].getPostfix() != null) {
-											bt.addText(" ");
-										}
-										if (ppdata.pers[0].getPrefix() != null) {
-											bt.addText(ppdata.pers[0]
-													.getPrefix() + " ");
-										}
-										if (ppdata.pers[0].getSurname() != null) {
-											bt.addText(ppdata.pers[0]
-													.getSurname());
-										}
-										if (ppdata.pers[0].getPostfix() != null) {
-											bt.addText(" "
-													+ ppdata.pers[0]
-															.getPostfix());
-										}
-
-									}
-								} else {
-									printNameNn(bt);
+							if (ppdata.pers[0].getGivenname() != null) {
+								printGivenname(bt,
+										ppdata.pers[0].getGivenname(), false);
+								if (ppdata.pers[0].getPrefix() != null
+										|| ppdata.pers[0].getSurname() != null
+										|| ppdata.pers[0].getPostfix() != null) {
+									bt.addText(" ");
 								}
-								bt.addText(" ");
-								bt.addText(typesTable.getTextValue("FROMTABLE")
-										.toLowerCase() + " " + refTab, true,
-										false);
+								if (ppdata.pers[0].getPrefix() != null) {
+									bt.addText(ppdata.pers[0].getPrefix() + " ");
+								}
+								if (ppdata.pers[0].getSurname() != null) {
+									bt.addText(ppdata.pers[0].getSurname());
+								}
+								if (ppdata.pers[0].getPostfix() != null) {
+									bt.addText(" "
+											+ ppdata.pers[0].getPostfix());
+								}
 
 							}
+
+							bt.addText(" ");
+							bt.addText(typesTable.getTextValue("FROMTABLE")
+									.toLowerCase() + " " + refTab, true, false);
 
 						}
-
-					} catch (NumberFormatException ne) {
-						// not expected here i.e. program error
-						logger.log(Level.WARNING, "pare fetch", ne);
-
-					} catch (SukuException e) {
-						logger.log(Level.WARNING, "pare fetch", e);
 					}
-				}
 
-				bt.addText("). ");
+				} catch (NumberFormatException ne) {
+					// not expected here i.e. program error
+					logger.log(Level.WARNING, "pare fetch", ne);
+
+				} catch (SukuException e) {
+					logger.log(Level.WARNING, "pare fetch", e);
+				}
 			}
 
-			// }
+			bt.addText("). ");
+		}
 
+		// }
+		if (pdata.persLong.getPrivacy() == null) {
 			printNotices(bt, notices, 2, tab.getTableNo() + tableOffset);
 		} else {
 			printNameNn(bt);
