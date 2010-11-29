@@ -2836,9 +2836,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 								vv.add(pitt);
 
 							}
-
 						}
-
 						float prose = (runnervalue * 100f) / mapsize;
 						if (prose > 100)
 							prose = 100;
@@ -2851,6 +2849,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					for (int i = 0; i < pits.length; i++) {
 						PersonInTables pit = pits[i];
+						if (pit.shortPerson.getPrivacy() != null) {
+							PersonShortData nn = new PersonShortData(
+									pit.shortPerson.getPid(), "N N", null,
+									null, null, null, null, null);
+							pit.shortPerson = nn;
+						}
 						String mefe = pit.getReferences(0, false, false, true,
 								indexTabOffset);
 
@@ -2957,6 +2961,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							row++;
 						}
 					}
+
 				}
 
 				if (commonIndexPlaces.isSelected()) {

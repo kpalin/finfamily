@@ -41,6 +41,7 @@ public class PersonShortData implements Serializable, Transferable,
 	private int pid = 0;
 	private String refn = null;
 	private String sex = null;
+	private String privacy = null;
 	private String group = null;
 	private ShortName[] names = null;
 
@@ -553,7 +554,7 @@ public class PersonShortData implements Serializable, Transferable,
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("select u.sex,u.userrefn,u.groupid,"
-				+ "u.tag,n.tag,n.givenname,");
+				+ "u.tag,u.privacy,n.tag,n.givenname,");
 		sql.append("n.patronym,n.prefix,n.surname,n.postfix,");
 		sql.append("n.fromdate,n.Place,n.Description,"
 				+ "n.pnid,n.mediadata,n.mediafilename,n.mediatitle,n.email ");
@@ -588,14 +589,15 @@ public class PersonShortData implements Serializable, Transferable,
 					this.refn = rs.getString(2);
 					this.sex = rs.getString(1);
 					this.group = rs.getString(3);
+					this.privacy = rs.getString(5);
 				}
-				tag = rs.getString(5);
+				tag = rs.getString(6);
 				content = "XX";
 				if (tag != null) {
 					if (tag.equals("NAME")) {
-						ShortName nn = new ShortName(rs.getString(6),
-								rs.getString(7), rs.getString(8),
-								rs.getString(9), rs.getString(10));
+						ShortName nn = new ShortName(rs.getString(7),
+								rs.getString(8), rs.getString(9),
+								rs.getString(10), rs.getString(11));
 
 						sn.add(nn);
 					}
@@ -604,12 +606,12 @@ public class PersonShortData implements Serializable, Transferable,
 
 						if (this.birtTag == null || tag.equals("BIRT")) {
 							this.birtTag = tag;
-							this.bDate = rs.getString(11);
-							this.bPlace = rs.getString(12);
+							this.bDate = rs.getString(12);
+							this.bPlace = rs.getString(13);
 						}
 					}
 					if (tag.equals("RESI")) {
-						content = rs.getString(18);
+						content = rs.getString(19);
 						if (content != null) {
 							content = "@";
 						} else {
@@ -621,23 +623,23 @@ public class PersonShortData implements Serializable, Transferable,
 
 						if (this.deatTag == null || tag.equals("DEAT")) {
 							this.deatTag = tag;
-							this.dDate = rs.getString(11);
-							this.dPlace = rs.getString(12);
+							this.dDate = rs.getString(12);
+							this.dPlace = rs.getString(13);
 						}
 					}
 
 					if ("OCCU".equals(tag)) {
-						this.occu = rs.getString(13);
+						this.occu = rs.getString(14);
 					}
 					if ("UNKN".equals(tag)) {
 						hasUnkn = true;
 					}
 					if ("PHOT".equals(tag)) {
-						this.mediaDataNotice = rs.getInt(14);
-						this.mediaFilename = rs.getString(16);
-						this.mediaTitle = rs.getString(17);
+						this.mediaDataNotice = rs.getInt(15);
+						this.mediaFilename = rs.getString(17);
+						this.mediaTitle = rs.getString(18);
 						if (this.mediaFilename != null) {
-							this.imageData = rs.getBytes(15);
+							this.imageData = rs.getBytes(16);
 						}
 					}
 
@@ -1443,6 +1445,13 @@ public class PersonShortData implements Serializable, Transferable,
 
 	public int getMotherPid() {
 		return motherPid;
+	}
+
+	/**
+	 * @return the privacy
+	 */
+	public String getPrivacy() {
+		return privacy;
 	}
 
 	private class ShortName implements Serializable {
