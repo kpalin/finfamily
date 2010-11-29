@@ -571,8 +571,10 @@ public abstract class CommonReport {
 						if (ppdata.pers != null && ppdata.pers.length > 0) {
 							if (ppdata.pers[0].getPrivacy() != null) {
 								ppdata.pers[0] = new PersonShortData(
-										ppdata.pers[0].getPid(), "N.N.", null,
-										null, null, null, null, null);
+										ppdata.pers[0].getPid(),
+										typesTable
+												.getTextValue("REPORT_NOMEN_NESCIO"),
+										null, null, null, null, null, null);
 
 							}
 							if (ppdata.pers[0].getGivenname() != null) {
@@ -1033,7 +1035,7 @@ public abstract class CommonReport {
 
 		UnitNotice[] notices = new UnitNotice[1];
 		notices[0] = new UnitNotice("NAME");
-		notices[0].setGivenname("N.N");
+		notices[0].setGivenname(typesTable.getTextValue("REPORT_NOMEN_NESCIO"));
 
 		for (int j = 0; j < notices.length; j++) {
 			UnitNotice nn = notices[j];
