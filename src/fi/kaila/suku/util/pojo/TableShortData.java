@@ -184,23 +184,23 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			y += rowHeight;
 		}
 		if (person.getBirtPlace() != null) {
-			g.drawString(person.getBirtPlace(), p.x + xmargin + xdatew, y);
+			g.drawString("  " + person.getBirtPlace(), p.x + xdatew, y);
 		}
 
 		if (person.getBirtDate() != null) {
-			g.drawString(Utils.textDate(person.getBirtDate(), false), p.x
-					+ xmargin, y);
+			g.drawString("* " + Utils.textDate(person.getBirtDate(), false),
+					p.x, y);
 		}
 		if (person.getBirtDate() != null || person.getBirtPlace() != null) {
 			y += rowHeight;
 		}
 		if (person.getDeatPlace() != null) {
-			g.drawString(person.getDeatPlace(), p.x + xmargin + xdatew, y);
+			g.drawString("  " + person.getDeatPlace(), p.x + xdatew, y);
 		}
 
 		if (person.getDeatDate() != null) {
-			g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
-					+ xmargin, y);
+			g.drawString("† " + Utils.textDate(person.getDeatDate(), false),
+					p.x, y);
 		}
 
 		if (person.getDeatDate() != null || person.getDeatPlace() != null) {
@@ -294,21 +294,20 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		g.drawString(person.getTextName(), p.x, y);
 
 		if (person.getBirtDate() != null) {
-			g.drawString(Utils.textDate(person.getBirtDate(), false), p.x
-					+ xdate + xmargin, y);
+			g.drawString("* " + Utils.textDate(person.getBirtDate(), false),
+					p.x + xdate, y);
 		}
 		if (person.getBirtPlace() != null) {
-			g.drawString(person.getBirtPlace(), p.x + xdate + datew + xmargin,
-					y);
+			g.drawString("  " + person.getBirtPlace(), p.x + xdate + datew, y);
 		}
 		if (person.getDeatDate() != null) {
 
-			g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
-					+ xdate + xmargin, y + rowHeight);
+			g.drawString("† " + Utils.textDate(person.getDeatDate(), false),
+					p.x + xdate, y + rowHeight);
 		}
 		if (person.getDeatPlace() != null) {
-			g.drawString(person.getDeatPlace(), p.x + xdate + datew + xmargin,
-					y + rowHeight);
+			g.drawString("  " + person.getDeatPlace(), p.x + xdate + datew
+					+ xmargin, y + rowHeight);
 		}
 		if (person.getOccupation() != null) {
 
@@ -331,20 +330,22 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			personAreas.add(pr);
 
 			if (person.getBirtDate() != null) {
-				g.drawString(Utils.textDate(person.getBirtDate(), false), p.x
-						+ xdate + xmargin, y);
+				g.drawString(
+						"* " + Utils.textDate(person.getBirtDate(), false), p.x
+								+ xdate, y);
 			}
 			if (person.getBirtPlace() != null) {
-				g.drawString(person.getBirtPlace(), p.x + xdate + datew
-						+ xmargin, y);
+				g.drawString("  " + person.getBirtPlace(), p.x + xdate + datew,
+						y);
 			}
 			if (person.getDeatDate() != null) {
-				g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
-						+ xdate + xmargin, y + rowHeight);
+				g.drawString(
+						"† " + Utils.textDate(person.getDeatDate(), false), p.x
+								+ xdate, y + rowHeight);
 			}
 			if (person.getDeatPlace() != null) {
-				g.drawString(person.getDeatPlace(), p.x + xdate + datew
-						+ xmargin, y + rowHeight);
+				g.drawString("  " + person.getDeatPlace(), p.x + xdate + datew,
+						y + rowHeight);
 			}
 			if (person.getOccupation() != null) {
 				g.drawString(person.getOccupation(), p.x + xmargin, y
@@ -430,20 +431,22 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 					person.getGraphRowCount() * rowHeight);
 			personAreas.add(pr);
 			if (person.getBirtDate() != null) {
-				g.drawString(Utils.textDate(person.getBirtDate(), false), p.x
-						+ xdate + xmargin, y);
+				g.drawString(
+						"* " + Utils.textDate(person.getBirtDate(), false), p.x
+								+ xdate, y);
 			}
 			if (person.getBirtPlace() != null) {
-				g.drawString(person.getBirtPlace(), p.x + xdate + datew
-						+ xmargin, y);
+				g.drawString("  " + person.getBirtPlace(), p.x + xdate + datew,
+						y);
 			}
 			if (person.getDeatDate() != null) {
-				g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
-						+ xdate + xmargin, y + rowHeight);
+				g.drawString(
+						"† " + Utils.textDate(person.getDeatDate(), false), p.x
+								+ xdate, y + rowHeight);
 			}
 			if (person.getDeatPlace() != null) {
-				g.drawString(person.getDeatPlace(), p.x + xdate + datew
-						+ xmargin, y + rowHeight);
+				g.drawString("  " + person.getDeatPlace(), p.x + xdate + datew,
+						y + rowHeight);
 			}
 			if (person.getChildCount() > 0) {
 
