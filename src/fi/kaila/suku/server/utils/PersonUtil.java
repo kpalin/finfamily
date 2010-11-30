@@ -118,24 +118,36 @@ public class PersonUtil {
 							+ Utils.nv(nn[i].getSurname()) + "/"
 							+ Utils.nv(nn[i].getPostfix());
 					if (thisName.equals(prevName)) {
-						String e = Resurses.getString("IDENTICAL_NAMES_ERROR")
-								+ " [" + req.persLong.getPid() + "] idx [" + i
-								+ "] = " + thisName;
-						logger.warning(e);
-						res.resu = e;
-						return res;
+						if (nn[i].isToBeDeleted() == false) {
+							String e = Resurses
+									.getString("IDENTICAL_NAMES_ERROR")
+									+ " ["
+									+ req.persLong.getPid()
+									+ "] idx ["
+									+ i
+									+ "] = " + thisName;
+							logger.warning(e);
+							res.resu = e;
+							return res;
+						}
 					}
 					prevName = thisName;
 
 				} else if (nn[i].getTag().equals("OCCU")) {
 					String thisOccu = Utils.nv(nn[i].getDescription());
 					if (thisOccu.equals(prevOccu)) {
-						String e = Resurses.getString("IDENTICAL_OCCU_ERROR")
-								+ " [" + req.persLong.getPid() + "] idx [" + i
-								+ "] = " + thisOccu;
-						logger.warning(e);
-						res.resu = e;
-						return res;
+						if (nn[i].isToBeDeleted() == false) {
+							String e = Resurses
+									.getString("IDENTICAL_OCCU_ERROR")
+									+ " ["
+									+ req.persLong.getPid()
+									+ "] idx ["
+									+ i
+									+ "] = " + thisOccu;
+							logger.warning(e);
+							res.resu = e;
+							return res;
+						}
 					}
 					prevOccu = thisOccu;
 				}
