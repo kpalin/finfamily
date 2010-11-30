@@ -31,10 +31,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Vector<PersonShortData> famMember = new Vector<PersonShortData>();
-	private Vector<RelationShortData> famMemRel = new Vector<RelationShortData>();
+	private final Vector<PersonShortData> famMember = new Vector<PersonShortData>();
+	private final Vector<RelationShortData> famMemRel = new Vector<RelationShortData>();
 
-	private Vector<PersonRectangle> personAreas = new Vector<PersonRectangle>();
+	private final Vector<PersonRectangle> personAreas = new Vector<PersonRectangle>();
 
 	private int spouseIdx = 1;
 	private int spouseCount = 0;
@@ -48,15 +48,16 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	private int motherIdx = 1;
 	private int motherCount = 0;
 
-	private Dimension imageSize = new Dimension(70, 100);
-	private int separatorHeight = 5;
-	private int separatorWidth = 5;
-	private int headerHeight = 15;
-	private int rowHeight = 15;
+	private final Dimension imageSize = new Dimension(70, 100);
+	private final int separatorHeight = 5;
+	private final int separatorWidth = 5;
+	private final int headerHeight = 15;
+	private final int rowHeight = 15;
 
-	private Font textFont = new Font("Serif", Font.PLAIN, 14);
+	private final Font textFont = new Font("Serif", Font.PLAIN, 14);
 	// private FontMetrics fm = null;// g.getFontMetrics();
 	private int xdate = 0;
+	private int xdatew = 0;
 
 	private Rectangle currentArea = null;
 
@@ -183,23 +184,23 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			y += rowHeight;
 		}
 		if (person.getBirtPlace() != null) {
-			g.drawString(person.getBirtPlace(), p.x + xmargin, y);
+			g.drawString(person.getBirtPlace(), p.x + xmargin + xdatew, y);
 		}
 
 		if (person.getBirtDate() != null) {
 			g.drawString(Utils.textDate(person.getBirtDate(), false), p.x
-					+ xmargin + xdate, y);
+					+ xmargin, y);
 		}
 		if (person.getBirtDate() != null || person.getBirtPlace() != null) {
 			y += rowHeight;
 		}
 		if (person.getDeatPlace() != null) {
-			g.drawString(person.getDeatPlace(), p.x + xmargin, y);
+			g.drawString(person.getDeatPlace(), p.x + xmargin + xdatew, y);
 		}
 
 		if (person.getDeatDate() != null) {
 			g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
-					+ xmargin + xdate, y);
+					+ xmargin, y);
 		}
 
 		if (person.getDeatDate() != null || person.getDeatPlace() != null) {
@@ -217,6 +218,10 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		Dimension d = getSize(g);
 
 		int sujet = 0;
+
+		FontMetrics fm = g.getFontMetrics(textFont);
+
+		int datew = fm.stringWidth(" *13.04.1944"); // date width
 
 		currentArea = new Rectangle(p.x, p.y, d.width, d.height);
 		int xmargin = 25;
@@ -292,12 +297,19 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			g.drawString(Utils.textDate(person.getBirtDate(), false), p.x
 					+ xdate + xmargin, y);
 		}
+		if (person.getBirtPlace() != null) {
+			g.drawString(person.getBirtPlace(), p.x + xdate + datew + xmargin,
+					y);
+		}
 		if (person.getDeatDate() != null) {
 
 			g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
 					+ xdate + xmargin, y + rowHeight);
 		}
-
+		if (person.getDeatPlace() != null) {
+			g.drawString(person.getDeatPlace(), p.x + xdate + datew + xmargin,
+					y + rowHeight);
+		}
 		if (person.getOccupation() != null) {
 
 			g.drawString(person.getOccupation(), p.x, y + rowHeight);
@@ -322,11 +334,18 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				g.drawString(Utils.textDate(person.getBirtDate(), false), p.x
 						+ xdate + xmargin, y);
 			}
+			if (person.getBirtPlace() != null) {
+				g.drawString(person.getBirtPlace(), p.x + xdate + datew
+						+ xmargin, y);
+			}
 			if (person.getDeatDate() != null) {
 				g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
 						+ xdate + xmargin, y + rowHeight);
 			}
-
+			if (person.getDeatPlace() != null) {
+				g.drawString(person.getDeatPlace(), p.x + xdate + datew
+						+ xmargin, y + rowHeight);
+			}
 			if (person.getOccupation() != null) {
 				g.drawString(person.getOccupation(), p.x + xmargin, y
 						+ rowHeight);
@@ -414,9 +433,17 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				g.drawString(Utils.textDate(person.getBirtDate(), false), p.x
 						+ xdate + xmargin, y);
 			}
+			if (person.getBirtPlace() != null) {
+				g.drawString(person.getBirtPlace(), p.x + xdate + datew
+						+ xmargin, y);
+			}
 			if (person.getDeatDate() != null) {
 				g.drawString(Utils.textDate(person.getDeatDate(), false), p.x
 						+ xdate + xmargin, y + rowHeight);
+			}
+			if (person.getDeatPlace() != null) {
+				g.drawString(person.getDeatPlace(), p.x + xdate + datew
+						+ xmargin, y + rowHeight);
 			}
 			if (person.getChildCount() > 0) {
 
@@ -517,13 +544,13 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		}
 
 		xdate = 0;
-		int datew = 0;
+		xdatew = 0;
 		FontMetrics fm = g.getFontMetrics(textFont);
 		int namew = 0;
 		int occuw = 0;
 		int birtw = 0;
 		int deatw = 0;
-		datew = fm.stringWidth(" *13.04.1944    "); // date width
+		xdatew = fm.stringWidth(" *13.04.1944    "); // date width
 		int datemargin = fm.stringWidth("    ");
 		int placew = 0;
 		namew = fm.stringWidth(person.getTextName());
@@ -545,8 +572,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			sb.append(person.getBirtPlace());
 		}
 		birtw = fm.stringWidth(sb.toString());
-		if (birtw > 0 && birtw < datew + placew) {
-			birtw = datew + placew;
+		if (birtw > 0 && birtw < xdatew + placew) {
+			birtw = xdatew + placew;
 		}
 		sb = new StringBuilder();
 		sb.append("* ");
@@ -561,8 +588,8 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			sb.append(person.getDeatPlace());
 		}
 		deatw = fm.stringWidth(sb.toString());
-		if (deatw > 0 && deatw < datew + placew) {
-			deatw = datew + placew;
+		if (deatw > 0 && deatw < xdatew + placew) {
+			deatw = xdatew + placew;
 		}
 		xdate += datemargin;
 
@@ -636,6 +663,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 			namew = namew + datew;
 		}
 
+		namew += datew;
 		return new Dimension(namew, height);
 
 	}
@@ -938,6 +966,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < famMember.size(); i++) {

@@ -214,7 +214,7 @@ public class SukuServerImpl implements SukuServer {
 			PreparedStatement pstm = this.con.prepareStatement(sql);
 
 			pstm.setInt(1, pid);
-
+			HashMap<Integer, Integer> test = new HashMap<Integer, Integer>();
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
 				String tag = rs.getString(3);
@@ -224,22 +224,23 @@ public class SukuServerImpl implements SukuServer {
 				String div = rs.getString(5);
 				// String stag = rs.getString(6);
 				int surety = rs.getInt(7);
-				// System.out.println("XX: " + tag + "/" + relPid + "/" +
-				// relOrder + "/" + aux + "/" + div);
+				if (test.put(relPid, 0) == null) {
+					// System.out.println("XX: " + tag + "/" + relPid + "/" +
+					// relOrder + "/" + aux + "/" + div);
 
-				RelationShortData rel = new RelationShortData(pid, relPid,
-						relOrder, tag, surety);
+					RelationShortData rel = new RelationShortData(pid, relPid,
+							relOrder, tag, surety);
 
-				if (aux != null) {
-					rel.setMarrDate(aux);
+					if (aux != null) {
+						rel.setMarrDate(aux);
+					}
+
+					if (div != null) {
+						rel.setDivDate(div);
+					}
+
+					v.add(rel);
 				}
-
-				if (div != null) {
-					rel.setDivDate(div);
-				}
-
-				v.add(rel);
-
 			}
 			pstm.close();
 
