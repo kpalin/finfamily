@@ -969,8 +969,11 @@ public class Read2004XML extends DefaultHandler {
 
 		if (this.currentEle.equals(unitNameTG)) {
 			insertUnitName();
+		} else if (this.currentEle.equals(unitRefnTG)) {
+			if (this.currentChars.length() > 0) {
+				this.unitRefn = this.currentChars.toString();
+			}
 		}
-
 		if (this.currentEle.equals(unitTG)) {
 			updateUnit();
 
