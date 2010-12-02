@@ -46,6 +46,7 @@ import javax.swing.table.TableColumnModel;
 
 import jxl.Workbook;
 import jxl.write.Label;
+import jxl.write.Number;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
@@ -179,6 +180,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private TaskIndex taskIndex;
 	private TaskSureties taskSureties;
 	private TaskAddresses taskAddresses;
+	private TaskGeneral taskGeneral;
 	private final ReportWorkerDialog self;
 
 	private boolean endSuccess = true;
@@ -872,6 +874,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			listad.setActionCommand("REPORT.LISTA.ADDRESSES");
 			listaGroup.add(listad);
 
+			listad = new JRadioButton(
+					Resurses.getString("REPORT.LISTA.GENERAL"));
+			listaPanel.add(listad);
+			listad.setBounds(10, 116, 200, 20);
+			listad.setActionCommand("REPORT.LISTA.GENERAL");
+			listaGroup.add(listad);
+
 			try {
 				SukuData vlist = kontroller.getSukuData("cmd=viewlist");
 				viewnames = new String[vlist.generalArray.length + 1];
@@ -1263,6 +1272,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						taskAddresses = new TaskAddresses();
 						taskAddresses.addPropertyChangeListener(this);
 						taskAddresses.execute();
+					} else if (listSele.equals("REPORT.LISTA.GENERAL")) {
+						taskGeneral = new TaskGeneral();
+						taskGeneral.addPropertyChangeListener(this);
+						taskGeneral.execute();
 					} else {
 						JOptionPane.showMessageDialog(this, Resurses
 								.getString("REPORT.LISTA.NOLIST.SELECTED"));
@@ -3036,6 +3049,320 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		 * 
 		 * @see javax.swing.SwingWorker#done()
 		 */
+		@Override
+		public void done() {
+			Toolkit.getDefaultToolkit().beep();
+			setVisible(false);
+
+		}
+	}
+
+	class TaskGeneral extends SwingWorker<Void, Void> {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			try {
+
+				if (parent.getDatabaseRowCount() > 60000) {
+					JOptionPane.showMessageDialog(null,
+							Resurses.getString("DBLISTA_TOO_LARGE"),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					return null;
+				}
+
+				if (!Suku.kontroller.createLocalFile("xls")) {
+					return null;
+				}
+
+				setProgress(0);
+
+				PersonShortData[] shorts = new PersonShortData[parent
+						.getDatabaseRowCount()];
+				PersonLongData longs = null;
+
+				for (int idx = 0; idx < shorts.length; idx++) {
+					shorts[idx] = parent.getDatbasePerson(idx);
+				}
+
+				BufferedOutputStream bstr = new BufferedOutputStream(
+						Suku.kontroller.getOutputStream());
+				WritableWorkbook workbook = Workbook.createWorkbook(bstr);
+
+				WritableFont arial10bold = new WritableFont(WritableFont.ARIAL,
+						10, WritableFont.BOLD, true);
+				WritableCellFormat arial0bold = new WritableCellFormat(
+						arial10bold);
+
+				WritableFont arial10 = new WritableFont(WritableFont.ARIAL, 10,
+						WritableFont.NO_BOLD, false);
+				WritableCellFormat arial0 = new WritableCellFormat(arial10);
+
+				WritableSheet sheet = workbook.createSheet(
+						Resurses.getString("REPORT.LISTA.GENERAL"), 0);
+				int rivi = 0;
+				WritableSheet wsh = sheet;
+				jxl.write.Number nume = null;
+				Label label = new Label(0, rivi,
+						typesTable.getTextValue("GENERAL_PID"), arial0bold);
+				sheet.addCell(label);
+				wsh.setColumnView(0, 5);
+				label = new Label(1, rivi,
+						typesTable.getTextValue("GENERAL_REFN"), arial0bold);
+				sheet.addCell(label);
+				wsh.setColumnView(1, 5);
+				label = new Label(2, rivi,
+						typesTable.getTextValue("GENERAL_GROUP"), arial0bold);
+				sheet.addCell(label);
+
+				label = new Label(3, rivi,
+						typesTable.getTextValue("GENERAL_PAPA"), arial0bold);
+				sheet.addCell(label);
+				wsh.setColumnView(3, 5);
+				label = new Label(4, rivi,
+						typesTable.getTextValue("GENERAL_MAMA"), arial0bold);
+				sheet.addCell(label);
+				wsh.setColumnView(4, 5);
+				label = new Label(5, rivi, typesTable.getTagName("NAME"),
+						arial0bold);
+				sheet.addCell(label);
+				wsh.setColumnView(5, 25);
+				label = new Label(6, rivi,
+						typesTable.getTextValue("ADDRESS_GIVENNAME"),
+						arial0bold);
+				sheet.addCell(label);
+				label = new Label(7, rivi,
+						typesTable.getTextValue("ADDRESS_PATRONYME"),
+						arial0bold);
+				sheet.addCell(label);
+				label = new Label(8, rivi,
+						typesTable.getTextValue("ADDRESS_SURNAME"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(9, rivi,
+						typesTable.getTextValue("GENERAL_MORENAMES"),
+						arial0bold);
+				sheet.addCell(label);
+				label = new Label(10, rivi, typesTable.getTagName("BIRT"),
+						arial0bold);
+				sheet.addCell(label);
+				label = new Label(11, rivi,
+						typesTable.getTextValue("INDEX_PLACE"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(12, rivi, typesTable.getTagName("DEAT"),
+						arial0bold);
+				sheet.addCell(label);
+				label = new Label(13, rivi,
+						typesTable.getTextValue("INDEX_PLACE"), arial0bold);
+				sheet.addCell(label);
+				label = new Label(14, rivi, typesTable.getTagName("OCCU"),
+						arial0bold);
+				sheet.addCell(label);
+
+				//
+
+				for (int i = 0; i < shorts.length; i++) {
+
+					SukuData sdata = Suku.getKontroller().getSukuData(
+							"cmd=person", "pid=" + shorts[i].getPid());
+					longs = sdata.persLong;
+
+					int dada = 0;
+					int mama = 0;
+
+					if (sdata.pers != null) {
+						for (int j = 0; j < sdata.pers.length; j++) {
+							PersonShortData sd = sdata.pers[j];
+							if ("M".equals(sd.getSex())) {
+								dada = sd.getPid();
+							} else {
+								mama = sd.getPid();
+							}
+						}
+					}
+
+					float prose = (i * 100f) / shorts.length;
+
+					UnitNotice name = null;
+					UnitNotice birt = null;
+					UnitNotice deat = null;
+
+					setRunnerValue("" + (int) prose + ";" + " ");
+					StringBuilder sNames = new StringBuilder();
+					StringBuilder occus = new StringBuilder();
+					for (int j = 0; j < longs.getNotices().length; j++) {
+
+						UnitNotice notice = longs.getNotices()[j];
+						if (notice.getTag().equals("NAME")) {
+							if (name == null) {
+								name = notice;
+							} else {
+								if (notice.getSurname() != null) {
+									if (sNames.length() > 0) {
+										sNames.append(";");
+									}
+									sNames.append(notice.getSurname());
+								}
+							}
+
+						}
+						if (notice.getTag().equals("BIRT")) {
+							if (birt == null) {
+								birt = notice;
+							}
+
+						}
+						if (notice.getTag().equals("DEAT")) {
+							if (deat == null) {
+								deat = notice;
+							}
+
+						}
+						if (notice.getTag().equals("OCCU")) {
+							if (occus.length() > 0) {
+								occus.append(";");
+							}
+							occus.append(notice.getDescription());
+
+						}
+
+					}
+
+					rivi++;
+					nume = new jxl.write.Number(0, rivi, name.getPid());
+					sheet.addCell(nume);
+
+					if (longs.getRefn() != null) {
+						label = new Label(1, rivi, longs.getRefn(), arial0);
+						sheet.addCell(label);
+					}
+
+					if (longs.getGroupId() != null) {
+						label = new Label(2, rivi, longs.getGroupId(), arial0);
+						sheet.addCell(label);
+					}
+
+					if (dada > 0) {
+						Number num = new Number(3, rivi, dada);
+						sheet.addCell(num);
+					}
+
+					if (mama > 0) {
+						Number num = new Number(4, rivi, mama);
+						sheet.addCell(num);
+					}
+
+					StringBuilder sb = new StringBuilder();
+					if (name.getGivenname() != null) {
+						sb.append(name.getGivenname());
+					}
+					if (name.getPatronym() != null) {
+						if (sb.length() > 0) {
+							sb.append(" ");
+
+						}
+						sb.append(name.getPatronym());
+					}
+
+					if (name.getPrefix() != null) {
+						if (sb.length() > 0) {
+							sb.append(" ");
+
+						}
+						sb.append(name.getPrefix());
+					}
+					if (name.getSurname() != null) {
+						if (sb.length() > 0) {
+							sb.append(" ");
+
+						}
+						sb.append(name.getSurname());
+					}
+					if (name.getPostfix() != null) {
+						if (sb.length() > 0) {
+							sb.append(" ");
+
+						}
+						sb.append(name.getPostfix());
+					}
+					if (sb.length() > 0) {
+						label = new Label(5, rivi, sb.toString(), arial0);
+						sheet.addCell(label);
+					}
+
+					if (name.getGivenname() != null) {
+						label = new Label(6, rivi, name.getGivenname(), arial0);
+						sheet.addCell(label);
+					}
+
+					if (name.getPatronym() != null) {
+						label = new Label(7, rivi, name.getPatronym(), arial0);
+						sheet.addCell(label);
+					}
+					sb = new StringBuilder();
+					if (name.getPrefix() != null) {
+						sb.append(name.getPrefix());
+					}
+					if (name.getSurname() != null) {
+						if (sb.length() > 0) {
+							sb.append(" ");
+						}
+						sb.append(name.getSurname());
+					}
+					label = new Label(8, rivi, sb.toString(), arial0);
+					sheet.addCell(label);
+					if (sNames.length() > 0) {
+						label = new Label(9, rivi, sNames.toString(), arial0);
+						sheet.addCell(label);
+					}
+					if (birt != null) {
+						if (birt.getFromDate() != null) {
+							label = new Label(10, rivi, Utils.textDate(
+									birt.getFromDate(), true), arial0);
+							sheet.addCell(label);
+						}
+						if (birt.getPlace() != null) {
+							label = new Label(11, rivi, birt.getPlace(), arial0);
+							sheet.addCell(label);
+						}
+					}
+
+					if (deat != null) {
+						if (deat.getFromDate() != null) {
+							label = new Label(12, rivi, Utils.textDate(
+									deat.getFromDate(), true), arial0);
+							sheet.addCell(label);
+						}
+						if (deat.getPlace() != null) {
+							label = new Label(13, rivi, deat.getPlace(), arial0);
+							sheet.addCell(label);
+						}
+					}
+
+					if (occus.length() > 0) {
+
+						label = new Label(14, rivi, occus.toString(), arial0);
+						sheet.addCell(label);
+
+					}
+
+				}
+
+				// }
+				setRunnerValue("100;OK");
+				workbook.write();
+				workbook.close();
+				bstr.close();
+				String report = Suku.kontroller.getFilePath();
+
+				Utils.openExternalFile(report);
+			} catch (Throwable e) {
+				JOptionPane.showMessageDialog(parent, e.getMessage());
+				logger.log(Level.WARNING, "Exception in background thread", e);
+			}
+			return null;
+
+		}
+
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();

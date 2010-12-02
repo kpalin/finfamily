@@ -314,4 +314,20 @@ public class BodyText {
 
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		if (imageName != null) {
+			sb.append("Image: ");
+			sb.append(imageName);
+			sb.append("\n");
+		}
+
+		for (Text t : txt) {
+			sb.append(t.text);
+		}
+		return sb.toString();
+	}
+
 }

@@ -397,7 +397,7 @@ public abstract class CommonReport {
 		printNotices(bt, notices, 2, 0);
 		// bt = new BodyText();
 		// bt.addText("");
-		// repoWriter.addText(bt);
+		repoWriter.addText(bt);
 	}
 
 	/**

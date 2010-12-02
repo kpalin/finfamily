@@ -2,6 +2,11 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 964 on 02 dec 2010
+
+* Fixed person list (text format)
+* Added general info report (ecel format)
+
 Release 963 on 01 dec 2010
 
 * modifications to family tree
