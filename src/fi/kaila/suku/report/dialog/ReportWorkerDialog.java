@@ -3321,7 +3321,22 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							sheet.addCell(label);
 						}
 						if (birt.getPlace() != null) {
-							label = new Label(11, rivi, birt.getPlace(), arial0);
+							StringBuilder splace = new StringBuilder();
+							splace.append(birt.getPlace());
+							if (birt.getVillage() != null) {
+								splace.append(";");
+								splace.append(birt.getVillage());
+							}
+							if (birt.getFarm() != null) {
+								splace.append(";");
+								splace.append(birt.getFarm());
+							}
+							if (birt.getCroft() != null) {
+								splace.append(";");
+								splace.append(birt.getCroft());
+							}
+							label = new Label(11, rivi, splace.toString(),
+									arial0);
 							sheet.addCell(label);
 						}
 					}
@@ -3333,7 +3348,24 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							sheet.addCell(label);
 						}
 						if (deat.getPlace() != null) {
-							label = new Label(13, rivi, deat.getPlace(), arial0);
+
+							StringBuilder splace = new StringBuilder();
+							splace.append(deat.getPlace());
+							if (deat.getVillage() != null) {
+								splace.append(";");
+								splace.append(deat.getVillage());
+							}
+							if (deat.getFarm() != null) {
+								splace.append(";");
+								splace.append(deat.getFarm());
+							}
+							if (deat.getCroft() != null) {
+								splace.append(";");
+								splace.append(deat.getCroft());
+							}
+							label = new Label(13, rivi, splace.toString(),
+									arial0);
+
 							sheet.addCell(label);
 						}
 					}

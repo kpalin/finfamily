@@ -2385,22 +2385,26 @@ public abstract class CommonReport {
 							bt.addText(")");
 							addSpace = true;
 						}
+						if (nn.getState() != null || nn.getCountry() != null) {
+							if (addSpace) {
+								bt.addText(" ");
+							}
+							bt.addText("(");
+							addSpace = false;
+							if (nn.getState() != null) {
+								addSpace = true;
 
-						if (nn.getState() != null) {
-							if (addSpace) {
-								bt.addText(", ");
-								addSpace = true;
-								addDot = true;
+								bt.addText(nn.getState());
 							}
-							bt.addText(nn.getState());
-						}
-						if (nn.getCountry() != null) {
-							if (addSpace) {
-								bt.addText(", ");
-								addSpace = true;
-								addDot = true;
+							if (nn.getCountry() != null) {
+								if (addSpace) {
+									bt.addText(", ");
+								}
+								bt.addText(nn.getCountry());
 							}
-							bt.addText(nn.getCountry());
+							addSpace = true;
+							addDot = true;
+							bt.addText(")");
 						}
 						if (tag.startsWith("PHOT") && caller.isSeparateImages()) {
 							if (addSpace) {
