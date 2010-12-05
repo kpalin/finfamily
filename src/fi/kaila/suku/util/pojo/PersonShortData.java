@@ -585,12 +585,12 @@ public class PersonShortData implements Serializable, Transferable,
 			String tag;
 			String content = "X";
 			while (rs.next()) {
-				if (this.sex == null) {
-					this.refn = rs.getString(2);
-					this.sex = rs.getString(1);
-					this.group = rs.getString(3);
-					this.privacy = rs.getString(5);
-				}
+				// if (this.sex == null) {
+				this.refn = rs.getString(2);
+				this.sex = rs.getString(1);
+				this.group = rs.getString(3);
+				this.privacy = rs.getString(5);
+				// }
 				tag = rs.getString(6);
 				content = "XX";
 				if (tag != null) {

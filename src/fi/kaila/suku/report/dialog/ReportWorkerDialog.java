@@ -2863,10 +2863,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					for (int i = 0; i < pits.length; i++) {
 						PersonInTables pit = pits[i];
 						if (pit.shortPerson.getPrivacy() != null) {
-							PersonShortData nn = new PersonShortData(
-									pit.shortPerson.getPid(), "N N", null,
-									null, null, null, null, null);
-							pit.shortPerson = nn;
+							if (pit.shortPerson.getPrivacy().equals("F")) {
+								PersonShortData nn = new PersonShortData(
+										pit.shortPerson.getPid(),
+										typesTable
+												.getTextValue("REPORT_NOMEN_NESCIO"),
+										null, null, null, null, null, null);
+								pit.shortPerson = nn;
+							}
 						}
 						String mefe = pit.getReferences(0, false, false, true,
 								indexTabOffset);

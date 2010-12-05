@@ -2334,20 +2334,22 @@ public abstract class CommonReport {
 							}
 						}
 
-						if (caller.isShowVillageFarm()
-								&& (nn.getVillage() != null
-										|| nn.getFarm() != null || nn
-										.getCroft() != null)) {
+						if ((caller.isShowVillageFarm() && (nn.getVillage() != null
+								|| nn.getFarm() != null || nn.getCroft() != null))
+								|| nn.getState() != null
+								|| nn.getCountry() != null) {
 							if (addSpace) {
 								bt.addText(" ");
 								addSpace = false;
 							}
 							bt.addText("(");
-							if (nn.getVillage() != null) {
+							if (caller.isShowVillageFarm()
+									&& nn.getVillage() != null) {
 								bt.addText(nn.getVillage());
 								addSpace = true;
 							}
-							if (nn.getFarm() != null) {
+							if (caller.isShowVillageFarm()
+									&& nn.getFarm() != null) {
 								if (addSpace) {
 									bt.addText(" ");
 									addSpace = true;
@@ -2355,7 +2357,8 @@ public abstract class CommonReport {
 								bt.addText(nn.getFarm());
 								addSpace = true;
 							}
-							if (nn.getCroft() != null) {
+							if (caller.isShowVillageFarm()
+									&& nn.getCroft() != null) {
 								if (addSpace) {
 									bt.addText(" ");
 									addSpace = true;
@@ -2363,18 +2366,12 @@ public abstract class CommonReport {
 								bt.addText(nn.getCroft());
 
 							}
-							bt.addText(")");
-							addSpace = true;
-						}
-						if (nn.getState() != null || nn.getCountry() != null) {
-							if (addSpace) {
-								bt.addText(" ");
-							}
-							bt.addText("(");
-							addSpace = false;
-							if (nn.getState() != null) {
-								addSpace = true;
 
+							if (nn.getState() != null) {
+								if (addSpace) {
+									bt.addText(" ");
+								}
+								addSpace = true;
 								bt.addText(nn.getState());
 							}
 							if (nn.getCountry() != null) {
