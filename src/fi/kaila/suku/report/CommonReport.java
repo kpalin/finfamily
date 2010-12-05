@@ -442,17 +442,6 @@ public abstract class CommonReport {
 		if (pdata.persLong == null)
 			return;
 
-		// for (int i = 0; i < tab.getMemberCount(); i++) {
-		// ReportTableMember mem = tab.getMember(i);
-		// PersonInTables pt = personReferences.get(mem.getPid());
-		//
-		// if (pt != null) {
-		// if (tab.getTableNo() > 0) {
-		// pt.addOwner(tab.getTableNo());
-		// }
-		// }
-		// }
-
 		UnitNotice[] xnotices = pdata.persLong.getNotices();
 
 		int tableCount = 0;
@@ -555,7 +544,7 @@ public abstract class CommonReport {
 					if (pare == null) {
 						logger.severe("parents tab " + refTab + " not found");
 					} else {
-						// StringBuilder sbb = new StringBuilder();
+
 						ReportTableMember rm = pare.getParent().get(0);
 						if (rm.getSex().equals("M")) {
 							bt.addText(typesTable.getTextValue("Father"));
@@ -617,11 +606,8 @@ public abstract class CommonReport {
 			bt.addText("). ");
 		}
 
-		// }
 		if (pdata.persLong.getPrivacy() == null) {
 			printNotices(bt, notices, 2, tab.getTableNo() + tableOffset);
-		} else {
-			printNameNn(bt);
 		}
 		fromTable = "";
 		ref = personReferences.get(tab.getPid());
@@ -660,6 +646,10 @@ public abstract class CommonReport {
 			repoWriter.addText(bt);
 
 		}
+
+		//
+		// here fetch ancestors of table owner
+		//
 		try {
 			for (int i = 0; i < subjectmember.getSubCount(); i++) {
 				bt = new SubPersonText();
@@ -769,12 +759,10 @@ public abstract class CommonReport {
 				cdata = caller.getKontroller().getSukuData("cmd=person",
 						"pid=" + childMember.getPid());
 				ref = personReferences.get(childMember.getPid());
-				// boolean hasSpouses = childMember.getSpouses() != null
-				// && childMember.getSpouses().length > 0;
+
 				boolean hasSpouses = childMember.getSpouses() != null
-						&& childMember.getSpouses().length > 0;// ref.asParents.size()
-				// >
-				// 1;
+						&& childMember.getSpouses().length > 0;
+
 				toTable = "";
 				hasOwnTable = false;
 
@@ -831,10 +819,7 @@ public abstract class CommonReport {
 						}
 					}
 				}
-				// else if (tab.getParent().size() == 2) {
-				// pareTxt = "0: ";
-				// }
-				// check if child is adopted
+
 				StringBuilder adopTag = new StringBuilder();
 
 				for (int i = 0; i < cdata.relations.length; i++) {
@@ -904,10 +889,7 @@ public abstract class CommonReport {
 				if (!toTable.isEmpty()) {
 					bt.addText(typesTable.getTextValue("TABLE") + " " + toTable
 							+ ". ", true, false);
-					// bt.addText(
-					// typesTable.getTextValue(hasOwnTable ? "TABLE"
-					// : "ALSO") + " " + toTable + ". ", true,
-					// false);
+
 				} else {
 					toTable = ref.getReferences(tab.getTableNo(), false, true,
 							false, tableOffset);
@@ -921,7 +903,7 @@ public abstract class CommonReport {
 				}
 
 				if (childMember.getSubCount() > 0) {
-					// repoWriter.addText(bt);
+
 					HashMap<String, String> submap = new HashMap<String, String>();
 
 					for (int i = 0; i < childMember.getSubCount(); i++) {
@@ -983,16 +965,8 @@ public abstract class CommonReport {
 					}
 				}
 
-				// else {
-				// hasSpouses = childMember.getSpouses() != null
-				// && childMember.getSpouses().length > 0;
-				// if (!toTable.isEmpty()) {
-				// System.out.println("Liekö seppo 1 to " + toTable);
-				// }
 				if (hasSpouses) {
-					// if ( toTable.isEmpty()
-					// && childMember.getSpouses() != null
-					// && childMember.getSpouses().length > 0) {
+
 					if (childMember.getSpouses() != null
 							&& childMember.getSpouses().length > 0) {
 
@@ -1011,7 +985,6 @@ public abstract class CommonReport {
 						}
 					}
 				}
-				// }
 
 				if (bt.getCount() > 0) {
 					repoWriter.addText(bt);
@@ -1074,35 +1047,43 @@ public abstract class CommonReport {
 		} else {
 			tmp = "WIFE";
 		}
+
+		if (sdata.persLong.getPrivacy() != null
+				&& sdata.persLong.getPrivacy().equals("P")) {
+			return;
+		}
+
 		String spouType = typesTable.getTextValue(tmp);
 		RelationNotice rnn[] = null;
 		if (sdata.relations != null) {
 			boolean isMarrTag = false;
+
 			for (int i = 0; i < sdata.relations.length; i++) {
 				if (sdata.relations[i].getRelative() == memberPid) {
+					if (sdata.persLong.getPrivacy() == null) {
+						if (sdata.relations[i].getNotices() != null) {
+							rnn = sdata.relations[i].getNotices();
 
-					if (sdata.relations[i].getNotices() != null) {
-						rnn = sdata.relations[i].getNotices();
-
-						for (RelationNotice rr : rnn) {
-							if (rr.getTag().equals("MARR")) {
-								isMarrTag = true;
+							for (RelationNotice rr : rnn) {
+								if (rr.getTag().equals("MARR")) {
+									isMarrTag = true;
+								}
 							}
-						}
-						if (isMarrTag) {
+							if (isMarrTag) {
 
-							RelationNotice rn = rnn[0];
+								RelationNotice rn = rnn[0];
 
-							if (rn.getTag().equals("MARR")) {
-								// spouType = typesTable.getTextValue(rn
-								// .getTag());
-								spouType = printRelationNotice(rn, spouType,
-										spouNum, true);
+								if (rn.getTag().equals("MARR")) {
+									// spouType = typesTable.getTextValue(rn
+									// .getTag());
+									spouType = printRelationNotice(rn,
+											spouType, spouNum, true);
+								}
 							}
+
 						}
 
 					}
-
 				}
 			}
 			if (!isMarrTag) {

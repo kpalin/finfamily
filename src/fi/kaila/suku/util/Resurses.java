@@ -391,6 +391,9 @@ public class Resurses {
 	/** The Constant PRIVACY_TEXT. */
 	public static final String PRIVACY_TEXT = "T";
 
+	/** The Constant PRIVACY_FORBID. */
+	public static final String PRIVACY_FORBID = "F";
+
 	/** The Constant PRIVACY_INDEX. */
 	public static final String PRIVACY_INDEX = "I";
 

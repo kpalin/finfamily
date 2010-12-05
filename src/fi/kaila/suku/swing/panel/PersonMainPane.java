@@ -16,7 +16,7 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -60,8 +60,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 	private JButton update;
 	private static Logger logger = Logger.getLogger(PersonMainPane.class
 			.getName());
-
-	private JCheckBox privacy;
+	/** The privacy. */
+	private JComboBox privacy;
+	// private JCheckBox privacy;
 	private String[] sextexts = { "Mies", "Nainen", "Tuntematon" };
 	private final String[] sexes = { "M", "F", "U" };
 	private ButtonGroup sexGroup = null;
@@ -427,9 +428,11 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		int placlen = 213;
 		int rcol = lcol + datelen + placlen + colbet * 2; // 460; //
 		int biglen = datelen + placlen + colbet * 2 + rwidth * 2;
-
-		privacy = new JCheckBox(Resurses.getString("DATA_PRIVACY"));
-		privacy.setBounds(rcol, rrivi, 100, 20);
+		String[] privacies = Resurses.getString("MAIN_PRIVACY_LEVEL")
+				.split(";");
+		privacy = new JComboBox(privacies);
+		// privacy = new JCheckBox(Resurses.getString("DATA_PRIVACY"));
+		privacy.setBounds(rcol, rrivi, rwidth * 2, 20);
 		add(privacy);
 
 		rrivi += 24;
@@ -751,17 +754,21 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		if (currSex == null) {
 			throw new SukuException(Resurses.getString("DATA_SEX_NULL"));
 		}
-		// int sexidx = 0;
-		// for (int i = 0; i < sexes.length; i++) {
-		// if (currSex.equals(sexes[i])) {
-		// sexidx = i;
-		// }
-		// }
-		// // sex.setSelectedIndex(sexidx);
 
 		setRadioButton(sexGroup, currSex);
 
-		privacy.setSelected(persLong.getPrivacy() != null);
+		String privacyCode = persLong.getPrivacy();
+
+		int privaIndex = 0;
+		if (privacyCode != null) {
+			if (privacyCode.equals(Resurses.PRIVACY_FORBID)) {
+				privaIndex = 1;
+			} else {
+				privaIndex = 2;
+			}
+		}
+
+		privacy.setSelectedIndex(privaIndex);
 
 		groupid.setText(persLong.getGroupId());
 
@@ -964,8 +971,18 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			persLong.setSex(model.getActionCommand());
 		}
 
-		String priva = privacy.isSelected() ? "P" : null;
-		persLong.setPrivacy(priva);
+		String privacyCode = null;
+		switch (privacy.getSelectedIndex()) {
+		case 1:
+			privacyCode = Resurses.PRIVACY_FORBID;
+			break;
+
+		case 2:
+			privacyCode = Resurses.PRIVACY_PRIVACY;
+			break;
+		}
+
+		persLong.setPrivacy(privacyCode);
 
 		// if (persLong.getPid() == 0) {
 		String grp = groupid.getText();
@@ -1544,8 +1561,18 @@ public class PersonMainPane extends JPanel implements ActionListener,
 				persLong.setSex(model.getActionCommand());
 			}
 
-			String priva = privacy.isSelected() ? "P" : null;
-			persLong.setPrivacy(priva);
+			String privacyCode = null;
+			switch (privacy.getSelectedIndex()) {
+			case 1:
+				privacyCode = Resurses.PRIVACY_FORBID;
+				break;
+
+			case 2:
+				privacyCode = Resurses.PRIVACY_PRIVACY;
+				break;
+			}
+
+			persLong.setPrivacy(privacyCode);
 
 			String grp = groupid.getText();
 			persLong.setGroupId(grp);
@@ -1629,6 +1656,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			gnlen = lwidth / 2 - colbet;
 			surlen = lwidth - postlen - colbet;
 			placlen = lwidth - datelen - colbet;
+			rwidth -= 2;
 		} else {
 			gnlen = 150;
 			placlen = 213;
@@ -1640,7 +1668,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		int rivi = 10;
 		int rrivi = 30;
 
-		privacy.setBounds(rcol, rrivi, 100, 20);
+		privacy.setBounds(rcol, rrivi, rwidth * 2, 20);
 
 		rrivi += 24;
 		groupLbl.setBounds(rcol, rrivi, 100, 20);

@@ -277,6 +277,7 @@ public class PersonLongData implements Serializable {
 	 *            "P" of null
 	 */
 	public void setPrivacy(String text) {
+
 		if (!nv(this.privacy).equals(nv(text))) {
 			mainModified = true;
 			this.privacy = vn(text);
@@ -333,7 +334,7 @@ public class PersonLongData implements Serializable {
 	}
 
 	private String vn(String text) {
-		if (text.length() == 0) {
+		if (text == null || text.length() == 0) {
 			text = null;
 		}
 		return text;
