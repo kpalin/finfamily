@@ -16,6 +16,12 @@ import java.io.ByteArrayOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -29,10 +35,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.report.style.BodyText;
@@ -358,15 +360,24 @@ public class JavaReport extends JFrame implements ActionListener,
 				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		graphics2D.drawImage(image, 0, 0, thumbWidth, thumbHeight, null);
 
-		// Write the scaled image to the output stream
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-		JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(thumbImage);
-		int quality = 100; // Use between 1 and 100, with 100 being highest
-		quality = Math.max(0, Math.min(quality, 100));
-		param.setQuality(quality / 100.0f, false);
-		encoder.setJPEGEncodeParam(param);
-		encoder.encode(thumbImage);
+		ByteArrayOutputStream outimg = new ByteArrayOutputStream();
+		ImageWriter writer = null;
+		java.util.Iterator<ImageWriter> iter = ImageIO
+				.getImageWritersByFormatName("jpg");
+		if (iter.hasNext()) {
+			writer = iter.next();
+		}
+		ImageOutputStream ios = ImageIO.createImageOutputStream(outimg);
+		writer.setOutput(ios);
+		ImageWriteParam parimg = new JPEGImageWriteParam(
+				java.util.Locale.getDefault());
+
+		parimg.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+
+		parimg.setCompressionQuality(0.98f);
+
+		writer.write(null, new IIOImage(thumbImage, null, null), parimg);
+
 		return thumbImage;
 
 	}
