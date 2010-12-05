@@ -228,11 +228,17 @@ public class JavaReport extends JFrame implements ActionListener,
 
 				try {
 					Image img = scaleImage(bt.getImage(), (int) w, (int) h);
-					ImageIcon icon = new ImageIcon(img);
-					// ImageIcon icon = new ImageIcon(bt.getImage());
-					StyleConstants.setIcon(myStyle, icon);
+					if (img != null) {
+						ImageIcon icon = new ImageIcon(img);
+						// ImageIcon icon = new ImageIcon(bt.getImage());
+						StyleConstants.setIcon(myStyle, icon);
 
-					extra = "\n";
+						extra = "\n";
+					} else {
+						logger.warning("Image failed for " + it.getImageName());
+						extra = it.getImageName() + "\n";
+					}
+
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -366,6 +372,8 @@ public class JavaReport extends JFrame implements ActionListener,
 				.getImageWritersByFormatName("jpg");
 		if (iter.hasNext()) {
 			writer = iter.next();
+		} else {
+			return null;
 		}
 		ImageOutputStream ios = ImageIO.createImageOutputStream(outimg);
 		writer.setOutput(ios);
