@@ -110,6 +110,7 @@ public class PersonUtil {
 		if (nn != null) {
 			String prevName = "";
 			String prevOccu = "";
+
 			for (int i = 0; i < nn.length; i++) {
 				if (nn[i].getTag().equals("NAME")) {
 					String thisName = Utils.nv(nn[i].getGivenname()) + "/"
@@ -117,7 +118,7 @@ public class PersonUtil {
 							+ Utils.nv(nn[i].getPrefix()) + "/"
 							+ Utils.nv(nn[i].getSurname()) + "/"
 							+ Utils.nv(nn[i].getPostfix());
-					if (thisName.equals(prevName)) {
+					if (thisName.equals(prevName) && !prevName.equals("")) {
 						if (nn[i].isToBeDeleted() == false) {
 							String e = Resurses
 									.getString("IDENTICAL_NAMES_ERROR")
@@ -127,15 +128,18 @@ public class PersonUtil {
 									+ i
 									+ "] = " + thisName;
 							logger.warning(e);
-							res.resu = e;
-							return res;
+
+							if (req.persLong.getPid() > 0) {
+								res.resu = e;
+								return res;
+							}
 						}
 					}
 					prevName = thisName;
 
 				} else if (nn[i].getTag().equals("OCCU")) {
 					String thisOccu = Utils.nv(nn[i].getDescription());
-					if (thisOccu.equals(prevOccu)) {
+					if (thisOccu.equals(prevOccu) && !prevOccu.equals("")) {
 						if (nn[i].isToBeDeleted() == false) {
 							String e = Resurses
 									.getString("IDENTICAL_OCCU_ERROR")
@@ -143,10 +147,13 @@ public class PersonUtil {
 									+ req.persLong.getPid()
 									+ "] idx ["
 									+ i
-									+ "] = " + thisOccu;
+									+ "] = '" + thisOccu + "'";
 							logger.warning(e);
-							res.resu = e;
-							return res;
+
+							if (req.persLong.getPid() > 0) {
+								res.resu = e;
+								return res;
+							}
 						}
 					}
 					prevOccu = thisOccu;
