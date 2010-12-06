@@ -1943,6 +1943,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			} else if (cmd.equals(Resurses.EXIT)) {
 				System.exit(0);
 			} else if (cmd.equals(Resurses.SETTINGS)) {
+
+				int midx = personView.getMainPaneIndex();
+				if (midx > 0) {
+					SukuTabPane tp = personView.getPane(midx);
+					if (tp != null) {
+						personView.askAndClosePerson();
+					}
+				}
 				SettingsDialog sets = new SettingsDialog(this);
 				sets.setVisible(true);
 
