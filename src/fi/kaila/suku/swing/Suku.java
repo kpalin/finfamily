@@ -267,6 +267,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private final Vector<String> needle = new Vector<String>();
 	private static final int maxNeedle = 32;
 	private int isConnected = 0; // 0 = disconnected, 1 = connect to non suku, 2
+	private int imageScalingIndex = 0;
 	// = connect to suku
 	/** The is exiting. */
 	boolean isExiting = false;
@@ -4098,5 +4099,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			return ii;
 		}
 
+	}
+
+	public void setImageScalerIndex(int imageScaler) {
+
+		imageScalingIndex = imageScaler;
+	}
+
+	public int getImageScalerIndex() {
+		return imageScalingIndex;
 	}
 }

@@ -1,10 +1,22 @@
 package fi.kaila.suku.util;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+import javax.imageio.stream.ImageOutputStream;
 
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.report.PersonInTables;
@@ -761,6 +773,75 @@ public class Utils {
 
 		}
 		return name;
+	}
+
+	/**
+	 * This method has been copied from
+	 * http://www.webmaster-talk.com/coding-forum
+	 * /63227-image-resizing-in-java.html#post301529 made by Rick Palmer
+	 * Modified to use java ImageIO for output
+	 * 
+	 * @param image
+	 * @param p_width
+	 * @param p_height
+	 * @return the scaled image
+	 * @throws Exception
+	 */
+	public static BufferedImage scaleImage(Image image, int p_width,
+			int p_height) throws Exception {
+
+		int thumbWidth = p_width;
+		int thumbHeight = p_height;
+
+		// Make sure the aspect ratio is maintained, so the image is not skewed
+		double thumbRatio = (double) thumbWidth / (double) thumbHeight;
+		int imageWidth = image.getWidth(null);
+		int imageHeight = image.getHeight(null);
+		double imageRatio = (double) imageWidth / (double) imageHeight;
+		if (thumbRatio < imageRatio) {
+			thumbHeight = (int) (thumbWidth / imageRatio);
+		} else {
+			thumbWidth = (int) (thumbHeight * imageRatio);
+		}
+
+		// Draw the scaled image
+		BufferedImage thumbImage = new BufferedImage(thumbWidth, thumbHeight,
+				BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics2D = thumbImage.createGraphics();
+		graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+
+		graphics2D.drawImage(image, 0, 0, thumbWidth, thumbHeight, null);
+
+		ByteArrayOutputStream outimg = new ByteArrayOutputStream();
+		ImageWriter writer = null;
+		java.util.Iterator<ImageWriter> iter = ImageIO
+				.getImageWritersByFormatName("jpg");
+		if (iter.hasNext()) {
+			writer = iter.next();
+		} else {
+			return null;
+		}
+		ImageOutputStream ios = ImageIO.createImageOutputStream(outimg);
+		writer.setOutput(ios);
+		ImageWriteParam parimg = new JPEGImageWriteParam(
+				java.util.Locale.getDefault());
+
+		parimg.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+
+		// String typd[] = parimg.getCompressionQualityDescriptions();
+		// String typs[] = parimg.getCompressionTypes();
+		// float typf[] = parimg.getCompressionQualityValues();
+
+		// parimg.setCompressionMode(ImageWriteParam.MODE_DEFAULT);
+		parimg.setCompressionQuality(1.0f);
+
+		writer.write(null, new IIOImage(thumbImage, null, null), parimg);
+
+		return thumbImage;
+
 	}
 
 }

@@ -1,6 +1,7 @@
 package fi.kaila.suku.report;
 
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
@@ -32,6 +34,7 @@ import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ImageText;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 
 /**
  * 
@@ -64,7 +67,7 @@ public class XmlReport implements ReportInterface {
 	private Dimension maxPersonImageSize = new Dimension(0, 0);
 	private int translatorIdx;
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
-
+	private int imageScaleIndex = 0;
 	/** The image counter. */
 	// int imageCounter = 0;
 	private boolean reportClosed = false;
@@ -94,6 +97,8 @@ public class XmlReport implements ReportInterface {
 		maxImageSize = parent.getImageMaxSize();
 		maxPersonImageSize = parent.getPersonImageMaxSize();
 		debugState = parent.getDebugState();
+		imageScaleIndex = parent.getSukuParent().getImageScalerIndex();
+
 		switch (translatorIdx) {
 		case 1:
 			translator = "resources/xml/docx.xsl";
@@ -231,60 +236,19 @@ public class XmlReport implements ReportInterface {
 		int imgWidth = 0;
 		int imgHeight = 0;
 		String img = null;
+		Dimension maxSize = maxImageSize;
+		int outHeight = 0;
+		int outWidth = 0;
 		boolean isPersonImage = false;
 		if (bt instanceof ImageText) {
 			ImageText it = (ImageText) bt;
-			imgWidth = it.getWidth();
-			imgHeight = it.getHeight();
-			imgTitle = it.getImageTitle();
 			isPersonImage = it.isPersonImage();
-			// imageCounter++;
-			imgName = /* "" + imageCounter + "_" + */it.getImageName();
-			File ff = new File(folder + "/" + imgName);
-			if (it.getData() != null) {
-				FileOutputStream fos;
-				try {
-
-					if (translatorIdx == 1) {
-						img = convertTo64(it);
-
-					} else {
-
-						fos = new FileOutputStream(ff);
-						fos.write(it.getData());
-						fos.close();
-					}
-
-				} catch (FileNotFoundException e) {
-					logger.log(Level.WARNING, "Image", e);
-				} catch (IOException e) {
-					logger.log(Level.WARNING, "Image", e);
-				}
-			}
-		}
-
-		ele = doc.createElement("chapter");
-		String style = bt.getClass().getName();
-		int lastDot = style.lastIndexOf(".");
-		ele.setAttribute("style", style.substring(lastDot + 1));
-		// StringBuilder sb = new StringBuilder();
-		// for (int i = 0; i < text.getCount(); i++) {
-		// String tmp = text.getText(i);
-		// sb.append(tmp);
-		// }
-		// ele.setTextContent(sb.toString());
-		if (imgName != null) {
-			ele.setAttribute("image", imgName);
-			ele.setAttribute("title", imgTitle);
-			// if (parent.isNumberingImages()) {
-			// ele.setAttribute("imageNo", "" + imageCounter);
-			// }
-			ele.setAttribute("imageName", Resurses.getString("REPORT.IMAGE"));
-
-			Dimension maxSize = maxImageSize;
 			if (isPersonImage) {
 				maxSize = maxPersonImageSize;
 			}
+			imgWidth = it.getWidth();
+			imgHeight = it.getHeight();
+			imgTitle = it.getImageTitle();
 			float w;
 			float h;
 			if (maxSize.width == 0 && maxSize.height == 0) {
@@ -324,13 +288,59 @@ public class XmlReport implements ReportInterface {
 					h = imgHeight;
 				}
 			}
+
 			if (h > 10) {
-				ele.setAttribute("width", "" + w);
-				ele.setAttribute("height", "" + h);
-			} else {
-				ele.setAttribute("width", "" + imgWidth);
-				ele.setAttribute("height", "" + imgHeight);
+				outWidth = (int) w;
+				outHeight = (int) h;
+
 			}
+
+			// imageCounter++;
+			imgName = /* "" + imageCounter + "_" + */it.getImageName();
+			File ff = new File(folder + "/" + imgName);
+			if (it.getData() != null) {
+				FileOutputStream fos;
+				try {
+
+					if (translatorIdx == 1) {
+
+						img = convertTo64(it, outWidth, outHeight);
+
+					} else {
+
+						fos = new FileOutputStream(ff);
+						fos.write(it.getData());
+						fos.close();
+					}
+
+				} catch (FileNotFoundException e) {
+					logger.log(Level.WARNING, "Image", e);
+				} catch (IOException e) {
+					logger.log(Level.WARNING, "Image", e);
+				}
+			}
+		}
+
+		ele = doc.createElement("chapter");
+		String style = bt.getClass().getName();
+		int lastDot = style.lastIndexOf(".");
+		ele.setAttribute("style", style.substring(lastDot + 1));
+		// StringBuilder sb = new StringBuilder();
+		// for (int i = 0; i < text.getCount(); i++) {
+		// String tmp = text.getText(i);
+		// sb.append(tmp);
+		// }
+		// ele.setTextContent(sb.toString());
+		if (imgName != null) {
+			ele.setAttribute("image", imgName);
+			ele.setAttribute("title", imgTitle);
+			// if (parent.isNumberingImages()) {
+			// ele.setAttribute("imageNo", "" + imageCounter);
+			// }
+			ele.setAttribute("imageName", Resurses.getString("REPORT.IMAGE"));
+
+			ele.setAttribute("width", "" + outWidth);
+			ele.setAttribute("height", "" + outHeight);
 
 			// if (imgHeight > maxHeight) {
 			//
@@ -553,10 +563,12 @@ public class XmlReport implements ReportInterface {
 	 * 
 	 * @param it
 	 *            the Style with the image
+	 * @param outHeight
+	 * @param outWidth
 	 * @param to
 	 *            path for output file
 	 */
-	private String convertTo64(ImageText it) {
+	private String convertTo64(ImageText it, int outWidth, int outHeight) {
 
 		if (it == null) {
 			logger.warning("Image is null");
@@ -566,71 +578,172 @@ public class XmlReport implements ReportInterface {
 			logger.warning("Image data is null" + it);
 			return "";
 		}
-		Formatter ff = new Formatter();
 
-		StringBuilder sbb = new StringBuilder();
-
-		byte[] ibuf = new byte[3];
-		byte[] obuf = new byte[4];
-
-		int inputparts;
-		int colPos = 0;
-		int insize = it.getData().length;
-		int indata = 0;
-
-		while (insize > 0) {
-			for (int i = inputparts = 0; i < 3; i++) {
-				if (insize > 0) {
-					inputparts++;
-
-					ibuf[i] = it.getData()[indata];
-					indata++;
-					insize--;
-				} else
-					ibuf[i] = 0;
-			}
-
-			obuf[0] = (byte) ((ibuf[0] & 0xFC) >> 2);
-			obuf[1] = (byte) (((ibuf[0] & 0x03) << 4) | ((ibuf[1] & 0xF0) >> 4));
-			obuf[2] = (byte) (((ibuf[1] & 0x0F) << 2) | ((ibuf[2] & 0xC0) >> 6));
-			obuf[3] = (byte) (ibuf[2] & 0x3F);
-
-			char c0, c1, c2, c3;
-			switch (inputparts) {
-			case 1: /* only one byte read */
-				c0 = table64.charAt(obuf[0]);
-				c1 = table64.charAt(obuf[1]);
-				ff.format("%c%c==", c0, c1);
-
-				break;
-			case 2: /* two bytes read */
-				c0 = table64.charAt(obuf[0]);
-				c1 = table64.charAt(obuf[1]);
-				c2 = table64.charAt(obuf[2]);
-				ff.format("%c%c%c=", c0, c1, c2);
-				break;
-			default:
-				c0 = table64.charAt(obuf[0]);
-				c1 = table64.charAt(obuf[1]);
-				c2 = table64.charAt(obuf[2]);
-				c3 = table64.charAt(obuf[3]);
-				ff.format("%c%c%c%c", c0, c1, c2, c3);
-				break;
-			}
-
-			if (colPos >= 76) {
-				ff.format("\n");
-
-				colPos = 0;
-			} else {
-				colPos += 4;
-			}
-
+		if (imageScaleIndex == 0) {
+			outWidth = 0;
 		}
 
-		sbb.append(ff.out());
+		if (outWidth != 0) {
+			BufferedImage img = null;
 
-		return sbb.toString();
+			try {
+				img = Utils.scaleImage(it.getImage(), outWidth, outHeight);
+
+			} catch (Exception e) {
+				return e.toString();
+			}
+
+			// O P E N
+			// converting to bytes : copy-paste from
+			// http://mindprod.com/jgloss/imageio.html#TOBYTES
+			ByteArrayOutputStream baos = new ByteArrayOutputStream(1000);
+			byte[] resultImageAsRawBytes = null;
+			// W R I T E
+			try {
+				ImageIO.write(img, "jpeg", baos);
+				// C L O S E
+				baos.flush();
+				img.flush();
+				resultImageAsRawBytes = baos.toByteArray();
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// Raster raster = img.getRaster();
+			// DataBufferByte dbuf = (DataBufferByte) raster.getDataBuffer();
+			Formatter ff = new Formatter();
+
+			StringBuilder sbb = new StringBuilder();
+
+			byte[] ibuf = new byte[3];
+			byte[] obuf = new byte[4];
+
+			int inputparts;
+			int colPos = 0;
+			int insize = resultImageAsRawBytes.length;
+			int indata = 0;
+
+			while (insize > 0) {
+				for (int i = inputparts = 0; i < 3; i++) {
+					if (insize > 0) {
+						inputparts++;
+
+						ibuf[i] = resultImageAsRawBytes[indata];
+						// it.getData()[indata];
+						indata++;
+						insize--;
+					} else
+						ibuf[i] = 0;
+				}
+
+				obuf[0] = (byte) ((ibuf[0] & 0xFC) >> 2);
+				obuf[1] = (byte) (((ibuf[0] & 0x03) << 4) | ((ibuf[1] & 0xF0) >> 4));
+				obuf[2] = (byte) (((ibuf[1] & 0x0F) << 2) | ((ibuf[2] & 0xC0) >> 6));
+				obuf[3] = (byte) (ibuf[2] & 0x3F);
+
+				char c0, c1, c2, c3;
+				switch (inputparts) {
+				case 1: /* only one byte read */
+					c0 = table64.charAt(obuf[0]);
+					c1 = table64.charAt(obuf[1]);
+					ff.format("%c%c==", c0, c1);
+
+					break;
+				case 2: /* two bytes read */
+					c0 = table64.charAt(obuf[0]);
+					c1 = table64.charAt(obuf[1]);
+					c2 = table64.charAt(obuf[2]);
+					ff.format("%c%c%c=", c0, c1, c2);
+					break;
+				default:
+					c0 = table64.charAt(obuf[0]);
+					c1 = table64.charAt(obuf[1]);
+					c2 = table64.charAt(obuf[2]);
+					c3 = table64.charAt(obuf[3]);
+					ff.format("%c%c%c%c", c0, c1, c2, c3);
+					break;
+				}
+
+				if (colPos >= 76) {
+					ff.format("\n");
+
+					colPos = 0;
+				} else {
+					colPos += 4;
+				}
+			}
+			sbb.append(ff.out());
+
+			return sbb.toString();
+		} else {
+
+			Formatter ff = new Formatter();
+
+			StringBuilder sbb = new StringBuilder();
+
+			byte[] ibuf = new byte[3];
+			byte[] obuf = new byte[4];
+
+			int inputparts;
+			int colPos = 0;
+			int insize = it.getData().length;
+			int indata = 0;
+
+			while (insize > 0) {
+				for (int i = inputparts = 0; i < 3; i++) {
+					if (insize > 0) {
+						inputparts++;
+
+						ibuf[i] = it.getData()[indata];
+						indata++;
+						insize--;
+					} else
+						ibuf[i] = 0;
+				}
+
+				obuf[0] = (byte) ((ibuf[0] & 0xFC) >> 2);
+				obuf[1] = (byte) (((ibuf[0] & 0x03) << 4) | ((ibuf[1] & 0xF0) >> 4));
+				obuf[2] = (byte) (((ibuf[1] & 0x0F) << 2) | ((ibuf[2] & 0xC0) >> 6));
+				obuf[3] = (byte) (ibuf[2] & 0x3F);
+
+				char c0, c1, c2, c3;
+				switch (inputparts) {
+				case 1: /* only one byte read */
+					c0 = table64.charAt(obuf[0]);
+					c1 = table64.charAt(obuf[1]);
+					ff.format("%c%c==", c0, c1);
+
+					break;
+				case 2: /* two bytes read */
+					c0 = table64.charAt(obuf[0]);
+					c1 = table64.charAt(obuf[1]);
+					c2 = table64.charAt(obuf[2]);
+					ff.format("%c%c%c=", c0, c1, c2);
+					break;
+				default:
+					c0 = table64.charAt(obuf[0]);
+					c1 = table64.charAt(obuf[1]);
+					c2 = table64.charAt(obuf[2]);
+					c3 = table64.charAt(obuf[3]);
+					ff.format("%c%c%c%c", c0, c1, c2, c3);
+					break;
+				}
+
+				if (colPos >= 76) {
+					ff.format("\n");
+
+					colPos = 0;
+				} else {
+					colPos += 4;
+				}
+			}
+			sbb.append(ff.out());
+
+			return sbb.toString();
+
+		}
 
 	}
 
