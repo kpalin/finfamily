@@ -1532,8 +1532,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 			schema = schemas.getSchema();
 			if (schema == null) {
-				this.isConnected = 1;
+				this.isConnected = 0;
 				enableCommands();
+				cdlg.rememberDatabase(false);
 				return;
 			}
 
