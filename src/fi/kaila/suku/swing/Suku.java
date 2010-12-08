@@ -398,6 +398,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			kontroller.putPref(this, Resurses.LOCALE, loca);
 		}
 
+		String scaleImageText = Suku.kontroller.getPref(this, "SCALE_IMAGE",
+				"0");
+		if (scaleImageText != null) {
+			imageScalingIndex = Integer.parseInt(scaleImageText);
+		}
+
 		Resurses.setLocale(loca);
 
 		String langu = kontroller.getPref(this, Resurses.REPOLANG, "fi");

@@ -237,6 +237,7 @@ public class XmlReport implements ReportInterface {
 		int imgHeight = 0;
 		String img = null;
 		Dimension maxSize = maxImageSize;
+		Dimension displaySize = new Dimension();
 		int outHeight = 0;
 		int outWidth = 0;
 		boolean isPersonImage = false;
@@ -251,47 +252,82 @@ public class XmlReport implements ReportInterface {
 			imgTitle = it.getImageTitle();
 			float w;
 			float h;
+			int widthMultiplier = imageScaleIndex;
+			if (widthMultiplier > 5) {
+				widthMultiplier = 0;
+			}
 			if (maxSize.width == 0 && maxSize.height == 0) {
 				w = imgWidth;
 				h = imgHeight;
-			} else if (maxSize.height == 0) {
-				if (imgWidth > maxSize.width) {
+				displaySize.width = imgWidth;
+				displaySize.height = imgHeight;
+
+			} else if (maxSize.width > 0) {
+				if (imgWidth > maxSize.width * widthMultiplier) {
 					float mw = maxSize.width;
 					float multip = mw / imgWidth;
 					w = imgWidth * multip;
 					h = imgHeight * multip;
+					displaySize.width = (int) w;
+					displaySize.height = (int) h;
+					w *= widthMultiplier;
+					h *= widthMultiplier;
+					outHeight = displaySize.height;
+					outWidth = displaySize.width;
 				} else {
-					w = imgWidth;
-					h = imgHeight;
+
+					float mw = maxSize.width;
+					float multip = mw / imgWidth;
+					w = imgWidth * multip;
+					h = imgHeight * multip;
+
+					displaySize.width = (int) w;
+					displaySize.height = (int) h;
+					outWidth = 0;
+					outHeight = 0;
+
 				}
-			} else if (maxSize.width == 0) {
+			} else {
 				if (imgHeight > maxSize.height) {
+					float mh = maxSize.height * widthMultiplier;
+					float multip = mh / imgHeight;
+					w = imgWidth * multip;
+					h = imgHeight * multip;
+					displaySize.width = (int) w;
+					displaySize.height = (int) h;
+					w *= widthMultiplier;
+					h *= widthMultiplier;
+					outHeight = displaySize.height;
+					outWidth = displaySize.width;
+				} else {
 					float mh = maxSize.height;
 					float multip = mh / imgHeight;
 					w = imgWidth * multip;
 					h = imgHeight * multip;
-				} else {
-					w = imgWidth;
-					h = imgHeight;
-				}
-			} else {
-				float mw = maxSize.width;
-				float mh = maxSize.height;
-				float multiw = mw / imgWidth;
-				float multih = mh / imgHeight;
-				float multip = (multiw < multih) ? multiw : multih;
-				if (multip < 1) {
-					w = imgWidth * multip;
-					h = imgHeight * multip;
-				} else {
-					w = imgWidth;
-					h = imgHeight;
+					displaySize.width = (int) w;
+					displaySize.height = (int) h;
+					outWidth = 0;
+					outHeight = 0;
 				}
 			}
+			// else {
+			// float mw = maxSize.width;
+			// float mh = maxSize.height;
+			// float multiw = mw / imgWidth;
+			// float multih = mh / imgHeight;
+			// float multip = (multiw < multih) ? multiw : multih;
+			// if (multip < 1) {
+			// w = imgWidth * multip;
+			// h = imgHeight * multip;
+			// } else {
+			// w = imgWidth;
+			// h = imgHeight;
+			// }
+			// }
 
-			if (h > 10) {
-				outWidth = (int) w;
-				outHeight = (int) h;
+			if (outHeight < 10) {
+				outWidth = 0;
+				outHeight = 0;
 
 			}
 
@@ -339,8 +375,8 @@ public class XmlReport implements ReportInterface {
 			// }
 			ele.setAttribute("imageName", Resurses.getString("REPORT.IMAGE"));
 
-			ele.setAttribute("width", "" + outWidth);
-			ele.setAttribute("height", "" + outHeight);
+			ele.setAttribute("width", "" + displaySize.width);
+			ele.setAttribute("height", "" + displaySize.height);
 
 			// if (imgHeight > maxHeight) {
 			//

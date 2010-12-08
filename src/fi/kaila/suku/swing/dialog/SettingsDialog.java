@@ -183,10 +183,12 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			getContentPane().add(lbl);
 			lbl.setBounds(x + 210, y + 60, 200, 20);
 
-			String scales[] = new String[2];
+			String scales[] = new String[5];
 			scales[0] = Resurses.getString("IMAGE_SCALE_NO");
 			scales[1] = Resurses.getString("IMAGE_SCALE_JAVA");
-
+			scales[2] = Resurses.getString("IMAGE_SCALE_GT") + " 2";
+			scales[3] = Resurses.getString("IMAGE_SCALE_GT") + " 3";
+			scales[4] = Resurses.getString("IMAGE_SCALE_GT") + " 4";
 			imageScaling = new JComboBox(scales);
 			getContentPane().add(imageScaling);
 			imageScaling.setBounds(x + 210, y + 84, 250, 20);
