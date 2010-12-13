@@ -409,39 +409,68 @@ public class ReportUtil {
 		// check possible table of spouses
 		//
 		for (int i = 0; i < unit.getParent().size(); i++) {
-			ReportUnit pareUnits = unitMap
-					.get(unit.getParent().get(i).getPid());
+
+			int parePid = unit.getParent().get(i).getPid();
+
+			ReportUnit pareUnits = unitMap.get(parePid);
+			// .get(unit.getParent().get(i).getPid());
+
 			//
 			// got table of spouse (if such exists)
 			//
 			if (pareUnits != null) {
 
-				if (unit.getChild().size() != pareUnits.getChild().size()) {
-					break;
-				}
-				int j = 0;
-				int jlen = unit.getChild().size();
-				for (j = 0; j < jlen; j++) {
-					if (unit.getChild().get(j).getPid() != pareUnits.getChild()
-							.get(j).getPid()) {
-						break;
+				//
+				// check that all children are part of other parents unit
+				//
+				if (unit.getChild().size() > pareUnits.getChild().size()) {
+					int jsize = pareUnits.getChild().size();
+					int j = 0;
+					for (j = 0; j < jsize; j++) {
+						int nxtSpouseChildPid = pareUnits.getChild().get(j)
+								.getPid();
+						int k = 0;
+						int ksize = unit.getChild().size();
+						for (k = 0; k < ksize; k++) {
+							int nxtMyChildPid = pareUnits.getChild().get(k)
+									.getPid();
+							if (nxtMyChildPid == nxtSpouseChildPid) {
+								break; // this says child found
+							}
+						}
+						if (k == ksize) {
+							break; // here when child not found
+						}
+					}
+					if (j == jsize) { // all children found from other spouse
+
+						// j = 0;
+						// int jlen = unit.getChild().size();
+						// for (j = 0; j < jlen; j++) {
+						// if (unit.getChild().get(j).getPid() != pareUnits
+						// .getChild().get(j).getPid()) {
+						// break;
+						// }
+						// }
+						// if (j < jlen)
+						// break;
+						if (order
+								.equals(ReportWorkerDialog.SET_ORDER_FIRSTMALE)
+								&& chi.getSex().equals("M")) {
+							// females.put(unit.getPid(),chi);
+							females.put(pareUnits.getPid(),
+									pareUnits.getMember(0));
+						}
+						//
+						// if spouse has table then if spouse and subject
+						// childlist
+						// match
+						// then spouse does not get own table
+						//
+						return nexttab;
 					}
 				}
-				if (j < jlen)
-					break;
-				if (order.equals(ReportWorkerDialog.SET_ORDER_FIRSTMALE)
-						&& chi.getSex().equals("M")) {
-					// females.put(unit.getPid(),chi);
-					females.put(pareUnits.getPid(), pareUnits.getMember(0));
-				}
-				//
-				// if spouse has table then if spouse and subject childlist
-				// match
-				// then spouse does not get own table
-				//
-				return nexttab;
 			}
-
 		}
 
 		if (females != null
