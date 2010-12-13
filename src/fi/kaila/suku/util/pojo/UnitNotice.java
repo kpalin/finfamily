@@ -3,6 +3,7 @@ package fi.kaila.suku.util.pojo;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Array;
 import java.sql.ResultSet;
@@ -871,8 +872,9 @@ public class UnitNotice implements Serializable {
 	 * Gets the media image.
 	 * 
 	 * @return image
+	 * @throws IOException
 	 */
-	public BufferedImage getMediaImage() {
+	public BufferedImage getMediaImage() throws IOException {
 		if (mediaData == null)
 			return null;
 		ByteArrayInputStream bb = new ByteArrayInputStream(mediaData);
@@ -880,14 +882,9 @@ public class UnitNotice implements Serializable {
 		if (this.image != null) {
 			return this.image;
 		}
-		try {
-			this.image = ImageIO.read(bb);
-			return this.image;
-		} catch (Exception e) {
 
-			e.printStackTrace();
-			return null;
-		}
+		this.image = ImageIO.read(bb);
+		return this.image;
 
 	}
 

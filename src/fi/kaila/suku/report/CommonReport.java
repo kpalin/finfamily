@@ -2,6 +2,7 @@ package fi.kaila.suku.report;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -228,7 +229,13 @@ public abstract class CommonReport {
 
 				if (caller.showImages()) {
 					ImageText imagetx = new ImageText();
-					BufferedImage img = nn.getMediaImage();
+					BufferedImage img = null;
+					try {
+						img = nn.getMediaImage();
+					} catch (IOException e) {
+						logger.log(Level.WARNING, "printImages", e);
+
+					}
 
 					if (img != null) {
 						double imh = img.getHeight();
@@ -2417,7 +2424,14 @@ public abstract class CommonReport {
 
 							if (caller.showImages()) {
 								ImageText imagetx = new ImageText();
-								BufferedImage img = nn.getMediaImage();
+								BufferedImage img;
+								try {
+									img = nn.getMediaImage();
+								} catch (IOException e) {
+									logger.log(Level.WARNING, "getMedia", e);
+
+									img = null;
+								}
 								if (img != null) {
 									double imh = img.getHeight();
 									double imw = img.getWidth();
@@ -2828,6 +2842,8 @@ public abstract class CommonReport {
 	private void printName(BodyText bt, PersonLongData persLong, int colType) {
 		int nameCount = 0;
 		String prevGivenname = "";
+		String prevPatronyme = "";
+		String prevPostfix = "";
 		UnitNotice[] notices = persLong.getNotices();
 		int minSurety = caller.showMinSurety();
 		boolean isDead = false;
@@ -2925,10 +2941,12 @@ public abstract class CommonReport {
 							wasName = true;
 						}
 
-						if (wasName && !nv(nn.getPatronym()).isEmpty()) {
-							bt.addText(" ", caller.showBoldNames(), false);
-						}
-						if (nameCount == 0) {
+						if (!prevPatronyme.equals(nv(nn.getPatronym()))) {
+							prevPatronyme = nv(nn.getPatronym());
+							if (wasName && !nv(nn.getPatronym()).isEmpty()) {
+								bt.addText(" ", caller.showBoldNames(), false);
+							}
+
 							if (!nv(nn.getPatronym()).isEmpty()) {
 								bt.addText(nn.getPatronym(),
 										caller.showBoldNames(), false);
@@ -2943,14 +2961,16 @@ public abstract class CommonReport {
 									false);
 							wasName = true;
 						}
-						if (nameCount == 0) {
+						if (!prevPostfix.equals(nv(nn.getPostfix()))) {
+							prevPostfix = nv(nn.getPostfix());
 							if (wasName && !nv(nn.getPostfix()).isEmpty()) {
 								bt.addText(" ", caller.showBoldNames(), false);
 							}
-						}
-						if (!nv(nn.getPostfix()).isEmpty()) {
-							bt.addText(nn.getPostfix(), caller.showBoldNames(),
-									false);
+
+							if (!nv(nn.getPostfix()).isEmpty()) {
+								bt.addText(nn.getPostfix(),
+										caller.showBoldNames(), false);
+							}
 						}
 
 						if (nn.getNoticeType() != null

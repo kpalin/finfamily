@@ -743,7 +743,11 @@ public class NoticePane extends JPanel implements ActionListener,
 			tmp = "";
 		mediaTitle.setText(tmp);
 
-		getImage();
+		try {
+			getImage();
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "update pane", e);
+		}
 
 		tmp = notice.getGivenname();
 		if (tmp == null)
@@ -879,7 +883,7 @@ public class NoticePane extends JPanel implements ActionListener,
 
 	private Dimension imageSize = null;
 
-	private void getImage() {
+	private void getImage() throws Exception {
 
 		BufferedImage img = notice.getMediaImage();
 		if (img != null) {
@@ -904,6 +908,7 @@ public class NoticePane extends JPanel implements ActionListener,
 		} else {
 			image.img = null;
 		}
+
 	}
 
 	/**
@@ -1107,12 +1112,13 @@ public class NoticePane extends JPanel implements ActionListener,
 						bstr.close();
 						notice.setMediaFilename(Suku.kontroller.getFileName());
 						getImage();
-						notice.setMediaSize(imageSize);
-
+						if (imageSize != null) {
+							notice.setMediaSize(imageSize);
+						}
 						mediaFilename.setText(notice.getMediaFilename());
 
 						updateUI();
-					} catch (IOException e1) {
+					} catch (Exception e1) {
 						JOptionPane.showMessageDialog(this, e1.getMessage(),
 								Resurses.getString(Resurses.SUKU),
 								JOptionPane.ERROR_MESSAGE);
@@ -1408,7 +1414,12 @@ public class NoticePane extends JPanel implements ActionListener,
 			lwidth = 525 - lcol - 10 - rwidth * 2;
 		}
 
-		getImage();
+		try {
+			getImage();
+		} catch (Exception e1) {
+			logger.warning("getImage failed");
+			e1.printStackTrace();
+		}
 		rcol = lwidth + lcol + 5;
 		int listY1 = 10;
 		int listY2 = 34;
@@ -1450,9 +1461,14 @@ public class NoticePane extends JPanel implements ActionListener,
 		}
 
 		boolean mustImage = personView.getSuku().isShowImage();
-		if (notice.getMediaFilename() != null || notice.getMediaImage() != null
-				|| notice.getMediaTitle() != null) {
-			mustImage = true;
+		try {
+			if (notice.getMediaFilename() != null
+					|| notice.getMediaImage() != null
+					|| notice.getMediaTitle() != null) {
+				mustImage = true;
+			}
+		} catch (IOException e) {
+			logger.log(Level.WARNING, "resize", e);
 		}
 		int rrNameList = 0;
 		int rrivi = 10;

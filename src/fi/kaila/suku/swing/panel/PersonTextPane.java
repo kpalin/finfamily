@@ -3,6 +3,7 @@ package fi.kaila.suku.swing.panel;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -41,7 +42,7 @@ public class PersonTextPane extends JTextPane {
 	private static final long serialVersionUID = 1L;
 	private AbstractDocument doc;
 	private int currentPid = 0;
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * default constructor.
@@ -289,7 +290,12 @@ public class PersonTextPane extends JTextPane {
 					// notice.getMediaSize().width + "," +
 					// notice.getMediaSize().height + ")\n",bodyText);
 					append("\n\n          ", bodyText);
-					BufferedImage img = notice.getMediaImage();
+					BufferedImage img = null;
+					try {
+						img = notice.getMediaImage();
+					} catch (IOException e) {
+
+					}
 					if (img != null) {
 						double imh = img.getHeight();
 						double imw = img.getWidth();
