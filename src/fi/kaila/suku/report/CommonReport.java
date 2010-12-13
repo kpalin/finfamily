@@ -2928,11 +2928,12 @@ public abstract class CommonReport {
 						if (wasName && !nv(nn.getPatronym()).isEmpty()) {
 							bt.addText(" ", caller.showBoldNames(), false);
 						}
-
-						if (!nv(nn.getPatronym()).isEmpty()) {
-							bt.addText(nn.getPatronym(),
-									caller.showBoldNames(), false);
-							wasName = true;
+						if (nameCount == 0) {
+							if (!nv(nn.getPatronym()).isEmpty()) {
+								bt.addText(nn.getPatronym(),
+										caller.showBoldNames(), false);
+								wasName = true;
+							}
 						}
 						if (wasName && !nv(nn.getSurname()).isEmpty()) {
 							bt.addText(" ", caller.showBoldNames(), false);
@@ -2942,8 +2943,10 @@ public abstract class CommonReport {
 									false);
 							wasName = true;
 						}
-						if (wasName && !nv(nn.getPostfix()).isEmpty()) {
-							bt.addText(" ", caller.showBoldNames(), false);
+						if (nameCount == 0) {
+							if (wasName && !nv(nn.getPostfix()).isEmpty()) {
+								bt.addText(" ", caller.showBoldNames(), false);
+							}
 						}
 						if (!nv(nn.getPostfix()).isEmpty()) {
 							bt.addText(nn.getPostfix(), caller.showBoldNames(),
