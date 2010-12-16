@@ -110,6 +110,7 @@ import fi.kaila.suku.util.SukuRow;
 import fi.kaila.suku.util.SukuSenser;
 import fi.kaila.suku.util.SukuStringComparator;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.VersionChecker;
 import fi.kaila.suku.util.local.LocalAdminUtilities;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.PlaceLocationData;
@@ -1004,7 +1005,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 		});
-
+		if (!this.isWebApp) {
+			new VersionChecker(this);
+		}
 	}
 
 	/**
