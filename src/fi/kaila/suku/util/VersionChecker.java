@@ -38,8 +38,6 @@ public class VersionChecker {
 		String lastTry = Suku.kontroller.getPref(this, "lastTime", "0");
 		String ant = AntVersion.antVersion;
 
-		// System.out.println("here is " + ant);
-
 		String requri = "http://www.sukuohjelmisto.fi/version/version.properties";
 
 		long nowTime = System.currentTimeMillis();
@@ -74,7 +72,6 @@ public class VersionChecker {
 				int pit = in.read(b);
 
 				String aux = new String(b, 0, pit);
-
 				String auxes[] = aux.split("\n");
 
 				for (int i = 0; i < auxes.length; i++) {
@@ -91,7 +88,6 @@ public class VersionChecker {
 						if (parts[0].equalsIgnoreCase("revision.version")) {
 							serverRevision = parts[1];
 						}
-
 					}
 				}
 
