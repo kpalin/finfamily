@@ -52,11 +52,10 @@ public class VersionChecker {
 			return;
 		}
 
-		Suku.kontroller.putPref(this, "lastTime", "" + nowTime);
 		if (lastTime + (24 * 60 * 60 * 1000) > nowTime) {
 			return;
 		}
-
+		Suku.kontroller.putPref(this, "lastTime", "" + nowTime);
 		int resu;
 		String serverVer = null;
 		String serverRevision = null;
@@ -101,13 +100,10 @@ public class VersionChecker {
 			}
 
 		} catch (Exception e) {
-			Suku.kontroller.putPref(this, "lastTime", ""
-					+ (nowTime + 60 * 60 * 24 * 1000 * 2));
+
 			logger.info(e.toString());
 
 		}
-
-		// System.out.println("ver:" + serverVer + "/ rev: " + serverRevision);
 
 		if (serverRevision == null) {
 			return;
@@ -129,8 +125,12 @@ public class VersionChecker {
 		}
 
 		if (serRev > currRev) {
-			int resux = JOptionPane.showConfirmDialog(suku,
-					Resurses.getString("CONFIRM_DOWNLOAD"),
+			int resux = JOptionPane.showConfirmDialog(
+					suku,
+					Resurses.getString("CONFIRM_DOWNLOAD") + " [" + serverVer
+							+ "." + serverRevision + "]\n"
+							+ Resurses.getString("CONFIRM_NEW") + " [" + ant
+							+ "]\n" + Resurses.getString("CONFIRM_GO"),
 					Resurses.getString(Resurses.SUKU),
 					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if (resux == JOptionPane.YES_OPTION) {
