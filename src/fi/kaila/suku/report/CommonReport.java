@@ -784,10 +784,27 @@ public abstract class CommonReport {
 
 							toTable = ""
 									+ (childMember.getMyTable() + tableOffset);
+						} else {
+							if (ref.asParents.size() > 0) {
+								hasOwnTable = true;
+							}
+
+							// boolean foundSpouseWoTable = false;
+							// for (int j = 0; j < ref.asParents.size(); j++) {
+							// long kk = ref.asParents.get(j);
+							// if (kk == 0)
+							// foundSpouseWoTable = true;
+							// }
+							// if (foundSpouseWoTable) {
+							// toTable = "";
+							// } else {
+							// hasOwnTable = true;
+							// }
 						}
-						if (hasSpouses) {
-							toTable = "";
-						}
+
+						// if (hasSpouses) {
+						// toTable = "";
+						// }
 					}
 
 				}
