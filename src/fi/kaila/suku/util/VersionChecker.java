@@ -50,10 +50,10 @@ public class VersionChecker {
 			return;
 		}
 
-		if (lastTime + (24 * 60 * 60 * 1000) > nowTime) {
+		if (lastTime + (60 * 60 * 1000) > nowTime) {
 			return;
 		}
-		Suku.kontroller.putPref(this, "lastTime", "" + nowTime);
+
 		int resu;
 		String serverVer = null;
 		String serverRevision = null;
@@ -96,7 +96,8 @@ public class VersionChecker {
 			}
 
 		} catch (Exception e) {
-
+			Suku.kontroller.putPref(this, "lastTime", ""
+					+ (nowTime + (12 * 60 * 60 * 1000)));
 			logger.info(e.toString());
 
 		}
@@ -115,6 +116,7 @@ public class VersionChecker {
 		} catch (NumberFormatException ne) {
 			return;
 		}
+		Suku.kontroller.putPref(this, "lastTime", "" + nowTime);
 		Suku.kontroller.putPref(this, "Revision", "" + serRev);
 		if (lastRev >= serRev) {
 			return;
