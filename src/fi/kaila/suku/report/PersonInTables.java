@@ -33,6 +33,9 @@ public class PersonInTables implements Comparable<PersonInTables> {
 
 	/** references as owner. */
 	// public long asOwner = 0;
+	public String givenName = null;
+
+	public String surName = null;
 	/**
 	 * references as child
 	 */

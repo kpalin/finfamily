@@ -138,7 +138,17 @@ public abstract class CommonReport {
 		while (eey.hasNext()) {
 			Map.Entry<String, PersonInTables> entry = eey.next();
 			PersonInTables pit = entry.getValue();
-			vv.add(pit);
+
+			String[] parts = entry.getKey().split(",");
+
+			if (parts.length == 2) {
+				pit.givenName = parts[1];
+				pit.surName = parts[0];
+				vv.add(pit);
+			} else if (parts.length == 1) {
+				pit.surName = parts[0];
+				vv.add(pit);
+			}
 		}
 
 		return vv;

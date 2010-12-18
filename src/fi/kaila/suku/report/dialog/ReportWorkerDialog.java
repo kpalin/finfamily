@@ -2778,38 +2778,49 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				if (commonIndexNames.isSelected() && dr != null) {
 					WritableSheet sheet = workbook.createSheet(
 							typesTable.getTextValue("INDEX_NAMES"), sheetNo++);
+
 					Label label = new Label(0, 0,
+							typesTable.getTextValue("INDEX_NUM"), arial0bold);
+					sheet.addCell(label);
+					label = new Label(1, 0,
 							typesTable.getTextValue("INDEX_NAME"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(1, 0,
+					label = new Label(2, 0,
 							typesTable.getTextValue("INDEX_TABLES"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(2, 0,
+					label = new Label(3, 0,
 							typesTable.getTextValue("ANC_BIRT"), arial0bold);
 					sheet.addCell(label);
-					label = new Label(3, 0,
+					label = new Label(4, 0,
 							typesTable.getTextValue("ANC_DEAT"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(4, 0,
+					label = new Label(5, 0,
 							typesTable.getTextValue("ANC_OWNER"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(5, 0,
+					label = new Label(6, 0,
 							typesTable.getTextValue("ANC_SPOU"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(6, 0,
+					label = new Label(7, 0,
 							typesTable.getTextValue("ANC_CHIL"), arial0bold);
 					sheet.addCell(label);
 
-					label = new Label(7, 0, typesTable.getTextValue("ANC_OTH"),
+					label = new Label(8, 0, typesTable.getTextValue("ANC_OTH"),
+							arial0bold);
+					sheet.addCell(label);
+					label = new Label(9, 0,
+							typesTable.getTextValue("ANC_SURNAME"), arial0bold);
+					sheet.addCell(label);
+					label = new Label(10, 0,
+							typesTable.getTextValue("ANC_GIVENNAME"),
 							arial0bold);
 					sheet.addCell(label);
 
-					int row = 2;
+					int row = 1;
 
 					Vector<PersonInTables> vv = dr.getPersonReferences();
 
@@ -2819,48 +2830,50 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					for (int j = 0; j < mapsize; j++) {
 						PersonInTables pit = vv.get(j);
 						// vv.add(pit);
-						if (pit.shortPerson != null) {
-							System.out.println("oli jo");
-						}
-						SukuData resp = Suku.kontroller.getSukuData(
-								"cmd=person", "mode=short", "pid=" + pit.pid);
+						if (pit.shortPerson == null) {
 
-						if (resp.pers != null) {
-							pit.shortPerson = resp.pers[0];
+							SukuData resp = Suku.kontroller.getSukuData(
+									"cmd=person", "mode=short", "pid="
+											+ pit.pid);
+							if (resp.pers != null) {
+								pit.shortPerson = resp.pers[0];
 
-							for (int i = 1; i < pit.shortPerson.getNameCount(); i++) {
-								PersonInTables pitt = new PersonInTables(
-										pit.shortPerson.getPid());
-								pitt.asChildren = pit.asChildren;
-								pitt.references = pit.references;
-								Long[] aa = pit.getOwnerArray();
-								for (Long a : aa) {
-									pitt.addOwner(a);
+								for (int i = 1; i < pit.shortPerson
+										.getNameCount(); i++) {
+									PersonInTables pitt = new PersonInTables(
+											pit.shortPerson.getPid());
+									pitt.asChildren = pit.asChildren;
+									pitt.references = pit.references;
+									Long[] aa = pit.getOwnerArray();
+									for (Long a : aa) {
+										pitt.addOwner(a);
+									}
+
+									pitt.asParents = pit.asParents;
+									PersonShortData p = pit.shortPerson;
+									PersonShortData alias = new PersonShortData(
+											p.getPid(), p.getGivenname(i),
+											p.getPatronym(i), p.getPrefix(i),
+											p.getSurname(i), p.getPostfix(i),
+											p.getBirtDate(), p.getDeatDate());
+									pitt.shortPerson = alias;
+									vv.add(pitt);
+
 								}
-
-								pitt.asParents = pit.asParents;
-								PersonShortData p = pit.shortPerson;
-								PersonShortData alias = new PersonShortData(
-										p.getPid(), p.getGivenname(i),
-										p.getPatronym(i), p.getPrefix(i),
-										p.getSurname(i), p.getPostfix(i),
-										p.getBirtDate(), p.getDeatDate());
-								pitt.shortPerson = alias;
-								vv.add(pitt);
-
 							}
+							float prose = (runnervalue * 100f) / mapsize;
+							if (prose > 100)
+								prose = 100;
+							setRunnerValue("" + (int) prose + ";"
+									+ pit.shortPerson.getAlfaName());
+							runnervalue++;
 						}
-						float prose = (runnervalue * 100f) / mapsize;
-						if (prose > 100)
-							prose = 100;
-						setRunnerValue("" + (int) prose + ";"
-								+ pit.shortPerson.getAlfaName());
-						runnervalue++;
 					}
 					PersonInTables[] pits = vv.toArray(new PersonInTables[0]);
 					Arrays.sort(pits);
 
 					for (int i = 0; i < pits.length; i++) {
+
 						PersonInTables pit = pits[i];
 						if (pit.shortPerson.getPrivacy() != null) {
 							if (pit.shortPerson.getPrivacy().equals("F")) {
@@ -2877,7 +2890,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 						if (alla || pit.getOwnerArray().length > 0
 								|| !mefe.isEmpty()) {
-							label = new Label(0, row, ""
+							Number numero = new Number(0, row, row, arial0);
+							sheet.addCell(numero);
+
+							String surn = pit.shortPerson.getSurname();
+
+							label = new Label(1, row, ""
 									+ pit.shortPerson.getAlfaName(), arial0);
 							sheet.addCell(label);
 
@@ -2930,12 +2948,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 								tstr.append(mefe);
 							}
 
-							label = new Label(1, row, tstr.toString(), arial0);
+							label = new Label(2, row, tstr.toString(), arial0);
 							sheet.addCell(label);
 
 							if (pit.shortPerson.getBirtDate() != null) {
 								label = new Label(
-										2,
+										3,
 										row,
 										Utils.nv4(pit.shortPerson.getBirtDate()),
 										arial0);
@@ -2943,24 +2961,55 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							}
 							if (pit.shortPerson.getDeatDate() != null) {
 								label = new Label(
-										3,
+										4,
 										row,
 										Utils.nv4(pit.shortPerson.getDeatDate()),
 										arial0);
 								sheet.addCell(label);
 							}
 
-							label = new Label(4, row,
+							label = new Label(5, row,
 									pit.getOwnerString(indexTabOffset), arial0);
 							sheet.addCell(label);
 
-							label = new Label(5, row, kefe, arial0);
+							label = new Label(6, row, kefe, arial0);
 							sheet.addCell(label);
 
-							label = new Label(6, row, cefe, arial0);
+							label = new Label(7, row, cefe, arial0);
 							sheet.addCell(label);
 
-							label = new Label(7, row, mefe, arial0);
+							label = new Label(8, row, mefe, arial0);
+							sheet.addCell(label);
+
+							tstr = new StringBuilder();
+							if (pit.shortPerson.getPrefix() != null) {
+								tstr.append(pit.shortPerson.getPrefix());
+								tstr.append(" ");
+							}
+
+							if (pit.shortPerson.getSurname() != null) {
+								tstr.append(pit.shortPerson.getSurname());
+							}
+							if (tstr.length() > 0) {
+								label = new Label(9, row, tstr.toString(),
+										arial0);
+								sheet.addCell(label);
+							}
+							tstr = new StringBuilder();
+							if (pit.shortPerson.getGivenname() != null) {
+								tstr.append(pit.shortPerson.getGivenname());
+							}
+							if (pit.shortPerson.getPatronym() != null) {
+								if (tstr.length() > 0) {
+									tstr.append(" ");
+								}
+								tstr.append(pit.shortPerson.getPatronym());
+							}
+							if (pit.shortPerson.getPostfix() != null) {
+								tstr.append(" ");
+								tstr.append(pit.shortPerson.getPostfix());
+							}
+							label = new Label(10, row, tstr.toString(), arial0);
 							sheet.addCell(label);
 
 							float prose = (i * 100f) / pits.length;
