@@ -366,6 +366,9 @@ public abstract class CommonReport {
 
 		if (caller.showIndexNames()) {
 			int tableOffset = caller.getDescendantPane().getStartTable();
+			if (tableOffset > 0) {
+				tableOffset--;
+			}
 			Vector<PersonInTables> vv = getPersonReferences();
 
 			float runnervalue = 0;
@@ -381,8 +384,12 @@ public abstract class CommonReport {
 					if (resp.pers != null) {
 						pit.shortPerson = resp.pers[0];
 						HashMap<String, String> nms = new HashMap<String, String>();
-						nms.put(pit.shortPerson.getSurname(),
-								pit.shortPerson.getSurname());
+						String testName = nv(pit.shortPerson.getPrefix()) + "|"
+								+ nv(pit.shortPerson.getSurname()) + "|"
+								+ nv(pit.shortPerson.getGivenname()) + "|"
+								+ nv(pit.shortPerson.getPatronym()) + "|"
+								+ nv(pit.shortPerson.getPostfix());
+						nms.put(testName, "1");
 						for (int i = 1; i < pit.shortPerson.getNameCount(); i++) {
 
 							PersonInTables pitt = new PersonInTables(
@@ -402,8 +409,13 @@ public abstract class CommonReport {
 									p.getSurname(i), p.getPostfix(i),
 									p.getBirtDate(), p.getDeatDate());
 							pitt.shortPerson = alias;
-							String oldName = nms.put(p.getSurname(i),
-									p.getSurname(i));
+							testName = nv(pitt.shortPerson.getPrefix()) + "|"
+									+ nv(pitt.shortPerson.getSurname()) + "|"
+									+ nv(pitt.shortPerson.getGivenname()) + "|"
+									+ nv(pitt.shortPerson.getPatronym()) + "|"
+									+ nv(pitt.shortPerson.getPostfix());
+
+							String oldName = nms.put(testName, "1");
 							if (oldName == null) {
 
 								vv.add(pitt);
