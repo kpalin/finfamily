@@ -23,6 +23,7 @@ import fi.kaila.suku.report.style.ChildListText;
 import fi.kaila.suku.report.style.ChildSpouseText;
 import fi.kaila.suku.report.style.ImageText;
 import fi.kaila.suku.report.style.MainPersonText;
+import fi.kaila.suku.report.style.NameIndexText;
 import fi.kaila.suku.report.style.SpousePersonText;
 import fi.kaila.suku.report.style.SubPersonText;
 import fi.kaila.suku.report.style.TableHeaderText;
@@ -32,6 +33,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.Roman;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
@@ -352,6 +354,198 @@ public abstract class CommonReport {
 				repoWriter.addText(bt);
 
 			}
+		}
+	}
+
+	/**
+	 * Print name index in word document (or html)
+	 * 
+	 * @throws SukuException
+	 */
+	public void printNameIndex() throws SukuException {
+
+		if (caller.showIndexNames()) {
+			int tableOffset = caller.getDescendantPane().getStartTable();
+			Vector<PersonInTables> vv = getPersonReferences();
+
+			float runnervalue = 0;
+			float mapsize = vv.size();
+
+			for (int j = 0; j < mapsize; j++) {
+				PersonInTables pit = vv.get(j);
+				// vv.add(pit);
+				if (pit.shortPerson == null) {
+
+					SukuData resp = Suku.kontroller.getSukuData("cmd=person",
+							"mode=short", "pid=" + pit.pid);
+					if (resp.pers != null) {
+						pit.shortPerson = resp.pers[0];
+						HashMap<String, String> nms = new HashMap<String, String>();
+						nms.put(pit.shortPerson.getSurname(),
+								pit.shortPerson.getSurname());
+						for (int i = 1; i < pit.shortPerson.getNameCount(); i++) {
+
+							PersonInTables pitt = new PersonInTables(
+									pit.shortPerson.getPid());
+							pitt.asChildren = pit.asChildren;
+							pitt.references = pit.references;
+							Long[] aa = pit.getOwnerArray();
+							for (Long a : aa) {
+								pitt.addOwner(a);
+							}
+
+							pitt.asParents = pit.asParents;
+							PersonShortData p = pit.shortPerson;
+							PersonShortData alias = new PersonShortData(
+									p.getPid(), p.getGivenname(i),
+									p.getPatronym(i), p.getPrefix(i),
+									p.getSurname(i), p.getPostfix(i),
+									p.getBirtDate(), p.getDeatDate());
+							pitt.shortPerson = alias;
+							String oldName = nms.put(p.getSurname(i),
+									p.getSurname(i));
+							if (oldName == null) {
+
+								vv.add(pitt);
+							}
+						}
+						nms.clear();
+					}
+					float prose = (runnervalue * 100f) / mapsize;
+					if (prose > 100)
+						prose = 100;
+					caller.setRunnerValue("" + (int) prose + ";"
+							+ pit.shortPerson.getAlfaName());
+					runnervalue++;
+				}
+			}
+			PersonInTables[] pits = vv.toArray(new PersonInTables[0]);
+			Arrays.sort(pits);
+			BodyText bt = new TableHeaderText();
+			bt.addText("\n");
+			repoWriter.addText(bt);
+			bt.addText(Resurses.getReportString("INDEX_NAMEINDEX"));
+			bt.addText("\n");
+			repoWriter.addText(bt);
+			bt = new NameIndexText();
+
+			String previousSurname = null;
+
+			for (int i = 0; i < pits.length; i++) {
+
+				PersonInTables pit = pits[i];
+				if (pit.shortPerson.getPrivacy() != null) {
+					if (pit.shortPerson.getPrivacy().equals("F")) {
+						PersonShortData nn = new PersonShortData(
+								pit.shortPerson.getPid(),
+								typesTable.getTextValue("REPORT_NOMEN_NESCIO"),
+								null, null, null, null, null, null);
+						pit.shortPerson = nn;
+					}
+				}
+				String mefe = pit.getReferences(0, false, false, true,
+						tableOffset);
+
+				StringBuilder tstr = new StringBuilder();
+				if (pit.shortPerson.getPrefix() != null) {
+					tstr.append(pit.shortPerson.getPrefix());
+					tstr.append(" ");
+				}
+				if (pit.shortPerson.getSurname() != null) {
+					tstr.append(pit.shortPerson.getSurname());
+				}
+				String surname = tstr.toString();
+				if (!Utils.nv(previousSurname).equalsIgnoreCase(surname)) {
+					bt.addText(surname, true, false);
+					repoWriter.addText(bt);
+					previousSurname = surname;
+				}
+
+				StringBuilder tstg = new StringBuilder();
+				if (pit.shortPerson.getGivenname() != null) {
+					tstg.append(pit.shortPerson.getGivenname());
+				}
+				if (pit.shortPerson.getPatronym() != null) {
+					tstg.append(pit.shortPerson.getPatronym());
+				}
+
+				if (pit.shortPerson.getPostfix() != null) {
+					tstg.append(" ");
+					tstg.append(pit.shortPerson.getPostfix());
+				}
+				bt.addText("  ");
+				printGivenname(bt, tstg.toString(), false);
+
+				//
+				// let's add living years here
+				//
+				if (caller.showIndexYears()) {
+					StringBuilder yrs = new StringBuilder();
+					if (pit.shortPerson.getBirtYear() > 0
+							|| pit.shortPerson.getDeatYear() > 0) {
+						yrs.append(" (");
+						if (pit.shortPerson.getBirtYear() > 0) {
+							yrs.append(pit.shortPerson.getBirtYear());
+						}
+						if (pit.shortPerson.getDeatYear() > 0) {
+							yrs.append("-");
+							yrs.append(pit.shortPerson.getDeatYear());
+						}
+
+						yrs.append(")");
+						bt.addText(yrs.toString());
+					}
+				}
+
+				String kefe = pit.getReferences(0, true, false, false,
+						tableOffset);
+				String cefe = pit.getReferences(0, false, true, false,
+						tableOffset);
+				String refe = kefe;
+
+				if (pit.getOwnerString(tableOffset).isEmpty()) {
+
+					if (refe.isEmpty()) {
+						refe = cefe;
+					} else {
+						if (!cefe.isEmpty()) {
+							refe += "," + cefe;
+						}
+					}
+				}
+
+				if (!mefe.isEmpty()) {
+					if (!refe.isEmpty()) {
+						refe += "," + mefe;
+					} else {
+						refe = mefe;
+					}
+				}
+
+				StringBuilder tt = new StringBuilder();
+				if (!kefe.isEmpty()) {
+					tt.append(kefe);
+				} else if (!pit.getOwnerString(tableOffset).isEmpty()) {
+					tt.append(pit.getOwnerString(tableOffset));
+				}
+				if (tt.length() == 0 && !cefe.isEmpty()) {
+					tt.append(cefe);
+				}
+				if (!mefe.isEmpty()) {
+					if (tt.length() > 0) {
+						tt.append(", ");
+					}
+					tt.append(mefe);
+				}
+				if (tt.length() > 0) {
+					bt.addText("\t");
+					bt.addText(tt.toString());
+				}
+
+				repoWriter.addText(bt);
+
+			}
+
 		}
 	}
 

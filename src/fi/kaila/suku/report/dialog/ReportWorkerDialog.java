@@ -477,6 +477,18 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * 
+	 * @return true to print name index
+	 */
+	public boolean showIndexNames() {
+		return commonIndexNames.isSelected();
+	}
+
+	public boolean showIndexYears() {
+		return commonIndexYears.isSelected();
+	}
+
+	/**
 	 * Show images.
 	 * 
 	 * @return true is selected to print images
@@ -1535,25 +1547,21 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				setVisible(false);
 			} else {
 
-				if (getSourceFormat().equals(SET_AFT)
-						|| commonIndexNames.isSelected()
-						|| commonIndexPlaces.isSelected()) {
+				if (endSuccess) {
+					int answer = JOptionPane.showConfirmDialog(runner,
+							Resurses.getString("REPORT.INDEX.CREATE"),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.YES_NO_OPTION);
+					if (answer == 0) {
+						taskIndex = new TaskIndex();
+						taskIndex.indexTabOffset = tabOffset;
+						taskIndex.addPropertyChangeListener(self);
+						taskIndex.execute();
 
-					if (endSuccess) {
-						int answer = JOptionPane.showConfirmDialog(runner,
-								Resurses.getString("REPORT.INDEX.CREATE"),
-								Resurses.getString(Resurses.SUKU),
-								JOptionPane.YES_NO_OPTION);
-						if (answer == 0) {
-							taskIndex = new TaskIndex();
-							taskIndex.indexTabOffset = tabOffset;
-							taskIndex.addPropertyChangeListener(self);
-							taskIndex.execute();
-
-						} else {
-							self.setVisible(false);
-						}
+					} else {
+						self.setVisible(false);
 					}
+
 					// if (repos != null) {
 					// for (String repo : repos) {
 					// Utils.openExternalFile(repo);
@@ -2893,7 +2901,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 							Number numero = new Number(0, row, row, arial0);
 							sheet.addCell(numero);
 
-							String surn = pit.shortPerson.getSurname();
+							// String surn = pit.shortPerson.getSurname();
 
 							label = new Label(1, row, ""
 									+ pit.shortPerson.getAlfaName(), arial0);

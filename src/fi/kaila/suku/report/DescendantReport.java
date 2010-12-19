@@ -133,7 +133,15 @@ public class DescendantReport extends CommonReport {
 		}
 
 		printImages();
-
+		try {
+			printNameIndex();
+		} catch (SukuException e) {
+			logger.log(Level.WARNING, "NameIndex", e);
+			JOptionPane.showMessageDialog(
+					caller,
+					Resurses.getString(Resurses.CREATE_REPORT) + ":"
+							+ e.getMessage());
+		}
 		caller.setRunnerValue("100;OK");
 
 	}

@@ -289,6 +289,21 @@
                 <wx:font wx:val = "Times New Roman"/>
             </w:rPr>
         </w:style>
+		<w:style w:type = "paragraph" w:styleId = "NameIndexText">
+            <w:name w:val = "NameIndexText"/>
+            <w:basedOn w:val = "BodyText"/>
+            <w:rsid w:val = "006E337B"/>
+			 <w:pPr>
+				<w:tabs><w:tab w:val="right" w:leader="dot" w:pos="3969"/></w:tabs>
+                <w:spacing w:after = "0"/>
+                <w:jc w:val = "left"/>
+            </w:pPr>
+            <w:rPr>
+                <wx:font wx:val = "Times New Roman"/>
+                <w:sz w:val = "20"/>
+            </w:rPr>
+			
+        </w:style>
              <w:style w:type = "paragraph" w:styleId = "SpousePersonText">
             <w:name w:val = "SpousePersonText"/>
             <w:basedOn w:val = "BodyText"/>
