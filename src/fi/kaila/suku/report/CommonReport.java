@@ -1,6 +1,5 @@
 package fi.kaila.suku.report;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -233,9 +232,14 @@ public abstract class CommonReport {
 			bt.addText("\n");
 			repoWriter.addText(bt);
 			bt = new MainPersonText();
-			for (ImageNotice inoti : imgNotices) {
-
+			for (int i = 0; i < imgNotices.size(); i++) {
+				// for (ImageNotice inoti : imgNotices) {
+				ImageNotice inoti = imgNotices.get(i);
 				UnitNotice nn = inoti.nn;
+
+				float prose = (i * 100f) / imgNotices.size();
+				caller.setRunnerValue("" + (int) prose + ";"
+						+ nn.getMediaFilename());
 
 				if (caller.showImages()) {
 					ImageText imagetx = new ImageText();
@@ -303,10 +307,10 @@ public abstract class CommonReport {
 						if (nn.getMediaTitle() != null) {
 							sm.append(nn.getMediaTitle());
 						}
-						Image imgs = img.getScaledInstance((int) neww,
-								(int) newh, Image.SCALE_DEFAULT);
+						// Image imgs = img.getScaledInstance((int) neww,
+						// (int) newh, Image.SCALE_DEFAULT);
 
-						imagetx.setImage(imgs, nn.getMediaData(),
+						imagetx.setImage(img, nn.getMediaData(),
 								img.getWidth(), img.getHeight(), imgNamePrefix
 										+ nn.getMediaFilename(), sm.toString(),
 								nn.getTag());
@@ -2480,9 +2484,9 @@ public abstract class CommonReport {
 										neww = imw * (newh / imh);
 									}
 
-									Image imgs = img.getScaledInstance(
-											(int) neww, (int) newh,
-											Image.SCALE_DEFAULT);
+									// Image imgs = img.getScaledInstance(
+									// (int) neww, (int) newh,
+									// Image.SCALE_DEFAULT);
 									imageNumber++;
 									String imgTitle = "";
 									if (caller.isNumberingImages()) {
@@ -2497,7 +2501,7 @@ public abstract class CommonReport {
 									String imgNamePrefix = xxx.substring(xxx
 											.length() - 4) + "_";
 									imagetx.setImage(
-											imgs,
+											img,
 											nn.getMediaData(),
 											img.getWidth(),
 											img.getHeight(),

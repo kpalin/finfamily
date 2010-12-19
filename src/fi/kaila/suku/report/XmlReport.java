@@ -246,6 +246,8 @@ public class XmlReport implements ReportInterface {
 			isPersonImage = it.isPersonImage();
 			if (isPersonImage) {
 				maxSize = maxPersonImageSize;
+			} else {
+				maxSize = maxImageSize;
 			}
 			imgWidth = it.getWidth();
 			imgHeight = it.getHeight();
@@ -264,8 +266,15 @@ public class XmlReport implements ReportInterface {
 
 			} else if (maxSize.width > 0) {
 				if (imgWidth > maxSize.width * widthMultiplier) {
+
 					float mw = maxSize.width;
 					float multip = mw / imgWidth;
+					float mh = maxSize.height;
+					float multih = mh / imgHeight;
+					if (multih > 0 && multih < multip) {
+						multip = multih;
+					}
+
 					w = imgWidth * multip;
 					h = imgHeight * multip;
 					displaySize.width = (int) w;
@@ -278,6 +287,13 @@ public class XmlReport implements ReportInterface {
 
 					float mw = maxSize.width;
 					float multip = mw / imgWidth;
+
+					float mh = maxSize.height;
+					float multih = mh / imgHeight;
+					if (multih > 0 && multih < multip) {
+						multip = multih;
+					}
+
 					w = imgWidth * multip;
 					h = imgHeight * multip;
 
