@@ -1494,7 +1494,8 @@ public abstract class CommonReport {
 				&& caller.getAncestorPane().getAllBranches()) {
 			// currTabNo = tableNum;
 		}
-		UnitNotice[] xnotices = null;
+		PersonLongData xdata = null;
+		// UnitNotice[] xnotices = null;
 		StringBuilder tabOwner = new StringBuilder();
 		if (ftab != null) {
 			// fatherTable = ftab.getTableNo();
@@ -1510,8 +1511,7 @@ public abstract class CommonReport {
 				JOptionPane.showMessageDialog(caller, e1.getMessage());
 				return;
 			}
-
-			xnotices = pappadata.persLong.getNotices();
+			xdata = pappadata.persLong;
 
 		}
 		if (mtab != null) {
@@ -1529,7 +1529,8 @@ public abstract class CommonReport {
 			}
 			if (pappadata == null) {
 				mainTab = mtab;
-				xnotices = mammadata.persLong.getNotices();
+				xdata = mammadata.persLong;
+
 			}
 
 		}
@@ -1544,8 +1545,8 @@ public abstract class CommonReport {
 			}
 		}
 
-		for (int j = 0; j < xnotices.length; j++) {
-			UnitNotice nn = xnotices[j];
+		for (int j = 0; j < xdata.getNotices().length; j++) {
+			UnitNotice nn = xdata.getNotices()[j];
 			if (nn.getTag().equals("NAME")) {
 				tabOwner.append(nn.getSurname());
 				if (tabOwner.length() > 0)
@@ -1582,6 +1583,7 @@ public abstract class CommonReport {
 				bt.addText(" " + toPrintTable(tableNum));
 			}
 		}
+
 		if (bt.getCount() > 0) {
 			repoWriter.addText(bt);
 		}
@@ -1648,6 +1650,16 @@ public abstract class CommonReport {
 				bt.addText(genText);
 				bt.addText(". ");
 			}
+			if (caller.showRefn() && xdata.getRefn() != null) {
+
+				bt.addText(xdata.getRefn());
+				bt.addText(" ");
+			}
+			if (caller.showGroup() && xdata.getGroupId() != null) {
+
+				bt.addText(xdata.getGroupId());
+				bt.addText(" ");
+			}
 			if (pappadata.persLong.getPrivacy() == null) {
 				printName(bt, pappadata.persLong, 2);
 				if (!order.equals("ESPOLIN")) {
@@ -1713,6 +1725,17 @@ public abstract class CommonReport {
 				bt.addText(genText);
 				bt.addText(". ");
 			}
+			if (caller.showRefn() && mammadata.persLong.getRefn() != null) {
+
+				bt.addText(mammadata.persLong.getRefn());
+				bt.addText(" ");
+			}
+			if (caller.showGroup() && mammadata.persLong.getGroupId() != null) {
+
+				bt.addText(mammadata.persLong.getGroupId());
+				bt.addText(" ");
+			}
+
 			if (mammadata.persLong.getPrivacy() == null) {
 				printName(bt, mammadata.persLong, 2);
 				if (!order.equals("ESPOLIN")) {
