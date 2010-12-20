@@ -25,6 +25,7 @@ public class DescendantPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTextField generations = null;
 	private JCheckBox adopted = null;
+	private JCheckBox bothParents = null;
 	private JTextField spouseAncestors = null;
 	private JTextField childAncestors = null;
 	private JTextField startTable = null;
@@ -74,6 +75,11 @@ public class DescendantPane extends JPanel {
 		adopted = new JCheckBox(Resurses.getString("REPORT.DESC.ADOPTEDALSO"));
 		adopted.setBounds(rtypx, rtypy, 200, 20);
 		add(adopted);
+		rtypy += 20;
+		bothParents = new JCheckBox(
+				Resurses.getString("REPORT.DESC.BOTHPARENTS"));
+		bothParents.setBounds(rtypx, rtypy, 200, 20);
+		add(bothParents);
 		rtypy += 20;
 		pp = new JPanel();
 		pp.setLayout(null);
@@ -162,7 +168,7 @@ public class DescendantPane extends JPanel {
 
 		radio = new JRadioButton(Resurses.getString("REPORT.LISTA.DESCLISTA"));
 		tableOrder.add(radio);
-		rtypy += 150;
+		rtypy += 130;
 		radio.setBounds(rtypx, rtypy, 200, 20);
 		radio.setActionCommand("REPORT.LISTA.DESCLISTA");
 		add(radio);
@@ -297,6 +303,10 @@ public class DescendantPane extends JPanel {
 		return adopted.isSelected();
 	}
 
+	public boolean isBothParents() {
+		return bothParents.isSelected();
+	}
+
 	/**
 	 * Sets the adopted.
 	 * 
@@ -305,6 +315,11 @@ public class DescendantPane extends JPanel {
 	 */
 	void setAdopted(boolean value) {
 		adopted.setSelected(value);
+
+	}
+
+	void setBothParents(boolean value) {
+		bothParents.setSelected(value);
 
 	}
 

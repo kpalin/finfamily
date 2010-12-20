@@ -780,54 +780,80 @@ public abstract class CommonReport {
 					} else {
 
 						ReportTableMember rm = pare.getParent().get(0);
-						if (rm.getSex().equals("M")) {
+						String pareSex = rm.getSex();
+						if (pareSex.equals("M")) {
 							bt.addText(typesTable.getTextValue("Father"));
 						} else {
 							bt.addText(typesTable.getTextValue("Mother"));
 						}
 						bt.addText(": ");
 						int ppid = rm.getPid();
-						SukuData ppdata = caller.getKontroller().getSukuData(
-								"cmd=person", "pid=" + ppid, "mode=short",
-								"lang=" + Resurses.getLanguage());
 
-						if (ppdata.pers != null && ppdata.pers.length > 0) {
-							if (ppdata.pers[0].getPrivacy() != null) {
-								ppdata.pers[0] = new PersonShortData(
-										ppdata.pers[0].getPid(),
-										typesTable
-												.getTextValue("REPORT_NOMEN_NESCIO"),
-										null, null, null, null, null, null);
-
+						SukuData ppdata = printParentReference(bt, ppid);
+						//
+						// lets see if we need other parent too
+						//
+						if (caller.getDescendantPane().isBothParents()) {
+							// OK. Let's see if we can locate him/her
+							String pareTag = (pareSex.equals("M")) ? "MOTH"
+									: "FATH";
+							int parePid = 0;
+							int pareSurety = 0;
+							for (int j = 0; j < pdata.relations.length; j++) {
+								Relation rel = pdata.relations[j];
+								if (rel.getTag().equals(pareTag)) {
+									if (rel.getSurety() > pareSurety) {
+										// still check for adoptions
+										boolean isAdopt = false;
+										if (rel.getNotices() != null) {
+											for (RelationNotice rn : rel
+													.getNotices()) {
+												if (rn.getTag().equals("ADOP")) {
+													isAdopt = true;
+													break;
+												}
+											}
+										}
+										if (!isAdopt) {
+											pareSurety = rel.getSurety();
+											parePid = rel.getRelative();
+										}
+									}
+								}
 							}
-							if (ppdata.pers[0].getGivenname() != null) {
-								printGivenname(bt,
-										ppdata.pers[0].getGivenname(), false);
-								if (ppdata.pers[0].getPrefix() != null
-										|| ppdata.pers[0].getSurname() != null
-										|| ppdata.pers[0].getPostfix() != null) {
-									bt.addText(" ");
-								}
-								if (ppdata.pers[0].getPrefix() != null) {
-									bt.addText(ppdata.pers[0].getPrefix() + " ");
-								}
-								if (ppdata.pers[0].getSurname() != null) {
-									bt.addText(ppdata.pers[0].getSurname());
-								}
-								if (ppdata.pers[0].getPostfix() != null) {
-									bt.addText(" "
-											+ ppdata.pers[0].getPostfix());
+							if (parePid > 0) {
+								// let's still make sure he/she is in the parent
+								// table
+								boolean isInTab = false;
+								for (int j = 0; j < tab.getParent().size(); j++) {
+									if (tab.getParent().get(j).getPid() == parePid) {
+										isInTab = true;
+										break;
+									}
 								}
 
+								if (isInTab) {
+									bt.addText(", ");
+
+									if (pareSex.equals("M")) {
+										bt.addText(typesTable
+												.getTextValue("Mother"));
+									} else {
+										bt.addText(typesTable
+												.getTextValue("Father"));
+									}
+									bt.addText(": ");
+									printParentReference(bt, parePid);
+								}
 							}
-
-							bt.addText(" ");
-							bt.addText(typesTable.getTextValue("FROMTABLE")
-									.toLowerCase() + " " + refTab, true, false);
-
+							if (ppdata.pers != null && ppdata.pers.length > 0) {
+								bt.addText(" ");
+								bt.addText(typesTable.getTextValue("FROMTABLE")
+										.toLowerCase() + " " + refTab, true,
+										false);
+							}
 						}
 					}
-
 				} catch (NumberFormatException ne) {
 					// not expected here i.e. program error
 					logger.log(Level.WARNING, "pare fetch", ne);
@@ -1253,6 +1279,47 @@ public abstract class CommonReport {
 			printNotices(bt, famtNotices, 2, tab.getTableNo());
 			repoWriter.addText(bt);
 		}
+	}
+
+	/**
+	 * @param bt
+	 * @param ppid
+	 * @return
+	 * @throws SukuException
+	 */
+	public SukuData printParentReference(BodyText bt, int ppid)
+			throws SukuException {
+		SukuData ppdata = caller.getKontroller().getSukuData("cmd=person",
+				"pid=" + ppid, "mode=short", "lang=" + Resurses.getLanguage());
+
+		if (ppdata.pers != null && ppdata.pers.length > 0) {
+
+			if (ppdata.pers[0].getPrivacy() != null) {
+				ppdata.pers[0] = new PersonShortData(ppdata.pers[0].getPid(),
+						typesTable.getTextValue("REPORT_NOMEN_NESCIO"), null,
+						null, null, null, null, null);
+
+			}
+			if (ppdata.pers[0].getGivenname() != null) {
+				printGivenname(bt, ppdata.pers[0].getGivenname(), false);
+				if (ppdata.pers[0].getPrefix() != null
+						|| ppdata.pers[0].getSurname() != null
+						|| ppdata.pers[0].getPostfix() != null) {
+					bt.addText(" ");
+				}
+				if (ppdata.pers[0].getPrefix() != null) {
+					bt.addText(ppdata.pers[0].getPrefix() + " ");
+				}
+				if (ppdata.pers[0].getSurname() != null) {
+					bt.addText(ppdata.pers[0].getSurname());
+				}
+				if (ppdata.pers[0].getPostfix() != null) {
+					bt.addText(" " + ppdata.pers[0].getPostfix());
+				}
+
+			}
+		}
+		return ppdata;
 	}
 
 	private void printNameNn(BodyText bt) {

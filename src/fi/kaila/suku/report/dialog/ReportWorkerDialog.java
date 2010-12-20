@@ -1079,6 +1079,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			boolean indexPlaces = false;
 			boolean indexYears = false;
 			boolean descendantAdopted = false;
+			boolean descendantBothParents = false;
 			boolean ancestorFamily = false;
 			boolean ancestorAllBranches = false;
 			int vid = 0;
@@ -1157,6 +1158,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						ancestorPanel.setGenerations(vx[1]);
 					} else if (vx[0].equals("descadopted")) {
 						descendantAdopted = true;
+					} else if (vx[0].equals("descbothparents")) {
+						descendantBothParents = true;
 					} else if (vx[0].equals("descspanc")) {
 						descendantPanel.setSpouseAncestors(vx[1]);
 					} else if (vx[0].equals("descchanc")) {
@@ -1212,6 +1215,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			commonIndexYears.setSelected(indexYears);
 			if (pers != null) {
 				descendantPanel.setAdopted(descendantAdopted);
+				descendantPanel.setBothParents(descendantBothParents);
 				ancestorPanel.setShowFamily(ancestorFamily);
 				ancestorPanel.setAllBranches(ancestorAllBranches);
 			}
@@ -1408,6 +1412,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			v.add("ancgen=" + ancestorPanel.getGenerations());
 			if (descendantPanel.getAdopted()) {
 				v.add("descadopted=true");
+			}
+			if (descendantPanel.isBothParents()) {
+				v.add("descbothparents=true");
 			}
 			v.add("descspanc=" + descendantPanel.getSpouseAncestors());
 			v.add("descchanc=" + descendantPanel.getChildAncestors());
