@@ -222,6 +222,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private JCheckBox commonNamesBold = null;
 	private JCheckBox commonNamesUnderline = null;
 	private JCheckBox commonWithAddress = null;
+	private JCheckBox commonWithRefn = null;
+	private JCheckBox commonWithGroup = null;
 
 	private SukuSuretyField commonSurety;
 
@@ -506,6 +508,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		return (commonWithAddress.getSelectedObjects() != null);
 	}
 
+	public boolean showRefn() {
+		return (commonWithRefn.getSelectedObjects() != null);
+	}
+
+	public boolean showGroup() {
+		return (commonWithGroup.getSelectedObjects() != null);
+	}
+
 	/**
 	 * Min surety level to include in the report (where supported)
 	 * 
@@ -668,16 +678,26 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		add(commonNamesUnderline);
 
 		commonWithAddress = new JCheckBox(
-				Resurses.getString("REPORT.WITHADDERSS"), true);
+				Resurses.getString("REPORT.WITHADDRESS"), true);
 		commonWithAddress.setBounds(x4, y1 + 220, 160, 20);
 		add(commonWithAddress);
 
+		commonWithRefn = new JCheckBox(Resurses.getString("REPORT.WITHREFN"),
+				true);
+		commonWithRefn.setBounds(x4, y1 + 242, 160, 20);
+		add(commonWithRefn);
+
+		commonWithGroup = new JCheckBox(Resurses.getString("REPORT.WITHGROUP"),
+				true);
+		commonWithGroup.setBounds(x4, y1 + 262, 160, 20);
+		add(commonWithGroup);
+
 		lb = new JLabel(Resurses.getString("REPORT.SURETY"));
-		lb.setBounds(x4, y1 + 242, 160, 20);
+		lb.setBounds(x4, y1 + 286, 160, 20);
 		add(lb);
 
 		commonSurety = new SukuSuretyField();
-		commonSurety.setBounds(x4, y1 + 262, 160, 20);
+		commonSurety.setBounds(x4, y1 + 306, 160, 20);
 		add(commonSurety);
 
 		spouseData = new ButtonGroup();
@@ -1052,6 +1072,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			boolean boldNames = false;
 			boolean underlineNames = false;
 			boolean withAddress = false;
+			boolean withRefn = false;
+			boolean withGroup = false;
 			int surety = 100;
 			boolean indexNames = false;
 			boolean indexPlaces = false;
@@ -1084,7 +1106,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					underlineNames = true;
 				} else if (vx[0].equals("address")) {
 					withAddress = true;
-
+				} else if (vx[0].equals("refn")) {
+					withRefn = true;
+				} else if (vx[0].equals("group")) {
+					withGroup = true;
 				} else if (vx[0].equals("farm")) {
 					includeFarm = true;
 				} else if (vx[0].equals("nameIndex")) {
@@ -1179,6 +1204,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			commonNamesBold.setSelected(boldNames);
 			commonNamesUnderline.setSelected(underlineNames);
 			commonWithAddress.setSelected(withAddress);
+			commonWithRefn.setSelected(withRefn);
+			commonWithGroup.setSelected(withGroup);
 			commonSurety.setSurety(surety);
 			commonIndexNames.setSelected(indexNames);
 			commonIndexPlaces.setSelected(indexPlaces);
@@ -1348,6 +1375,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 		if (commonWithAddress.getSelectedObjects() != null) {
 			v.add("address=true");
+		}
+		if (commonWithRefn.getSelectedObjects() != null) {
+			v.add("refn=true");
+		}
+		if (commonWithGroup.getSelectedObjects() != null) {
+			v.add("group=true");
 		}
 		ButtonModel model = commonDateFormatGroup.getSelection();
 		if (model != null) {

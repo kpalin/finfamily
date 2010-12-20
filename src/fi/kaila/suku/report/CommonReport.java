@@ -745,7 +745,14 @@ public abstract class CommonReport {
 			bt.addText(genText);
 			bt.addText(". ");
 		}
-
+		if (caller.showRefn() && pdata.persLong.getRefn() != null) {
+			bt.addText(pdata.persLong.getRefn());
+			bt.addText(" ");
+		}
+		if (caller.showGroup() && pdata.persLong.getGroupId() != null) {
+			bt.addText(pdata.persLong.getGroupId());
+			bt.addText(" ");
+		}
 		if (pdata.persLong.getPrivacy() == null) {
 			printName(bt, pdata.persLong, 2);
 		} else {
