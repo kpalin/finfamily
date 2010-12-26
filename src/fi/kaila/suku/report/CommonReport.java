@@ -373,6 +373,7 @@ public abstract class CommonReport {
 
 			float runnervalue = 0;
 			float mapsize = vv.size();
+			HashMap<String, String> nms = new HashMap<String, String>();
 
 			for (int j = 0; j < mapsize; j++) {
 				PersonInTables pit = vv.get(j);
@@ -383,7 +384,7 @@ public abstract class CommonReport {
 							"mode=short", "pid=" + pit.pid);
 					if (resp.pers != null) {
 						pit.shortPerson = resp.pers[0];
-						HashMap<String, String> nms = new HashMap<String, String>();
+						nms.clear();
 						String testName = nv(pit.shortPerson.getPrefix()) + "|"
 								+ nv(pit.shortPerson.getSurname()) + "|"
 								+ nv(pit.shortPerson.getGivenname()) + "|"
