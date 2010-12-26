@@ -157,8 +157,7 @@ public class SukuUtility {
 	public SukuData import2004Data(Connection con, String path, String oldCode)
 			throws SukuException {
 		Read2004XML x = new Read2004XML(path, con, oldCode);
-		SukuData resp = x.importFile();
-		return resp;
+		return x.importFile();
 	}
 
 }

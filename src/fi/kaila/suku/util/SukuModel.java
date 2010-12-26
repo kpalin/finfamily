@@ -211,15 +211,7 @@ public class SukuModel implements TableModel {
 			return null;
 
 		this.row = this.tab.get(argr);
-		Object o = this.row.get(argc);
-		// if (o != null) {
-		// System.out.println("getAt[" + argr + "," + argc + "]:" +
-		// o.toString());
-		// } else {
-		// System.out.println("getAt[" + argr + "," + argc + "]:null" );
-		//
-		// }
-		return o;
+		return this.row.get(argc);
 
 	}
 

@@ -59,10 +59,7 @@ public class SukuNameComparator implements Comparator {
 		String nuno = noAdel(uno.trim()).replace(' ', '!');
 		String nduo = noAdel(duo.trim()).replace(' ', '!');
 
-		int compnresu = this.colli.compare(nuno, nduo);
-		// System.out.println("NoComp: [" + compnresu + "] '" + nuno + "'/'"
-		// + nduo + "'");
-		return compnresu;
+		return this.colli.compare(nuno, nduo);
 
 	}
 

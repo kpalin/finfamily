@@ -68,8 +68,7 @@ public class SukuTypesTable extends JTable {
 
 				java.awt.Point p = e.getPoint();
 				int index = this.columnModel.getColumnIndexAtX(p.x);
-				String tip = Resurses.getString("TYPES_COLUMN_" + index);
-				return tip;
+				return Resurses.getString("TYPES_COLUMN_" + index);
 			}
 		};
 	}
@@ -118,8 +117,7 @@ public class SukuTypesTable extends JTable {
 	 * @return rule for requested type
 	 */
 	public String getTypeRule(String type) {
-		String rule = model.getTypeRule(type);
-		return rule;
+		return model.getTypeRule(type);
 
 	}
 

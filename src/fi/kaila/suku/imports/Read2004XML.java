@@ -3012,8 +3012,7 @@ public class Read2004XML extends DefaultHandler {
 			dd = new java.util.Date();
 		}
 
-		Timestamp tms = new Timestamp(dd.getTime());
-		return tms;
+		return new Timestamp(dd.getTime());
 	}
 
 	private File copyToTempfile(ZipInputStream zipIn, String imgName)

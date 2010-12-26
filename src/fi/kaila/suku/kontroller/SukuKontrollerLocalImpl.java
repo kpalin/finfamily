@@ -353,8 +353,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	 */
 	@Override
 	public String getFilePath() {
-		String tmp = file.getAbsolutePath().replace("\\", "/");
-		return tmp;
+		return file.getAbsolutePath().replace("\\", "/");
 	}
 
 }

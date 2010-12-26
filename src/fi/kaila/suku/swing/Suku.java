@@ -2665,8 +2665,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						SukuModel.SUKU_ROW);
 				if (rivi == null)
 					return null;
-				PersonShortData pers = rivi.getPerson();
-				return pers;
+				return rivi.getPerson();
 			}
 		}
 		return null;
@@ -3151,8 +3150,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * @return PersonShortData instance for requested person
 	 */
 	public PersonShortData getPerson(int pid) {
-		PersonShortData ss = tableMap.get(pid);
-		return ss;
+		return tableMap.get(pid);
 	}
 
 	/**
@@ -4089,10 +4087,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		 */
 		@Override
 		public int convertColumnIndexToView(int modelColumnIndex) {
-			int ii = crit.getViewIndex(modelColumnIndex);
-			// System.out.println("toView[" + modelColumnIndex + "/" + ii +
-			// "]");
-			return ii;
+			return crit.getViewIndex(modelColumnIndex);
 		}
 
 		/*
@@ -4102,11 +4097,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		 */
 		@Override
 		public int convertColumnIndexToModel(int viewColumnIndex) {
-			int ii = crit.getModelIndex(viewColumnIndex);
-
-			// System.out.println("toModel[" + viewColumnIndex + "/" + ii +
-			// "]");
-			return ii;
+			return crit.getModelIndex(viewColumnIndex);
 		}
 
 	}

@@ -336,9 +336,8 @@ public class PersonInTables implements Comparable<PersonInTables> {
 			nuno = collatable(nuno.toLowerCase());
 			nduo = collatable(nduo.toLowerCase());
 		}
-		int compnresu = fiCollator.compare(nuno, nduo);
 
-		return compnresu;
+		return fiCollator.compare(nuno, nduo);
 
 	}
 

@@ -143,8 +143,7 @@ public class SukuServerImpl implements SukuServer {
 		logger.fine("database created for " + path);
 
 		try {
-			SukuData resp = data.import2004Data(this.con, path, oldCode);
-			return resp;
+			return data.import2004Data(this.con, path, oldCode);
 		} catch (Exception e) {
 			throw new SukuException(e);
 		}
