@@ -290,8 +290,9 @@ public class ImportGedcomUtil {
 
 									double prose = (dluku * 100) / dLen;
 									int intprose = (int) prose;
-									sb.append("" + intprose + ";"
-											+ record.toString(false));
+									sb.append(intprose);
+									sb.append(";");
+									sb.append(record.toString(false));
 									if (this.runner.setRunnerValue(sb
 											.toString())) {
 										throw new SukuException(

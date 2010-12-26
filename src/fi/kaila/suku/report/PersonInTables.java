@@ -167,7 +167,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 					if (asChildren.get(i) != table) {
 						if (sx.length() > 0)
 							sx.append(",");
-						sx.append("" + (asChildren.get(i) + tableOffset));
+						sx.append((asChildren.get(i) + tableOffset));
 					}
 				}
 			}
@@ -182,7 +182,7 @@ public class PersonInTables implements Comparable<PersonInTables> {
 					if (asParents.get(i) != table) {
 						if (sx.length() > 0)
 							sx.append(",");
-						sx.append("" + (asParents.get(i) + tableOffset));
+						sx.append((asParents.get(i) + tableOffset));
 					}
 				}
 			}
