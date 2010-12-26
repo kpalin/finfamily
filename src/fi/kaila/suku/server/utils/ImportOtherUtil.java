@@ -367,6 +367,7 @@ public class ImportOtherUtil {
 
 		}
 		rs.close();
+		pst.close();
 
 		sql = "SELECT setval('unitseq'," + npid + ")";
 		rs = stm.executeQuery(sql);

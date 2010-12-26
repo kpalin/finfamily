@@ -262,6 +262,7 @@ public class ReportUtil {
 			}
 		}
 		rs.close();
+		stm.close();
 
 		sql = "select p.tag from spouse as p where aid=? and bid=?";
 
