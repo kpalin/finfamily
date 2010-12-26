@@ -735,8 +735,12 @@ public class ExportGedcomUtil {
 			}
 			while (chap.length() > 0) {
 				if (chap.length() <= linelen) {
-					sb.append("" + currLevel + " " + currTag + " " + chap
-							+ "\r\n");
+					sb.append(currLevel);
+					sb.append(" ");
+					sb.append(currTag);
+					sb.append(" ");
+					sb.append(chap);
+					sb.append("\r\n");
 					chap = "";
 				} else {
 
