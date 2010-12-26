@@ -2308,6 +2308,14 @@ public abstract class CommonReport {
 				bt.addText("(" + sb.toString() + "). ");
 			}
 		}
+		// FIXME: This method appears to modify a parameter, and then return
+		// this parameter as the methods return value. This will be confusing to
+		// callers of this method, as it won't be apparent that the 'original'
+		// passed in parameter will be changed as well. If the purpose of this
+		// method is to change the parameter, it would be more clear to change
+		// the method to a have a void return value. If a return type is
+		// required due to interface or superclass contract, perhaps a clone of
+		// the parameter should be made.
 		return bt;
 	}
 
