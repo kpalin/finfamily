@@ -390,7 +390,9 @@ public class ImportGedcomUtil {
 
 				double prose = (indiIndex * 100) / indiCount;
 				int intprose = (int) prose;
-				sb.append("" + intprose + ";" + rec.toString(false));
+				sb.append(intprose);
+				sb.append(";");
+				sb.append(rec.toString(false));
 				if (this.runner.setRunnerValue(sb.toString())) {
 					throw new SukuException(
 							Resurses.getString("GEDCOM_CANCELLED"));
