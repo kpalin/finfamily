@@ -2998,8 +2998,7 @@ public class Read2004XML extends DefaultHandler {
 	private Timestamp toTimestamp(String date, boolean forceNow) {
 		if (date == null) {
 			if (forceNow) {
-				Timestamp now = new Timestamp(System.currentTimeMillis());
-				return now;
+				return new Timestamp(System.currentTimeMillis());
 			} else {
 				return null;
 			}

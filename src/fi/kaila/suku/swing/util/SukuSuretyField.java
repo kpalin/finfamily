@@ -40,10 +40,7 @@ public class SukuSuretyField extends JPanel {
 	 * @return surtety value [0,20,40,60,80,100]
 	 */
 	public int getSurety() {
-		int sureIdx = surety.getSelectedIndex();
-		sureIdx = 5 - sureIdx;
-		sureIdx *= 20;
-		return sureIdx;
+		return (5 - surety.getSelectedIndex()) * 20;
 	}
 
 	/**
