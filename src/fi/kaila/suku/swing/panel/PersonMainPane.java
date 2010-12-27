@@ -101,6 +101,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 	private JLabel groupLbl;
 	private JLabel refnLbl;
+	private JLabel pidLbl;
 	private JLabel createdLbl;
 	private JLabel modifiedLbl;
 	/** set true for debug output */
@@ -454,6 +455,11 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		add(refn);
 		refn.setBounds(rcol, rrivi, rwidth * 2, 20);
 
+		rrivi += 24;
+		pidLbl = new JLabel("Pid");
+		add(pidLbl);
+		pidLbl.setBounds(rcol, rrivi, 70, 20);
+
 		rrivi += 20;
 		createdLbl = new JLabel(Resurses.getString("DATA_PERSON_CREATED"));
 		createdLbl.setBounds(rcol, rrivi, 200, 20);
@@ -770,9 +776,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 		groupid.setText(persLong.getGroupId());
 
-		// groupid.setEditable(persLong.getPid() == 0);
 		refn.setText(persLong.getRefn());
-
+		pidLbl.setText("Pid:" + persLong.getPid());
 		String tmp;
 		if (persLong.getCreated() == null) {
 			tmp = "";
@@ -1680,6 +1685,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		rrivi += 20;
 
 		refn.setBounds(rcol, rrivi, rwidth * 2, 20);
+		rrivi += 24;
+
+		pidLbl.setBounds(rcol, rrivi, 70, 20);
 
 		rrivi += 20;
 		createdLbl.setBounds(rcol, rrivi, 200, 20);
