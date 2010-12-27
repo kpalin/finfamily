@@ -245,11 +245,9 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		patronym.setEnabled(privacyCount == 0);
 		surname.setEnabled(privacyCount == 0);
 		postfix.setEnabled(privacyCount == 0);
-		if (privacyCount == 0) {
-			String tmp = comboname.toString();
-			surname.setText(tmp);
 
-		}
+		String tmp = comboname.toString();
+		surname.setText(tmp);
 
 	}
 

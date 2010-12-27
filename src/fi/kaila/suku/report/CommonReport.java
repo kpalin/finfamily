@@ -2747,24 +2747,6 @@ public abstract class CommonReport {
 							imgNotices.add(inoti);
 						} else {
 
-							// if (nn.getMediaFilename() != null
-							// && caller.showImages()) {
-							// if (caller.isSeparateImages()) {
-							// if (addSpace) {
-							// addSpace = true;
-							// }
-							// imageNumber++;
-							// bt.addText(
-							// Resurses.getReportString("INDEX_IMAGE")
-							// + " " + imageNumber + ". ",
-							// true, false);
-							//
-							// ImageNotice inoti = new ImageNotice(nn,
-							// imageNumber, tableNo);
-							// imgNotices.add(inoti);
-							//
-							// } else {
-
 							if (caller.showImages()) {
 								ImageText imagetx = new ImageText();
 								BufferedImage img;
@@ -2836,12 +2818,14 @@ public abstract class CommonReport {
 							if (nn.getNoteText() != null) {
 
 								if (addSpace) {
-									if (nn.getNoteText().charAt(0) != ','
-											&& nn.getNoteText().charAt(0) != '.') {
-										bt.addText(" ");
+									String trimmed = trim(nn.getNoteText());
+									if (trimmed != null && !trimmed.isEmpty()) {
+										if (trimmed.charAt(0) != ','
+												&& trimmed.charAt(0) != '.') {
+											bt.addText(" ");
+										}
 									}
 								}
-
 								int tlen = printText(bt, trim(nn.getNoteText()));
 								if (tlen > 0) {
 									addSpace = true;
@@ -3278,7 +3262,7 @@ public abstract class CommonReport {
 
 						if (!prevGivenname.isEmpty()
 								&& !nv(nn.getPrefix()).isEmpty()) {
-							bt.addText(" ", caller.showBoldNames(), false);
+							// bt.addText(" ", caller.showBoldNames(), false);
 							bt.addText(nn.getPrefix(), caller.showBoldNames(),
 									false);
 							wasName = true;
@@ -3518,6 +3502,8 @@ public abstract class CommonReport {
 
 		if (lastSpace > 0) {
 			return sb.toString().substring(0, lastSpace);
+		} else if (lastSpace == 0) {
+			return "";
 		} else {
 			return sb.toString();
 		}
