@@ -1477,8 +1477,6 @@ public abstract class CommonReport {
 			repoWriter.addText(bt);
 		}
 
-		// HashMap<String, String> submap = new HashMap<String, String>();
-
 		for (int i = 0; i < spouseMember.getSubCount(); i++) {
 			bt = new SubPersonText();
 			String subDad = spouseMember.getSubDadMom(i);
@@ -1486,36 +1484,68 @@ public abstract class CommonReport {
 			SukuData sub = caller.getKontroller().getSukuData("cmd=person",
 					"pid=" + spouseMember.getSubPid(i));
 			notices = sub.persLong.getNotices();
-			if (sub.persLong.getPrivacy() == null) {
-
-				printName(bt, sub.persLong, 4);
-				printNotices(bt, notices, 4, tabNo);
-			} else {
-				printNameNn(bt);
-			}
-			fromTable = "";
-
+			StringBuilder fromsTable = new StringBuilder();
+			boolean referenceFoundEarlier = false;
 			refs = personReferences.get(spouseMember.getSubPid(i));
 			if (refs != null) {
 				fromTable = refs.getReferences(tabNo, true, true, true,
 						tableOffset);
 
 				String[] froms = fromTable.split(",");
-				StringBuilder fromsTable = new StringBuilder();
+
 				for (int j = 0; j < froms.length; j++) {
-					// String mapx = submap.put(froms[j], subDad);
-					// if (mapx == null || mapx.equals(subDad)) {
+					long refTab = 0;
+					try {
+						refTab = Long.parseLong(froms[j]);
+					} catch (NumberFormatException ne) {
+						refTab = 0;
+					}
+					if (refTab > 0 && refTab < tabNo) {
+						referenceFoundEarlier = true;
+					}
+
 					if (j > 0) {
 						fromsTable.append(",");
 					}
 					fromsTable.append(froms[j]);
 				}
-				// }
-				if (fromsTable.length() > 0) {
-					bt.addText(typesTable.getTextValue("ALSO") + " "
-							+ fromsTable.toString() + ". ", true, false);
-				}
 			}
+
+			if (sub.persLong.getPrivacy() == null) {
+
+				printName(bt, sub.persLong, 4);
+				int noticeCol = 4;
+				if (referenceFoundEarlier) {
+					noticeCol = 3;
+				}
+				printNotices(bt, notices, noticeCol, tabNo);
+			} else {
+				printNameNn(bt);
+			}
+			fromTable = "";
+
+			// refs = personReferences.get(spouseMember.getSubPid(i));
+			// if (refs != null) {
+			// fromTable = refs.getReferences(tabNo, true, true, true,
+			// tableOffset);
+			//
+			// String[] froms = fromTable.split(",");
+			// StringBuilder fromsTable = new StringBuilder();
+			// for (int j = 0; j < froms.length; j++) {
+			// // String mapx = submap.put(froms[j], subDad);
+			// // if (mapx == null || mapx.equals(subDad)) {
+			// if (j > 0) {
+			// fromsTable.append(",");
+			// }
+			// fromsTable.append(froms[j]);
+			// }
+			// }
+			if (fromsTable.length() > 0) {
+				bt.addText(
+						typesTable.getTextValue("ALSO") + " "
+								+ fromsTable.toString() + ". ", true, false);
+			}
+			// }
 
 			repoWriter.addText(bt);
 
