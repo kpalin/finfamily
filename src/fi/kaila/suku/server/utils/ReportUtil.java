@@ -156,20 +156,26 @@ public class ReportUtil {
 
 		for (int i = 0; i < tables.size(); i++) {
 			ReportUnit unit = tables.get(i);
-			String sex = null;
+			// String sex = null;
+			String pareSex = null;
+			ReportTableMember famParent = unit.getParent().get(0);
+			if (famParent == null) {
+				return;
+			}
+			pareSex = famParent.getSex();
 			for (int j = 0; j < unit.getChild().size(); j++) {
 
 				ReportTableMember member = unit.getChild().get(j);
-				if (j == 0) {
-					sex = member.getSex();
-				}
+				// if (j == 0) {
+				// sex = member.getSex();
+				// }
 				// HashMap<Integer,PersonInTables> personReferences
 				// long strado=2;
 				// if (unit.getMember(0).getSex().equals("M")){
 				// strado=3;
 				// }
 
-				addAncestorsToMember(member, 1, gen, sex);
+				addAncestorsToMember(member, 1, gen, pareSex);
 				// spouse not a relative
 
 			}
