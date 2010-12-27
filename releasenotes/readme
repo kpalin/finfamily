@@ -2,6 +2,11 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 1007 on 27 dec 2010
+
+*report formatting fixes. r
+*Fixed checking of sex of parent when generating childs parents
+
 Release 996 on 21 dec 2010
 
 * Added reference to other parent in descendant report
