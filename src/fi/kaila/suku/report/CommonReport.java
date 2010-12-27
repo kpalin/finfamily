@@ -847,13 +847,13 @@ public abstract class CommonReport {
 									printParentReference(bt, parePid);
 								}
 							}
-							if (ppdata.pers != null && ppdata.pers.length > 0) {
-								bt.addText(" ");
-								bt.addText(typesTable.getTextValue("FROMTABLE")
-										.toLowerCase() + " " + refTab, true,
-										false);
-							}
 						}
+						if (ppdata.pers != null && ppdata.pers.length > 0) {
+							bt.addText(" ");
+							bt.addText(typesTable.getTextValue("FROMTABLE")
+									.toLowerCase() + " " + refTab, true, false);
+						}
+
 					}
 				} catch (NumberFormatException ne) {
 					// not expected here i.e. program error
