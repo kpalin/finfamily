@@ -222,6 +222,7 @@
             <w:basedOn w:val = "BodyText"/>
             <w:rsid w:val = "006E337B"/>
             <w:pPr>
+            	<w:keepNext/>
                 <w:spacing w:before = "240" w:after = "240"/>
                 <w:jc w:val = "left"/>
             </w:pPr>
@@ -296,6 +297,7 @@
 			 <w:pPr>
 				<w:tabs><w:tab w:val="right" w:leader="dot" w:pos="3969"/></w:tabs>
                 <w:spacing w:after = "0"/>
+                <w:ind w:left="170" w:hanging="170"/>
                 <w:jc w:val = "left"/>
             </w:pPr>
             <w:rPr>
