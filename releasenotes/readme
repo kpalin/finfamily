@@ -2,6 +2,12 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 1015 on 29 dec 2010
+
+* Fixed problem with report language
+* Update nameindex in excel to same as in word
+* Fixed problem with printing of parent of adopted child
+
 Release 1010 on 27 dec 2010
 
 * fix to reference to parent in descendant report
