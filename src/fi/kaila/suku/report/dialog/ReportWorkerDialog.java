@@ -2385,7 +2385,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					relas[i] = sdata.relations;
 
 					PersonShortData psp = new PersonShortData(longs[i]);
-					System.out.println("PSP=" + psp.getAlfaName());
+					// System.out.println("PSP=" + psp.getAlfaName());
 					float prose = (i * 100f) / shorts.length;
 					setRunnerValue("" + (int) prose + ";" + psp.getAlfaName());
 				}
@@ -2874,48 +2874,72 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 					float runnervalue = 0;
 					float mapsize = vv.size();
-
+					HashMap<String, String> nms = new HashMap<String, String>();
 					for (int j = 0; j < mapsize; j++) {
 						PersonInTables pit = vv.get(j);
 						// vv.add(pit);
-						if (pit.shortPerson == null) {
+						// if (pit.shortPerson == null) {
+						if (pit.pid > 0) {
 
 							SukuData resp = Suku.kontroller.getSukuData(
 									"cmd=person", "mode=short", "pid="
 											+ pit.pid);
 							if (resp.pers != null) {
 								pit.shortPerson = resp.pers[0];
-
-								for (int i = 1; i < pit.shortPerson
-										.getNameCount(); i++) {
-									PersonInTables pitt = new PersonInTables(
-											pit.shortPerson.getPid());
-									pitt.asChildren = pit.asChildren;
-									pitt.references = pit.references;
-									Long[] aa = pit.getOwnerArray();
-									for (Long a : aa) {
-										pitt.addOwner(a);
-									}
-
-									pitt.asParents = pit.asParents;
-									PersonShortData p = pit.shortPerson;
-									PersonShortData alias = new PersonShortData(
-											p.getPid(), p.getGivenname(i),
-											p.getPatronym(i), p.getPrefix(i),
-											p.getSurname(i), p.getPostfix(i),
-											p.getBirtDate(), p.getDeatDate());
-									pitt.shortPerson = alias;
-									vv.add(pitt);
-
-								}
 							}
-							float prose = (runnervalue * 100f) / mapsize;
-							if (prose > 100)
-								prose = 100;
-							setRunnerValue("" + (int) prose + ";"
-									+ pit.shortPerson.getAlfaName());
-							runnervalue++;
 						}
+						// }
+						// // }
+						// if (pit.shortPerson != null) {
+						nms.clear();
+						String testName = Utils.nv(pit.shortPerson.getPrefix())
+								+ "|" + Utils.nv(pit.shortPerson.getSurname())
+								+ "|"
+								+ Utils.nv(pit.shortPerson.getGivenname())
+								+ "|" + Utils.nv(pit.shortPerson.getPatronym())
+								+ "|" + Utils.nv(pit.shortPerson.getPostfix());
+						nms.put(testName, "1");
+						for (int i = 1; i < pit.shortPerson.getNameCount(); i++) {
+							PersonInTables pitt = new PersonInTables(
+									pit.shortPerson.getPid());
+							pitt.asChildren = pit.asChildren;
+							pitt.references = pit.references;
+							Long[] aa = pit.getOwnerArray();
+							for (Long a : aa) {
+								pitt.addOwner(a);
+							}
+
+							pitt.asParents = pit.asParents;
+							PersonShortData p = pit.shortPerson;
+							PersonShortData alias = new PersonShortData(
+									p.getPid(), p.getGivenname(i),
+									p.getPatronym(i), p.getPrefix(i),
+									p.getSurname(i), p.getPostfix(i),
+									p.getBirtDate(), p.getDeatDate());
+							pitt.shortPerson = alias;
+							testName = Utils.nv(pitt.shortPerson.getPrefix())
+									+ "|"
+									+ Utils.nv(pitt.shortPerson.getSurname())
+									+ "|"
+									+ Utils.nv(pitt.shortPerson.getGivenname())
+									+ "|"
+									+ Utils.nv(pitt.shortPerson.getPatronym())
+									+ "|"
+									+ Utils.nv(pitt.shortPerson.getPostfix());
+
+							String oldName = nms.put(testName, "1");
+							if (oldName == null) {
+								vv.add(pitt);
+							}
+
+						}
+						float prose = (runnervalue * 100f) / mapsize;
+						if (prose > 100)
+							prose = 100;
+						setRunnerValue("" + (int) prose + ";"
+								+ pit.shortPerson.getAlfaName());
+						runnervalue++;
+
 					}
 					PersonInTables[] pits = vv.toArray(new PersonInTables[0]);
 					Arrays.sort(pits);
@@ -2943,8 +2967,39 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 							// String surn = pit.shortPerson.getSurname();
 
-							label = new Label(1, row, ""
-									+ pit.shortPerson.getAlfaName(), arial0);
+							StringBuilder tstg = new StringBuilder();
+
+							if (pit.shortPerson.getPrefix() != null) {
+								tstg.append(pit.shortPerson.getPrefix());
+							}
+							if (pit.shortPerson.getSurname() != null) {
+								if (tstg.length() > 0) {
+									tstg.append(" ");
+								}
+								tstg.append(pit.shortPerson.getSurname());
+							}
+							if (pit.shortPerson.getGivenname() != null) {
+								if (tstg.length() > 0) {
+									tstg.append(" ");
+								}
+								tstg.append(pit.shortPerson.getGivenname());
+							}
+							if (pit.shortPerson.getPatronym() != null) {
+								if (tstg.length() > 0) {
+									tstg.append(" ");
+								}
+								tstg.append(pit.shortPerson.getPatronym());
+							}
+
+							if (pit.shortPerson.getPostfix() != null) {
+								if (tstg.length() > 0) {
+									tstg.append(" ");
+								}
+
+								tstg.append(pit.shortPerson.getPostfix());
+							}
+
+							label = new Label(1, row, tstg.toString(), arial0);
 							sheet.addCell(label);
 
 							String kefe = pit.getReferences(0, true, false,
@@ -2965,8 +3020,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 									}
 								}
 							}
-							// System.out.println("RUN:"
-							// + pit.shortPerson.getAlfaName());
 
 							if (!mefe.isEmpty()) {
 								if (!refe.isEmpty()) {

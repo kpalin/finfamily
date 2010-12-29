@@ -250,6 +250,7 @@
             <w:basedOn w:val = "BodyText"/>
             <w:rsid w:val = "006E337B"/>
             <w:pPr>
+           		<w:keepNext/>
                 <w:spacing w:before = "120" w:after = "0"/>
                 <w:ind w:left = "567"/>
             </w:pPr>

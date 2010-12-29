@@ -175,7 +175,7 @@ public class ReportUtil {
 				// strado=3;
 				// }
 
-				addAncestorsToMember(member, 1, gen, pareSex);
+				addAncestorsToMember(unit, member, 1, gen, pareSex);
 				// spouse not a relative
 
 			}
@@ -201,7 +201,7 @@ public class ReportUtil {
 							true, false, 0);
 				}
 				if (fromTable.isEmpty()) {
-					addAncestorsToMember(member, 1, gen, null);
+					addAncestorsToMember(unit, member, 1, gen, null);
 					// spouse not a relative
 				}
 			}
@@ -222,7 +222,7 @@ public class ReportUtil {
 									true, true, false, 0);
 						}
 						if (fromTable.isEmpty()) {
-							addAncestorsToMember(spouses[k], 1, gen, null);
+							addAncestorsToMember(unit, spouses[k], 1, gen, null);
 							// spouse not a relative
 						}
 					}
@@ -231,20 +231,20 @@ public class ReportUtil {
 		}
 	}
 
-	private void addAncestorsToMember(ReportTableMember member, long strado,
-			int gen, String parentSex) throws SQLException {
+	private void addAncestorsToMember(ReportUnit unit,
+			ReportTableMember member, long strado, int gen, String parentSex)
+			throws SQLException {
 
 		int pid = member.getPid();
-		String sex = member.getSex();
 
-		addMemberParents(member, pid, strado, sex, parentSex, 0, gen);
+		addMemberParents(unit, member, pid, strado, parentSex, 0, gen);
 
 		member.sortSubs();
 
 	}
 
-	private void addMemberParents(ReportTableMember member, int pid,
-			long strado, String sex, String parentSex, int gen, int maxGen)
+	private void addMemberParents(ReportUnit unit, ReportTableMember member,
+			int pid, long strado, String parentSex, int gen, int maxGen)
 			throws SQLException {
 
 		String sql = "select p.aid,p.bid,p.tag "
@@ -269,6 +269,21 @@ public class ReportUtil {
 		}
 		rs.close();
 		stm.close();
+
+		for (int i = 0; i < unit.getParent().size(); i++) {
+
+			ReportTableMember pare = unit.getParent().get(i);
+			if (fatherPid == pare.getPid()) {
+				fatherPid = 0;
+			}
+			if (motherPid == pare.getPid()) {
+				motherPid = 0;
+			}
+
+		}
+		if (fatherPid == 0 && motherPid == 0) {
+			return;
+		}
 
 		sql = "select p.tag from spouse as p where aid=? and bid=?";
 
@@ -312,12 +327,12 @@ public class ReportUtil {
 
 		if ((parentSex == null || "F".equals(parentSex)) && fatherPid > 0
 				&& gen < maxGen - 1) {
-			addMemberParents(member, fatherPid, strado * 2, "M", null, gen + 1,
+			addMemberParents(unit, member, fatherPid, strado * 2, "M", gen + 1,
 					maxGen);
 		}
 		if ((parentSex == null || "M".equals(parentSex)) && motherPid > 0
 				&& gen < maxGen - 1) {
-			addMemberParents(member, motherPid, strado * 2 + 1, "F", null,
+			addMemberParents(unit, member, motherPid, strado * 2 + 1, "F",
 					gen + 1, maxGen);
 		}
 
