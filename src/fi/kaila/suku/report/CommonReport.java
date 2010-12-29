@@ -1141,7 +1141,7 @@ public abstract class CommonReport {
 					bt.addText(pareTxt);
 				}
 				if (adopTag.length() > 0) {
-					bt.addText("(" + adopTag.toString() + ")");
+					bt.addText("(" + adopTag.toString() + ") ");
 				}
 
 				if (cdata.persLong.getPrivacy() == null) {
@@ -2631,11 +2631,7 @@ public abstract class CommonReport {
 								repoWriter.addText(bt);
 							} else {
 								if (addSpace) {
-									if (typesTable.getTypeText(tag).length() > 1) {
-										bt.addText(" ");
-									} else {
-										bt.addText("\u00A0");
-									}
+									bt.addText(" ");
 								}
 								String desc = nn.getDescription();
 								if (occuTypes.indexOf(nn.getTag()) > 0) {
@@ -2656,7 +2652,11 @@ public abstract class CommonReport {
 								nn.getFromDate(), nn.getToDate());
 						if (dd.length() > 0) {
 							if (addSpace) {
-								bt.addText(" ");
+								if (typesTable.getTypeText(tag).length() > 1) {
+									bt.addText(" ");
+								} else {
+									bt.addText("\u00A0");
+								}
 								bt.addText(dd);
 							}
 							addSpace = true;
