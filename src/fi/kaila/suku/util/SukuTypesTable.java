@@ -292,9 +292,9 @@ public class SukuTypesTable extends JTable {
 							}
 							setValueAt(b, row, 5);
 						}
-						if (vx[1].length() > 5) {
-							setValueAt(vx[1].substring(5), row, 6);
-						}
+						// if (vx[1].length() > 5) {
+						// // setValueAt(vx[1].substring(5), row, 6);
+						// }
 
 						break;
 					}

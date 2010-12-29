@@ -264,6 +264,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 				Suku.kontroller.putPref(owner, Resurses.REPOLANG,
 						Suku.getRepoLanguage(newLang, true));
 
+				Resurses.setLanguage(Suku.getRepoLanguage(newLang, true));
+
 			}
 
 			int imageScaler = imageScaling.getSelectedIndex();
