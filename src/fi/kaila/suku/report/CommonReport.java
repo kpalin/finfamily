@@ -2808,7 +2808,7 @@ public abstract class CommonReport {
 									if (caller.isNumberingImages()) {
 										imgTitle = Resurses
 												.getReportString("INDEX_IMAGE")
-												+ " " + imageNumber + ". ";
+												+ "\u00A0" + imageNumber + ". ";
 									}
 									if (nn.getMediaTitle() != null) {
 										imgTitle += nn.getMediaTitle();

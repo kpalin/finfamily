@@ -246,7 +246,9 @@ public class ReportUtil {
 	private void addMemberParents(ReportUnit unit, ReportTableMember member,
 			int pid, long strado, String parentSex, int gen, int maxGen)
 			throws SQLException {
-
+		if (gen >= maxGen) {
+			return;
+		}
 		String sql = "select p.aid,p.bid,p.tag "
 				+ "from parent as p left join relationnotice as r on p.rid=r.rid "
 				+ "where aid=? and r.tag is null";
@@ -270,70 +272,26 @@ public class ReportUtil {
 		rs.close();
 		stm.close();
 
-		for (int i = 0; i < unit.getParent().size(); i++) {
-
-			ReportTableMember pare = unit.getParent().get(i);
-			if (fatherPid == pare.getPid()) {
-				fatherPid = 0;
-			}
-			if (motherPid == pare.getPid()) {
-				motherPid = 0;
-			}
-
-		}
 		if (fatherPid == 0 && motherPid == 0) {
 			return;
 		}
 
-		sql = "select p.tag from spouse as p where aid=? and bid=?";
+		if (fatherPid > 0) {
 
-		stm = con.prepareStatement(sql);
-		stm.setInt(1, fatherPid);
-		stm.setInt(2, motherPid);
-
-		rs = stm.executeQuery();
-		tag = null;
-		while (rs.next()) {
-			tag = rs.getString(1);
-		}
-		rs.close();
-		stm.close();
-
-		if ((parentSex == null || "F".equals(parentSex)) && fatherPid > 0) {
-			PersonInTables ref = null;
-			if (gen < 2) {
-				ref = personReferences.get(fatherPid);
-			}
-
-			if (ref == null || tag == null) {
+			if (personReferences.get(fatherPid) == null) {
 				member.addSub(fatherPid, "M", strado * 2);
-			} else {
-				fatherPid = 0;
+				addMemberParents(unit, member, fatherPid, strado * 2, "M",
+						gen + 1, maxGen);
+
 			}
 		}
-		if ((parentSex == null || "M".equals(parentSex)) && motherPid > 0) {
-			PersonInTables ref = null;
-			if (gen < 2) {
-				ref = personReferences.get(motherPid);
-			}
+		if (motherPid > 0) {
 
-			if (ref == null || tag == null) {
+			if (personReferences.get(motherPid) == null) {
 				member.addSub(motherPid, "F", strado * 2 + 1);
-			} else {
-				motherPid = 0;
+				addMemberParents(unit, member, motherPid, strado * 2 + 1, "F",
+						gen + 1, maxGen);
 			}
-
-		}
-
-		if ((parentSex == null || "F".equals(parentSex)) && fatherPid > 0
-				&& gen < maxGen - 1) {
-			addMemberParents(unit, member, fatherPid, strado * 2, "M", gen + 1,
-					maxGen);
-		}
-		if ((parentSex == null || "M".equals(parentSex)) && motherPid > 0
-				&& gen < maxGen - 1) {
-			addMemberParents(unit, member, motherPid, strado * 2 + 1, "F",
-					gen + 1, maxGen);
 		}
 
 	}
