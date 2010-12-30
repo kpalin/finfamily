@@ -322,7 +322,7 @@ public abstract class CommonReport {
 
 					repoWriter.addText(imagetx);
 					if (nn.getNoteText() != null) {
-						printText(bt, nn.getNoteText());
+						printText(bt, nn.getNoteText(), null);
 					}
 
 				} else {
@@ -340,7 +340,7 @@ public abstract class CommonReport {
 
 					repoWriter.addText(bt);
 					if (nn.getNoteText() != null) {
-						printText(bt, nn.getNoteText());
+						printText(bt, nn.getNoteText(), null);
 					}
 				}
 				// if (img != null) {
@@ -481,6 +481,9 @@ public abstract class CommonReport {
 					tstg.append(pit.shortPerson.getGivenname());
 				}
 				if (pit.shortPerson.getPatronym() != null) {
+					if (tstg.length() > 0) {
+						tstg.append(" ");
+					}
 					tstg.append(pit.shortPerson.getPatronym());
 				}
 
@@ -2848,7 +2851,9 @@ public abstract class CommonReport {
 										}
 									}
 								}
-								int tlen = printText(bt, trim(nn.getNoteText()));
+								int tlen = printText(bt,
+										trim(nn.getNoteText()),
+										nn.getRefNames());
 								if (tlen > 0) {
 									addSpace = true;
 									addDot = true;
@@ -3029,11 +3034,58 @@ public abstract class CommonReport {
 	 * 
 	 * @param bt
 	 * @param text
+	 * @param strings
 	 * @return
 	 */
-	private int printText(BodyText bt, String text) {
+	private int printText(BodyText bt, String text, String[] namesin) {
 		if (text == null)
 			return 0;
+
+		if (namesin != null && caller.showBoldNames()) {
+			String names[] = new String[namesin.length];
+			for (int i = 0; i < names.length; i++) {
+				names[i] = namesin[i];
+			}
+
+			int firstName = -1;
+			int nameIdx = -1;
+			String nameTxt = null;
+
+			TextNamePart txtPart = null;
+			for (int i = 0; i < names.length; i++) {
+				if (names[i] != null) {
+					txtPart = locateName(text, names[i]);
+
+					if (txtPart != null && txtPart.location >= 0) {
+						if (firstName < 0 || txtPart.location < firstName) {
+							firstName = txtPart.location;
+							nameTxt = txtPart.nameText;
+							nameIdx = i;
+						}
+					}
+				}
+			}
+			String nxtText;
+			int fullLength = 0;
+			if (firstName > 0) {
+				nxtText = text.substring(firstName + nameTxt.length());
+				int len1 = printText(bt, text.substring(0, firstName), null);
+				fullLength += len1;
+			} else if (firstName == 0) {
+				nxtText = text;
+			} else {
+				printText(bt, text, null);
+				return fullLength + text.length();
+			}
+			bt.addText(nameTxt, true, false);
+			if (nameTxt.equals(text)) {
+				return fullLength + nameTxt.length();
+			}
+			names[nameIdx] = null;
+			int len2 = printText(bt, nxtText, names);
+			return fullLength + len2;
+
+		}
 
 		StringBuilder sb = new StringBuilder();
 		ArrayList<String> v = new ArrayList<String>();
@@ -3090,6 +3142,21 @@ public abstract class CommonReport {
 		}
 
 		return text.length();
+	}
+
+	private TextNamePart locateName(String text, String name) {
+		TextNamePart tnp = new TextNamePart();
+
+		String parts[] = name.split(",");
+		if (parts.length == 2) {
+			tnp.location = text.indexOf(parts[1] + " " + parts[0]);
+			tnp.nameText = parts[1] + " " + parts[0];
+		}
+		if (tnp.location < 0) {
+			tnp.location = text.indexOf(name);
+			tnp.nameText = name;
+		}
+		return tnp;
 	}
 
 	private String printDate(String datePrefix, String dateFrom, String dateTo) {
@@ -3545,6 +3612,12 @@ public abstract class CommonReport {
 		if (text == null)
 			return "";
 		return text;
+	}
+
+	class TextNamePart {
+		int location = -1;
+		int nameIdx = -1;
+		String nameText = null;
 	}
 
 	/**
