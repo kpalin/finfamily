@@ -2875,6 +2875,11 @@ public abstract class CommonReport {
 												refpid, parts[1], null, null,
 												parts[0], null, null, null);
 										textReferences.put(txtName, ppText);
+									} else if (parts.length == 1) {
+										ppText.shortPerson = new PersonShortData(
+												refpid, parts[0], null, null,
+												null, null, null, null);
+										textReferences.put(txtName, ppText);
 									}
 								}
 								ppText.references.add(tableNo);
