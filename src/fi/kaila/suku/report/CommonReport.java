@@ -2842,9 +2842,9 @@ public abstract class CommonReport {
 							// }
 
 							if (nn.getNoteText() != null) {
-
+								String trimmed = trim(nn.getNoteText());
 								if (addSpace) {
-									String trimmed = trim(nn.getNoteText());
+
 									if (trimmed != null && !trimmed.isEmpty()) {
 										if (trimmed.charAt(0) != ','
 												&& trimmed.charAt(0) != '.') {
@@ -2852,8 +2852,7 @@ public abstract class CommonReport {
 										}
 									}
 								}
-								int tlen = printText(bt,
-										trim(nn.getNoteText()),
+								int tlen = printText(bt, trimmed,
 										nn.getRefNames());
 								if (tlen > 0) {
 									addSpace = true;
@@ -3155,13 +3154,39 @@ public abstract class CommonReport {
 
 		String parts[] = name.split(",");
 		if (parts.length == 2) {
-			tnp.location = text.indexOf(parts[1] + " " + parts[0]);
-			tnp.nameText = parts[1] + " " + parts[0];
+
+			if (parts[0].isEmpty()) {
+				tnp.location = text.indexOf(parts[1]);
+				tnp.nameText = parts[1];
+			} else if (parts[1].isEmpty()) {
+				tnp.location = text.indexOf(parts[0]);
+				tnp.nameText = parts[0];
+			} else {
+				tnp.location = text.indexOf(parts[1] + " " + parts[0]);
+				tnp.nameText = parts[1] + " " + parts[0];
+			}
+
 		}
 		if (tnp.location < 0) {
 			tnp.location = text.indexOf(name);
 			tnp.nameText = name;
 		}
+
+		if (tnp.location >= 0) {
+			int j = 0;
+			for (j = 0; j < 5; j++) {
+				if (text.length() == tnp.location + tnp.nameText.length()) {
+					break;
+				}
+				char c = text.charAt(tnp.location + tnp.nameText.length());
+				if (c == ' ') {
+					break;
+				}
+				tnp.nameText += c;
+			}
+
+		}
+
 		return tnp;
 	}
 
