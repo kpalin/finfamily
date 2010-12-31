@@ -389,4 +389,9 @@ public class JavaReport extends JFrame implements ActionListener,
 		return thumbImage;
 
 	}
+
+	@Override
+	public String toString() {
+		return "Preview";
+	}
 }

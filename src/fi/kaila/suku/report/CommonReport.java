@@ -290,7 +290,9 @@ public abstract class CommonReport {
 									+ " " + inoti.imgNumber + ". ";
 						}
 						if (nn.getMediaTitle() != null) {
-							imgTitle += nn.getMediaTitle();
+							String titl = trim(nn.getMediaTitle());
+							imgTitle += titl + ".";
+
 						}
 						String xxx = "0000" + inoti.imgNumber;
 						String imgNamePrefix = xxx.substring(xxx.length() - 4)
@@ -307,10 +309,8 @@ public abstract class CommonReport {
 						sm.append(inoti.tabNo);
 						sm.append("). ");
 						if (nn.getMediaTitle() != null) {
-							sm.append(nn.getMediaTitle());
+							sm.append(imgTitle);
 						}
-						// Image imgs = img.getScaledInstance((int) neww,
-						// (int) newh, Image.SCALE_DEFAULT);
 
 						imagetx.setImage(img, nn.getMediaData(),
 								img.getWidth(), img.getHeight(), imgNamePrefix
@@ -2814,7 +2814,8 @@ public abstract class CommonReport {
 												+ "\u00A0" + imageNumber + ". ";
 									}
 									if (nn.getMediaTitle() != null) {
-										imgTitle += nn.getMediaTitle();
+										String titl = trim(nn.getMediaTitle());
+										imgTitle += titl + ".";
 									}
 									String xxx = "0000" + imageNumber;
 									String imgNamePrefix = xxx.substring(xxx

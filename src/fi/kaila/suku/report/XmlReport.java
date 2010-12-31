@@ -799,4 +799,9 @@ public class XmlReport implements ReportInterface {
 
 	}
 
+	@Override
+	public String toString() {
+		return report;
+	}
+
 }

@@ -91,7 +91,7 @@ public class DescendantReport extends CommonReport {
 		}
 
 		if (vlist != null) {
-			logger.info("Descendant repo");
+			logger.info("Descendant repo to " + repoWriter.toString());
 			tables = vlist.tables;
 
 			personReferences = Utils.getDescendantToistot(tables);
