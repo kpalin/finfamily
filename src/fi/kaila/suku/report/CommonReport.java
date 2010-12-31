@@ -3174,6 +3174,7 @@ public abstract class CommonReport {
 
 		if (tnp.location >= 0) {
 			int j = 0;
+			String origName = tnp.nameText;
 			for (j = 0; j < 5; j++) {
 				if (text.length() == tnp.location + tnp.nameText.length()) {
 					break;
@@ -3183,6 +3184,9 @@ public abstract class CommonReport {
 					break;
 				}
 				tnp.nameText += c;
+			}
+			if (j == 5) {
+				tnp.nameText = origName;
 			}
 
 		}
