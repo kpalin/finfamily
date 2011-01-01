@@ -304,24 +304,33 @@ public class PersonInTables implements Comparable<PersonInTables> {
 		if (shortPerson == null || o.shortPerson == null)
 			return 0;
 
-		// int cl = fiCollator.compare(Utils.nv(shortPerson.getSurname()),
-		// Utils.nv(o.shortPerson.getSurname()));
-
 		int cl = compareFF(Utils.nv(shortPerson.getSurname()),
 				Utils.nv(o.shortPerson.getSurname()));
 		if (cl != 0) {
 			return cl;
 		}
-		// cl = fiCollator.compare(Utils.nv(shortPerson.getGivenname()),
-		// Utils.nv(o.shortPerson.getGivenname()));
+
 		cl = compareFF(Utils.nv(shortPerson.getGivenname()),
 				Utils.nv(o.shortPerson.getGivenname()));
 
 		if (cl != 0) {
 			return cl;
 		}
-		return (Utils.nv(shortPerson.getBirtDate()).compareTo(Utils
+		cl = (Utils.nv(shortPerson.getBirtDate()).compareTo(Utils
 				.nv(o.shortPerson.getBirtDate())));
+
+		if (cl != 0) {
+			return cl;
+		}
+
+		if (shortPerson.getPid() < o.shortPerson.getPid()) {
+			return -1;
+		} else if (shortPerson.getPid() > o.shortPerson.getPid()) {
+			return 1;
+		} else {
+			return 0;
+		}
+
 	}
 
 	private int compareFF(String uno, String duo) {
