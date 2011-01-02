@@ -2443,7 +2443,7 @@ public abstract class CommonReport {
 
 						sb.append(rn.getType());
 						addSpace = true;
-						spouseNum = 0;
+						// spouseNum = 0;
 					} else {
 						sb.append(defType);
 					}
@@ -3148,7 +3148,7 @@ public abstract class CommonReport {
 
 	private TextNamePart locateName(String text, String name) {
 		TextNamePart tnp = new TextNamePart();
-
+		int minusEnding = 0;
 		String parts[] = name.split(",");
 		if (parts.length == 2) {
 
@@ -3159,10 +3159,21 @@ public abstract class CommonReport {
 				tnp.location = text.indexOf(parts[0]);
 				tnp.nameText = parts[0];
 			} else {
-				tnp.location = text.indexOf(parts[1] + " " + parts[0]);
-				tnp.nameText = parts[1] + " " + parts[0];
-			}
+				while (minusEnding < 4) {
+					String compaName = parts[1] + " " + parts[0];
+					if (compaName.length() > 10) {
+						compaName = compaName.substring(0, compaName.length()
+								- minusEnding);
+					}
+					tnp.location = text.indexOf(compaName);
 
+					if (tnp.location >= 0 || compaName.length() < 10) {
+						tnp.nameText = compaName;
+						break;
+					}
+					minusEnding++;
+				}
+			}
 		}
 		if (tnp.location < 0) {
 			tnp.location = text.indexOf(name);
@@ -3177,7 +3188,7 @@ public abstract class CommonReport {
 					break;
 				}
 				char c = text.charAt(tnp.location + tnp.nameText.length());
-				if (c == ' ') {
+				if (c < 'A') {
 					break;
 				}
 				tnp.nameText += c;
@@ -3370,6 +3381,10 @@ public abstract class CommonReport {
 								}
 							}
 
+						}
+						if (nn.getDescription() != null) {
+							bt.addText(nn.getDescription());
+							bt.addText(" ");
 						}
 						boolean wasName = false;
 						if (!prevGivenname.equals(nv(nn.getGivenname()))) {
