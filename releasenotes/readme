@@ -6,6 +6,7 @@ At least for now releases follow the Subversion revision numbers. Numbers in the
 Release 1030 on 02 jan 2011
 
 * fixes to name index
+* Added insert of name index to selected view 
 
 Release 1024 on 31 dec 2010
 
