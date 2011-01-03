@@ -608,7 +608,7 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 	}
 
 	private Dimension getTableSize(Graphics g) {
-
+		int xmargin = 25;
 		int height = headerHeight * 2;
 		int imagew = mainImageCount();
 		if (imagew > 0) {
@@ -642,11 +642,13 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 		for (int i = 0; i < childIdx + childCount; i++) {
 			PersonShortData person = famMember.get(i);
 			String txt = person.getAlfaName();
-			if (txt == null)
+			if (txt == null) {
 				txt = "";
+			}
 			int xx = fm.stringWidth(txt);
-			if (xx > namew)
+			if (xx > namew) {
 				namew = xx;
+			}
 			txt = person.getOccupation();
 			if (txt == null)
 				txt = "";
@@ -655,10 +657,11 @@ public class TableShortData implements Serializable, ISukuGraphicalItem {
 				occuw = xx;
 		}
 
-		if (occuw > namew)
+		if (occuw > namew) {
 			namew = occuw;
+		}
 		imagew += separatorWidth;
-		xdate = namew;
+		xdate = namew + xmargin;
 
 		if (namew + datew < imagew) {
 			namew = imagew;

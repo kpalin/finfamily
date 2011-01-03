@@ -137,28 +137,19 @@ public class FamilyPanel extends JPanel implements MouseListener,
 				gg.setStroke(new BasicStroke(2));
 			}
 
-			if (false) {
-				// TODO: This is the old way. Delete it if new is better.
-				int nearpp = pp.x > cp.x ? -10 : 10;
-				drawSuretyLine(gg, new Point(cp.x + dd.width / 2, cp.y),
-						new Point(pp.x + dp.width / 2 + nearpp, cp.y - 10),
-						rel.getSurety());
-				drawSuretyLine(gg, new Point(pp.x + dp.width / 2 + nearpp,
-						cp.y - 10), new Point(pp.x + dp.width / 2, pp.y
-						+ dp.height), rel.getSurety());
-			} else {
-				drawSuretyLine(gg, new Point(pp.x + dp.width / 2, cp.y - 6 - i
-						* 4), new Point(pp.x + dp.width / 2, pp.y + dp.height),
-						rel.getSurety());
+			drawSuretyLine(gg,
+					new Point(pp.x + dp.width / 2, cp.y - 6 - i * 4),
+					new Point(pp.x + dp.width / 2, pp.y + dp.height),
+					rel.getSurety());
 
-				drawSuretyLine(gg, new Point(pp.x + dp.width / 2, cp.y - 6 - i
-						* 4), new Point(cp.x + dd.width / 2, cp.y - 6 - i * 4),
-						rel.getSurety());
+			drawSuretyLine(gg,
+					new Point(pp.x + dp.width / 2, cp.y - 6 - i * 4),
+					new Point(cp.x + dd.width / 2, cp.y - 6 - i * 4),
+					rel.getSurety());
 
-				drawSuretyLine(gg, new Point(cp.x + dd.width / 2, cp.y),
-						new Point(cp.x + dd.width / 2, cp.y - 6 - i * 4),
-						rel.getSurety());
-			}
+			drawSuretyLine(gg, new Point(cp.x + dd.width / 2, cp.y), new Point(
+					cp.x + dd.width / 2, cp.y - 6 - i * 4), rel.getSurety());
+
 		}
 		gg.setColor(Color.black);
 		gg.setStroke(new BasicStroke(2));

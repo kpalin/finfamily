@@ -30,7 +30,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  */
 public class GenGraphReport extends CommonReport {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Constructor for GenGraphReport.
@@ -50,6 +50,7 @@ public class GenGraphReport extends CommonReport {
 	/**
 	 * execute the report.
 	 */
+	@Override
 	public void executeReport() {
 
 		// this will create the output file stream

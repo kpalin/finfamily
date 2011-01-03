@@ -371,57 +371,65 @@ public abstract class CommonReport {
 			float runnervalue = 0;
 			float mapsize = vv.size();
 			HashMap<String, String> nms = new HashMap<String, String>();
-
+			Vector<Integer> pidlist = new Vector<Integer>();
 			for (int j = 0; j < mapsize; j++) {
 				PersonInTables pit = vv.get(j);
 				// vv.add(pit);
+
 				if (pit.shortPerson == null) {
 
 					SukuData resp = Suku.kontroller.getSukuData("cmd=person",
 							"mode=short", "pid=" + pit.pid);
 
 					if (resp.pers != null) {
+
 						pit.shortPerson = resp.pers[0];
+						if (pit.shortPerson.getPrivacy() == null) {
+							pidlist.add(pit.pid);
+							nms.clear();
+							String testName = nv(pit.shortPerson.getPrefix())
+									+ "|" + nv(pit.shortPerson.getSurname())
+									+ "|" + nv(pit.shortPerson.getGivenname())
+									+ "|" + nv(pit.shortPerson.getPatronym())
+									+ "|" + nv(pit.shortPerson.getPostfix());
+							nms.put(testName, "1");
+							for (int i = 1; i < pit.shortPerson.getNameCount(); i++) {
 
-						nms.clear();
-						String testName = nv(pit.shortPerson.getPrefix()) + "|"
-								+ nv(pit.shortPerson.getSurname()) + "|"
-								+ nv(pit.shortPerson.getGivenname()) + "|"
-								+ nv(pit.shortPerson.getPatronym()) + "|"
-								+ nv(pit.shortPerson.getPostfix());
-						nms.put(testName, "1");
-						for (int i = 1; i < pit.shortPerson.getNameCount(); i++) {
+								PersonInTables pitt = new PersonInTables(
+										pit.shortPerson.getPid());
+								pitt.asChildren = pit.asChildren;
+								pitt.references = pit.references;
+								Long[] aa = pit.getOwnerArray();
+								for (Long a : aa) {
+									pitt.addOwner(a);
+								}
 
-							PersonInTables pitt = new PersonInTables(
-									pit.shortPerson.getPid());
-							pitt.asChildren = pit.asChildren;
-							pitt.references = pit.references;
-							Long[] aa = pit.getOwnerArray();
-							for (Long a : aa) {
-								pitt.addOwner(a);
+								pitt.asParents = pit.asParents;
+								PersonShortData p = pit.shortPerson;
+								PersonShortData alias = new PersonShortData(
+										p.getPid(), p.getGivenname(i),
+										p.getPatronym(i), p.getPrefix(i),
+										p.getSurname(i), p.getPostfix(i),
+										p.getBirtDate(), p.getDeatDate());
+								pitt.shortPerson = alias;
+								testName = nv(pitt.shortPerson.getPrefix())
+										+ "|"
+										+ nv(pitt.shortPerson.getSurname())
+										+ "|"
+										+ nv(pitt.shortPerson.getGivenname())
+										+ "|"
+										+ nv(pitt.shortPerson.getPatronym())
+										+ "|"
+										+ nv(pitt.shortPerson.getPostfix());
+
+								String oldName = nms.put(testName, "1");
+								if (oldName == null) {
+
+									vv.add(pitt);
+								}
 							}
-
-							pitt.asParents = pit.asParents;
-							PersonShortData p = pit.shortPerson;
-							PersonShortData alias = new PersonShortData(
-									p.getPid(), p.getGivenname(i),
-									p.getPatronym(i), p.getPrefix(i),
-									p.getSurname(i), p.getPostfix(i),
-									p.getBirtDate(), p.getDeatDate());
-							pitt.shortPerson = alias;
-							testName = nv(pitt.shortPerson.getPrefix()) + "|"
-									+ nv(pitt.shortPerson.getSurname()) + "|"
-									+ nv(pitt.shortPerson.getGivenname()) + "|"
-									+ nv(pitt.shortPerson.getPatronym()) + "|"
-									+ nv(pitt.shortPerson.getPostfix());
-
-							String oldName = nms.put(testName, "1");
-							if (oldName == null) {
-
-								vv.add(pitt);
-							}
+							nms.clear();
 						}
-						nms.clear();
 					}
 					float prose = (runnervalue * 100f) / mapsize;
 					if (prose > 100)
@@ -431,6 +439,18 @@ public abstract class CommonReport {
 					runnervalue++;
 				}
 			}
+			if (caller.getStorageVid() >= 0) {
+				SukuData request = new SukuData();
+				request.pidArray = new int[pidlist.size()];
+				for (int i = 0; i < pidlist.size(); i++) {
+					request.pidArray[i] = pidlist.get(i);
+				}
+				Suku.kontroller.getSukuData(request, "cmd=view", "action=add",
+						"key=pidarray", "viewid=" + caller.getStorageVid(),
+						"empty=" + caller.emptyStorageView());
+
+			}
+
 			PersonInTables[] pits = vv.toArray(new PersonInTables[0]);
 			Arrays.sort(pits);
 			BodyText bt = new TableHeaderText();
@@ -453,6 +473,8 @@ public abstract class CommonReport {
 								typesTable.getTextValue("REPORT_NOMEN_NESCIO"),
 								null, null, null, null, null, null);
 						pit.shortPerson = nn;
+					} else {
+						continue;
 					}
 				}
 				String mefe = pit.getReferences(0, false, false, true,
@@ -489,8 +511,11 @@ public abstract class CommonReport {
 					tstg.append(pit.shortPerson.getPostfix());
 				}
 				bt.addText("  ");
-				printGivenname(bt, tstg.toString(), false);
-
+				if (tstg.length() == 0) {
+					bt.addText("  ");
+				} else {
+					printGivenname(bt, tstg.toString(), false);
+				}
 				//
 				// let's add living years here
 				//
@@ -579,6 +604,7 @@ public abstract class CommonReport {
 		this.caller = caller;
 		this.typesTable = typesTable;
 		this.repoWriter = repoWriter;
+
 	}
 
 	protected void createPidTable(int idx, int[] pidCount) {
@@ -2868,9 +2894,27 @@ public abstract class CommonReport {
 									ppText = new PersonInTables(refpid);
 									String[] parts = txtName.split(",");
 									if (parts.length == 2) {
+										//
+										// check the von
+										//
+										String vonPart = null;
+										String surPart = null;
+										int vonIndex = Utils
+												.isKnownPrefix(parts[0]);
+										if (vonIndex > 0
+												&& vonIndex < parts[0].length()) {
+											vonPart = parts[0].substring(0,
+													vonIndex);
+											surPart = parts[0]
+													.substring(vonIndex + 1);
+										} else {
+											surPart = parts[0];
+										}
+
 										ppText.shortPerson = new PersonShortData(
-												refpid, parts[1], null, null,
-												parts[0], null, null, null);
+												refpid, parts[1], null,
+												vonPart, surPart, null, null,
+												null);
 										textReferences.put(txtName, ppText);
 									} else if (parts.length == 1) {
 										ppText.shortPerson = new PersonShortData(

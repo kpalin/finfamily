@@ -183,6 +183,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private TaskGeneral taskGeneral;
 	private final ReportWorkerDialog self;
 
+	private JComboBox viewInsert;
+	private JCheckBox viewResetInsert;
+
 	private boolean endSuccess = true;
 
 	/** The report type pane. */
@@ -476,6 +479,30 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 */
 	public boolean showOnSeparateLines() {
 		return (commonSeparateNotices.getSelectedObjects() != null);
+	}
+
+	/**
+	 * 
+	 * @return vid of view to store result of report
+	 */
+	public int getStorageVid() {
+		int selectedView = -1;
+		//
+		// check what view to use if any
+		//
+		int ii = viewInsert.getSelectedIndex();
+		if (ii > 0) {
+			selectedView = viewids[ii];
+		}
+		return selectedView;
+	}
+
+	/**
+	 * 
+	 * @return true if storageView is to be emptied first
+	 */
+	public boolean emptyStorageView() {
+		return viewResetInsert.isSelected();
 	}
 
 	/**
@@ -801,11 +828,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		add(lb);
 
 		commonReportFormatList = new JComboBox(v);
-		commonReportFormatList.setBounds(x3, footery + 25, 200, 20);
+		commonReportFormatList.setBounds(x3, footery + 25, 160, 20);
 		add(commonReportFormatList);
 
 		commonDebugCheck = new JCheckBox(Resurses.getString("REPORT.DEBUG"));
-		commonDebugCheck.setBounds(x3, footery + 50, 200, 20);
+		commonDebugCheck.setBounds(x3, footery + 50, 160, 20);
 		add(commonDebugCheck);
 
 		pane = new JPanel();
@@ -875,6 +902,33 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		reportTypePane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 		reportTypePane.setBounds(x1, y1, tabw, tabh);
+		String insertViewList[] = null;
+		try {
+			SukuData vlist = kontroller.getSukuData("cmd=viewlist");
+			viewnames = new String[vlist.generalArray.length + 1];
+			insertViewList = new String[vlist.generalArray.length + 1];
+			viewids = new int[vlist.generalArray.length + 1];
+			viewnames[0] = "";
+			insertViewList[0] = Resurses.getString("REPORT.SELECT_REPORTVIEW");
+			viewids[0] = 0;
+			for (int i = 0; i < vlist.generalArray.length; i++) {
+				String[] parts = vlist.generalArray[i].split(";");
+				viewnames[i + 1] = parts[1];
+				insertViewList[i + 1] = parts[1];
+				viewids[i + 1] = Integer.parseInt(parts[0]);
+			}
+
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
+
+		viewInsert = new JComboBox(insertViewList);
+		add(viewInsert);
+		viewInsert.setBounds(x4, footery + 25, 260, 20);
+
+		viewResetInsert = new JCheckBox(Resurses.getString("REPORT.RESET.VIEW"));
+		viewResetInsert.setBounds(x4, footery + 50, 200, 20);
+		add(viewResetInsert);
 
 		if (pers == null) {
 			listaGroup = new ButtonGroup();
@@ -913,26 +967,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			listad.setActionCommand("REPORT.LISTA.GENERAL");
 			listaGroup.add(listad);
 
-			try {
-				SukuData vlist = kontroller.getSukuData("cmd=viewlist");
-				viewnames = new String[vlist.generalArray.length + 1];
-
-				viewids = new int[vlist.generalArray.length + 1];
-				viewnames[0] = "";
-				viewids[0] = 0;
-				for (int i = 0; i < vlist.generalArray.length; i++) {
-					String[] parts = vlist.generalArray[i].split(";");
-					viewnames[i + 1] = parts[1];
-					viewids[i + 1] = Integer.parseInt(parts[0]);
-				}
-
-			} catch (SukuException e) {
-				JOptionPane.showMessageDialog(this, e.getMessage());
-			}
-
 			viewlist = new JComboBox(viewnames);
 			listaPanel.add(viewlist);
 			viewlist.setBounds(10, tabh - 60, 200, 20);
+
 		}
 		lb = new JLabel(Resurses.getString("REPORT.SETTINGS.NAME"));
 		lb.setBounds(x1 + 20, y3, 100, 20);
@@ -1545,6 +1583,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						if (tabOffset > 0)
 							tabOffset--;
 						dr = new DescendantReport(self, typesTable, repo);
+
 					}
 				} else if (reportTypePane.getSelectedIndex() == 1) {
 					tabOffset = 0;

@@ -38,7 +38,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  */
 public class AncestorTableReport extends CommonReport {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Constructor for AncestorTableReport.
@@ -58,6 +58,7 @@ public class AncestorTableReport extends CommonReport {
 	/**
 	 * execute the report.
 	 */
+	@Override
 	public void executeReport() {
 		SukuData vlist = null;
 
