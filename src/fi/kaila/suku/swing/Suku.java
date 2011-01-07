@@ -1514,11 +1514,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			SelectSchema schemas = new SelectSchema(this, databaseName, false);
 			String schema = null;
 			schema = schemas.getSchema();
-			if (schema == null) {
+
+			if (schema == null || schema.isEmpty()) {
 				schemas.setVisible(true);
 
 			}
-
+			schema = schemas.getSchema();
+			if (schema == null) {
+				return;
+			}
 			SukuData dblist = kontroller.getSukuData("cmd=dblista");
 
 			if (dblist.generalArray != null) {
@@ -1534,7 +1538,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				kontroller.putPref(cdlg, "DBNAMES", sb.toString());
 			}
 			schema = schemas.getSchema();
-			if (schema == null) {
+			if (schema == null || schema.isEmpty()) {
 				this.isConnected = 0;
 				enableCommands();
 				cdlg.rememberDatabase(false);
