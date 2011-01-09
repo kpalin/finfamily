@@ -289,7 +289,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			if (!pane.village.getText().isEmpty()
 					|| !pane.farm.getText().isEmpty()
 					|| !pane.croft.getText().isEmpty()) {
-				sPlace.append(";");
+				sPlace.append(" (");
 				if (!pane.village.getText().isEmpty()) {
 					sPlace.append(pane.village.getText());
 				}
@@ -304,7 +304,7 @@ public class PersonMainPane extends JPanel implements ActionListener,
 						sPlace.append(pane.croft.getText());
 					}
 				}
-
+				sPlace.append(")");
 			}
 			if (pane.notice.getTag().equals("BIRT")) {
 				birtCount++;
