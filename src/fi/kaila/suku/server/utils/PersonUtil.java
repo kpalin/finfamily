@@ -1403,6 +1403,12 @@ public class PersonUtil {
 
 	}
 
+	/**
+	 * Update the noticerow values for the person
+	 * 
+	 * @param longPerson
+	 * @throws SQLException
+	 */
 	public void updateNoticesOrder(PersonLongData longPerson)
 			throws SQLException {
 
@@ -1426,7 +1432,7 @@ public class PersonUtil {
 	 * @param index
 	 * @param type
 	 * @param name
-	 * @return
+	 * @return settings in a SukuData object
 	 */
 	public SukuData getSettings(String index, String type, String name) {
 		SukuData res = new SukuData();

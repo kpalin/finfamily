@@ -464,12 +464,8 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 	/**
 	 * set a hiskipanel person.
 	 * 
-	 * @param idx
-	 *            the idx
-	 * @param pid
-	 *            the pid
-	 * @param nimi
-	 *            the nimi
+	 * @param pers
+	 *            the person
 	 */
 	public void setHiskiPerson(int idx, PersonShortData pers) {
 		if (idx >= 0 && idx < hiskiPid.length) {

@@ -1299,7 +1299,7 @@ public abstract class CommonReport {
 	/**
 	 * @param bt
 	 * @param ppid
-	 * @return
+	 * @return the result in a SukuData object
 	 * @throws SukuException
 	 */
 	public SukuData printParentReference(BodyText bt, int ppid)

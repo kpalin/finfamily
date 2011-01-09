@@ -198,12 +198,8 @@ public class PersonView extends JPanel implements ChangeListener {
 	/**
 	 * set a hiskipanel person.
 	 * 
-	 * @param idx
-	 *            the idx
-	 * @param pid
-	 *            the pid
-	 * @param nimi
-	 *            the nimi
+	 * @param pers
+	 *            the person object
 	 */
 	public void setHiskiPerson(int idx, PersonShortData pers) {
 		HiskiImportPanel hiskiPanel = null;

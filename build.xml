@@ -302,9 +302,8 @@ Filename: "{app}\Suku.exe"; Description: "{cm:LaunchProgram,FinFamily}"; Flags: 
 
     <target name="javadoc">
         <javadoc access="public" encoding="UTF-8" author="true" classpath="lib/servlet.jar;lib/postgresql-9.0-801.jdbc4.jar;lib/jxl.jar;resources;lib/junit-4.4.jar;lib/jnlp.jar;lib/swingx-1.6.jar;lib/swingx-ws-1.0.jar" 
-		destdir="guide/javadoc" doctitle="FinFamily 11" nodeprecated="false" 
+		destdir="guide/javadoc" doctitle="FinFamily" nodeprecated="false" 
 		nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" 
-		stylesheetfile="guide/xml/stylesheet.css"
 		overview="src\overview.html" source="1.6"  sourcepath="src;junit" excludepackagenames="components"
 		splitindex="true" use="true" version="true"/>
     </target>

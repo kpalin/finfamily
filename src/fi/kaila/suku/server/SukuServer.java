@@ -23,7 +23,6 @@ public interface SukuServer {
 	 *            the userid
 	 * @param passwd
 	 *            the passwd
-	 * @return the connection
 	 * @throws SukuException
 	 *             If connection fails this is thrown with reason for failuye
 	 */

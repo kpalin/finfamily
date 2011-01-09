@@ -178,8 +178,7 @@ public class Utils {
 	 * 
 	 * @param dbDate
 	 *            the db date
-	 * @param trimDate
-	 *            the trim date
+	 * 
 	 * @return in text format
 	 */
 	public static int textDateMonth(String dbDate) {

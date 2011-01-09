@@ -22,9 +22,9 @@ import fi.kaila.suku.util.SukuTextField.Field;
  */
 public class SukuSenser implements MouseListener {
 
-	private JWindow sens;
-	private JList lista;
-	private Vector<String> model;
+	private final JWindow sens;
+	private final JList lista;
+	private final Vector<String> model;
 
 	private SukuSenser() {
 		sens = new JWindow();
@@ -247,7 +247,6 @@ public class SukuSenser implements MouseListener {
 	 * 
 	 * @param parent
 	 *            the parent
-	 * @return the sens
 	 */
 	public void getSens(SukuTextField parent) {
 		if (model.size() > 0) {

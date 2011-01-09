@@ -304,7 +304,7 @@ public class PersonShortData implements Serializable, Transferable,
 	/**
 	 * Sets the todo.
 	 * 
-	 * @param hasTodo
+	 * @param hasUnkn
 	 *            i.e. a notice with tag Todo
 	 */
 	public void setUnkn(boolean hasUnkn) {
