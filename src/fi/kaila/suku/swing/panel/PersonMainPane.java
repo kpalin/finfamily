@@ -306,6 +306,20 @@ public class PersonMainPane extends JPanel implements ActionListener,
 				}
 				sPlace.append(")");
 			}
+			if (!pane.state.getText().isEmpty()
+					|| !pane.country.getText().isEmpty()) {
+				sPlace.append(" [");
+				if (!pane.state.getText().isEmpty()) {
+					sPlace.append(pane.state.getText());
+				}
+				if (!pane.country.getText().isEmpty()) {
+					if (!pane.state.getText().isEmpty()) {
+						sPlace.append(",");
+					}
+					sPlace.append(pane.country.getText());
+				}
+				sPlace.append("]");
+			}
 			if (pane.notice.getTag().equals("BIRT")) {
 				birtCount++;
 				if (!pane.date.isPlain()) {
