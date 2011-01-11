@@ -374,9 +374,14 @@ public class XmlReport implements ReportInterface {
 		}
 
 		ele = doc.createElement("chapter");
+
 		String style = bt.getClass().getName();
 		int lastDot = style.lastIndexOf(".");
 		ele.setAttribute("style", style.substring(lastDot + 1));
+		String anchor = bt.getAnchor();
+		if (anchor != null) {
+			ele.setAttribute("anchor", anchor);
+		}
 		// StringBuilder sb = new StringBuilder();
 		// for (int i = 0; i < text.getCount(); i++) {
 		// String tmp = text.getText(i);
@@ -419,9 +424,11 @@ public class XmlReport implements ReportInterface {
 			}
 		}
 		String prevStyle = "";
+		String link = null;
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < bt.getCount(); i++) {
 			String value = bt.getText(i);
+
 			String currStyle;
 			if (value != null && !value.isEmpty()) {
 				if (bt.isBold(i) && bt.isUnderline(i) && bt.isItalic(i)) {
@@ -441,12 +448,16 @@ public class XmlReport implements ReportInterface {
 				} else {
 					currStyle = "n";
 				}
-				if (!currStyle.equals(prevStyle)) {
+				if (!currStyle.equals(prevStyle) || link != null) {
 					if (sb.length() > 0) {
 						tele = doc.createElement(prevStyle);
+
 						tele.setTextContent(sb.toString());
 						ele.appendChild(tele);
-
+						if (link != null) {
+							tele.setAttribute("link", link);
+							link = null;
+						}
 						sb = new StringBuilder();
 					}
 					prevStyle = currStyle;
@@ -454,11 +465,16 @@ public class XmlReport implements ReportInterface {
 				}
 
 				sb.append(bt.getText(i));
+				link = bt.getLink(i);
 
 			}
 		}
 		if (sb.length() > 0) {
 			tele = doc.createElement(prevStyle);
+			if (link != null) {
+				tele.setAttribute("link", link);
+				link = null;
+			}
 			tele.setTextContent(sb.toString());
 			ele.appendChild(tele);
 		}

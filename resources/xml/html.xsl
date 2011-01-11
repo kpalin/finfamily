@@ -38,7 +38,10 @@
   </xsl:template>
   
     <xsl:template match="chapter">
-	
+	<xsl:if test="@anchor">
+	 <xsl:variable name="ancnm" select="@anchor"/>
+	<a name="T{$ancnm}"/>
+	</xsl:if>
 	
 	 <xsl:variable name="style" select="@style"/>
   <div class="{$style}">
@@ -62,10 +65,25 @@
   </xsl:template> 
   
    <xsl:template match="b">
+   
   <strong>
+  <xsl:choose>
+  <xsl:when test="@link">
+    <xsl:variable name="lnknm" select="@link"/>
+   <a href="#T{$lnknm}">
   <xsl:apply-templates/>
+  </a>
+  </xsl:when>
+  <xsl:otherwise>
+   <xsl:apply-templates/>
+  </xsl:otherwise>
+</xsl:choose>
   </strong>
+ 
   </xsl:template> 
+  
+
+  
   
    <xsl:template match="i">
   <i>

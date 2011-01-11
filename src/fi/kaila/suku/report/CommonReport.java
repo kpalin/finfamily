@@ -761,7 +761,7 @@ public abstract class CommonReport {
 		}
 
 		bt = new TableHeaderText();
-
+		bt.addAnchor("" + (tab.getTableNo() + tableOffset));
 		bt.addText(typesTable.getTypeText("TABLE"));
 		bt.addText("\u00A0" + (tab.getTableNo() + tableOffset));
 		repoWriter.addText(bt);
@@ -878,8 +878,10 @@ public abstract class CommonReport {
 						}
 						if (ppdata.pers != null && ppdata.pers.length > 0) {
 							bt.addText(" ");
-							bt.addText(typesTable.getTextValue("FROMTABLE")
-									.toLowerCase() + " " + refTab, true, false);
+							bt.addLink(typesTable.getTextValue("FROMTABLE")
+									.toLowerCase() + " " + refTab, true, false,
+									false, "" + refTab);
+
 						}
 
 					}
@@ -923,11 +925,11 @@ public abstract class CommonReport {
 		}
 		if (fromTable.length() > 0) {
 			if (childTables.isEmpty()) {
-				bt.addText(typesTable.getTextValue("ALSO") + "\u00A0"
-						+ fromTable + ". ", true, false);
+				bt.addLink(typesTable.getTextValue("ALSO") + "\u00A0"
+						+ fromTable + ". ", true, false, false, "" + fromTable);
 			} else {
-				bt.addText(typesTable.getTextValue("ISFAMILY") + " "
-						+ fromTable + ". ", true, false);
+				bt.addLink(typesTable.getTextValue("ISFAMILY") + " "
+						+ fromTable + ". ", true, false, false, "" + fromTable);
 			}
 		}
 
@@ -964,8 +966,9 @@ public abstract class CommonReport {
 					// himself
 					//
 					if (fromTable.length() > 0) {
-						bt.addText(typesTable.getTextValue("ALSO") + " "
-								+ fromTable + ". ", true, false);
+						bt.addLink(typesTable.getTextValue("ALSO") + " "
+								+ fromTable + ". ", true, false, false, ""
+								+ fromTable);
 					}
 				}
 
@@ -1179,15 +1182,15 @@ public abstract class CommonReport {
 					printNameNn(bt);
 				}
 				if (!toTable.isEmpty()) {
-					bt.addText(typesTable.getTextValue("TABLE") + "\u00A0"
-							+ toTable + ". ", true, false);
+					bt.addLink(typesTable.getTextValue("TABLE") + "\u00A0"
+							+ toTable + ". ", true, false, false, "" + toTable);
 
 				} else {
 					toTable = ref.getReferences(tab.getTableNo(), false, true,
 							false, tableOffset);
 					if (!toTable.isEmpty()) {
-						bt.addText(typesTable.getTextValue("ALSO") + "\u00A0"
-								+ toTable + ". ", true, false);
+						bt.addLink(typesTable.getTextValue("ALSO") + "\u00A0"
+								+ toTable + ". ", true, false, false, toTable);
 					}
 				}
 				if (bt.getCount() > 0) {
@@ -1246,9 +1249,10 @@ public abstract class CommonReport {
 								// none should be related if we come here
 								//
 								if (fromsTable.length() > 0) {
-									bt.addText(typesTable.getTextValue("ALSO")
+									bt.addLink(typesTable.getTextValue("ALSO")
 											+ " " + fromsTable.toString()
-											+ ". ", true, false);
+											+ ". ", true, false, false,
+											fromsTable.toString());
 								}
 							}
 
@@ -1480,10 +1484,10 @@ public abstract class CommonReport {
 			if (refs != null) {
 
 				if (fromTable.length() > 0) {
-					bt.addText(
+					bt.addLink(
 							typesTable.getTextValue(isRelated ? "ISFAMILY"
 									: "ALSO") + " " + fromTable + ". ", true,
-							false);
+							false, false, "" + fromTable);
 				}
 			}
 		}
@@ -1555,9 +1559,10 @@ public abstract class CommonReport {
 			// }
 			// }
 			if (fromsTable.length() > 0) {
-				bt.addText(
+				bt.addLink(
 						typesTable.getTextValue("ALSO") + " "
-								+ fromsTable.toString() + ". ", true, false);
+								+ fromsTable.toString() + ". ", true, false,
+						false, fromsTable.toString());
 			}
 			// }
 

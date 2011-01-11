@@ -57,6 +57,8 @@ public class BodyText {
 
 	private Vector<Text> txt = new Vector<Text>();
 
+	private String anchor = null;
+
 	/**
 	 * Gets the font name.
 	 * 
@@ -187,6 +189,37 @@ public class BodyText {
 	}
 
 	/**
+	 * Add link with text
+	 * 
+	 * @param text
+	 * @param isBold
+	 * @param isUnderline
+	 * @param isItalic
+	 * @param link
+	 */
+	public void addLink(String text, boolean isBold, boolean isUnderline,
+			boolean isItalic, String link) {
+		Text t = new Text(text);
+		t.isBold = isBold;
+		t.isUnderline = isUnderline;
+		t.isItalic = isItalic;
+		if (link != null) {
+			t.link = link;
+		}
+		txt.add(t);
+
+	}
+
+	public void addAnchor(String anchor) {
+		this.anchor = anchor;
+
+	}
+
+	public String getAnchor() {
+		return anchor;
+	}
+
+	/**
 	 * Gets the count.
 	 * 
 	 * @return text size in style element
@@ -205,6 +238,16 @@ public class BodyText {
 	public String getText(int idx) {
 		Text t = txt.get(idx);
 		return t.text;
+	}
+
+	/**
+	 * 
+	 * @param idx
+	 * @return link from text element or null
+	 */
+	public String getLink(int idx) {
+		Text t = txt.get(idx);
+		return t.link;
 	}
 
 	/**
@@ -264,8 +307,20 @@ public class BodyText {
 		boolean isBold = false;
 		boolean isUnderline = false;
 		boolean isItalic = false;
+		String link = null;
+
+		Text(String text, String link) {
+			this.link = link;
+			if (text != null) {
+				addTxt(text);
+			}
+		}
 
 		Text(String text) {
+			addTxt(text);
+		}
+
+		private void addTxt(String text) {
 			if (text == null) {
 				text = "";
 				return;
