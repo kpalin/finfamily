@@ -42,7 +42,25 @@
 	 <xsl:variable name="ancnm" select="@anchor"/>
 	<a name="T{$ancnm}"/>
 	</xsl:if>
+	<xsl:choose>
+	<xsl:when test="@style='NameIndexText'">
+	<tr>
 	
+	<xsl:if test="not(descendant::b)">
+	<td/>
+	</xsl:if>
+	<td class="NameIndexText">
+	
+	<xsl:apply-templates/>
+	
+	</td>
+	
+	<xsl:if test="descendant::b">
+	<td/>
+	</xsl:if>
+	</tr>
+	</xsl:when>
+	<xsl:otherwise>
 	 <xsl:variable name="style" select="@style"/>
   <div class="{$style}">
   <xsl:if test="@image">
@@ -54,62 +72,90 @@
 	</xsl:if>
   <xsl:apply-templates/>
   </div>
+  </xsl:otherwise>
+  </xsl:choose>
   </xsl:template>
   
+   <xsl:template match="n">
+  
+  <xsl:call-template name="dolink"/>
  
+  </xsl:template> 
+  
+  
+   <xsl:template match="u">
+   <span class="ul">
+ 
+  <xsl:call-template name="dolink"/>
+  
+  </span>
+  </xsl:template> 
   
   <xsl:template match="bui">
   <strong class="ul"><i>
-  <xsl:apply-templates/>
+  <xsl:call-template name="dolink"/>
   </i></strong>
   </xsl:template> 
-  
+ 
    <xsl:template match="b">
-   
+  
   <strong>
-  <xsl:choose>
+  
+  <xsl:call-template name="dolink"/>
+  </strong>
+ 
+  </xsl:template> 
+  
+   <xsl:template name="dolink">
+   <xsl:choose>
   <xsl:when test="@link">
     <xsl:variable name="lnknm" select="@link"/>
    <a href="#T{$lnknm}">
-  <xsl:apply-templates/>
+   <xsl:value-of select="."/>
+  <!--  <xsl:apply-templates/> -->
   </a>
   </xsl:when>
   <xsl:otherwise>
    <xsl:apply-templates/>
   </xsl:otherwise>
 </xsl:choose>
-  </strong>
- 
-  </xsl:template> 
-  
+   </xsl:template>
 
   
   
    <xsl:template match="i">
   <i>
-  <xsl:apply-templates/>
+   <xsl:call-template name="dolink"/>
   </i>
   </xsl:template> 
   
   <xsl:template match="bi">
   <b><i>
-  <xsl:apply-templates/>
+ <xsl:call-template name="dolink"/>
   </i></b>
   </xsl:template> 
   
   <!--   this should be normal underline -->
   <xsl:template match="ui">
   <strong class="ul"><i>
-  <xsl:apply-templates/>
+   <xsl:call-template name="dolink"/>
   </i></strong>
   </xsl:template> 
   
   <xsl:template match="bu">
   <strong class="ul">
-  <xsl:apply-templates/>
+   <xsl:call-template name="dolink"/>
   </strong>
   </xsl:template> 
   
+  
+  <xsl:template match="nameIndex">
+  <table>
+   <xsl:apply-templates/>
+   </table>
+  </xsl:template>
+
+
 
   <!--
   <xsl:template 

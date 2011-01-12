@@ -579,11 +579,15 @@ public abstract class CommonReport {
 				}
 				if (tt.length() > 0) {
 					bt.addText("\t");
-					bt.addText(tt.toString());
+
+					bt.addLink(tt.toString(), false, false, false,
+							tt.toString());
+					repoWriter.addText(bt);
+					// bt.addText(tt.toString());
+				} else {
+
+					repoWriter.addText(bt);
 				}
-
-				repoWriter.addText(bt);
-
 			}
 
 		}

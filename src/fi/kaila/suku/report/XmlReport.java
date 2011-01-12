@@ -326,20 +326,6 @@ public class XmlReport implements ReportInterface {
 					outHeight = 0;
 				}
 			}
-			// else {
-			// float mw = maxSize.width;
-			// float mh = maxSize.height;
-			// float multiw = mw / imgWidth;
-			// float multih = mh / imgHeight;
-			// float multip = (multiw < multih) ? multiw : multih;
-			// if (multip < 1) {
-			// w = imgWidth * multip;
-			// h = imgHeight * multip;
-			// } else {
-			// w = imgWidth;
-			// h = imgHeight;
-			// }
-			// }
 
 			if (outHeight < 10) {
 				outWidth = 0;
@@ -376,46 +362,35 @@ public class XmlReport implements ReportInterface {
 		ele = doc.createElement("chapter");
 
 		String style = bt.getClass().getName();
+
 		int lastDot = style.lastIndexOf(".");
-		ele.setAttribute("style", style.substring(lastDot + 1));
+		style = style.substring(lastDot + 1);
+		ele.setAttribute("style", style);
+		if ("NameIndexText".equals(style)) {
+			if (nameIndex == null) {
+				nameIndex = doc.createElement("nameIndex");
+				body.appendChild(nameIndex);
+			}
+
+		} else {
+			if (style != null && !"NameIndexText".equals(style)) {
+				nameIndex = null;
+
+			}
+		}
 		String anchor = bt.getAnchor();
 		if (anchor != null) {
 			ele.setAttribute("anchor", anchor);
 		}
-		// StringBuilder sb = new StringBuilder();
-		// for (int i = 0; i < text.getCount(); i++) {
-		// String tmp = text.getText(i);
-		// sb.append(tmp);
-		// }
-		// ele.setTextContent(sb.toString());
+
 		if (imgName != null) {
 			ele.setAttribute("image", imgName);
 			ele.setAttribute("title", imgTitle);
-			// if (parent.isNumberingImages()) {
-			// ele.setAttribute("imageNo", "" + imageCounter);
-			// }
+
 			ele.setAttribute("imageName", Resurses.getString("REPORT.IMAGE"));
 
 			ele.setAttribute("width", "" + displaySize.width);
 			ele.setAttribute("height", "" + displaySize.height);
-
-			// if (imgHeight > maxHeight) {
-			//
-			// float mh = maxHeight;
-			//
-			// float multip = mh / imgHeight;
-			// float w = imgWidth * multip;
-			// float h = imgHeight * multip;
-			//
-			// if (h > 10) {
-			// ele.setAttribute("width", "" + w);
-			// ele.setAttribute("height", "" + h);
-			// }
-			//
-			// } else {
-			// ele.setAttribute("width", "" + imgWidth);
-			// ele.setAttribute("height", "" + imgHeight);
-			// }
 
 			if (img != null) {
 				iii = doc.createElement("media");
@@ -424,6 +399,7 @@ public class XmlReport implements ReportInterface {
 			}
 		}
 		String prevStyle = "";
+
 		String link = null;
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < bt.getCount(); i++) {
@@ -448,37 +424,56 @@ public class XmlReport implements ReportInterface {
 				} else {
 					currStyle = "n";
 				}
-				if (!currStyle.equals(prevStyle) || link != null) {
+				link = bt.getLink(i);
+				if (link == null) {
+					if (!currStyle.equals(prevStyle)) {
+						if (sb.length() > 0) {
+							tele = doc.createElement(prevStyle);
+
+							tele.setTextContent(sb.toString());
+							ele.appendChild(tele);
+
+							sb = new StringBuilder();
+						}
+						prevStyle = currStyle;
+
+					}
+					sb.append(value);
+
+				} else {
 					if (sb.length() > 0) {
 						tele = doc.createElement(prevStyle);
-
 						tele.setTextContent(sb.toString());
 						ele.appendChild(tele);
-						if (link != null) {
-							tele.setAttribute("link", link);
-							link = null;
-						}
-						sb = new StringBuilder();
+
 					}
 					prevStyle = currStyle;
 
+					tele = doc.createElement(prevStyle);
+					tele.setTextContent(value);
+					ele.appendChild(tele);
+
+					tele.setAttribute("link", link);
+					sb = new StringBuilder();
+					link = null;
+					// sb.append(value);
 				}
 
-				sb.append(bt.getText(i));
-				link = bt.getLink(i);
+				// link = bt.getLink(i);
 
 			}
 		}
 		if (sb.length() > 0) {
 			tele = doc.createElement(prevStyle);
-			if (link != null) {
-				tele.setAttribute("link", link);
-				link = null;
-			}
+
 			tele.setTextContent(sb.toString());
 			ele.appendChild(tele);
 		}
-		body.appendChild(ele);
+		if (nameIndex != null) {
+			nameIndex.appendChild(ele);
+		} else {
+			body.appendChild(ele);
+		}
 		bt.reset();
 	}
 
@@ -561,6 +556,7 @@ public class XmlReport implements ReportInterface {
 
 	private Document doc = null;
 	private Element body = null;
+	private Element nameIndex = null;
 
 	/**
 	 * Create report prepares the report for input In case of Xml report this

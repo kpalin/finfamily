@@ -85,13 +85,19 @@ body {
 }
 
 .TableSubHeaderText{
-	font-size:120%;
+	font-120%;
 	font-weight: normal;
-	
 	margin-bottom:12pt;
 	text-align:center
 }
 
+
+.NameIndexText{
+	font-size:smaller;
+	font-weight: normal;
+	margin-bottom:3pt;
+	text-align:left
+}
 .ul {  
 	text-decoration:underline;
 }
