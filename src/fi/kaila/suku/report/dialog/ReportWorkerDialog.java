@@ -1641,11 +1641,6 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						self.setVisible(false);
 					}
 
-					// if (repos != null) {
-					// for (String repo : repos) {
-					// Utils.openExternalFile(repo);
-					// }
-					// }
 				} else {
 					self.setVisible(false);
 				}

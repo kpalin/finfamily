@@ -230,6 +230,7 @@ public class XmlReport implements ReportInterface {
 	public void addText(BodyText bt) {
 		Element ele;
 		Element tele;
+		Element anc;
 		Element iii;
 		String imgName = null;
 		String imgTitle = null;
@@ -378,10 +379,10 @@ public class XmlReport implements ReportInterface {
 
 			}
 		}
-		String anchor = bt.getAnchor();
-		if (anchor != null) {
-			ele.setAttribute("anchor", anchor);
-		}
+		// String anchor = bt.getAnchor();
+		// if (anchor != null) {
+		// ele.setAttribute("anchor", anchor);
+		// }
 
 		if (imgName != null) {
 			ele.setAttribute("image", imgName);
@@ -404,7 +405,12 @@ public class XmlReport implements ReportInterface {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < bt.getCount(); i++) {
 			String value = bt.getText(i);
-
+			String anchor = bt.getAnchor(i);
+			if (anchor != null) {
+				anc = doc.createElement("anchor");
+				anc.setTextContent(anchor);
+				ele.appendChild(anc);
+			}
 			String currStyle;
 			if (value != null && !value.isEmpty()) {
 				if (bt.isBold(i) && bt.isUnderline(i) && bt.isItalic(i)) {

@@ -38,10 +38,7 @@
   </xsl:template>
   
     <xsl:template match="chapter">
-	<xsl:if test="@anchor">
-	 <xsl:variable name="ancnm" select="@anchor"/>
-	<a name="T{$ancnm}"/>
-	</xsl:if>
+	
 	<xsl:choose>
 	<xsl:when test="@style='NameIndexText'">
 	<tr>
@@ -76,6 +73,14 @@
   </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="anchor">
+   <xsl:variable name="aanch">
+   <xsl:value-of select="."/>
+   </xsl:variable>
+  <a name="T{$aanch}"/>
+  </xsl:template>
+  
+ 
    <xsl:template match="n">
   
   <xsl:call-template name="dolink"/>

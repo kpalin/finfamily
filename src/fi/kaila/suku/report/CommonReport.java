@@ -1692,8 +1692,10 @@ public abstract class CommonReport {
 			if (!genText.isEmpty()) {
 				bt.addText(genText + ".");
 			}
-
+			bt.addAnchor("" + (ftab.getTableNo()));
+			bt.addAnchor("" + (mtab.getTableNo()));
 			bt.addText(" " + toPrintTable(ftab.getTableNo()));
+
 			bt.addText(", " + toPrintTable(mtab.getTableNo()));
 		} else {
 			if (tableNum > 0) {
@@ -1701,6 +1703,7 @@ public abstract class CommonReport {
 				if (!genText.isEmpty()) {
 					bt.addText(genText + ".");
 				}
+				bt.addAnchor("" + (tableNum));
 				bt.addText(" " + toPrintTable(tableNum));
 			}
 		}
@@ -1747,7 +1750,9 @@ public abstract class CommonReport {
 						bt.addText(",");
 					}
 					setComma = true;
-					bt.addText(toPrintTable(ki.next(), true));
+					String tt = toPrintTable(ki.next(), true);
+					bt.addLink(" " + tt, true, false, false, "" + tt);
+					// bt.addText(toPrintTable(ki.next(), true));
 				}
 
 				bt.addText(")");
@@ -1784,7 +1789,7 @@ public abstract class CommonReport {
 			if (pappadata.persLong.getPrivacy() == null) {
 				printName(bt, pappadata.persLong, 2);
 				if (!order.equals("ESPOLIN")) {
-					bt = addParentReference(tab, bt);
+					addParentReference(tab, bt);
 				}
 				printNotices(bt, notices, getTypeColumn(fid), ftab.getTableNo());
 			} else {
@@ -1860,7 +1865,7 @@ public abstract class CommonReport {
 			if (mammadata.persLong.getPrivacy() == null) {
 				printName(bt, mammadata.persLong, 2);
 				if (!order.equals("ESPOLIN")) {
-					bt = addParentReference(tab, bt);
+					addParentReference(tab, bt);
 				}
 				printNotices(bt, notices,
 						getTypeColumn(mammadata.persLong.getPid()),
@@ -1962,8 +1967,11 @@ public abstract class CommonReport {
 						// fromTable = ref.getReferences(tab.getTableNo(), true,
 						// true, false);
 						if (fromTable.length() > 0) {
-							bt.addText(typesTable.getTextValue("TABLE")
-									+ "\u00A0" + fromTable + ". ", true, false);
+							bt.addLink(typesTable.getTextValue("TABLE")
+									+ "\u00A0" + fromTable + ". ", true, false,
+									false, "" + fromTable);
+							// bt.addText(typesTable.getTextValue("TABLE")
+							// + "\u00A0" + fromTable + ". ", true, false);
 						}
 					}
 
@@ -1991,9 +1999,12 @@ public abstract class CommonReport {
 							fromTable = ref.getReferences(tableNum, true, true,
 									true, 0);
 							if (fromTable.length() > 0) {
-								bt.addText(typesTable.getTextValue("ALSO")
+								// bt.addText(typesTable.getTextValue("ALSO")
+								// + "\u00A0" + fromTable + ". ", true,
+								// false);
+								bt.addLink(typesTable.getTextValue("ALSO")
 										+ "\u00A0" + fromTable + ". ", true,
-										false);
+										false, false, "" + fromTable);
 							}
 						}
 
@@ -2327,7 +2338,7 @@ public abstract class CommonReport {
 	 * @param bt
 	 * @return
 	 */
-	private BodyText addParentReference(ReportUnit ftab, BodyText bt) {
+	private void addParentReference(ReportUnit ftab, BodyText bt) {
 		PersonInTables ref;
 		ref = personReferences.get(ftab.getPid());
 		if (ref != null) {
@@ -2362,15 +2373,7 @@ public abstract class CommonReport {
 				bt.addText("(" + sb.toString() + "). ");
 			}
 		}
-		// FIXME: This method appears to modify a parameter, and then return
-		// this parameter as the methods return value. This will be confusing to
-		// callers of this method, as it won't be apparent that the 'original'
-		// passed in parameter will be changed as well. If the purpose of this
-		// method is to change the parameter, it would be more clear to change
-		// the method to a have a void return value. If a return type is
-		// required due to interface or superclass contract, perhaps a clone of
-		// the parameter should be made.
-		return bt;
+
 	}
 
 	/**
@@ -2396,7 +2399,10 @@ public abstract class CommonReport {
 		if (cu != null && momTable != cu.getTableNo()
 				&& dadTable != cu.getTableNo()) {
 
-			bt.addText("(" + text + " " + cu.getTableNo() + "). ");
+			// bt.addText("(" + text + " " + cu.getTableNo() + "). ");
+			bt.addLink("(" + text + " " + cu.getTableNo() + "). ", false,
+					false, false, " " + cu.getTableNo());
+
 			return true;
 
 		}
@@ -2425,8 +2431,9 @@ public abstract class CommonReport {
 
 		if (sb.length() > 0) {
 
-			bt.addText("(" + typesTable.getTextValue("ALSO") + " " + text + " "
-					+ sb.toString() + "). ");
+			bt.addLink("(" + typesTable.getTextValue("ALSO") + " " + text + " "
+					+ sb.toString() + "). ", false, false, false, sb.toString());
+
 			return true;
 		}
 

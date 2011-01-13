@@ -98,6 +98,15 @@ public class AncestorReport extends CommonReport {
 					createStradoReport();
 				}
 			}
+			try {
+				printNameIndex();
+			} catch (SukuException e) {
+				logger.log(Level.WARNING, "NameIndex", e);
+				JOptionPane.showMessageDialog(
+						caller,
+						Resurses.getString(Resurses.CREATE_REPORT) + ":"
+								+ e.getMessage());
+			}
 			repoWriter.closeReport();
 
 		}

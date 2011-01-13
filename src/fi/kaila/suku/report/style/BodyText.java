@@ -57,8 +57,6 @@ public class BodyText {
 
 	private Vector<Text> txt = new Vector<Text>();
 
-	private String anchor = null;
-
 	/**
 	 * Gets the font name.
 	 * 
@@ -211,12 +209,14 @@ public class BodyText {
 	}
 
 	public void addAnchor(String anchor) {
-		this.anchor = anchor;
-
+		Text t = new Text(null);
+		t.anchor = anchor;
+		txt.add(t);
 	}
 
-	public String getAnchor() {
-		return anchor;
+	public String getAnchor(int idx) {
+		Text t = txt.get(idx);
+		return t.anchor;
 	}
 
 	/**
@@ -308,13 +308,7 @@ public class BodyText {
 		boolean isUnderline = false;
 		boolean isItalic = false;
 		String link = null;
-
-		Text(String text, String link) {
-			this.link = link;
-			if (text != null) {
-				addTxt(text);
-			}
-		}
+		String anchor = null;
 
 		Text(String text) {
 			addTxt(text);
