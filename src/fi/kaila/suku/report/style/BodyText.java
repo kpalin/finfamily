@@ -232,7 +232,7 @@ public class BodyText {
 	}
 
 	public void addAnchor(String anchor) {
-		Text t = new Text(null);
+		Text t = new Text("");
 		t.anchor = anchor;
 		txt.add(t);
 	}
