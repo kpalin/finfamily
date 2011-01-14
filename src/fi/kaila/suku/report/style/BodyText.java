@@ -201,10 +201,33 @@ public class BodyText {
 		t.isBold = isBold;
 		t.isUnderline = isUnderline;
 		t.isItalic = isItalic;
-		if (link != null) {
-			t.link = link;
+
+		String[] parts = link.split(",");
+
+		if (parts.length == 1) {
+			if (link != null) {
+				t.link = link;
+			}
+			txt.add(t);
+			return;
 		}
-		txt.add(t);
+		for (int i = 0; i < parts.length; i++) {
+			if (i > 0) {
+				t = new Text(",");
+				t.isBold = isBold;
+				t.isUnderline = isUnderline;
+				t.isItalic = isItalic;
+				txt.add(t);
+			}
+			t = new Text(parts[i]);
+			t.isBold = isBold;
+			t.isUnderline = isUnderline;
+			t.isItalic = isItalic;
+
+			t.link = parts[i];
+
+			txt.add(t);
+		}
 
 	}
 
