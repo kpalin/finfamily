@@ -921,11 +921,11 @@ public abstract class CommonReport {
 				fromTable = "";// if as child then don't refer to as spouse
 				// spouse will be referred from the spouse
 			}
-		}
-		if (fromTable.length() == 0) {
+			if (fromTable.length() == 0) {
 
-			fromTable = ref.getReferences(tab.getTableNo(), false, false, true,
-					tableOffset);
+				fromTable = ref.getReferences(tab.getTableNo(), false, false,
+						true, tableOffset);
+			}
 		}
 		if (fromTable.length() > 0) {
 			if (childTables.isEmpty()) {
@@ -1807,7 +1807,7 @@ public abstract class CommonReport {
 				// now let's look for marriage info
 
 				Relation marr = null;
-				if (mammadata.relations != null) {
+				if (mammadata != null && mammadata.relations != null) {
 					for (int i = 0; i < mammadata.relations.length; i++) {
 						Relation rr = mammadata.relations[i];
 						if (rr.getTag().equals("HUSB")
@@ -3404,25 +3404,28 @@ public abstract class CommonReport {
 								String[] parts = typesTable.getTypeText("NAME")
 										.split(";");
 								String part = null;
-								if (parts != null && parts.length > 1) {
-									if (j < notices.length - 1) {
-										if (notices[j + 1].getTag().equals(
-												"NAME")) {
-											part = parts[0];
+								if (parts != null) {
+									if (parts.length > 1) {
+										if (j < notices.length - 1) {
+											if (notices[j + 1].getTag().equals(
+													"NAME")) {
+												part = parts[0];
+											}
 										}
-									}
-									if (part == null) {
-										if (parts.length < 3 || isDead == false) {
-											part = parts[1];
-										} else {
-											part = parts[2];
+										if (part == null) {
+											if (parts.length < 3
+													|| isDead == false) {
+												part = parts[1];
+											} else {
+												part = parts[2];
+											}
 										}
+										bt.addText(part);
+										bt.addText(" ");
+									} else if (parts.length == 1) {
+										bt.addText(parts[0]);
+										bt.addText(" ");
 									}
-									bt.addText(part);
-									bt.addText(" ");
-								} else if (parts.length == 1) {
-									bt.addText(parts[0]);
-									bt.addText(" ");
 								}
 							}
 						} else if (nn.getNoticeType() != null) {

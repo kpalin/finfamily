@@ -229,9 +229,13 @@ public class SukuSenser implements MouseListener {
 					}
 				}
 				break;
+			case Fld_Country:
+				// TODO: Fld_Country ?
+				break;
+			case Fld_Null:
+				// TODO: Fld_Null ?
+				break;
 			}
-			// TODO: Fld_Country ?
-			// TODO: Fld_Null ?
 			lista.updateUI();
 			listIndex = 0;
 			lista.setSelectedIndex(listIndex);

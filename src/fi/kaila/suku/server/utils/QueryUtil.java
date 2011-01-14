@@ -427,7 +427,7 @@ public class QueryUtil {
 				dbmediafilename = rs.getString(16);
 				dbmediatitle = rs.getString(17);
 				dbCountry = rs.getString(18);
-				if (pid != currentPid && currentPid != 0) {
+				if (pid != currentPid && currentPid != 0 && perso != null) {
 					personList.add(perso);
 
 					persMap.put(perso.getPid(), perso);

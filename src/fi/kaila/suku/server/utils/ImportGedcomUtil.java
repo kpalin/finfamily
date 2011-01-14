@@ -330,7 +330,7 @@ public class ImportGedcomUtil {
 						// System.out.println("'" + lineg.level + "'" + lineg.id
 						// + "'" + lineg.tag + "'" + lineg.lineValue);
 					}
-					if (lineg.tag == null)
+					if (lineg == null || lineg.tag == null)
 						continue;
 
 					if (lineg.lineValue != null && lineg.level == 1
@@ -364,7 +364,7 @@ public class ImportGedcomUtil {
 			String key = record.getKey();
 			gedMap.put(key, record);
 
-			if (isZipFile) {
+			if (zipIn != null && isZipFile) {
 				zipIn.closeEntry();
 
 				ZipEntry entry = null;
