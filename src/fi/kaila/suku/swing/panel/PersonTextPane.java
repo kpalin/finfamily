@@ -294,7 +294,7 @@ public class PersonTextPane extends JTextPane {
 					try {
 						img = notice.getMediaImage();
 					} catch (IOException e) {
-
+						// Ignore
 					}
 					if (img != null) {
 						double imh = img.getHeight();
