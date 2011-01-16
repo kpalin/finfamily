@@ -2,6 +2,11 @@ FinFamily Release notes
 
 At least for now releases follow the Subversion revision numbers. Numbers in the headers show download counts for the older version. Earlier release notes are in releasenotes0172
 
+Release 1053 on 16 jan 2011
+
+* Fix to ancestor report nameindex to include only selected ancestors
+* fix to search algorithm to use also modified date
+
 Release 1045 on 14 jan 2011
 
 * hyperlinks to both ancestor and descendant report now implemented

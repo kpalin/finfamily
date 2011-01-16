@@ -57,6 +57,7 @@ public class AncestorReport extends CommonReport {
 
 		boolean showFamily = caller.getAncestorPane().getShowfamily();
 		int generations = caller.getAncestorPane().getGenerations();
+
 		logger.info("Ancestor report for " + caller.getPid() + ", order="
 				+ order + ", include family = [" + showFamily + "] with ["
 				+ generations + "] generations");
@@ -66,7 +67,7 @@ public class AncestorReport extends CommonReport {
 					"cmd=" + Resurses.CMD_CREATE_TABLES,
 					"type=" + Resurses.CMD_ANC_TYPE,
 					"generations=" + generations, "order=" + order,
-					"family=true", "pid=" + caller.getPid());
+					"family=" + showFamily, "pid=" + caller.getPid());
 		} catch (SukuException e) {
 			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
 					e);
