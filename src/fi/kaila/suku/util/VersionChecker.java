@@ -3,6 +3,7 @@ package fi.kaila.suku.util;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
@@ -39,12 +40,21 @@ public class VersionChecker {
 				.getPref(suku, Resurses.REPOLANG, "fi");
 		String dateFormat = Suku.kontroller.getPref(suku, Resurses.DATEFORMAT,
 				"FI");
+
+		String country = Locale.getDefault().getCountry();
+		String langu = Locale.getDefault().getLanguage();
+
 		String lastRevision = Suku.kontroller.getPref(this, "Revision", "0");
 		String lastTry = Suku.kontroller.getPref(this, "lastTime", "0");
 		String ant = AntVersion.antVersion;
 
-		String requri = "http://www.sukuohjelmisto.fi/version/version.properties?"
-				+ progLoca + "&" + repoLang + "&" + dateFormat + "&" + ant;
+		String requri = "http://www.sukuohjelmisto.fi/version/version.properties?fl="
+				+ progLoca // finfamily program language
+				+ "&fr=" + repoLang // finfamily report language
+				+ "&fd=" + dateFormat // finfamily date format
+				+ "&fv=" + ant // finfamily version
+				+ "&jc=" + country // java country
+				+ "&jl=" + langu; // java language
 
 		long nowTime = System.currentTimeMillis();
 
@@ -144,5 +154,4 @@ public class VersionChecker {
 		}
 
 	}
-
 }
