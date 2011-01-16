@@ -34,11 +34,17 @@ public class VersionChecker {
 		//
 		// first decide if now is good time to check
 		//
+		String progLoca = Suku.kontroller.getPref(suku, Resurses.LOCALE, "fi");
+		String repoLang = Suku.kontroller
+				.getPref(suku, Resurses.REPOLANG, "fi");
+		String dateFormat = Suku.kontroller.getPref(suku, Resurses.DATEFORMAT,
+				"FI");
 		String lastRevision = Suku.kontroller.getPref(this, "Revision", "0");
 		String lastTry = Suku.kontroller.getPref(this, "lastTime", "0");
 		String ant = AntVersion.antVersion;
 
-		String requri = "http://www.sukuohjelmisto.fi/version/version.properties";
+		String requri = "http://www.sukuohjelmisto.fi/version/version.properties?"
+				+ progLoca + "&" + repoLang + "&" + dateFormat + "&" + ant;
 
 		long nowTime = System.currentTimeMillis();
 
