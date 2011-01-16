@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -12,6 +14,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.ExcelBundle;
@@ -31,17 +35,20 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	private static Logger logger = Logger.getLogger(SettingsDialog.class
+			.getName());
 	private JComboBox loca = null;
 	private JComboBox repolang = null;
 	private JComboBox dateFormat = null;
 	private JCheckBox useOpenStreetMap = null;
 	private JComboBox defaultCountryCode = null;
 	private JComboBox imageScaling = null;
+	private final JComboBox lookAndFeel;
 	private JTextField dbFontSize = null;
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
-
+	private final String[] lfNames;
+	private final UIManager.LookAndFeelInfo[] lafInfo;
 	private String[] locas = null;
 	private String[] dateCodes = null;
 	private Suku owner = null;
@@ -225,6 +232,33 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 		dateFormat.setSelectedIndex(dateIndex);
 
+		y += 20;
+		lbl = new JLabel(Resurses.getString("LOOK_AND_FEEL"));
+		getContentPane().add(lbl);
+		lbl.setBounds(x, y, 200, 20);
+
+		y += 24;
+
+		String lfdef = Suku.kontroller.getPref(owner, "LOOK_AND_FEEL", "");
+
+		lafInfo = UIManager.getInstalledLookAndFeels();
+		int defLf = 0;
+		lfNames = new String[lafInfo.length + 1];
+		lfNames[0] = "";
+		for (int i = 0; i < lafInfo.length; i++) {
+			lfNames[i + 1] = lafInfo[i].getName();
+			if (lfNames[i + 1].equalsIgnoreCase(lfdef)) {
+				defLf = i + 1;
+			}
+		}
+
+		lookAndFeel = new JComboBox(lfNames);
+		getContentPane().add(lookAndFeel);
+		lookAndFeel.setBounds(x, y, 200, 20);
+		if (defLf > 0) {
+			lookAndFeel.setSelectedIndex(defLf);
+		}
+
 		JButton ok = new JButton(Resurses.OK);
 		// this.ok.setDefaultCapable(true);
 		getContentPane().add(ok);
@@ -297,8 +331,32 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			String fntSize = dbFontSize.getText();
 			Suku.kontroller.putPref(owner, "DB_VIEW_FONTSIZE", fntSize);
 
+			String lf = lfNames[lookAndFeel.getSelectedIndex()];
+			Suku.kontroller.putPref(owner, "LOOK_AND_FEEL", lf);
+
+			int lfIdx = -1;
+			for (int i = 0; i < lafInfo.length; i++) {
+				if (lafInfo[i].getName().equalsIgnoreCase(lf)) {
+					lfIdx = i;
+					break;
+				}
+			}
+			try {
+				if (lfIdx < 0) {
+
+					UIManager.setLookAndFeel(UIManager
+							.getSystemLookAndFeelClassName());
+				} else {
+					UIManager.setLookAndFeel(lafInfo[lfIdx].getClassName());
+				}
+				SwingUtilities.updateComponentTreeUI(owner);
+
+			} catch (Exception e1) {
+				logger.log(Level.WARNING, "look_and_feel", e1);
+
+			}
+
 			setVisible(false);
 		}
 	}
-
 }

@@ -331,48 +331,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void startMe(String[] args) throws SukuException {
 
-		try {
-
-			if (args.length != 1 || !args[0].equals("web")) {
-
-				os = System.getProperty("os.name");
-				if (args.length > 0 && !args[0].equals("$1")) {
-					// if you want to experiment with another look and feel you
-					// can
-					// write
-					// its class name as argument to the program
-					// set metal as name for CrossPlatformLookAndFeelClassName
-					if (args[0].equals("metal")) {
-						UIManager.setLookAndFeel(UIManager
-								.getCrossPlatformLookAndFeelClassName());
-					} else {
-						UIManager.setLookAndFeel(args[0]);
-					}
-				} else {
-
-					// if (os.toLowerCase().indexOf("windows") >= 0
-					// || os.toLowerCase().indexOf("mac") >= 0) {
-
-					UIManager.setLookAndFeel(UIManager
-							.getSystemLookAndFeelClassName());
-					// } else if (os.toLowerCase().indexOf("linux") >= 0) {
-					// UIManager
-					// .setLookAndFeel("com.jgoodies.looks.plastic.PlasticLookAndFeel");
-					// } else {
-					// UIManager.setLookAndFeel(UIManager
-					// .getCrossPlatformLookAndFeelClassName());
-					// }
-				}
-			}
-			// * com.jgoodies.looks.windows.WindowsLookAndFeel
-			// * com.jgoodies.looks.plastic.PlasticLookAndFeel
-			// * com.jgoodies.looks.plastic.Plastic3DLookAndFeel
-			// * com.jgoodies.looks.plastic.PlasticXPLookAndFeel
-
-		} catch (Exception e) {
-			logger.log(Level.INFO, "look-and-feel virhe", e);
-
-		}
 		String arg1 = null;
 		if (args.length > 0) {
 			arg1 = args[0];
@@ -384,6 +342,68 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			kontroller = new SukuKontrollerWebstartImpl();
 		} else {
 			kontroller = new SukuKontrollerLocalImpl(this);
+		}
+		try {
+
+			String lfdef = Suku.kontroller.getPref(this, "LOOK_AND_FEEL", "");
+			if (!lfdef.equals("")) {
+				UIManager.LookAndFeelInfo[] lafInfo = UIManager
+						.getInstalledLookAndFeels();
+				int lfIdx = -1;
+				for (int i = 0; i < lafInfo.length; i++) {
+					if (lfdef.equalsIgnoreCase(lafInfo[i].getName())) {
+						lfIdx = i;
+						break;
+					}
+				}
+
+				if (lfIdx >= 0) {
+					UIManager.setLookAndFeel(lafInfo[lfIdx].getClassName());
+				}
+
+			} else {
+				if (args.length != 1 || !args[0].equals("web")) {
+
+					os = System.getProperty("os.name");
+					if (args.length > 0 && !args[0].equals("$1")) {
+						// if you want to experiment with another look and feel
+						// you
+						// can
+						// write
+						// its class name as argument to the program
+						// set metal as name for
+						// CrossPlatformLookAndFeelClassName
+						if (args[0].equals("metal")) {
+							UIManager.setLookAndFeel(UIManager
+									.getCrossPlatformLookAndFeelClassName());
+						} else {
+							UIManager.setLookAndFeel(args[0]);
+						}
+					} else {
+
+						// if (os.toLowerCase().indexOf("windows") >= 0
+						// || os.toLowerCase().indexOf("mac") >= 0) {
+
+						UIManager.setLookAndFeel(UIManager
+								.getSystemLookAndFeelClassName());
+						// } else if (os.toLowerCase().indexOf("linux") >= 0) {
+						// UIManager
+						// .setLookAndFeel("com.jgoodies.looks.plastic.PlasticLookAndFeel");
+						// } else {
+						// UIManager.setLookAndFeel(UIManager
+						// .getCrossPlatformLookAndFeelClassName());
+						// }
+					}
+				}
+			}
+			// * com.jgoodies.looks.windows.WindowsLookAndFeel
+			// * com.jgoodies.looks.plastic.PlasticLookAndFeel
+			// * com.jgoodies.looks.plastic.Plastic3DLookAndFeel
+			// * com.jgoodies.looks.plastic.PlasticXPLookAndFeel
+
+		} catch (Exception e) {
+			logger.log(Level.INFO, "look-and-feel virhe", e);
+
 		}
 
 		String loca = kontroller.getPref(this, Resurses.LOCALE, "xx");
