@@ -262,13 +262,13 @@ public class QueryUtil {
 					}
 					isFirstCriteria = false;
 					if (todate == null) {
-						fromSQL.append("u.pid in (select pid from unitnotice where createdate >= '"
-								+ begdate + "' )");
+						fromSQL.append("u.pid in (select pid from unitnotice where coalesce(modified,createdate) >= '"
+								+ begdate + "')");
 					} else if (begdate == null) {
-						fromSQL.append("u.pid in (select pid from unitnotice where createdate >= '"
+						fromSQL.append("u.pid in (select pid from unitnotice where coalesce(modified,createdate) <= '"
 								+ todate + "' )");
 					} else {
-						fromSQL.append("u.pid in (select pid from unitnotice where createdate between '"
+						fromSQL.append("u.pid in (select pid from unitnotice where coalesce(modified,createdate) between '"
 								+ begdate + "' and '" + todate + "' ) ");
 					}
 				}
