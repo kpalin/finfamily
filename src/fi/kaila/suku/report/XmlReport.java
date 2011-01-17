@@ -822,4 +822,81 @@ public class XmlReport implements ReportInterface {
 		return report;
 	}
 
+	@Override
+	public void closeReport(long tabNo) throws SukuException {
+		PrintStream origErr = System.err;
+		ByteArrayOutputStream barray = new ByteArrayOutputStream();
+		int dotPos = report.lastIndexOf(".");
+
+		String myreport;
+
+		if (dotPos > 0) {
+			myreport = report.substring(0, dotPos) + tabNo + "."
+					+ report.substring(dotPos + 1);
+		} else {
+			return;
+		}
+
+		try {
+			if (reportClosed) {
+				return;
+			}
+			reportClosed = true;
+			//
+			// delete folder if empty
+			// note that delete does not delete it if it's not empty
+			//
+			// if (folder != null) {
+			// File dd = new File(folder);
+			// dd.delete();
+			// }
+			if (debugState) {
+				logger.info("raw xml-file stored at " + myreport + ".debug");
+				DOMSource docw = new DOMSource(doc);
+				ByteArrayOutputStream bout = new ByteArrayOutputStream();
+				TransformerFactory tfactory = TransformerFactory.newInstance();
+
+				Transformer transformer = tfactory.newTransformer();//
+				transformer.transform(docw, new StreamResult(bout));
+				FileOutputStream fos = new FileOutputStream(report + ".debug");
+				fos.write(bout.toByteArray());
+				fos.close();
+			}
+
+			if (translator != null) {
+				logger.info("report will store at " + myreport);
+				File f = new File(translator);
+				logger.info("transformed with " + f.getAbsolutePath());
+				// redirect stderr to get transformation error data to the
+				// logger
+				PrintStream stderr = new PrintStream(barray);
+
+				System.setErr(stderr);
+				DOMSource docw = new DOMSource(doc);
+				ByteArrayOutputStream bout = new ByteArrayOutputStream();
+				TransformerFactory tfactory = TransformerFactory.newInstance();
+				// Create a transformer for the stylesheet.
+				Source src = new StreamSource(translator);
+				Transformer transformer = tfactory.newTransformer(src);
+
+				transformer.transform(docw, new StreamResult(bout));
+				FileOutputStream fos = new FileOutputStream(myreport);
+				fos.write(bout.toByteArray());
+				fos.close();
+				logger.fine(myreport + " will be opened");
+				// parent.addRepoForDisplay(report); // is this needed ?
+				// Utils.openExternalFile(report);
+			}
+
+		} catch (Throwable e) {
+			logger.log(Level.WARNING, barray.toString());
+			logger.log(Level.WARNING, e.getMessage(), e);
+			String messu = e.getMessage();
+			System.setErr(origErr);
+			throw new SukuException(messu);
+		}
+		System.setErr(origErr);
+
+	}
+
 }

@@ -32,6 +32,14 @@ public interface ReportInterface {
 	public void closeReport() throws SukuException;
 
 	/**
+	 * close report part
+	 * 
+	 * @param tabNo
+	 * @throws SukuException
+	 */
+	public void closeReport(long tabNo) throws SukuException;
+
+	/**
 	 * create the report.
 	 * 
 	 * @throws SukuException

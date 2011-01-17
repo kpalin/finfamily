@@ -87,8 +87,11 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	public void getConnection(String host, String dbname, String userid,
 			String passwd) throws SukuException {
 
-		String requri = this.codebase + "suku?userid=" + userid + "&passwd="
-				+ passwd;
+		String requri = this.codebase + "SukuServlet?userid=" + userid
+				+ "&passwd=" + passwd;
+
+		// JOptionPane.showMessageDialog(null, requri,
+		// Resurses.getString(Resurses.SUKU), JOptionPane.ERROR_MESSAGE);
 
 		int resu;
 
@@ -102,6 +105,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			// String contentType = uc.getContentType();
 
 			resu = uc.getResponseCode();
+
 			if (resu == 200) {
 
 				InputStream in;
@@ -121,6 +125,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 					}
 				}
 				String aux = new String(b, 0, pit);
+
 				String auxes[] = aux.split("/");
 
 				this.userno = auxes[0];
@@ -399,7 +404,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 		String paras[] = params;
 
-		sb.append("suku?userno=" + this.userno);
+		sb.append("SukuServlet?userno=" + this.userno);
 
 		for (i = 0; i < paras.length; i++) {
 			sb.append("&" + paras[i]);

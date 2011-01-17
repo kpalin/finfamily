@@ -55,12 +55,14 @@ public class ImagesLista extends CommonReport {
 		logger.info("Lista repo");
 
 		textReferences = new HashMap<String, PersonInTables>();
-		repoWriter.createReport();
+		// repoWriter.createReport();
 		for (int idx = 0; idx < pidArray.length; idx++) {
+			repoWriter.createReport();
 			createPidTable(idx, pidArray);
+			repoWriter.closeReport(pidArray[idx]);
 		}
 		caller.setRunnerValue("100;OK");
-		repoWriter.closeReport();
+		// repoWriter.closeReport();
 
 	}
 

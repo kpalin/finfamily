@@ -42,6 +42,7 @@ import fi.kaila.suku.report.style.ImageText;
 import fi.kaila.suku.swing.doc.SukuDocument;
 import fi.kaila.suku.swing.text.DocumentSukuFilter;
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.SukuException;
 
 /**
  * The Java report is a separate window that receives the report in a java
@@ -393,5 +394,14 @@ public class JavaReport extends JFrame implements ActionListener,
 	@Override
 	public String toString() {
 		return "Preview";
+	}
+
+	@Override
+	public void closeReport(long tabNo) throws SukuException {
+		if (reportClosed)
+			return;
+		reportClosed = true;
+		setVisible(true);
+
 	}
 }

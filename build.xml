@@ -89,17 +89,17 @@
   </target>
   
 	
-	 <target name="war" depends="jar" description="Build war">
+<target name="war" depends="jar" description="Build war">
 	    
-	  	<copy file="${dist.home}/suku.jar" tofile="${web.home}/suku.jar" />
-	 	<copy file="${lib.home}/jxl.jar" tofile="${web.home}/jxl.jar" />
-		
-	 	<war destfile="${dist.home}/finfamily.war" basedir="${basedir}/WebContent">
-	 		
-	 	</war>
-	 	
-	 	
-	  </target>	
+	<copy file="${dist.home}/suku.jar" tofile="${web.home}/suku.jar" />
+	<copy file="${lib.home}/jxl.jar" tofile="${web.home}/jxl.jar" />	
+	<copy file="${lib.home}/jcalendarbutton-1.4.5.jar" tofile="${web.home}/jcalendarbutton-1.4.5.jar" />	
+	<copy file="${lib.home}/jfreechart-1.0.13.jar" tofile="${web.home}/jfreechart-1.0.13.jar" />	
+	<copy file="${lib.home}/jcommon-1.0.16.jar" tofile="${web.home}/jcommon-1.0.16.jar" />	
+	<war destfile="${dist.home}/finfamily.war" basedir="${basedir}/WebContent">	 		
+	</war>
+	
+</target>	
 	
   
    <target name="dist" depends="jar,war" description="Create distribution folder">

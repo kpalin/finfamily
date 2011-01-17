@@ -1009,10 +1009,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		// if (!this.isWebApp){
 		calcSize();
 		connectDb();
-
-		File home = new File(".");
-		statusPanel.setText(home.getAbsolutePath());
-
+		if (!this.isWebApp) {
+			File home = new File(".");
+			statusPanel.setText(home.getAbsolutePath());
+		}
 		// }
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -1305,10 +1305,16 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		if (isConnected > 0) {
 			sb.append(" [");
-			sb.append(databaseName);
-			if (schema != null) {
+			if (this.isWebApp) {
 				sb.append(" ! ");
 				sb.append(schema);
+			} else {
+
+				sb.append(databaseName);
+				if (schema != null) {
+					sb.append(" ! ");
+					sb.append(schema);
+				}
 			}
 			sb.append("]");
 		}
@@ -1531,42 +1537,48 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			return;
 		}
 		try {
-			SelectSchema schemas = new SelectSchema(this, databaseName, false);
-			String schema = null;
-			schema = schemas.getSchema();
 
-			if (schema == null || schema.isEmpty()) {
-				schemas.setVisible(true);
+			if (!this.isWebApp) {
 
-			}
-			schema = schemas.getSchema();
-			if (schema == null) {
-				return;
-			}
-			SukuData dblist = kontroller.getSukuData("cmd=dblista");
+				SelectSchema schemas = new SelectSchema(this, databaseName,
+						false);
+				String schema = null;
+				schema = schemas.getSchema();
 
-			if (dblist.generalArray != null) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(databaseName);
-				for (int i = 0; i < dblist.generalArray.length; i++) {
-					if (!dblist.generalArray[i].equalsIgnoreCase(databaseName)) {
-						sb.append(";");
-						sb.append(dblist.generalArray[i]);
+				if (schema == null || schema.isEmpty()) {
+					schemas.setVisible(true);
+
+				}
+				schema = schemas.getSchema();
+				if (schema == null) {
+					return;
+				}
+				SukuData dblist = kontroller.getSukuData("cmd=dblista");
+
+				if (dblist.generalArray != null) {
+					StringBuilder sb = new StringBuilder();
+					sb.append(databaseName);
+					for (int i = 0; i < dblist.generalArray.length; i++) {
+						if (!dblist.generalArray[i]
+								.equalsIgnoreCase(databaseName)) {
+							sb.append(";");
+							sb.append(dblist.generalArray[i]);
+						}
 					}
+
+					kontroller.putPref(cdlg, "DBNAMES", sb.toString());
+				}
+				schema = schemas.getSchema();
+				if (schema == null || schema.isEmpty()) {
+					this.isConnected = 0;
+					enableCommands();
+					cdlg.rememberDatabase(false);
+					return;
 				}
 
-				kontroller.putPref(cdlg, "DBNAMES", sb.toString());
+				kontroller.getSukuData("cmd=schema", "type=set", "name="
+						+ schema);
 			}
-			schema = schemas.getSchema();
-			if (schema == null || schema.isEmpty()) {
-				this.isConnected = 0;
-				enableCommands();
-				cdlg.rememberDatabase(false);
-				return;
-			}
-
-			kontroller.getSukuData("cmd=schema", "type=set", "name=" + schema);
-
 			// copy report languages here to static
 			Locale reportLocale = new Locale("fi");
 
