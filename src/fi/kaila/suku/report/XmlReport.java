@@ -827,10 +827,14 @@ public class XmlReport implements ReportInterface {
 		PrintStream origErr = System.err;
 		ByteArrayOutputStream barray = new ByteArrayOutputStream();
 		int dotPos = report.lastIndexOf(".");
-
+		int slashPos = report.replace("\\", "/").lastIndexOf("/");
+		if (folder == null || slashPos <= 0 || dotPos < slashPos)
+			return;
 		String myreport;
 
 		if (dotPos > 0) {
+			// myreport = folder + "/" + report.substring(slashPos + 1, dotPos)
+			// + tabNo + "." + report.substring(dotPos + 1);
 			myreport = report.substring(0, dotPos) + tabNo + "."
 					+ report.substring(dotPos + 1);
 		} else {
