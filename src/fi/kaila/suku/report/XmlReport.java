@@ -513,14 +513,15 @@ public class XmlReport implements ReportInterface {
 				dd.delete();
 			}
 			if (debugState) {
-				logger.info("raw xml-file stored at " + report + ".debug");
+				logger.info("raw xml-file stored at " + report + ".debug.xml");
 				DOMSource docw = new DOMSource(doc);
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				TransformerFactory tfactory = TransformerFactory.newInstance();
 
 				Transformer transformer = tfactory.newTransformer();//
 				transformer.transform(docw, new StreamResult(bout));
-				FileOutputStream fos = new FileOutputStream(report + ".debug");
+				FileOutputStream fos = new FileOutputStream(report
+						+ ".debug.xml");
 				fos.write(bout.toByteArray());
 				fos.close();
 			}
@@ -855,14 +856,15 @@ public class XmlReport implements ReportInterface {
 			// dd.delete();
 			// }
 			if (debugState) {
-				logger.info("raw xml-file stored at " + myreport + ".debug");
+				logger.info("raw xml-file stored at " + myreport + ".debug.xml");
 				DOMSource docw = new DOMSource(doc);
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				TransformerFactory tfactory = TransformerFactory.newInstance();
 
 				Transformer transformer = tfactory.newTransformer();//
 				transformer.transform(docw, new StreamResult(bout));
-				FileOutputStream fos = new FileOutputStream(report + ".debug");
+				FileOutputStream fos = new FileOutputStream(report
+						+ ".debug.xml");
 				fos.write(bout.toByteArray());
 				fos.close();
 			}
