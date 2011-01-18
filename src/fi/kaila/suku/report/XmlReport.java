@@ -833,10 +833,10 @@ public class XmlReport implements ReportInterface {
 		String myreport;
 
 		if (dotPos > 0) {
-			// myreport = folder + "/" + report.substring(slashPos + 1, dotPos)
-			// + tabNo + "." + report.substring(dotPos + 1);
-			myreport = report.substring(0, dotPos) + tabNo + "."
-					+ report.substring(dotPos + 1);
+			myreport = folder + "/" + report.substring(slashPos + 1, dotPos)
+					+ tabNo + "." + report.substring(dotPos + 1);
+			// myreport = report.substring(0, dotPos) + tabNo + "."
+			// + report.substring(dotPos + 1);
 		} else {
 			return;
 		}
@@ -866,31 +866,31 @@ public class XmlReport implements ReportInterface {
 				fos.write(bout.toByteArray());
 				fos.close();
 			}
+			translator = "resources/xml/export.xsl";
+			// if (translator != null) {
+			logger.info("report will store at " + myreport);
+			File f = new File(translator);
+			logger.info("transformed with " + f.getAbsolutePath());
+			// redirect stderr to get transformation error data to the
+			// logger
+			PrintStream stderr = new PrintStream(barray);
 
-			if (translator != null) {
-				logger.info("report will store at " + myreport);
-				File f = new File(translator);
-				logger.info("transformed with " + f.getAbsolutePath());
-				// redirect stderr to get transformation error data to the
-				// logger
-				PrintStream stderr = new PrintStream(barray);
+			System.setErr(stderr);
+			DOMSource docw = new DOMSource(doc);
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			TransformerFactory tfactory = TransformerFactory.newInstance();
+			// Create a transformer for the stylesheet.
+			Source src = new StreamSource(translator);
+			Transformer transformer = tfactory.newTransformer(src);
 
-				System.setErr(stderr);
-				DOMSource docw = new DOMSource(doc);
-				ByteArrayOutputStream bout = new ByteArrayOutputStream();
-				TransformerFactory tfactory = TransformerFactory.newInstance();
-				// Create a transformer for the stylesheet.
-				Source src = new StreamSource(translator);
-				Transformer transformer = tfactory.newTransformer(src);
-
-				transformer.transform(docw, new StreamResult(bout));
-				FileOutputStream fos = new FileOutputStream(myreport);
-				fos.write(bout.toByteArray());
-				fos.close();
-				logger.fine(myreport + " will be opened");
-				// parent.addRepoForDisplay(report); // is this needed ?
-				// Utils.openExternalFile(report);
-			}
+			transformer.transform(docw, new StreamResult(bout));
+			FileOutputStream fos = new FileOutputStream(myreport);
+			fos.write(bout.toByteArray());
+			fos.close();
+			logger.fine(myreport + " will be opened");
+			// parent.addRepoForDisplay(report); // is this needed ?
+			// Utils.openExternalFile(report);
+			// }
 
 		} catch (Throwable e) {
 			logger.log(Level.WARNING, barray.toString());
