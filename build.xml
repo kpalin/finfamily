@@ -7,6 +7,7 @@
  <property name="build.home" value="${basedir}/build"/>
   <property name="resources.home" value="${basedir}/resources"/>
   <property name="dist.home" value="${basedir}/dist"/>
+ 
   <property name="docs.home" value="${basedir}/docs"/>
   <property name="src.home"  value="${basedir}/src"/>
   <property name="conf.home" value="${basedir}/conf"/>
@@ -89,7 +90,7 @@
   </target>
   
 	
-<target name="war" depends="jar" description="Build war">
+<target name="war" depends="jar,servlet" description="Build war">
 	    
 	<copy file="${dist.home}/suku.jar" tofile="${web.home}/suku.jar" />
 	<copy file="${lib.home}/jxl.jar" tofile="${web.home}/jxl.jar" />	
@@ -102,7 +103,56 @@
 </target>	
 	
   
-   <target name="dist" depends="jar,war" description="Create distribution folder">
+	<target name="servlet" depends="clean,compile" description="Build war">
+		    
+		   <mkdir dir="${web.home}"/>
+		 	<mkdir dir="${web.home}/WEB-INF"/>
+		    <jar destfile="${web.home}/WEB-INF/lib/finfamily.jar" basedir="${build.home}/classes">
+
+<!--			<fileset dir="${basedir}/resources"   >	
+				 <include name="**/FinFamily.xls"/>
+				 <include name="/images/**"/>
+				 <include name="/xml/**"/>
+				<include name="/sql/**"/>
+			</fileset>
+-->			
+			<manifest >
+		    <attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Main-Class" value="fi.kaila.suku.swing.Suku"/>
+			<attribute name="Class-Path" value="jfreechart-1.0.13.jar jcommon-1.0.16.jar lib/jxl.jar jcalendarbutton-1.4.5.jar looks-2.3.1.jar swingx-1.6.jar swingx-ws-1.0.jar  resources/"/>
+		    <section name="common">
+		      <attribute name="Specification-Title" value="Example"/>
+		      <attribute name="Specification-Version" value="${app.version}.${revision.version}"/>
+		      <attribute name="Specification-Vendor" value="KK Software"/>
+		      <attribute name="Implementation-Title" value="common"/>
+		      <attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
+		      <attribute name="Implementation-Vendor" value="KK Software"/>
+		    </section>
+		   
+		  </manifest>
+
+			
+		   </jar>
+		
+		<copy todir="${web.home}/WEB-INF">
+			<fileset dir="${basedir}"   >	
+				<include name="resources/FinFamily.xls"/>
+				<include name="resources/images/**"/>
+				<include name="resources/xml/**"/>
+				<include name="resources/sql/**"/>
+				
+				<include name="lib/jfreechart-1.0.13.jar"/>
+				<include name="lib/jcommon-1.0.16.jar"/>
+				<include name="lib/jcalendarbutton-1.4.5.jar"/>
+				<include name="lib/jxl.jar"/>
+					
+				
+			</fileset>
+		</copy>
+		
+	</target>	
+	
+   <target name="dist" depends="jar" description="Create distribution folder">
    <mkdir dir="${dist.home}/lib"/>
    <mkdir dir="${dist.home}/properties"/>
    <mkdir dir="${dist.home}/resources"/>
