@@ -2,11 +2,14 @@ package fi.kaila.suku.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -15,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
@@ -64,6 +68,7 @@ public class SukuServlet extends HttpServlet {
 	private String dbDatabase = null;
 	private String dbUser = null;
 	private String dbPassword = null;
+	private String filesPath = null;
 
 	/*
 	 * (non-Javadoc)
@@ -85,7 +90,7 @@ public class SukuServlet extends HttpServlet {
 			this.dbDatabase = initEnv("suku.db.database");
 			this.dbUser = initEnv("suku.db.user");
 			this.dbPassword = initEnv("suku.db.password");
-
+			this.filesPath = initEnv("suku.files.path");
 			// myTablePrefix = initEnv("forum.table.prefix");
 
 		} catch (Exception e) {
@@ -111,19 +116,28 @@ public class SukuServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String referer = req.getHeader("referer");
-		logger.fine("Post referer on " + referer);
+
 		SukuData requestData = null;
 		if (referer != null) {
 			String parts[] = referer.split("/");
-
+			logger.fine("Post referer [" + parts.length + "]: " + referer);
 			if (parts.length >= 2) {
 
 				UserInfo ui = this.usermap.get("" + parts[2]);
 				if (ui == null) {
-					logger.fine("parts2a " + parts[2]);
+					logger.fine("parts1 " + parts[2]);
 				} else {
-					logger.fine("parts2b " + parts[2]);
-					requestData = extractSukuData(req);
+					if (parts.length > 2) {
+
+						logger.fine("parts3 " + parts[3]);
+						requestData = extractFile(req, filesPath + "/"
+								+ ui.userid, parts[3]);
+						ui.openFile = filesPath + "/" + ui.userid + "/"
+								+ parts[3];
+					} else {
+						logger.fine("parts2 " + parts[2]);
+						requestData = extractSukuData(req);
+					}
 				}
 			}
 		}
@@ -169,11 +183,11 @@ public class SukuServlet extends HttpServlet {
 			int koko = 0;
 			ByteArrayOutputStream oss = new ByteArrayOutputStream();
 			byte brivi[] = new byte[32 * 1024];
-			// boolean riviYksi = true;
+
 			StringBuilder sb = null;
 			for (int idx = 0; idx < buffi.length; idx++) {
 				if ((buffi[idx] == '\n')) {
-					// logger.fine("buffissa paikalla " + idx);
+
 					sb = new StringBuilder();
 					for (int j = kurre; j < idx; j++) {
 						if (buffi[j] >= '0') {
@@ -296,13 +310,11 @@ public class SukuServlet extends HttpServlet {
 		//
 		//
 
-		// System.out.println(new Date());
-
 		String cmd;
 		String userid;
 		String passwd;
 		// String pid;
-		// String file;
+		String file;
 		// String lang;
 		// String filename;
 
@@ -340,7 +352,8 @@ public class SukuServlet extends HttpServlet {
 		passwd = vpara.get("passwd");
 		uno = vpara.get("userno");
 		cmd = vpara.get("cmd");
-
+		file = vpara.get("file");
+		logger.info("into servlet: cmd=" + cmd + ", file=" + file);
 		String params[] = null;
 
 		if (uno != null) {
@@ -380,7 +393,7 @@ public class SukuServlet extends HttpServlet {
 
 		params = v.toArray(new String[0]);
 
-		if (cmd == null || ui == null || userno == 0) {
+		if (cmd == null || ui == null || userno == 0 || file != null) {
 			logger.info("cmd=null");
 			PrintWriter out = resp.getWriter();
 			resp.setHeader("Content-Type", "text/html");
@@ -401,6 +414,9 @@ public class SukuServlet extends HttpServlet {
 
 		try {
 			sk = new SukuServerImpl(ui.getUserId());
+			if (ui.openFile != null) {
+				sk.setOpenFile(ui.openFile);
+			}
 			resp.addHeader("Content-Encoding", "gzip");
 			ServletOutputStream sos = resp.getOutputStream();
 			logger.fine("log0: " + this.dbServer + "/" + this.dbDatabase + "/"
@@ -448,6 +464,109 @@ public class SukuServlet extends HttpServlet {
 	}
 
 	/**
+	 * This is from the old servlet
+	 * 
+	 * @param req
+	 * @param outputPath
+	 * @param fileName
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
+	 * @throws FileNotFoundException
+	 */
+	private SukuData extractFile(HttpServletRequest req, String outputPath,
+			String fileName) throws IOException, UnsupportedEncodingException,
+			FileNotFoundException {
+		SukuData suku = new SukuData();
+		int input = -1;
+		try {
+			InputStream is = req.getInputStream();
+
+			ByteArrayOutputStream boss = new ByteArrayOutputStream();
+			boolean endParams = false;
+			StringBuilder params = new StringBuilder();
+			while ((input = is.read()) >= 0) {
+				char c = (char) input;
+				if (!endParams) {
+					if (c == '\r') {
+
+					} else if (c == '\n') {
+						if (params.length() > 0) {
+							endParams = true;
+						}
+					} else {
+						params.append(c);
+					}
+
+				} else {
+					if (c != '\r') {
+						boss.write((byte) c);
+					}
+				}
+			}
+
+			suku.cmd = URLDecoder.decode(params.toString(), "UTF-8");
+			logger.info("params:" + params.toString() + ":" + suku);
+			byte buffi[] = boss.toByteArray();
+			// logger.info("buffi:" + buffi.length);
+			String rivi = "XXX";
+
+			int kurre = 0;
+			int koko = 0;
+
+			FileOutputStream foss = new FileOutputStream(outputPath + "/"
+					+ fileName);
+			byte brivi[] = new byte[32 * 1024];
+
+			StringBuilder sb = null;
+			for (int idx = 0; idx < buffi.length; idx++) {
+				if ((buffi[idx] == '\n')) {
+
+					sb = new StringBuilder();
+					for (int j = kurre; j < idx; j++) {
+						if (buffi[j] >= '0') {
+							sb.append(new String(buffi, j, 1, "US-ASCII"));
+						}
+					}
+					rivi = sb.toString();
+					kurre = idx;
+
+					if (rivi.indexOf("*****") > 0) {
+						break;
+					}
+
+					if (rivi.length() > 0 && (rivi.length() & 1) == 0) {
+
+						int bi = 0;
+						int x1, x2;
+						if (hexi.indexOf(rivi.charAt(0)) >= 0) {
+
+							for (int j = 0; j < rivi.length() - 1; j += 2) {
+								x1 = Integer.parseInt(rivi.substring(j, j + 1),
+										16);
+								x2 = Integer.parseInt(
+										rivi.substring(j + 1, j + 2), 16);
+
+								brivi[bi++] = (byte) (((x1 << 4) & 0xf0) | (x2 & 0xf));
+
+							}
+							foss.write(brivi, 0, bi);
+
+							koko += bi;
+						}
+					}
+				}
+			}
+
+			foss.close();
+
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "extractFile", e);
+
+		}
+		return suku;
+	}
+
+	/**
 	 * The Class UserInfo.
 	 */
 	class UserInfo {
@@ -455,6 +574,7 @@ public class SukuServlet extends HttpServlet {
 		private String userid = null;
 		private String passwd = null;
 		private long lastUsed = 0;
+		private String openFile = null;
 
 		/**
 		 * Instantiates a new user info.

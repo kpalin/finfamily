@@ -24,10 +24,10 @@ import javax.jnlp.FileOpenService;
 import javax.jnlp.PersistenceService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
-import javax.swing.JOptionPane;
 
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
@@ -330,7 +330,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			// System.out.println("NOT FOUND: key=" + key);
 			return def;
 		} catch (Exception e) {
-			System.out.println("Kaatui: e=" + e);
+			Utils.println(this, "Kaatui: e=" + e);
 			e.printStackTrace();
 		}
 
@@ -414,9 +414,9 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		for (i = 0; i < paras.length; i++) {
 			sb.append("&" + paras[i]);
 		}
-		if (this.filename != null) {
-			sb.append("&filename=" + this.filename);
-		}
+		// if (this.filename != null) {
+		// sb.append("&filename=" + this.filename);
+		// }
 
 		requri = sb.toString();
 		try {
@@ -425,17 +425,28 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			// System.out.println();
 			// JOptionPane.showMessageDialog(null, "URI on: " + requri);
 			logger.fine("URILOG: " + requri);
+			Utils.println(this, "URILOG: " + requri);
 			URL url = new URL(requri);
 			HttpURLConnection uc = (HttpURLConnection) url.openConnection();
 			// String encoding = uc.getContentEncoding();
 
 			resu = uc.getResponseCode();
 			// JOptionPane.showMessageDialog(null, "Resu = " + resu);
-			System.out.println();
+
 			if (resu == 200) {
 				String coding = uc.getHeaderField("Content-Encoding");
 				// JOptionPane.showMessageDialog(null, "coding on: " + coding);
 				// JOptionPane.showMessageDialog(null, "resu on: " + resu);
+
+				StringBuilder xx = new StringBuilder();
+				xx.append("Content-Encoding: " + coding);
+				xx.append(";");
+				for (int j = 0; j < params.length; j++) {
+					xx.append(params[j]);
+					xx.append(";");
+				}
+				Utils.println(this, xx.toString());
+
 				InputStream in = null;
 				if ("gzip".equals(coding)) {
 					in = new GZIPInputStream(uc.getInputStream());
@@ -452,6 +463,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 					e.printStackTrace();
 					throw new SukuException(e);
 				}
+				this.filename = null;
 				// JOptionPane.showMessageDialog(null, "se onnistui");
 				return fam;
 
@@ -459,8 +471,9 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			throw new SukuException("Network error " + resu);
 
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null,
-					"se xpäonnistui+" + e.toString());
+			Utils.println(this, "Ilman dataa failed: " + e.toString());
+			// JOptionPane.showMessageDialog(null,
+			// "se xpäonnistui+" + e.toString());
 			throw new SukuException(e);
 		}
 	}
@@ -480,65 +493,83 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		String boundary = "*****";
 		DataOutputStream dos = null;
 		InputStream iis = null;
+		FileContents fc = null;
+		String fileName = null;
+		int resu;
+		// System.out.println("huhuu");
 		try {
 			fos = (FileOpenService) ServiceManager
 					.lookup("javax.jnlp.FileOpenService");
-		} catch (UnavailableServiceException e) {
-			fos = null;
-		}
-		FileContents fc = null;
-		String fileName = null;
 
-		if (fos != null) {
-			try {
-				// ask user to select a file through this service
-				fc = fos.openFileDialog(null, null);
-				if (fc == null) {
-					return false;
-				}
-				fileName = fc.getName();
-				iis = fc.getInputStream();
-				// ask user to select multiple files through this service
-				// FileContents[] fcs = fos.openMultiFileDialog(null, null);
-			} catch (Exception e) {
-				e.printStackTrace();
+			// ask user to select a file through this service
+			fc = fos.openFileDialog(null, null);
+			if (fc == null) {
 				return false;
 			}
-		}
+			fileName = fc.getName();
+			iis = fc.getInputStream();
+			// ask user to select multiple files through this service
+			// FileContents[] fcs = fos.openMultiFileDialog(null, null);
 
-		int resu;
-		try {
 			String uri = this.codebase;
 			String query;
 
-			uri += "suku";
+			uri += "SukuServlet";
 			// query = "intres";
-			query = "cmd=fff";
-			query += "&TRM_TP=" + URLEncoder.encode("Kaila", "UTF-8");
+			query = "cmd=file";
+			// query += "&TRM_TP=" + URLEncoder.encode("Kaila", "UTF-8");
+			// ///////////////////////////////////////
+			// byte[] bytes = query.getBytes();
+			//
+			// URL url = new URL(uri);
+			// HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			// con.setDoOutput(true);
+			// con.setDoInput(true);
+			// // con.setRequestProperty(
+			// // "Content-Type",
+			// // "application/x-www-form-urlencoded; charset=UTF-8");
+			//
+			// con.setRequestProperty("Content-Type",
+			// "multipart/form-data;boundary=" + boundary);
+			//
+			// con.setRequestMethod("POST");
+			// con.setRequestProperty("Referer", "/SSS/" + this.userno + "/"
+			// + fileName + "/");
+			// con.setRequestProperty("Content-Length",
+			// String.valueOf(bytes.length));
+			// dos = new DataOutputStream(con.getOutputStream());
+			// dos.writeBytes(twoHyphens + boundary + lineEnd);
+			// dos.writeBytes("Content-Disposition: form-data; name=\"upload\";"
+			// + " filename=\"" + fileName + "\"" + lineEnd);
+			// dos.writeBytes(lineEnd);
+
+			// //////////////////////////////////////
 
 			byte[] bytes = query.getBytes();
-
+			// JOptionPane.showMessageDialog(null, "bytes:" + bytes.length);
 			URL url = new URL(uri);
+
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setDoOutput(true);
 			con.setDoInput(true);
-			// con.setRequestProperty(
-			// "Content-Type",
-			// "application/x-www-form-urlencoded; charset=UTF-8");
-
+			// JOptionPane.showMessageDialog(null, "setPostPian");
 			con.setRequestProperty("Content-Type",
 					"multipart/form-data;boundary=" + boundary);
 
-			con.setRequestMethod("POST");
 			con.setRequestProperty("Referer", "/SSS/" + this.userno + "/"
 					+ fileName + "/");
 			con.setRequestProperty("Content-Length",
 					String.valueOf(bytes.length));
+			con.setRequestMethod("POST");
+
 			dos = new DataOutputStream(con.getOutputStream());
-			dos.writeBytes(twoHyphens + boundary + lineEnd);
-			dos.writeBytes("Content-Disposition: form-data; name=\"upload\";"
-					+ " filename=\"" + fileName + "\"" + lineEnd);
+			// JOptionPane.showMessageDialog(null, "dos");
+			dos.write(bytes);
 			dos.writeBytes(lineEnd);
+			// dos.writeBytes(twoHyphens + boundary + lineEnd);
+			dos.writeBytes(lineEnd);
+
+			// ////////////////////////////////////
 
 			// dos.write(bytes);
 			// dos.writeBytes(lineEnd);
@@ -546,7 +577,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			int nextByte;
 
 			StringBuilder rivi = new StringBuilder();
-			// FIXME: Potential NPE
+
 			while ((nextByte = iis.read()) >= 0) {
 				if (rivi.length() > 64) {
 					dos.writeBytes(rivi.toString() + lineEnd);
@@ -586,14 +617,10 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			dos.close();
 			con.disconnect();
 			this.filename = fileName;
-			logger.finest("resu: " + resu + "/" + inle);
+
+			logger.fine("resu: " + resu + "/" + inle);
 		} catch (Exception e) {
-			// FIXME: Spaghetti code. This method uses a try-catch block that
-			// catches Exception objects, but Exception is not thrown within the
-			// try block, and RuntimeException is not explicitly caught. This
-			// construct also accidentally catches RuntimeException as well,
-			// masking potential bugs.
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
@@ -680,8 +707,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			con.setRequestProperty("Content-Type",
 					"multipart/form-data;boundary=" + boundary);
 
-			con.setRequestProperty("Referer", "/SSS/" + this.userno + "/"
-					+ "fileName" + "/");
+			con.setRequestProperty("Referer", "/SSS/" + this.userno + "/");
 			con.setRequestProperty("Content-Length",
 					String.valueOf(bytes.length));
 			con.setRequestMethod("POST");
@@ -760,10 +786,12 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			dos.close();
 			con.disconnect();
 			// JOptionPane.showMessageDialog(null, "respinput: [" + resu + "]");
+			this.filename = null;
 			logger.fine("resu: " + resu + "/" + inle);
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null,
-					"datalla epäonnistui+" + e.toString());
+			Utils.println(this, "Datalla failed+" + e.toString());
+			// JOptionPane.showMessageDialog(null,
+			// "datalla epäonnistui+" + e.toString());
 			throw new SukuException(e);
 
 		}

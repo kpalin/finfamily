@@ -93,6 +93,14 @@ public class SukuData implements Serializable {
 		sb.append("resu=" + resu);
 		sb.append(";");
 		sb.append("long=" + persLong);
+		if (generalText != null) {
+			sb.append(";");
+			sb.append("text=" + generalText);
+		}
+		if (generalArray != null) {
+			sb.append(";");
+			sb.append("listsz=" + generalArray.length);
+		}
 		return sb.toString();
 	}
 }

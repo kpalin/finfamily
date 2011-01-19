@@ -2,10 +2,10 @@ package fi.kaila.suku.util.data;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fi.kaila.suku.imports.Read2004XML;
@@ -19,7 +19,7 @@ import fi.kaila.suku.util.pojo.SukuData;
  */
 public class SukuUtility {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private static SukuUtility sData = null;
 
@@ -62,19 +62,23 @@ public class SukuUtility {
 	 */
 	public void createSukuDb(Connection con, String sqlpath)
 			throws SukuException {
-
+		logger.fine("create db from " + sqlpath);
 		InputStreamReader in = null;
+		Statement stm;
+		int lukuri = 0;
 		try {
 			in = new InputStreamReader(this.getClass().getResourceAsStream(
 					sqlpath), "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
 
-			e1.printStackTrace();
-			throw new SukuException(e1);
-		}
-
-		Statement stm;
-		try {
+			logger.fine("create script at " + in);
+			// } catch (UnsupportedEncodingException e1) {
+			//
+			// logger.log(Level.WARNING, "create", e1);
+			// throw new SukuException(e1);
+			// }
+			//
+			//
+			// try {
 			stm = con.createStatement();
 
 			boolean wasDash = false;
@@ -121,13 +125,16 @@ public class SukuUtility {
 
 				try {
 					stm.executeUpdate(sql);
+					lukuri++;
 				} catch (SQLException se) {
 					logger.severe(se.getMessage());
 				}
 				sb = new StringBuilder();
 
 			}
+			logger.fine("creates script with  " + lukuri + " sql commands");
 		} catch (Exception e) {
+			logger.log(Level.WARNING, "create", e);
 			throw new SukuException(e);
 		} finally {
 			try {
@@ -153,8 +160,8 @@ public class SukuUtility {
 	 */
 	public SukuData import2004Data(Connection con, String path, String oldCode)
 			throws SukuException {
-		Read2004XML x = new Read2004XML(path, con, oldCode);
-		return x.importFile();
+		Read2004XML x = new Read2004XML(con, oldCode);
+		return x.importFile(path);
 	}
 
 }

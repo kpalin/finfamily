@@ -60,4 +60,11 @@
   </env-entry>
   
     
+      <env-entry>
+	<description>server file path</description>
+	<env-entry-name>suku.files.path</env-entry-name> 
+	<env-entry-type>java.lang.String</env-entry-type>	 
+	<env-entry-value>C:\apps\upload</env-entry-value>
+  </env-entry>
+    
 </web-app>

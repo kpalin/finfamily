@@ -36,7 +36,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.NameArray;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
@@ -86,7 +85,7 @@ public class Read2004XML extends DefaultHandler {
 	private StringBuffer currentChars = null;
 	private String finFamilyVersion = null;
 	private Connection con = null;
-	private String urli = null;
+	// private String urli = null;
 	private String databaseFolder = null;
 	private boolean databaseHasImages = false;
 
@@ -483,10 +482,9 @@ public class Read2004XML extends DefaultHandler {
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public Read2004XML(String urli, Connection con, String oldCode)
-			throws SukuException {
+	public Read2004XML(Connection con, String oldCode) throws SukuException {
 		this.con = con;
-		this.urli = urli;
+		// this.urli = urli;
 		try {
 			this.runner = Import2004Dialog.getRunner();
 
@@ -518,7 +516,7 @@ public class Read2004XML extends DefaultHandler {
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public SukuData importFile() throws SukuException {
+	public SukuData importFile(String filepath) throws SukuException {
 
 		SukuData resp = new SukuData();
 		images = new LinkedHashMap<String, String>();
@@ -526,9 +524,9 @@ public class Read2004XML extends DefaultHandler {
 
 		SAXParserFactory dbfactory = SAXParserFactory.newInstance();
 
-		logger.fine("Import from file: " + urli);
+		logger.fine("Import from file: " + filepath);
 
-		String aux = this.urli.replace('\\', '/');
+		String aux = filepath.replace('\\', '/');
 		int auxi = aux.lastIndexOf('/');
 		this.databaseFolder = aux.substring(0, auxi);
 
@@ -536,11 +534,14 @@ public class Read2004XML extends DefaultHandler {
 			parser = dbfactory.newSAXParser();
 
 		} catch (Exception e) {
+			logger.log(Level.WARNING, "Import parser failed: ", e);
 			throw new SukuException(e);
 
 		}
 
 		try {
+
+			FileInputStream ff = new FileInputStream(filepath);
 
 			long started = System.currentTimeMillis();
 			GZIPInputStream gz = null;
@@ -556,21 +557,23 @@ public class Read2004XML extends DefaultHandler {
 			stm.executeUpdate(ADD_UNITNOTICE_SID);
 			stm.executeUpdate(ADD_RELATIONNOTICE_SID);
 
-			if (this.urli.endsWith(".zip")) {
+			if (filepath.endsWith(".zip")) {
 				String gedFile = null;
 				isZipFile = true;
-
+				logger.fine("input from zip-file at: " + filepath);
 				ZipEntry zipEntry = null;
 				File xmlFile = null;
-				zipIn = new ZipInputStream(Suku.kontroller.getInputStream());
+				zipIn = new ZipInputStream(ff);
 				BufferedInputStream bis = new BufferedInputStream(zipIn);
 				while ((zipEntry = zipIn.getNextEntry()) != null) {
 					String entryName = zipEntry.getName();
+					logger.fine("importZipEntry: " + entryName);
 					if (entryName.toLowerCase().endsWith(".xml")) {
 						int li = entryName.replace('\\', '/').lastIndexOf('/');
 						if (li > 0) {
 							baseFolder = entryName.substring(0, li + 1);
 						}
+						logger.fine("importZipBaseFolder: " + baseFolder);
 						xmlFile = copyToTempfile(zipIn, entryName);
 					} else if (entryName.toLowerCase().endsWith(".ged")) {
 						gedFile = entryName;
@@ -579,11 +582,9 @@ public class Read2004XML extends DefaultHandler {
 					}
 				}
 				bis.close();
-				if (this.runner.setRunnerValue(Resurses
-						.getString("GETSUKU_INPUT_FINISHED"))) {
-					throw new SukuException(
-							Resurses.getString("GETSUKU_CANCELLED"));
-				}
+				logger.fine("zip extracted");
+				setRunnerValue(Resurses.getString("GETSUKU_INPUT_FINISHED"));
+
 				if (xmlFile != null) {
 					parser.parse(xmlFile, this);
 				} else {
@@ -595,12 +596,12 @@ public class Read2004XML extends DefaultHandler {
 
 				}
 
-			} else if (this.urli.endsWith(".gz")) {
-				gz = new GZIPInputStream(new FileInputStream(this.urli));
+			} else if (filepath.endsWith(".gz")) {
+				gz = new GZIPInputStream(new FileInputStream(filepath));
 				parser.parse(gz, this);
 				gz.close();
 			} else {
-				parser.parse(this.urli, this);
+				parser.parse(filepath, this);
 			}
 
 			stm.executeUpdate(UPDATE_WIFE_REL);
@@ -666,7 +667,7 @@ public class Read2004XML extends DefaultHandler {
 
 			stm.executeUpdate(VACUUM);
 			long ended = System.currentTimeMillis();
-			logger.info("Backup " + this.urli + " converted in "
+			logger.info("Backup " + filepath + " converted in "
 					+ (ended - started) + " ms");
 			logger.info("Restore suku10 had units[" + laskuriUnits
 					+ "]; relations[" + laskuriRelations + "]; groups["
@@ -680,6 +681,7 @@ public class Read2004XML extends DefaultHandler {
 			resp.generalArray = errorLine.toArray(new String[0]);
 			return resp;
 		} catch (Throwable e) {
+			logger.log(Level.WARNING, "import", e);
 			errorLine.add(e.getMessage());
 			resp.generalArray = errorLine.toArray(new String[0]);
 			throw new SukuException(e);
@@ -1347,13 +1349,9 @@ public class Read2004XML extends DefaultHandler {
 						pst.setString(4, this.conversionsTo);
 						pst.executeUpdate();
 						laskuriConversion++;
-						if (this.runner != null) {
-							if (this.runner.setRunnerValue("ConversionId: "
-									+ laskuriConversion)) {
-								throw new SAXException(
-										Resurses.getString("SUKU_CANCELLED"));
-							}
-						}
+
+						setRunnerValue("ConversionId: " + laskuriConversion);
+
 					} catch (SQLException e) {
 						logger.log(Level.SEVERE, "importing conversion failed",
 								e);
@@ -1392,14 +1390,8 @@ public class Read2004XML extends DefaultHandler {
 					pst.setTimestamp(3, toTimestamp(this.viewCreateDate, true));
 					pst.executeUpdate();
 					laskuriViews++;
-					this.runner.setRunnerValue("view [" + vid + "]"
-							+ this.viewName);
-					if (this.runner != null) {
-						if (this.runner.setRunnerValue("ViewId: " + vid)) {
-							throw new SAXException(
-									Resurses.getString("SUKU_CANCELLED"));
-						}
-					}
+
+					setRunnerValue("view [" + vid + "]" + this.viewName);
 
 				} catch (SQLException e) {
 					logger.log(Level.SEVERE, "importing views failed", e);
@@ -1452,7 +1444,7 @@ public class Read2004XML extends DefaultHandler {
 			this.currentEle = this.currentEle.substring(0, k - qName.length()
 					- 1);
 		} else {
-			System.out.println("BAD XML: " + this.currentEle + "/" + qName);
+			Utils.println(this, "BAD XML: " + this.currentEle + "/" + qName);
 			return;
 		}
 
@@ -2121,7 +2113,8 @@ public class Read2004XML extends DefaultHandler {
 				int intprose = (int) prose;
 				if (intprose < 100) {
 
-					this.runner.setRunnerValue("" + intprose + ";" + rid);
+					setRunnerValue("" + intprose + ";" + rid);
+
 				}
 			}
 		} catch (SQLException e) {
@@ -2129,9 +2122,7 @@ public class Read2004XML extends DefaultHandler {
 			throw new SAXException(e);
 		}
 
-		if (this.runner.setRunnerValue("Rid = " + this.rid)) {
-			throw new SAXException(Resurses.getString("GETSUKU_CANCELLED"));
-		}
+		setRunnerValue("Rid = " + this.rid);
 
 		this.relationDescription = null;
 		this.relationBegType = null;
@@ -2537,9 +2528,7 @@ public class Read2004XML extends DefaultHandler {
 			}
 			pst.close();
 
-			if (this.runner.setRunnerValue("Pid = " + this.unitId)) {
-				throw new SAXException(Resurses.getString("GETSUKU_CANCELLED"));
-			}
+			setRunnerValue("Pid = " + this.unitId);
 
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "update unit source failed", e);
@@ -2644,10 +2633,7 @@ public class Read2004XML extends DefaultHandler {
 						sb.append(" ");
 						sb.append(this.unitPostfix);
 					}
-					if (this.runner.setRunnerValue(sb.toString())) {
-						throw new SAXException(
-								Resurses.getString("SUKU_CANCELLED"));
-					}
+					setRunnerValue(sb.toString());
 
 				} catch (SQLException e) {
 					logger.log(Level.SEVERE, "importing unit name failed", e);
@@ -3028,10 +3014,14 @@ public class Read2004XML extends DefaultHandler {
 				imgName = imgName.substring(baseFolder.length());
 			}
 		}
-		if (this.runner.setRunnerValue(imgName)) {
-			throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
+		try {
+			setRunnerValue(imgName);
+
+		} catch (SAXException e) {
+			throw new SukuException(e);
 		}
 		File tf = File.createTempFile("finFam", imgSuffix);
+		logger.fine("tempfile[" + imgName + "] to " + tf.getAbsolutePath());
 		BufferedOutputStream fos = new BufferedOutputStream(
 				new FileOutputStream(tf));
 		int dd = 0;
@@ -3044,6 +3034,15 @@ public class Read2004XML extends DefaultHandler {
 		images.put(imgName.replace('\\', '/'), tf.getPath());
 		zipIn.closeEntry();
 		return tf;
+	}
+
+	private void setRunnerValue(String juttu) throws SAXException {
+		if (runner != null) {
+			if (this.runner.setRunnerValue(juttu)) {
+				throw new SAXException(
+						Resurses.getString("EXECUTION_CANCELLED"));
+			}
+		}
 	}
 
 }

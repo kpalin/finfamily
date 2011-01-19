@@ -1851,7 +1851,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			} else if (cmd.equals("MENU_TOOLS_LIST_DATABASES")) {
 				listDatabaseStatistics();
 			} else if (cmd.equals("MENU_COPY")) {
-				System.out.println("EDIT-COPY by ctrl/c");
+				Utils.println(this, "EDIT-COPY by ctrl/c");
 			} else if (cmd.equals(Resurses.TOOLBAR_REMPERSON_ACTION)) {
 
 				int[] selection = table.getSelectedRows();
@@ -3286,19 +3286,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			logger.finest("Opened IMPORT FILE status " + isOpened);
 
-			SelectSchema schema = new SelectSchema(this, databaseName);
-			schema.setVisible(true);
+			if (!this.isWebApp) {
+				SelectSchema schema = new SelectSchema(this, databaseName);
+				schema.setVisible(true);
 
-			String selectedSchema = schema.getSchema();
-			if (selectedSchema == null)
-				return;
-			if (!schema.isExistingSchema()) {
-				kontroller.getSukuData("cmd=schema", "type=create", "name="
+				String selectedSchema = schema.getSchema();
+				if (selectedSchema == null)
+					return;
+				if (!schema.isExistingSchema()) {
+					kontroller.getSukuData("cmd=schema", "type=create", "name="
+							+ selectedSchema);
+
+				}
+				kontroller.getSukuData("cmd=schema", "type=set", "name="
 						+ selectedSchema);
-
 			}
-			kontroller.getSukuData("cmd=schema", "type=set", "name="
-					+ selectedSchema);
 			Import2004Dialog dlg = null;
 			try {
 				dlg = new Import2004Dialog(this, kontroller);
@@ -3311,14 +3313,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 			dlg.setVisible(true);
-
+			Utils.println(this, "import done");
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
-			kontroller.getSukuData("cmd=excel",
-					"path=resources/excel/PlaceLocations.xls",
-					"page=coordinates");
-			dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
-			kontroller.getSukuData("cmd=excel",
-					"path=resources/excel/TypesExcel.xls", "page=types");
+
+			if (!this.isWebApp) {
+				kontroller.getSukuData("cmd=excel",
+						"path=resources/excel/PlaceLocations.xls",
+						"page=coordinates");
+				dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
+				kontroller.getSukuData("cmd=excel",
+						"path=resources/excel/TypesExcel.xls", "page=types");
+			}
 			setTitle(null);
 			String[] failedLines = dlg.getResult();
 			if (failedLines != null) {

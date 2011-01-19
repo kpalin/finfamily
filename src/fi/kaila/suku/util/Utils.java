@@ -843,4 +843,19 @@ public class Utils {
 
 	}
 
+	/**
+	 * A Common method for debugging using System.out.println("text");
+	 * 
+	 * @param text
+	 *            to print
+	 */
+	public static void println(Object source, String text) {
+
+		String name = (source == null) ? "" : source.getClass().getName()
+				+ " :";
+
+		System.out.println(name + text);
+
+	}
+
 }

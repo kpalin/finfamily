@@ -137,7 +137,9 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData import2004Data(String path, String oldCode)
 			throws SukuException {
+		logger.fine("alkaa import: " + path);
 		SukuUtility data = SukuUtility.instance();
+		logger.fine("data import: " + path);
 		data.createSukuDb(this.con, "/sql/finfamily.sql");
 
 		logger.fine("database created for " + path);
@@ -849,20 +851,24 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData executeCmdImport(HashMap<String, String> map, SukuData fam)
 			throws SukuException {
-		String file;
+		String file = this.openFile;
 		String lang;
 		String type = map.get("type");
+
+		logger.fine("backstart:" + this.openFile + ";" + type);
+
 		if (type != null) {
 			if (type.equals("backup")) {
 				// this.createSukuDb();
-				file = this.openFile;
 				if (file == null) {
 					file = map.get("filename");
-				} else {
-					fam.resu = Resurses.getString("GETSUKU_BAD_FILEMISSING");
+					if (file == null) {
+						fam.resu = Resurses
+								.getString("GETSUKU_BAD_FILEMISSING");
+					}
 				}
 				lang = map.get("lang");
-				logger.info("Suku 2004 FILE: " + file);
+				logger.info("Suku 2004 FILE: " + file + ";l=" + lang);
 				if (file != null) {
 					if (file.toLowerCase().endsWith("xml.gz")
 							|| file.toLowerCase().endsWith("xml")
@@ -1026,11 +1032,11 @@ public class SukuServerImpl implements SukuServer {
 		}
 		if (path == null) {
 			path = this.openFile;
-			if (path == null) {
-				path = "resources/excel/TypesExcel.xls";
-				// fam.resu = Resurses.getString("INVALID_FILE");
-
-			}
+			// if (path == null) {
+			// path = "resources/excel/TypesExcel.xls";
+			// // fam.resu = Resurses.getString("INVALID_FILE");
+			//
+			// }
 		}
 		if (type == null || type.equals("import")) {
 			fam = importExcelData(path, page);

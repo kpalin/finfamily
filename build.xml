@@ -57,14 +57,19 @@
     <mkdir dir="${dist.home}"/>
     <jar destfile="${dist.home}/suku.jar" basedir="${build.home}/classes">
 
-	<fileset dir="${basedir}/resources"   >	
-		 <include name="**/FinFamily.xls"/>
-		 <include name="/images/**"/>
-		 <include name="/xml/**"/>
-		<include name="/sql/**"/>
+ 	<fileset dir="${basedir}/resources"   >	
+		<include name="**/*.xls"/>
+		<include name="/images/**"/>
+ 		<include name="/xml/**"/>
+ 		<include name="/sql/**"/>
 	</fileset>
 
+	<fileset dir="${basedir}/"   >	
+		 <include name="resources/excel/**"/>	
+	</fileset>
 	
+	
+    	
 	<manifest >
     <attribute name="Built-By" value="${user.name}"/>
 	<attribute name="Main-Class" value="fi.kaila.suku.swing.Suku"/>
@@ -109,13 +114,16 @@
 		 	<mkdir dir="${web.home}/WEB-INF"/>
 		    <jar destfile="${web.home}/WEB-INF/lib/finfamily.jar" basedir="${build.home}/classes">
 
-<!--			<fileset dir="${basedir}/resources"   >	
-				 <include name="**/FinFamily.xls"/>
-				 <include name="/images/**"/>
-				 <include name="/xml/**"/>
-				<include name="/sql/**"/>
-			</fileset>
--->			
+		    	<fileset dir="${basedir}/resources"   >	
+		    		<include name="**/FinFamily.xls"/>
+		    		<include name="/images/**"/>
+		    		<include name="/sql/**"/>
+		    		<include name="/xml/**"/>
+		    	</fileset>
+
+
+		    	
+			
 			<manifest >
 		    <attribute name="Built-By" value="${user.name}"/>
 			<attribute name="Main-Class" value="fi.kaila.suku.swing.Suku"/>

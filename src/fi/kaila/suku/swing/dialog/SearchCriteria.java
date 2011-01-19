@@ -1188,6 +1188,7 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			SukuData request = new SukuData();
 			request.generalArray = v.toArray(new String[0]);
 			try {
+				System.out.println("talleen settingsejä:" + request);
 				Suku.kontroller.getSukuData(request, "cmd=updatesettings",
 						"type=query");
 			} catch (SukuException e1) {

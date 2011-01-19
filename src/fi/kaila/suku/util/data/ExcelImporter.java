@@ -383,6 +383,9 @@ public class ExcelImporter {
 			ws.setEncoding("ISO-8859-1");
 			ws.setCharacterSet(0);
 
+			File ft = new File(path);
+			System.out.println("abs:" + ft.getAbsolutePath());
+
 			workbook = Workbook.getWorkbook(new File(path), ws);
 			int sheetCount = workbook.getNumberOfSheets();
 
