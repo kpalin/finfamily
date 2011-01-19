@@ -130,14 +130,11 @@ public class SukuUtility {
 		} catch (Exception e) {
 			throw new SukuException(e);
 		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException ignored) {
-					// IOException ignored
-				}
+			try {
+				in.close();
+			} catch (IOException ignored) {
+				// IOException ignored
 			}
-
 		}
 	}
 

@@ -205,9 +205,7 @@ public class BodyText {
 		String[] parts = link.split(",");
 
 		if (parts.length == 1) {
-			if (link != null) {
-				t.link = link;
-			}
+			t.link = link;
 			txt.add(t);
 			return;
 		}

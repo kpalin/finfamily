@@ -109,7 +109,7 @@ public class SukuServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		;
+
 		String referer = req.getHeader("referer");
 		logger.fine("Post referer on " + referer);
 		SukuData requestData = null;
@@ -143,7 +143,7 @@ public class SukuServlet extends HttpServlet {
 				char c = (char) input;
 				if (!endParams) {
 					if (c == '\r') {
-
+						// TODO
 					} else if (c == '\n') {
 						if (params.length() > 0) {
 							endParams = true;
@@ -347,7 +347,7 @@ public class SukuServlet extends HttpServlet {
 			try {
 				userno = Integer.parseInt(uno);
 			} catch (NumberFormatException e) {
-
+				// TODO: Ignored?
 			}
 		}
 
