@@ -142,51 +142,11 @@ public class UnitNotice implements Serializable {
 	Timestamp createDate = null; // timestamp not null default now() --
 	// timestamp created
 
-	// FIXME: Class fi.kaila.suku.util.pojo.UnitNotice defines non-transient
-	// non-serializable instance field image. This Serializable class defines a
-	// non-primitive instance field which is neither transient, Serializable, or
-	// java.lang.Object, and does not appear to implement the Externalizable
-	// interface or the readObject() and writeObject() methods. Objects of this
-	// class will not be deserialized correctly if a non-Serializable object is
-	// stored in this field.
-	// Mika: Maybe you should set it transient?
-	private BufferedImage image = null;
+	private transient BufferedImage image = null;
 
 	private UnitLanguage[] unitlanguages = null;
 
 	/**
-	 * create table UnitNotice ( PNID integer not null primary key, -- Numeric
-	 * Id that identifies this Notice, supplied by the system PID integer not
-	 * null references Unit(PID), -- Id of the Unit for this UnitNotice --
-	 * active boolean not null default true, -- active when this notice is
-	 * activated by reasearcher surety integer not null default 100, -- surety
-	 * indicator MainItem boolean not null default false, -- true for primary
-	 * name and other primary items NoticeRow integer not null default 0, -- Row
-	 * # of the Notice for the unit Tag varchar not null, -- Tag of the Notice,
-	 * Mostly Level 1 GEDCOM tags Privacy char, -- Privacy indicator, null =
-	 * Public NoticeType varchar, -- Notice type (L) Description varchar, --
-	 * Description or remark (L) FromDatePrefix varchar(8), -- Prefix for the
-	 * date (beginning date if date period) DatePrefix varchar(8), -- Prefix for
-	 * the date (beginning date if date period) FromDate varchar, -- Date for
-	 * the event described in this notice ToDate varchar, -- Date for the event
-	 * described in this notice Place varchar, -- Place Village varchar, -- Kyl
-	 * NEW Farm varchar, -- Talo NEW Croft varchar, -- Torppa NEW Address
-	 * varchar, -- Address line 1 / Village/Kylä PostOffice varchar, -- Place of
-	 * the event, Postoffice, City PostalCode varchar, -- Postal Code Country
-	 * varchar, -- Country Location point, -- Geographical location of place
-	 * Email varchar, -- Email-address or web-page of person NoteText varchar,
-	 * -- Note textfield (L) MediaFilename varchar, -- Filename of the
-	 * multimedia file MediaData bytea, -- Container of image MediaTitle
-	 * varchar, -- text describing the multimedia file (L) MediaWidth integer,
-	 * -- media width in pixels MediaHeight integer, -- media height in pixels
-	 * Prefix varchar, -- Prefix of the surname Surname varchar, -- Surname
-	 * Givenname varchar, -- Givenname Patronym varchar, -- Patronyymi NEW
-	 * PostFix varchar, -- Name Postfix RefNames varchar, -- List of names
-	 * within notice for index RefPlaces varchar, -- List of places within
-	 * notice for index SID integer, -- temp storage for sourcieid for now
-	 * SourceText varchar , -- Source as text PrivateText varchar, -- Private
-	 * researcher information Modified timestamp, -- timestamp modified
-	 * CreateDate timestamp not null default now() -- timestamp created );
 	 * 
 	 * The sr has format select * from unitNotice.
 	 * 

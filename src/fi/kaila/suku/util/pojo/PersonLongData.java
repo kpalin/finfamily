@@ -259,16 +259,16 @@ public class PersonLongData implements Serializable {
 		return text;
 	}
 
-	private String trimx(String text) {
-		if (text == null)
-			return null;
-
-		String tek = text.trim();
-		if (tek.endsWith(".")) {
-			tek = tek.substring(0, tek.length() - 1);
-		}
-		return tek.trim();
-	}
+	// private String trimx(String text) {
+	// if (text == null)
+	// return null;
+	//
+	// String tek = text.trim();
+	// if (tek.endsWith(".")) {
+	// tek = tek.substring(0, tek.length() - 1);
+	// }
+	// return tek.trim();
+	// }
 
 	/**
 	 * Sets the privacy.
@@ -338,5 +338,14 @@ public class PersonLongData implements Serializable {
 			text = null;
 		}
 		return text;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(pid);
+		sb.append(",");
+		sb.append(sex);
+		return sb.toString();
 	}
 }

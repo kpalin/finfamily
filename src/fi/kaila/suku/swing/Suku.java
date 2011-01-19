@@ -1291,19 +1291,22 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	public void setTitle(String title) {
 		SukuData dat;
 		String schema;
-		try {
-			dat = kontroller.getSukuData("cmd=schema", "type=get");
-			schema = dat.generalArray.length == 1 ? dat.generalArray[0] : null;
-		} catch (SukuException e) {
-
-			e.printStackTrace();
-			return;
-		}
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(Resurses.getString(Resurses.SUKU));
 
 		if (isConnected > 0) {
+			try {
+
+				dat = kontroller.getSukuData("cmd=schema", "type=get");
+				schema = dat.generalArray.length == 1 ? dat.generalArray[0]
+						: null;
+
+			} catch (SukuException e) {
+
+				e.printStackTrace();
+				return;
+			}
 			sb.append(" [");
 			if (this.isWebApp) {
 				sb.append(" ! ");

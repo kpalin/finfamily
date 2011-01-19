@@ -1,13 +1,13 @@
 package fi.kaila.suku.server;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -17,8 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -66,7 +64,6 @@ public class SukuServlet extends HttpServlet {
 	private String dbDatabase = null;
 	private String dbUser = null;
 	private String dbPassword = null;
-	private String uploadFolder = null;
 
 	/*
 	 * (non-Javadoc)
@@ -88,7 +85,6 @@ public class SukuServlet extends HttpServlet {
 			this.dbDatabase = initEnv("suku.db.database");
 			this.dbUser = initEnv("suku.db.user");
 			this.dbPassword = initEnv("suku.db.password");
-			this.uploadFolder = initEnv("suku.upload.folder");
 
 			// myTablePrefix = initEnv("forum.table.prefix");
 
@@ -113,189 +109,141 @@ public class SukuServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("POSTX2");
+		;
 		String referer = req.getHeader("referer");
-		logger.finest("referer on " + referer);
+		logger.fine("Post referer on " + referer);
+		SukuData requestData = null;
 		if (referer != null) {
 			String parts[] = referer.split("/");
+
 			if (parts.length >= 2) {
 
 				UserInfo ui = this.usermap.get("" + parts[2]);
 				if (ui == null) {
-					// logger.finest("parts2 " + parts[2]);
+					logger.fine("parts2a " + parts[2]);
 				} else {
-					extractFile(req, this.uploadFolder + ui.getUserId() + "/",
-							parts[3]);
+					logger.fine("parts2b " + parts[2]);
+					requestData = extractSukuData(req);
 				}
 			}
-
 		}
-
-		processRequest(req, resp);
+		logger.info("recdata:" + requestData);
+		processRequest(requestData, req, resp);
 
 	}
 
-	private void extractFile(HttpServletRequest req, String outputPath,
-			String fileName) throws IOException, UnsupportedEncodingException,
-			FileNotFoundException {
+	private SukuData extractSukuData(HttpServletRequest req) {
+		int input = -1;
+		try {
+			InputStream is = req.getInputStream();
+			ByteArrayOutputStream boss = new ByteArrayOutputStream();
+			boolean endParams = false;
+			StringBuilder params = new StringBuilder();
+			while ((input = is.read()) >= 0) {
+				char c = (char) input;
+				if (!endParams) {
+					if (c == '\r') {
 
-		InputStream is = req.getInputStream();
-
-		File dir = new File(outputPath);
-		if (!dir.exists()) {
-
-			dir.mkdir();
-		}
-
-		logger.finest("File entering: " + outputPath + fileName);
-
-		// FileOutputStream fos = new
-		// FileOutputStream("C:/Tomcat6.0/logs/kk.log");
-		int leni = 0;
-		int pos = 0;
-		int endi = 0;
-		int idx;
-		int j;
-		int koko = 0;
-		String rivi = "XXX";
-		StringBuilder sb;
-		String filename = null;
-		FileOutputStream fos = null;
-		byte bbb[] = new byte[32 * 1024];
-
-		byte brivi[] = new byte[32 * 1024];
-		while (true) {
-
-			leni = is.read(bbb, pos, bbb.length - pos);
-			if (leni > 0) {
-				// System.out.println("XXXXXXXX");
-				//
-				// for (j = pos; j < pos+leni; j++) {
-				// System.out.print(bbb[j]);
-				// }
-				// System.out.println("YYYYYYYY");
-				endi = endi + leni;
-			}
-			// System.out.println("leini: " + endi);
-			String tmp;
-			sb = new StringBuilder();
-			for (idx = 0; idx < endi; idx++) {
-				if ((bbb[idx] == '\n')) {
-					for (j = 0; j < idx; j++) {
-						if (bbb[j] != '\r') {
-							tmp = new String(bbb, j, 1, "US-ASCII");
-							sb.append(tmp);
+					} else if (c == '\n') {
+						if (params.length() > 0) {
+							endParams = true;
 						}
-					}
-					rivi = sb.toString();
-					for (j = idx + 1; j < endi; j++) {
-						bbb[j - idx - 1] = bbb[j];
-					}
-					pos = j - idx - 1;
-					endi = endi - idx - 1;
-					break;
-				}
-			}
-			// System.out.println("rivi: "+filename + "/"+rivi.length()+"/" +
-			// rivi);
-
-			if (filename == null) {
-				// System.out.println("R0:" + rivi);
-				if (rivi.indexOf("Content-Disposition:") >= 0) {
-					filename = rivi;
-					fos = new FileOutputStream(outputPath + fileName);
-
-					// // System.out.println("R1:" + rivi);
-					// j = rivi.indexOf("filename");
-					// if (j > 0) {
-					// // System.out.println("R2:" + j);
-					// i = rivi.indexOf("\"", j);
-					// j = rivi.indexOf("\"", i+1);
-					// // System.out.println("R3:" + i + "/"+ j);
-					// if (j > i) {
-					// filename = rivi.substring(i+1,j);
-					// // System.out.println("FILNM:" + filename + "Ä");
-					// fos = new FileOutputStream(this.uploadFolder + filename);
-					//
-					// }
-					//
-					// }
-				}
-			} else if (rivi.length() > 0 && (rivi.length() & 1) == 0) {
-				int bi = 0;
-				int x1, x2;
-				if (hexi.indexOf(rivi.charAt(0)) >= 0) {
-					for (j = 0; j < rivi.length() - 1; j += 2) {
-						x1 = Integer.parseInt(rivi.substring(j, j + 1), 16);
-						x2 = Integer.parseInt(rivi.substring(j + 1, j + 2), 16);
-						// System.out.println("x:" + j + "/" + bi + "/" + x1 +
-						// "/" + x2);
-						brivi[bi++] = (byte) (((x1 << 4) & 0xf0) | (x2 & 0xf));
-
-					}
-					// FIXME: Potential NPE
-					fos.write(brivi, 0, bi);
-					koko += bi;
-
-				}
-			}
-
-			// System.out.println("endi: " + endi);
-
-			if (endi <= 0)
-				break;
-		}
-		// FIXME: Potential NPE
-		fos.close();
-		is.close();
-
-		logger.fine("File " + filename + " size " + koko + " to " + outputPath
-				+ fileName);
-
-		if (fileName != null && fileName.toLowerCase().endsWith("zip")) {
-
-			ZipFile z = new ZipFile(outputPath + "/" + fileName);
-
-			System.out.println("z:" + z);
-			File f;
-			FileOutputStream os;
-			Enumeration e = z.entries();
-			ZipEntry ze;
-			InputStream ins;
-			int lit;
-			byte bbbb[] = new byte[32 * 1024];
-			while (e.hasMoreElements()) {
-				ze = (ZipEntry) e.nextElement();
-				System.out.println("zen:" + ze.getName());
-				if (ze.isDirectory()) {
-					f = new File(outputPath + "/" + ze.getName());
-					if (!f.isDirectory()) {
-						// FIXME: This method returns a value that is not
-						// checked. The return value should be checked since it
-						// can indicate an unusual or unexpected function
-						// execution.
-						f.mkdirs();
+					} else {
+						params.append(c);
 					}
 
 				} else {
-
-					ins = z.getInputStream(ze);
-					os = new FileOutputStream(outputPath + "/" + ze.getName());
-
-					while (true) {
-						lit = ins.read(bbbb);
-						if (lit > 0) {
-							os.write(bbbb, 0, lit);
-						} else {
-							break;
-						}
+					if (c != '\r') {
+						boss.write((byte) c);
 					}
-					os.close();
-
 				}
 			}
-			z.close();
+			logger.info("params:" + params.toString());
+			String prm = URLDecoder.decode(params.toString(), "UTF-8");
 
+			byte buffi[] = boss.toByteArray();
+			logger.info("prm:" + prm + " : buffi:" + buffi.length);
+			String rivi = "XXX";
+
+			int kurre = 0;
+			int koko = 0;
+			ByteArrayOutputStream oss = new ByteArrayOutputStream();
+			byte brivi[] = new byte[32 * 1024];
+			// boolean riviYksi = true;
+			StringBuilder sb = null;
+			for (int idx = 0; idx < buffi.length; idx++) {
+				if ((buffi[idx] == '\n')) {
+					// logger.fine("buffissa paikalla " + idx);
+					sb = new StringBuilder();
+					for (int j = kurre; j < idx; j++) {
+						if (buffi[j] >= '0') {
+							sb.append(new String(buffi, j, 1, "US-ASCII"));
+						}
+					}
+					rivi = sb.toString();
+					kurre = idx;
+					// logger.fine("rivix: " + rivi + " : " + rivi.length());
+
+					if (rivi.indexOf("*****") > 0) {
+						break;
+					}
+
+					if (rivi.length() > 0 && (rivi.length() & 1) == 0) {
+
+						int bi = 0;
+						int x1, x2;
+						if (hexi.indexOf(rivi.charAt(0)) >= 0) {
+
+							for (int j = 0; j < rivi.length() - 1; j += 2) {
+								x1 = Integer.parseInt(rivi.substring(j, j + 1),
+										16);
+								x2 = Integer.parseInt(
+										rivi.substring(j + 1, j + 2), 16);
+
+								brivi[bi++] = (byte) (((x1 << 4) & 0xf0) | (x2 & 0xf));
+								// if (riviYksi) {
+								// logger.fine("x1 " + x1 + ", x2 " + x2
+								// + " bi " + bi);
+								// }
+
+							}
+							oss.write(brivi, 0, bi);
+							// if (riviYksi) {
+							// oss.toByteArray();
+							// riviYksi = false;
+							// }
+							koko += bi;
+
+						}
+
+					}
+
+				}
+
+			}
+			// logger.info("muutetaan objektiksi: : oss: " + oss.size());
+			ObjectInputStream obj = new ObjectInputStream(
+					new ByteArrayInputStream(oss.toByteArray()));
+			SukuData suku = (SukuData) obj.readObject();
+			logger.fine("oli: " + suku);
+			// if (suku != null) {
+			// if (suku.persLong != null) {
+			// logger.fine("tuli persLong:" + suku.persLong.getPid() + ":"
+			// + prm);
+			// } else if (suku.pers != null) {
+			// logger.fine("tuli persShortlkm:" + suku.pers.length + ":"
+			// + prm);
+			// }
+			// } else {
+			// logger.fine("ei tuli jotain:" + suku + ":" + prm);
+			// }
+			suku.cmd = prm;
+			return suku;
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return null;
 		}
 
 	}
@@ -311,11 +259,12 @@ public class SukuServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// System.out.println("GET");
-		processRequest(req, resp);
+		processRequest(null, req, resp);
 	}
 
-	private void processRequest(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+	private void processRequest(SukuData sukuData, HttpServletRequest req,
+			HttpServletResponse resp) throws IOException {
+
 		// Enumeration enu = req.getHeaderNames();
 		// String nimi;
 		// String value;
@@ -352,65 +301,53 @@ public class SukuServlet extends HttpServlet {
 		String cmd;
 		String userid;
 		String passwd;
-		String pid;
-		String file;
-		String lang;
-		String filename;
+		// String pid;
+		// String file;
+		// String lang;
+		// String filename;
 
 		String uno;
 		int userno = 0;
 		LinkedHashMap<String, String> vpara = new LinkedHashMap<String, String>();
 
-		Enumeration enu = req.getParameterNames();
-		String key;
-		StringBuilder sbx = new StringBuilder();
-		while (enu.hasMoreElements()) {
-			key = (String) enu.nextElement();
-			vpara.put(key, req.getParameter(key));
-			if (sbx.length() > 0)
-				sbx.append(";");
-			sbx.append(key + "=" + req.getParameter(key));
+		if (sukuData == null) {
+
+			Enumeration enu = req.getParameterNames();
+			String key;
+			StringBuilder sbx = new StringBuilder();
+			while (enu.hasMoreElements()) {
+				key = (String) enu.nextElement();
+				vpara.put(key, req.getParameter(key));
+				if (sbx.length() > 0)
+					sbx.append(";");
+				sbx.append(key + "=" + req.getParameter(key));
+			}
+
+			// logger.fine("parms: " + sbx.toString());
+
+			// cmd = req.getParameter("cmd");
+			// vpara.remove("cmd");
+		} else {
+			String[] requs = sukuData.cmd.split("&");
+			for (int i = 0; i < requs.length; i++) {
+				String parms[] = requs[i].split("=");
+				vpara.put(parms[0], parms[1]);
+			}
+
 		}
 
-		logger.fine("parms: " + sbx.toString());
+		userid = vpara.get("userid");
+		passwd = vpara.get("passwd");
+		uno = vpara.get("userno");
+		cmd = vpara.get("cmd");
 
-		cmd = req.getParameter("cmd");
-		vpara.remove("cmd");
-		file = req.getParameter("file");
-		vpara.remove("file");
-
-		lang = req.getParameter("lang");
-		vpara.remove("lang");
-		filename = req.getParameter("filename");
-		vpara.remove("filename");
-		userid = req.getParameter("userid");
-		vpara.remove("userid");
-		passwd = req.getParameter("passwd");
-		vpara.remove("passwd");
-		uno = req.getParameter("userno");
-		vpara.remove("userno");
-		pid = req.getParameter("pid");
-		vpara.remove("pid");
-
-		logger.fine("cmd=" + cmd);
-
-		// if (uno == null) {
-		// if (refers != null && refers.length > 1) {
-		// uno = refers[0];
-		// file = refers[1];
-		// }
-		// }
 		String params[] = null;
-
-		// System.out.println("NYT TULEE: " + uno + "/" + file);
-
-		// System.out.println("FOLDER:" + this.uploadFolder + "|" + file);
 
 		if (uno != null) {
 			try {
 				userno = Integer.parseInt(uno);
 			} catch (NumberFormatException e) {
-				//
+
 			}
 		}
 
@@ -431,24 +368,7 @@ public class SukuServlet extends HttpServlet {
 
 		UserInfo ui = this.usermap.get("" + userno);
 
-		if (file != null) {
-			file = this.uploadFolder + ui.getUserId() + "/" + file;
-		}
-		if (filename != null) {
-			filename = this.uploadFolder + ui.getUserId() + "/" + filename;
-		}
-
 		ArrayList<String> v = new ArrayList<String>();
-		if (cmd != null)
-			v.add("cmd=" + cmd);
-		if (pid != null)
-			v.add("pid=" + pid);
-		if (file != null)
-			v.add("file=" + file);
-		if (lang != null)
-			v.add("lang=" + lang);
-		if (filename != null)
-			v.add("filename=" + filename);
 
 		Set<Map.Entry<String, String>> entries = vpara.entrySet();
 		Iterator<Map.Entry<String, String>> it = entries.iterator();
@@ -458,89 +378,51 @@ public class SukuServlet extends HttpServlet {
 			v.add(entry.getKey().toString() + "=" + entry.getValue().toString());
 		}
 
-		String[] ss = new String[0];
-		params = v.toArray(ss);
+		params = v.toArray(new String[0]);
 
-		if (cmd == null) {
-
+		if (cmd == null || ui == null || userno == 0) {
+			logger.info("cmd=null");
 			PrintWriter out = resp.getWriter();
 			resp.setHeader("Content-Type", "text/html");
-			out.println("sukuohjelmisto");
+			out.println("FinFamily");
 			return;
 		}
 
 		if (cmd.equals("logout")) { // logout request
-
+			logger.info("cmd=logout");
 			// resp.setHeader("Content-Type", "text/html");
 
 			this.usermap.remove("" + userno);
 
 		}
 
-		// String koe = req.getHeader("x-userno");
-		//
-		// System.out.println("koe=" + koe);
-		//
-		// Iterator<String>iit = this.usermap.keySet().iterator();
-		// while (iit.hasNext()){
-		// String key = iit.next();
-		//
-		// UserInfo uu = this.usermap.get(key);
-		//
-		// System.out.println("Coo: " + key + "/" + uu.toString());
-		//
-		//
-		// }
-
-		// Cookie cook[] = req.getCookies();
-		// if (cook != null){
-		// for (int i = 0;i < cook.length;i++){
-		// System.out.println("cookie [" + i + "] " + cook[i].getName() + "/" +
-		// cook[i].getValue());
-		// }
-		// } else {
-		// System.out.println("cooks was nulli");
-		// }
-
 		resp.setHeader("Content-Type", "text/html");
 		SukuServer sk;
 
 		try {
 			sk = new SukuServerImpl(ui.getUserId());
+			resp.addHeader("Content-Encoding", "gzip");
 			ServletOutputStream sos = resp.getOutputStream();
 			logger.fine("log0: " + this.dbServer + "/" + this.dbDatabase + "/"
 					+ this.dbUser + "/" + this.dbPassword);
 
 			sk.getConnection(this.dbServer, this.dbDatabase, this.dbUser,
 					this.dbPassword);
-			// System.out.println("GETx1:");
-			StringBuilder sb = new StringBuilder();
-			sb.append("log1");
-			for (int i = 0; i < params.length; i++) {
-				sb.append(";" + params[i]);
-			}
-			logger.fine(sb.toString());
 
-			SukuData fam = sk.getSukuData(params);
-			// if (cmd.equals("logout")){
-			// fam = sk.getSukuData("cmd=logout") ;
-			// } else if (cmd.equals("plist")){
-			// fam = sk.getSukuData("cmd=plist") ;
-			// } else if (cmd.equals("family") && pid != null){
-			// fam = sk.getSukuData("cmd=family","pid=" + pid) ;
-			// } else {
-			// fam = sk.getSukuData(params);
-			// }
+			SukuData fam = sk.getSukuData(sukuData, params);
 
 			logger.fine("Returning fam: " + fam);
 
 			GZIPOutputStream gos;
+			// ByteArrayOutputStream gos;
+			logger.info("ccmd:" + fam.cmd);
 			try {
 				gos = new GZIPOutputStream(sos);
+				// gos = new ByteArrayOutputStream(sos);
 				ObjectOutputStream oos = new ObjectOutputStream(gos);
 				oos.writeObject(fam);
 				oos.close();
-				logger.fine("Returned fam: " + fam);
+				// gos.close();
 
 			} catch (Exception e) {
 				throw new SukuException("getShortPersonList", e);

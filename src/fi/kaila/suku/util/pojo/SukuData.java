@@ -84,4 +84,15 @@ public class SukuData implements Serializable {
 
 	/** answer as a pid. */
 	public int resultPid = 0;
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("cmd=" + cmd);
+		sb.append(";");
+		sb.append("resu=" + resu);
+		sb.append(";");
+		sb.append("long=" + persLong);
+		return sb.toString();
+	}
 }
