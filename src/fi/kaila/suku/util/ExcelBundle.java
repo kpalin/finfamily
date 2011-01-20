@@ -115,9 +115,9 @@ public class ExcelBundle {
 		InputStream in = null;
 
 		try {
-			System.out.println("excelkbundle1: " + path);
+			// System.out.println("excelkbundle1: " + path);
 			in = this.getClass().getResourceAsStream("/" + path + ".xls");
-			System.out.println("excelkbundle2: " + path);
+			// System.out.println("excelkbundle2: " + path);
 			Workbook workbook = Workbook.getWorkbook(in, ws);
 			// Workbook workbook = Workbook.getWorkbook(new File("resources/"
 			// + path + ".xls"), ws);

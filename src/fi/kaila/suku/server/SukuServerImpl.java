@@ -883,7 +883,7 @@ public class SukuServerImpl implements SukuServer {
 				}
 
 				ImportGedcomUtil inged = new ImportGedcomUtil(con);
-				fam = inged.importGedcom(lang);
+				fam = inged.importGedcom(file, lang);
 				inged = null;
 			} else if (type.equals("other")) {
 				ImportOtherUtil inoth = new ImportOtherUtil(con);

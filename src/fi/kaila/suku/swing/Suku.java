@@ -1018,9 +1018,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			@Override
 			public void windowClosing(WindowEvent e) {
 				e.getClass();
-				disconnectDb();
-				personView.askAndClosePerson();
 
+				personView.askAndClosePerson();
+				disconnectDb();
 				System.exit(0);
 			}
 
@@ -1518,9 +1518,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		String password = cdlg.getPassword();
 
 		try {
-
-			kontroller.getConnection(name, databaseName, userid, password);
-			cdlg.rememberDatabase(true);
+			if (this.isWebApp) {
+				if ("demo".equals(userid) && "demo".equals(password)) {
+					kontroller.getConnection(name, databaseName, userid,
+							password);
+				} else {
+					throw new SukuException("UNKNOWN USER/PASSWORD");
+				}
+			} else {
+				kontroller.getConnection(name, databaseName, userid, password);
+				cdlg.rememberDatabase(true);
+			}
 		} catch (SukuException e3) {
 			String e1 = e3.getMessage();
 			String[] e2 = { "Connection failed" };
@@ -2417,37 +2425,39 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		isOpened = kontroller.openLocalFile("ged;zip");
 		String dbname = kontroller.getFileName();
 		logger.finest("Opened GEDCOM FILE status " + isOpened);
+		Utils.println(this, "gedcom open=" + isOpened + ": " + dbname);
 		if (isOpened) {
 			this.tableModel.resetModel(); // clear contents of table first
 			table.getRowSorter().modelStructureChanged();
 			this.personView.reset();
 			this.table.updateUI();
 			this.scrollPane.updateUI();
+			if (!this.isWebApp) {
+				SelectSchema schema;
+				try {
+					schema = new SelectSchema(this, databaseName);
 
-			SelectSchema schema;
-			try {
-				schema = new SelectSchema(this, databaseName);
+					schema.setVisible(true);
 
-				schema.setVisible(true);
+					String selectedSchema = schema.getSchema();
+					if (selectedSchema == null)
+						return;
+					if (!schema.isExistingSchema()) {
+						kontroller.getSukuData("cmd=schema", "type=create",
+								"name=" + selectedSchema);
 
-				String selectedSchema = schema.getSchema();
-				if (selectedSchema == null)
-					return;
-				if (!schema.isExistingSchema()) {
-					kontroller.getSukuData("cmd=schema", "type=create", "name="
+					}
+					kontroller.getSukuData("cmd=schema", "type=set", "name="
 							+ selectedSchema);
+					setTitle(null);
+				} catch (SukuException e1) {
 
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this, e1.getMessage(),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+					return;
 				}
-				kontroller.getSukuData("cmd=schema", "type=set", "name="
-						+ selectedSchema);
-				setTitle(null);
-			} catch (SukuException e1) {
-
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, e1.getMessage(),
-						Resurses.getString(Resurses.SUKU),
-						JOptionPane.ERROR_MESSAGE);
-				return;
 			}
 			ImportGedcomDialog dlg;
 			try {

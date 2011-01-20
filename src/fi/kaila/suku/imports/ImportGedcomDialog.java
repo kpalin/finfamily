@@ -37,15 +37,15 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 	private static final String OK = "OK";
 	private static final String CANCEL = "CANCEL";
 
-	private JLabel textContent;
-	private JButton ok;
-	private JButton cancel;
-	private JTextField fileName;
-	private JLabel timeEstimate;
+	private final JLabel textContent;
+	private final JButton ok;
+	private final JButton cancel;
+	private final JTextField fileName;
+	private final JLabel timeEstimate;
 
 	private SukuKontroller kontroller = null;
 	private String importFileName = null;
-	private JProgressBar progressBar;
+	private final JProgressBar progressBar;
 	private Task task = null;
 
 	/**
@@ -246,12 +246,16 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				kontroller.getSukuData("cmd=initdb");
 
 				setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
-				kontroller.getSukuData("cmd=excel",
-						"path=resources/excel/PlaceLocations.xls",
-						"page=coordinates");
-				setRunnerValue(Resurses.getString("IMPORT_TYPES"));
-				kontroller.getSukuData("cmd=excel",
-						"path=resources/excel/TypesExcel.xls", "page=types");
+				if (!kontroller.isWebStart()) {
+					kontroller.getSukuData("cmd=excel",
+							"path=resources/excel/PlaceLocations.xls",
+							"page=coordinates");
+					setRunnerValue(Resurses.getString("IMPORT_TYPES"));
+					kontroller
+							.getSukuData("cmd=excel",
+									"path=resources/excel/TypesExcel.xls",
+									"page=types");
+				}
 				// kontroller.getSukuData("cmd=excel",
 				// "path=resources/excel/TextsExcel.xls", "page=texts");
 

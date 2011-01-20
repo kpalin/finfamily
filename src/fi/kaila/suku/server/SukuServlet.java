@@ -127,7 +127,7 @@ public class SukuServlet extends HttpServlet {
 				if (ui == null) {
 					logger.fine("parts1 " + parts[2]);
 				} else {
-					if (parts.length > 2) {
+					if (parts.length > 3) {
 
 						logger.fine("parts3 " + parts[3]);
 						requestData = extractFile(req, filesPath + "/"

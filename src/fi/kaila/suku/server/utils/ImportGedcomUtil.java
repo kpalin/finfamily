@@ -21,12 +21,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import fi.kaila.suku.imports.ImportGedcomDialog;
-import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.ExcelBundle;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
@@ -109,7 +109,7 @@ public class ImportGedcomUtil {
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public SukuData importGedcom(String lang) throws SukuException {
+	public SukuData importGedcom(String path, String lang) throws SukuException {
 		SukuData resp = new SukuData();
 		gedMap = new LinkedHashMap<String, GedcomLine>();
 		gedSource = new LinkedHashMap<String, GedcomLine>();
@@ -123,11 +123,14 @@ public class ImportGedcomUtil {
 		double famCount = 0;
 		GedcomLine record = null;
 		Statement stm;
-
+		logger.fine("importGedcom entered from " + path);
+		if (path == null) {
+			throw new SukuException("FILE MISSING");
+		}
 		repoTexts = new ExcelBundle();
 		Locale locRepo = new Locale(lang);
 		repoTexts.importBundle("excel/FinFamily", "Report", locRepo);
-
+		logger.fine("importGedcom repoTexts + con=" + con);
 		// texts = new HashMap<String, String>();
 		// if (vvTexts != null) {
 		// for (int i = 0; i < vvTexts.size(); i++) {
@@ -145,25 +148,30 @@ public class ImportGedcomUtil {
 				unitCount = rs.getInt(1);
 
 			}
+
+			logger.fine("gedcom existing count " + unitCount);
 			rs.close();
 			stm.close();
 			if (unitCount > 0) {
 				resp.resu = Resurses.getString("DATABASE_NOT_EMPTY");
 				return resp;
 			}
-
-			String fileName = Suku.kontroller.getFileName();
-			// System.out.println("FromFile:" + fileName);
+			logger.fine("gedcom check filename next for count " + unitCount);
+			String fileName = path;
+			logger.fine("gedcom input from " + fileName);
 			ZipInputStream zipIn = null;
 			ZipEntry zipEntry = null;
 			String entryName = null;
 			BufferedInputStream bis;
+			File f = new File(fileName);
+			FileInputStream ff = new FileInputStream(f);
+
 			if (fileName.toLowerCase().endsWith(".zip")) {
 				isZipFile = true;
 				// this is a zip-file. let's first find the gedcom file from
 				// there
 
-				zipIn = new ZipInputStream(Suku.kontroller.getInputStream());
+				zipIn = new ZipInputStream(ff);
 				bis = new BufferedInputStream(zipIn);
 				while ((zipEntry = zipIn.getNextEntry()) != null) {
 					entryName = zipEntry.getName();
@@ -172,19 +180,16 @@ public class ImportGedcomUtil {
 						if (li > 0) {
 							baseFolder = entryName.substring(0, li + 1);
 						}
-						if (this.runner.setRunnerValue("+" + entryName)) {
-							throw new SukuException(
-									Resurses.getString("GEDCOM_CANCELLED"));
-						}
+						setRunnerValue("+" + entryName);
 						break;
 					} else {
 						copyImageToTempfile(zipIn, entryName);
 					}
 				}
 			} else {
-				bis = new BufferedInputStream(Suku.kontroller.getInputStream());
+				bis = new BufferedInputStream(ff);
 			}
-			long dataLen = Suku.kontroller.getFileLength();
+			long dataLen = f.length();
 			double dLen = dataLen;
 			int data = 0;
 			fileIndex = 4;
@@ -293,11 +298,7 @@ public class ImportGedcomUtil {
 									sb.append(intprose);
 									sb.append(";");
 									sb.append(record.toString(false));
-									if (this.runner.setRunnerValue(sb
-											.toString())) {
-										throw new SukuException(
-												Resurses.getString("GEDCOM_CANCELLED"));
-									}
+									setRunnerValue(sb.toString());
 
 								}
 							}
@@ -394,10 +395,7 @@ public class ImportGedcomUtil {
 				sb.append(intprose);
 				sb.append(";");
 				sb.append(rec.toString(false));
-				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(
-							Resurses.getString("GEDCOM_CANCELLED"));
-				}
+				setRunnerValue(sb.toString());
 				indiIndex++;
 			}
 
@@ -406,7 +404,7 @@ public class ImportGedcomUtil {
 
 			}
 			logger.info("Starting to do FAM");
-			this.runner.setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
+			setRunnerValue(Resurses.getString("GEDCOM_FINALIZE"));
 			Set<Map.Entry<String, GedcomLine>> entries = gedFamMap.entrySet();
 			Iterator<Map.Entry<String, GedcomLine>> ee = entries.iterator();
 			double famIndex = 0;
@@ -420,10 +418,7 @@ public class ImportGedcomUtil {
 				sb.append(intprose);
 				sb.append(";");
 				sb.append(rec.toString(false));
-				if (this.runner.setRunnerValue(sb.toString())) {
-					throw new SukuException(
-							Resurses.getString("GEDCOM_CANCELLED"));
-				}
+				setRunnerValue(sb.toString());
 				famIndex++;
 			}
 			logger.info("Mostly done now");
@@ -432,9 +427,9 @@ public class ImportGedcomUtil {
 			// resp.generalArray = recs.toArray(new String[0]);
 
 			bis.close();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			unknownLine.add(e.getMessage() + "\r\n");
-			// throw new SukuException(e);
+			logger.log(Level.WARNING, "gedcom input", e);
 		} finally {
 			Set<Map.Entry<String, String>> imgSet = images.entrySet();
 			Iterator<Map.Entry<String, String>> iti = imgSet.iterator();
@@ -478,9 +473,7 @@ public class ImportGedcomUtil {
 				imgName = imgName.substring(baseFolder.length());
 			}
 		}
-		if (this.runner.setRunnerValue(imgName)) {
-			throw new SukuException(Resurses.getString("GEDCOM_CANCELLED"));
-		}
+		setRunnerValue(imgName);
 		File tf = File.createTempFile("finFam", imgSuffix);
 		BufferedOutputStream fos = new BufferedOutputStream(
 				new FileOutputStream(tf));
@@ -1306,7 +1299,13 @@ public class ImportGedcomUtil {
 						}
 					}
 				} else {
-					ins = Suku.kontroller.openFile(item.lineValue);
+					File f1 = new File(item.lineValue);
+					try {
+						ins = new FileInputStream(f1);
+					} catch (FileNotFoundException e) {
+						ins = null;
+					}
+					;
 				}
 				if (ins != null) {
 					BufferedInputStream bstr = null;
@@ -2015,6 +2014,15 @@ public class ImportGedcomUtil {
 	// }
 	//
 	// }
+
+	private void setRunnerValue(String juttu) throws SukuException {
+		if (runner != null) {
+			if (this.runner.setRunnerValue(juttu)) {
+				throw new SukuException(
+						Resurses.getString("EXECUTION_CANCELLED"));
+			}
+		}
+	}
 
 	/**
 	 * The Class GedcomLine.

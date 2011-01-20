@@ -853,6 +853,10 @@ public class Utils {
 
 		String name = (source == null) ? "" : source.getClass().getName()
 				+ " :";
+		int ii = name.lastIndexOf(".");
+		if (ii > 0) {
+			name = name.substring(ii + 1);
+		}
 
 		System.out.println(name + text);
 

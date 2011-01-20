@@ -356,4 +356,10 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return file.getAbsolutePath().replace("\\", "/");
 	}
 
+	@Override
+	public boolean isWebStart() {
+
+		return false;
+	}
+
 }

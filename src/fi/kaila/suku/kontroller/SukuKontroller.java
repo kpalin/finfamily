@@ -168,4 +168,10 @@ public interface SukuKontroller {
 	 */
 	public InputStream openFile(String path);
 
+	/**
+	 * 
+	 * @return true if webstart mode
+	 */
+	public boolean isWebStart();
+
 }

@@ -494,7 +494,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		DataOutputStream dos = null;
 		InputStream iis = null;
 		FileContents fc = null;
-		String fileName = null;
+
 		int resu;
 		// System.out.println("huhuu");
 		try {
@@ -506,7 +506,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			if (fc == null) {
 				return false;
 			}
-			fileName = fc.getName();
+			filename = fc.getName();
 			iis = fc.getInputStream();
 			// ask user to select multiple files through this service
 			// FileContents[] fcs = fos.openMultiFileDialog(null, null);
@@ -557,7 +557,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 					"multipart/form-data;boundary=" + boundary);
 
 			con.setRequestProperty("Referer", "/SSS/" + this.userno + "/"
-					+ fileName + "/");
+					+ filename + "/");
 			con.setRequestProperty("Content-Length",
 					String.valueOf(bytes.length));
 			con.setRequestMethod("POST");
@@ -616,7 +616,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			in.close();
 			dos.close();
 			con.disconnect();
-			this.filename = fileName;
+			// this.filename = filename;
 
 			logger.fine("resu: " + resu + "/" + inle);
 		} catch (Exception e) {
@@ -818,6 +818,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 */
 	@Override
 	public InputStream getInputStream() {
+		Utils.println(this, "getInputStream not implemented");
 		logger.severe("getInputStream not implemented");
 		return null;
 	}
@@ -829,8 +830,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 */
 	@Override
 	public String getFileName() {
-
-		return "not available yet";
+		return filename;
 	}
 
 	/*
@@ -876,6 +876,12 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	public String getFilePath() {
 		// return null in webstart
 		return null;
+	}
+
+	@Override
+	public boolean isWebStart() {
+
+		return true;
 	}
 
 }
