@@ -1,7 +1,7 @@
 package fi.kaila.suku.util.data;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +45,7 @@ public class ExcelImporter {
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public SukuData importTypes(Connection con, String path)
+	public SukuData importTypes(Connection con, InputStream fis)
 			throws SukuException {
 		WorkbookSettings ws = new WorkbookSettings();
 		ws.setEncoding("ISO-8859-1");
@@ -53,7 +53,7 @@ public class ExcelImporter {
 		SukuData suk = new SukuData();
 		suk.resu = Resurses.getString("UNKNOWN_EXCEL_TYPE");
 		try {
-			Workbook workbook = Workbook.getWorkbook(new File(path), ws);
+			Workbook workbook = Workbook.getWorkbook(fis, ws);
 
 			String[] names = workbook.getSheetNames();
 
@@ -364,7 +364,7 @@ public class ExcelImporter {
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public SukuData importCoordinates(Connection con, String path)
+	public SukuData importCoordinates(Connection con, InputStream fis)
 			throws SukuException {
 
 		SukuData suk = new SukuData();
@@ -383,10 +383,7 @@ public class ExcelImporter {
 			ws.setEncoding("ISO-8859-1");
 			ws.setCharacterSet(0);
 
-			File ft = new File(path);
-			System.out.println("abs:" + ft.getAbsolutePath());
-
-			workbook = Workbook.getWorkbook(new File(path), ws);
+			workbook = Workbook.getWorkbook(fis, ws);
 			int sheetCount = workbook.getNumberOfSheets();
 
 			pst = con.prepareStatement(DELETE_PLACEOTHER);

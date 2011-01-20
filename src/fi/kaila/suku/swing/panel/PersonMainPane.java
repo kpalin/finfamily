@@ -949,9 +949,12 @@ public class PersonMainPane extends JPanel implements ActionListener,
 					updateRestNotices();
 
 					debugNoticePanels();
+					Utils.println(this, "Person " + getPersonPid() + " updated");
 
 					SukuData resp = updatePerson(false);
 					personView.closeMainPane(true);
+
+					Utils.println(this, "Close response:" + resp.resu);
 					logger.fine("Close response:" + resp.resu);
 
 					// if (cmd.equals(Resurses.UPDATE)){
@@ -1187,13 +1190,14 @@ public class PersonMainPane extends JPanel implements ActionListener,
 			try {
 				resp = Suku.kontroller.getSukuData(req, "cmd=update",
 						"type=person");
+				Utils.println(this, "fromUpdate [" + resp + "]");
 				if (resp.pers != null && resp.pers.length > 0) {
 
 					PersonShortData shh = resp.pers[0];
 					personPid = shh.getPid();
 
 					personView.getSuku().updatePerson(shh);
-
+					// Utils.println(this, "doneDbView [" + shh + "]");
 					//
 					// now reset the toBeUpdate value if persLong exists
 					//

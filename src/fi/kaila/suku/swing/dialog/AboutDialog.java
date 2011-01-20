@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
@@ -88,19 +89,22 @@ public class AboutDialog extends JDialog implements ActionListener {
 		}
 		SukuData stats = null;
 		try {
+			Utils.println(this, "fetching dbstats");
 			stats = Suku.kontroller.getSukuData("cmd=dbstats");
+
 		} catch (Exception e) {
+			Utils.println(this, "dbstats ex = " + e.toString());
 			stats = new SukuData();
 			if (e.getMessage() != null) {
-				stats.resu = e.getMessage();
+				stats.generalText = e.getMessage();
 			} else {
-				stats.resu = "no connection";
+				stats.generalText = "no connection";
 			}
 		}
 		about.append("\n");
 		about.append(Resurses.getString("DBSTATS"));
 		about.append(": ");
-		about.append(stats.resu);
+		about.append(stats.generalText);
 		logger.info(about.toString());
 		aboutArea.setText(about.toString());
 

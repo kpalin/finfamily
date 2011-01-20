@@ -463,7 +463,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 					e.printStackTrace();
 					throw new SukuException(e);
 				}
-				this.filename = null;
+				// this.filename = null;
 				// JOptionPane.showMessageDialog(null, "se onnistui");
 				return fam;
 
@@ -616,11 +616,11 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			in.close();
 			dos.close();
 			con.disconnect();
-			// this.filename = filename;
+			// this.filename = null;
 
-			logger.fine("resu: " + resu + "/" + inle);
+			Utils.println(this, "resu: " + resu + "/" + inle);
 		} catch (Exception e) {
-
+			Utils.println(this, "w/o data " + e.toString());
 			e.printStackTrace();
 		}
 
@@ -763,6 +763,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			dos.close();
 			// JOptionPane.showMessageDialog(null, "streams-closed");
 			// Read the response
+			Utils.println(this, "withData getting response now");
 
 			String coding = con.getHeaderField("Content-Encoding");
 
@@ -772,31 +773,28 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			} else {
 				in = con.getInputStream();
 			}
-			// InputStream in = con.getInputStream();
-			int inle = 0;
-			while (true) {
-				int idata = in.read();
-				if (idata == -1)
-					break;
-				inle++;
-			}
 
-			resu = con.getResponseCode();
-			in.close();
-			dos.close();
-			con.disconnect();
-			// JOptionPane.showMessageDialog(null, "respinput: [" + resu + "]");
-			this.filename = null;
-			logger.fine("resu: " + resu + "/" + inle);
-		} catch (Exception e) {
-			Utils.println(this, "Datalla failed+" + e.toString());
+			ObjectInputStream ois = new ObjectInputStream(in);
+			SukuData fam = null;
+			try {
+				fam = (SukuData) ois.readObject();
+				ois.close();
+			} catch (Exception e) {
+				Utils.println(this, e.toString());
+
+				throw new SukuException(e);
+			}
+			// this.filename = null;
+
+			return fam;
+
+		} catch (Throwable e) {
+			Utils.println(this, "Data failed+" + e.toString());
 			// JOptionPane.showMessageDialog(null,
 			// "datalla epäonnistui+" + e.toString());
 			throw new SukuException(e);
 
 		}
-		return errr;
-		// throw new SukuException("Post method not yet implemented");
 
 	}
 

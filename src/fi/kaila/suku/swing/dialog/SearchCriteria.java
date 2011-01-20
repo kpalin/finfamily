@@ -1188,11 +1188,13 @@ public class SearchCriteria extends JDialog implements ActionListener {
 			SukuData request = new SukuData();
 			request.generalArray = v.toArray(new String[0]);
 			try {
-				System.out.println("talleen settingsejä:" + request);
+				Utils.println(this, "talleen settingsejä:" + request);
 				Suku.kontroller.getSukuData(request, "cmd=updatesettings",
 						"type=query");
 			} catch (SukuException e1) {
-				logger.log(Level.WARNING, "Failed to write query settings ", e1);
+				String tmp = "Failed to write query settings ";
+				Utils.println(this, tmp + e1.toString());
+				logger.log(Level.WARNING, tmp, e1);
 			}
 			// Suku.kontroller.putPref(this, "viewId", preferredView);
 			// this.surnameTx = this.surname.getText();

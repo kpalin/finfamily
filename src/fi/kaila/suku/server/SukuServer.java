@@ -35,12 +35,12 @@ public interface SukuServer {
 	public void resetConnection();
 
 	/**
-	 * set open file handle for server.
+	 * set local file handle for server.
 	 * 
 	 * @param f
 	 *            the new open file
 	 */
-	public void setOpenFile(String f);
+	public void setLocalFile(String f);
 
 	/**
 	 * Gets the suku data.

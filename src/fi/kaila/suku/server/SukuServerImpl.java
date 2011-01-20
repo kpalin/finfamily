@@ -1,5 +1,8 @@
 package fi.kaila.suku.server;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -72,11 +75,13 @@ public class SukuServerImpl implements SukuServer {
 	 * 
 	 * @param schema
 	 *            the schema
+	 * @param openFile
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public SukuServerImpl(String schema) throws SukuException {
+	public SukuServerImpl(String schema, String openFile) throws SukuException {
 		this.schema = schema;
+		this.openFile = openFile;
 		logger = Logger.getLogger(this.getClass().getName());
 		try {
 			Class.forName(this.dbDriver);
@@ -445,10 +450,10 @@ public class SukuServerImpl implements SukuServer {
 			fam = executeCmdCrtables(map, fam);
 		} else if (cmd.equals("dblista")) {
 			fam.generalArray = LocalDatabaseUtility.getListOfDatabases(con);
-		} else if (cmd.equals("dbversion")) {
-			fam = getDbVersion();
 		} else if (cmd.equals("dbstats")) {
 			fam = getDbStatistics();
+		} else if (cmd.equals("dbversion")) {
+			fam = getDbVersion();
 		} else if (cmd.equals("delete")) {
 			fam = executeCmdDelete(map, fam);
 		} else if (cmd.equals("excel")) {
@@ -490,6 +495,7 @@ public class SukuServerImpl implements SukuServer {
 			fam = getUnitCount();
 		} else if (cmd.equals("update")) {
 			fam = executeCmdUpdate(request, map, fam);
+			logger.fine("update done " + fam);
 		} else if (cmd.equals("updatesettings")) {
 			fam = executeCmdUpdatesettings(request, map);
 		} else if (cmd.equals("upload")) {
@@ -719,10 +725,13 @@ public class SukuServerImpl implements SukuServer {
 			fam.resu = Resurses.getString("GETSUKU_BAD_UPDATE_TYPE");
 
 		} else if (type.equals("person")) {
+			logger.fine("updateperson begin ");
 			fam = updatePerson(request);
+			logger.fine("updateperson done " + fam);
 			if (fam.resultPid > 0) {
 				PersonShortData psp = new PersonShortData(this.con,
 						fam.resultPid);
+				logger.fine("updateperson is " + psp);
 				fam.pers = new PersonShortData[1];
 				fam.pers[0] = psp;
 			}
@@ -881,6 +890,9 @@ public class SukuServerImpl implements SukuServer {
 				if (lang == null) {
 					lang = Resurses.getLanguage();
 				}
+				if (file == null) {
+					file = this.openFile;
+				}
 
 				ImportGedcomUtil inged = new ImportGedcomUtil(con);
 				fam = inged.importGedcom(file, lang);
@@ -1021,26 +1033,29 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData executeCmdExcel(HashMap<String, String> map, SukuData fam)
 			throws SukuException {
-		String lang;
+
 		String page = map.get("page");
-		String path = map.get("path");
+		String file = map.get("file");
 		String type = map.get("type");
-		lang = map.get("lang");
+		String lang = map.get("lang");
 		String all = map.get("all");
 		if (lang == null) {
 			lang = Resurses.getLanguage();
 		}
-		if (path == null) {
-			path = this.openFile;
-			if (path == null) {
-				path = "resources/excel/TypesExcel.xls";
-
-			}
+		if ("xls".equals(file)) {
+			file = this.openFile;
 		}
+		// if (path == null) {
+		// path = this.openFile;
+		// // if (path == null) {
+		// // path = "resources/excel/TypesExcel.xls";
+		// //
+		// // }
+		// }
 		if (type == null || type.equals("import")) {
-			fam = importExcelData(path, page);
+			fam = importExcelData(file, page);
 		} else if (type.equals("export")) {
-			fam = exportExcelData(path, page, lang,
+			fam = exportExcelData(file, page, lang,
 					(all != null && all.equals("true")) ? true : false);
 		} else {
 			fam.resu = Resurses.getString("BAD_COMMAND_TYPE");
@@ -1733,6 +1748,7 @@ public class SukuServerImpl implements SukuServer {
 
 	private SukuData getDbStatistics() {
 		SukuData response = new SukuData();
+		logger.fine("entering dbstats");
 		String sql = "select count(*) from unit";
 		Statement stm;
 		StringBuilder sb = new StringBuilder();
@@ -1745,7 +1761,7 @@ public class SukuServerImpl implements SukuServer {
 				sb.append("]; ");
 			}
 			rs.close();
-
+			logger.fine("entering dbstats notice");
 			rs = stm.executeQuery("select count(*) from unitnotice");
 			while (rs.next()) {
 				sb.append("unitnotice [");
@@ -1802,10 +1818,12 @@ public class SukuServerImpl implements SukuServer {
 			}
 			rs.close();
 			stm.close();
+			logger.fine("ending dbstats " + sb.toString());
+			response.generalText = sb.toString();
 
-			response.resu = sb.toString();
-		} catch (SQLException e) {
-			response.resu = e.getMessage();
+		} catch (Throwable e) {
+			logger.log(Level.INFO, "dbstats exception: ", e);
+			response.generalText = e.getMessage();
 		}
 
 		return response;
@@ -2158,28 +2176,29 @@ public class SukuServerImpl implements SukuServer {
 	 */
 	private SukuData importExcelData(String path, String page)
 			throws SukuException {
-
-		if ("coordinates".equals(page)) {
-			ExcelImporter ex = new ExcelImporter();
-			return ex.importCoordinates(this.con, path);
-
-		} else {
-			ExcelImporter ex = new ExcelImporter();
-			return ex.importTypes(this.con, path);
-
+		try {
+			InputStream fis;
+			if (path == null) {
+				if ("coordinates".equals(page)) {
+					fis = this.getClass().getResourceAsStream(
+							"/excel/PlaceLocations.xls");
+				} else {
+					fis = this.getClass().getResourceAsStream(
+							"/excel/TypesExcel.xls");
+				}
+			} else {
+				fis = new FileInputStream(path);
+			}
+			if ("coordinates".equals(page)) {
+				ExcelImporter ex = new ExcelImporter();
+				return ex.importCoordinates(this.con, fis);
+			} else {
+				ExcelImporter ex = new ExcelImporter();
+				return ex.importTypes(this.con, fis);
+			}
+		} catch (FileNotFoundException e) {
+			throw new SukuException(e);
 		}
-
-	}
-
-	/**
-	 * sets the opened file name.
-	 * 
-	 * @param f
-	 *            the new open file
-	 */
-	@Override
-	public void setOpenFile(String f) {
-		this.openFile = f;
 
 	}
 
@@ -2191,6 +2210,12 @@ public class SukuServerImpl implements SukuServer {
 	@Override
 	public SukuData getSukuData(String... params) throws SukuException {
 		return getSukuData(null, params);
+	}
+
+	@Override
+	public void setLocalFile(String f) {
+		this.openFile = f;
+
 	}
 
 }

@@ -2,6 +2,7 @@ package fi.kaila.suku.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,7 +69,8 @@ public class SukuServlet extends HttpServlet {
 	private String dbDatabase = null;
 	private String dbUser = null;
 	private String dbPassword = null;
-	private String filesPath = null;
+
+	// private String filesPath = null;
 
 	/*
 	 * (non-Javadoc)
@@ -90,7 +92,7 @@ public class SukuServlet extends HttpServlet {
 			this.dbDatabase = initEnv("suku.db.database");
 			this.dbUser = initEnv("suku.db.user");
 			this.dbPassword = initEnv("suku.db.password");
-			this.filesPath = initEnv("suku.files.path");
+			// this.filesPath = initEnv("suku.files.path");
 			// myTablePrefix = initEnv("forum.table.prefix");
 
 		} catch (Exception e) {
@@ -124,16 +126,15 @@ public class SukuServlet extends HttpServlet {
 			if (parts.length >= 2) {
 
 				UserInfo ui = this.usermap.get("" + parts[2]);
+
 				if (ui == null) {
 					logger.fine("parts1 " + parts[2]);
 				} else {
 					if (parts.length > 3) {
 
 						logger.fine("parts3 " + parts[3]);
-						requestData = extractFile(req, filesPath + "/"
-								+ ui.userid, parts[3]);
-						ui.openFile = filesPath + "/" + ui.userid + "/"
-								+ parts[3];
+						requestData = extractFile(req, parts[3]);
+						ui.openFile = requestData.generalText;
 					} else {
 						logger.fine("parts2 " + parts[2]);
 						requestData = extractSukuData(req);
@@ -353,6 +354,7 @@ public class SukuServlet extends HttpServlet {
 		uno = vpara.get("userno");
 		cmd = vpara.get("cmd");
 		file = vpara.get("file");
+
 		logger.info("into servlet: cmd=" + cmd + ", file=" + file);
 		String params[] = null;
 
@@ -393,7 +395,7 @@ public class SukuServlet extends HttpServlet {
 
 		params = v.toArray(new String[0]);
 
-		if (cmd == null || ui == null || userno == 0 || file != null) {
+		if (cmd == null || ui == null || userno == 0) {
 			logger.info("cmd=null");
 			PrintWriter out = resp.getWriter();
 			resp.setHeader("Content-Type", "text/html");
@@ -413,10 +415,8 @@ public class SukuServlet extends HttpServlet {
 		SukuServer sk;
 
 		try {
-			sk = new SukuServerImpl(ui.getUserId());
-			if (ui.openFile != null) {
-				sk.setOpenFile(ui.openFile);
-			}
+			sk = new SukuServerImpl(ui.getUserId(), ui.openFile);
+
 			resp.addHeader("Content-Encoding", "gzip");
 			ServletOutputStream sos = resp.getOutputStream();
 			logger.fine("log0: " + this.dbServer + "/" + this.dbDatabase + "/"
@@ -473,8 +473,8 @@ public class SukuServlet extends HttpServlet {
 	 * @throws UnsupportedEncodingException
 	 * @throws FileNotFoundException
 	 */
-	private SukuData extractFile(HttpServletRequest req, String outputPath,
-			String fileName) throws IOException, UnsupportedEncodingException,
+	private SukuData extractFile(HttpServletRequest req, String fileName)
+			throws IOException, UnsupportedEncodingException,
 			FileNotFoundException {
 		SukuData suku = new SukuData();
 		int input = -1;
@@ -505,6 +505,7 @@ public class SukuServlet extends HttpServlet {
 			}
 
 			suku.cmd = URLDecoder.decode(params.toString(), "UTF-8");
+
 			logger.info("params:" + params.toString() + ":" + suku);
 			byte buffi[] = boss.toByteArray();
 			// logger.info("buffi:" + buffi.length);
@@ -513,8 +514,32 @@ public class SukuServlet extends HttpServlet {
 			int kurre = 0;
 			int koko = 0;
 
-			FileOutputStream foss = new FileOutputStream(outputPath + "/"
-					+ fileName);
+			// File f = new File(outputPath + "/" + fileName);
+
+			// logger.fine("file exists1: " + f.exists() + ": "
+			// + f.getAbsolutePath());
+			// try {
+			// if (f.createNewFile()) {
+			// f.delete();
+			// } else {
+			// f.delete();
+			// }
+			// logger.fine("file exists2: " + f.exists() + ": "
+			// + f.getAbsolutePath());
+			// } catch (Exception ee) {
+			// logger.fine("create ex:" + ee.toString());
+			// }
+			String postFix = null;
+			int idxType = fileName.lastIndexOf(".");
+			if (idxType > 0) {
+				postFix = fileName.substring(idxType);
+			}
+
+			File t = File.createTempFile("finfamily", postFix);
+			logger.fine("temp cerated [" + t.exists() + ") : at: "
+					+ t.getAbsolutePath());
+			suku.generalText = t.getAbsolutePath();
+			FileOutputStream foss = new FileOutputStream(t);
 			byte brivi[] = new byte[32 * 1024];
 
 			StringBuilder sb = null;

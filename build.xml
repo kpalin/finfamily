@@ -115,7 +115,7 @@
 		    <jar destfile="${web.home}/WEB-INF/lib/finfamily.jar" basedir="${build.home}/classes">
 
 		    	<fileset dir="${basedir}/resources"   >	
-		    		<include name="**/FinFamily.xls"/>
+		    		<include name="**/*.xls"/>
 		    		<include name="/images/**"/>
 		    		<include name="/sql/**"/>
 		    		<include name="/xml/**"/>

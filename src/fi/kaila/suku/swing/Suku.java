@@ -109,6 +109,7 @@ import fi.kaila.suku.util.SukuPidComparator;
 import fi.kaila.suku.util.SukuRow;
 import fi.kaila.suku.util.SukuSenser;
 import fi.kaila.suku.util.SukuStringComparator;
+import fi.kaila.suku.util.SukuTypesModel;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.VersionChecker;
 import fi.kaila.suku.util.local.LocalAdminUtilities;
@@ -1296,6 +1297,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		sb.append(Resurses.getString(Resurses.SUKU));
 
 		if (isConnected > 0) {
+
 			try {
 
 				dat = kontroller.getSukuData("cmd=schema", "type=get");
@@ -1307,6 +1309,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				e.printStackTrace();
 				return;
 			}
+
 			sb.append(" [");
 			if (this.isWebApp) {
 				sb.append(" ! ");
@@ -1594,7 +1597,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			Locale reportLocale = new Locale("fi");
 
 			ExcelBundle resultla = new ExcelBundle();
-
 			resultla.importBundle("excel/FinFamily", "Program", reportLocale);
 
 			repoLangList = ExcelBundle.getLangList();
@@ -1733,13 +1735,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				if (resp.resu != null) {
 					resu = resp.resu;
 				} else {
-					kontroller.getSukuData("cmd=excel",
-							"path=resources/excel/PlaceLocations.xls",
-							"page=coordinates");
-					kontroller
-							.getSukuData("cmd=excel",
-									"path=resources/excel/TypesExcel.xls",
-									"page=types");
+					kontroller.getSukuData("cmd=excel", "page=coordinates");
+					kontroller.getSukuData("cmd=excel", "page=types");
 
 				}
 
@@ -1748,32 +1745,33 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						JOptionPane.INFORMATION_MESSAGE);
 			} else if (cmd.equals("SCHEMA_INITIALIZE")) {
 
-				SelectSchema schema;
-				try {
-					schema = new SelectSchema(this, databaseName);
+				if (!this.isWebApp) {
+					SelectSchema schema;
+					try {
+						schema = new SelectSchema(this, databaseName);
 
-					schema.setVisible(true);
+						schema.setVisible(true);
 
-					String selectedSchema = schema.getSchema();
-					if (selectedSchema == null)
-						return;
-					if (!schema.isExistingSchema()) {
-						kontroller.getSukuData("cmd=schema", "type=create",
+						String selectedSchema = schema.getSchema();
+						if (selectedSchema == null)
+							return;
+						if (!schema.isExistingSchema()) {
+							kontroller.getSukuData("cmd=schema", "type=create",
+									"name=" + selectedSchema);
+
+						}
+						kontroller.getSukuData("cmd=schema", "type=set",
 								"name=" + selectedSchema);
+						setTitle(null);
+					} catch (SukuException e1) {
 
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(this, e1.getMessage(),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.ERROR_MESSAGE);
+						return;
 					}
-					kontroller.getSukuData("cmd=schema", "type=set", "name="
-							+ selectedSchema);
-					setTitle(null);
-				} catch (SukuException e1) {
-
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, e1.getMessage(),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.ERROR_MESSAGE);
-					return;
 				}
-
 				SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
 				if (resp.resuCount > 0) {
 					// if (schema.isExistingSchema()) {
@@ -1796,13 +1794,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					this.scrollPane.updateUI();
 
 					kontroller.getSukuData("cmd=initdb");
-					kontroller.getSukuData("cmd=excel",
-							"path=resources/excel/PlaceLocations.xls",
-							"page=coordinates");
-					kontroller
-							.getSukuData("cmd=excel",
-									"path=resources/excel/TypesExcel.xls",
-									"page=types");
+
+					kontroller.getSukuData("cmd=excel", "page=coordinates");
+					kontroller.getSukuData("cmd=excel", "page=types");
 
 					JOptionPane.showMessageDialog(this,
 							Resurses.getString("CREATED_NEWDB"),
@@ -2402,8 +2396,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			boolean openedFile = Suku.kontroller.openLocalFile("xls");
 			if (openedFile) {
-				kontroller.getSukuData("cmd=excel", "page=conversions",
-						"type=import");
+				kontroller.getSukuData("cmd=excel", "file=xls",
+						"page=conversions", "type=import");
 
 				JOptionPane.showMessageDialog(this,
 						Resurses.getString("IMPORTED_CONVERSIONS"),
@@ -2516,8 +2510,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			boolean openedFile = Suku.kontroller.openLocalFile("xls");
 			if (openedFile) {
-				kontroller.getSukuData("cmd=excel", "page=types");
-
+				kontroller.getSukuData("cmd=excel", "file=xls", "page=types");
+				SukuTypesModel typesModel = Utils.typeInstance();
+				typesModel.initTypes();
 				JOptionPane.showMessageDialog(this,
 						Resurses.getString("IMPORTED_TYPES"),
 						Resurses.getString(Resurses.SUKU),
@@ -2536,7 +2531,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			boolean openedFile = Suku.kontroller.openLocalFile("xls");
 			if (openedFile) {
-				kontroller.getSukuData("cmd=excel", "page=coordinates");
+				kontroller.getSukuData("cmd=excel", "file=xls",
+						"page=coordinates");
 
 				JOptionPane.showMessageDialog(this,
 						Resurses.getString("IMPORTED_COORDINATES"),
@@ -3327,12 +3323,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
 
 			if (!this.isWebApp) {
-				kontroller.getSukuData("cmd=excel",
-						"path=resources/excel/PlaceLocations.xls",
-						"page=coordinates");
+				kontroller.getSukuData("cmd=excel", "page=coordinates");
 				dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
-				kontroller.getSukuData("cmd=excel",
-						"path=resources/excel/TypesExcel.xls", "page=types");
+				kontroller.getSukuData("cmd=excel", "page=types");
 			}
 			setTitle(null);
 			String[] failedLines = dlg.getResult();

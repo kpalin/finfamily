@@ -47,7 +47,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	 */
 	public SukuKontrollerLocalImpl(Suku host) throws SukuException {
 		this.host = host;
-		this.server = new SukuServerImpl("public");
+		this.server = new SukuServerImpl("public", null);
 		sr = Preferences.userRoot();
 		logger = Logger.getLogger(this.getClass().getName());
 	}
@@ -118,16 +118,6 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return this.server.getSukuData(params);
 	}
 
-	/**
-	 * local method for Junit use only.
-	 * 
-	 * @param filename
-	 *            the new local file
-	 */
-	public void setLocalFile(String filename) {
-		this.server.setOpenFile(filename);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -167,7 +157,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		}
 		String filename = f.getAbsolutePath();
 		file = new File(filename);
-		this.server.setOpenFile(filename);
+		this.server.setLocalFile(filename);
 
 		logger.info("Valittiin: " + filename);
 
@@ -290,7 +280,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		}
 
 		file = new File(filename);
-		this.server.setOpenFile(filename);
+		this.server.setLocalFile(filename);
 
 		logger.info("Valittiin: " + filename);
 

@@ -56,7 +56,7 @@ public class Import2004Test extends TestCase {
 
 		kontroller.getConnection(this.host, this.dbname, this.userid,
 				this.password);
-		kontroller.setLocalFile(this.filename);
+		// kontroller.setLocalFile(this.filename);
 
 		kontroller.getSukuData("cmd=import", "type=backup", "lang=FI");
 		// server.import2004Data("db/" + this.filename, "FI");
