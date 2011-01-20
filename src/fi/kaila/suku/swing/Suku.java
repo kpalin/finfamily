@@ -462,12 +462,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mFile.add(this.mNewDatabase);
 		this.mNewDatabase.setActionCommand("SCHEMA_INITIALIZE");
 		this.mNewDatabase.addActionListener(this);
-
-		this.mDropSchema = new JMenuItem(Resurses.getString("SCHEMA_DROP"));
-		this.mFile.add(this.mDropSchema);
-		this.mDropSchema.setActionCommand("SCHEMA_DROP");
-		this.mDropSchema.addActionListener(this);
-
+		if (!isWebApp) {
+			this.mDropSchema = new JMenuItem(Resurses.getString("SCHEMA_DROP"));
+			this.mFile.add(this.mDropSchema);
+			this.mDropSchema.setActionCommand("SCHEMA_DROP");
+			this.mDropSchema.addActionListener(this);
+		}
 		this.mFile.addSeparator();
 
 		mImport = new JMenu(Resurses.getString("IMPORT"));
@@ -484,13 +484,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mImport.add(this.mImportGedcom);
 		this.mImportGedcom.setActionCommand(Resurses.IMPORT_GEDCOM);
 		this.mImportGedcom.addActionListener(this);
-
-		this.mImportOther = new JMenuItem(
-				Resurses.getString(Resurses.IMPORT_OTHER));
-		mImport.add(this.mImportOther);
-		this.mImportOther.setActionCommand(Resurses.IMPORT_OTHER);
-		this.mImportOther.addActionListener(this);
-
+		if (!isWebApp) {
+			this.mImportOther = new JMenuItem(
+					Resurses.getString(Resurses.IMPORT_OTHER));
+			mImport.add(this.mImportOther);
+			this.mImportOther.setActionCommand(Resurses.IMPORT_OTHER);
+			this.mImportOther.addActionListener(this);
+		}
 		mExport = new JMenu(Resurses.getString("EXPORT"));
 		this.mFile.add(mExport);
 		this.mExportGedcom = new JMenuItem(

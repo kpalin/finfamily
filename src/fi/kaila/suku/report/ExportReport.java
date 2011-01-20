@@ -16,7 +16,7 @@ import fi.kaila.suku.util.SukuTypesTable;
  * 
  * @author Kalle
  */
-public class ImagesLista extends CommonReport {
+public class ExportReport extends CommonReport {
 
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -30,7 +30,7 @@ public class ImagesLista extends CommonReport {
 	 * @param repoWriter
 	 *            the repo writer
 	 */
-	public ImagesLista(ReportWorkerDialog caller, SukuTypesTable typesTable,
+	public ExportReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
 			ReportInterface repoWriter) {
 		super(caller, typesTable, repoWriter);
 
@@ -45,24 +45,28 @@ public class ImagesLista extends CommonReport {
 	@Override
 	public void executeReport() throws SukuException {
 
-		int pidArray[] = new int[caller.getSukuParent().getDatabaseRowCount()];
+		int pidArray[];
+		if (caller.getPid() > 0) {
+			pidArray = new int[1];
+			pidArray[0] = caller.getPid();
+		} else {
+			pidArray = new int[caller.getSukuParent().getDatabaseRowCount()];
 
-		for (int idx = 0; idx < pidArray.length; idx++) {
-			pidArray[idx] = caller.getSukuParent().getDatbasePerson(idx)
-					.getPid();
+			for (int idx = 0; idx < pidArray.length; idx++) {
+				pidArray[idx] = caller.getSukuParent().getDatbasePerson(idx)
+						.getPid();
+			}
 		}
-
 		logger.info("Lista repo");
 
 		textReferences = new HashMap<String, PersonInTables>();
-		repoWriter.createReport();
+
 		for (int idx = 0; idx < pidArray.length; idx++) {
-			// repoWriter.createReport();
+			repoWriter.createReport();
 			createPidTable(idx, pidArray);
-			// repoWriter.closeReport(pidArray[idx]);
+			repoWriter.closeReport(pidArray[idx]);
 		}
 		caller.setRunnerValue("100;OK");
-		repoWriter.closeReport();
 
 	}
 

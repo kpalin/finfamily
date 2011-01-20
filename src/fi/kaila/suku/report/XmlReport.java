@@ -868,8 +868,7 @@ public class XmlReport implements ReportInterface {
 				fos.write(bout.toByteArray());
 				fos.close();
 			}
-			translator = "xml/export.xsl";
-			// if (translator != null) {
+
 			logger.info("report will store at " + myreport);
 			File f = new File(translator);
 			logger.info("transformed with " + f.getAbsolutePath());

@@ -60,6 +60,7 @@ import fi.kaila.suku.report.AncestorTableReport;
 import fi.kaila.suku.report.CommonReport;
 import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
+import fi.kaila.suku.report.ExportReport;
 import fi.kaila.suku.report.GenGraphReport;
 import fi.kaila.suku.report.ImagesLista;
 import fi.kaila.suku.report.JavaReport;
@@ -254,6 +255,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	private DescendantPane descendantPanel;
 	private AncestorPane ancestorPanel;
 	private OtherReportsPane otherPane;
+	private ExportReportsPane exportPane;
 	private JPanel listaPanel;
 	// private ReportFrame repo;
 	private PersonShortData pers = null;
@@ -433,6 +435,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	 * @return subject pid
 	 */
 	public int getPid() {
+		if (this.pers == null) {
+			return 0;
+		}
 		return this.pers.getPid();
 	}
 
@@ -877,10 +882,16 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					ancestorPanel, Resurses.getString("REPORT.TIP.ANCESTOR"));
 			reportTypePane.setMnemonicAt(1, KeyEvent.VK_2);
 
+			exportPane = new ExportReportsPane();
+			reportTypePane.addTab(Resurses.getString("REPORT.EXPORT"), icon3,
+					exportPane, Resurses.getString("REPORT.TIP.EXPORT"));
+			reportTypePane.setMnemonicAt(2, KeyEvent.VK_3);
+
 			otherPane = new OtherReportsPane();
 			reportTypePane.addTab(Resurses.getString("REPORT.OTHER"), icon3,
 					otherPane, Resurses.getString("REPORT.TIP.OTHER"));
-			reportTypePane.setMnemonicAt(2, KeyEvent.VK_3);
+			reportTypePane.setMnemonicAt(3, KeyEvent.VK_4);
+
 		} else {
 			listaPanel = new JPanel();
 			listaPanel.setLayout(null);
@@ -889,6 +900,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			reportTypePane.addTab(Resurses.getString("REPORT.LISTAT"), icon3,
 					listaPanel, Resurses.getString("REPORT.TIP.LISTAT"));
 			reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
+
+			exportPane = new ExportReportsPane();
+			reportTypePane.addTab(Resurses.getString("REPORT.EXPORT"), icon3,
+					exportPane, Resurses.getString("REPORT.TIP.EXPORT"));
+			reportTypePane.setMnemonicAt(1, KeyEvent.VK_2);
 		}
 		//
 		// reportTypePane.addTab(Resurses.getString("REPORT.LISTAT"), icon3,
@@ -1330,6 +1346,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					task.execute();
 				}
 			} else {
+				int paneIdx = reportTypePane.getSelectedIndex();
+				if (paneIdx == 1) {
+					task = new Task();
+					task.addPropertyChangeListener(this);
+					task.execute();
+					return;
+				}
+
 				if (listaGroup.getSelection() == null) {
 					JOptionPane.showMessageDialog(this,
 							Resurses.getString("REPORT.LISTA.NOLIST.SELECTED"));
@@ -1551,7 +1575,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				ReportInterface repo = null;
 
 				reportFormatidx = commonReportFormatList.getSelectedIndex();
-
+				int paneIdx = reportTypePane.getSelectedIndex();
+				boolean isExportReport = false;
+				if ((pers == null && paneIdx == 1) || pers != null
+						&& paneIdx == 2) {
+					isExportReport = true;
+					reportFormatidx = 2;
+				}
 				if (reportFormatidx == 0) {
 					repo = new JavaReport(runner);
 				} else {
@@ -1575,7 +1605,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				}
 				setProgress(0);
 
-				if (reportTypePane.getSelectedIndex() == 0) {
+				if (isExportReport) {
+					dr = new ExportReport(self, typesTable, repo);
+				} else
+
+				if (paneIdx == 0) {
 					if (self.getDescendantPane() == null) {
 						dr = new ImagesLista(self, typesTable, repo);
 					} else {
@@ -1585,7 +1619,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						dr = new DescendantReport(self, typesTable, repo);
 
 					}
-				} else if (reportTypePane.getSelectedIndex() == 1) {
+				} else if (paneIdx == 1) {
 					tabOffset = 0;
 					String order = getAncestorPane().getNumberingFormat()
 							.getSelection().getActionCommand();
@@ -1594,6 +1628,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 					} else {
 						dr = new AncestorReport(self, typesTable, repo);
 					}
+
 				} else {
 					dr = new GenGraphReport(self, typesTable, repo);
 				}
