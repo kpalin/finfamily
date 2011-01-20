@@ -1032,11 +1032,10 @@ public class SukuServerImpl implements SukuServer {
 		}
 		if (path == null) {
 			path = this.openFile;
-			// if (path == null) {
-			// path = "resources/excel/TypesExcel.xls";
-			// // fam.resu = Resurses.getString("INVALID_FILE");
-			//
-			// }
+			if (path == null) {
+				path = "resources/excel/TypesExcel.xls";
+
+			}
 		}
 		if (type == null || type.equals("import")) {
 			fam = importExcelData(path, page);

@@ -119,8 +119,6 @@ public class ExcelBundle {
 			in = this.getClass().getResourceAsStream("/" + path + ".xls");
 			// System.out.println("excelkbundle2: " + path);
 			Workbook workbook = Workbook.getWorkbook(in, ws);
-			// Workbook workbook = Workbook.getWorkbook(new File("resources/"
-			// + path + ".xls"), ws);
 
 			Sheet sheet = workbook.getSheet(page);
 			int colCount;

@@ -47,8 +47,8 @@ public class SuomiMap extends JFrame implements ActionListener,
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ISuku parent;
-	private SuomiMap me;
+	private final ISuku parent;
+	private final SuomiMap me;
 
 	private KarttaPanel map;
 	private BufferedImage kartta;
@@ -216,6 +216,7 @@ public class SuomiMap extends JFrame implements ActionListener,
 		 * 
 		 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 		 */
+		@Override
 		public void paintComponent(Graphics g) {
 
 			// Rectangle suomiSize = new
@@ -327,6 +328,7 @@ public class SuomiMap extends JFrame implements ActionListener,
 		 * @see
 		 * javax.swing.JComponent#processMouseEvent(java.awt.event.MouseEvent)
 		 */
+		@Override
 		protected void processMouseEvent(MouseEvent e) {
 			if (e.getID() == MouseEvent.MOUSE_ENTERED) {
 				mouseIsHere = true;
@@ -344,6 +346,7 @@ public class SuomiMap extends JFrame implements ActionListener,
 		 * javax.swing.JComponent#processMouseMotionEvent(java.awt.event.MouseEvent
 		 * )
 		 */
+		@Override
 		protected void processMouseMotionEvent(MouseEvent e) {
 			if (mouseIsHere) {
 				int idx;
