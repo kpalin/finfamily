@@ -955,7 +955,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			String[] extensions = new String[1];
 			extensions[0] = Resurses.getString("FULL_PATHNAME") + " " + filter;
 			// in = new InputStream();
-
+			// ByteArrayInputStream in = new ByteArrayInputStream(buffer);
 			fc = fos.saveFileDialog(null, extensions, in, "FinFamily" + filter);
 
 			return true;

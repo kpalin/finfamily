@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -287,37 +285,10 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 					} else {
 						buffi = tekst.getBytes();
 					}
+					ByteArrayInputStream in = new ByteArrayInputStream(buffi);
 
-					if (Suku.kontroller.isWebStart()) {
+					Suku.kontroller.saveFile("zip", in);
 
-						ByteArrayInputStream in = new ByteArrayInputStream(
-								buffi);
-
-						Suku.kontroller.saveFile("zip", in);
-
-					} else {
-
-						OutputStream fos = Suku.kontroller.getOutputStream();
-
-						try {
-							fos.write(buffi);
-							fos.close();
-						} catch (IOException e) {
-							JOptionPane.showMessageDialog(null,
-									Resurses.getString("EXPORT_BACKUP") + ":"
-											+ e.getMessage());
-						}
-						if (resp.resu != null) {
-							JOptionPane.showMessageDialog(owner,
-									Resurses.getString("EXPORT_BACKUP") + ":"
-											+ resp.resu);
-						}
-					}
-					// else {
-					// JOptionPane.showMessageDialog(owner, Resurses
-					// .getString("EXPORT_BACKUP")
-					// + ": Under construction");
-					// }
 				}
 			} catch (SukuException e) {
 				e.printStackTrace();

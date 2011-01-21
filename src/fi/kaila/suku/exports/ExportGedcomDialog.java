@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -16,7 +14,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
@@ -345,28 +342,27 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 					} else {
 						buffi = tekst.getBytes();
 					}
-					if (Suku.kontroller.isWebStart()) {
-						ByteArrayInputStream in = new ByteArrayInputStream(
-								buffi);
+					// if (Suku.kontroller.isWebStart()) {
+					ByteArrayInputStream in = new ByteArrayInputStream(buffi);
 
-						Suku.kontroller.saveFile("zip", in);
-					} else {
-						try {
-							OutputStream fos = Suku.kontroller
-									.getOutputStream();
-							fos.write(buffi);
-							fos.close();
-						} catch (IOException e) {
-							JOptionPane.showMessageDialog(null,
-									Resurses.getString("EXPORT_GEDCOM") + ":"
-											+ e.getMessage());
-						}
-						if (resp.resu != null) {
-							JOptionPane.showMessageDialog(owner,
-									Resurses.getString("EXPORT_GEDCOM") + ":"
-											+ resp.resu);
-						}
-					}
+					Suku.kontroller.saveFile("zip", in);
+					// } else {
+					// try {
+					// OutputStream fos = Suku.kontroller
+					// .getOutputStream();
+					// fos.write(buffi);
+					// fos.close();
+					// } catch (IOException e) {
+					// JOptionPane.showMessageDialog(null,
+					// Resurses.getString("EXPORT_GEDCOM") + ":"
+					// + e.getMessage());
+					// }
+					// if (resp.resu != null) {
+					// JOptionPane.showMessageDialog(owner,
+					// Resurses.getString("EXPORT_GEDCOM") + ":"
+					// + resp.resu);
+					// }
+					// }
 				}
 			} catch (SukuException e) {
 				e.printStackTrace();
