@@ -1057,6 +1057,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 	}
 
 	/**
+	 * 
+	 * @return handle to export reports pane
+	 */
+	public ExportReportsPane getExportPane() {
+		return exportPane;
+	}
+
+	/**
 	 * Gets the other pane.
 	 * 
 	 * @return handle to other reports pane

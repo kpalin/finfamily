@@ -63,7 +63,7 @@ public class ExportReport extends CommonReport {
 
 		for (int idx = 0; idx < pidArray.length; idx++) {
 			repoWriter.createReport();
-			createPidTable(idx, pidArray);
+			createExportTable(idx, pidArray);
 			repoWriter.closeReport(pidArray[idx]);
 		}
 		caller.setRunnerValue("100;OK");
