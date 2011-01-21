@@ -58,16 +58,10 @@
     <jar destfile="${dist.home}/suku.jar" basedir="${build.home}/classes">
 
  	<fileset dir="${basedir}/resources"   >	
-		<include name="**/*.xls"/>
 		<include name="/images/**"/>
- 		<include name="/xml/**"/>
  		<include name="/sql/**"/>
 	</fileset>
 
-	<fileset dir="${basedir}/"   >	
-		 <include name="resources/excel/**"/>	
-	</fileset>
-	
 	
     	
 	<manifest >
@@ -88,16 +82,13 @@
 	
    </jar>
   	
-  	<!--
-  <copy file="${dist.home}/suku.jar" tofile="C:/Tomcat6.0/webapps/suku/Suku.jar"/> 
-  <copy file="${dist.home}/suku.jar" todir="C:/Tomcat6.0/webapps/suku/WEB-INF/lib"/>
-  -->
+
   </target>
   
 	
 <target name="war" depends="jar,servlet" description="Build war">
 	    
-	<copy file="${dist.home}/suku.jar" tofile="${web.home}/suku.jar" />
+	<copy file="${web.home}/WEB-INF/lib/finfamily.jar" tofile="${web.home}/suku.jar" />
 	<copy file="${lib.home}/jxl.jar" tofile="${web.home}/jxl.jar" />	
 	<copy file="${lib.home}/jcalendarbutton-1.4.5.jar" tofile="${web.home}/jcalendarbutton-1.4.5.jar" />	
 	<copy file="${lib.home}/jfreechart-1.0.13.jar" tofile="${web.home}/jfreechart-1.0.13.jar" />	
@@ -113,7 +104,6 @@
 		   <mkdir dir="${web.home}"/>
 		 	<mkdir dir="${web.home}/WEB-INF"/>
 		    <jar destfile="${web.home}/WEB-INF/lib/finfamily.jar" basedir="${build.home}/classes">
-
 		    	<fileset dir="${basedir}/resources"   >	
 		    		<include name="**/*.xls"/>
 		    		<include name="/images/**"/>
@@ -121,8 +111,6 @@
 		    		<include name="/xml/**"/>
 		    	</fileset>
 
-
-		    	
 			
 			<manifest >
 		    <attribute name="Built-By" value="${user.name}"/>
