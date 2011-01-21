@@ -41,8 +41,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 
 	private static Logger logger = null;
 
-	private String filename = null;
-	FileContents fc = null;
+	private FileContents fc = null;
 
 	// public void createSukuDb() throws SukuException {
 	// // TODO Auto-generated method stub
@@ -487,7 +486,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 */
 	@Override
 	public boolean openFile(String filter) {
-		this.filename = null;
+
 		FileOpenService fos;
 		String lineEnd = "\r\n";
 		String twoHyphens = "--";
@@ -506,7 +505,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			if (fc == null) {
 				return false;
 			}
-			filename = fc.getName();
+
 			iis = fc.getInputStream();
 			// ask user to select multiple files through this service
 			// FileContents[] fcs = fos.openMultiFileDialog(null, null);
@@ -557,7 +556,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 					"multipart/form-data;boundary=" + boundary);
 
 			con.setRequestProperty("Referer", "/SSS/" + this.userno + "/"
-					+ filename + "/");
+					+ getFileName() + "/");
 			con.setRequestProperty("Content-Length",
 					String.valueOf(bytes.length));
 			con.setRequestMethod("POST");
@@ -844,7 +843,15 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 */
 	@Override
 	public String getFileName() {
-		return filename;
+		if (fc != null) {
+			try {
+				return fc.getName();
+			} catch (IOException e) {
+				Utils.println(this, "getFileName: " + e.toString());
+
+			}
+		}
+		return null;
 	}
 
 	/*

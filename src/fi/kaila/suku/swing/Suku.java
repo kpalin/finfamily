@@ -2814,8 +2814,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 		if (this.suomi == null) {
 
-			if (Suku.kontroller.getPref(this, "USE_OPEN_STREETMAP", "false")
-					.equals("true")) {
+			if (!this.isWebApp
+					&& kontroller.getPref(this, "USE_OPEN_STREETMAP", "false")
+							.equals("true")) {
 				this.suomi = new WorldMap(this);
 			} else {
 
@@ -2825,7 +2826,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		HashMap<String, String> ccodes = new HashMap<String, String>();
 		try {
-			SukuData countdata = Suku.kontroller.getSukuData("cmd=get",
+			SukuData countdata = kontroller.getSukuData("cmd=get",
 					"type=ccodes");
 
 			for (String nxt : countdata.generalArray) {

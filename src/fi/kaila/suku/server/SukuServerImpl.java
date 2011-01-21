@@ -100,8 +100,7 @@ public class SukuServerImpl implements SukuServer {
 	@Override
 	public void getConnection(String host, String dbname, String userid,
 			String passwd) throws SukuException {
-		String dbConne = "jdbc:postgresql://localhost/sukuproto?user=kalle&password=kalle";
-		dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
+		String dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
 				+ userid;
 		logger.info("Connection: " + dbConne + ";schema: " + this.schema);
 		if (passwd != null && !passwd.isEmpty()) {

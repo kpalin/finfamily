@@ -119,6 +119,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 		useOpenStreetMap.setBounds(x + 210, y, 200, 20);
 
+		if (Suku.kontroller.isWebStart()) {
+			useOpenStreetMap.setEnabled(false);
+		}
+
 		y += 20;
 		lbl = new JLabel(Resurses.getString("SETTING_REPOLANG"));
 		getContentPane().add(lbl);

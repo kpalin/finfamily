@@ -419,7 +419,7 @@ public class SukuServlet extends HttpServlet {
 
 			resp.addHeader("Content-Encoding", "gzip");
 			ServletOutputStream sos = resp.getOutputStream();
-			logger.fine("log0: " + this.dbServer + "/" + this.dbDatabase + "/"
+			logger.fine("log: " + this.dbServer + "/" + this.dbDatabase + "/"
 					+ this.dbUser + "/" + this.dbPassword);
 
 			sk.getConnection(this.dbServer, this.dbDatabase, this.dbUser,

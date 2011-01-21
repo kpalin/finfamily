@@ -70,10 +70,10 @@ public interface SukuKontroller {
 			throws SukuException;
 
 	/**
-	 * <h1>Local file management</h1>
+	 * <h1>File management</h1>
 	 * 
-	 * Open of a local file. To make webstart possible all local data management
-	 * is made diffrently in the local Kontroller and the webstart kontrollr
+	 * Open of a file. This is used to enable server side to access the file.
+	 * WebStart version sends file to server. Local version just opens it.
 	 * 
 	 * @param filter
 	 *            the filter
@@ -104,6 +104,8 @@ public interface SukuKontroller {
 
 	/**
 	 * this returns null for webstart.
+	 * 
+	 * used mainly to open the report when it has been created
 	 * 
 	 * @return filepath of opened file
 	 */
@@ -159,14 +161,14 @@ public interface SukuKontroller {
 	public OutputStream getOutputStream() throws FileNotFoundException;
 
 	/**
-	 * Opening a named local file In webstart the file is read from a
-	 * zip-package uploaded before this is done.
+	 * Opening a named local file for GUI side.
 	 * 
-	 * @param path
-	 *            of file to open
+	 * @param filter
+	 *            for opefile dialog
+	 * 
 	 * @return InputStream to the file
 	 */
-	public InputStream openLocalFile(String path);
+	public InputStream openLocalFile(String filter);
 
 	/**
 	 * 
