@@ -178,10 +178,7 @@ public class ExportGedcomUtil {
 				sbb.append(intprose);
 				sbb.append(";");
 				sbb.append(shortie.getAlfaName());
-				if (this.runner.setRunnerValue(sbb.toString())) {
-					throw new SukuException(
-							Resurses.getString("GEDCOM_CANCELLED"));
-				}
+				setRunnerValue(sbb.toString());
 
 			}
 
@@ -1428,6 +1425,15 @@ public class ExportGedcomUtil {
 			this.other = other;
 		}
 
+	}
+
+	private void setRunnerValue(String juttu) throws SukuException {
+		if (runner != null) {
+			if (this.runner.setRunnerValue(juttu)) {
+				throw new SukuException(
+						Resurses.getString("EXECUTION_CANCELLED"));
+			}
+		}
 	}
 
 }

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Vector;
@@ -293,7 +294,7 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 
 			// Initialize progress property.
 			setProgress(0);
-			setRunnerValue(Resurses.getString("EXPORT_INITIALING"));
+			setRunnerValue(Resurses.getString("EXPORT_INITIALIZING"));
 
 			try {
 
@@ -335,30 +336,36 @@ public class ExportGedcomDialog extends JDialog implements ActionListener,
 					v.add("charid=" + charidx);
 					String[] auxes = v.toArray(new String[0]);
 					SukuData resp = Suku.kontroller.getSukuData(auxes);
-					try {
-						OutputStream fos = Suku.kontroller.getOutputStream();
 
-						String tekst = "GEDCOM EXPORT";
+					String tekst = "GEDCOM EXPORT";
 
-						byte[] buffi = null;
-						if (resp.buffer != null) {
-							buffi = resp.buffer;
-						} else {
-							buffi = tekst.getBytes();
-						}
-
-						fos.write(buffi);
-						fos.close();
-					} catch (IOException e) {
-						JOptionPane.showMessageDialog(
-								null,
-								Resurses.getString("EXPORT_GEDCOM") + ":"
-										+ e.getMessage());
+					byte[] buffi = null;
+					if (resp.buffer != null) {
+						buffi = resp.buffer;
+					} else {
+						buffi = tekst.getBytes();
 					}
-					if (resp.resu != null) {
-						JOptionPane.showMessageDialog(owner,
-								Resurses.getString("EXPORT_GEDCOM") + ":"
-										+ resp.resu);
+					if (Suku.kontroller.isWebStart()) {
+						ByteArrayInputStream in = new ByteArrayInputStream(
+								buffi);
+
+						Suku.kontroller.saveFile("zip", in);
+					} else {
+						try {
+							OutputStream fos = Suku.kontroller
+									.getOutputStream();
+							fos.write(buffi);
+							fos.close();
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(null,
+									Resurses.getString("EXPORT_GEDCOM") + ":"
+											+ e.getMessage());
+						}
+						if (resp.resu != null) {
+							JOptionPane.showMessageDialog(owner,
+									Resurses.getString("EXPORT_GEDCOM") + ":"
+											+ resp.resu);
+						}
 					}
 				}
 			} catch (SukuException e) {

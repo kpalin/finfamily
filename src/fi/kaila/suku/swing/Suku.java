@@ -2258,74 +2258,137 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void createFamilyBackup() {
-		boolean isCreated = kontroller.createLocalFile("zip");
-		String zipName = kontroller.getFileName();
-		if (zipName == null)
-			return;
-		int punkt = zipName.lastIndexOf(".");
-		if (punkt < 1)
-			return;
-		String dbName = zipName.substring(0, punkt);
-		logger.finest("Created Backup FILE status " + isCreated);
-		if (isCreated) {
-			ExportFamilyDatabaseDialog dlg;
 
+		if (this.isWebApp) {
+			ExportFamilyDatabaseDialog dlg;
 			try {
-				dlg = new ExportFamilyDatabaseDialog(this, dbName, zipName);
+
+				SukuData dat = kontroller.getSukuData("cmd=schema", "type=get");
+				String schema = dat.generalArray.length == 1 ? dat.generalArray[0]
+						: "finfamily";
+				dlg = new ExportFamilyDatabaseDialog(this, schema,
+						"finfamily.zip");
 				dlg.setVisible(true);
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage());
 				return;
 			}
+		} else {
 
+			boolean isCreated = kontroller.createLocalFile("zip");
+			String zipName = kontroller.getFileName();
+			if (zipName == null)
+				return;
+			int punkt = zipName.lastIndexOf(".");
+			if (punkt < 1)
+				return;
+			String dbName = zipName.substring(0, punkt);
+			logger.finest("Created Backup FILE status " + isCreated);
+			if (isCreated) {
+				ExportFamilyDatabaseDialog dlg;
+
+				try {
+					dlg = new ExportFamilyDatabaseDialog(this, dbName, zipName);
+					dlg.setVisible(true);
+				} catch (SukuException e) {
+					JOptionPane.showMessageDialog(this, e.getMessage());
+					return;
+				}
+			}
 		}
 	}
 
 	private void exportGedcom() {
 
-		boolean isCreated = kontroller.createLocalFile("zip");
-		String zipName = kontroller.getFileName();
-		logger.finest("Opened GEDCOM FILE status " + isCreated);
-		if (isCreated) {
-
-			ExportGedcomDialog dlg;
+		if (this.isWebApp) {
 			try {
-				dlg = new ExportGedcomDialog(this, databaseName, zipName);
+				SukuData dat = kontroller.getSukuData("cmd=schema", "type=get");
+				String schema = dat.generalArray.length == 1 ? dat.generalArray[0]
+						: "demo";
+				ExportGedcomDialog dlg;
+
+				dlg = new ExportGedcomDialog(this, schema, "gedcom.zip");
+
+				dlg.setVisible(true);
+
+				String[] failedLines = dlg.getResult();
+				if (failedLines != null) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < failedLines.length; i++) {
+						sb.append(failedLines[i]);
+					}
+					if (sb.length() > 0) {
+
+						if (dlg.getLang(true) != null) {
+							sb.append("\n");
+							sb.append(Resurses.getString("EXPORT_LANG"));
+							sb.append(" ");
+							sb.append(dlg.getLang(false));
+						}
+						if (dlg.getViewName() != null) {
+							sb.append("\n");
+							sb.append(Resurses.getString("EXPORTED_VIEW"));
+							sb.append(" ");
+							sb.append(dlg.getViewName());
+
+						}
+						java.util.Date d = new java.util.Date();
+						SukuPad pad = new SukuPad(this,
+								kontroller.getFileName() + "\n" + d.toString()
+										+ "\n\n" + sb.toString());
+						pad.setVisible(true);
+					}
+				}
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(this, e.getMessage());
 				return;
 			}
-			dlg.setVisible(true);
 
-			String[] failedLines = dlg.getResult();
-			if (failedLines != null) {
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < failedLines.length; i++) {
-					sb.append(failedLines[i]);
+		} else {
+			boolean isCreated = kontroller.createLocalFile("zip");
+			String zipName = kontroller.getFileName();
+			logger.finest("Opened GEDCOM FILE status " + isCreated);
+			if (isCreated) {
+
+				ExportGedcomDialog dlg;
+				try {
+					dlg = new ExportGedcomDialog(this, databaseName, zipName);
+				} catch (SukuException e) {
+					JOptionPane.showMessageDialog(this, e.getMessage());
+					return;
 				}
-				if (sb.length() > 0) {
+				dlg.setVisible(true);
 
-					if (dlg.getLang(true) != null) {
-						sb.append("\n");
-						sb.append(Resurses.getString("EXPORT_LANG"));
-						sb.append(" ");
-						sb.append(dlg.getLang(false));
+				String[] failedLines = dlg.getResult();
+				if (failedLines != null) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < failedLines.length; i++) {
+						sb.append(failedLines[i]);
 					}
-					if (dlg.getViewName() != null) {
-						sb.append("\n");
-						sb.append(Resurses.getString("EXPORTED_VIEW"));
-						sb.append(" ");
-						sb.append(dlg.getViewName());
+					if (sb.length() > 0) {
 
+						if (dlg.getLang(true) != null) {
+							sb.append("\n");
+							sb.append(Resurses.getString("EXPORT_LANG"));
+							sb.append(" ");
+							sb.append(dlg.getLang(false));
+						}
+						if (dlg.getViewName() != null) {
+							sb.append("\n");
+							sb.append(Resurses.getString("EXPORTED_VIEW"));
+							sb.append(" ");
+							sb.append(dlg.getViewName());
+
+						}
+						java.util.Date d = new java.util.Date();
+						SukuPad pad = new SukuPad(this,
+								kontroller.getFileName() + "\n" + d.toString()
+										+ "\n\n" + sb.toString());
+						pad.setVisible(true);
 					}
-					java.util.Date d = new java.util.Date();
-					SukuPad pad = new SukuPad(this, kontroller.getFileName()
-							+ "\n" + d.toString() + "\n\n" + sb.toString());
-					pad.setVisible(true);
+
 				}
-
 			}
-
 		}
 	}
 

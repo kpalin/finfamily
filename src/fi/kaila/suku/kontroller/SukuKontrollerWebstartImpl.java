@@ -27,6 +27,7 @@ import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
 
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -43,13 +44,6 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	private static Logger logger = null;
 
 	private FileContents fc = null;
-
-	private final InputStream in = null;
-
-	// public void createSukuDb() throws SukuException {
-	// // TODO Auto-generated method stub
-	//
-	// }
 
 	/**
 	 * constructor sets environment for remote.
@@ -654,8 +648,6 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		StringBuilder query = new StringBuilder();
 		// query.append(this.codebase);
 
-		int resu;
-
 		String paras[] = params;
 		try {
 			query.append("userno=" + this.userno);
@@ -880,6 +872,11 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			String[] extensions = new String[1];
 			extensions[0] = filter;
 			// in = new InputStream();
+
+			byte[] buffi = { '0', '1', '2', '3' };
+
+			ByteArrayInputStream in = new ByteArrayInputStream(buffi);
+
 			fc = fos.saveFileDialog(null, extensions, in, "FinFamily");
 
 			return true;
@@ -942,6 +939,32 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	public boolean isWebStart() {
 
 		return true;
+	}
+
+	@Override
+	public boolean saveFile(String filter, InputStream in) {
+		/**
+		 * This isn't yet ready
+		 */
+
+		FileSaveService fos;
+		try {
+			fos = (FileSaveService) ServiceManager
+					.lookup("javax.jnlp.FileSaveService");
+
+			String[] extensions = new String[1];
+			extensions[0] = Resurses.getString("FULL_PATHNAME") + " " + filter;
+			// in = new InputStream();
+
+			fc = fos.saveFileDialog(null, extensions, in, "FinFamily" + filter);
+
+			return true;
+		} catch (Exception e) {
+			Utils.println(this, "createLocal: " + e.toString());
+
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }

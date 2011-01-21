@@ -9,7 +9,7 @@
     <vendor>Kaarle Kaila</vendor>
     <homepage href="http://localhost:8080/finfamily/index.html"/>
     <description>FinFamily</description>
-    <description kind="short">>WebStart version of FinFamily genealogical application</description>
+    <description kind="short">WebStart version of FinFamily genealogical application</description>
     <offline-allowed/>
   </information>
   <resources>

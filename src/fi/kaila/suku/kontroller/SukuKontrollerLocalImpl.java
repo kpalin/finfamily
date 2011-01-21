@@ -349,4 +349,10 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		return false;
 	}
 
+	@Override
+	public boolean saveFile(String filter, InputStream in) {
+		// probably not used locally
+		return false;
+	}
+
 }

@@ -384,7 +384,7 @@ public class ExportBackupUtil {
 			unitEle.appendChild(notices);
 			double prossa = unitCounter / dbSize;
 			int prose = (int) (prossa * 100);
-			this.runner.setRunnerValue("" + prose + ";unit");
+			setRunnerValue("" + prose + ";unit");
 			// System.out.println("se on " + unitCounter + " [" + pid + "]");
 			// if (pid == 163) {
 			// System.out.println("onkelma");
@@ -504,7 +504,7 @@ public class ExportBackupUtil {
 			int prose = (int) (prossa * 100);
 			if (prose > 100)
 				prose = 100;
-			this.runner.setRunnerValue("" + prose + ";relation");
+			setRunnerValue("" + prose + ";relation");
 			createRelationNoticesElement(document, relEle, rid);
 
 			if (beginDesc != null) {
@@ -1281,6 +1281,17 @@ public class ExportBackupUtil {
 			return sb.toString();
 		}
 
+	}
+
+	private void setRunnerValue(String juttu) {
+		if (runner != null) {
+			// if (
+			this.runner.setRunnerValue(juttu);
+			// {
+			// throw new SukuException(
+			// Resurses.getString("EXECUTION_CANCELLED"));
+			// }
+		}
 	}
 
 }

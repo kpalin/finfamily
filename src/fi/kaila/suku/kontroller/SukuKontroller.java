@@ -153,6 +153,16 @@ public interface SukuKontroller {
 	public boolean createLocalFile(String filter);
 
 	/**
+	 * Method used in webstart version to save the buffer to a file on local
+	 * disk
+	 * 
+	 * @param filter
+	 * @param buffer
+	 * @return
+	 */
+	public boolean saveFile(String filter, InputStream in);
+
+	/**
 	 * <h1>Local file management</h1>.
 	 * 
 	 * @return created local file as an output stream

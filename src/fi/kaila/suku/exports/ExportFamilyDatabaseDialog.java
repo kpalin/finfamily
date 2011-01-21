@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Vector;
@@ -36,17 +37,17 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 
 	private static final String OK = "OK";
 	private static final String CANCEL = "CANCEL";
-	private JLabel textContent;
-	private JButton ok;
-	private JButton cancel;
-	private JTextField fileName;
+	private final JLabel textContent;
+	private final JButton ok;
+	private final JButton cancel;
+	private final JTextField fileName;
 
 	private String dbName = null;
 	private String zipName = null;
 	private Suku owner = null;
 	private static ExportFamilyDatabaseDialog runner = null;
-	private JLabel timeEstimate;
-	private JProgressBar progressBar;
+	private final JLabel timeEstimate;
+	private final JProgressBar progressBar;
 
 	private Task task = null;
 
@@ -278,8 +279,6 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 					String[] auxes = v.toArray(new String[0]);
 					SukuData resp = Suku.kontroller.getSukuData(auxes);
 
-					OutputStream fos = Suku.kontroller.getOutputStream();
-
 					String tekst = "EXPORT_BACKUP";
 
 					byte[] buffi = null;
@@ -289,19 +288,30 @@ public class ExportFamilyDatabaseDialog extends JDialog implements
 						buffi = tekst.getBytes();
 					}
 
-					try {
-						fos.write(buffi);
-						fos.close();
-					} catch (IOException e) {
-						JOptionPane.showMessageDialog(
-								null,
-								Resurses.getString("EXPORT_BACKUP") + ":"
-										+ e.getMessage());
-					}
-					if (resp.resu != null) {
-						JOptionPane.showMessageDialog(owner,
-								Resurses.getString("EXPORT_BACKUP") + ":"
-										+ resp.resu);
+					if (Suku.kontroller.isWebStart()) {
+
+						ByteArrayInputStream in = new ByteArrayInputStream(
+								buffi);
+
+						Suku.kontroller.saveFile("zip", in);
+
+					} else {
+
+						OutputStream fos = Suku.kontroller.getOutputStream();
+
+						try {
+							fos.write(buffi);
+							fos.close();
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(null,
+									Resurses.getString("EXPORT_BACKUP") + ":"
+											+ e.getMessage());
+						}
+						if (resp.resu != null) {
+							JOptionPane.showMessageDialog(owner,
+									Resurses.getString("EXPORT_BACKUP") + ":"
+											+ resp.resu);
+						}
 					}
 					// else {
 					// JOptionPane.showMessageDialog(owner, Resurses
