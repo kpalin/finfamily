@@ -2,14 +2,14 @@
 <!-- JNLP File for FinFamily -->
 <jnlp
   spec="1.0+"
-  codebase="http://localhost:8080/finfamily/"
+  codebase="http://www.sukuohjelmisto.fi/finfamily/"
   href="FinFamily.jnlp">
   <information>
     <title>FinFamily</title>
     <vendor>Kaarle Kaila</vendor>
-    <homepage href="http://localhost:8080/finfamily/index.html"/>
+    <homepage href="http://www.sukuohjelmisto.fi/finfamily/index.html"/>
     <description>FinFamily</description>
-    <description kind="short">WebStart version of FinFamily genealogical application</description>
+    <description kind="short">WebStart version of FinFamily</description>
     <offline-allowed/>
   </information>
   <resources>

@@ -6,10 +6,10 @@
   href="FF.jnlp">
   <information>
     <title>FinFamily</title>
-    <vendor>KK-Software</vendor>
+    <vendor>Kaarle Kaila</vendor>
     <homepage href="http://localhost:8080/finfamily/index.html"/>
     <description>FinFamily</description>
-    <description kind="short">Demonstrates how to use finfamily</description>
+    <description kind="short">WebStart version of FinFamily</description>
     <offline-allowed/>
   </information>
   <resources>
