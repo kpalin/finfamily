@@ -54,7 +54,6 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import fi.kaila.suku.kontroller.SukuKontroller;
-import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
 import fi.kaila.suku.report.AncestorReport;
 import fi.kaila.suku.report.AncestorTableReport;
 import fi.kaila.suku.report.CommonReport;
@@ -822,7 +821,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		Vector<String> v = new Vector<String>();
 
 		v.add(Resurses.getString("REPORT.FORMAT.JAVA"));
-		if (kontroller instanceof SukuKontrollerLocalImpl) {
+		if (!kontroller.isWebStart()) {
 			v.add(Resurses.getString("REPORT.FORMAT.WORD2003"));
 			v.add(Resurses.getString("REPORT.FORMAT.HTML"));
 			// v.add(Resurses.getString("REPORT.FORMAT.XML"));
@@ -1407,9 +1406,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		if (pers == null) {
 			type = "lista";
 		}
-		v.add("cmd=savesettings");
-		v.add("type=" + type);
-		v.add("index=" + settingsIndex);
+
 		v.add("name=" + (String) settingsName.getSelectedItem());
 		if (commonWithImages.getSelectedObjects() != null) {
 			v.add("images=true");
@@ -1525,8 +1522,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 
 		try {
-			SukuData reposet = Suku.kontroller.getSukuData(v
-					.toArray(new String[0]));
+			SukuData req = new SukuData();
+			req.generalArray = v.toArray(new String[0]);
+
+			SukuData reposet = Suku.kontroller.getSukuData(req,
+					"cmd=savesettings", "type=" + type, "index="
+							+ settingsIndex);
+
 			if (reposet.resu != null) {
 				JOptionPane.showMessageDialog(this, reposet.resu,
 						Resurses.getString(Resurses.SUKU),

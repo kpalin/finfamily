@@ -112,7 +112,7 @@ public class ReportUtil {
 
 		logger.fine("Descendant repo");
 
-		this.runner.setRunnerValue(Resurses.getString("REPORT_DESC_COUNTING"));
+		setRunnerValue(Resurses.getString("REPORT_DESC_COUNTING"));
 		tableNo = 1;
 		int gen = 0;
 		ReportUnit unit = unitMap.get(pid);
@@ -131,7 +131,7 @@ public class ReportUtil {
 
 		// logUnits("laskettu taulut");
 
-		this.runner.setRunnerValue(Resurses.getString("REPORT_DESC_ALSO_IN"));
+		setRunnerValue(Resurses.getString("REPORT_DESC_ALSO_IN"));
 
 		personReferences = Utils.getDescendantToistot(tables);
 		logUnits("laskettu toistot");
@@ -461,14 +461,11 @@ public class ReportUtil {
 
 		int tableNo = nexttab + 1;
 		if (round > 0) {
-			this.runner.setRunnerValue(Resurses
-					.getString("REPORT_TABSTRUCT_INITMALE")
-					+ " ["
-					+ round
-					+ "]: " + tableNo);
+			setRunnerValue(Resurses.getString("REPORT_TABSTRUCT_INITMALE")
+					+ " [" + round + "]: " + tableNo);
 		} else {
-			this.runner.setRunnerValue(Resurses
-					.getString("REPORT_TABSTRUCT_INIT") + " " + tableNo);
+			setRunnerValue(Resurses.getString("REPORT_TABSTRUCT_INIT") + " "
+					+ tableNo);
 		}
 		unitMap.put(unit.getPid(), unit);
 
@@ -845,8 +842,8 @@ public class ReportUtil {
 			throws SQLException, SukuException {
 		ArrayList<RelationShortData> rr = new ArrayList<RelationShortData>();
 		descListaCounter++;
-		this.runner.setRunnerValue(Resurses.getString("REPORT.LISTA.DESCLISTA")
-				+ " [" + descListaCounter + "/" + gen + "] ");
+		setRunnerValue(Resurses.getString("REPORT.LISTA.DESCLISTA") + " ["
+				+ descListaCounter + "/" + gen + "] ");
 		String sql;
 		PreparedStatement stm;
 		ResultSet rs;
@@ -1015,4 +1012,9 @@ public class ReportUtil {
 		return fam;
 	}
 
+	private void setRunnerValue(String juttu) {
+		if (runner != null) {
+			this.runner.setRunnerValue(juttu);
+		}
+	}
 }

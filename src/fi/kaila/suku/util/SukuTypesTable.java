@@ -202,9 +202,6 @@ public class SukuTypesTable extends JTable {
 
 		ArrayList<String> v = new ArrayList<String>();
 
-		v.add("cmd=savesettings");
-		v.add("type=" + type);
-		v.add("index=" + settingsIndex);
 		int typeCount = getRowCount();
 
 		for (int row = 0; row < typeCount; row++) {
@@ -222,8 +219,14 @@ public class SukuTypesTable extends JTable {
 		}
 
 		try {
-			SukuData reposet = Suku.kontroller.getSukuData(v
-					.toArray(new String[0]));
+			// String parms[] = v.toArray(new String[0]);
+			SukuData req = new SukuData();
+			req.generalArray = v.toArray(new String[0]);
+			// Utils.println(this, "# of parms: " + parms.length);
+			SukuData reposet = Suku.kontroller.getSukuData(req,
+					"cmd=savesettings", "type=" + type, "index="
+							+ settingsIndex);
+
 			if (reposet.resu != null && !reposet.resu.equals(Resurses.OK)) {
 				JOptionPane.showMessageDialog(this, reposet.resu,
 						Resurses.getString(Resurses.SUKU),

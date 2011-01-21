@@ -21,6 +21,7 @@ import java.util.zip.GZIPInputStream;
 import javax.jnlp.BasicService;
 import javax.jnlp.FileContents;
 import javax.jnlp.FileOpenService;
+import javax.jnlp.FileSaveService;
 import javax.jnlp.PersistenceService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
@@ -42,6 +43,8 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	private static Logger logger = null;
 
 	private FileContents fc = null;
+
+	private final InputStream in = null;
 
 	// public void createSukuDb() throws SukuException {
 	// // TODO Auto-generated method stub
@@ -453,12 +456,14 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 				} else {
 					in = uc.getInputStream();
 				}
+				Utils.println(this, "content coding is " + coding);
 				// InputStream in = uc.getInputStream();
 				ObjectInputStream ois = new ObjectInputStream(in);
 				SukuData fam = null;
 				try {
 					fam = (SukuData) ois.readObject();
-					ois.close();
+					Utils.println(this, "Sukudata received is " + fam);
+					in.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new SukuException(e);
@@ -862,8 +867,29 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 */
 	@Override
 	public boolean createLocalFile(String filter) {
-		// TODO Auto-generated method stub
-		return false;
+
+		/**
+		 * This isn't yet ready
+		 */
+
+		FileSaveService fos;
+		try {
+			fos = (FileSaveService) ServiceManager
+					.lookup("javax.jnlp.FileSaveService");
+
+			String[] extensions = new String[1];
+			extensions[0] = filter;
+			// in = new InputStream();
+			fc = fos.saveFileDialog(null, extensions, in, "FinFamily");
+
+			return true;
+		} catch (Exception e) {
+			Utils.println(this, "createLocal: " + e.toString());
+
+			e.printStackTrace();
+			return false;
+		}
+
 	}
 
 	/*

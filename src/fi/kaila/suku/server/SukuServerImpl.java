@@ -13,9 +13,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -485,7 +482,7 @@ public class SukuServerImpl implements SukuServer {
 		} else if (cmd.equals("relatives")) {
 			fam = executeCmdRelatives(map, fam);
 		} else if (cmd.equals("savesettings")) {
-			fam = saveReportSettings(map);
+			fam = saveReportSettings(request, map);
 		} else if (cmd.equals("schema")) {
 			executeCmdSchema(map, fam);
 		} else if (cmd.equals("sql")) {
@@ -2038,8 +2035,8 @@ public class SukuServerImpl implements SukuServer {
 	//
 	// }
 
-	private SukuData saveReportSettings(HashMap<String, String> map)
-			throws SukuException {
+	private SukuData saveReportSettings(SukuData request,
+			HashMap<String, String> map) throws SukuException {
 		SukuData res = new SukuData();
 		int index;
 
@@ -2057,9 +2054,10 @@ public class SukuServerImpl implements SukuServer {
 		} catch (NumberFormatException ne) {
 			index = -1;
 		}
-		if (index > 11 || index < 0)
+		if (index > 11 || index < 0) {
 			index = 0;
-
+		}
+		logger.fine("savesett" + index);
 		int luku = -1;
 		PreparedStatement pstm;
 		ResultSet rs;
@@ -2083,6 +2081,7 @@ public class SukuServerImpl implements SukuServer {
 		try {
 
 			sql = "delete from SukuSettings where SettingIndex = ? and settingtype = ?";
+			logger.fine(sql);
 			pstm = con.prepareStatement(sql);
 			pstm.setInt(1, index);
 			pstm.setString(2, type);
@@ -2093,27 +2092,23 @@ public class SukuServerImpl implements SukuServer {
 
 			sql = "insert into SukuSettings (SettingType,SettingIndex,SettingName,SettingValue) "
 					+ "values (?,?,?,?)";
-
+			logger.fine(sql);
 			pstm = con.prepareStatement(sql);
 
-			Set<Map.Entry<String, String>> entries = map.entrySet();
-			Iterator<Map.Entry<String, String>> ee = entries.iterator();
+			for (int i = 0; i < request.generalArray.length; i++) {
 
-			while (ee.hasNext()) {
-				Map.Entry<String, String> entry = ee.next();
-				if (!entry.getKey().equals("index")
-						&& !entry.getKey().equals("cmd")
-						&& !entry.getKey().equals("type")) {
+				String parts[] = request.generalArray[i].split("=");
+				if (parts.length == 2) {
 					pstm.setString(1, type);
 					pstm.setInt(2, index);
-					pstm.setString(3, entry.getKey().toString());
-					pstm.setString(4, entry.getValue().toString());
+					pstm.setString(3, parts[0]);
+					pstm.setString(4, parts[1]);
 					pstm.executeUpdate();
 				}
-
 			}
-			pstm.close();
 
+			pstm.close();
+			logger.fine("savedone: " + res);
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "report settings", e);
 

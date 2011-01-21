@@ -576,12 +576,11 @@ public class Resurses {
 
 		ArrayList<String> v = new ArrayList<String>();
 
-		v.add("cmd=savesettings");
-		v.add("type=country");
-		v.add("index=0");
 		v.add("country=" + countryCode);
-
-		Suku.kontroller.getSukuData(v.toArray(new String[0]));
+		SukuData req = new SukuData();
+		req.generalArray = v.toArray(new String[0]);
+		Suku.kontroller.getSukuData(req, "cmd=savesettings", "type=country",
+				"index=0");
 
 	}
 

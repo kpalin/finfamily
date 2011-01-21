@@ -431,7 +431,7 @@ public class SukuServlet extends HttpServlet {
 
 			GZIPOutputStream gos;
 			// ByteArrayOutputStream gos;
-			logger.info("ccmd:" + fam.cmd);
+			logger.info("cmd:" + fam.cmd);
 			try {
 				gos = new GZIPOutputStream(sos);
 				// gos = new ByteArrayOutputStream(sos);
@@ -439,15 +439,16 @@ public class SukuServlet extends HttpServlet {
 				oos.writeObject(fam);
 				oos.close();
 				// gos.close();
-
+				logger.info("oos: closed");
 			} catch (Exception e) {
+				logger.log(Level.WARNING, "GZIP send", e);
 				throw new SukuException("getShortPersonList", e);
 
 			}
 
 		} catch (SukuException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "servlet", e);
+
 		}
 
 		return;
