@@ -1091,42 +1091,38 @@ public class NoticePane extends JPanel implements ActionListener,
 			notice.setLanguages(lan.getLanguages());
 
 		} else if (cmd.equals("IMAGE_OPEN")) {
-			boolean openedImage = Suku.kontroller.openLocalFile("jpg;png;gif");
-			if (openedImage) {
-				long filesize = Suku.kontroller.getFileLength();
-				if (filesize > 0) {
-					BufferedInputStream bstr = new BufferedInputStream(
-							Suku.kontroller.getInputStream());
-					// System.out.println("OPEN: " + openedImage);
 
-					byte buffer[] = new byte[(int) filesize];
+			BufferedInputStream bstr = new BufferedInputStream(
+					Suku.kontroller.openLocalFile("jpg;png;gif"));
+			long filesize = Suku.kontroller.getFileLength();
+			byte buffer[] = new byte[(int) filesize];
 
-					try {
-						int luettu = bstr.read(buffer);
-						if (luettu == filesize) {
-							notice.setMediaData(buffer);
-						} else {
-							logger.warning("Filesize expected " + filesize
-									+ " read " + luettu);
-						}
-						bstr.close();
-						notice.setMediaFilename(Suku.kontroller.getFileName());
-						getImage();
-						if (imageSize != null) {
-							notice.setMediaSize(imageSize);
-						}
-						mediaFilename.setText(notice.getMediaFilename());
-
-						updateUI();
-					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(this, e1.getMessage(),
-								Resurses.getString(Resurses.SUKU),
-								JOptionPane.ERROR_MESSAGE);
-
-						e1.printStackTrace();
-					}
+			try {
+				int luettu = bstr.read(buffer);
+				if (luettu == filesize) {
+					notice.setMediaData(buffer);
+				} else {
+					logger.warning("Filesize expected " + filesize + " read "
+							+ luettu);
 				}
+				bstr.close();
+				notice.setMediaFilename(Suku.kontroller.getFileName());
+				getImage();
+				if (imageSize != null) {
+					notice.setMediaSize(imageSize);
+				}
+				mediaFilename.setText(notice.getMediaFilename());
+
+				updateUI();
+			} catch (Exception e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage(),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
+
+				e1.printStackTrace();
 			}
+			// }
+			// }
 			// // } else if (cmd.equals("DELETE")) {
 			// // setToBeDeleted(true, false);
 			// // } else if (cmd.equals("ADD")) {

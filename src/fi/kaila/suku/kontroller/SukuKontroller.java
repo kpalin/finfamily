@@ -79,7 +79,7 @@ public interface SukuKontroller {
 	 *            the filter
 	 * @return true if opened file selected
 	 */
-	public boolean openLocalFile(String filter);
+	public boolean openFile(String filter);
 
 	/**
 	 * <h1>Local file management</h1>.
@@ -166,7 +166,7 @@ public interface SukuKontroller {
 	 *            of file to open
 	 * @return InputStream to the file
 	 */
-	public InputStream openFile(String path);
+	public InputStream openLocalFile(String path);
 
 	/**
 	 * 

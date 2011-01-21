@@ -125,7 +125,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	 * fi.kaila.suku.kontroller.SukuKontroller#openLocalFile(java.lang.String)
 	 */
 	@Override
-	public boolean openLocalFile(String filter) {
+	public boolean openFile(String filter) {
 		// TODO Auto-generated method stub
 		Preferences sr = Preferences.userRoot();
 
@@ -313,25 +313,22 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	 * @see fi.kaila.suku.kontroller.SukuKontroller#openFile(java.lang.String)
 	 */
 	@Override
-	public InputStream openFile(String path) {
-		if (path != null) {
+	public InputStream openLocalFile(String path) {
 
-			if (file == null)
-				return null;
+		if (openFile(path)) {
+			if (path != null) {
+				if (file == null)
+					return null;
 
-			String mainPath = file.getAbsolutePath();
-			int last = mainPath.replace('\\', '/').lastIndexOf('/');
-			if (last < 0)
-				return null;
-			String absPath = mainPath.substring(0, last + 1) + path;
+				String mainPath = file.getAbsolutePath();
 
-			try {
-				return new FileInputStream(absPath);
-			} catch (FileNotFoundException e) {
-				logger.log(Level.WARNING, e.getMessage());
+				try {
+					return new FileInputStream(mainPath);
+				} catch (FileNotFoundException e) {
+					logger.log(Level.WARNING, e.getMessage());
 
+				}
 			}
-
 		}
 		return null;
 	}

@@ -42,6 +42,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	private static Logger logger = null;
 
 	private String filename = null;
+	FileContents fc = null;
 
 	// public void createSukuDb() throws SukuException {
 	// // TODO Auto-generated method stub
@@ -485,7 +486,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 * fi.kaila.suku.kontroller.SukuKontroller#openLocalFile(java.lang.String)
 	 */
 	@Override
-	public boolean openLocalFile(String filter) {
+	public boolean openFile(String filter) {
 		this.filename = null;
 		FileOpenService fos;
 		String lineEnd = "\r\n";
@@ -493,7 +494,6 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 		String boundary = "*****";
 		DataOutputStream dos = null;
 		InputStream iis = null;
-		FileContents fc = null;
 
 		int resu;
 		// System.out.println("huhuu");
@@ -805,7 +805,14 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 */
 	@Override
 	public long getFileLength() {
-		logger.severe("getFileLength not implemented");
+		if (fc != null) {
+			try {
+				return fc.getLength();
+			} catch (IOException e) {
+				Utils.println(this, e.toString());
+			}
+		}
+
 		return 0;
 	}
 
@@ -816,8 +823,17 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 */
 	@Override
 	public InputStream getInputStream() {
-		Utils.println(this, "getInputStream not implemented");
-		logger.severe("getInputStream not implemented");
+
+		if (fc != null) {
+			try {
+				return fc.getInputStream();
+			} catch (IOException e) {
+				Utils.println(this, "getInputStream " + e.toString());
+				return null;
+			}
+		}
+		Utils.println(this, "getInputStream not found");
+		logger.severe("getInputStream not found");
 		return null;
 	}
 
@@ -860,9 +876,22 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	 * @see fi.kaila.suku.kontroller.SukuKontroller#openFile(java.lang.String)
 	 */
 	@Override
-	public InputStream openFile(String path) {
-		// TODO Auto-generated method stub
+	public InputStream openLocalFile(String path) {
+
+		try {
+			FileOpenService fos = (FileOpenService) ServiceManager
+					.lookup("javax.jnlp.FileOpenService");
+
+			fc = fos.openFileDialog(null, null);
+			if (fc != null) {
+				return fc.getInputStream();
+			}
+		} catch (Exception e1) {
+			Utils.println(this, "openfile: " + e1.toString());
+
+		}
 		return null;
+
 	}
 
 	/*

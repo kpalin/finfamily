@@ -2394,7 +2394,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void importConversions() {
 		try {
-			boolean openedFile = Suku.kontroller.openLocalFile("xls");
+			boolean openedFile = Suku.kontroller.openFile("xls");
 			if (openedFile) {
 				kontroller.getSukuData("cmd=excel", "file=xls",
 						"page=conversions", "type=import");
@@ -2416,7 +2416,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		boolean isOpened;
 
-		isOpened = kontroller.openLocalFile("ged;zip");
+		isOpened = kontroller.openFile("ged;zip");
 		String dbname = kontroller.getFileName();
 		logger.finest("Opened GEDCOM FILE status " + isOpened);
 		Utils.println(this, "gedcom open=" + isOpened + ": " + dbname);
@@ -2508,7 +2508,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void importDefaultTypes() {
 		try {
-			boolean openedFile = Suku.kontroller.openLocalFile("xls");
+			boolean openedFile = Suku.kontroller.openFile("xls");
 			if (openedFile) {
 				kontroller.getSukuData("cmd=excel", "file=xls", "page=types");
 				SukuTypesModel typesModel = Utils.typeInstance();
@@ -2529,7 +2529,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void importDefaultCoordinates() {
 		try {
-			boolean openedFile = Suku.kontroller.openLocalFile("xls");
+			boolean openedFile = Suku.kontroller.openFile("xls");
 			if (openedFile) {
 				kontroller.getSukuData("cmd=excel", "file=xls",
 						"page=coordinates");
@@ -3288,7 +3288,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.table.updateUI();
 			this.scrollPane.updateUI();
 
-			isOpened = kontroller.openLocalFile("xml;xml.gz;zip");
+			isOpened = kontroller.openFile("xml;xml.gz;zip");
 
 			logger.finest("Opened IMPORT FILE status " + isOpened);
 
@@ -3510,14 +3510,20 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mQuery.setEnabled(isConnected == 2);
 		mSettings.setEnabled(isConnected > 0);
 		mNewDatabase.setEnabled(isConnected != 0);
-		mDropSchema.setEnabled(isConnected != 0);
+		if (!this.isWebApp) {
+			mDropSchema.setEnabled(isConnected != 0);
+		}
 		mOpenPerson.setEnabled(isConnected == 2);
 		mPrintPerson.setEnabled(isConnected == 2);
 		mShowInMap.setEnabled(isConnected == 2);
 		mLista.setEnabled(isConnected == 2);
 		// mDisconnect.setEnabled(isConnected != 0);
 		tQueryButton.setEnabled(isConnected == 2);
-		mImportHiski.setEnabled(isConnected == 2);
+		if (this.isWebApp) {
+			mImportHiski.setEnabled(false);
+		} else {
+			mImportHiski.setEnabled(isConnected == 2);
+		}
 		mNewPerson.setEnabled(isConnected == 2);
 		mShowNotices.setEnabled(isConnected == 2);
 		mShowNote.setEnabled(isConnected == 2);
