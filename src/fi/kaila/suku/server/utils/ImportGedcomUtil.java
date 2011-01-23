@@ -1305,7 +1305,6 @@ public class ImportGedcomUtil {
 					} catch (FileNotFoundException e) {
 						ins = null;
 					}
-					;
 				}
 				if (ins != null) {
 					BufferedInputStream bstr = null;
