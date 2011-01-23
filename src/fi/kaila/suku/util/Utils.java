@@ -862,4 +862,39 @@ public class Utils {
 
 	}
 
+	/**
+	 * remove diacritcs from text
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public static String toUsAscii(String text) {
+		if (text == null)
+			return null;
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < text.length(); i++) {
+			String c = text.substring(i, i + 1);
+			if (c.equals("å"))
+				c = "a";
+			else if (c.equals("ä"))
+				c = "a";
+			else if (c.equals("ö"))
+				c = "o";
+			else if (c.equals("Å"))
+				c = "A";
+			else if (c.equals("Ä"))
+				c = "A";
+			else if (c.equals("Ö"))
+				c = "O";
+			else if (c.compareTo(" ") <= 0)
+				c = "_";
+			else if (c.compareTo("z") > 0)
+				c = "x";
+			sb.append(c);
+
+		}
+		return sb.toString();
+	}
+
 }

@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -369,6 +370,8 @@ public class ExcelImporter {
 
 		SukuData suk = new SukuData();
 
+		Vector<String> errvec = new Vector<String>();
+
 		String INSERT_PLACELOC = "insert into PlaceLocations (PlaceName,CountryCode,Location) values (?,?,point(?,?))";
 		String INSERT_PLACEOTHER = "insert into PlaceOtherNames (OtherName,CountryCode,PlaceName) values (?,?,?)";
 
@@ -458,10 +461,13 @@ public class ExcelImporter {
 							laskuri1++;
 
 						} catch (SQLException e) {
-							logger.info("failed to insert " + placeName
+							String error = "Failed to insert " + placeName
 									+ " at [" + placeLongitude + ";"
-									+ placeLatitude + "] " + e.getMessage());
-							e.printStackTrace();
+									+ placeLatitude + "] \n" + e.getMessage()
+									+ "\n";
+							logger.info(error);
+							errvec.add(error);
+							// e.printStackTrace();
 						}
 
 					}
@@ -494,10 +500,12 @@ public class ExcelImporter {
 									pstOther.executeUpdate();
 									laskuri2++;
 								} catch (SQLException e) {
-									logger.info("failed to insert " + otherName
-											+ " for [" + placeName + "] "
-											+ e.getMessage());
-									e.printStackTrace();
+									String error = "failed to insert "
+											+ otherName + " for [" + placeName
+											+ "] \n" + e.getMessage() + "\n";
+									logger.info(error);
+									errvec.add(error);
+									// e.printStackTrace();
 								}
 							}
 
@@ -514,9 +522,12 @@ public class ExcelImporter {
 						+ " othernames in [" + sheetName.toUpperCase() + "]");
 
 			}
+
 		} catch (Throwable e1) {
 			suk.resu = e1.getMessage();
-			e1.printStackTrace();
+
+		} finally {
+			suk.generalArray = errvec.toArray(new String[0]);
 		}
 
 		return suk;

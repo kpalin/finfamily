@@ -67,6 +67,8 @@ public class SukuPad extends JDialog implements ActionListener {
 
 		txtArea = new JTextArea(text);
 		JScrollPane sc = new JScrollPane(txtArea);
+		txtArea.setLineWrap(true);
+		txtArea.setWrapStyleWord(true);
 		getContentPane().add(sc);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(d.width / 2 - 300, d.height / 2 - 200, 600, 400);

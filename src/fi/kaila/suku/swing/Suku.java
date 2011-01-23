@@ -2584,13 +2584,35 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			boolean openedFile = Suku.kontroller.openFile("xls");
 			if (openedFile) {
-				kontroller.getSukuData("cmd=excel", "file=xls",
-						"page=coordinates");
+				SukuData result = kontroller.getSukuData("cmd=excel",
+						"file=xls", "page=coordinates");
+				if (result.generalArray != null) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < result.generalArray.length; i++) {
+						sb.append(result.generalArray[i]);
+					}
+					if (sb.length() > 0) {
 
-				JOptionPane.showMessageDialog(this,
-						Resurses.getString("IMPORTED_COORDINATES"),
-						Resurses.getString(Resurses.SUKU),
-						JOptionPane.INFORMATION_MESSAGE);
+						java.util.Date d = new java.util.Date();
+						SukuPad pad = new SukuPad(
+								this,
+								kontroller.getFileName()
+										+ "\n"
+										+ d.toString()
+										+ "\n"
+										+ Resurses
+												.getString("COORDINATE_IMPORT_FAILED")
+										+ "\n\n" + sb.toString());
+						pad.setVisible(true);
+					} else {
+						JOptionPane.showMessageDialog(this,
+								Resurses.getString("IMPORTED_COORDINATES"),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+
+				}
+
 			}
 		} catch (SukuException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(),

@@ -17,6 +17,7 @@ import javax.swing.event.MouseInputListener;
 import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.pojo.SukuData;
 
 /**
@@ -142,7 +143,7 @@ public class SelectSchema extends JDialog implements ActionListener,
 	 */
 	public String getSchema() {
 		if (okSelected) {
-			return schema.getText();
+			return Utils.toUsAscii(schema.getText());
 		}
 		return null;
 

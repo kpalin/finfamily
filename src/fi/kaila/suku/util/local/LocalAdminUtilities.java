@@ -24,6 +24,7 @@ import javax.swing.ListSelectionModel;
 
 import fi.kaila.suku.swing.ISuku;
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.Utils;
 
 /**
  * Admin part of application uses database directly from user side This is not
@@ -40,8 +41,8 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 
 	// JMenu mDb;
 
-	private ISuku parent;
-	private LocalAdminUtilities me;
+	private final ISuku parent;
+	private final LocalAdminUtilities me;
 
 	private JMenuItem mNewUser = null;
 	private JMenuItem mChangePassword = null;
@@ -51,7 +52,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 
 	private JList dblista;
 	private JComboBox userCombo;
-	private String dbDriver = "org.postgresql.Driver";
+	private final String dbDriver = "org.postgresql.Driver";
 
 	/**
 	 * Constructor.
@@ -249,7 +250,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 			LocalUserAdmin ladm = new LocalUserAdmin(this);
 			ladm.setVisible(true);
 
-			newUser = toAscii(ladm.getUserid());
+			newUser = Utils.toUsAscii(ladm.getUserid());
 			newPassword = ladm.getPassword();
 
 			if (newUser != null && newPassword != null && newUser.length() > 2
@@ -321,7 +322,7 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 			}
 		} else if (cmd.equals(Resurses.NEWDB)) {
 
-			String newDb = toAscii(JOptionPane.showInputDialog(this,
+			String newDb = Utils.toUsAscii(JOptionPane.showInputDialog(this,
 					Resurses.getString("NEWDATABASENAME")));
 			Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
 			setCursor(hourglassCursor);
@@ -385,35 +386,6 @@ public class LocalAdminUtilities extends JFrame implements ActionListener {
 			this.setVisible(false);
 		}
 
-	}
-
-	private String toAscii(String text) {
-		if (text == null)
-			return null;
-		StringBuilder sb = new StringBuilder();
-
-		for (int i = 0; i < text.length(); i++) {
-			String c = text.substring(i, i + 1);
-			if (c.equals("å"))
-				c = "a";
-			else if (c.equals("ä"))
-				c = "a";
-			else if (c.equals("ö"))
-				c = "ö";
-			else if (c.equals("Å"))
-				c = "A";
-			else if (c.equals("Ä"))
-				c = "A";
-			else if (c.equals("Ö"))
-				c = "O";
-			else if (c.compareTo(" ") <= 0)
-				c = "_";
-			else if (c.compareTo("z") > 0)
-				c = "x";
-			sb.append(c);
-
-		}
-		return sb.toString();
 	}
 
 }
