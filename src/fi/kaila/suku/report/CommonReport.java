@@ -605,59 +605,6 @@ public abstract class CommonReport {
 
 	}
 
-	protected void createExportTable(int idx, int[] pidCount) {
-		BodyText bt = new TableHeaderText();
-
-		//
-		// Tässä vaan mallin vuoksi otetaan raporttiikkunasta arvo mukaan
-		//
-		bt.addText(Resurses.getReportString("REPORT.EXPORT.TABLE") + ":"
-				+ caller.getExportPane().getAncestors() + ":" + pidCount[idx]);
-		repoWriter.addText(bt);
-
-		SukuData pdata = null;
-		StringBuilder tabOwner = new StringBuilder();
-
-		try {
-			pdata = caller.getKontroller().getSukuData("cmd=person",
-					"pid=" + pidCount[idx], "lang=" + Resurses.getLanguage());
-		} catch (SukuException e1) {
-			logger.log(Level.WARNING, "background reporting", e1);
-			JOptionPane.showMessageDialog(caller, e1.getMessage());
-			return;
-		}
-
-		UnitNotice[] notices = pdata.persLong.getNotices();
-
-		for (int j = 0; j < notices.length; j++) {
-			UnitNotice nn = notices[j];
-			if (nn.getTag().equals("NAME")) {
-				tabOwner.append(nn.getSurname());
-				if (tabOwner.length() > 0)
-					tabOwner.append(" ");
-				tabOwner.append(nn.getGivenname());
-				// break;
-			}
-
-			String xxx = nn.getMediaTitle();
-			if (xxx == null) {
-				xxx = "";
-			}
-
-		}
-		float prose = (idx * 100f) / pidCount.length;
-		caller.setRunnerValue("" + (int) prose + ";" + tabOwner);
-
-		bt = new MainPersonText();
-		printName(bt, pdata.persLong, 2);
-		repoWriter.addText(bt);
-
-		printNotices(bt, notices, 2, 0);
-		// bt = new BodyText();
-		// bt.addText("");
-		repoWriter.addText(bt);
-	}
-
 	/**
 	 * @param tabMember
 	 * @param bt

@@ -1296,6 +1296,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		StringBuilder sb = new StringBuilder();
 		sb.append(Resurses.getString(Resurses.SUKU));
 
+		if (Suku.kontroller.isWebStart()) {
+			sb.append("-");
+			sb.append(Resurses.getString("WEBSTART_NAME"));
+		}
+
 		if (isConnected > 0) {
 
 			try {
