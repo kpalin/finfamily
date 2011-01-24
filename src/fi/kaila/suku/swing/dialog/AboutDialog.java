@@ -81,12 +81,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 			about.append(Suku.postServerVersion);
 			about.append("\n");
 		}
-		if (Suku.serverVersion != null) {
-			about.append(Resurses.getString(Resurses.ABOUT_SERVER_VERSION));
-			about.append(": ");
-			about.append(Suku.serverVersion);
-			about.append("\n");
-		}
+
 		SukuData stats = null;
 		try {
 			Utils.println(this, "fetching dbstats");

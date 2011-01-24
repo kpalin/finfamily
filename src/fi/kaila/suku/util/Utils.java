@@ -694,6 +694,7 @@ public class Utils {
 				String[] macs = { "open", "" };
 				macs[1] = url;
 				Process p = Runtime.getRuntime().exec(macs);
+				p.waitFor();
 			}
 
 			// Properties props = System.getProperties();
@@ -849,17 +850,18 @@ public class Utils {
 	 * @param text
 	 *            to print
 	 */
+	@SuppressWarnings("unused")
 	public static void println(Object source, String text) {
+		if (false) {
+			String name = (source == null) ? "" : source.getClass().getName()
+					+ " :";
+			int ii = name.lastIndexOf(".");
+			if (ii > 0) {
+				name = name.substring(ii + 1);
+			}
 
-		String name = (source == null) ? "" : source.getClass().getName()
-				+ " :";
-		int ii = name.lastIndexOf(".");
-		if (ii > 0) {
-			name = name.substring(ii + 1);
+			System.out.println(name + text);
 		}
-
-		System.out.println(name + text);
-
 	}
 
 	/**

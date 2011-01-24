@@ -529,8 +529,9 @@ public class XmlReport implements ReportInterface {
 				// redirect stderr to get transformation error data to the
 				// logger
 				PrintStream stderr = new PrintStream(barray);
-
-				System.setErr(stderr);
+				if (!Suku.kontroller.isWebStart()) {
+					System.setErr(stderr);
+				}
 				DOMSource docw = new DOMSource(doc);
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				TransformerFactory tfactory = TransformerFactory.newInstance();
@@ -590,10 +591,14 @@ public class XmlReport implements ReportInterface {
 			logger.log(Level.WARNING, barray.toString());
 			logger.log(Level.WARNING, e.getMessage(), e);
 			String messu = e.getMessage();
-			System.setErr(origErr);
+			if (!Suku.kontroller.isWebStart()) {
+				System.setErr(origErr);
+			}
 			throw new SukuException(messu);
 		}
-		System.setErr(origErr);
+		if (!Suku.kontroller.isWebStart()) {
+			System.setErr(origErr);
+		}
 	}
 
 	private Document doc = null;

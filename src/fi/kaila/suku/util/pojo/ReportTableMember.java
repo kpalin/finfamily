@@ -438,7 +438,11 @@ public class ReportTableMember implements Serializable {
 	 * father=2, mother = 3, fathers father 4 etc.
 	 */
 
-	class SubPersonMember implements Comparable<SubPersonMember> {
+	class SubPersonMember implements Comparable<SubPersonMember>, Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private int pid = 0;
 		private String sex = null;
 		private long stradoNum = 0;

@@ -1673,16 +1673,17 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			} else {
 
 				if (endSuccess) {
-					int answer = JOptionPane.showConfirmDialog(runner,
-							Resurses.getString("REPORT.INDEX.CREATE"),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.YES_NO_OPTION);
-					if (answer == 0) {
-						taskIndex = new TaskIndex();
-						taskIndex.indexTabOffset = tabOffset;
-						taskIndex.addPropertyChangeListener(self);
-						taskIndex.execute();
-
+					if (!Suku.kontroller.isWebStart()) {
+						int answer = JOptionPane.showConfirmDialog(runner,
+								Resurses.getString("REPORT.INDEX.CREATE"),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.YES_NO_OPTION);
+						if (answer == 0) {
+							taskIndex = new TaskIndex();
+							taskIndex.indexTabOffset = tabOffset;
+							taskIndex.addPropertyChangeListener(self);
+							taskIndex.execute();
+						}
 					} else {
 						self.setVisible(false);
 					}
