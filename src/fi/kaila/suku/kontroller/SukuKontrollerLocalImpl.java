@@ -354,11 +354,11 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 
 		if (createLocalFile(filter)) {
 			try {
-				byte[] buffer = new byte[16 * 1024];
+				byte[] buffer = new byte[1024];
 
 				int readBytes = 0;
 				FileOutputStream fos = new FileOutputStream(file);
-				while ((readBytes = in.read(buffer)) <= 0) {
+				while ((readBytes = in.read(buffer)) >= 0) {
 					fos.write(buffer, 0, readBytes);
 				}
 

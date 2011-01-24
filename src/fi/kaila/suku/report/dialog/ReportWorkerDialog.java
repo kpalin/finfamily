@@ -821,10 +821,11 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		Vector<String> v = new Vector<String>();
 
 		v.add(Resurses.getString("REPORT.FORMAT.JAVA"));
+
+		v.add(Resurses.getString("REPORT.FORMAT.WORD2003"));
 		if (!kontroller.isWebStart()) {
-			v.add(Resurses.getString("REPORT.FORMAT.WORD2003"));
 			v.add(Resurses.getString("REPORT.FORMAT.HTML"));
-			// v.add(Resurses.getString("REPORT.FORMAT.XML"));
+
 		}
 
 		lb = new JLabel(Resurses.getString("REPORT.FORMAT"));

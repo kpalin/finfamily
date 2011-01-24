@@ -2,11 +2,13 @@ package fi.kaila.suku.report;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.logging.Level;
@@ -32,6 +34,7 @@ import org.w3c.dom.Element;
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.report.style.BodyText;
 import fi.kaila.suku.report.style.ImageText;
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
@@ -101,17 +104,19 @@ public class XmlReport implements ReportInterface {
 
 		switch (translatorIdx) {
 		case 1:
-			translator = "resources/xml/docx.xsl";
-			report = createFile("xml");
-			break;
+			// translator = "resources/xml/docx.xsl";
+			// report = createFile("xml");
+			// break;
+			translator = "/xml/full2003.xsl";
+			report = null; // createFile("xml");
+			return;
 		case 2:
 			translator = "resources/xml/html.xsl";
 			report = createFile("html");
 			break;
 		default:
-			translator = null;
-			report = createFile("doc");
-			break;
+			throw new SukuException(
+					Resurses.getString("WARN_REPORT_NOT_SELECTED"));
 
 		}
 		if (report != null) {
@@ -512,24 +517,15 @@ public class XmlReport implements ReportInterface {
 				File dd = new File(folder);
 				dd.delete();
 			}
-			if (debugState) {
-				logger.info("raw xml-file stored at " + report + ".debug.xml");
-				DOMSource docw = new DOMSource(doc);
-				ByteArrayOutputStream bout = new ByteArrayOutputStream();
-				TransformerFactory tfactory = TransformerFactory.newInstance();
-
-				Transformer transformer = tfactory.newTransformer();//
-				transformer.transform(docw, new StreamResult(bout));
-				FileOutputStream fos = new FileOutputStream(report
-						+ ".debug.xml");
-				fos.write(bout.toByteArray());
-				fos.close();
-			}
 
 			if (translator != null) {
 				logger.info("report will store at " + report);
-				File f = new File(translator);
-				logger.info("transformed with " + f.getAbsolutePath());
+
+				InputStream in = this.getClass()
+						.getResourceAsStream(translator);
+
+				// File f = new File(translator);
+				// logger.info("transformed with " + f.getAbsolutePath());
 				// redirect stderr to get transformation error data to the
 				// logger
 				PrintStream stderr = new PrintStream(barray);
@@ -539,16 +535,55 @@ public class XmlReport implements ReportInterface {
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				TransformerFactory tfactory = TransformerFactory.newInstance();
 				// Create a transformer for the stylesheet.
-				Source src = new StreamSource(translator);
+				// Source src = new StreamSource(translator);
+				Source src;
+				if (report == null) {
+					src = new StreamSource(in);
+				} else {
+					src = new StreamSource(translator);
+				}
+
 				Transformer transformer = tfactory.newTransformer(src);
 
 				transformer.transform(docw, new StreamResult(bout));
-				FileOutputStream fos = new FileOutputStream(report);
-				fos.write(bout.toByteArray());
-				fos.close();
-				logger.fine(report + " will be opened");
-				parent.addRepoForDisplay(report);
-				// Utils.openExternalFile(report);
+				if (report != null) {
+					FileOutputStream fos = new FileOutputStream(report);
+					fos.write(bout.toByteArray());
+					fos.close();
+					logger.fine(report + " will be opened");
+					parent.addRepoForDisplay(report);
+				} else {
+					byte[] buffi = bout.toByteArray();
+
+					ByteArrayInputStream bin = new ByteArrayInputStream(buffi);
+
+					Suku.kontroller.saveFile("xml", bin);
+					logger.fine(report + " will be opened");
+					String outPath = Suku.kontroller.getFilePath();
+					if (outPath != null) {
+						parent.addRepoForDisplay(outPath);
+					}
+				}
+
+			}
+			if (debugState && !Suku.kontroller.isWebStart()) {
+
+				DOMSource docw = new DOMSource(doc);
+				ByteArrayOutputStream bout = new ByteArrayOutputStream();
+				TransformerFactory tfactory = TransformerFactory.newInstance();
+
+				Transformer transformer = tfactory.newTransformer();//
+				transformer.transform(docw, new StreamResult(bout));
+
+				byte[] buffi = bout.toByteArray();
+
+				ByteArrayInputStream bin = new ByteArrayInputStream(buffi);
+				Suku.kontroller.saveFile("debug.xml", bin);
+
+				// FileOutputStream fos = new FileOutputStream(report
+				// + ".debug.xml");
+				// fos.write(bout.toByteArray());
+				// fos.close();
 			}
 
 		} catch (Throwable e) {
