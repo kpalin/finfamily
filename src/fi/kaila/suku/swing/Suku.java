@@ -1495,8 +1495,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void connectDb() {
 		sukuObject = null;
 		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
-
-		if (this.isConnected != 0) {
+		boolean hasMemory = cdlg.hasDatabase();
+		if (this.isConnected != 0 && hasMemory) {
 			this.tableModel.resetModel(); // clear contents of table first
 			table.getRowSorter().modelStructureChanged();
 			this.table.clearSelection();
@@ -1565,6 +1565,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				}
 				schema = schemas.getSchema();
 				if (schema == null) {
+					cdlg.rememberDatabase(false);
 					return;
 				}
 				SukuData dblist = kontroller.getSukuData("cmd=dblista");
@@ -3311,13 +3312,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void disconnectDb() {
 
+		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
+		cdlg.rememberDatabase(false);
 		if (isConnected == 0)
 			return;
 		SukuData request = new SukuData();
 		request.generalArray = needle.toArray(new String[0]);
-
-		ConnectDialog cdlg = new ConnectDialog(this, kontroller, isWebApp);
-		cdlg.rememberDatabase(false);
 
 		try {
 			Suku.kontroller.getSukuData(request, "cmd=updatesettings",
