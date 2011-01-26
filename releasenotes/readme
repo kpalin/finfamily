@@ -2,6 +2,11 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+
+Release 1088 on 26 jan 2011
+
+* Fix to backup store
+
 Release 1084 on 23 jan 2011
 
 * Program structural changes

@@ -244,7 +244,7 @@ public class AntVersion {
 AppId={{68611E54-42B6-437B-9857-411678FE2E68}
 AppName=FinFamily
 AppVerName=FinFamily ${app.version}.${revision.version}
-AppPublisher=KK-Software
+AppPublisher=Kaarle Kaila
 AppPublisherURL=http://www.sukuohjelmisto.fi
 AppSupportURL=http://www.sukuohjelmisto.fi
 AppUpdatesURL=http://www.sukuohjelmisto.fi
