@@ -1241,11 +1241,19 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 				return resp;
 			} catch (SukuException e) {
-				JOptionPane.showMessageDialog(this, e.getMessage(),
-						Resurses.getString(Resurses.SUKU),
-						JOptionPane.ERROR_MESSAGE);
+				String message = Resurses.getString(e.getMessage());
+				if (!message.equals(e.getMessage())) {
+					JOptionPane.showMessageDialog(this, message,
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+				} else {
 
-				e.printStackTrace();
+					JOptionPane.showMessageDialog(this, e.getMessage(),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+
+					e.printStackTrace();
+				}
 			}
 		}
 

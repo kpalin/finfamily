@@ -200,10 +200,9 @@ public class PersonUtil {
 					int lukuri = pst.executeUpdate();
 					if (lukuri != 1) {
 
-						logger.warning("Person updated for pid " + pid
-								+ "  gave result " + lukuri);
-						throw new SQLException("Person update for pid " + pid
+						logger.warning("Person update for pid " + pid
 								+ " failed [" + lukuri + "] (Should be 1)");
+						throw new SQLException("TRANSACTION_ERROR");
 					}
 
 					// update relation as b set tag='FATH'
@@ -293,11 +292,10 @@ public class PersonUtil {
 						pstDel.setInt(1, n.getPnid());
 						int delcnt = pstDel.executeUpdate();
 						if (delcnt == 1) {
-							logger.warning("Person notice delete for pid "
-									+ pid + "  gave result " + delcnt);
-							throw new SQLException("Person notice ["
-									+ n.getTag() + "]delete for pid " + pid
-									+ " failed [" + delcnt + "] (Should be 1)");
+							logger.warning("Person notice [" + n.getTag()
+									+ "]delete for pid " + pid + " failed ["
+									+ delcnt + "] (Should be 1)");
+							throw new SQLException("TRANSACTION_ERROR");
 						}
 						String text = "Poistettiin " + delcnt + " riviä ["
 								+ landelcnt + "] kieliversiota pid = "
@@ -387,12 +385,11 @@ public class PersonUtil {
 							}
 							int luku = pst.executeUpdate();
 							if (luku != 1) {
-								logger.warning("Person notice updated for pid "
-										+ pid + "  gave result " + luku);
-								throw new SQLException("Person notice ["
-										+ n.getTag() + "] update for pid "
-										+ pid + " failed [" + luku
+								logger.warning("Person notice [" + n.getTag()
+										+ "] update for pid " + pid
+										+ " failed [" + luku
 										+ "] (Should be 1)");
+								throw new SQLException("TRANSACTION_ERROR");
 							}
 
 							logger.fine("Päivitettiin " + luku
@@ -510,8 +507,24 @@ public class PersonUtil {
 				}
 
 			}
+
+			if (req.relations != null) {
+				if (req.persLong.getPid() == 0) {
+					req.persLong.setPid(pid);
+					for (int i = 0; i < req.relations.length; i++) {
+						Relation r = req.relations[i];
+						if (r.getPid() == 0) {
+							r.setPid(pid);
+						}
+					}
+
+				}
+
+				updateRelations(req);
+			}
+
 			con.commit();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			try {
 				con.rollback();
 			} catch (SQLException e1) {
@@ -528,25 +541,12 @@ public class PersonUtil {
 				logger.log(Level.WARNING, "set autocommit failed", e);
 			}
 		}
-		if (req.relations != null) {
-			if (req.persLong.getPid() == 0) {
-				req.persLong.setPid(pid);
-				for (int i = 0; i < req.relations.length; i++) {
-					Relation r = req.relations[i];
-					if (r.getPid() == 0) {
-						r.setPid(pid);
-					}
-				}
-
-			}
-
-			updateRelations(req);
-		}
 		return res;
 
 	}
 
-	private SukuData updateRelations(SukuData req) {
+	private SukuData updateRelations(SukuData req) throws SQLException,
+			SukuException {
 		String updSql = "update relationnotice set "
 				+ "surety=?,RelationType=?,Description=?,"
 				+ "DatePrefix=?,FromDate=?,ToDate=?,Place=?,"
@@ -576,52 +576,98 @@ public class PersonUtil {
 
 		SukuData res = new SukuData();
 		SukuData ffmm = null;
-		try {
 
-			PreparedStatement pst;
-			Statement stm;
-			String delRel = "delete from relation where rid = ?";
-			String delRelNoti = "delete from relationnotice where rid = ?";
-			String delRelLangu = "delete from relationlanguage where rid = ?";
+		PreparedStatement pst;
+		Statement stm;
+		String delRel = "delete from relation where rid = ?";
+		String delRelNoti = "delete from relationnotice where rid = ?";
+		String delRelLangu = "delete from relationlanguage where rid = ?";
 
-			for (int i = 0; i < req.relations.length; i++) {
-				Relation r = req.relations[i];
-				int rid = r.getRid();
-				if (req.relations[i].isToBeDeleted()) {
-					if (rid > 0) {
+		for (int i = 0; i < req.relations.length; i++) {
+			Relation r = req.relations[i];
+			int rid = r.getRid();
+			if (req.relations[i].isToBeDeleted()) {
+				if (rid > 0) {
 
-						pst = con.prepareStatement(delRelLangu);
-						pst.setInt(1, rid);
-						int laskLang = pst.executeUpdate();
-						pst = con.prepareStatement(delRelNoti);
-						pst.setInt(1, rid);
-						int laskNoti = pst.executeUpdate();
-						pst = con.prepareStatement(delRel);
-						pst.setInt(1, rid);
-						int laskRel = pst.executeUpdate();
-						logger.info("deleted relation [" + r.getTag() + "]"
-								+ rid + " between " + r.getPid() + "/"
-								+ r.getRelative() + " result [" + laskRel + "/"
-								+ laskNoti + "/" + laskLang + "]");
+					pst = con.prepareStatement(delRelLangu);
+					pst.setInt(1, rid);
+					int laskLang = pst.executeUpdate();
+					pst = con.prepareStatement(delRelNoti);
+					pst.setInt(1, rid);
+					int laskNoti = pst.executeUpdate();
+					pst = con.prepareStatement(delRel);
+					pst.setInt(1, rid);
+					int laskRel = pst.executeUpdate();
+					logger.info("deleted relation [" + r.getTag() + "]" + rid
+							+ " between " + r.getPid() + "/" + r.getRelative()
+							+ " result [" + laskRel + "/" + laskNoti + "/"
+							+ laskLang + "]");
+				}
+			} else if (req.relations[i].isToBeUpdated()) {
+
+				if (rid == 0) {
+					stm = con.createStatement();
+					ResultSet rs = stm
+							.executeQuery("select nextval('relationseq')");
+
+					if (rs.next()) {
+						rid = rs.getInt(1);
+					} else {
+						throw new SQLException("Sequence relationseq error");
 					}
-				} else if (req.relations[i].isToBeUpdated()) {
+					rs.close();
+					r.setRid(rid);
+					if (r.getPid() == req.persLong.getPid()) {
 
-					if (rid == 0) {
-						stm = con.createStatement();
-						ResultSet rs = stm
-								.executeQuery("select nextval('relationseq')");
+						pst = con.prepareStatement(insRelSql);
 
-						if (rs.next()) {
-							rid = rs.getInt(1);
-						} else {
-							throw new SQLException("Sequence relationseq error");
+						pst.setInt(1, rid);
+						pst.setInt(2, r.getPid());
+						pst.setInt(3, r.getSurety());
+						pst.setString(4, r.getTag());
+						pst.setInt(5, 10);
+						// TODO the rownumber
+						int lukuri = pst.executeUpdate();
+						if (lukuri != 1) {
+							logger.warning("relation for rid " + rid
+									+ "  gave result " + lukuri);
 						}
-						rs.close();
-						r.setRid(rid);
-						if (r.getPid() == req.persLong.getPid()) {
 
+						String tag;
+						if (r.getTag().equals("CHIL")) {
+							if (req.persLong.getSex().equals("M")) {
+								tag = "FATH";
+							} else {
+								tag = "MOTH"; // or mother
+							}
+						} else if (r.getTag().equals("FATH")
+								|| r.getTag().equals("MOTH")) {
+							tag = "CHIL";
+						} else if (r.getTag().equals("HUSB")) {
+							tag = "WIFE";
+						} else {
+							tag = "HUSB";
+						}
+						pst.setInt(1, rid);
+						pst.setInt(2, r.getRelative());
+						pst.setInt(3, r.getSurety());
+
+						pst.setString(4, tag);
+						pst.setInt(5, 10);
+						// TODO the rownumber
+						lukuri = pst.executeUpdate();
+						if (lukuri != 1) {
+							logger.warning("relation for rid " + rid
+									+ "  gave result " + lukuri);
+						}
+					} else {
+						//
+						// here for the special MOTH/FATH relations
+						//
+
+						if (r.getTag().equals("FATH")
+								|| r.getTag().equals("MOTH")) {
 							pst = con.prepareStatement(insRelSql);
-
 							pst.setInt(1, rid);
 							pst.setInt(2, r.getPid());
 							pst.setInt(3, r.getSurety());
@@ -630,348 +676,310 @@ public class PersonUtil {
 							// TODO the rownumber
 							int lukuri = pst.executeUpdate();
 							if (lukuri != 1) {
-								logger.warning("relation for rid " + rid
-										+ "  gave result " + lukuri);
+								logger.warning("other relation for rid " + rid
+										+ " [" + r.getTag() + "]  gave result "
+										+ lukuri);
 							}
 
-							String tag;
-							if (r.getTag().equals("CHIL")) {
-								if (req.persLong.getSex().equals("M")) {
-									tag = "FATH";
-								} else {
-									tag = "MOTH"; // or mother
-								}
-							} else if (r.getTag().equals("FATH")
-									|| r.getTag().equals("MOTH")) {
-								tag = "CHIL";
-							} else if (r.getTag().equals("HUSB")) {
-								tag = "WIFE";
-							} else {
-								tag = "HUSB";
-							}
 							pst.setInt(1, rid);
 							pst.setInt(2, r.getRelative());
 							pst.setInt(3, r.getSurety());
 
-							pst.setString(4, tag);
+							pst.setString(4, "CHIL");
 							pst.setInt(5, 10);
 							// TODO the rownumber
 							lukuri = pst.executeUpdate();
 							if (lukuri != 1) {
-								logger.warning("relation for rid " + rid
-										+ "  gave result " + lukuri);
+								logger.warning("other relation for rid " + rid
+										+ " [CHIL]  gave result " + lukuri);
 							}
+						}
+
+						ffmm = getFullPerson(r.getRelative(), null);
+						ArrayList<Relation> ffvec = new ArrayList<Relation>();
+						Relation newrel = null;
+						for (int j = 0; j < ffmm.relations.length; j++) {
+							Relation rfm = ffmm.relations[j];
+							if (rfm.getTag().equals("CHIL")) {
+								for (int k = 0; k < ffmm.pers.length; k++) {
+									PersonShortData pfm = ffmm.pers[k];
+									if (pfm.getPid() == rfm.getRelative()) {
+										rfm.setShortPerson(pfm);
+									}
+								}
+								if (rfm.getRid() == rid) {
+									newrel = rfm;
+								} else {
+									ffvec.add(rfm);
+								}
+							}
+						}
+						if (newrel == null
+								|| newrel.getShortPerson() == null
+								|| newrel.getShortPerson().getBirtDate() == null
+								|| newrel.getShortPerson().getBirtDate()
+										.isEmpty()) {
+							newrel = null;
 						} else {
-							//
-							// here for the special MOTH/FATH relations
-							//
-
-							if (r.getTag().equals("FATH")
-									|| r.getTag().equals("MOTH")) {
-								pst = con.prepareStatement(insRelSql);
-								pst.setInt(1, rid);
-								pst.setInt(2, r.getPid());
-								pst.setInt(3, r.getSurety());
-								pst.setString(4, r.getTag());
-								pst.setInt(5, 10);
-								// TODO the rownumber
-								int lukuri = pst.executeUpdate();
-								if (lukuri != 1) {
-									logger.warning("other relation for rid "
-											+ rid + " [" + r.getTag()
-											+ "]  gave result " + lukuri);
-								}
-
-								pst.setInt(1, rid);
-								pst.setInt(2, r.getRelative());
-								pst.setInt(3, r.getSurety());
-
-								pst.setString(4, "CHIL");
-								pst.setInt(5, 10);
-								// TODO the rownumber
-								lukuri = pst.executeUpdate();
-								if (lukuri != 1) {
-									logger.warning("other relation for rid "
-											+ rid + " [CHIL]  gave result "
-											+ lukuri);
-								}
-							}
-
-							ffmm = getFullPerson(r.getRelative(), null);
-							ArrayList<Relation> ffvec = new ArrayList<Relation>();
-							Relation newrel = null;
-							for (int j = 0; j < ffmm.relations.length; j++) {
-								Relation rfm = ffmm.relations[j];
-								if (rfm.getTag().equals("CHIL")) {
-									for (int k = 0; k < ffmm.pers.length; k++) {
-										PersonShortData pfm = ffmm.pers[k];
-										if (pfm.getPid() == rfm.getRelative()) {
-											rfm.setShortPerson(pfm);
-										}
-									}
-									if (rfm.getRid() == rid) {
-										newrel = rfm;
-									} else {
-										ffvec.add(rfm);
-									}
-								}
-							}
-							if (newrel == null
-									|| newrel.getShortPerson() == null
-									|| newrel.getShortPerson().getBirtDate() == null
-									|| newrel.getShortPerson().getBirtDate()
-											.isEmpty()) {
-								newrel = null;
-							} else {
-								for (int j = 0; j < ffvec.size(); j++) {
-									Relation rfm = ffvec.get(j);
-									if (rfm.getShortPerson() == null
-											|| rfm.getShortPerson()
-													.getBirtDate() == null
-											|| rfm.getShortPerson()
-													.getBirtDate().isEmpty()) {
+							for (int j = 0; j < ffvec.size(); j++) {
+								Relation rfm = ffvec.get(j);
+								if (rfm.getShortPerson() == null
+										|| rfm.getShortPerson().getBirtDate() == null
+										|| rfm.getShortPerson().getBirtDate()
+												.isEmpty()) {
+									ffvec.add(j, newrel);
+									newrel = null;
+									break;
+								} else {
+									if (newrel
+											.getShortPerson()
+											.getBirtDate()
+											.compareTo(
+													rfm.getShortPerson()
+															.getBirtDate()) < 0) {
 										ffvec.add(j, newrel);
 										newrel = null;
 										break;
-									} else {
-										if (newrel
-												.getShortPerson()
-												.getBirtDate()
-												.compareTo(
-														rfm.getShortPerson()
-																.getBirtDate()) < 0) {
-											ffvec.add(j, newrel);
-											newrel = null;
-											break;
-										}
 									}
 								}
-								if (newrel != null) {
-									ffvec.add(newrel);
-								}
+							}
+							if (newrel != null) {
+								ffvec.add(newrel);
+							}
 
-								// order childnotices for father or mother
+							// order childnotices for father or mother
 
-								for (int rivi0 = 0; rivi0 < ffvec.size(); rivi0++) {
-									Relation rr = ffvec.get(rivi0);
+							for (int rivi0 = 0; rivi0 < ffvec.size(); rivi0++) {
+								Relation rr = ffvec.get(rivi0);
 
-									pst = con.prepareStatement(updRowSql);
-									pst.setInt(1, rivi0 + 1);
-									pst.setInt(2, rr.getRid());
-									pst.setInt(3, rr.getPid());
-									int lukuri = pst.executeUpdate();
-									logger.finest("RELAFFMMROW # " + lukuri);
-
-								}
+								pst = con.prepareStatement(updRowSql);
+								pst.setInt(1, rivi0 + 1);
+								pst.setInt(2, rr.getRid());
+								pst.setInt(3, rr.getPid());
+								int lukuri = pst.executeUpdate();
+								logger.finest("RELAFFMMROW # " + lukuri);
 
 							}
 
 						}
-					} else {
-						String updSureSql = "update relation set surety = ?,Modified=now() where rid = ?";
 
-						PreparedStatement updLang = con
-								.prepareStatement(updSureSql);
-						updLang.setInt(1, r.getSurety());
-
-						updLang.setInt(2, r.getRid());
-
-						int rner = updLang.executeUpdate();
-						logger.fine("Surety set to " + r.getSurety()
-								+ " for rid " + r.getRid() + " cnt " + rner);
 					}
+				} else {
+					String updSureSql = "update relation set surety = ?,Modified=now() where rid = ? ";
+
+					PreparedStatement updLang;
+					if (r.getModified() == null) {
+						updLang = con.prepareStatement(updSureSql
+								+ " and modified is null");
+					} else {
+						updLang = con.prepareStatement(updSureSql
+								+ " and modified = ?");
+					}
+					updLang.setInt(1, r.getSurety());
+
+					updLang.setInt(2, r.getRid());
+					if (r.getModified() != null) {
+						updLang.setTimestamp(3, r.getModified());
+					}
+					int rner = updLang.executeUpdate();
+					if (rner != 2) {
+						logger.warning("Relation update for rid " + r.getRid()
+								+ " failed [" + rner + "] (Should be 2)");
+						throw new SQLException("TRANSACTION_ERROR");
+					}
+					logger.fine("Surety set to " + r.getSurety() + " for rid "
+							+ r.getRid() + " cnt " + rner);
 				}
-				if (req.relations[i].getNotices() != null) {
+			}
+			if (req.relations[i].getNotices() != null) {
 
-					String updnorder = "update relationNotice set noticerow = ? where rnid = ?";
-					PreparedStatement rorder = con.prepareStatement(updnorder);
+				String updnorder = "update relationNotice set noticerow = ? where rnid = ?";
+				PreparedStatement rorder = con.prepareStatement(updnorder);
 
-					for (int j = 0; j < req.relations[i].getNotices().length; j++) {
-						RelationNotice rn = req.relations[i].getNotices()[j];
-						int rnid = rn.getRnid();
-						if (rn.isToBeDeleted() && rnid > 0) {
+				for (int j = 0; j < req.relations[i].getNotices().length; j++) {
+					RelationNotice rn = req.relations[i].getNotices()[j];
+					int rnid = rn.getRnid();
+					if (rn.isToBeDeleted() && rnid > 0) {
 
-							String sqlNoti = "delete from relationnotice where rnid = ?";
-							String sqlRelLangu = "delete from relationlanguage where rnid = ?";
+						String sqlNoti = "delete from relationnotice where rnid = ?";
+						String sqlRelLangu = "delete from relationlanguage where rnid = ?";
 
-							pst = con.prepareStatement(sqlRelLangu);
-							pst.setInt(1, rnid);
-							int laskLang = pst.executeUpdate();
-							pst = con.prepareStatement(sqlNoti);
-							pst.setInt(1, rnid);
-							int laskNoti = pst.executeUpdate();
+						pst = con.prepareStatement(sqlRelLangu);
+						pst.setInt(1, rnid);
+						int laskLang = pst.executeUpdate();
+						pst = con.prepareStatement(sqlNoti);
+						pst.setInt(1, rnid);
+						int laskNoti = pst.executeUpdate();
 
-							logger.info("deleted relationnotice [" + r.getTag()
-									+ "" + rid + " between " + r.getPid() + "/"
-									+ r.getRelative() + " result [" + laskNoti
-									+ "/" + laskLang);
-						} else {
-							if (rn.isToBeUpdated() || rnid == 0) {
+						logger.info("deleted relationnotice [" + r.getTag()
+								+ "" + rid + " between " + r.getPid() + "/"
+								+ r.getRelative() + " result [" + laskNoti
+								+ "/" + laskLang);
+					} else {
+						if (rn.isToBeUpdated() || rnid == 0) {
 
-								if (rn.getRnid() == 0) {
-									stm = con.createStatement();
-									ResultSet rs = stm
-											.executeQuery("select nextval('RelationNoticeSeq')");
+							if (rn.getRnid() == 0) {
+								stm = con.createStatement();
+								ResultSet rs = stm
+										.executeQuery("select nextval('RelationNoticeSeq')");
 
-									if (rs.next()) {
-										rnid = rs.getInt(1);
-									} else {
-										throw new SQLException(
-												"Sequence relationseq error");
-									}
-									rs.close();
-
-									pst = con.prepareStatement(insSql);
-
+								if (rs.next()) {
+									rnid = rs.getInt(1);
 								} else {
-									pst = con.prepareStatement(updSql);
+									throw new SQLException(
+											"Sequence relationseq error");
 								}
+								rs.close();
 
-								pst.setInt(1, rn.getSurety());
-								pst.setString(2, rn.getType());
-								pst.setString(3, rn.getDescription());
-								pst.setString(4, rn.getDatePrefix());
-								pst.setString(5, rn.getFromDate());
-								pst.setString(6, rn.getToDate());
-								pst.setString(7, rn.getPlace());
-								pst.setString(8, rn.getNoteText());
-								pst.setString(9, rn.getSource());
-								pst.setString(10, rn.getPrivateText());
+								pst = con.prepareStatement(insSql);
 
-								if (rn.getRnid() > 0) {
-									pst.setInt(11, rnid);
-									int rer = pst.executeUpdate();
-									logger.fine("update rn for " + rnid + "["
-											+ rer + "]");
+							} else {
+								if (rn.getModified() == null) {
+									pst = con.prepareStatement(updSql
+											+ " and modified is null");
 								} else {
-
-									pst.setInt(11, rnid);
-									pst.setInt(12, rid);
-									pst.setString(13, rn.getTag());
-									int rer = pst.executeUpdate();
-									logger.fine("insert rn for " + rnid + "["
-											+ rer + "]");
-
+									pst = con.prepareStatement(updSql
+											+ " and modified = ?");
 								}
 							}
 
-							rorder.setInt(1, j);
-							rorder.setInt(2, rnid);
-							int orderit = rorder.executeUpdate();
+							pst.setInt(1, rn.getSurety());
+							pst.setString(2, rn.getType());
+							pst.setString(3, rn.getDescription());
+							pst.setString(4, rn.getDatePrefix());
+							pst.setString(5, rn.getFromDate());
+							pst.setString(6, rn.getToDate());
+							pst.setString(7, rn.getPlace());
+							pst.setString(8, rn.getNoteText());
+							pst.setString(9, rn.getSource());
+							pst.setString(10, rn.getPrivateText());
 
-							logger.finest("RN order lkm = " + orderit);
-							if (rn.getLanguages() != null) {
+							if (rn.getRnid() > 0) {
+								pst.setInt(11, rnid);
+								if (rn.getModified() != null) {
+									pst.setTimestamp(12, rn.getModified());
+								}
+								int rer = pst.executeUpdate();
+								if (rer != 1) {
+									logger.warning("Relation notice update for rnid "
+											+ rn.getRnid()
+											+ " failed ["
+											+ rer
+											+ "] (Should be 1");
+									throw new SQLException("TRANSACTION_ERROR");
+								}
+								logger.fine("update rn for " + rnid + "[" + rer
+										+ "]");
+							} else {
 
-								for (int k = 0; k < rn.getLanguages().length; k++) {
-									RelationLanguage rl = rn.getLanguages()[k];
-									if (rl.isToBeUpdated()) {
-										if (rl.getRnid() == 0) {
-											PreparedStatement updLang = con
-													.prepareStatement(insLangSql);
-											// "(rnid,rid,langcode,RelationType,Description,Place,NoteText) "
-											// +
-											updLang.setInt(1, rnid);
-											updLang.setInt(2, rid);
-											updLang.setString(3,
-													rl.getLangCode());
-											updLang.setString(4,
-													rl.getRelationType());
-											updLang.setString(5,
-													rl.getDescription());
-											updLang.setString(6, rl.getPlace());
-											updLang.setString(7,
-													rl.getNoteText());
+								pst.setInt(11, rnid);
+								pst.setInt(12, rid);
+								pst.setString(13, rn.getTag());
+								int rer = pst.executeUpdate();
+								logger.fine("insert rn for " + rnid + "[" + rer
+										+ "]");
 
-											int rier = updLang.executeUpdate();
-											logger.fine("insert rl rnid: "
-													+ rnid + "/"
-													+ rl.getLangCode()
-													+ "count:[" + rier + "]");
+							}
+						}
 
-										} else if (rl.isToBeDeleted()) {
-											PreparedStatement updLang = con
-													.prepareStatement(delLangSql);
-											updLang.setInt(1, rnid);
-											updLang.setString(2,
-													rl.getLangCode());
-											int rder = updLang.executeUpdate();
-											logger.fine("delete rl rnid: "
-													+ rnid + "/"
-													+ rl.getLangCode()
-													+ "count:[" + rder + "]");
+						rorder.setInt(1, j);
+						rorder.setInt(2, rnid);
+						int orderit = rorder.executeUpdate();
 
-										} else {
+						logger.finest("RN order lkm = " + orderit);
+						if (rn.getLanguages() != null) {
 
-											PreparedStatement updLang = con
-													.prepareStatement(updLangSql);
-											updLang.setString(1,
-													rl.getRelationType());
-											updLang.setString(2,
-													rl.getDescription());
-											updLang.setString(3, rl.getPlace());
-											updLang.setString(4,
-													rl.getNoteText());
-											updLang.setInt(5, rl.getRnid());
-											updLang.setString(6,
-													rl.getLangCode());
-											int rner = updLang.executeUpdate();
-											logger.fine("update rl for "
-													+ rl.getRnid() + "/"
-													+ rl.getLangCode() + "["
-													+ rner + "]");
-										}
+							for (int k = 0; k < rn.getLanguages().length; k++) {
+								RelationLanguage rl = rn.getLanguages()[k];
+								if (rl.isToBeUpdated()) {
+									if (rl.getRnid() == 0) {
+										PreparedStatement updLang = con
+												.prepareStatement(insLangSql);
+										// "(rnid,rid,langcode,RelationType,Description,Place,NoteText) "
+										// +
+										updLang.setInt(1, rnid);
+										updLang.setInt(2, rid);
+										updLang.setString(3, rl.getLangCode());
+										updLang.setString(4,
+												rl.getRelationType());
+										updLang.setString(5,
+												rl.getDescription());
+										updLang.setString(6, rl.getPlace());
+										updLang.setString(7, rl.getNoteText());
+
+										int rier = updLang.executeUpdate();
+										logger.fine("insert rl rnid: " + rnid
+												+ "/" + rl.getLangCode()
+												+ "count:[" + rier + "]");
+
+									} else if (rl.isToBeDeleted()) {
+										PreparedStatement updLang = con
+												.prepareStatement(delLangSql);
+										updLang.setInt(1, rnid);
+										updLang.setString(2, rl.getLangCode());
+										int rder = updLang.executeUpdate();
+										logger.fine("delete rl rnid: " + rnid
+												+ "/" + rl.getLangCode()
+												+ "count:[" + rder + "]");
+
+									} else {
+
+										PreparedStatement updLang = con
+												.prepareStatement(updLangSql);
+										updLang.setString(1,
+												rl.getRelationType());
+										updLang.setString(2,
+												rl.getDescription());
+										updLang.setString(3, rl.getPlace());
+										updLang.setString(4, rl.getNoteText());
+										updLang.setInt(5, rl.getRnid());
+										updLang.setString(6, rl.getLangCode());
+										int rner = updLang.executeUpdate();
+										logger.fine("update rl for "
+												+ rl.getRnid() + "/"
+												+ rl.getLangCode() + "[" + rner
+												+ "]");
 									}
 								}
 							}
 						}
 					}
-
-					// some ordering still
-
 				}
+
+				// some ordering still
+
 			}
+		}
 
-			//
-			// set the order still
-			//
-			int childRow = 0;
-			int parentRow = 0;
-			int spouseRow = 0;
-			int thisRow = 0;
+		//
+		// set the order still
+		//
+		int childRow = 0;
+		int parentRow = 0;
+		int spouseRow = 0;
+		int thisRow = 0;
 
-			for (int i = 0; i < req.relations.length; i++) {
-				Relation r = req.relations[i];
-				if (r.getPid() == req.persLong.getPid()) {
-					if (r.getTag().equals("CHIL")) {
-						thisRow = ++childRow;
-					} else if (r.getTag().equals("HUSB")
-							|| r.getTag().equals("WIFE")) {
-						thisRow = ++spouseRow;
-					} else {
-						thisRow = ++parentRow;
-					}
-
-					pst = con.prepareStatement(updRowSql);
-					pst.setInt(1, thisRow);
-					pst.setInt(2, r.getRid());
-					pst.setInt(3, r.getPid());
-					int lukuri = pst.executeUpdate();
-
-					logger.finest("RELAROW # " + lukuri);
-
+		for (int i = 0; i < req.relations.length; i++) {
+			Relation r = req.relations[i];
+			if (r.getPid() == req.persLong.getPid()) {
+				if (r.getTag().equals("CHIL")) {
+					thisRow = ++childRow;
+				} else if (r.getTag().equals("HUSB")
+						|| r.getTag().equals("WIFE")) {
+					thisRow = ++spouseRow;
+				} else {
+					thisRow = ++parentRow;
 				}
+
+				pst = con.prepareStatement(updRowSql);
+				pst.setInt(1, thisRow);
+				pst.setInt(2, r.getRid());
+				pst.setInt(3, r.getPid());
+				int lukuri = pst.executeUpdate();
+
+				logger.finest("RELAROW # " + lukuri);
+
 			}
-
-		} catch (SQLException e) {
-			// e.printStackTrace();
-			logger.log(Level.WARNING, "Relation update", e);
-			res.resu = e.getMessage();
-			return res;
-
-		} catch (SukuException e) {
-			logger.log(Level.WARNING, "Person load", e);
-			res.resu = e.getMessage();
-			return res;
 		}
 
 		return res;
