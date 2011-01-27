@@ -15,8 +15,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,9 +103,11 @@ public class SuomiMap extends JFrame implements ActionListener,
 		setLayout(null);
 		setLocation(200, 10);
 
-		File f = new File("resources/images/suomikartta.jpg");
+		InputStream in = this.getClass().getResourceAsStream(
+				"/images/suomikartta.jpg");
+		// File f = new File("resources/images/suomikartta.jpg");
 		try {
-			this.kartta = ImageIO.read(f);
+			this.kartta = ImageIO.read(in);
 
 			suomiSize = new Rectangle(0, 0, this.kartta.getWidth(),
 					this.kartta.getHeight());

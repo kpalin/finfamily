@@ -309,7 +309,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private static SearchCriteria crit = null;
 	private int activePersonPid = 0;
 	private boolean isWebApp = false;
-
+	private static JFrame myFrame = null;
 	private static final int needleSize = 4;
 
 	/**
@@ -331,7 +331,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void startMe(String[] args) throws SukuException {
-
+		myFrame = this;
 		String arg1 = null;
 		if (args.length > 0) {
 			arg1 = args[0];
@@ -1029,6 +1029,17 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		if (!this.isWebApp) {
 			new VersionChecker(this);
 		}
+	}
+
+	/**
+	 * 
+	 * This can be used by some dialogs to attach it to the main program instead
+	 * of null
+	 * 
+	 * @return the Suku instance
+	 */
+	public static JFrame getFrame() {
+		return myFrame;
 	}
 
 	/**

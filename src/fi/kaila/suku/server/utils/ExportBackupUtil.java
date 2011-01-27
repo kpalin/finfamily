@@ -123,8 +123,13 @@ public class ExportBackupUtil {
 			zip.write(bos.toByteArray());
 
 			zip.closeEntry();
-
+			double dbSize = images.size();
 			for (int i = 0; i < images.size(); i++) {
+
+				double prossa = i / dbSize;
+				int prose = (int) (prossa * 100);
+				setRunnerValue("" + prose + ";" + images.get(i).getPath());
+
 				entry = new ZipEntry(zipPath + "/" + images.get(i).getPath());
 				zip.putNextEntry(entry);
 				zip.write(images.get(i).imageData);

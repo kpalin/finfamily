@@ -17,6 +17,7 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
+import javax.swing.JOptionPane;
 
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.report.PersonInTables;
@@ -677,6 +678,19 @@ public class Utils {
 	 *            the url
 	 */
 	public static void openExternalFile(String url) {
+
+		if (Suku.kontroller.isWebStart()) {
+
+			StringBuilder sb = new StringBuilder();
+			sb.append(Resurses.getString("WEBSTART_OPEN"));
+			sb.append("\n");
+			sb.append(url);
+
+			JOptionPane.showMessageDialog(Suku.getFrame(), sb.toString());
+			return;
+
+		}
+
 		try {
 
 			String os = System.getProperty("os.name");

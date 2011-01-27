@@ -153,8 +153,7 @@
    <mkdir dir="${dist.home}/properties"/>
    <mkdir dir="${dist.home}/resources"/>
    <mkdir dir="${dist.home}/resources/excel"/>
-   <mkdir dir="${dist.home}/resources/images"/>
- 
+  
    <mkdir dir="${dist.home}/resources/xml"/>
    <mkdir dir="${swing.home}"/>
    
@@ -165,8 +164,7 @@
 
    <copy file="${resources.home}/excel/FinFamily.xls" todir="${dist.home}/resources/excel"/>
 
-   <copy file="${resources.home}/images/suomikartta.jpg" todir="${dist.home}/resources/images"/>  
-
+  
     <copy todir="${dist.home}/resources/xml">
      <fileset dir="${resources.home}/xml" includes="*.xsl"/>
    </copy>
@@ -188,7 +186,7 @@
 	  lib/jxl.jar lib/jcalendarbutton-1.4.5.jar lib/jfreechart-1.0.13.jar lib/jcommon-1.0.16.jar lib/swingx-1.6.jar lib/swingx-ws-1.0.jar
 	  lib/looks-2.3.1.jar properties/* 
 	  resources/excel/PlaceLocations.xls resources/excel/TypesExcel.xls 
-	  resources/excel/FinFamily.xls resources/excel/Taivut_fi.xls resources/images/suomikartta.jpg 
+	  resources/excel/FinFamily.xls resources/excel/Taivut_fi.xls 
 	  resources/xml/*">
 	
 	</zip>
