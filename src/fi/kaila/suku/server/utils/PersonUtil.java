@@ -63,7 +63,8 @@ public class PersonUtil {
 				+ "values (?,?,?,?,?,?,?,?)";
 
 		String updPers = "update unit set privacy=?,groupid=?,sex=?,"
-				+ "sourcetext=?,privatetext=?,userrefn=?,Modified=now() where pid = ?";
+				+ "sourcetext=?,privatetext=?,userrefn=?,Modified=now()"
+				+ " where pid = ? ";
 
 		String updSql = "update unitnotice set "
 				+ "surety=?,Privacy=?,NoticeType=?,Description=?,"
@@ -163,6 +164,7 @@ public class PersonUtil {
 
 		int pid = 0;
 		try {
+			con.setAutoCommit(false);
 			Statement stm;
 			PreparedStatement pst;
 
@@ -176,8 +178,15 @@ public class PersonUtil {
 					// String updPers =
 					// "update unit set privacy=?,groupid=?,sex=?," +
 					// "sourcetext=?,privatetext=?,userrefn=?,Modified=now() ";
-					pst = con.prepareStatement(updPers);
 
+					if (req.persLong.getModified() == null) {
+						pst = con.prepareStatement(updPers
+								+ " and modified is null ");
+					} else {
+
+						pst = con.prepareStatement(updPers
+								+ " and modified = ?");
+					}
 					pst.setString(1, req.persLong.getPrivacy());
 					pst.setString(2, req.persLong.getGroupId());
 					pst.setString(3, req.persLong.getSex());
@@ -185,10 +194,16 @@ public class PersonUtil {
 					pst.setString(5, req.persLong.getPrivateText());
 					pst.setString(6, req.persLong.getRefn());
 					pst.setInt(7, req.persLong.getPid());
+					if (req.persLong.getModified() != null) {
+						pst.setTimestamp(8, req.persLong.getModified());
+					}
 					int lukuri = pst.executeUpdate();
 					if (lukuri != 1) {
+
 						logger.warning("Person updated for pid " + pid
 								+ "  gave result " + lukuri);
+						throw new SQLException("Person update for pid " + pid
+								+ " failed [" + lukuri + "] (Should be 1)");
 					}
 
 					// update relation as b set tag='FATH'
@@ -277,6 +292,13 @@ public class PersonUtil {
 						int landelcnt = pstDelLang.executeUpdate();
 						pstDel.setInt(1, n.getPnid());
 						int delcnt = pstDel.executeUpdate();
+						if (delcnt == 1) {
+							logger.warning("Person notice delete for pid "
+									+ pid + "  gave result " + delcnt);
+							throw new SQLException("Person notice ["
+									+ n.getTag() + "]delete for pid " + pid
+									+ " failed [" + delcnt + "] (Should be 1)");
+						}
 						String text = "Poistettiin " + delcnt + " riviä ["
 								+ landelcnt + "] kieliversiota pid = "
 								+ n.getPid() + " tag=" + n.getTag();
@@ -299,7 +321,14 @@ public class PersonUtil {
 							rs.close();
 							pst = con.prepareStatement(insSql);
 						} else {
-							pst = con.prepareStatement(updSql);
+							if (n.getModified() == null) {
+
+								pst = con.prepareStatement(updSql
+										+ " and modified is null ");
+							} else {
+								pst = con.prepareStatement(updSql
+										+ " and modified = ?");
+							}
 							pnid = n.getPnid();
 						}
 
@@ -353,9 +382,19 @@ public class PersonUtil {
 						}
 						if (n.getPnid() > 0) {
 							pst.setInt(30, n.getPnid());
+							if (n.getModified() != null) {
+								pst.setTimestamp(31, n.getModified());
+							}
 							int luku = pst.executeUpdate();
-							// System.out.println("Päivitettiin " + luku +
-							// " tietuetta");
+							if (luku != 1) {
+								logger.warning("Person notice updated for pid "
+										+ pid + "  gave result " + luku);
+								throw new SQLException("Person notice ["
+										+ n.getTag() + "] update for pid "
+										+ pid + " failed [" + luku
+										+ "] (Should be 1)");
+							}
+
 							logger.fine("Päivitettiin " + luku
 									+ " tietuetta pnid=[" + n.getPnid() + "]");
 						} else {
@@ -363,8 +402,7 @@ public class PersonUtil {
 							pst.setInt(31, pid);
 							pst.setString(32, n.getTag());
 							int luku = pst.executeUpdate();
-							// System.out.println("Luotiin " + luku +
-							// " uusi tietue");
+
 							logger.fine("Luotiin " + luku + " tietue pnid=["
 									+ pnid + "]");
 						}
@@ -419,7 +457,7 @@ public class PersonUtil {
 							if (ll.isToBeUpdated()) {
 
 								if (ll.getPnid() == 0) {
-									//
+
 									pst = con.prepareStatement(insLangSql);
 									pst.setInt(1, n.getPnid());
 									pst.setInt(2, pid);
@@ -472,12 +510,23 @@ public class PersonUtil {
 				}
 
 			}
+			con.commit();
 		} catch (SQLException e) {
-			// e.printStackTrace();
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				logger.log(Level.WARNING, "Person update rollback failed", e1);
+			}
 			logger.log(Level.WARNING, "person update", e);
 			res.resu = e.getMessage();
 			return res;
 
+		} finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e) {
+				logger.log(Level.WARNING, "set autocommit failed", e);
+			}
 		}
 		if (req.relations != null) {
 			if (req.persLong.getPid() == 0) {
