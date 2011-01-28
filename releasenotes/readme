@@ -2,9 +2,10 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
-Release 1096 on 28 jan 2011
+Release 1097 on 28 jan 2011
 
 * Added createdBy and modifiedBy fields to database tables
+* Included also in backup/restore
 * To use existing database you must execute Tools - Update database
 
 Release 1095 on 27 jan 2011

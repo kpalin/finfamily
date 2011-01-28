@@ -235,10 +235,6 @@ public class PersonUtil {
 
 				if (req.persLong.isMainModified()) {
 
-					// String updPers =
-					// "update unit set privacy=?,groupid=?,sex=?," +
-					// "sourcetext=?,privatetext=?,userrefn=?,Modified=now() ";
-
 					if (req.persLong.getModified() == null) {
 						pst = con.prepareStatement(updPers
 								+ " and modified is null ");
@@ -262,7 +258,7 @@ public class PersonUtil {
 
 						logger.warning("Person update for pid " + pid
 								+ " failed [" + lukuri + "] (Should be 1)");
-						throw new SQLException("TRANSACTION_ERROR");
+						throw new SQLException("TRANSACTION_ERROR_1");
 					}
 
 					// update relation as b set tag='FATH'
@@ -355,7 +351,7 @@ public class PersonUtil {
 							logger.warning("Person notice [" + n.getTag()
 									+ "]delete for pid " + pid + " failed ["
 									+ delcnt + "] (Should be 1)");
-							throw new SQLException("TRANSACTION_ERROR");
+							throw new SQLException("TRANSACTION_ERROR_2");
 						}
 						String text = "Poistettiin " + delcnt + " riviä ["
 								+ landelcnt + "] kieliversiota pid = "
@@ -449,7 +445,7 @@ public class PersonUtil {
 										+ "] update for pid " + pid
 										+ " failed [" + luku
 										+ "] (Should be 1)");
-								throw new SQLException("TRANSACTION_ERROR");
+								throw new SQLException("TRANSACTION_ERROR_3");
 							}
 
 							logger.fine("Päivitettiin " + luku
@@ -896,7 +892,7 @@ public class PersonUtil {
 					if (rner != 2) {
 						logger.warning("Relation update for rid " + r.getRid()
 								+ " failed [" + rner + "] (Should be 2)");
-						throw new SQLException("TRANSACTION_ERROR");
+						throw new SQLException("TRANSACTION_ERROR_4");
 					}
 					logger.fine("Surety set to " + r.getSurety() + " for rid "
 							+ r.getRid() + " cnt " + rner);
@@ -977,7 +973,8 @@ public class PersonUtil {
 											+ " failed ["
 											+ rer
 											+ "] (Should be 1");
-									throw new SQLException("TRANSACTION_ERROR");
+									throw new SQLException(
+											"TRANSACTION_ERROR_5");
 								}
 								logger.fine("update rn for " + rnid + "[" + rer
 										+ "]");
