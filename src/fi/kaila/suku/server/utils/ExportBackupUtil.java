@@ -332,9 +332,18 @@ public class ExportBackupUtil {
 			unitEle.setAttribute("created", created);
 
 			unitEle.setAttribute("createdate", created.substring(0, 10));
+			String createdBy = rs.getString("createdBy");
+			if (createdBy != null) {
+				unitEle.setAttribute("createdBy", createdBy);
+			}
+
 			String modified = rs.getString("modified");
 			if (modified != null) {
 				unitEle.setAttribute("modified", modified);
+			}
+			String modifiedBy = rs.getString("modifiedBy");
+			if (modifiedBy != null) {
+				unitEle.setAttribute("modifiedBy", modifiedBy);
 			}
 
 			tmp = rs.getString("userrefn");
@@ -416,7 +425,8 @@ public class ExportBackupUtil {
 		stm.close();
 
 		sql = "select a.rid,a.pid,b.pid,a.tag,b.tag,a.surety,"
-				+ "a.relationrow,b.relationrow,a.createdate "
+				+ "a.relationrow,b.relationrow,a.createdate,"
+				+ "a.modified,a.createdby,a.modifiedby "
 				+ "from relation as a inner join relation as b on a.rid=b.rid "
 				+ "where a.pid <> b.pid  order by a.rid";
 
@@ -442,6 +452,9 @@ public class ExportBackupUtil {
 			int arow = rs.getInt(7);
 			int brow = rs.getInt(8);
 			String created = rs.getString(9);
+			String modified = rs.getString(10);
+			String createdBy = rs.getString(11);
+			String modifiedBy = rs.getString(12);
 			int xpid = 0;
 			int ypid = 0;
 			String xtag = null;
@@ -504,7 +517,17 @@ public class ExportBackupUtil {
 			relEle.setAttribute("rowb", "" + yrow);
 			relEle.setAttribute("surety", "" + surety);
 			relEle.setAttribute("created", created);
+			relEle.setAttribute("modified", modified);
 			relEle.setAttribute("createdate", created.substring(0, 10));
+
+			if (createdBy != null) {
+				relEle.setAttribute("createdBy", createdBy);
+			}
+
+			if (modifiedBy != null) {
+				relEle.setAttribute("modifiedBy", modifiedBy);
+			}
+
 			double prossa = relaCounter / dbSize;
 			int prose = (int) (prossa * 100);
 			if (prose > 100)
@@ -644,6 +667,8 @@ public class ExportBackupUtil {
 			String privatetext = rs.getString("privatetext");
 			String modified = rs.getString("modified");
 			String created = rs.getString("createdate");
+			String modifiedBy = rs.getString("modifiedBy");
+			String createdBy = rs.getString("createdBy");
 
 			Element nEle = document.createElement("relationnotice");
 			rootElement.appendChild(nEle);
@@ -656,6 +681,15 @@ public class ExportBackupUtil {
 			}
 			nEle.setAttribute("created", created);
 			nEle.setAttribute("createdate", created.substring(0, 10));
+
+			if (createdBy != null) {
+				nEle.setAttribute("createdBy", createdBy);
+			}
+
+			if (modifiedBy != null) {
+				nEle.setAttribute("modifiedBy", modifiedBy);
+			}
+
 			if (rtype != null) {
 				ele = document.createElement("relationtype");
 				ele.setTextContent(rtype);
@@ -788,6 +822,15 @@ public class ExportBackupUtil {
 			if (modified != null) {
 				noticeEle.setAttribute("modified", modified);
 			}
+			String createdBy = rs.getString("createdBy");
+			if (createdBy != null) {
+				noticeEle.setAttribute("createdBy", createdBy);
+			}
+			String modifiedBy = rs.getString("modifiedBy");
+			if (modifiedBy != null) {
+				noticeEle.setAttribute("modifiedBy", modifiedBy);
+			}
+
 			tmp = rs.getString("noticetype");
 			if (tmp != null) {
 				ele = document.createElement("noticetype");
@@ -1074,6 +1117,15 @@ public class ExportBackupUtil {
 			}
 			langEle.setAttribute("created", created);
 
+			String createdBy = rs.getString("createdBy");
+			if (createdBy != null) {
+				langEle.setAttribute("createdBy", createdBy);
+			}
+			String modifiedBy = rs.getString("modifiedBy");
+			if (modifiedBy != null) {
+				langEle.setAttribute("modifiedBy", modifiedBy);
+			}
+
 			if (nType != null) {
 				langEle.setAttribute("noticetype", nType);
 			}
@@ -1117,6 +1169,8 @@ public class ExportBackupUtil {
 			String notetext = rs.getString("notetext");
 			String modified = rs.getString("modified");
 			String created = rs.getString("createdate");
+			String modifiedBy = rs.getString("modifiedBy");
+			String createdBy = rs.getString("createdBy");
 
 			Element langEle = document.createElement("language");
 			rootElement.appendChild(langEle);
@@ -1145,11 +1199,15 @@ public class ExportBackupUtil {
 			}
 
 			if (modified != null) {
-
 				langEle.setAttribute("modified", modified);
 			}
 			langEle.setAttribute("created", created);
-
+			if (createdBy != null) {
+				langEle.setAttribute("createdBy", createdBy);
+			}
+			if (modifiedBy != null) {
+				langEle.setAttribute("modifiedBy", modifiedBy);
+			}
 		}
 		rs.close();
 		pstm.close();

@@ -95,22 +95,22 @@ public class Read2004XML extends DefaultHandler {
 	private Vector<String> namelist = null;
 	private Vector<String> placelist = null;
 	/** The cdf. */
-	SimpleDateFormat cdf = new SimpleDateFormat("yyyy-MM-dd");
+	SimpleDateFormat cdf = new SimpleDateFormat("yyyy-MM-dd H:m:s.S");
 
 	private static final String INSERT_UNIT = "insert into Unit "
-			+ "(PID,tag,sex,groupid,privacy,sid,createdate)"
-			+ " values (?,'INDI',?,?,?,?,?)";
+			+ "(PID,tag,sex,groupid,privacy,sid,createdate,createdby,modified,modifiedby)"
+			+ " values (?,'INDI',?,?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_UNIT = "update Unit set userrefn = ?,  sourcetext = ?, privatetext = ? "
 			+ "where pid = ? ";
 
 	private static final String INSERT_NAME_NOTICE = "insert into UnitNotice "
-			+ "(PID,PNID,tag,privacy,givenname,patronym,prefix,surname,postfix,createdate)"
-			+ " values (?,?,?,?,?,?,?,?,?,?)";
+			+ "(PID,PNID,tag,privacy,givenname,patronym,prefix,surname,postfix,createdate,createdby,modified,modifiedby)"
+			+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String INIT_UNIT_NOTICE = "insert into UnitNotice "
-			+ "(PID,PNID,tag,privacy,noticerow,surety,modified,createdate) "
-			+ "values (?,?,?,?,?, ?,?,?)";
+			+ "(PID,PNID,tag,privacy,noticerow,surety,modified,createdate,createdby,modifiedby) "
+			+ "values (?,?,?,?,?, ?,?,?,?,?)";
 
 	private static final String UPDATE_UNIT_NOTICE = "update UnitNotice "
 			+ "set noticetype=?,description=?,dateprefix=?,fromdate=?,todate=?,"
@@ -121,8 +121,8 @@ public class Read2004XML extends DefaultHandler {
 
 	private static final String INSERT_UNIT_LANGUAGE = "insert into UnitLanguage "
 			+ "(PID,PNID,tag,langCode,noticetype,"
-			+ "description,place,notetext,mediatitle,modified,createdate) "
-			+ "values (?,?,?,?,?, ?,?,?,?,?, ?)";
+			+ "description,place,notetext,mediatitle,modified,createdate,modifiedby,createdby) "
+			+ "values (?,?,?,?,?, ?,?,?,?,?, ?,?,?)";
 
 	private static final String UPDATE_IMAGE_DATA = "update UnitNotice set MediaData = ?,mediaWidth = ?"
 			+ ",mediaheight = ? where PNID = ? ";
@@ -130,12 +130,12 @@ public class Read2004XML extends DefaultHandler {
 	private static final String UPDATE_UNIT_INDEX_DATA = "update UnitNotice set RefNames = ?,RefPlaces = ? where PNID = ? ";
 
 	private static final String INSERT_RELATION = "insert into Relation "
-			+ "(RID,PID,tag,relationrow,surety,modified,createdate) values (?,?,?,?,?,?,?)";
+			+ "(RID,PID,tag,relationrow,surety,modified,createdate,modifiedby,createdby) values (?,?,?,?,?,?,?,?,?)";
 
 	private static final String INSERT_RELATION_NOTICE = "insert into RelationNotice "
 			+ "(RNID,RID,tag,noticerow,surety,description,relationtype,"
 			+ "dateprefix,fromdate,todate,place,notetext,"
-			+ "SID,sourcetext,privatetext,modified,createdate) values (?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?)";
+			+ "SID,sourcetext,privatetext,modified,createdate,modifiedby,createdby) values (?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?,?,?)";
 
 	private static final String INSERT_RELATION_ADOPTION = "insert into RelationNotice "
 			+ "(RNID,RID,tag,noticerow,createdate) values (?,?,?,?,?)";
@@ -336,7 +336,9 @@ public class Read2004XML extends DefaultHandler {
 	private String unitPrivateText = null;
 	private String unitSourceText = null;
 	private String unitCreateDate = null;
-
+	private String unitModified = null;
+	private String unitCreatedBy = null;
+	private String unitModifiedBy = null;
 	private String noticeTag = null;
 	private String noticeRow = null;
 	private String noticeType = null;
@@ -369,6 +371,8 @@ public class Read2004XML extends DefaultHandler {
 	private String noticeSourceText = null;
 	private String noticeModifiedDate = null;
 	private String noticeCreateDate = null;
+	private String noticeCreatedBy = null;
+	private String noticeModifiedBy = null;
 
 	private String noticeLanguage = null;
 	private String noticeLanguageType = null;
@@ -378,6 +382,8 @@ public class Read2004XML extends DefaultHandler {
 	private String noticeLanguageNoteText = null;
 	private String noticeLanguageModifiedDate = null;
 	private String noticeLanguageCreateDate = null;
+	private String noticeLanguageModifiedBy = null;
+	private String noticeLanguageCreatedBy = null;
 	private int pnid = 0;
 	private int unitPid = 0;
 
@@ -408,9 +414,13 @@ public class Read2004XML extends DefaultHandler {
 	private String relationPrivateText = null;
 	private String relationModifiedDate = null;
 	private String relationCreateDate = null;
+	private String relationModifiedBy = null;
+	private String relationCreatedBy = null;
 
 	private String relationNoticeModifiedDate = null;
 	private String relationNoticeCreateDate = null;
+	private String relationNoticeModifiedBy = null;
+	private String relationNoticeCreatedBy = null;
 	private String relationNoticeRow = null;
 	private String relationNoticeSurety = null;
 	private String relationNoticeTag = null;
@@ -730,6 +740,9 @@ public class Read2004XML extends DefaultHandler {
 			if (this.unitCreateDate == null) {
 				this.unitCreateDate = attributes.getValue("createdate");
 			}
+			this.unitModified = attributes.getValue("modified");
+			this.unitCreatedBy = attributes.getValue("createdBy");
+			this.unitModifiedBy = attributes.getValue("modifiedBy");
 
 		}
 		if (this.currentEle.equals(unitSourceTG)) {
@@ -752,6 +765,8 @@ public class Read2004XML extends DefaultHandler {
 			if (this.noticeCreateDate == null) {
 				this.noticeCreateDate = attributes.getValue("createdate");
 			}
+			this.noticeModifiedBy = attributes.getValue("modifiedBy");
+			this.noticeCreatedBy = attributes.getValue("createdBy");
 			initUnitNotice();
 		} else if (this.currentEle.equals(noticeSourceTG)) {
 			this.noticeSourceId = attributes.getValue("sourceid");
@@ -763,6 +778,8 @@ public class Read2004XML extends DefaultHandler {
 			this.noticeLanguage = attributes.getValue("langcode");
 			this.noticeLanguageModifiedDate = attributes.getValue("modified");
 			this.noticeLanguageCreateDate = attributes.getValue("created");
+			this.noticeLanguageModifiedBy = attributes.getValue("modifiedBy");
+			this.noticeLanguageCreatedBy = attributes.getValue("createdBy");
 		} else if (this.currentEle.equals(noticeNamelistTG)) {
 			namelist = new Vector<String>();
 		} else if (this.currentEle.equals(noticePlacelistTG)) {
@@ -782,7 +799,8 @@ public class Read2004XML extends DefaultHandler {
 			if (this.relationCreateDate == null) {
 				this.relationCreateDate = attributes.getValue("createdate");
 			}
-
+			this.relationModifiedBy = attributes.getValue("modifiedBy");
+			this.relationCreatedBy = attributes.getValue("createdBy");
 			ResultSet rs;
 			PreparedStatement pstm;
 			try {
@@ -808,7 +826,8 @@ public class Read2004XML extends DefaultHandler {
 			this.relationNoticeTag = attributes.getValue("tag");
 			this.relationNoticeModifiedDate = attributes.getValue("modified");
 			this.relationNoticeCreateDate = attributes.getValue("created");
-
+			this.relationNoticeModifiedBy = attributes.getValue("modifiedBy");
+			this.relationNoticeCreatedBy = attributes.getValue("createdBy");
 			PreparedStatement pst;
 			try {
 				pst = this.con
@@ -1465,15 +1484,12 @@ public class Read2004XML extends DefaultHandler {
 			pst.setString(7, this.noticeLanguagePlace);
 			pst.setString(8, this.noticeLanguageNoteText);
 			pst.setString(9, this.noticeLanguageMediaTitleText);
-
-			if (noticeLanguageModifiedDate == null) {
-				pst.setNull(10, Types.TIMESTAMP);
-			} else {
-				pst.setTimestamp(10,
-						toTimestamp(this.noticeLanguageModifiedDate, false));
-			}
+			pst.setTimestamp(10,
+					toTimestamp(this.noticeLanguageModifiedDate, false));
 			pst.setTimestamp(11,
 					toTimestamp(this.noticeLanguageCreateDate, true));
+			pst.setString(12, this.noticeLanguageModifiedBy);
+			pst.setString(13, this.noticeLanguageCreatedBy);
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {
@@ -1567,15 +1583,14 @@ public class Read2004XML extends DefaultHandler {
 			pst.setInt(13, 0);
 			pst.setString(14, this.relationSourceText);
 			pst.setString(15, this.relationPrivateText);
-			if (relationNoticeModifiedDate == null) {
-				pst.setNull(16, Types.TIMESTAMP);
-			} else {
-				pst.setTimestamp(16,
-						toTimestamp(this.relationNoticeModifiedDate, false));
-			}
 
+			pst.setTimestamp(16,
+					toTimestamp(this.relationNoticeModifiedDate, false));
 			pst.setTimestamp(17,
 					toTimestamp(this.relationNoticeCreateDate, true));
+			pst.setString(18, this.relationNoticeModifiedBy);
+			pst.setString(19, this.relationNoticeCreatedBy);
+
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {
@@ -1652,6 +1667,8 @@ public class Read2004XML extends DefaultHandler {
 							toTimestamp(this.relationModifiedDate, false));
 				}
 				pst.setTimestamp(7, toTimestamp(this.relationCreateDate, true));
+				pst.setString(8, this.relationModifiedBy);
+				pst.setString(9, this.relationCreatedBy);
 				try {
 					pst.executeUpdate();
 				} catch (SQLException se) {
@@ -1685,9 +1702,11 @@ public class Read2004XML extends DefaultHandler {
 					}
 				}
 				pst.setInt(5, surety);
-				pst.setNull(6, Types.TIMESTAMP);
+				pst.setTimestamp(6,
+						toTimestamp(this.relationModifiedDate, true));
 				pst.setTimestamp(7, toTimestamp(this.relationCreateDate, true));
-
+				pst.setString(8, this.relationModifiedBy);
+				pst.setString(9, this.relationCreatedBy);
 				try {
 					pst.executeUpdate();
 				} catch (SQLException se) {
@@ -1740,9 +1759,12 @@ public class Read2004XML extends DefaultHandler {
 						}
 					}
 					pst.setInt(5, surety);
-					pst.setNull(6, Types.TIMESTAMP);
+					pst.setTimestamp(6,
+							toTimestamp(this.relationModifiedDate, true));
 					pst.setTimestamp(7,
 							toTimestamp(this.relationCreateDate, true));
+					pst.setString(8, this.relationModifiedBy);
+					pst.setString(9, this.relationCreatedBy);
 					try {
 						pst.executeUpdate();
 					} catch (SQLException se) {
@@ -1969,26 +1991,23 @@ public class Read2004XML extends DefaultHandler {
 
 						pst.setString(14, this.relationSourceText);
 						pst.setString(15, this.relationPrivateText);
-						pst.setNull(16, Types.TIMESTAMP);
-						pst.setTimestamp(17,
-								toTimestamp(this.relationCreateDate, true));
+
+						pst.setTimestamp(
+								16,
+								toTimestamp(this.relationNoticeModifiedDate,
+										false));
+						pst.setTimestamp(
+								17,
+								toTimestamp(this.relationNoticeCreateDate, true));
+						pst.setString(18, this.relationNoticeModifiedBy);
+						pst.setString(19, this.relationNoticeCreatedBy);
+
 						pst.executeUpdate();
 						laskuriRelations++;
 
 						if (langus != null && langus.length > 1) {
 							for (i = 0; i < langus.length; i++) {
 								if (!langus[i].equals(this.oldCode)) {
-									// pstm =
-									// this.con.prepareStatement("select nextval('relationseq')");
-									//
-									// rs = pstm.executeQuery();
-									// if (rs.next()){
-									// rid = rs.getInt(1);
-									// } else {
-									// throw new SAXException
-									// ("Sequence relationseq error");
-									// }
-									// rs.close();
 
 									pst = this.con
 											.prepareStatement(INSERT_RELATION_LANGUAGE);
@@ -2015,8 +2034,10 @@ public class Read2004XML extends DefaultHandler {
 									Timestamp now = new Timestamp(
 											System.currentTimeMillis());
 									pst.setTimestamp(9, now);
-									// pstm.setString(9,
-									// langText(this.relationSourceText,langus[i]));
+									// pst.setString(10,
+									// this.relationModifiedBy);
+									// pst.setString(11,
+									// this.relationCreatedBy);
 
 									pst.executeUpdate();
 								}
@@ -2067,9 +2088,16 @@ public class Read2004XML extends DefaultHandler {
 						pst.setNull(13, Types.INTEGER);
 						pst.setNull(14, Types.VARCHAR);
 						pst.setNull(15, Types.VARCHAR);
-						pst.setNull(16, Types.TIMESTAMP);
-						pst.setTimestamp(17,
-								toTimestamp(this.relationCreateDate, true));
+						pst.setTimestamp(
+								16,
+								toTimestamp(this.relationNoticeModifiedDate,
+										false));
+						pst.setTimestamp(
+								17,
+								toTimestamp(this.relationNoticeCreateDate, true));
+						pst.setString(18, this.relationNoticeModifiedBy);
+						pst.setString(19, this.relationNoticeCreatedBy);
+
 						pst.executeUpdate();
 
 						if (langus != null && langus.length > 1) {
@@ -2195,6 +2223,8 @@ public class Read2004XML extends DefaultHandler {
 				pst.setTimestamp(7, toTimestamp(this.noticeModifiedDate, false));
 			}
 			pst.setTimestamp(8, toTimestamp(this.noticeCreateDate, true));
+			pst.setString(9, this.noticeCreatedBy);
+			pst.setString(10, this.noticeModifiedBy);
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {
@@ -2446,11 +2476,15 @@ public class Read2004XML extends DefaultHandler {
 						pst.setString(9,
 								langText(this.noticeMediaTitle, langus[i]));
 
-						pst.setNull(10, Types.TIMESTAMP);
-
-						Timestamp now = new Timestamp(
-								System.currentTimeMillis());
-						pst.setTimestamp(11, now);
+						pst.setTimestamp(
+								10,
+								toTimestamp(this.noticeLanguageModifiedDate,
+										false));
+						pst.setTimestamp(
+								11,
+								toTimestamp(this.noticeLanguageCreateDate, true));
+						pst.setString(12, this.noticeLanguageModifiedBy);
+						pst.setString(13, this.noticeLanguageCreatedBy);
 
 						pst.executeUpdate();
 						pst.close();
@@ -2536,6 +2570,7 @@ public class Read2004XML extends DefaultHandler {
 
 		this.unitPrivateText = null;
 		this.unitSourceText = null;
+
 	}
 
 	private void insertUnitName() throws SAXException {
@@ -2563,6 +2598,13 @@ public class Read2004XML extends DefaultHandler {
 				pst.setNull(5, Types.INTEGER);
 			}
 			pst.setTimestamp(6, toTimestamp(this.unitCreateDate, true));
+
+			pst.setString(7, this.unitCreatedBy);
+
+			pst.setTimestamp(8, toTimestamp(this.unitModified, false));
+
+			pst.setString(9, this.unitModifiedBy);
+
 			pst.executeUpdate();
 			// this.runner.setRunnerValue("pid [" + unitPid + "]");
 			logger.fine("Unit: " + this.unitId + "/" + this.unitSex + "/"
@@ -2610,6 +2652,9 @@ public class Read2004XML extends DefaultHandler {
 					pst.setString(8, this.unitSurName);
 					pst.setString(9, this.unitPostfix);
 					pst.setTimestamp(10, toTimestamp(this.unitCreateDate, true));
+					pst.setString(11, this.unitCreatedBy);
+					pst.setTimestamp(12, toTimestamp(this.unitModified, true));
+					pst.setString(13, this.unitModifiedBy);
 					pst.executeUpdate();
 					pst.close();
 					logger.fine("UnitName: " + this.unitId + "/"
