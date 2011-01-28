@@ -509,7 +509,7 @@ public class ExportGedcomUtil {
 					rs.getString("dateprefix"), rs.getString("fromdate"),
 					rs.getString("todate"), rs.getString("place"),
 					rs.getString("notetext"), rs.getString("sourcetext"), null,
-					null, null);
+					null, null, null, null);
 			relNotices.add(rnote);
 		}
 		rs.close();

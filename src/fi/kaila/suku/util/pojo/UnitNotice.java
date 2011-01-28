@@ -141,6 +141,10 @@ public class UnitNotice implements Serializable {
 	/** The create date. */
 	Timestamp createDate = null; // timestamp not null default now() --
 	// timestamp created
+	/** The modifiedBy userid */
+	String modifiedBy = null;
+	/** The createdBy userid */
+	String createdBy = null;
 
 	private transient BufferedImage image = null;
 
@@ -208,6 +212,8 @@ public class UnitNotice implements Serializable {
 		privateText = rs.getString("privatetext");
 		modified = rs.getTimestamp("modified");
 		createDate = rs.getTimestamp("createDate");
+		modifiedBy = rs.getString("modifiedby");
+		createdBy = rs.getString("createdby");
 
 	}
 
@@ -1058,12 +1064,28 @@ public class UnitNotice implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @return user id of modifier
+	 */
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	/**
 	 * Gets the created.
 	 * 
 	 * @return when created
 	 */
 	public Timestamp getCreated() {
 		return createDate;
+	}
+
+	/**
+	 * 
+	 * @return userid of creator
+	 */
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
 	private String trim(String text) {

@@ -226,7 +226,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 				tag = "FATH";
 			}
 			Relation rpare = new Relation(0, child.getPid(), mother.getPid(),
-					tag, 100, null, null);
+					tag, 100, null, null, null, null);
 
 			this.relativesPane.checkLocalRelation(child, rpare, mother);
 

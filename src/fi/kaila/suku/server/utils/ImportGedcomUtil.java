@@ -526,7 +526,8 @@ public class ImportGedcomUtil {
 					ownerPid = aid.pid;
 				}
 
-				rel = new Relation(0, aid.pid, bid.pid, "WIFE", 100, null, null);
+				rel = new Relation(0, aid.pid, bid.pid, "WIFE", 100, null,
+						null, null, null);
 				rels.add(rel);
 			}
 		}
@@ -638,7 +639,7 @@ public class ImportGedcomUtil {
 
 					if (aid != null) {
 						crel = new Relation(0, cid.pid, aid.pid, "FATH", 100,
-								null, null);
+								null, null, null, null);
 						rels.add(crel);
 						if (adopt != null) {
 							for (int j = 0; j < adopt.lines.size(); j++) {
@@ -669,7 +670,7 @@ public class ImportGedcomUtil {
 					}
 					if (bid != null) {
 						crel = new Relation(0, cid.pid, bid.pid, "MOTH", 100,
-								null, null);
+								null, null, null, null);
 						rels.add(crel);
 						if (adopt != null) {
 							for (int j = 0; j < adopt.lines.size(); j++) {
@@ -1178,7 +1179,7 @@ public class ImportGedcomUtil {
 		request.persLong = pers;
 		PersonUtil u = new PersonUtil(con);
 
-		SukuData resp = u.updatePerson(request);
+		SukuData resp = u.updatePerson(null, request);
 		if (resp.resu != null) {
 			throw new SukuException(resp.resu);
 		}

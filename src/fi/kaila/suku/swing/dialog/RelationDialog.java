@@ -77,7 +77,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	private JTextArea noteTextLang = null;
 	private JLabel noteLbl = null;
 
-	private JPanel langPanel;
+	private final JPanel langPanel;
 	private JScrollPane scrollNoteLang = null;
 	private JLabel sourceLbl = null;
 	private JLabel privateLbl = null;
@@ -86,8 +86,8 @@ public class RelationDialog extends JDialog implements ActionListener,
 	// private JLabel descLangLbl = null;
 	private JLabel placeLangLbl = null;
 	private JLabel noteLangLbl = null;
-	private JButton ok;
-	private JButton delete;
+	private final JButton ok;
+	private final JButton delete;
 	private static int ytype = 10;
 	private static int ydesc = 34;
 	private static int ydate = 58;
@@ -127,6 +127,10 @@ public class RelationDialog extends JDialog implements ActionListener,
 
 	/** The modified lbl. */
 	JLabel modifiedLbl;
+	/** The created userid. */
+	JTextField createdBy;
+	/** The modified userid. */
+	JTextField modifiedBy;
 
 	/**
 	 * Instantiates a new relation dialog.
@@ -178,13 +182,18 @@ public class RelationDialog extends JDialog implements ActionListener,
 		created = new JTextField();
 		created.setEditable(false);
 		add(created);
+		createdBy = new JTextField();
+		createdBy.setEditable(false);
+		add(createdBy);
 
 		modifiedLbl = new JLabel(Resurses.getString("DATA_MODIFIED"));
 		add(modifiedLbl);
 		modified = new JTextField();
 		modified.setEditable(false);
 		add(modified);
-
+		modifiedBy = new JTextField();
+		modifiedBy.setEditable(false);
+		add(modifiedBy);
 		JLabel lbl = new JLabel(Resurses.getString("DATA_TYPE"));
 		add(lbl);
 		lbl.setBounds(10, ytype, 80, 20);
@@ -280,6 +289,7 @@ public class RelationDialog extends JDialog implements ActionListener,
 	 * 
 	 * @see javax.swing.JDialog#createRootPane()
 	 */
+	@Override
 	protected JRootPane createRootPane() {
 		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		JRootPane rootPane = new JRootPane();
@@ -334,9 +344,11 @@ public class RelationDialog extends JDialog implements ActionListener,
 			created.setText("");
 		} else {
 			created.setText(rela.getCreated().toString());
+			createdBy.setText(rela.getCreatedBy());
 		}
 		if (rela.getModified() != null) {
 			modified.setText(rela.getModified().toString());
+			modifiedBy.setText(rela.getModifiedBy());
 		} else {
 			modified.setText("");
 		}
@@ -627,9 +639,13 @@ public class RelationDialog extends JDialog implements ActionListener,
 		ry += 22;
 		created.setBounds(rightColumn, ry, 150, 20);
 		ry += 22;
+		createdBy.setBounds(rightColumn, ry, 150, 20);
+		ry += 22;
 		modifiedLbl.setBounds(rightColumn, ry, 100, 20);
 		ry += 22;
 		modified.setBounds(rightColumn, ry, 150, 20);
+		ry += 22;
+		modifiedBy.setBounds(rightColumn, ry, 150, 20);
 
 		relationType.setBounds(80, ytype, leftWidth, 20);
 		description.setBounds(80, ydesc, leftWidth, 20);

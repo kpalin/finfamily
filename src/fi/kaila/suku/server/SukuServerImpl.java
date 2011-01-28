@@ -47,6 +47,7 @@ public class SukuServerImpl implements SukuServer {
 	private final String dbDriver = "org.postgresql.Driver";
 	private Connection con = null;
 	private String schema = null;
+	private String userId = null;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private String openFile = null;
 
@@ -99,6 +100,7 @@ public class SukuServerImpl implements SukuServer {
 			String passwd) throws SukuException {
 		String dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
 				+ userid;
+		this.userId = userid;
 		logger.info("Connection: " + dbConne + ";schema: " + this.schema);
 		if (passwd != null && !passwd.isEmpty()) {
 
@@ -1937,7 +1939,7 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData updatePerson(SukuData request) {
 		PersonUtil u = new PersonUtil(con);
 
-		return u.updatePerson(request);
+		return u.updatePerson(this.userId, request);
 
 	}
 

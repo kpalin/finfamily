@@ -73,6 +73,8 @@ public class PersonMainPane extends JPanel implements ActionListener,
 
 	private JTextField created;
 	private JTextField modified;
+	private JTextField createdBy;
+	private JTextField modifiedBy;
 
 	private SukuTextField givenname;
 	private SukuTextField patronym;
@@ -494,10 +496,10 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		add(refn);
 		refn.setBounds(rcol, rrivi, rwidth * 2, 20);
 
-		rrivi += 24;
+		// rrivi += 24;
 		pidLbl = new JLabel("Pid");
 		add(pidLbl);
-		pidLbl.setBounds(rcol, rrivi, 70, 20);
+		pidLbl.setBounds(rcol, 0, 70, 20);
 
 		rrivi += 20;
 		createdLbl = new JLabel(Resurses.getString("DATA_PERSON_CREATED"));
@@ -508,6 +510,11 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		created.setBounds(rcol, rrivi, rwidth * 2, 20);
 		created.setEditable(false);
 		add(created);
+		rrivi += 20;
+		createdBy = new JTextField();
+		createdBy.setBounds(rcol, rrivi, rwidth * 2, 20);
+		createdBy.setEditable(false);
+		add(createdBy);
 
 		rrivi += 28;
 		modifiedLbl = new JLabel(Resurses.getString("DATA_PERSON_MODIFIED"));
@@ -518,7 +525,11 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		modified.setBounds(rcol, rrivi, rwidth * 2, 20);
 		modified.setEditable(false);
 		add(modified);
-
+		rrivi += 20;
+		modifiedBy = new JTextField();
+		modifiedBy.setBounds(rcol, rrivi, rwidth * 2, 20);
+		modifiedBy.setEditable(false);
+		add(modifiedBy);
 		rrivi += 22;
 
 		close = new JButton(Resurses.getString(Resurses.CLOSE));
@@ -825,13 +836,19 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		}
 
 		created.setText(tmp);
+		if (persLong.getCreatedBy() != null) {
+			createdBy.setText(persLong.getCreatedBy());
+		}
+
 		if (persLong.getModified() == null) {
 			tmp = "";
 		} else {
 			tmp = persLong.getModified().toString();
 		}
 		modified.setText(tmp);
-
+		if (persLong.getModifiedBy() != null) {
+			modifiedBy.setText(persLong.getModifiedBy());
+		}
 		if (persLong.getSource() == null) {
 			tmp = "";
 		} else {
@@ -1736,21 +1753,25 @@ public class PersonMainPane extends JPanel implements ActionListener,
 		rrivi += 20;
 
 		refn.setBounds(rcol, rrivi, rwidth * 2, 20);
-		rrivi += 24;
+		// rrivi += 24;
 
-		pidLbl.setBounds(rcol, rrivi, 70, 20);
+		pidLbl.setBounds(rcol, 0, 70, 20);
 
 		rrivi += 20;
 		createdLbl.setBounds(rcol, rrivi, 200, 20);
 		rrivi += 20;
 
 		created.setBounds(rcol, rrivi, rwidth * 2, 20);
-
+		rrivi += 20;
+		createdBy.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 28;
 		modifiedLbl.setBounds(rcol, rrivi, 200, 20);
 		rrivi += 20;
 
 		modified.setBounds(rcol, rrivi, rwidth * 2, 20);
+		rrivi += 20;
+
+		modifiedBy.setBounds(rcol, rrivi, rwidth * 2, 20);
 
 		rrivi += 22;
 

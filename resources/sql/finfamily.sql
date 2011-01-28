@@ -110,11 +110,12 @@ tag varchar,               -- Tag. GEDCOM like INDI for individual
 Privacy  char,             -- Privacy indicator, null = Public  
 GroupId varchar,           -- Id of group for this unit  
 Sex char not null,         -- Male = M, Female = F, Unknown = U  
---SID integer,               -- temp storage for sourcieid for now
 SourceText varchar ,       -- Source as text
 PrivateText varchar,       -- Private researcher information  
 UserREFN varchar,          -- Reference number to the unit. GEDCOM REFN tag  
-Modified timestamp,                           -- timestamp modified
+ModifiedBy varchar,        -- modifier by user id
+Modified timestamp,        -- timestamp modified
+CreatedBy varchar,         -- created by user id
 CreateDate timestamp not null default now()   -- timestamp created  
 );
 
@@ -153,7 +154,9 @@ PID integer not null references Unit(PID),    -- Unit/Person Id
 surety integer not null default 100,          -- surety indicator
 tag varchar,                                  -- tag of relation
 RelationRow integer,                          -- row of relation at person
+ModifiedBy varchar,	                          -- modifier by user id
 Modified timestamp,                           -- timestamp modified
+CreatedBy varchar,                            -- created by user id
 CreateDate timestamp not null default now()   -- timestamp created  
 ) with oids;
 
@@ -214,7 +217,9 @@ RefPlaces varchar[],               -- List of places within notice for index
 --SID integer,               -- temp storage for sourcieid for now
 SourceText varchar ,       -- Source as text
 PrivateText varchar,             --  Private researcher information  
+ModifiedBy varchar,	                          -- modifier by user id
 Modified timestamp,                           -- timestamp modified
+CreatedBy varchar,                            -- created by user id
 CreateDate timestamp not null default now()    --  timestamp created  
 );
 
@@ -233,7 +238,9 @@ Description varchar,             -- Description or remark  (L)
 Place varchar,                   -- Place
 NoteText varchar,                -- Note textfield  (L)
 MediaTitle varchar,              -- text describing the multimedia file (L)  
+ModifiedBy varchar,	                          -- modifier by user id
 Modified timestamp,                           -- timestamp modified
+CreatedBy varchar,                            -- created by user id
 CreateDate timestamp not null default now()    --  timestamp created  
 ) with oids;
 
@@ -257,11 +264,9 @@ create index UnitLanguagePidIdx on UnitLanguage (PID);
 create table RelationNotice (
 RNID integer primary key,         -- Numeric Id that identifies this RelationNotice, supplied by the system  
 RID integer not null ,            -- Relation Id of the relation  
--- active boolean not null default true,
 surety integer not null default 100,  -- surety indicator
 NoticeRow integer not null,      -- Row # of the Relation. See description for UnitNotice
 Tag varchar not null,            -- Tag of the relation ( MARR,DIV,ADOP...) 
---LangCode varchar,                -- Language code. ISO 639-1 Code 2 char code
 Description varchar,             -- Description of relation (for parent/child relations not null means adopted)  
 RelationType varchar,            -- Type such as type of marriage  
 DatePrefix varchar,              -- Prefix for the date (beginning date if date period)  
@@ -269,10 +274,11 @@ FromDate varchar,                -- Date for the (beginning) event described in 
 ToDate varchar,                  -- End Date for the beginning even  
 Place varchar,                   -- Place for the (beginning of the) event  
 NoteText varchar,                -- Note textfield  
---SID integer,                     -- temp storage for sourcieid for now
 SourceText varchar ,             -- Source as text
 PrivateText varchar,             -- Private researcher information  
+ModifiedBy varchar,	                          -- modifier by user id
 Modified timestamp,                           -- timestamp modified
+CreatedBy varchar,                            -- created by user id
 CreateDate timestamp not null default now()   -- Date/time when created  
 ) ;
 
@@ -284,7 +290,9 @@ RelationType varchar,            -- Type such as type of marriage
 Description varchar,             -- Description of relation (for parent/child relations not null means adopted)  
 Place varchar,                   --  Place for the (beginning of the) event  
 NoteText varchar,                -- Note textfield  
+ModifiedBy varchar,	                          -- modifier by user id
 Modified timestamp,                           -- timestamp modified
+CreatedBy varchar,                            -- created by user id
 CreateDate timestamp not null default now()   -- Date/time when created  
 ) with oids;
 

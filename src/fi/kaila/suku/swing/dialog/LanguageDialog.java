@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
@@ -36,7 +37,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		ComponentListener {
 
 	private static final long serialVersionUID = 1L;
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 	private String tag = null;
 	private JTextField noticeType = null;
 
@@ -60,7 +61,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	private static int ytitle = 110;
 	// private static int ynote = 132;
 
-	private JButton ok;
+	private final JButton ok;
 
 	/** The created lbl. */
 	JLabel createdLbl = null;
@@ -73,7 +74,10 @@ public class LanguageDialog extends JDialog implements ActionListener,
 
 	/** The modified. */
 	JTextField modified = null;
-
+	/** The created by. */
+	JTextField createdBy = null;
+	/** The modified by. */
+	JTextField modifiedBy = null;
 	// public String [] texts = null;
 	private UnitLanguage[] languages = null;
 
@@ -160,11 +164,19 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		created.setEditable(false);
 		add(created);
 
+		createdBy = new JTextField();
+		createdBy.setEditable(false);
+		add(createdBy);
+
 		modifiedLbl = new JLabel(Resurses.getString("DATA_MODIFIED"));
 		add(modifiedLbl);
 		modified = new JTextField();
 		modified.setEditable(false);
 		add(modified);
+
+		modifiedBy = new JTextField();
+		modifiedBy.setEditable(false);
+		add(modifiedBy);
 
 	}
 
@@ -174,7 +186,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	 * @return list of UnitLanguage notices
 	 */
 	public UnitLanguage[] getLanguages() {
-
+		Vector<UnitLanguage> ulv = new Vector<UnitLanguage>();
 		for (int i = 0; i < languages.length; i++) {
 			UnitLanguage u = languages[i];
 			if (u.getNoticeType() == null && u.getMediaTitle() == null
@@ -182,9 +194,12 @@ public class LanguageDialog extends JDialog implements ActionListener,
 					&& u.getNoteText() == null) {
 				u.setToBeDeleted(true);
 			}
+			if (u.getPid() > 0 && !u.isToBeDeleted()) {
+				ulv.add(u);
+			}
 		}
 
-		return languages;
+		return ulv.toArray(new UnitLanguage[0]);
 	}
 
 	/**
@@ -229,6 +244,7 @@ public class LanguageDialog extends JDialog implements ActionListener,
 	 * 
 	 * @see javax.swing.JDialog#createRootPane()
 	 */
+	@Override
 	protected JRootPane createRootPane() {
 		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		JRootPane rootPane = new JRootPane();
@@ -313,11 +329,13 @@ public class LanguageDialog extends JDialog implements ActionListener,
 					tmp = languages[langIdx].getCreated().toString();
 				}
 				created.setText(tmp);
+				createdBy.setText(languages[langIdx].getCreatedBy());
 				tmp = "";
 				if (languages[langIdx].getModified() != null) {
 					tmp = languages[langIdx].getModified().toString();
 				}
 				modified.setText(tmp);
+				modifiedBy.setText(languages[langIdx].getModifiedBy());
 				noticeType.setText(languages[langIdx].getNoticeType());
 				description.setText(languages[langIdx].getDescription());
 				place.setText(languages[langIdx].getPlace());
@@ -389,9 +407,13 @@ public class LanguageDialog extends JDialog implements ActionListener,
 		ry += 22;
 		created.setBounds(rightColumn, ry, 150, 20);
 		ry += 22;
+		createdBy.setBounds(rightColumn, ry, 150, 20);
+		ry += 22;
 		modifiedLbl.setBounds(rightColumn, ry, 100, 20);
 		ry += 22;
 		modified.setBounds(rightColumn, ry, 150, 20);
+		ry += 22;
+		modifiedBy.setBounds(rightColumn, ry, 150, 20);
 		int yl = ytype;
 		if (!tag.equals("NOTE")) {
 			typeLbl.setBounds(5, yl, 70, 20);

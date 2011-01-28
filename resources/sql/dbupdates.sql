@@ -21,6 +21,27 @@ ALTER TABLE unitnotice ADD COLUMN state varchar;
 ALTER TABLE SukuVariables ADD COLUMN owner_state varchar;
 ALTER TABLE SukuVariables ADD COLUMN owner_webaddress varchar;
 
+
+
+ALTER TABLE Unit ADD COLUMN createdBy varchar;
+ALTER TABLE Unit ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE UnitNotice ADD COLUMN createdBy varchar;
+ALTER TABLE UnitNotice ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE UnitLanguage ADD COLUMN createdBy varchar;
+ALTER TABLE UnitLanguage ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE Relation ADD COLUMN createdBy varchar;
+ALTER TABLE Relation ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE RelationNotice ADD COLUMN createdBy varchar;
+ALTER TABLE RelationNotice ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE RelationLanguage ADD COLUMN createdBy varchar;
+ALTER TABLE RelationLanguage ADD COLUMN modifiedBy varchar;
+
+
 drop view if exists unitNotice_fi;
 drop view if exists unitNotice_sv;
 drop view if exists unitNotice_en;
@@ -131,3 +152,22 @@ on p1.pid = g1.pid and g1.tag = 'HUSB')
 inner join Relation as g2 on g1.RID = g2.RID )
 inner join Unit as p2 on g2.pid = p2.pid and g2.tag = 'WIFE')
 where p1.pid <> p2.pid;
+
+
+ALTER TABLE Unit ADD COLUMN createdBy varchar;
+ALTER TABLE Unit ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE UnitNotice ADD COLUMN createdBy varchar;
+ALTER TABLE UnitNotice ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE UnitLanguage ADD COLUMN createdBy varchar;
+ALTER TABLE UnitLanguage ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE Relation ADD COLUMN createdBy varchar;
+ALTER TABLE Relation ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE RelationNotice ADD COLUMN createdBy varchar;
+ALTER TABLE RelationNotice ADD COLUMN modifiedBy varchar;
+
+ALTER TABLE RelationLanguage ADD COLUMN createdBy varchar;
+ALTER TABLE RelationLanguage ADD COLUMN modifiedBy varchar;

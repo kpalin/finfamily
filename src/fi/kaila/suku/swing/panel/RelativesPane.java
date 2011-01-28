@@ -150,10 +150,13 @@ public class RelativesPane extends JPanel implements ActionListener,
 
 	/** The created. */
 	JTextField created = null;
+	/** The created. bu userid */
+	JTextField createdBy = null;
 
 	/** The modified. */
 	JTextField modified = null;
-
+	/** The modified by userid. */
+	JTextField modifiedBy = null;
 	/** woman icon for database list. */
 	public static ImageIcon womanIcon = null;
 
@@ -708,11 +711,19 @@ public class RelativesPane extends JPanel implements ActionListener,
 		created.setEditable(false);
 		relaPane.add(created);
 
+		createdBy = new JTextField();
+		createdBy.setEditable(false);
+		relaPane.add(createdBy);
+
 		modLabel = new JLabel(Resurses.getString("DATA_MODIFIED"));
 		relaPane.add(modLabel);
 		modified = new JTextField();
 		modified.setEditable(false);
 		relaPane.add(modified);
+
+		modifiedBy = new JTextField();
+		modifiedBy.setEditable(false);
+		relaPane.add(modifiedBy);
 
 		notices = new MyNoticeModel();
 		noticeTab = setupNoticeTable(notices);
@@ -1108,7 +1119,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 	private void insertIntoChildTable(PersonShortData persShort, int row) {
 
 		Relation rel = new Relation(0, longPers.getPid(), persShort.getPid(),
-				"CHIL", 100, null, null);
+				"CHIL", 100, null, null, null, null);
 		rel.setShortPerson(persShort);
 		String myRelTag = (longPers.getSex().equals("M")) ? "FATH" : "MOTH";
 		String tag = (longPers.getSex().equals("M")) ? "MOTH" : "FATH";
@@ -1262,7 +1273,8 @@ public class RelativesPane extends JPanel implements ActionListener,
 					logger.info("Adding " + pare.getAlfaName() + " as "
 							+ pareTag);
 					Relation rpare = new Relation(0, persShort.getPid(),
-							pare.getPid(), tag, parentSurety, null, null);
+							pare.getPid(), tag, parentSurety, null, null, null,
+							null);
 					persShort.setParentPid(pare.getPid());
 					rpare.setShortPerson(pare);
 					pare.setParentPid(pare.getPid());
@@ -1296,7 +1308,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		}
 
 		Relation rel = new Relation(0, longPers.getPid(), persShort.getPid(),
-				tag, 100, null, null);
+				tag, 100, null, null, null, null);
 		rel.setShortPerson(persShort);
 
 		try {
@@ -1358,7 +1370,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 			tag = "FATH";
 		}
 		Relation rel = new Relation(0, longPers.getPid(), persShort.getPid(),
-				tag, 100, null, null);
+				tag, 100, null, null, null, null);
 		rel.setShortPerson(persShort);
 		try {
 			checkLocalRelation(new PersonShortData(longPers), rel, persShort);
@@ -1474,9 +1486,10 @@ public class RelativesPane extends JPanel implements ActionListener,
 		surety.setBounds(0, 52, halfx - 20, 20);
 		creLabel.setBounds(0, 74, halfx - 20, 20);
 		created.setBounds(0, 94, halfx - 10, 20);
+		createdBy.setBounds(halfx - 10, 94, halfx - 10, 20);
 		modLabel.setBounds(0, 116, halfx - 20, 20);
 		modified.setBounds(0, 136, halfx - 10, 20);
-
+		modifiedBy.setBounds(halfx - 10, 136, halfx - 10, 20);
 		addData.setBounds(0, 162, (leveys - 20) / 2, 20);
 		delRelation.setBounds((leveys - 20) / 2, 162, (leveys - 20) / 2, 20);
 		noticeScroll.setBounds(0, 186, leveys, ph);
@@ -1556,11 +1569,13 @@ public class RelativesPane extends JPanel implements ActionListener,
 				modified.setText("");
 			} else {
 				modified.setText(activeRelation.getModified().toString());
+				modifiedBy.setText(activeRelation.getModifiedBy());
 			}
 			if (activeRelation.getCreated() == null) {
 				created.setText("");
 			} else {
 				created.setText(activeRelation.getCreated().toString());
+				createdBy.setText(activeRelation.getCreatedBy());
 			}
 		}
 

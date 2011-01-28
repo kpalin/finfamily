@@ -56,45 +56,105 @@ public class PersonUtil {
 	 *            the req
 	 * @return result in resu field if failed
 	 */
-	public SukuData updatePerson(SukuData req) {
+	public SukuData updatePerson(String usertext, SukuData req) {
 
-		String insPers = "insert into unit (pid,tag,privacy,groupid,sex,"
-				+ "sourcetext,privatetext,userrefn) "
-				+ "values (?,?,?,?,?,?,?,?)";
+		String insPers;
+		String userid = Utils.toUsAscii(usertext);
+		if (userid != null && userid.length() > 16) {
+			userid = userid.substring(0, 16);
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("insert into unit (pid,tag,privacy,groupid,sex,sourcetext,privatetext,userrefn");
+		if (userid != null) {
+			sb.append(",createdby");
+		}
+		sb.append(") values (?,?,?,?,?,?,?,? ");
+		if (userid != null) {
+			sb.append(",'" + userid + "'");
+		}
+		sb.append(")");
 
-		String updPers = "update unit set privacy=?,groupid=?,sex=?,"
-				+ "sourcetext=?,privatetext=?,userrefn=?,Modified=now()"
-				+ " where pid = ? ";
+		insPers = sb.toString();
 
-		String updSql = "update unitnotice set "
-				+ "surety=?,Privacy=?,NoticeType=?,Description=?,"
-				+ "DatePrefix=?,FromDate=?,ToDate=?,Place=?,"
-				+ "Village=?,Farm=?,Croft=?,Address=?,"
-				+ "PostalCode=?,PostOffice=?,State=?,Country=?,Email=?,"
-				+ "NoteText=?,MediaFilename=?,MediaTitle=?,Prefix=?,"
-				+ "Surname=?,Givenname=?,Patronym=?,PostFix=?,"
-				+ "SourceText=?,PrivateText=?,RefNames=?,RefPlaces=?,Modified=now() "
-				+ "where pnid=? ";
+		String updPers;
+		sb = new StringBuilder();
 
-		String insSql = "insert into unitnotice  ("
-				+ "surety,Privacy,NoticeType,Description,"
-				+ "DatePrefix,FromDate,ToDate,Place,"
-				+ "Village,Farm,Croft,Address,"
-				+ "PostalCode,PostOffice,State,Country,Email,"
-				+ "NoteText,MediaFilename,MediaTitle,Prefix,"
-				+ "Surname,Givenname,Patronym,PostFix,"
-				+ "SourceText,PrivateText,RefNames,Refplaces,pnid,pid,tag) values ("
-				+ "?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?,"
-				+ "?,?,?,?,?,?,?,?) ";
+		sb.append("update unit set privacy=?,groupid=?,sex=?,sourcetext=?,"
+				+ "privatetext=?,userrefn=?,Modified=now()");
+		if (userid != null) {
+			sb.append(",modifiedby = '" + userid + "' where pid = ?");
+		} else {
+			sb.append(" where pid = ?");
+		}
+		updPers = sb.toString();
 
-		String updLangSql = "update unitlanguage set "
-				+ "NoticeType=?,Description=?," + "Place=?,"
-				+ "NoteText=?,MediaTitle=?,Modified=now() "
-				+ "where pnid=? and langCode = ?";
+		sb = new StringBuilder();
+		String updSql;
 
-		String insLangSql = "insert into unitlanguage (pnid,pid,tag,langcode,"
-				+ "NoticeType,Description,Place,"
-				+ "NoteText,MediaTitle) values (?,?,?,?,?,?,?,?,?)";
+		sb.append("update unitnotice set ");
+		sb.append("surety=?,Privacy=?,NoticeType=?,Description=?,");
+		sb.append("DatePrefix=?,FromDate=?,ToDate=?,Place=?,");
+		sb.append("Village=?,Farm=?,Croft=?,Address=?,");
+		sb.append("PostalCode=?,PostOffice=?,State=?,Country=?,Email=?,");
+		sb.append("NoteText=?,MediaFilename=?,MediaTitle=?,Prefix=?,");
+		sb.append("Surname=?,Givenname=?,Patronym=?,PostFix=?,");
+		sb.append("SourceText=?,PrivateText=?,RefNames=?,RefPlaces=?,Modified=now()");
+		if (userid != null) {
+			sb.append(",modifiedby = '" + userid + "'");
+		}
+		sb.append(" where pnid = ?");
+		updSql = sb.toString();
+
+		sb = new StringBuilder();
+		String insSql;
+
+		sb.append("insert into unitnotice  (");
+		sb.append("surety,Privacy,NoticeType,Description,");
+		sb.append("DatePrefix,FromDate,ToDate,Place,");
+		sb.append("Village,Farm,Croft,Address,");
+		sb.append("PostalCode,PostOffice,State,Country,Email,");
+		sb.append("NoteText,MediaFilename,MediaTitle,Prefix,");
+		sb.append("Surname,Givenname,Patronym,PostFix,");
+		sb.append("SourceText,PrivateText,RefNames,Refplaces,pnid,pid,tag");
+		if (userid != null) {
+			sb.append(",createdby");
+		}
+		sb.append(") values (");
+		sb.append("?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?,");
+		sb.append("?,?,?,?,?,?,?,?");
+		if (userid != null) {
+			sb.append(",'" + userid + "'");
+		}
+		sb.append(")");
+		insSql = sb.toString();
+
+		sb = new StringBuilder();
+
+		String updLangSql;
+
+		sb.append("update unitlanguage set ");
+		sb.append("NoticeType=?,Description=?," + "Place=?,");
+		sb.append("NoteText=?,MediaTitle=?,Modified=now() ");
+		if (userid != null) {
+			sb.append(",modifiedby = '" + userid + "'");
+		}
+		sb.append("where pnid=? and langCode = ?");
+		updLangSql = sb.toString();
+		sb = new StringBuilder();
+		String insLangSql;
+
+		sb.append("insert into unitlanguage (pnid,pid,tag,langcode,");
+		sb.append("NoticeType,Description,Place,");
+		sb.append("NoteText,MediaTitle");
+		if (userid != null) {
+			sb.append(",createdby");
+		}
+		sb.append(") values (?,?,?,?,?,?,?,?,?");
+		if (userid != null) {
+			sb.append(",'" + userid + "'");
+		}
+		sb.append(")");
+		insLangSql = sb.toString();
 		String delOneLangSql = "delete from unitlanguage where pnid = ? and langcode = ? ";
 		String updRowSql = "update unitnotice set noticerow = ? where pnid = ? ";
 
@@ -291,7 +351,7 @@ public class PersonUtil {
 						int landelcnt = pstDelLang.executeUpdate();
 						pstDel.setInt(1, n.getPnid());
 						int delcnt = pstDel.executeUpdate();
-						if (delcnt == 1) {
+						if (delcnt != 1) {
 							logger.warning("Person notice [" + n.getTag()
 									+ "]delete for pid " + pid + " failed ["
 									+ delcnt + "] (Should be 1)");
@@ -520,7 +580,7 @@ public class PersonUtil {
 
 				}
 
-				updateRelations(req);
+				updateRelations(userid, req);
 			}
 
 			con.commit();
@@ -545,33 +605,78 @@ public class PersonUtil {
 
 	}
 
-	private SukuData updateRelations(SukuData req) throws SQLException,
-			SukuException {
-		String updSql = "update relationnotice set "
-				+ "surety=?,RelationType=?,Description=?,"
-				+ "DatePrefix=?,FromDate=?,ToDate=?,Place=?,"
-				+ "NoteText=?,SourceText=?,PrivateText=?,Modified=now()" +
-				// "SourceText=?,PrivateText=?,Modified=now() " +
-				"where rnid=? ";
+	private SukuData updateRelations(String userid, SukuData req)
+			throws SQLException, SukuException {
 
-		String insSql = "insert into relationnotice  "
-				+ "(surety,RelationType,Description,DatePrefix,FromDate,ToDate,"
-				+ "Place,NoteText,sourcetext,privatetext,rnid,rid,tag,noticerow)"
-				+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,0) ";
+		StringBuilder sb = new StringBuilder();
+		String updSql;
 
-		String updLangSql = "update relationlanguage set "
-				+ "RelationType=?,Description=?,Place=?,"
-				+ "NoteText=?,Modified=now()" +
-				// "SourceText=?,PrivateText=?,Modified=now() " +
-				"where rnid=? and langcode = ?";
+		sb.append("update relationnotice set ");
+		sb.append("surety=?,RelationType=?,Description=?,");
+		sb.append("DatePrefix=?,FromDate=?,ToDate=?,Place=?,");
+		sb.append("NoteText=?,SourceText=?,PrivateText=?,Modified=now()");
+		if (userid != null) {
+			sb.append(",modifiedby = '" + userid + "' ");
+		}
+		sb.append("where rnid=? ");
+		updSql = sb.toString();
 
-		String insLangSql = "insert into relationlanguage  "
-				+ "(rnid,rid,langcode,RelationType,Description,Place,NoteText) "
-				+ " values (?,?,?,?,?,?,?) ";
+		sb = new StringBuilder();
+		String insSql;
+
+		sb.append("insert into relationnotice  ");
+		sb.append("(surety,RelationType,Description,DatePrefix,FromDate,ToDate,");
+		sb.append("Place,NoteText,sourcetext,privatetext,rnid,rid,tag,noticerow");
+		if (userid != null) {
+			sb.append(",createdby");
+		}
+		sb.append(") values (?,?,?,?,?,?,?,?,?,?,?,?,?,0 ");
+		if (userid != null) {
+			sb.append(",'" + userid + "'");
+		}
+		sb.append(")");
+		insSql = sb.toString();
+
+		sb = new StringBuilder();
+		String updLangSql;
+
+		sb.append("update relationlanguage set ");
+		sb.append("RelationType=?,Description=?,Place=?,");
+		sb.append("NoteText=?,Modified=now()");
+		if (userid != null) {
+			sb.append(",modifiedby = '" + userid + "' ");
+		}
+		sb.append("where rnid=? and langcode = ?");
+		updLangSql = sb.toString();
+
+		sb = new StringBuilder();
+		String insLangSql;
+		sb.append("insert into relationlanguage  ");
+		sb.append("(rnid,rid,langcode,RelationType,Description,Place,NoteText ");
+		if (userid != null) {
+			sb.append(",createdby");
+		}
+		sb.append(") values (?,?,?,?,?,?,? ");
+		if (userid != null) {
+			sb.append(",'" + userid + "'");
+		}
+		sb.append(")");
+		insLangSql = sb.toString();
 
 		String delLangSql = "delete from relationlanguage where rnid=? and langcode = ?";
 
-		String insRelSql = "insert into relation (rid,pid,surety,tag,relationrow) values (?,?,?,?,?) ";
+		sb = new StringBuilder();
+		String insRelSql;
+		sb.append("insert into relation (rid,pid,surety,tag,relationrow");
+		if (userid != null) {
+			sb.append(",createdby");
+		}
+		sb.append(") values (?,?,?,?,? ");
+		if (userid != null) {
+			sb.append(",'" + userid + "'");
+		}
+		sb.append(")");
+		insRelSql = sb.toString();
 		String updRowSql = "update relation set relationrow = ? where rid = ? and pid = ?";
 
 		SukuData res = new SukuData();
@@ -765,7 +870,13 @@ public class PersonUtil {
 
 					}
 				} else {
-					String updSureSql = "update relation set surety = ?,Modified=now() where rid = ? ";
+					String updSureSql;
+					if (userid == null) {
+						updSureSql = "update relation set surety = ?,Modified=now() where rid = ? ";
+					} else {
+						updSureSql = "update relation set surety = ?,Modified=now(),modifiedby = '"
+								+ userid + "' where rid = ? ";
+					}
 
 					PreparedStatement updLang;
 					if (r.getModified() == null) {
@@ -1114,7 +1225,7 @@ public class PersonUtil {
 							+ "coalesce(u2.NoteText,u1.NoteText) as NoteText ,  "
 							+ "u1.MediaFilename,u1.MediaData,coalesce(u2.MediaTitle,u1.MediaTitle) as MediaTitle ,   "
 							+ "u1.MediaWidth,u1.MediaHeight,u1.Prefix,u1.Surname,u1.Givenname,u1.Patronym,u1.PostFix,	"
-							+ "u1.RefNames,u1.RefPlaces,u1.SourceText,u1.PrivateText,u1.modified,u1.CreateDate "
+							+ "u1.RefNames,u1.RefPlaces,u1.SourceText,u1.PrivateText,u1.modified,u1.CreateDate,u1.modifiedBy,u1.createdBy "
 							+ "from unitNotice as u1 left join unitLanguage as u2 "
 							+ "on u1.pnid = u2.pnid and u2.langcode = ? "
 							+ "where u1.pid = ? order by u1.noticerow ";
@@ -1170,7 +1281,7 @@ public class PersonUtil {
 					// UnitLanguage[0]));
 				}
 
-				sql = "select a.rid,a.pid,b.pid,a.tag,a.surety,a.modified,a.createdate  "
+				sql = "select a.rid,a.pid,b.pid,a.tag,a.surety,a.modified,a.createdate,a.modifiedby,a.createdby  "
 						+ "from relation a inner join relation b on a.rid=b.rid "
 						+ "where a.pid <> b.pid and a.pid=? order by a.tag,a.relationrow";
 				pstm = con.prepareStatement(sql);
@@ -1192,7 +1303,8 @@ public class PersonUtil {
 					relpids.add(bid);
 
 					rel = new Relation(rid, aid, bid, tag, rs.getInt(5),
-							rs.getTimestamp(6), rs.getTimestamp(7));
+							rs.getTimestamp(6), rs.getTimestamp(7),
+							rs.getString(8), rs.getString(9));
 					rels.add(rel);
 					relmap.put(rid, rel);
 
@@ -1233,7 +1345,9 @@ public class PersonUtil {
 							rs.getString("sourcetext"),
 							rs.getString("privatetext"),
 							rs.getTimestamp("modified"),
-							rs.getTimestamp("createdate"));
+							rs.getTimestamp("createdate"),
+							rs.getString("modifiedBy"),
+							rs.getString("createdBy"));
 					relNotices.add(rnote);
 				}
 

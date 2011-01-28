@@ -60,8 +60,14 @@ public class RelationNotice implements Serializable {
 	/** The modified. */
 	Timestamp modified = null;
 
+	/** The modified by userid. */
+	String modifiedBy = null;
+
 	/** The created. */
 	Timestamp created = null;
+
+	/** The created by userid. */
+	String createdBy = null;
 
 	/** The languages. */
 	RelationLanguage[] languages = null;
@@ -104,7 +110,7 @@ public class RelationNotice implements Serializable {
 			String type, String description, String datePrefix,
 			String fromDate, String toDate, String place, String noteText,
 			String sourceText, String privateText, Timestamp modified,
-			Timestamp created) {
+			Timestamp created, String modifiedBy, String createdBy) {
 		this.rnid = rnid;
 		this.rid = rid;
 		this.setSurety(surety);
@@ -120,6 +126,8 @@ public class RelationNotice implements Serializable {
 		this.privateText = privateText;
 		this.modified = modified;
 		this.created = created;
+		this.modifiedBy = modifiedBy;
+		this.createdBy = createdBy;
 		this.toBeUpdated = false;
 		this.toBeDeleted = false;
 	}
@@ -436,12 +444,28 @@ public class RelationNotice implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @return created by userid
+	 */
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
 	 * Gets the modified.
 	 * 
 	 * @return when modified
 	 */
 	public Timestamp getModified() {
 		return modified;
+	}
+
+	/**
+	 * 
+	 * @return modifiedBy userid
+	 */
+	public String getModifiedBy() {
+		return modifiedBy;
 	}
 
 	private String trim(String text) {
@@ -464,6 +488,7 @@ public class RelationNotice implements Serializable {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return tag + "/" + type + "/" + description;
 	}

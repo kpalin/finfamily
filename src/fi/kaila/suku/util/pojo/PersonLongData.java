@@ -27,6 +27,8 @@ public class PersonLongData implements Serializable {
 	private String userRefn = null;
 	private Timestamp created = null;
 	private Timestamp modified = null;
+	private String createdBy = null;
+	private String modifiedBy = null;
 	private boolean orderModified = false; // order of notices has been modified
 	private boolean mainModified = false; // main unit data has been modfied
 
@@ -173,6 +175,22 @@ public class PersonLongData implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @return userid of modifier
+	 */
+	public String getModifiedBy() {
+		return this.modifiedBy;
+	}
+
+	/**
+	 * 
+	 * @return userid of creator
+	 */
+	public String getCreatedBy() {
+		return this.createdBy;
+	}
+
+	/**
 	 * Sets the pid.
 	 * 
 	 * @param pid
@@ -235,6 +253,8 @@ public class PersonLongData implements Serializable {
 		this.userRefn = rs.getString("userrefn");
 		this.created = rs.getTimestamp("createdate");
 		this.modified = rs.getTimestamp("modified");
+		this.createdBy = rs.getString("createdBy");
+		this.modifiedBy = rs.getString("modifiedBy");
 
 	}
 

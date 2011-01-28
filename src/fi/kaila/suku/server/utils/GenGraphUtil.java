@@ -84,7 +84,8 @@ public class GenGraphUtil {
 					String tag = rs.getString(3);
 					int surety = rs.getInt(4);
 					String noteTag = rs.getString(5);
-					rela = new Relation(rid, pid, bid, tag, surety, null, null);
+					rela = new Relation(rid, pid, bid, tag, surety, null, null,
+							null, null);
 					relas.add(rela);
 
 					if (noteTag != null) {

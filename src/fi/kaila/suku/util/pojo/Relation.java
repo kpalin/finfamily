@@ -47,6 +47,12 @@ public class Relation implements Serializable {
 	/** The created. */
 	Timestamp created = null;
 
+	/** The modified by userid. */
+	String modifiedBy = null;
+
+	/** The created by userid. */
+	String createdBy = null;
+
 	/** The notices. */
 	RelationNotice[] notices = null;
 	//
@@ -73,7 +79,8 @@ public class Relation implements Serializable {
 	 *            the created
 	 */
 	public Relation(int rid, int aid, int bid, String tag, int surety,
-			Timestamp modified, Timestamp created) {
+			Timestamp modified, Timestamp created, String modifiedBy,
+			String createdBy) {
 		this.rid = rid;
 		this.aid = aid;
 		this.bid = bid;
@@ -81,6 +88,8 @@ public class Relation implements Serializable {
 		this.surety = surety;
 		this.modified = modified;
 		this.created = created;
+		this.modifiedBy = modifiedBy;
+		this.createdBy = createdBy;
 		if (rid == 0) {
 			toBeUpdated = true;
 		}
@@ -271,12 +280,28 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @return userid of creater
+	 */
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
 	 * Gets the modified.
 	 * 
 	 * @return modifieud time
 	 */
 	public Timestamp getModified() {
 		return modified;
+	}
+
+	/**
+	 * 
+	 * @return userid of modifier
+	 */
+	public String getModifiedBy() {
+		return modifiedBy;
 	}
 
 	/**

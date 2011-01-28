@@ -2,9 +2,10 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
-Release 1093 on 27 jan 2011
+Release 1095 on 27 jan 2011
 
 * Transaction implemented to person update
+* Fixed error with delete notice
 
 Release 1088 on 26 jan 2011
 

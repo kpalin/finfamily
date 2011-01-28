@@ -95,6 +95,12 @@ public class NoticePane extends JPanel implements ActionListener,
 	/** The modified. */
 	JTextField modified;
 
+	/** The creater. */
+	JTextField createdBy;
+
+	/** The modifier. */
+	JTextField modifiedBy;
+
 	/** The type lbl. */
 	JLabel typeLbl;
 
@@ -391,25 +397,33 @@ public class NoticePane extends JPanel implements ActionListener,
 
 		if (notice.getCreated() == null) {
 			created = new JTextField();
+			createdBy = new JTextField();
 		} else {
 			created = new JTextField(notice.getCreated().toString());
+			createdBy = new JTextField(notice.getCreatedBy());
 		}
 
 		created.setEditable(false);
 		add(created);
+		createdBy.setEditable(false);
+		add(createdBy);
 
 		modifiedLbl = new JLabel(Resurses.getString("DATA_MODIFIED"));
 
 		add(modifiedLbl);
 
 		modified = new JTextField();
-
 		modified.setEditable(false);
 		add(modified);
+		modifiedBy = new JTextField();
+		modifiedBy.setEditable(false);
+		add(modifiedBy);
 
 		if (notice.getModified() != null) {
 			modified.setText(notice.getModified().toString());
+			modifiedBy.setText(notice.getModifiedBy());
 		}
+
 		String[] privacies = Resurses.getString("DATA_PRIVACY_LEVEL")
 				.split(";");
 		privacy = new JComboBox(privacies);
@@ -1491,9 +1505,13 @@ public class NoticePane extends JPanel implements ActionListener,
 		rrivi += 20;
 		created.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
+		createdBy.setBounds(rcol, rrivi, rwidth * 2, 20);
+		rrivi += 24;
 		modifiedLbl.setBounds(rcol, rrivi, 100, 20);
 		rrivi += 20;
 		modified.setBounds(rcol, rrivi, rwidth * 2, 20);
+		rrivi += 24;
+		modifiedBy.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;
 		privacy.setBounds(rcol, rrivi, rwidth * 2, 20);
 		rrivi += 24;

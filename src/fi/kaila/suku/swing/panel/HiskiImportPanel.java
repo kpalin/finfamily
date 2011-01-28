@@ -1375,7 +1375,7 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		RelationNotice[] rNotices = new RelationNotice[1];
 		if (miesId != 0 && vaimoId != 0) {
 			rel = new Relation(0, miesId, vaimoId, "WIFE", hiskiSurety, null,
-					null);
+					null, null, null);
 			relations.add(rel);
 
 			rNotices[0] = new RelationNotice("MARR");
@@ -1751,17 +1751,17 @@ public class HiskiImportPanel extends JPanel implements ActionListener {
 		Relation rel;
 		if (isaId != 0 && lapsiId != 0 && (isaId < 0 || lapsiId < 0)) {
 			rel = new Relation(0, lapsiId, isaId, "FATH", hiskiSurety, null,
-					null);
+					null, null, null);
 			relations.add(rel);
 		}
 		if (aitiId != 0 && lapsiId != 0 && (aitiId < 0 || lapsiId < 0)) {
 			rel = new Relation(0, lapsiId, aitiId, "MOTH", hiskiSurety, null,
-					null);
+					null, null, null);
 			relations.add(rel);
 		}
 		if (isaId != 0 && aitiId != 0) {
 			rel = new Relation(0, isaId, aitiId, "WIFE", hiskiSurety, null,
-					null);
+					null, null, null);
 			relations.add(rel);
 		}
 

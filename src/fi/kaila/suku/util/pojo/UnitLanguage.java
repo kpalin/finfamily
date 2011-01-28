@@ -52,6 +52,10 @@ public class UnitLanguage implements Serializable {
 
 	/** The create date. */
 	Timestamp createDate = null; // timestamp not null default now() --
+	/** The modified by userid. */
+	String modifiedBy = null;
+	/** The creater userid. */
+	String createdBy = null;
 
 	// timestamp created
 
@@ -78,6 +82,8 @@ public class UnitLanguage implements Serializable {
 		// index
 		modified = rs.getTimestamp("modified");
 		createDate = rs.getTimestamp("createDate");
+		modifiedBy = rs.getString("modifiedBy");
+		createdBy = rs.getString("createdBy");
 
 	}
 
@@ -287,12 +293,28 @@ public class UnitLanguage implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @return userid of last modifier
+	 */
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	/**
 	 * Gets the created.
 	 * 
 	 * @return time when created
 	 */
 	public Timestamp getCreated() {
 		return createDate;
+	}
+
+	/**
+	 * 
+	 * @return userid of creater
+	 */
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
 	private String trim(String text) {
