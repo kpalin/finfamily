@@ -1259,6 +1259,13 @@ public class PersonMainPane extends JPanel implements ActionListener,
 				return resp;
 			} catch (SukuException e) {
 				String message = Resurses.getString(e.getMessage());
+
+				int createdIdx = message.indexOf("createdby");
+
+				if (createdIdx > 0) {
+					message += "\n" + Resurses.getString("SUGGEST_UPDATE");
+				}
+
 				if (!message.equals(e.getMessage())) {
 					JOptionPane.showMessageDialog(this, message,
 							Resurses.getString(Resurses.SUKU),
