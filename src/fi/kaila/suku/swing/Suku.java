@@ -4102,7 +4102,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				if (cmd.startsWith("ADD")) {
 					PersonShortData pp = pop.getPerson();
 					if (pp != null) {
-						System.out.println("kukku");
+
 						parent.activePersonPid = 0;
 						try {
 
