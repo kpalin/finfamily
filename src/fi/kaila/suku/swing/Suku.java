@@ -1760,6 +1760,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				JOptionPane.showMessageDialog(this, resu,
 						Resurses.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
+				disconnectDb();
 			} else if (cmd.equals("SCHEMA_INITIALIZE")) {
 
 				if (!this.isWebApp) {
@@ -4019,15 +4020,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						showPerson(pid);
 					} catch (SukuException e1) {
 
-						JOptionPane.showMessageDialog(parent, e1.getMessage());
+						String message = Resurses.getString(e1.getMessage());
+						int createdIdx = message.toLowerCase().indexOf(
+								"the column name");
+						if (createdIdx > 0) {
+							message += "\n"
+									+ Resurses.getString("SUGGEST_UPDATE");
+						}
+
+						JOptionPane.showMessageDialog(parent, message);
 						logger.log(Level.SEVERE, "Failed to create person ["
 								+ pid + "]", e);
 
 					}
-
-					// setTitle(pop.getPerson().getAlfaName() + " "
-					// + nv4(pop.getPerson().getBirtDate()) + "-" +
-					// nv4(pop.getPerson().getDeatDate()));
 
 				} else if (cmd.equals(Resurses.TAB_RELATIVES)) {
 					int pid = pop.getPerson().getPid();

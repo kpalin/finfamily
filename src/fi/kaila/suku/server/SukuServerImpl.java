@@ -68,7 +68,7 @@ public class SukuServerImpl implements SukuServer {
 	// }
 
 	/**
-	 * used by tomcat from webstart idea is that database uses different scema
+	 * used by tomcat from webstart idea is that database uses different schema
 	 * for each user.
 	 * 
 	 * @param schema
@@ -79,6 +79,7 @@ public class SukuServerImpl implements SukuServer {
 	 */
 	public SukuServerImpl(String schema, String openFile) throws SukuException {
 		this.schema = schema;
+		this.userId = schema;
 		this.openFile = openFile;
 		logger = Logger.getLogger(this.getClass().getName());
 		try {
@@ -100,7 +101,12 @@ public class SukuServerImpl implements SukuServer {
 			String passwd) throws SukuException {
 		String dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
 				+ userid;
-		this.userId = userid;
+		if (this.userId == null) {
+			this.userId = userid;
+		}
+		if (this.schema == null) {
+			this.schema = "public";
+		}
 		logger.info("Connection: " + dbConne + ";schema: " + this.schema);
 		if (passwd != null && !passwd.isEmpty()) {
 

@@ -2,6 +2,9 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+NOTE!!! While the download problems continue at sourceforge.net you may download FinFamily at
+http://www.finfamily.fi
+
 Release 1100 on 28 jan 2011
 
 * Added createdBy and modifiedBy fields to database tables
