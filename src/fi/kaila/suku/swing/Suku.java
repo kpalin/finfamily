@@ -2770,7 +2770,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	}
 
 	private void showPerson(int pid) throws SukuException {
-		personView.displayNewPersonPane(pid);
+		personView.displayNewPersonPane(pid, null);
+	}
+
+	private void showPerson(int pid, String sex) throws SukuException {
+		personView.displayNewPersonPane(pid, sex);
 	}
 
 	/**
@@ -4093,6 +4097,35 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					PersonShortData pp = pop.getPerson();
 					if (pp != null) {
 						addToNeedle(pp);
+					}
+				}
+				if (cmd.startsWith("ADD")) {
+					PersonShortData pp = pop.getPerson();
+					if (pp != null) {
+						System.out.println("kukku");
+						parent.activePersonPid = 0;
+						try {
+
+							if (cmd.equals("ADDCHILD")) {
+								parent.showPerson(0, null);
+								parent.personView.addParentToPerson(pp);
+							} else if (cmd.equals("ADDSPOUSE")) {
+								String spouseSex = (pp.getSex().equals("M")) ? "F"
+										: "M";
+								parent.showPerson(0, spouseSex);
+								parent.personView.addSpouseToPerson(pp);
+
+							} else if (cmd.equals("ADDPARENT")) {
+								parent.showPerson(0, null);
+								parent.personView.addChildToPerson(pp);
+							}
+
+						} catch (SukuException e1) {
+							JOptionPane.showMessageDialog(parent,
+									e1.getMessage());
+							logger.log(Level.SEVERE,
+									"Failed to create person ", e);
+						}
 					}
 				}
 			}

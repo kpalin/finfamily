@@ -1099,7 +1099,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		try {
 			// TODO the below three commands should be simplified
 			personView.closePersonPane(askChanges);
-			personView.displayPersonPane(personPid);
+			personView.displayPersonPane(personPid, null);
 			personView.closeMainPane(reOpen);
 			if (reOpen) {
 				personView.selectRelativesPane();
@@ -1116,7 +1116,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		}
 	}
 
-	private void insertIntoChildTable(PersonShortData persShort, int row) {
+	void insertIntoChildTable(PersonShortData persShort, int row) {
 
 		Relation rel = new Relation(0, longPers.getPid(), persShort.getPid(),
 				"CHIL", 100, null, null, null, null);
@@ -1300,7 +1300,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		chilTab.updateUI();
 	}
 
-	private void insertIntoSpouseTable(PersonShortData persShort, int row) {
+	void insertIntoSpouseTable(PersonShortData persShort, int row) {
 		// System.out.println("Lisätään siis puolisoksi " + showNewPerson);
 		String tag = "WIFE";
 		if (persShort.getSex().equals("M")) {
@@ -1363,7 +1363,7 @@ public class RelativesPane extends JPanel implements ActionListener,
 		chilTab.updateUI();
 	}
 
-	private void insertIntoParentTable(PersonShortData persShort, int row) {
+	void insertIntoParentTable(PersonShortData persShort, int row) {
 		// System.out.println("Lisätään siis vanhemmaksi " + showNewPerson);
 		String tag = "MOTH";
 		if (persShort.getSex().equals("M")) {

@@ -282,7 +282,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	public void displayNewPersonPane(int pid) throws SukuException {
+	public void displayNewPersonPane(int pid, String sex) throws SukuException {
 		reOpenIndex = -1;
 		try {
 			closePersonPane(true);
@@ -291,7 +291,7 @@ public class PersonView extends JPanel implements ChangeListener {
 			return;
 		}
 
-		displayPersonPane(pid);
+		displayPersonPane(pid, sex);
 
 	}
 
@@ -396,7 +396,7 @@ public class PersonView extends JPanel implements ChangeListener {
 	 * @throws SukuException
 	 *             the suku exception
 	 */
-	protected void displayPersonPane(int pid) throws SukuException {
+	protected void displayPersonPane(int pid, String sex) throws SukuException {
 
 		previousNoticeIndex = -1;
 		PersonMainPane personMain = new PersonMainPane(this, pid);
@@ -405,7 +405,7 @@ public class PersonView extends JPanel implements ChangeListener {
 		int mainIdx = getMainPaneIndex();
 
 		personMain.openPersonNotices(pid);
-
+		personMain.setSex(sex);
 		setSelectedIndex(mainIdx);
 
 		// previousNoticeIndex = getMainPaneIndex();
@@ -472,7 +472,7 @@ public class PersonView extends JPanel implements ChangeListener {
 
 		if (reOpen && personPid > 0) {
 			closePersonPane(true);
-			displayPersonPane(personPid);
+			displayPersonPane(personPid, null);
 
 			if (reOpenIndex > previousNoticeIndex
 					&& reOpenIndex < getTabCount()) {
@@ -1038,6 +1038,54 @@ public class PersonView extends JPanel implements ChangeListener {
 			// ClassCastException ignored
 		}
 
+	}
+
+	public void addChildToPerson(PersonShortData relativ) {
+		int midx = getMainPaneIndex();
+		if (midx < 0)
+			return;
+		SukuTabPane relp = getPane(midx + 1);
+		try {
+			RelativesPane rel = (RelativesPane) relp.pnl;
+			tabbedPane.setSelectedIndex(midx + 1);
+
+			rel.insertIntoChildTable(relativ, -1);
+
+		} catch (ClassCastException cce) {
+			// ClassCastException ignored
+		}
+	}
+
+	public void addParentToPerson(PersonShortData relativ) {
+		int midx = getMainPaneIndex();
+		if (midx < 0)
+			return;
+		SukuTabPane relp = getPane(midx + 1);
+		try {
+			RelativesPane rel = (RelativesPane) relp.pnl;
+			tabbedPane.setSelectedIndex(midx + 1);
+
+			rel.insertIntoParentTable(relativ, -1);
+
+		} catch (ClassCastException cce) {
+			// ClassCastException ignored
+		}
+	}
+
+	public void addSpouseToPerson(PersonShortData relativ) {
+		int midx = getMainPaneIndex();
+		if (midx < 0)
+			return;
+		SukuTabPane relp = getPane(midx + 1);
+		try {
+			RelativesPane rel = (RelativesPane) relp.pnl;
+			tabbedPane.setSelectedIndex(midx + 1);
+
+			rel.insertIntoSpouseTable(relativ, -1);
+
+		} catch (ClassCastException cce) {
+			// ClassCastException ignored
+		}
 	}
 
 	/**

@@ -239,7 +239,7 @@ class RelativePopupListener extends MouseAdapter implements ActionListener {
 		if (this.relativesPane.pop.getMousePerson() != null) {
 			this.relativesPane.personView.closePersonPane(true);
 			this.relativesPane.personView.displayPersonPane(relativesPane.pop
-					.getMousePerson().getPid());
+					.getMousePerson().getPid(), null);
 			if (showRelatives) {
 				int midx = this.relativesPane.personView.getMainPaneIndex();
 				if (midx >= 2) {
