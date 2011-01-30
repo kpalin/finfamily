@@ -199,7 +199,6 @@ public class OrderChildren extends JDialog implements ActionListener,
 
 		@Override
 		protected Void doInBackground() throws Exception {
-			System.out.println("Juupa " + viewId);
 
 			setProgress(0);
 			setRunnerValue("0;" + Resurses.getString(""));
@@ -223,26 +222,19 @@ public class OrderChildren extends JDialog implements ActionListener,
 					try {
 						plong = Suku.kontroller.getSukuData("cmd=sort", "pid="
 								+ sho.getPid());
-
-					} catch (SukuException e) {
-						if ("NODATE".equals(e.getMessage())) {
+						if (plong.resuCount > 0) {
 							pidsnot.add(sho.getPid());
-							// System.out.println("NODATE for " + sho.getPid());
-						} else {
-							JOptionPane.showMessageDialog(owner, e.toString(),
-									Resurses.getString(Resurses.SUKU),
-									JOptionPane.ERROR_MESSAGE);
-
-							break;
 						}
+					} catch (SukuException e) {
+
+						JOptionPane.showMessageDialog(owner, e.toString(),
+								Resurses.getString(Resurses.SUKU),
+								JOptionPane.ERROR_MESSAGE);
+
+						break;
+
 					}
 
-					// try {
-					// Thread.sleep(500);
-					//
-					// } catch (InterruptedException ie) {
-					// System.out.println(ie.getMessage());
-					// }
 				}
 			}
 
@@ -253,9 +245,8 @@ public class OrderChildren extends JDialog implements ActionListener,
 				for (int i = 0; i < pidsnot.size(); i++) {
 					request.pidArray[i] = pidsnot.get(i);
 				}
-				SukuData response = Suku.kontroller.getSukuData(request,
-						"cmd=view", "action=add", "key=pidarray", "viewid="
-								+ viewId, "empty=true");
+				Suku.kontroller.getSukuData(request, "cmd=view", "action=add",
+						"key=pidarray", "viewid=" + viewId, "empty=true");
 
 			}
 

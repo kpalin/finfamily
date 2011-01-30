@@ -534,7 +534,6 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData executeCmdSort(HashMap<String, String> map) {
 		SukuData resp = new SukuData();
 		String pidtext = map.get("pid");
-
 		Vector<PersonShortData> ps = new Vector<PersonShortData>();
 
 		try {
@@ -543,7 +542,7 @@ public class SukuServerImpl implements SukuServer {
 			String sql = "select b.pid,a.relationrow,n.fromdate,a.rid "
 					+ "from relation as a inner join relation as b on a.rid=b.rid and a.pid <> b.pid 	"
 					+ "left join unitnotice as n on b.pid=n.pid and n.tag='BIRT' "
-					+ "where a.tag='CHIL' and a.pid=? order by n.fromdate";
+					+ "where a.tag='CHIL' and a.pid=? order by n.fromdate,a.relationrow";
 
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setInt(1, pid);
@@ -571,8 +570,7 @@ public class SukuServerImpl implements SukuServer {
 			rs.close();
 			pst.close();
 			if (foundMissingDate) {
-				resp.resu = "NODATE";
-				return resp;
+				resp.resuCount++;
 
 			}
 			if (foundBadOrder) {
