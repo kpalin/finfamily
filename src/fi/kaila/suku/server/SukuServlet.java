@@ -489,7 +489,7 @@ public class SukuServlet extends HttpServlet {
 				char c = (char) input;
 				if (!endParams) {
 					if (c == '\r') {
-
+						// TODO:
 					} else if (c == '\n') {
 						if (params.length() > 0) {
 							endParams = true;
@@ -497,7 +497,6 @@ public class SukuServlet extends HttpServlet {
 					} else {
 						params.append(c);
 					}
-
 				} else {
 					if (c != '\r') {
 						boss.write((byte) c);
