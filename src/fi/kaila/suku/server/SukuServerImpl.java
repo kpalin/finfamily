@@ -30,6 +30,7 @@ import fi.kaila.suku.server.utils.Upload;
 import fi.kaila.suku.server.utils.ViewUtil;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
+import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.data.ExcelImporter;
 import fi.kaila.suku.util.data.SukuUtility;
 import fi.kaila.suku.util.local.LocalDatabaseUtility;
@@ -493,6 +494,8 @@ public class SukuServerImpl implements SukuServer {
 			fam = saveReportSettings(request, map);
 		} else if (cmd.equals("schema")) {
 			executeCmdSchema(map, fam);
+		} else if (cmd.equals("sort")) {
+			fam = executeCmdSort(map);
 		} else if (cmd.equals("sql")) {
 			fam = executeCmdSql(request, map, fam);
 		} else if (cmd.equals("unitCount")) {
@@ -526,6 +529,72 @@ public class SukuServerImpl implements SukuServer {
 			throw new SukuException(fam.resu);
 		}
 		return fam;
+	}
+
+	private SukuData executeCmdSort(HashMap<String, String> map) {
+		SukuData resp = new SukuData();
+		String pidtext = map.get("pid");
+
+		Vector<PersonShortData> ps = new Vector<PersonShortData>();
+
+		try {
+			int pid = Integer.parseInt(pidtext);
+
+			String sql = "select b.pid,a.relationrow,n.fromdate,a.rid "
+					+ "from relation as a inner join relation as b on a.rid=b.rid and a.pid <> b.pid 	"
+					+ "left join unitnotice as n on b.pid=n.pid and n.tag='BIRT' "
+					+ "where a.tag='CHIL' and a.pid=? order by n.fromdate";
+
+			PreparedStatement pst = con.prepareStatement(sql);
+			pst.setInt(1, pid);
+			int currerow = -1;
+			boolean foundMissingDate = false;
+			boolean foundBadOrder = false;
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+				String dd = rs.getString(3);
+				if (dd == null) {
+					foundMissingDate = true;
+					break;
+				}
+				int curow = rs.getInt(2);
+				if (curow < currerow) {
+					foundBadOrder = true;
+				}
+				currerow = curow;
+				int cid = rs.getInt(1);
+
+				PersonShortData psp = new PersonShortData(this.con, cid);
+				psp.setParentPid(rs.getInt(4));
+				ps.add(psp);
+			}
+			rs.close();
+			pst.close();
+			if (foundMissingDate) {
+				resp.resu = "NODATE";
+				return resp;
+
+			}
+			if (foundBadOrder) {
+				sql = "update Relation set relationrow = ? where rid = ? and pid = ?";
+				pst = con.prepareStatement(sql);
+				for (int i = 0; i < ps.size(); i++) {
+					PersonShortData psp = ps.get(i);
+					pst.setInt(1, i + 1);
+					pst.setInt(2, psp.getParentPid());
+					pst.setInt(3, pid);
+					int lukuri = pst.executeUpdate();
+					Utils.println(this, "lukuri " + lukuri);
+				}
+				pst.close();
+
+			}
+
+		} catch (Exception ne) {
+			resp.resu = ne.getMessage();
+		}
+
+		return resp;
 	}
 
 	private SukuData executeCmdSql(SukuData request,

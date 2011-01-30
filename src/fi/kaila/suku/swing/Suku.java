@@ -85,6 +85,7 @@ import fi.kaila.suku.swing.dialog.ConnectDialog;
 import fi.kaila.suku.swing.dialog.GenStat;
 import fi.kaila.suku.swing.dialog.GroupMgrWindow;
 import fi.kaila.suku.swing.dialog.LicenseDialog;
+import fi.kaila.suku.swing.dialog.OrderChildren;
 import fi.kaila.suku.swing.dialog.OwnerDialog;
 import fi.kaila.suku.swing.dialog.SearchCriteria;
 import fi.kaila.suku.swing.dialog.SearchCriteria.ColTable;
@@ -238,6 +239,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mStoreAllConversions;
 	private JMenuItem mStoreConversions;
 	private JMenuItem mDbWork;
+	private JMenuItem mOrderChildren;
 	private JMenuItem mOwner;
 	private JMenuItem mDbUpdate;
 	private JMenuItem mListDatabases;
@@ -684,6 +686,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		auxCommands.add(this.mDbWork);
 		this.mDbWork.setActionCommand("MENU_NOTICES_ORDER");
 		this.mDbWork.addActionListener(this);
+
+		this.mOrderChildren = new JMenuItem(
+				Resurses.getString("MENU_CHILDREN_ORDER"));
+		auxCommands.add(this.mOrderChildren);
+		this.mOrderChildren.setActionCommand("MENU_CHILDREN_ORDER");
+		this.mOrderChildren.addActionListener(this);
 
 		this.mExecSql = new JMenuItem(Resurses.getString("MENU_TOOLS_SQL"));
 		auxCommands.add(this.mExecSql);
@@ -1866,6 +1874,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			} else if (cmd.equals("MENU_NOTICES_ORDER")) {
 				executeDbWork();
+			} else if (cmd.equals("MENU_CHILDREN_ORDER")) {
+				executeOrderChildren();
 			} else if (cmd.equals("MENU_OWNER_INFO")) {
 				showOwnerInformation();
 			} else if (cmd.equals("MENU_TOOLS_LIST_DATABASES")) {
@@ -2244,6 +2254,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			logger.log(Level.WARNING, "Suku action", ex);
 			JOptionPane.showMessageDialog(personView.getSuku(), ex.toString());
 		}
+	}
+
+	private void executeOrderChildren() {
+		OrderChildren dlg;
+		try {
+			dlg = new OrderChildren(this);
+			dlg.setVisible(true);
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, e.toString(),
+					Resurses.getString(Resurses.SUKU),
+					JOptionPane.ERROR_MESSAGE);
+		}
+
 	}
 
 	private void importOther() {
