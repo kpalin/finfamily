@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -46,6 +47,7 @@ public class OrderChildren extends JDialog implements ActionListener,
 	private static final String SORT = "NOTICES.SORT";
 	private static final String CANCEL = "CANCEL";
 
+	private JCheckBox orderAll = null;
 	private JComboBox viewList = null;
 	private int[] viewIds = null;
 
@@ -68,7 +70,18 @@ public class OrderChildren extends JDialog implements ActionListener,
 
 		y += 50;
 
-		JLabel lbl = new JLabel(Resurses.getString("STORE_NOT_SORTED"));
+		JLabel lbl;
+
+		orderAll = new JCheckBox(Resurses.getString("ORDER_ALL_CHILDREN"));
+		add(orderAll);
+		orderAll.setBounds(10, y, 260, 20);
+		y += 24;
+		// lbl = new JLabel();
+		// add(lbl);
+		// lbl.setBounds(10, y, 260, 20);
+		// y += 20;
+
+		lbl = new JLabel(Resurses.getString("STORE_NOT_SORTED"));
 		add(lbl);
 		lbl.setBounds(10, y, 260, 20);
 		y += 20;
@@ -156,6 +169,7 @@ public class OrderChildren extends JDialog implements ActionListener,
 			}
 
 			task = new Task();
+			task.orderAll = orderAll.isSelected();
 			task.viewId = viewIds[ii];
 			task.addPropertyChangeListener(this);
 			task.execute();
@@ -195,13 +209,14 @@ public class OrderChildren extends JDialog implements ActionListener,
 
 		int viewId = 0;
 		boolean stopMeNow = false;
+		boolean orderAll = false;
 		int notOrdered = 0;
 
 		@Override
 		protected Void doInBackground() throws Exception {
 
 			setProgress(0);
-			setRunnerValue("0;" + Resurses.getString(""));
+			setRunnerValue("0;" + Resurses.getString("MENU_CHILDREN_ORDER"));
 
 			int dbcount = owner.getDatabaseRowCount();
 			Vector<Integer> pidsnot = new Vector<Integer>();
@@ -220,8 +235,8 @@ public class OrderChildren extends JDialog implements ActionListener,
 
 					SukuData plong;
 					try {
-						plong = Suku.kontroller.getSukuData("cmd=sort", "pid="
-								+ sho.getPid());
+						plong = Suku.kontroller.getSukuData("cmd=sort", "all="
+								+ orderAll, "pid=" + sho.getPid());
 						if (plong.resuCount > 0) {
 							pidsnot.add(sho.getPid());
 						}

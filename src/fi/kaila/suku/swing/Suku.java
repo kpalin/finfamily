@@ -2258,6 +2258,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void executeOrderChildren() {
 		OrderChildren dlg;
+
+		if (personView.getMainPaneIndex() > 1) {
+			JOptionPane.showMessageDialog(this,
+					Resurses.getString("STORE_CLOSE_PERSON"));
+			return;
+		}
+
 		try {
 			dlg = new OrderChildren(this);
 			dlg.setVisible(true);

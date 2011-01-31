@@ -535,6 +535,11 @@ public class SukuServerImpl implements SukuServer {
 		SukuData resp = new SukuData();
 		String pidtext = map.get("pid");
 		Vector<PersonShortData> ps = new Vector<PersonShortData>();
+		boolean sortAll = false;
+		String tmp = map.get("all");
+		if (tmp != null && tmp.equalsIgnoreCase("true")) {
+			sortAll = true;
+		}
 
 		try {
 			int pid = Integer.parseInt(pidtext);
@@ -571,9 +576,9 @@ public class SukuServerImpl implements SukuServer {
 			pst.close();
 			if (foundMissingDate) {
 				resp.resuCount++;
-
 			}
-			if (foundBadOrder) {
+
+			if (foundBadOrder && (sortAll || !foundMissingDate)) {
 				sql = "update Relation set relationrow = ? where rid = ? and pid = ?";
 				pst = con.prepareStatement(sql);
 				for (int i = 0; i < ps.size(); i++) {
