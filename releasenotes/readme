@@ -5,9 +5,10 @@ Releases follow the Subversion revision numbers.
 NOTE!!! While the download problems continue at sourceforge.net you may download FinFamily at
 http://www.finfamily.fi
 
-Release 1108 on 31 jan 2011
+Release 1110 on 31 jan 2011
 
 * Added Tools -> Order children
+* Added set of ready made commands to sql dialog
 
 Release 1103 on 29 jan 2011
 
