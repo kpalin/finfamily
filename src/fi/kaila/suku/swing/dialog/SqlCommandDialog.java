@@ -6,7 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -33,6 +38,8 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 	private static final String OK = "OK";
 
 	private JSplitPane splitPane = null;
@@ -41,6 +48,11 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 	private Vector<String> columnNames = null;
 	private JTable outputTable = null;
 	private JTextField errorField = null;
+
+	private JComboBox selectExisting = null;
+
+	private String[] preparedCommands = null;
+
 	private JComboBox viewList = null;
 	private int[] viewIds = null;
 	private JCheckBox resetView = null;
@@ -66,7 +78,8 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 		Dimension size = new Dimension(650, 500);
 		setBounds(d.width / 2 - 325, d.height / 2 - 250, size.width,
 				size.height);
-
+		String loca = Suku.kontroller.getPref(parent, Resurses.LOCALE, "xx");
+		int y = 30;
 		inputArea = new JTextArea();
 		inputArea.setLineWrap(true);
 		JScrollPane inputScroll = new JScrollPane(inputArea,
@@ -85,11 +98,20 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 		this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true,
 				inputScroll, outputScroll);
 		add(this.splitPane);
-		this.splitPane.setBounds(10, 30, size.width - 40, size.height - 200);
+		this.splitPane.setBounds(10, y, size.width - 40, size.height - 200);
 		this.splitPane.setDividerLocation(0.5);
 		this.errorField = new JTextField();
 		add(this.errorField);
 		this.errorField.setEditable(false);
+
+		selectExisting = new JComboBox();
+		selectExisting.addActionListener(this);
+		add(selectExisting);
+
+		selectExisting.addItem(Resurses.getString("TOOLS_SQL_SELECTCOMMAND"));
+
+		extractCommands(loca);
+
 		this.resetView = new JCheckBox(
 				Resurses.getString("DIALOG_VIEW_ADD_EMPTY_VIEW"));
 		add(this.resetView);
@@ -100,9 +122,10 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 
 		String[] lista = vlist.generalArray;
 		this.viewList = new JComboBox();
+
 		add(this.viewList);
 		// viewList.removeAllItems();
-		viewList.addItem("");
+		viewList.addItem(Resurses.getString("TOOLS_SQL_SELECTVIEW"));
 		viewIds = new int[lista.length];
 		for (int i = 0; i < lista.length; i++) {
 			String[] pp = lista[i].split(";");
@@ -130,6 +153,68 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 		add(cancel);
 
 		cancel.addActionListener(this);
+
+	}
+
+	private void extractCommands(String loca) {
+		InputStream in = this.getClass()
+				.getResourceAsStream("/sql/queries.sql");
+
+		String rivi = null;
+		String defaultrivi = null;
+		StringBuilder sb = new StringBuilder();
+		Vector<String> lista = new Vector<String>();
+		try {
+			while ((rivi = readRivi(in)) != null) {
+
+				if (rivi.startsWith("--")) {
+					if (rivi.startsWith("--en")) {
+						defaultrivi = rivi;
+					} else if (rivi.startsWith("--" + loca)) {
+						defaultrivi = rivi.substring(4);
+					}
+				} else {
+					if (rivi.trim().endsWith(";")) {
+						int lo = rivi.lastIndexOf(";");
+						sb.append(rivi.substring(0, lo));
+						lista.add(sb.toString());
+						selectExisting.addItem(defaultrivi);
+						// System.out.println("sb:" + sb.toString());
+						sb = new StringBuilder();
+					} else {
+						sb.append(rivi);
+						if (rivi.length() > 0) {
+							sb.append(" ");
+						}
+					}
+				}
+
+			}
+			preparedCommands = lista.toArray(new String[0]);
+		} catch (IOException e) {
+			logger.log(Level.WARNING, "Creating prepared commands", e);
+		}
+
+	}
+
+	private String readRivi(InputStream in) throws IOException {
+		int nextByte = 0;
+
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		while ((nextByte = in.read()) >= 0) {
+			if (nextByte == '\n') {
+				break;
+			}
+			if (nextByte != '\r') {
+				if (bout.size() > 0 || nextByte != ' ') {
+					bout.write(nextByte);
+				}
+			}
+		}
+		if (bout.size() == 0 && nextByte < 0) {
+			return null;
+		}
+		return bout.toString("UTF-8");
 
 	}
 
@@ -223,7 +308,13 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 		if (e.getSource() == cancel) {
 			setVisible(false);
 		}
-
+		if (e.getSource() == selectExisting) {
+			int idx = selectExisting.getSelectedIndex();
+			if (idx > 0) {
+				splitPane.setDividerLocation(0.5);
+				inputArea.setText(preparedCommands[idx - 1]);
+			}
+		}
 	}
 
 	@Override
@@ -237,13 +328,16 @@ public class SqlCommandDialog extends JDialog implements ActionListener,
 		this.errorField.setBounds(10, 30 + this.splitPane.getHeight() + 5,
 				this.splitPane.getWidth(), 24);
 
-		viewList.setBounds(10, 30 + this.splitPane.getHeight() + 34,
+		selectExisting.setBounds(10, 30 + this.splitPane.getHeight() + 34,
+				this.splitPane.getWidth() - 20, 24);
+
+		viewList.setBounds(10, 30 + this.splitPane.getHeight() + 64,
 				this.splitPane.getWidth() - 200, 24);
 		resetView.setBounds(this.splitPane.getWidth() - 190,
-				30 + this.splitPane.getHeight() + 34, 190, 24);
-		ok.setBounds(rootx + size.width - 250, rooty + size.height - 120, 100,
+				30 + this.splitPane.getHeight() + 64, 190, 24);
+		ok.setBounds(rootx + size.width - 250, rooty + size.height - 95, 100,
 				24);
-		cancel.setBounds(rootx + size.width - 140, rooty + size.height - 120,
+		cancel.setBounds(rootx + size.width - 140, rooty + size.height - 95,
 				100, 24);
 	}
 
