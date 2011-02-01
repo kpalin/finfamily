@@ -5,6 +5,10 @@ Releases follow the Subversion revision numbers.
 NOTE!!! While the download problems continue at sourceforge.net you may download FinFamily at
 http://www.finfamily.fi
 
+Release 1112 on 1 feb 2011
+
+* Fix to descendant report male first order
+
 Release 1110 on 31 jan 2011
 
 * Added Tools -> Order children

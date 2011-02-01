@@ -564,7 +564,6 @@ public class XmlReport implements ReportInterface {
 					if (outPath != null) {
 						parent.addRepoForDisplay(outPath);
 					}
-
 				}
 				in.close();
 

@@ -358,8 +358,9 @@ public class ReportUtil {
 
 		}
 		boolean childrenAlreadyListed = false;
+		ReportUnit spoUnits = null;
 		for (int i = 1; i < unit.getParent().size(); i++) {
-			ReportUnit spoUnits = unitMap.get(unit.getParent().get(i).getPid());
+			spoUnits = unitMap.get(unit.getParent().get(i).getPid());
 			if (spoUnits != null) {
 				for (int k = 0; k < unit.getChild().size(); k++) {
 					ReportTableMember ktm = unit.getChild().get(k);
@@ -383,6 +384,14 @@ public class ReportUtil {
 
 		}
 		if (childrenAlreadyListed) {
+
+			if (order.equals(ReportWorkerDialog.SET_ORDER_FIRSTMALE)
+					&& chi.getSex().equals("M")) {
+				ReportTableMember rtm = spoUnits.getParent().get(0);
+				females.put(spoUnits.getPid(), rtm);
+
+			}
+
 			return nexttab;
 		}
 		//
