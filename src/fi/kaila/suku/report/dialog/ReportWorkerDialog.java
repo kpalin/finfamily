@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,8 +83,7 @@ import fi.kaila.suku.util.pojo.UnitNotice;
  * 
  * @author Kalle
  */
-public class ReportWorkerDialog extends JDialog implements ActionListener,
-		PropertyChangeListener {
+public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 	// date formats
 	private static final String SET_FI = "FI";
@@ -175,6 +172,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 
 	private JProgressBar progressBar;
 	private Task task;
+	boolean cancelRequested = false;
 	private TaskLista taskLista;
 	private TaskCards taskCards;
 	private TaskIndex taskIndex;
@@ -1326,6 +1324,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 			return;
 		}
 		if (cmd.equals(EXIT)) {
+			cancelRequested = true;
 			if (this.task == null) {
 				setVisible(false);
 			} else {
@@ -1345,19 +1344,19 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				if (order.equals("REPORT.LISTA.DESCLISTA")
 						&& reportTypePane.getSelectedIndex() == 0) {
 					taskLista = new TaskLista();
-					taskLista.addPropertyChangeListener(this);
+					// taskLista.addPropertyChangeListener(this);
 					taskLista.execute();
 				} else {
 					// we create new instances as needed.
 					task = new Task();
-					task.addPropertyChangeListener(this);
+					// task.addPropertyChangeListener(this);
 					task.execute();
 				}
 			} else {
 				int paneIdx = reportTypePane.getSelectedIndex();
 				if (paneIdx == 1) {
 					task = new Task();
-					task.addPropertyChangeListener(this);
+					// task.addPropertyChangeListener(this);
 					task.execute();
 					return;
 				}
@@ -1371,23 +1370,23 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				if (listSele != null) {
 					if (listSele.equals("REPORT.LISTA.PIDLIST")) {
 						task = new Task();
-						task.addPropertyChangeListener(this);
+						// task.addPropertyChangeListener(this);
 						task.execute();
 					} else if (listSele.equals("REPORT.LISTA.PERSONCARDS")) {
 						taskCards = new TaskCards();
-						taskCards.addPropertyChangeListener(this);
+						// taskCards.addPropertyChangeListener(this);
 						taskCards.execute();
 					} else if (listSele.equals("REPORT.LISTA.SURETIES")) {
 						taskSureties = new TaskSureties();
-						taskSureties.addPropertyChangeListener(this);
+						// taskSureties.addPropertyChangeListener(this);
 						taskSureties.execute();
 					} else if (listSele.equals("REPORT.LISTA.ADDRESSES")) {
 						taskAddresses = new TaskAddresses();
-						taskAddresses.addPropertyChangeListener(this);
+						// taskAddresses.addPropertyChangeListener(this);
 						taskAddresses.execute();
 					} else if (listSele.equals("REPORT.LISTA.GENERAL")) {
 						taskGeneral = new TaskGeneral();
-						taskGeneral.addPropertyChangeListener(this);
+						// taskGeneral.addPropertyChangeListener(this);
 						taskGeneral.execute();
 					} else {
 						JOptionPane.showMessageDialog(this, Resurses
@@ -1646,6 +1645,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				dr.executeReport();
 
 			} catch (Exception e) {
+				if (isCancelRequested()) {
+					return null;
+				}
 				JOptionPane.showMessageDialog(runner, e.getMessage(),
 						Resurses.getString(Resurses.SUKU),
 						JOptionPane.ERROR_MESSAGE);
@@ -1672,7 +1674,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 				setVisible(false);
 			} else {
 
-				if (endSuccess) {
+				if (endSuccess && !isCancelRequested()) {
 					if (!Suku.kontroller.isWebStart()) {
 						int answer = JOptionPane.showConfirmDialog(runner,
 								Resurses.getString("REPORT.INDEX.CREATE"),
@@ -1681,19 +1683,19 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 						if (answer == 0) {
 							taskIndex = new TaskIndex();
 							taskIndex.indexTabOffset = tabOffset;
-							taskIndex.addPropertyChangeListener(self);
+							// taskIndex.addPropertyChangeListener(self);
 							taskIndex.execute();
 						}
-					} else {
-						self.setVisible(false);
 					}
-
-				} else {
-					self.setVisible(false);
 				}
+				self.setVisible(false);
+
 			}
 
 			if (dr != null) {
+				if (isCancelRequested()) {
+					return;
+				}
 				try {
 					dr.getWriter().closeReport();
 
@@ -2803,36 +2805,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener,
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * 
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
-	 * PropertyChangeEvent)
+	 * @return true if cancel button has been pressed
 	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if ("progress".equals(evt.getPropertyName())) {
-			String juttu = evt.getNewValue().toString();
-			String[] kaksi = juttu.split(";");
-			if (kaksi.length >= 2) {
-				int progress = Integer.parseInt(kaksi[0]);
-				progressBar.setIndeterminate(false);
-				progressBar.setValue(progress);
-				textContent.setText(kaksi[1]);
-			} else {
-
-				textContent.setText(juttu);
-				int progre = progressBar.getValue();
-				if (progre > 95) {
-					progre = 0;
-
-				} else {
-					progre++;
-				}
-				progressBar.setIndeterminate(true);
-				progressBar.setValue(progre);
-			}
-		}
+	public boolean isCancelRequested() {
+		return cancelRequested;
 	}
 
 	private void setRadioButton(ButtonGroup g, String name) {

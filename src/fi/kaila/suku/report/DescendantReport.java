@@ -129,7 +129,9 @@ public class DescendantReport extends CommonReport {
 
 				repoWriter.createReport();
 				createReport();
-				repoWriter.closeReport();
+				if (!caller.isCancelRequested()) {
+					repoWriter.closeReport();
+				}
 
 			}
 
@@ -142,7 +144,9 @@ public class DescendantReport extends CommonReport {
 
 			ReportUnit tab = tables.get(i);
 			createDescendantTable(i, tab);
-
+			if (caller.isCancelRequested()) {
+				return;
+			}
 		}
 
 		printImages();

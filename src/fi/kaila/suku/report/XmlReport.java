@@ -564,7 +564,9 @@ public class XmlReport implements ReportInterface {
 					if (outPath != null) {
 						parent.addRepoForDisplay(outPath);
 					}
+
 				}
+				in.close();
 
 			}
 			if (debugState && !Suku.kontroller.isWebStart()) {
