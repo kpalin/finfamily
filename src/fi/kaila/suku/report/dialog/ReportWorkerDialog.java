@@ -2813,6 +2813,10 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 		return cancelRequested;
 	}
 
+	public void requestCancel() {
+		cancelRequested = true;
+	}
+
 	private void setRadioButton(ButtonGroup g, String name) {
 		Enumeration<AbstractButton> e = g.getElements();
 		while (e.hasMoreElements()) {

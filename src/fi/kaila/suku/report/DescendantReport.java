@@ -62,7 +62,7 @@ public class DescendantReport extends CommonReport {
 	 *             the suku exception
 	 */
 	@Override
-	public void executeReport() throws SukuException {
+	public void executeReport() {
 		SukuData vlist = null;
 
 		if (caller.getDescendantPane().getTableOrder().getSelection() == null) {
@@ -94,52 +94,56 @@ public class DescendantReport extends CommonReport {
 									+ caller.getDescendantPane()
 											.getChildAncestors(),
 							"pid=" + caller.getPid());
-		} catch (SukuException e) {
-			logger.log(Level.INFO, Resurses.getString(Resurses.CREATE_REPORT),
-					e);
-			JOptionPane.showMessageDialog(
-					caller,
-					Resurses.getString(Resurses.CREATE_REPORT) + ":"
-							+ e.getMessage());
-		}
 
-		if (vlist != null) {
-			logger.info("Descendant repo to " + repoWriter.toString());
-			tables = vlist.tables;
+			if (vlist != null) {
+				logger.info("Descendant repo to " + repoWriter.toString());
+				tables = vlist.tables;
 
-			personReferences = Utils.getDescendantToistot(tables);
+				personReferences = Utils.getDescendantToistot(tables);
 
-			if (tables.size() > 0) {
+				if (tables.size() > 0) {
 
-				for (int i = 0; i < tables.size(); i++) {
-					ReportUnit tt = tables.get(i);
-					int pid = tt.getPid();
-					PersonInTables ptt = personReferences.get(pid);
-					if (ptt != null) {
-						ptt.setMyTable(tt.getTableNo());
+					for (int i = 0; i < tables.size(); i++) {
+						ReportUnit tt = tables.get(i);
+						int pid = tt.getPid();
+						PersonInTables ptt = personReferences.get(pid);
+						if (ptt != null) {
+							ptt.setMyTable(tt.getTableNo());
+						}
 					}
-				}
 
-				for (int i = 0; i < tables.size(); i++) {
-					ReportUnit tt = tables.get(i);
-					if (tt != null) {
-						tabMap.put(tt.getTableNo(), tt);
+					for (int i = 0; i < tables.size(); i++) {
+						ReportUnit tt = tables.get(i);
+						if (tt != null) {
+							tabMap.put(tt.getTableNo(), tt);
+						}
 					}
-				}
 
-				repoWriter.createReport();
-				createReport();
-				if (!caller.isCancelRequested()) {
-					repoWriter.closeReport();
+					repoWriter.createReport();
+					createReport();
+					if (!caller.isCancelRequested()) {
+						repoWriter.closeReport();
+					}
+
 				}
 
 			}
-
+		} catch (SukuException e) {
+			caller.requestCancel();
+			logger.log(Level.WARNING, "background reporting", e);
+			String message = Resurses.getString(e.getMessage());
+			int createdIdx = message.toLowerCase().indexOf("the column name");
+			if (createdIdx > 0) {
+				message += "\n" + Resurses.getString("SUGGEST_UPDATE");
+			}
+			JOptionPane.showMessageDialog(caller, message);
+			return;
 		}
 	}
 
-	private void createReport() {
+	private void createReport() throws SukuException {
 		textReferences = new HashMap<String, PersonInTables>();
+		// try {
 		for (int i = 0; i < tables.size(); i++) {
 
 			ReportUnit tab = tables.get(i);
@@ -179,8 +183,10 @@ public class DescendantReport extends CommonReport {
 	 *            the idx
 	 * @param tab
 	 *            the tab
+	 * @throws SukuException
 	 */
-	protected void createDescendantTable(int idx, ReportUnit tab) {
+	protected void createDescendantTable(int idx, ReportUnit tab)
+			throws SukuException {
 
 		BodyText bt = null;
 		ReportTableMember subjectmember = tab.getParent().get(0);
@@ -193,15 +199,22 @@ public class DescendantReport extends CommonReport {
 		} else {
 			tableOffset = 0;
 		}
-		try {
-			pdata = caller.getKontroller().getSukuData("cmd=person",
-					"pid=" + subjectmember.getPid(),
-					"lang=" + Resurses.getLanguage());
-		} catch (SukuException e1) {
-			logger.log(Level.WARNING, "background reporting", e1);
-			JOptionPane.showMessageDialog(caller, e1.getMessage());
-			return;
-		}
+		// try {
+		pdata = caller.getKontroller().getSukuData("cmd=person",
+				"pid=" + subjectmember.getPid(),
+				"lang=" + Resurses.getLanguage());
+		// } catch (SukuException e1) {
+		// logger.log(Level.WARNING, "background reporting", e1);
+		// String message = Resurses.getString(e1.getMessage());
+		// int createdIdx = message.toLowerCase().indexOf(
+		// "the column name");
+		// if (createdIdx > 0) {
+		// message += "\n"
+		// + Resurses.getString("SUGGEST_UPDATE");
+		// }
+		// JOptionPane.showMessageDialog(caller, message);
+		// return;
+		// }
 		if (pdata.persLong == null)
 			return;
 
