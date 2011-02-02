@@ -637,7 +637,7 @@ public abstract class CommonReport {
 		String spouType = typesTable.getTextValue(tmp);
 		RelationNotice rnn[] = null;
 		if (sdata.relations != null) {
-			boolean isMarrTag = false;
+			RelationNotice rnMarr = null;
 
 			for (int i = 0; i < sdata.relations.length; i++) {
 				if (sdata.relations[i].getRelative() == memberPid) {
@@ -647,19 +647,14 @@ public abstract class CommonReport {
 
 							for (RelationNotice rr : rnn) {
 								if (rr.getTag().equals("MARR")) {
-									isMarrTag = true;
+									rnMarr = rr;
+									break;
 								}
 							}
-							if (isMarrTag) {
-
-								RelationNotice rn = rnn[0];
-
-								if (rn.getTag().equals("MARR")) {
-									// spouType = typesTable.getTextValue(rn
-									// .getTag());
-									spouType = printRelationNotice(rn,
-											spouType, spouNum, true);
-								}
+							if (rnMarr != null) {
+								spouType = printRelationNotice(rnMarr,
+										spouType, spouNum, true);
+								break;
 							}
 
 						}
@@ -667,7 +662,7 @@ public abstract class CommonReport {
 					}
 				}
 			}
-			if (!isMarrTag) {
+			if (rnMarr == null) {
 				if (spouNum > 0) {
 					spouType += " " + spouNum + ":o";
 				}
@@ -714,13 +709,18 @@ public abstract class CommonReport {
 				printNameNn(bt);
 			}
 			if (rnn != null) {
+				boolean skipMarr = true;
 				for (int i = 0; i < rnn.length; i++) {
 					RelationNotice rn = rnn[i];
-					spouType = printRelationNotice(rn, null, 0, false);
-					if (spouType.length() > 0) {
-						// bt.addText(" ");
-						bt.addText(spouType);
-						bt.addText(". ");
+					if (skipMarr && rn.getTag().equals("MARR")) {
+						skipMarr = false;
+					} else {
+						spouType = printRelationNotice(rn, null, 0, false);
+						if (spouType.length() > 0) {
+							// bt.addText(" ");
+							bt.addText(spouType);
+							bt.addText(". ");
+						}
 					}
 				}
 			}
@@ -786,34 +786,17 @@ public abstract class CommonReport {
 			}
 			fromTable = "";
 
-			// refs = personReferences.get(spouseMember.getSubPid(i));
-			// if (refs != null) {
-			// fromTable = refs.getReferences(tabNo, true, true, true,
-			// tableOffset);
-			//
-			// String[] froms = fromTable.split(",");
-			// StringBuilder fromsTable = new StringBuilder();
-			// for (int j = 0; j < froms.length; j++) {
-			// // String mapx = submap.put(froms[j], subDad);
-			// // if (mapx == null || mapx.equals(subDad)) {
-			// if (j > 0) {
-			// fromsTable.append(",");
-			// }
-			// fromsTable.append(froms[j]);
-			// }
-			// }
 			if (fromsTable.length() > 0) {
 				bt.addLink(
 						typesTable.getTextValue("ALSO") + " "
 								+ fromsTable.toString() + ". ", true, false,
 						false, fromsTable.toString());
 			}
-			// }
 
 			repoWriter.addText(bt);
 
 		}
-		// return notices;
+
 	}
 
 	protected int getTypeColumn(int pid) {
@@ -1066,63 +1049,53 @@ public abstract class CommonReport {
 			if (rn.getType() != null) {
 				if (rn.getTag().equals("MARR")) {
 
-					if (!showType.equals(ReportWorkerDialog.SET_SPOUSE_FULL)) {
+					sb.append(rn.getType());
+					addSpace = true;
 
-						sb.append(rn.getType());
-						addSpace = true;
-						// spouseNum = 0;
-					} else {
-						sb.append(defType);
-					}
 				}
 			} else if (defType != null) {
 				sb.append(defType);
 			}
 		} else {
-			if (!rn.getTag().equals("MARR")) {
-				if (rn.getTag().equals("DIV")
-						|| showType.equals(ReportWorkerDialog.SET_SPOUSE_FULL)) {
-					sb.append(typesTable.getTextValue(Resurses
-							.getReportString(rn.getTag())));
-					addSpace = true;
-				}
-			}
-		}
-		// if (sb.length() == 0 && rn.getTag() != null) {
-		// sb.append(typesTable.getTextValue(rn.getTag()));
-		// }
 
-		if (sb.length() > 0) {
-			if (spouseNum > 0) {
-				sb.append(" " + spouseNum + ":o");
+			if (showType.equals(ReportWorkerDialog.SET_SPOUSE_NONE)) {
+				return "";
+			}
+			if (rn.getType() != null) {
+				sb.append(rn.getType());
+			} else {
+				sb.append(typesTable.getTextValue(Resurses.getReportString(rn
+						.getTag())));
 			}
 			addSpace = true;
+
+		}
+
+		if (isBefore) {
+			if (sb.length() > 0) {
+				if (spouseNum > 0) {
+					sb.append(" " + spouseNum + ":o");
+				}
+				addSpace = true;
+			}
 		}
 
 		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_NONE)) {
 			return sb.toString();
 		}
-		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_YEAR)) {
-			if ((isBefore && rn.getTag().equals("MARR"))
-					|| (!isBefore && !rn.getTag().equals("MARR"))) {
+
+		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_YEAR)
+				|| showType.equals(ReportWorkerDialog.SET_SPOUSE_DATE)) {
+			if ((isBefore && rn.getTag().equals("MARR")) || (!isBefore)) {
 				String yr = rn.getFromDate();
-				if (yr != null && yr.length() >= 4) {
-					if (addSpace) {
-						sb.append(" ");
+				if (showType.equals(ReportWorkerDialog.SET_SPOUSE_YEAR)) {
+					if (yr != null && yr.length() >= 4) {
+						if (addSpace) {
+							sb.append(" ");
+						}
+						sb.append(yr.substring(0, 4));
 					}
-					sb.append(yr.substring(0, 4));
-				}
-			}
-			return sb.toString();
-		}
-
-		if (showType.equals(ReportWorkerDialog.SET_SPOUSE_DATE)) {
-
-			if ((isBefore && rn.getTag().equals("MARR"))
-					|| (!isBefore && !rn.getTag().equals("MARR"))) {
-				String yr = rn.getFromDate();
-				if (yr != null && yr.length() >= 4) {
-
+				} else {
 					String date = printDate(rn.getDatePrefix(),
 							rn.getFromDate(), rn.getToDate());
 					if (date.length() > 0) {
@@ -1135,20 +1108,11 @@ public abstract class CommonReport {
 			}
 			return sb.toString();
 		}
-		if (isBefore) {
-			return sb.toString();
-		} else if (!showType.equals(ReportWorkerDialog.SET_SPOUSE_FULL)) {
-			return sb.toString();
+
+		if (isBefore && !rn.getTag().equals("MARR")) {
+			return "";
 		}
-		if (rn.getTag().equals("MARR")) {
-			if (rn.getType() == null) {
-				sb.append(typesTable.getTextValue(Resurses.getReportString(rn
-						.getTag())));
-			} else {
-				sb.append(rn.getType());
-			}
-			addSpace = true;
-		}
+
 		if (rn.getDescription() != null) {
 
 			if (addSpace) {

@@ -124,9 +124,7 @@ public class DescendantReport extends CommonReport {
 					if (!caller.isCancelRequested()) {
 						repoWriter.closeReport();
 					}
-
 				}
-
 			}
 		} catch (SukuException e) {
 			caller.requestCancel();

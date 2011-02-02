@@ -490,7 +490,7 @@ public class RelationNotice implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return tag + "/" + type + "/" + description;
+		return tag + "/" + type + "/" + description + "/" + fromDate;
 	}
 
 	/**
