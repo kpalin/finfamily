@@ -5,6 +5,10 @@ Releases follow the Subversion revision numbers.
 NOTE!!! While the download problems continue at sourceforge.net you may download FinFamily at
 http://www.finfamily.fi
 
+Release 1115 on 2 feb 2011
+
+* Modified format of marriage data in report
+
 Release 1112 on 1 feb 2011
 
 * Fix to descendant report male first order
