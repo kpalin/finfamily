@@ -197,22 +197,11 @@ public class DescendantReport extends CommonReport {
 		} else {
 			tableOffset = 0;
 		}
-		// try {
+
 		pdata = caller.getKontroller().getSukuData("cmd=person",
 				"pid=" + subjectmember.getPid(),
 				"lang=" + Resurses.getLanguage());
-		// } catch (SukuException e1) {
-		// logger.log(Level.WARNING, "background reporting", e1);
-		// String message = Resurses.getString(e1.getMessage());
-		// int createdIdx = message.toLowerCase().indexOf(
-		// "the column name");
-		// if (createdIdx > 0) {
-		// message += "\n"
-		// + Resurses.getString("SUGGEST_UPDATE");
-		// }
-		// JOptionPane.showMessageDialog(caller, message);
-		// return;
-		// }
+
 		if (pdata.persLong == null)
 			return;
 
@@ -372,8 +361,8 @@ public class DescendantReport extends CommonReport {
 								// let's still make sure he/she is in the parent
 								// table
 								boolean isInTab = false;
-								for (int j = 0; j < tab.getParent().size(); j++) {
-									if (tab.getParent().get(j).getPid() == parePid) {
+								for (int j = 0; j < pare.getParent().size(); j++) {
+									if (pare.getParent().get(j).getPid() == parePid) {
 										isInTab = true;
 										break;
 									}
