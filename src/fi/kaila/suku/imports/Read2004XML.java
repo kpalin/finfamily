@@ -1878,7 +1878,8 @@ public class Read2004XML extends DefaultHandler {
 					pst.setNull(6, Types.TIMESTAMP);
 					pst.setTimestamp(7,
 							toTimestamp(this.relationCreateDate, true));
-
+					pst.setNull(8, Types.VARCHAR);
+					pst.setNull(9, Types.VARCHAR);
 					try {
 						pst.executeUpdate();
 					} catch (SQLException se) {
