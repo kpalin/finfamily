@@ -509,12 +509,8 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 	/**
 	 * 
-	 * @return true to print name index
+	 * @return true to show years in name index
 	 */
-	public boolean showIndexNames() {
-		return commonIndexNames.isSelected();
-	}
-
 	public boolean showIndexYears() {
 		return commonIndexYears.isSelected();
 	}
@@ -1673,23 +1669,26 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 			if (reportFormatidx == 0) {
 				setVisible(false);
 			} else {
-
+				boolean hideMeNow = true;
 				if (endSuccess && !isCancelRequested()) {
 					if (!Suku.kontroller.isWebStart()) {
-						int answer = JOptionPane.showConfirmDialog(runner,
-								Resurses.getString("REPORT.INDEX.CREATE"),
-								Resurses.getString(Resurses.SUKU),
-								JOptionPane.YES_NO_OPTION);
-						if (answer == 0) {
-							taskIndex = new TaskIndex();
-							taskIndex.indexTabOffset = tabOffset;
-							// taskIndex.addPropertyChangeListener(self);
-							taskIndex.execute();
+						if (getDebugState()) {
+							int answer = JOptionPane.showConfirmDialog(parent,
+									Resurses.getString("REPORT.INDEX.CREATE"),
+									Resurses.getString(Resurses.SUKU),
+									JOptionPane.YES_NO_OPTION);
+							if (answer == 0) {
+								hideMeNow = false;
+								taskIndex = new TaskIndex();
+								taskIndex.indexTabOffset = tabOffset;
+								taskIndex.execute();
+							}
 						}
 					}
 				}
-				self.setVisible(false);
-
+				if (hideMeNow) {
+					self.setVisible(false);
+				}
 			}
 
 			if (dr != null) {

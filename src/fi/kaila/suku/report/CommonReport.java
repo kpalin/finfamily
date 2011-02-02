@@ -355,7 +355,7 @@ public abstract class CommonReport {
 	 */
 	public void printNameIndex() throws SukuException {
 
-		if (caller.showIndexNames()) {
+		if (caller.isCreateNameIndexSet()) {
 			int tableOffset = caller.getDescendantPane().getStartTable();
 			if (tableOffset > 0) {
 				tableOffset--;
@@ -581,6 +581,68 @@ public abstract class CommonReport {
 				} else {
 
 					repoWriter.addText(bt);
+				}
+			}
+
+		}
+		printPlaceIndex();
+		printSourceReference();
+	}
+
+	private void printPlaceIndex() throws SukuException {
+
+		if (caller.isCreatePlaceIndexSet()) {
+			int tableOffset = caller.getDescendantPane().getStartTable();
+			if (tableOffset > 0) {
+				tableOffset--;
+			}
+			PlaceInTables[] places = getPlaceReferences();
+			BodyText bt = null;
+			if (places.length > 0) {
+				bt = new TableHeaderText();
+				bt.addText("\n");
+				repoWriter.addText(bt);
+				bt.addText(Resurses.getReportString("INDEX_PLACES"));
+				bt.addText("\n");
+				repoWriter.addText(bt);
+				bt = new NameIndexText();
+
+				for (int i = 0; i < places.length; i++) {
+					PlaceInTables pit = places[i];
+					bt.addText(pit.getPlace());
+					bt.addText("\t");
+					bt.addText(pit.toString());
+					repoWriter.addText(bt);
+
+				}
+			}
+		}
+	}
+
+	private void printSourceReference() throws SukuException {
+		if (caller.getSourceFormat().equals(ReportWorkerDialog.SET_AFT)) {
+			int tableOffset = caller.getDescendantPane().getStartTable();
+			if (tableOffset > 0) {
+				tableOffset--;
+			}
+			BodyText bt = null;
+			String[] refs = getSourceList();
+			if (refs.length > 0) {
+				bt = new TableHeaderText();
+				bt.addText("\n");
+				repoWriter.addText(bt);
+				bt.addText(Resurses.getReportString("SOURCE_INDEXES"));
+				bt.addText("\n");
+				repoWriter.addText(bt);
+				bt = new NameIndexText();
+				int row = 1;
+				for (int i = 0; i < refs.length; i++) {
+					bt.addText("" + row);
+					bt.addText("\t");
+					bt.addText(refs[i]);
+
+					repoWriter.addText(bt);
+					row++;
 				}
 			}
 
