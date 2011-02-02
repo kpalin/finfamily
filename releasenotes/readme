@@ -5,9 +5,10 @@ Releases follow the Subversion revision numbers.
 NOTE!!! While the download problems continue at sourceforge.net you may download FinFamily at
 http://www.finfamily.fi
 
-Release 1115 on 2 feb 2011
+Release 1120 on 2 feb 2011
 
 * Modified format of marriage data in report
+* Fixed (new from 1100) bug with import from suku 2004
 
 Release 1112 on 1 feb 2011
 
