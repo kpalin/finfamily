@@ -58,7 +58,7 @@ public class AncestorPane extends JPanel {
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.ANC.NUMBERING")));
 		pane.setLayout(new GridLayout(0, 1));
-		pane.setBounds(rtypx, rtypy, 250, 124);
+		pane.setBounds(rtypx, rtypy, 250, 134);
 
 		ancestorNumberingFormatGroup = new ButtonGroup();
 		JRadioButton formd = new JRadioButton(
@@ -85,8 +85,12 @@ public class AncestorPane extends JPanel {
 		// formd.setBounds(10, rtypy, 200, 20);
 		ancestorNumberingFormatGroup.add(formd);
 		pane.add(formd);
+		formd = new JRadioButton(Resurses.getString("REPORT.LISTA.GRAPHVIZ"));
+		formd.setActionCommand("REPORT.LISTA.GRAPHVIZ");
+		ancestorNumberingFormatGroup.add(formd);
+		pane.add(formd);
 
-		rtypy += 130;
+		rtypy += 140;
 		ancestorShowFamily = new JCheckBox(
 				Resurses.getString("REPORT.ANC.SHOW.FAMILY"));
 		ancestorShowFamily.setBounds(rtypx, rtypy, 280, 20);

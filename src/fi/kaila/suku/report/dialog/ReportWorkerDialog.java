@@ -1345,7 +1345,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 					taskLista = new TaskLista();
 					taskLista.execute();
 				} else if (order.equals("REPORT.LISTA.GRAPHVIZ")
-						&& reportTypePane.getSelectedIndex() == 0) {
+						&& reportTypePane.getSelectedIndex() <= 1) {
 					taskGraphviz = new TaskGraphviz();
 					taskGraphviz.execute();
 
@@ -3636,8 +3636,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 		@Override
 		protected Void doInBackground() throws Exception {
-
-			dr = new GraphvizReport(self, typesTable);
+			boolean descendant = reportTypePane.getSelectedIndex() == 0 ? true
+					: false;
+			dr = new GraphvizReport(self, typesTable, descendant);
 
 			dr.executeReport();
 

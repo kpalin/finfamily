@@ -26,8 +26,12 @@ public class GraphvizReport extends CommonReport {
 
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-	public GraphvizReport(ReportWorkerDialog caller, SukuTypesTable typesTable) {
+	private boolean descendantReport = true;
+
+	public GraphvizReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
+			boolean descendant) {
 		super(caller, typesTable, null);
+		descendantReport = descendant;
 
 	}
 
@@ -37,6 +41,8 @@ public class GraphvizReport extends CommonReport {
 	@Override
 	public void executeReport() throws SukuException {
 		int descgen = caller.getDescendantPane().getGenerations();
+		int ancgen = caller.getAncestorPane().getGenerations();
+		boolean includeFamily = caller.getAncestorPane().getShowfamily();
 		boolean includeAdopted = caller.getDescendantPane().getAdopted();
 		boolean underlineName = caller.showUnderlineNames();
 		identMap = new LinkedHashMap<String, PersonShortData>();
@@ -50,9 +56,11 @@ public class GraphvizReport extends CommonReport {
 				GraphData subj = new GraphData(pdata);
 				// PersonShortData subj = new PersonShortData(pdata.persLong);
 				identMap.put("I" + subj.getPid(), subj);
-
-				addRelatives(subj, descgen - 1, includeAdopted);
-
+				if (descendantReport) {
+					addDescendantRelatives(subj, descgen - 1, includeAdopted);
+				} else {
+					addAncestorRelatives(subj, ancgen - 1, false /* includeFamily */);
+				}
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
 				// System.out.println("graph G {");
@@ -197,11 +205,97 @@ public class GraphvizReport extends CommonReport {
 		}
 	}
 
-	private void addRelatives(PersonShortData pers, int generation,
+	private void addAncestorRelatives(PersonShortData pers, int generation,
+			boolean includeFamily) throws SukuException {
+		SukuData pdata = caller.getKontroller().getSukuData("cmd=person",
+				"pid=" + pers.getPid(), "lang=" + Resurses.getLanguage());
+		GraphData gdata = new GraphData(pdata);
+
+		caller.setRunnerValue(gdata.getAlfaName());
+
+		int fatherPid = 0;
+		int motherPid = 0;
+		for (int i = 0; i < gdata.relations.length; i++) {
+			Relation spo = gdata.relations[i];
+
+			if (spo.getTag().equals("FATH")) {
+				fatherPid = spo.getRelative();
+			} else if (spo.getTag().equals("MOTH")) {
+				motherPid = spo.getRelative();
+			}
+		}
+		if (includeFamily) {
+			for (int i = 0; i < gdata.relations.length; i++) {
+				Relation rela = gdata.relations[i];
+				if (rela.getTag().equals("HUSB")
+						|| rela.getTag().equals("WIFE")) {
+					PersonShortData spou = gdata.rels.get(rela.getRelative());
+					identMap.put("I" + spou.getPid(), spou);
+
+					StringBuilder sb = new StringBuilder();
+					sb.append(" ");
+					sb.append("I" + pers.getPid());
+					sb.append(" -- ");
+					sb.append("I" + spou.getPid());
+
+					sb.append("  [style=bold,color=green]; ");
+
+					relaMap.put("I" + pers.getPid() + "I" + spou.getPid(),
+							sb.toString());
+
+				}
+
+			}
+		}
+		if (fatherPid > 0) {
+			addParentData(pers, gdata, fatherPid, generation, includeFamily);
+		}
+		if (motherPid > 0) {
+			addParentData(pers, gdata, motherPid, generation, includeFamily);
+		}
+
+	}
+
+	/**
+	 * @param pers
+	 *            of original person
+	 * @param gdata
+	 * @param fatherPid
+	 * @throws SukuException
+	 */
+	public void addParentData(PersonShortData pers, GraphData gdata,
+			int parePid, int generation, boolean includeFamily)
+			throws SukuException {
+
+		if (generation > 0) {
+			PersonShortData pare = gdata.rels.get(parePid);
+
+			identMap.put("I" + pare.getPid(), pare);
+			StringBuilder sb = new StringBuilder();
+			sb.append(" ");
+			sb.append("I" + pers.getPid());
+			sb.append(" -- ");
+			sb.append("I" + pare.getPid());
+			if (pare.getSex().equals("M")) {
+				sb.append("  [style=bold,color=blue]; ");
+			} else {
+				sb.append("  [style=bold,color=red]; ");
+			}
+			relaMap.put("I" + pers.getPid() + "I" + pare.getPid(),
+					sb.toString());
+
+			addAncestorRelatives(pare, generation - 1, includeFamily);
+		}
+	}
+
+	private void addDescendantRelatives(PersonShortData pers, int generation,
 			boolean includeAdopted) throws SukuException {
 		SukuData pdata = caller.getKontroller().getSukuData("cmd=person",
 				"pid=" + pers.getPid(), "lang=" + Resurses.getLanguage());
 		GraphData gdata = new GraphData(pdata);
+
+		caller.setRunnerValue(gdata.getAlfaName());
+
 		for (int i = 0; i < gdata.relations.length; i++) {
 			Relation spo = gdata.relations[i];
 			if (spo.getTag().equals("WIFE") || spo.getTag().equals("HUSB")) {
@@ -328,7 +422,8 @@ public class GraphvizReport extends CommonReport {
 						}
 
 						if (prev == null) {
-							addRelatives(chil, generation - 1, includeAdopted);
+							addDescendantRelatives(chil, generation - 1,
+									includeAdopted);
 						}
 					}
 				}
