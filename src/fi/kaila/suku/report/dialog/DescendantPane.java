@@ -137,7 +137,7 @@ public class DescendantPane extends JPanel {
 				.getString("REPORT.DESC.ORDER")));
 		pane.setLayout(new GridLayout(0, 1));
 
-		pane.setBounds(rtypx, rtypy, 250, 130);
+		pane.setBounds(rtypx, rtypy, 250, 120);
 
 		tableOrder = new ButtonGroup();
 		JRadioButton radio = new JRadioButton(
@@ -168,11 +168,17 @@ public class DescendantPane extends JPanel {
 
 		radio = new JRadioButton(Resurses.getString("REPORT.LISTA.DESCLISTA"));
 		tableOrder.add(radio);
-		rtypy += 130;
+		rtypy += 120;
 		radio.setBounds(rtypx, rtypy, 200, 20);
 		radio.setActionCommand("REPORT.LISTA.DESCLISTA");
 		add(radio);
-
+		tableOrder.add(radio);
+		radio = new JRadioButton(Resurses.getString("REPORT.LISTA.GRAPHVIZ"));
+		rtypy += 20;
+		radio.setBounds(rtypx, rtypy, 200, 20);
+		radio.setActionCommand("REPORT.LISTA.GRAPHVIZ");
+		add(radio);
+		tableOrder.add(radio);
 	}
 
 	/**

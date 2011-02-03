@@ -59,6 +59,7 @@ import fi.kaila.suku.report.DescendantLista;
 import fi.kaila.suku.report.DescendantReport;
 import fi.kaila.suku.report.ExportReport;
 import fi.kaila.suku.report.GenGraphReport;
+import fi.kaila.suku.report.GraphvizReport;
 import fi.kaila.suku.report.ImagesLista;
 import fi.kaila.suku.report.JavaReport;
 import fi.kaila.suku.report.PersonInTables;
@@ -174,6 +175,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 	private Task task;
 	boolean cancelRequested = false;
 	private TaskLista taskLista;
+	private TaskGraphviz taskGraphviz;
 	private TaskCards taskCards;
 	private TaskIndex taskIndex;
 	private TaskSureties taskSureties;
@@ -821,6 +823,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 			v.add(Resurses.getString("REPORT.FORMAT.HTML"));
 
 		}
+		// v.add(Resurses.getString("REPORT.LISTA.GRAPHVIZ"));
 
 		lb = new JLabel(Resurses.getString("REPORT.FORMAT"));
 		lb.setBounds(x3, footery, 200, 20);
@@ -1340,19 +1343,21 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 				if (order.equals("REPORT.LISTA.DESCLISTA")
 						&& reportTypePane.getSelectedIndex() == 0) {
 					taskLista = new TaskLista();
-					// taskLista.addPropertyChangeListener(this);
 					taskLista.execute();
+				} else if (order.equals("REPORT.LISTA.GRAPHVIZ")
+						&& reportTypePane.getSelectedIndex() == 0) {
+					taskGraphviz = new TaskGraphviz();
+					taskGraphviz.execute();
+
 				} else {
 					// we create new instances as needed.
 					task = new Task();
-					// task.addPropertyChangeListener(this);
 					task.execute();
 				}
 			} else {
 				int paneIdx = reportTypePane.getSelectedIndex();
 				if (paneIdx == 1) {
 					task = new Task();
-					// task.addPropertyChangeListener(this);
 					task.execute();
 					return;
 				}
@@ -1613,9 +1618,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 				if (isExportReport) {
 					dr = new ExportReport(self, typesTable, repo);
-				} else
-
-				if (paneIdx == 0) {
+				} else if (paneIdx == 0) {
 					if (self.getDescendantPane() == null) {
 						dr = new ImagesLista(self, typesTable, repo);
 					} else {
@@ -3619,6 +3622,26 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 			}
 			return null;
 
+		}
+
+		@Override
+		public void done() {
+			Toolkit.getDefaultToolkit().beep();
+			setVisible(false);
+
+		}
+	}
+
+	class TaskGraphviz extends SwingWorker<Void, Void> {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+
+			dr = new GraphvizReport(self, typesTable);
+
+			dr.executeReport();
+
+			return null;
 		}
 
 		@Override

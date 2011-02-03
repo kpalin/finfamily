@@ -1403,22 +1403,22 @@ public class PersonUtil {
 					}
 				}
 
-				if (lang == null) {
-					ArrayList<PersonShortData> pv = new ArrayList<PersonShortData>();
-					HashMap<Integer, Integer> testPid = new HashMap<Integer, Integer>();
-					for (int i = 0; i < relpids.size(); i++) {
-						Integer test = relpids.get(i);
+				// if (lang == null) {
+				ArrayList<PersonShortData> pv = new ArrayList<PersonShortData>();
+				HashMap<Integer, Integer> testPid = new HashMap<Integer, Integer>();
+				for (int i = 0; i < relpids.size(); i++) {
+					Integer test = relpids.get(i);
 
-						if (testPid.put(test, test) == null) {
-							// System.out.println("kalleko:" + test.intValue());
-							PersonShortData p = new PersonShortData(this.con,
-									test.intValue());
-							pv.add(p);
-						}
+					if (testPid.put(test, test) == null) {
+						// System.out.println("kalleko:" + test.intValue());
+						PersonShortData p = new PersonShortData(this.con,
+								test.intValue());
+						pv.add(p);
 					}
-					pers.pers = pv.toArray(new PersonShortData[0]);
 				}
+				pers.pers = pv.toArray(new PersonShortData[0]);
 			}
+			// }
 
 		} catch (SQLException e) {
 			e.printStackTrace();
