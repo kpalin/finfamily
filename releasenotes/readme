@@ -2,6 +2,10 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+Release 1122 on 3 feb 2011
+
+* Added Graphviz alternative to descendant reports
+
 Release 1120 on 2 feb 2011
 
 * Modified format of marriage data in report
