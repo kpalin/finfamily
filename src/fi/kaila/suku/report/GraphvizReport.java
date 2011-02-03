@@ -38,6 +38,7 @@ public class GraphvizReport extends CommonReport {
 	public void executeReport() throws SukuException {
 		int descgen = caller.getDescendantPane().getGenerations();
 		boolean includeAdopted = caller.getDescendantPane().getAdopted();
+		boolean underlineName = caller.showUnderlineNames();
 		identMap = new LinkedHashMap<String, PersonShortData>();
 		relaMap = new LinkedHashMap<String, String>();
 		try {
@@ -69,22 +70,39 @@ public class GraphvizReport extends CommonReport {
 					sb.append("I" + pp.getPid());
 					sb.append(" [shape=");
 					if (pp.getSex().equals("M")) {
-						sb.append("box,color=red");
+						sb.append("box,color=blue");
 					} else {
-						sb.append("ellipse,color=blue");
+						sb.append("ellipse,color=red");
 					}
 					sb.append(",style=bold,label=\"");
 					if (pp.getGivenname() != null) {
-						String parts[] = pp.getGivenname().split(" ");
-						String etunimi = parts[0];
-						for (int n = 0; n < parts.length; n++) {
-							if (parts[n].endsWith("*")) {
-								etunimi = parts[n].substring(0,
-										parts[n].length() - 1);
-								break;
+						if (!underlineName) {
+							StringBuilder sbx = new StringBuilder();
+							for (int l = 0; l < pp.getGivenname().length(); l++) {
+								char c = pp.getGivenname().charAt(l);
+								if (c != '*') {
+									sbx.append(c);
+								}
 							}
+							sb.append(sbx.toString());
+
+						} else {
+							String parts[] = pp.getGivenname().split(" ");
+							String etunimi = parts[0];
+							for (int n = 0; n < parts.length; n++) {
+
+								StringBuilder sbs = new StringBuilder();
+								for (int m = 0; m < parts[n].length(); m++) {
+									char c = parts[n].charAt(m);
+									if (c != '*') {
+										sbs.append(c);
+									}
+								}
+								etunimi = sbs.toString();
+
+							}
+							sb.append(etunimi);
 						}
-						sb.append(etunimi);
 					}
 					if (pp.getPatronym() != null) {
 						sb.append(" ");
@@ -148,7 +166,7 @@ public class GraphvizReport extends CommonReport {
 					sb.append("\"];");
 
 					bos.write(sb.toString().getBytes("UTF-8"));
-
+					bos.write('\n');
 					// System.out.println(sb.toString());
 
 				}
@@ -158,7 +176,7 @@ public class GraphvizReport extends CommonReport {
 				while (itr.hasNext()) {
 					Map.Entry<String, String> entry = itr.next();
 					bos.write(entry.getValue().getBytes("UTF-8"));
-
+					bos.write('\n');
 					// System.out.println(entry.getValue());
 
 				}
@@ -188,6 +206,13 @@ public class GraphvizReport extends CommonReport {
 			Relation spo = gdata.relations[i];
 			if (spo.getTag().equals("WIFE") || spo.getTag().equals("HUSB")) {
 				PersonShortData spouse = gdata.rels.get(spo.getRelative());
+
+				SukuData sdata = caller.getKontroller().getSukuData(
+						"cmd=person", "pid=" + spouse.getPid(),
+						"lang=" + Resurses.getLanguage());
+				GraphData xdata = new GraphData(sdata); // full version of
+														// spouse
+
 				identMap.put("I" + spouse.getPid(), spouse);
 				StringBuilder sb = new StringBuilder();
 				sb.append(" ");
@@ -197,6 +222,48 @@ public class GraphvizReport extends CommonReport {
 				sb.append("  [style=bold,color=green]; ");
 				relaMap.put("I" + pers.getPid() + "I" + spouse.getPid(),
 						sb.toString());
+				int spogen = caller.getDescendantPane().getSpouseAncestors();
+				if (spogen > 0) {
+
+					int spoFatherPid = 0;
+					int spoMotherPid = 0;
+					for (int ii = 0; ii < xdata.relations.length; ii++) {
+						Relation spox = xdata.relations[ii];
+						if (spox.getTag().equals("FATH")) {
+							spoFatherPid = spox.getRelative();
+						} else if (spox.getTag().equals("MOTH")) {
+							spoMotherPid = spox.getRelative();
+						}
+					}
+					if (spoFatherPid > 0) {
+						PersonShortData fat = xdata.rels.get(spoFatherPid);
+						identMap.put("I" + spoFatherPid, fat);
+
+						StringBuilder sbb = new StringBuilder();
+						sbb.append(" ");
+						sbb.append("I" + fat.getPid());
+						sbb.append(" -- ");
+						sbb.append("I" + spouse.getPid());
+						sbb.append("  [style=bold,color=blue]; ");
+						relaMap.put("I" + fat.getPid() + "I" + spouse.getPid(),
+								sbb.toString());
+
+					}
+					if (spoMotherPid > 0) {
+						PersonShortData fat = xdata.rels.get(spoMotherPid);
+						identMap.put("I" + spoMotherPid, fat);
+						StringBuilder sbb = new StringBuilder();
+						sbb.append(" ");
+						sbb.append("I" + fat.getPid());
+						sbb.append(" -- ");
+						sbb.append("I" + spouse.getPid());
+						sbb.append("  [style=bold,color=red]; ");
+
+						relaMap.put("I" + fat.getPid() + "I" + spouse.getPid(),
+								sbb.toString());
+					}
+
+				}
 
 			}
 		}
@@ -205,57 +272,68 @@ public class GraphvizReport extends CommonReport {
 			for (int i = 0; i < gdata.relations.length; i++) {
 				Relation chi = gdata.relations[i];
 				if (chi.getTag().equals("CHIL")) {
-					PersonShortData chil = gdata.rels.get(chi.getRelative());
-					PersonShortData prev = identMap.put("I" + chil.getPid(),
-							chil);
-
-					StringBuilder sb = new StringBuilder();
-					sb.append(" ");
-					sb.append("I" + pers.getPid());
-					sb.append(" -- ");
-					sb.append("I" + chil.getPid());
-					if (pers.getSex().equals("M")) {
-						sb.append("  [style=bold,color=blue]; ");
-					} else {
-						sb.append("  [style=bold,color=red]; ");
-					}
-					relaMap.put("I" + pers.getPid() + "I" + chil.getPid(),
-							sb.toString());
-
-					for (int moth = 1; moth < gdata.relations.length; moth++) {
-						if (gdata.relations[moth].getRelative() == chil
-								.getMotherPid()
-								|| gdata.relations[moth].getRelative() == chil
-										.getFatherPid()) {
-							PersonShortData mother = gdata.rels
-									.get(gdata.relations[moth].getRelative());
-
-							if (mother != null) {
-								StringBuilder sbb = new StringBuilder();
-								sbb.append(" ");
-								sbb.append("I" + mother.getPid());
-								sbb.append(" -- ");
-								sbb.append("I" + chil.getPid());
-								if (mother.getSex().equals("M")) {
-									sbb.append("  [style=bold,color=blue]; ");
-								} else {
-									sbb.append("  [style=bold,color=red]; ");
-								}
-								relaMap.put(
-										"I" + mother.getPid() + "I"
-												+ chil.getPid(), sbb.toString());
+					boolean notAdopted = true;
+					if (chi.getNotices() != null) {
+						for (int adop = 0; adop < chi.getNotices().length; adop++) {
+							if (chi.getNotices()[adop].getTag().equals("ADOP")) {
+								notAdopted = false;
+								break;
 							}
-
 						}
 					}
+					if (notAdopted || includeAdopted) {
 
-					if (prev == null) {
-						addRelatives(chil, generation - 1, includeAdopted);
+						PersonShortData chil = gdata.rels
+								.get(chi.getRelative());
+						PersonShortData prev = identMap.put(
+								"I" + chil.getPid(), chil);
+
+						StringBuilder sb = new StringBuilder();
+						sb.append(" ");
+						sb.append("I" + pers.getPid());
+						sb.append(" -- ");
+						sb.append("I" + chil.getPid());
+						if (pers.getSex().equals("M")) {
+							sb.append("  [style=bold,color=blue]; ");
+						} else {
+							sb.append("  [style=bold,color=red]; ");
+						}
+						relaMap.put("I" + pers.getPid() + "I" + chil.getPid(),
+								sb.toString());
+
+						for (int moth = 1; moth < gdata.relations.length; moth++) {
+							if (gdata.relations[moth].getRelative() == chil
+									.getMotherPid()
+									|| gdata.relations[moth].getRelative() == chil
+											.getFatherPid()) {
+								PersonShortData mother = gdata.rels
+										.get(gdata.relations[moth]
+												.getRelative());
+
+								if (mother != null) {
+									StringBuilder sbb = new StringBuilder();
+									sbb.append(" ");
+									sbb.append("I" + mother.getPid());
+									sbb.append(" -- ");
+									sbb.append("I" + chil.getPid());
+									if (mother.getSex().equals("M")) {
+										sbb.append("  [style=bold,color=blue]; ");
+									} else {
+										sbb.append("  [style=bold,color=red]; ");
+									}
+									relaMap.put("I" + mother.getPid() + "I"
+											+ chil.getPid(), sbb.toString());
+								}
+							}
+						}
+
+						if (prev == null) {
+							addRelatives(chil, generation - 1, includeAdopted);
+						}
 					}
 				}
 			}
 		}
-
 	}
 
 	@Override
