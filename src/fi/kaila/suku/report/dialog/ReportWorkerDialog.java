@@ -1340,27 +1340,34 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 				String order = descendantPanel.getTableOrder().getSelection()
 						.getActionCommand();
-				if (order.equals("REPORT.LISTA.DESCLISTA")
-						&& reportTypePane.getSelectedIndex() == 0) {
-					taskLista = new TaskLista();
-					taskLista.execute();
-				} else if (order.equals("REPORT.LISTA.GRAPHVIZ")
-						&& reportTypePane.getSelectedIndex() <= 1) {
-					taskGraphviz = new TaskGraphviz();
-					taskGraphviz.execute();
+				int paneIdx = reportTypePane.getSelectedIndex();
+				if (paneIdx == 0) {
+					if (order.equals("REPORT.LISTA.DESCLISTA")) {
+						taskLista = new TaskLista();
+						taskLista.execute();
+					} else if (order.equals("REPORT.LISTA.GRAPHVIZ")) {
+						taskGraphviz = new TaskGraphviz();
+						taskGraphviz.execute();
 
-				} else {
-					// we create new instances as needed.
-					task = new Task();
-					task.execute();
+					} else {
+						// we create new instances as needed.
+						task = new Task();
+						task.execute();
+					}
+				} else if (reportTypePane.getSelectedIndex() == 1) {
+					order = ancestorPanel.getNumberingFormat().getSelection()
+							.getActionCommand();
+					if (order.equals("REPORT.LISTA.GRAPHVIZ")) {
+						taskGraphviz = new TaskGraphviz();
+						taskGraphviz.execute();
+
+					} else {
+						// we create new instances as needed.
+						task = new Task();
+						task.execute();
+					}
 				}
 			} else {
-				int paneIdx = reportTypePane.getSelectedIndex();
-				if (paneIdx == 1) {
-					task = new Task();
-					task.execute();
-					return;
-				}
 
 				if (listaGroup.getSelection() == null) {
 					JOptionPane.showMessageDialog(this,
