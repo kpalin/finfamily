@@ -25,3 +25,9 @@ select pid from unitnotice where tag='OCCU' group by pid having count(*)>1;
 select pid from relation as a inner join relationnotice as n on a.rid=n.rid 
 where n.tag = 'ADOP';
 
+--en fetch persons that have been married between 1968 and  1970
+--fi etsi henkilöt joiden vihkipäivä on välillä 1968 ja  1970
+--sv hämta personer vars vigsel inträffat mellan 1968 och 1970
+
+select r.pid from relationnotice as n inner join relation as r on n.rid=r.rid 
+where n.tag='MARR' and n.fromdate between '1968' and '1970';

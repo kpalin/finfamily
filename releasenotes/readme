@@ -2,6 +2,10 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+Release 1131 on 4 feb 2011
+
+* Added images to graphviz reports
+
 Release 1126 on 3 feb 2011
 
 * Added Graphviz alternative to ancestor reports

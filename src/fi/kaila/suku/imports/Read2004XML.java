@@ -674,7 +674,7 @@ public class Read2004XML extends DefaultHandler {
 			stm.executeUpdate(DROP_UNIT_SID);
 			stm.executeUpdate(DROP_UNITNOTICE_SID);
 			stm.executeUpdate(DROP_RELATIONNOTICE_SID);
-
+			setRunnerValue(Resurses.getString("VACUUM"));
 			stm.executeUpdate(VACUUM);
 			long ended = System.currentTimeMillis();
 			logger.info("Backup " + filepath + " converted in "
@@ -2733,7 +2733,7 @@ public class Read2004XML extends DefaultHandler {
 		if (i == 0)
 			return null;
 
-		if (i + 1 > parts.length)
+		if (i > parts.length)
 			return null;
 
 		return parts[i - 1];
