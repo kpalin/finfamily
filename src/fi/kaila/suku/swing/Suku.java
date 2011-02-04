@@ -24,9 +24,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -242,6 +244,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mOrderChildren;
 	private JMenuItem mOwner;
 	private JMenuItem mDbUpdate;
+	private JMenu mToolsAuxProgram;
+	public JMenuItem mToolsAuxGraphviz;
 	private JMenuItem mListDatabases;
 	// private JMenuItem mStopPgsql;
 	// private JMenuItem mStartPgsql;
@@ -750,6 +754,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mStoreAllConversions.addActionListener(this);
 		mTools.addSeparator();
 		if (!isWebApp) {
+			mToolsAuxProgram = new JMenu(
+					Resurses.getString("TOOLS_AUX_COMMANDS"));
+			mTools.add(mToolsAuxProgram);
+			mToolsAuxGraphviz = new JMenuItem(
+					Resurses.getString("TOOLS_AUX_GRAPHVIZ"));
+			mToolsAuxGraphviz.addActionListener(this);
+			mToolsAuxGraphviz.setActionCommand("GRAPHVIZ");
+			String exeTask = kontroller.getPref(this, "GRAPHVIZ", "");
+			if ("".equals(exeTask)) {
+				mToolsAuxGraphviz.setEnabled(false);
+			}
+			mToolsAuxProgram.add(mToolsAuxGraphviz);
+
 			mListDatabases = new JMenuItem(
 					Resurses.getString("MENU_TOOLS_LIST_DATABASES"));
 			mTools.add(mListDatabases);
@@ -1734,7 +1751,45 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				Utils.openExternalFile(updateSite);
 				return;
 			}
+			if (cmd.equals("GRAPHVIZ")) {
+				String exeTask = kontroller.getPref(this, "GRAPHVIZ", "");
+				if (!"".equals(exeTask)) {
+					Runtime rt = Runtime.getRuntime();
+					Vector<String> rtv = new Vector<String>();
+					rtv.add(exeTask);
+					rtv.add("-Tjpeg");
+					// rtv.add("-Tpdf");
+					if (!kontroller.openFile("txt")) {
+						return;
+					}
+					String infile = kontroller.getFilePath();
+					rtv.add(infile);
+					if (!kontroller.createLocalFile("jpg")) {
+						return;
+					}
+					String endi = kontroller.getFilePath();
+					rtv.add("-o");
+					rtv.add(endi);
 
+					Process pr = rt.exec(rtv.toArray(new String[0]));
+
+					// Process pr = rt.exec(System.getenv("windir")
+					// + "\\system32\\" + "tree.com /A");
+
+					BufferedReader input = new BufferedReader(
+							new InputStreamReader(pr.getInputStream()));
+					String line = null;
+					while ((line = input.readLine()) != null) {
+						logger.info(line);
+					}
+
+					int exitVal = pr.waitFor();
+					logger.info("conversion to " + endi + " resulted in "
+							+ exitVal);
+					Utils.openExternalFile(endi);
+
+				}
+			}
 			if (cmd.equals("MENU_TOOLS_STAT")) {
 				displayGenStats();
 

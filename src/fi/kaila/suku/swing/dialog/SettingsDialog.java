@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -45,6 +47,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JComboBox imageScaling = null;
 	private final JComboBox lookAndFeel;
 	private JTextField dbFontSize = null;
+	private final JButton graphVizSetup;
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
 	private final String[] lfNames;
@@ -262,7 +265,12 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		if (defLf > 0) {
 			lookAndFeel.setSelectedIndex(defLf);
 		}
-
+		y += 24;
+		graphVizSetup = new JButton(Resurses.getString("SETTINGS_GRAPHVIZ"));
+		graphVizSetup.setBounds(x, y, 200, 24);
+		graphVizSetup.setActionCommand("GRAPHVIZ");
+		graphVizSetup.addActionListener(this);
+		getContentPane().add(graphVizSetup);
 		JButton ok = new JButton(Resurses.OK);
 		// this.ok.setDefaultCapable(true);
 		getContentPane().add(ok);
@@ -290,6 +298,27 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 		if (cmd == null)
 			return;
+		if (cmd.equals("GRAPHVIZ")) {
+			JFileChooser chooser = new JFileChooser();
+
+			chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter("exe"));
+			chooser.setDialogTitle("Open gragviz dot file");
+
+			if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+				Suku.kontroller.putPref(owner, "GRAPHVIZ", "");
+				owner.mToolsAuxGraphviz.setEnabled(false);
+				return;
+			}
+
+			File f = chooser.getSelectedFile();
+			String gpath = "";
+			if (f != null) {
+				gpath = f.getAbsolutePath();
+			}
+			Suku.kontroller.putPref(owner, "GRAPHVIZ", gpath);
+			owner.mToolsAuxGraphviz.setEnabled(true);
+
+		}
 
 		if (cmd.equals(Resurses.OK)) {
 

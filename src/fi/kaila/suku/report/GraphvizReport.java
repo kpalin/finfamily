@@ -42,7 +42,7 @@ public class GraphvizReport extends CommonReport {
 	public void executeReport() throws SukuException {
 		int descgen = caller.getDescendantPane().getGenerations();
 		int ancgen = caller.getAncestorPane().getGenerations();
-		boolean includeFamily = caller.getAncestorPane().getShowfamily();
+		// boolean includeFamily = caller.getAncestorPane().getShowfamily();
 		boolean includeAdopted = caller.getDescendantPane().getAdopted();
 		boolean underlineName = caller.showUnderlineNames();
 		identMap = new LinkedHashMap<String, PersonShortData>();
@@ -98,18 +98,19 @@ public class GraphvizReport extends CommonReport {
 							String parts[] = pp.getGivenname().split(" ");
 							String etunimi = parts[0];
 							for (int n = 0; n < parts.length; n++) {
-
-								StringBuilder sbs = new StringBuilder();
-								for (int m = 0; m < parts[n].length(); m++) {
-									char c = parts[n].charAt(m);
-									if (c != '*') {
-										sbs.append(c);
-									}
+								if (parts[n].indexOf("*") > 0) {
+									etunimi = parts[n];
+									break;
 								}
-								etunimi = sbs.toString();
-
 							}
-							sb.append(etunimi);
+							StringBuilder sbs = new StringBuilder();
+							for (int m = 0; m < etunimi.length(); m++) {
+								char c = etunimi.charAt(m);
+								if (c != '*') {
+									sbs.append(c);
+								}
+							}
+							sb.append(sbs.toString());
 						}
 					}
 					if (pp.getPatronym() != null) {
