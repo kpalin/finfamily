@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -48,6 +46,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private final JComboBox lookAndFeel;
 	private JTextField dbFontSize = null;
 	private final JButton graphVizSetup;
+	private final JTextField graphVizPath;
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
 	private final String[] lfNames;
@@ -266,20 +265,31 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			lookAndFeel.setSelectedIndex(defLf);
 		}
 		y += 24;
-		graphVizSetup = new JButton(Resurses.getString("SETTINGS_GRAPHVIZ"));
-		graphVizSetup.setBounds(x, y, 200, 24);
+		lbl = new JLabel(Resurses.getString("SETTINGS_GRAPHVIZ"));
+		getContentPane().add(lbl);
+		lbl.setBounds(x, y, 400, 20);
+		y += 20;
+
+		String grpath = Suku.kontroller.getPref(owner, "GRAPHVIZ", "");
+		graphVizPath = new JTextField(grpath);
+		graphVizPath.setBounds(x, y, 440, 20);
+		graphVizPath.setEditable(false);
+		getContentPane().add(graphVizPath);
+		graphVizSetup = new JButton("...");
+		graphVizSetup.setBounds(x + 440, y, 20, 20);
 		graphVizSetup.setActionCommand("GRAPHVIZ");
 		graphVizSetup.addActionListener(this);
 		getContentPane().add(graphVizSetup);
 		JButton ok = new JButton(Resurses.OK);
 		// this.ok.setDefaultCapable(true);
+		y += 36;
 		getContentPane().add(ok);
 		ok.setActionCommand(Resurses.OK);
 		ok.addActionListener(this);
-		ok.setBounds(330, 220, 100, 24);
+		ok.setBounds(330, y, 100, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 300, d.height / 2 - 150, 540, 300);
+		setBounds(d.width / 2 - 300, d.height / 2 - 170, 540, 340);
 		setResizable(false);
 		getRootPane().setDefaultButton(ok);
 
@@ -299,23 +309,15 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		if (cmd == null)
 			return;
 		if (cmd.equals("GRAPHVIZ")) {
-			JFileChooser chooser = new JFileChooser();
-
-			chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter("exe"));
-			chooser.setDialogTitle("Open gragviz dot file");
-
-			if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+			if (!Suku.kontroller.openFile("exe")) {
 				Suku.kontroller.putPref(owner, "GRAPHVIZ", "");
+				graphVizPath.setText("");
 				owner.mToolsAuxGraphviz.setEnabled(false);
 				return;
 			}
-
-			File f = chooser.getSelectedFile();
-			String gpath = "";
-			if (f != null) {
-				gpath = f.getAbsolutePath();
-			}
+			String gpath = Suku.kontroller.getFilePath();
 			Suku.kontroller.putPref(owner, "GRAPHVIZ", gpath);
+			graphVizPath.setText(gpath);
 			owner.mToolsAuxGraphviz.setEnabled(true);
 
 		}
