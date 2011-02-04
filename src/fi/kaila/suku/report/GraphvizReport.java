@@ -45,6 +45,11 @@ public class GraphvizReport extends CommonReport {
 		// boolean includeFamily = caller.getAncestorPane().getShowfamily();
 		boolean includeAdopted = caller.getDescendantPane().getAdopted();
 		boolean underlineName = caller.showUnderlineNames();
+
+		boolean nameShow = typesTable.isType("NAME", 2);
+		boolean birtShow = typesTable.isType("BIRT", 2);
+		boolean deatShow = typesTable.isType("DEAT", 2);
+		boolean occuShow = typesTable.isType("OCCU", 2);
 		identMap = new LinkedHashMap<String, PersonShortData>();
 		relaMap = new LinkedHashMap<String, String>();
 		try {
@@ -83,100 +88,128 @@ public class GraphvizReport extends CommonReport {
 						sb.append("ellipse,color=red");
 					}
 					sb.append(",style=bold,label=\"");
-					if (pp.getGivenname() != null) {
-						if (!underlineName) {
-							StringBuilder sbx = new StringBuilder();
-							for (int l = 0; l < pp.getGivenname().length(); l++) {
-								char c = pp.getGivenname().charAt(l);
-								if (c != '*') {
-									sbx.append(c);
+					if (nameShow) {
+						if (pp.getGivenname() != null) {
+							if (!underlineName) {
+								StringBuilder sbx = new StringBuilder();
+								for (int l = 0; l < pp.getGivenname().length(); l++) {
+									char c = pp.getGivenname().charAt(l);
+									if (c != '*') {
+										sbx.append(c);
+									}
 								}
-							}
-							sb.append(sbx.toString());
+								sb.append(sbx.toString());
 
-						} else {
+							} else {
+								String parts[] = pp.getGivenname().split(" ");
+								String etunimi = parts[0];
+								for (int n = 0; n < parts.length; n++) {
+									if (parts[n].indexOf("*") > 0) {
+										etunimi = parts[n];
+										break;
+									}
+								}
+								StringBuilder sbs = new StringBuilder();
+								for (int m = 0; m < etunimi.length(); m++) {
+									char c = etunimi.charAt(m);
+									if (c != '*') {
+										sbs.append(c);
+									}
+								}
+								sb.append(sbs.toString());
+							}
+						}
+						if (pp.getPatronym() != null) {
+							sb.append(" ");
+							sb.append(pp.getPatronym());
+						}
+
+						if (pp.getPrefix() != null) {
+							sb.append(" ");
+							sb.append(pp.getPrefix());
+
+						}
+						if (pp.getSurname() != null) {
+							sb.append(" ");
+							sb.append(pp.getSurname());
+						}
+						if (pp.getPostfix() != null) {
+							sb.append(" ");
+							sb.append(pp.getPostfix());
+						}
+					} else {
+						// don't show name. Show initials only
+						if (pp.getGivenname() != null) {
 							String parts[] = pp.getGivenname().split(" ");
-							String etunimi = parts[0];
-							for (int n = 0; n < parts.length; n++) {
-								if (parts[n].indexOf("*") > 0) {
-									etunimi = parts[n];
+							String firstpart = parts[0];
+							for (int i1 = 0; i1 < parts.length; i1++) {
+								if (parts[i1].indexOf("*") > 0) {
+									firstpart = parts[i1];
 									break;
 								}
 							}
-							StringBuilder sbs = new StringBuilder();
-							for (int m = 0; m < etunimi.length(); m++) {
-								char c = etunimi.charAt(m);
-								if (c != '*') {
-									sbs.append(c);
-								}
+							sb.append(firstpart.charAt(0));
+
+						}
+						if (pp.getPrefix() != null) {
+							sb.append(pp.getPrefix().charAt(0));
+						}
+						if (pp.getSurname() != null) {
+							sb.append(pp.getSurname().charAt(0));
+						}
+					}
+					if (birtShow) {
+						if (pp.getBirtDate() != null
+								|| pp.getBirtPlace() != null) {
+							sb.append("\\n");
+
+							sb.append(typesTable.getTextValue("ANC_BORN"));
+							if (pp.getBirtDate() != null) {
+								sb.append(" ");
+								sb.append(Utils.textDate(pp.getBirtDate(), true));
 							}
-							sb.append(sbs.toString());
+							if (pp.getBirtPlace() != null) {
+								sb.append(" ");
+								sb.append(pp.getBirtPlace());
+							}
+							if (pp.getBirthCountry() != null) {
+								sb.append(" ");
+								sb.append(pp.getBirthCountry());
+							}
+
 						}
 					}
-					if (pp.getPatronym() != null) {
-						sb.append(" ");
-						sb.append(pp.getPatronym());
-					}
+					if (deatShow) {
+						if (pp.getDeatDate() != null
+								|| pp.getDeatPlace() != null) {
+							sb.append("\\n");
 
-					if (pp.getPrefix() != null) {
-						sb.append(" ");
-						sb.append(pp.getPrefix());
+							sb.append(typesTable.getTextValue("ANC_DIED"));
+							if (pp.getDeatDate() != null) {
+								sb.append(" ");
+								sb.append(Utils.textDate(pp.getDeatDate(), true));
+							}
+							if (pp.getDeatPlace() != null) {
+								sb.append(" ");
+								sb.append(pp.getDeatPlace());
+							}
+							if (pp.getDeatCountry() != null) {
+								sb.append(" ");
+								sb.append(pp.getDeatCountry());
+							}
 
-					}
-					if (pp.getSurname() != null) {
-						sb.append(" ");
-						sb.append(pp.getSurname());
-					}
-					if (pp.getPostfix() != null) {
-						sb.append(" ");
-						sb.append(pp.getPostfix());
-					}
-					if (pp.getBirtDate() != null || pp.getBirtPlace() != null) {
-						sb.append("\\n");
-
-						sb.append(typesTable.getTextValue("ANC_BORN"));
-						if (pp.getBirtDate() != null) {
-							sb.append(" ");
-							sb.append(Utils.textDate(pp.getBirtDate(), true));
 						}
-						if (pp.getBirtPlace() != null) {
-							sb.append(" ");
-							sb.append(pp.getBirtPlace());
-						}
-						if (pp.getBirthCountry() != null) {
-							sb.append(" ");
-							sb.append(pp.getBirthCountry());
-						}
-
 					}
-					if (pp.getDeatDate() != null || pp.getDeatPlace() != null) {
-						sb.append("\\n");
-
-						sb.append(typesTable.getTextValue("ANC_DIED"));
-						if (pp.getDeatDate() != null) {
-							sb.append(" ");
-							sb.append(Utils.textDate(pp.getDeatDate(), true));
+					if (occuShow) {
+						if (pp.getOccupation() != null) {
+							sb.append("\\n");
+							sb.append(pp.getOccupation());
 						}
-						if (pp.getDeatPlace() != null) {
-							sb.append(" ");
-							sb.append(pp.getDeatPlace());
-						}
-						if (pp.getDeatCountry() != null) {
-							sb.append(" ");
-							sb.append(pp.getDeatCountry());
-						}
-
 					}
-					if (pp.getOccupation() != null) {
-						sb.append("\\n");
-						sb.append(pp.getOccupation());
-					}
-
 					sb.append("\"];");
 
 					bos.write(sb.toString().getBytes("UTF-8"));
 					bos.write('\n');
-					// System.out.println(sb.toString());
 
 				}
 				Set<Map.Entry<String, String>> relat = relaMap.entrySet();
@@ -186,17 +219,12 @@ public class GraphvizReport extends CommonReport {
 					Map.Entry<String, String> entry = itr.next();
 					bos.write(entry.getValue().getBytes("UTF-8"));
 					bos.write('\n');
-					// System.out.println(entry.getValue());
-
 				}
 				bos.write("}".getBytes("UTF-8"));
 				byte[] buffi = bos.toByteArray();
 
 				ByteArrayInputStream bin = new ByteArrayInputStream(buffi);
 				Suku.kontroller.saveFile("txt", bin);
-
-				// System.out.println("}");
-
 			} else {
 				JOptionPane.showMessageDialog(caller, "dblista");
 			}

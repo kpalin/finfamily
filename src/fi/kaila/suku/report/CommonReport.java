@@ -218,8 +218,10 @@ public abstract class CommonReport {
 
 	/**
 	 * Prints the images.
+	 * 
+	 * @throws SukuException
 	 */
-	public void printImages() {
+	public void printImages() throws SukuException {
 		if (imgNotices.size() > 0) {
 			BodyText bt = new TableHeaderText();
 			bt.addText("\n");

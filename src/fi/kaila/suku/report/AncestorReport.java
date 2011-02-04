@@ -129,7 +129,8 @@ public class AncestorReport extends CommonReport {
 
 	}
 
-	private void createFullStradoReport(HashMap<Integer, ReportUnit> reportUnits) {
+	private void createFullStradoReport(HashMap<Integer, ReportUnit> reportUnits)
+			throws SukuException {
 		textReferences = new HashMap<String, PersonInTables>();
 
 		ReportUnitAll ftab = null;
@@ -204,7 +205,7 @@ public class AncestorReport extends CommonReport {
 
 	}
 
-	private void createStradoReport() {
+	private void createStradoReport() throws SukuException {
 		textReferences = new HashMap<String, PersonInTables>();
 
 		ReportUnit ftab;
@@ -248,7 +249,7 @@ public class AncestorReport extends CommonReport {
 
 	}
 
-	private void createEspolinReport() {
+	private void createEspolinReport() throws SukuException {
 		textReferences = new HashMap<String, PersonInTables>();
 		long currTab = 0;
 		for (int i = 0; i < tables.size(); i++) {
@@ -276,9 +277,10 @@ public class AncestorReport extends CommonReport {
 	 *            the mtab
 	 * @param tableNum
 	 *            the table num
+	 * @throws SukuException
 	 */
 	protected void createAncestorTable(int idx, ReportUnit ftab,
-			ReportUnit mtab, long tableNum) {
+			ReportUnit mtab, long tableNum) throws SukuException {
 		BodyText bt = null;
 		ReportTableMember subjectmember;
 		SukuData pappadata = null;

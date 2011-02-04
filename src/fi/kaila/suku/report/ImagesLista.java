@@ -74,7 +74,7 @@ public class ImagesLista extends CommonReport {
 
 	}
 
-	protected void createPidTable(int idx, int[] pidCount) {
+	protected void createPidTable(int idx, int[] pidCount) throws SukuException {
 		BodyText bt = new TableHeaderText();
 		bt.addText(Resurses.getReportString("REPORT.LISTA.TABLE") + " Pid = "
 				+ pidCount[idx]);

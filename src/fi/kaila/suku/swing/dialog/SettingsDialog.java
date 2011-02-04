@@ -280,6 +280,11 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		graphVizSetup.setActionCommand("GRAPHVIZ");
 		graphVizSetup.addActionListener(this);
 		getContentPane().add(graphVizSetup);
+
+		if (Suku.kontroller.isWebStart()) {
+			graphVizSetup.setEnabled(false);
+		}
+
 		JButton ok = new JButton(Resurses.OK);
 		// this.ok.setDefaultCapable(true);
 		y += 36;

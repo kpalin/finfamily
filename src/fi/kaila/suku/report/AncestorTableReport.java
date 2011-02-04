@@ -57,9 +57,11 @@ public class AncestorTableReport extends CommonReport {
 
 	/**
 	 * execute the report.
+	 * 
+	 * @throws SukuException
 	 */
 	@Override
-	public void executeReport() {
+	public void executeReport() throws SukuException {
 		SukuData vlist = null;
 
 		int generations = caller.getAncestorPane().getGenerations();

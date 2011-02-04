@@ -2798,8 +2798,12 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 	 * 
 	 * @param juttu
 	 *            the new runner value
+	 * @throws SukuException
 	 */
-	public void setRunnerValue(String juttu) {
+	public void setRunnerValue(String juttu) throws SukuException {
+		if (cancelRequested) {
+			throw new SukuException(Resurses.getString("EXECUTION_CANCELLED"));
+		}
 		String[] kaksi = juttu.split(";");
 		if (kaksi.length >= 2) {
 			int progress = Integer.parseInt(kaksi[0]);
@@ -3655,6 +3659,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
+			cancelRequested = true;
 			setVisible(false);
 
 		}

@@ -82,10 +82,11 @@ public class ReportUtil {
 	 * @return result of process
 	 * @throws SQLException
 	 *             the sQL exception
+	 * @throws SukuException
 	 */
 	public SukuData createDescendantStructure(int pid, int generations,
 			int spouGen, int chilGen, String order, boolean adopted)
-			throws SQLException {
+			throws SQLException, SukuException {
 		SukuData fam = new SukuData();
 		unitMap = new HashMap<Integer, ReportUnit>();
 
@@ -315,10 +316,11 @@ public class ReportUtil {
 	 *            true if also adopted children are to be included
 	 * @return
 	 * @throws SQLException
+	 * @throws SukuException
 	 */
 	private int createDescendantTables(long parentTableNo, int nexttab,
 			ReportTableMember chi, int gen, int generations, String order,
-			boolean adopted, int round) throws SQLException {
+			boolean adopted, int round) throws SQLException, SukuException {
 
 		ReportUnit pidTable = unitMap.get(chi.getPid());
 
@@ -1021,7 +1023,7 @@ public class ReportUtil {
 		return fam;
 	}
 
-	private void setRunnerValue(String juttu) {
+	private void setRunnerValue(String juttu) throws SukuException {
 		if (runner != null) {
 			this.runner.setRunnerValue(juttu);
 		}
