@@ -1143,6 +1143,14 @@ public class PersonShortData implements Serializable, Transferable,
 	}
 
 	/**
+	 * 
+	 * @return the image data
+	 */
+	public byte[] getMediaData() {
+		return this.imageData;
+	}
+
+	/**
 	 * Gets the image name.
 	 * 
 	 * @return image namefield

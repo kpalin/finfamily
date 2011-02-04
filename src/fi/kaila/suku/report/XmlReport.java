@@ -66,6 +66,7 @@ public class XmlReport implements ReportInterface {
 	private String translator = null;
 	private String report = null;
 	private String folder = null;
+
 	private Dimension maxImageSize = new Dimension(0, 0);
 	private Dimension maxPersonImageSize = new Dimension(0, 0);
 	private int translatorIdx;
@@ -113,6 +114,10 @@ public class XmlReport implements ReportInterface {
 		case 2:
 			translator = "resources/xml/html.xsl";
 			report = createFile("html");
+			break;
+		case 3:
+			translator = null;
+			report = createFile("txt");
 			break;
 		default:
 			throw new SukuException(
@@ -857,6 +862,22 @@ public class XmlReport implements ReportInterface {
 
 		}
 
+	}
+
+	public String getFolderName() {
+		if (folder == null) {
+			return null;
+		}
+		int ix = folder.replace('\\', '/').lastIndexOf('/');
+		if (ix > 0) {
+			return folder.substring(ix + 1);
+		}
+
+		return folder;
+	}
+
+	public String getReportPath() {
+		return report;
 	}
 
 	@Override

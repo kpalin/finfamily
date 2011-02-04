@@ -3645,11 +3645,14 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 	class TaskGraphviz extends SwingWorker<Void, Void> {
 
+		XmlReport repo = null;
+
 		@Override
 		protected Void doInBackground() throws Exception {
+			repo = new XmlReport(runner, 3, Resurses.getString("REPORT.LISTAT"));
 			boolean descendant = reportTypePane.getSelectedIndex() == 0 ? true
 					: false;
-			dr = new GraphvizReport(self, typesTable, descendant);
+			dr = new GraphvizReport(self, typesTable, descendant, repo);
 
 			dr.executeReport();
 

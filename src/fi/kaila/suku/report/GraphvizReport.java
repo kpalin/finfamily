@@ -1,7 +1,8 @@
 package fi.kaila.suku.report;
 
-import java.io.ByteArrayInputStream;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
-import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.report.style.ImageText;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
@@ -27,10 +28,12 @@ public class GraphvizReport extends CommonReport {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private boolean descendantReport = true;
+	private final XmlReport xmlRepo;
 
 	public GraphvizReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
-			boolean descendant) {
-		super(caller, typesTable, null);
+			boolean descendant, XmlReport repo) {
+		super(caller, typesTable, repo);
+		xmlRepo = repo;
 		descendantReport = descendant;
 
 	}
@@ -50,8 +53,15 @@ public class GraphvizReport extends CommonReport {
 		boolean birtShow = typesTable.isType("BIRT", 2);
 		boolean deatShow = typesTable.isType("DEAT", 2);
 		boolean occuShow = typesTable.isType("OCCU", 2);
+		boolean pictShow = typesTable.isType("PHOT", 2);
+		if (!caller.showImages()) {
+			pictShow = false;
+		}
 		identMap = new LinkedHashMap<String, PersonShortData>();
 		relaMap = new LinkedHashMap<String, String>();
+
+		repoWriter.createReport();
+
 		try {
 			if (caller.getPid() > 0) {
 				caller.getDescendantPane().getGenerations();
@@ -206,7 +216,27 @@ public class GraphvizReport extends CommonReport {
 							sb.append(pp.getOccupation());
 						}
 					}
-					sb.append("\"];");
+					sb.append("\"");
+					if (pictShow) {
+						if (pp.getMediaFilename() != null) {
+							ImageText imagetx = new ImageText();
+							BufferedImage img = pp.getImage();
+							imagetx.setImage(img, pp.getMediaData(),
+									img.getWidth(), img.getHeight(),
+									pp.getMediaFilename(), pp.getMediaTitle(),
+									"PHOT");
+							repoWriter.addText(imagetx);
+
+							sb.append(",image=\"");
+							sb.append(xmlRepo.getFolderName());
+							sb.append("/");
+							sb.append(pp.getMediaFilename());
+							sb.append("\"");
+							sb.append(",labelloc=b");
+						}
+					}
+
+					sb.append("];");
 
 					bos.write(sb.toString().getBytes("UTF-8"));
 					bos.write('\n');
@@ -223,8 +253,14 @@ public class GraphvizReport extends CommonReport {
 				bos.write("}".getBytes("UTF-8"));
 				byte[] buffi = bos.toByteArray();
 
-				ByteArrayInputStream bin = new ByteArrayInputStream(buffi);
-				Suku.kontroller.saveFile("txt", bin);
+				// ByteArrayInputStream bout = new ByteArrayInputStream(buffi);
+
+				FileOutputStream fos = new FileOutputStream(
+						xmlRepo.getReportPath());
+				// fos.write(bout.toByteArray());
+				fos.write(buffi);
+				fos.close();
+				// Suku.kontroller.saveFile("txt", bin);
 			} else {
 				JOptionPane.showMessageDialog(caller, "dblista");
 			}
