@@ -45,7 +45,7 @@ public class GraphvizReport extends CommonReport {
 	public void executeReport() throws SukuException {
 		int descgen = caller.getDescendantPane().getGenerations();
 		int ancgen = caller.getAncestorPane().getGenerations();
-		// boolean includeFamily = caller.getAncestorPane().getShowfamily();
+		boolean includeFamily = caller.getAncestorPane().getShowfamily();
 		boolean includeAdopted = caller.getDescendantPane().getAdopted();
 		boolean underlineName = caller.showUnderlineNames();
 
@@ -74,7 +74,7 @@ public class GraphvizReport extends CommonReport {
 				if (descendantReport) {
 					addDescendantRelatives(subj, descgen - 1, includeAdopted);
 				} else {
-					addAncestorRelatives(subj, ancgen - 1, false /* includeFamily */);
+					addAncestorRelatives(subj, ancgen - 1, includeFamily);
 				}
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -270,6 +270,8 @@ public class GraphvizReport extends CommonReport {
 		}
 	}
 
+	HashMap<Integer, Integer> remover = new HashMap<Integer, Integer>();
+
 	private void addAncestorRelatives(PersonShortData pers, int generation,
 			boolean includeFamily) throws SukuException {
 		SukuData pdata = caller.getKontroller().getSukuData("cmd=person",
@@ -285,15 +287,22 @@ public class GraphvizReport extends CommonReport {
 
 			if (spo.getTag().equals("FATH")) {
 				fatherPid = spo.getRelative();
+				remover.put(spo.getRid(), 1);
 			} else if (spo.getTag().equals("MOTH")) {
 				motherPid = spo.getRelative();
+				remover.put(spo.getRid(), 1);
 			}
+
 		}
 		if (includeFamily) {
+			String spouseTag = "HUSB";
+			if (pers.getSex().equals("M")) {
+				spouseTag = "WIFE";
+			}
 			for (int i = 0; i < gdata.relations.length; i++) {
 				Relation rela = gdata.relations[i];
-				if (rela.getTag().equals("HUSB")
-						|| rela.getTag().equals("WIFE")) {
+				Integer wasAlready = remover.put(rela.getRid(), 1);
+				if (wasAlready == null && rela.getTag().equals(spouseTag)) {
 					PersonShortData spou = gdata.rels.get(rela.getRelative());
 					identMap.put("I" + spou.getPid(), spou);
 
@@ -303,10 +312,50 @@ public class GraphvizReport extends CommonReport {
 					sb.append(" -- ");
 					sb.append("I" + spou.getPid());
 
-					sb.append("  [style=bold,color=green]; ");
+					sb.append("  [style=bold,color=violet]; ");
 
 					relaMap.put("I" + pers.getPid() + "I" + spou.getPid(),
 							sb.toString());
+
+				}
+				if (wasAlready == null && rela.getTag().equals("CHIL")) {
+
+					PersonShortData chil = gdata.rels.get(rela.getRelative());
+					identMap.put("I" + chil.getPid(), chil);
+
+					StringBuilder sb = new StringBuilder();
+					sb.append(" ");
+					sb.append("I" + pers.getPid());
+					sb.append(" -- ");
+					sb.append("I" + chil.getPid());
+
+					sb.append("  [style=bold,color=orange]; ");
+
+					relaMap.put("I" + pers.getPid() + "I" + chil.getPid(),
+							sb.toString());
+
+					int otherPid = 0;
+					if (spouseTag.equals("HUSB")) {
+						otherPid = chil.getFatherPid();
+					} else {
+						otherPid = chil.getMotherPid();
+					}
+
+					for (int j = 0; j < gdata.relations.length; j++) {
+						Relation othe = gdata.relations[j];
+						if (othe.getRelative() == otherPid) {
+							StringBuilder ssb = new StringBuilder();
+							ssb.append(" ");
+							ssb.append("I" + otherPid);
+							ssb.append(" -- ");
+							ssb.append("I" + chil.getPid());
+
+							ssb.append("  [style=bold,color=orange]; ");
+
+							relaMap.put("I" + otherPid + "I" + chil.getPid(),
+									ssb.toString());
+						}
+					}
 
 				}
 
@@ -338,9 +387,9 @@ public class GraphvizReport extends CommonReport {
 			identMap.put("I" + pare.getPid(), pare);
 			StringBuilder sb = new StringBuilder();
 			sb.append(" ");
-			sb.append("I" + pers.getPid());
-			sb.append(" -- ");
 			sb.append("I" + pare.getPid());
+			sb.append(" -- ");
+			sb.append("I" + pers.getPid());
 			if (pare.getSex().equals("M")) {
 				sb.append("  [style=bold,color=blue]; ");
 			} else {
