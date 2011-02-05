@@ -507,6 +507,32 @@ public class GraphvizReport extends CommonReport {
 		Relation[] relations;
 		HashMap<Integer, PersonShortData> rels = new HashMap<Integer, PersonShortData>();
 
+		@Override
+		public int getFatherPid() {
+			if (relations == null) {
+				for (int i = 0; i < relations.length; i++) {
+					Relation r = relations[i];
+					if (r.getTag().equals("FATH")) {
+						return r.getRelative();
+					}
+				}
+			}
+			return 0;
+		}
+
+		@Override
+		public int getMotherPid() {
+			if (relations == null) {
+				for (int i = 0; i < relations.length; i++) {
+					Relation r = relations[i];
+					if (r.getTag().equals("MOTH")) {
+						return r.getRelative();
+					}
+				}
+			}
+			return 0;
+		}
+
 		public GraphData(SukuData data) {
 			super(data.persLong);
 			relations = data.relations;
