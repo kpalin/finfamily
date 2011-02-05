@@ -24,9 +24,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -1780,35 +1782,39 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					rtv.add(endi);
 
 					Process pr = rt.exec(rtv.toArray(new String[0]), null, dir);
-					int counter = 0;
-					int exitVal = -1;
-					while (counter >= 0) {
-						//
-						// this loop is hetre because dot sees to hang up
-						// sometimes
-						try {
-							counter++;
-							if (counter > 250) {
-								counter = -1;
-								pr.destroy();
-							}
-							Thread.sleep(40);
-							exitVal = pr.exitValue();
-							break;
+					boolean dont = false;
+					if (dont) {
+						int counter = 0;
+						int exitVal = -1;
+						while (counter >= 0) {
+							//
+							// this loop is here because dot sees to hang up
+							// sometimes
+							try {
+								counter++;
+								if (counter > 250) {
+									counter = -1;
+									pr.destroy();
+								}
+								Thread.sleep(40);
+								exitVal = pr.exitValue();
+								break;
 
-						} catch (Exception ie) {
-							if (counter > 240) {
-								logger.info(ie.getMessage() + " for " + infile);
+							} catch (Exception ie) {
+								if (counter > 240) {
+									logger.info(ie.getMessage() + " for "
+											+ infile);
+								}
 							}
 						}
 					}
-					// BufferedReader input = new BufferedReader(
-					// new InputStreamReader(pr.getInputStream()));
-					// String line = null;
-					// while ((line = input.readLine()) != null) {
-					// logger.info(line);
-					// }
-					// int exitVal = pr.waitFor();
+					BufferedReader input = new BufferedReader(
+							new InputStreamReader(pr.getErrorStream()));
+					String line = null;
+					while ((line = input.readLine()) != null) {
+						logger.info(line);
+					}
+					int exitVal = pr.waitFor();
 
 					logger.info("conversion to " + endi + " resulted in "
 							+ exitVal);

@@ -148,6 +148,11 @@ public class XmlReport implements ReportInterface {
 				int lastIdx = report.replace('\\', '/').lastIndexOf('.');
 				if (lastIdx > 0) {
 					folder = report.substring(0, lastIdx) + "_files";
+					int folderIdx = folder.replace('\\', '/').lastIndexOf('/');
+					String folderx = folder.substring(folderIdx + 1);
+					folder = folder.substring(0, folderIdx + 1)
+							+ Utils.toUsAscii(folderx);
+
 					File d = new File(folder);
 					if (d.exists()) {
 						if (!fileExists && d.isDirectory()) {
