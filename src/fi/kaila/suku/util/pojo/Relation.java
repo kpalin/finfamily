@@ -141,6 +141,24 @@ public class Relation implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @param tag
+	 * @return first notice of type tag
+	 */
+	public RelationNotice getNotice(String tag) {
+		if (notices == null) {
+			return null;
+		}
+		for (int i = 0; i < notices.length; i++) {
+			if (notices[i].getTag().equals(tag)) {
+				return notices[i];
+			}
+		}
+		return null;
+
+	}
+
+	/**
 	 * Sets the notices.
 	 * 
 	 * @param notices

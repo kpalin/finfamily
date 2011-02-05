@@ -509,28 +509,60 @@ public class GraphvizReport extends CommonReport {
 
 		@Override
 		public int getFatherPid() {
-			if (relations == null) {
+			String tag = "FATH";
+			return getParent(tag);
+		}
+
+		/**
+		 * Here get the most probable parent not adopted rather than adopted
+		 * First relation of greatest surety is selected
+		 * 
+		 * @param tag
+		 * @return
+		 */
+		private int getParent(String tag) {
+
+			boolean isAdopted = true;
+			Relation rr = null;
+
+			if (relations != null) {
 				for (int i = 0; i < relations.length; i++) {
 					Relation r = relations[i];
-					if (r.getTag().equals("FATH")) {
-						return r.getRelative();
+					if (r.getTag().equals(tag)) {
+						if (rr == null) {
+							rr = r;
+						}
+						if (r.getNotice("ADOP") == null) {
+							// not adopted
+							if (isAdopted) {
+								rr = r;
+								isAdopted = false;
+							}
+							if (r.getSurety() > rr.getSurety()) {
+								rr = r;
+							}
+						} else {
+							// is adopted
+							if (isAdopted) {
+								// continue only if adopted
+								if (r.getSurety() > rr.getSurety()) {
+									rr = r;
+								}
+							}
+						}
+
 					}
 				}
+				return rr.getRelative();
 			}
 			return 0;
 		}
 
 		@Override
 		public int getMotherPid() {
-			if (relations == null) {
-				for (int i = 0; i < relations.length; i++) {
-					Relation r = relations[i];
-					if (r.getTag().equals("MOTH")) {
-						return r.getRelative();
-					}
-				}
-			}
-			return 0;
+			String tag = "MOTH";
+
+			return getParent(tag);
 		}
 
 		public GraphData(SukuData data) {
