@@ -2,6 +2,10 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+Release 1137 on 6 feb 2011
+
+* Image scaling implemented to Graphviz report
+
 Release 1131 on 4 feb 2011
 
 * Added images to graphviz reports
