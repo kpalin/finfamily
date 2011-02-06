@@ -1,5 +1,6 @@
 package fi.kaila.suku.util;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -789,6 +790,12 @@ public class Utils {
 		return name;
 	}
 
+	public static BufferedImage scaleImage(Image image, int p_width,
+			int p_height) throws Exception {
+		return scaleImage(image, p_width, p_height, 0);
+	}
+
+	//
 	/**
 	 * This method has been copied from
 	 * http://www.webmaster-talk.com/coding-forum
@@ -802,7 +809,7 @@ public class Utils {
 	 * @throws Exception
 	 */
 	public static BufferedImage scaleImage(Image image, int p_width,
-			int p_height) throws Exception {
+			int p_height, int trailer_height) throws Exception {
 
 		int thumbWidth = p_width;
 		int thumbHeight = p_height;
@@ -819,14 +826,16 @@ public class Utils {
 		}
 
 		// Draw the scaled image
-		BufferedImage thumbImage = new BufferedImage(thumbWidth, thumbHeight,
-				BufferedImage.TYPE_INT_RGB);
+		BufferedImage thumbImage = new BufferedImage(thumbWidth, thumbHeight
+				+ trailer_height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics2D = thumbImage.createGraphics();
 		graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-
+		graphics2D.setColor(Color.white);
+		graphics2D
+				.fillRect(0, 0, thumbImage.getWidth(), thumbImage.getHeight());
 		graphics2D.drawImage(image, 0, 0, thumbWidth, thumbHeight, null);
 
 		ByteArrayOutputStream outimg = new ByteArrayOutputStream();

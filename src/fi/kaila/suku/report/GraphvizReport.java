@@ -1,8 +1,12 @@
 package fi.kaila.suku.report;
 
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -11,10 +15,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
-import fi.kaila.suku.report.style.ImageText;
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
@@ -28,13 +33,24 @@ public class GraphvizReport extends CommonReport {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private boolean descendantReport = true;
-	private final XmlReport xmlRepo;
+
+	private String filePath = null;
+	private static String FOLDER_NAME = "Graphviz_images";
 
 	public GraphvizReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
-			boolean descendant, XmlReport repo) {
-		super(caller, typesTable, repo);
-		xmlRepo = repo;
+			boolean descendant) throws SukuException {
+		super(caller, typesTable, null);
+
 		descendantReport = descendant;
+
+		if (!Suku.kontroller.createLocalFile("txt")) {
+			throw new SukuException(
+					Resurses.getString("WARN_REPORT_NOT_SELECTED"));
+		}
+
+		String path = Suku.kontroller.getFilePath();
+		int pIdx = path.lastIndexOf("/");
+		filePath = path.substring(0, pIdx);
 
 	}
 
@@ -48,7 +64,14 @@ public class GraphvizReport extends CommonReport {
 		boolean includeFamily = caller.getAncestorPane().getShowfamily();
 		boolean includeAdopted = caller.getDescendantPane().getAdopted();
 		boolean underlineName = caller.showUnderlineNames();
-
+		Dimension maxPersonImageSize = caller.getPersonImageMaxSize();
+		if (maxPersonImageSize.width == 0) {
+			maxPersonImageSize = new Dimension(100, 150);
+		} else {
+			if (maxPersonImageSize.height == 0) {
+				maxPersonImageSize.height = maxPersonImageSize.width * 3 / 2;
+			}
+		}
 		boolean nameShow = typesTable.isType("NAME", 2);
 		boolean birtShow = typesTable.isType("BIRT", 2);
 		boolean deatShow = typesTable.isType("DEAT", 2);
@@ -57,19 +80,42 @@ public class GraphvizReport extends CommonReport {
 		if (!caller.showImages()) {
 			pictShow = false;
 		}
+		if (pictShow) {
+			File d = new File(filePath + "/" + FOLDER_NAME);
+			if (d.exists()) {
+				if (d.isDirectory()) {
+					int resu = JOptionPane.showConfirmDialog(caller,
+							Resurses.getString("CONFIRM_REPLACE_REPORTDIR"),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					if (resu == JOptionPane.YES_OPTION) {
+						if (d.isDirectory()) {
+							String[] files = d.list();
+							for (int i = 0; i < files.length; i++) {
+								File df = new File(filePath + "/" + files[i]);
+								df.delete();
+							}
+						}
+					}
+				}
+			}
+			d.mkdirs();
+		}
+
 		identMap = new LinkedHashMap<String, PersonShortData>();
 		relaMap = new LinkedHashMap<String, String>();
 
-		repoWriter.createReport();
+		// repoWriter.createReport();
 
 		try {
 			if (caller.getPid() > 0) {
-				caller.getDescendantPane().getGenerations();
+				// caller.getDescendantPane().getGenerations();
 				SukuData pdata = caller.getKontroller().getSukuData(
 						"cmd=person", "pid=" + caller.getPid(),
 						"lang=" + Resurses.getLanguage());
 				GraphData subj = new GraphData(pdata);
-				// PersonShortData subj = new PersonShortData(pdata.persLong);
+
 				identMap.put("I" + subj.getPid(), subj);
 				if (descendantReport) {
 					addDescendantRelatives(subj, descgen - 1, includeAdopted);
@@ -78,8 +124,7 @@ public class GraphvizReport extends CommonReport {
 				}
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-				// System.out.println("graph G {");
-				bos.write("graph G {".getBytes("UTF-8"));
+				bos.write("graph G {\n".getBytes("UTF-8"));
 				Set<Map.Entry<String, PersonShortData>> setti = identMap
 						.entrySet();
 
@@ -87,6 +132,7 @@ public class GraphvizReport extends CommonReport {
 						.iterator();
 
 				while (it.hasNext()) {
+					int lineCount = 1;
 					Map.Entry<String, PersonShortData> entry = it.next();
 					StringBuilder sb = new StringBuilder();
 					PersonShortData pp = entry.getValue();
@@ -172,7 +218,7 @@ public class GraphvizReport extends CommonReport {
 						if (pp.getBirtDate() != null
 								|| pp.getBirtPlace() != null) {
 							sb.append("\\n");
-
+							lineCount++;
 							sb.append(typesTable.getTextValue("ANC_BORN"));
 							if (pp.getBirtDate() != null) {
 								sb.append(" ");
@@ -193,7 +239,7 @@ public class GraphvizReport extends CommonReport {
 						if (pp.getDeatDate() != null
 								|| pp.getDeatPlace() != null) {
 							sb.append("\\n");
-
+							lineCount++;
 							sb.append(typesTable.getTextValue("ANC_DIED"));
 							if (pp.getDeatDate() != null) {
 								sb.append(" ");
@@ -213,22 +259,62 @@ public class GraphvizReport extends CommonReport {
 					if (occuShow) {
 						if (pp.getOccupation() != null) {
 							sb.append("\\n");
+							lineCount++;
 							sb.append(pp.getOccupation());
 						}
 					}
 					sb.append("\"");
 					if (pictShow) {
-						if (pp.getMediaFilename() != null) {
-							ImageText imagetx = new ImageText();
-							BufferedImage img = pp.getImage();
-							imagetx.setImage(img, pp.getMediaData(),
-									img.getWidth(), img.getHeight(),
-									pp.getMediaFilename(), pp.getMediaTitle(),
-									"PHOT");
-							repoWriter.addText(imagetx);
+						if (pp.getMediaData() != null) {
+							if (pp.getMediaFilename() != null) {
+
+								BufferedImage img = pp.getImage();
+								BufferedImage imgStamp = Utils.scaleImage(img,
+										maxPersonImageSize.width,
+										maxPersonImageSize.height,
+										lineCount * 25);
+
+								// O P E N
+								// converting to bytes : copy-paste from
+								// http://mindprod.com/jgloss/imageio.html#TOBYTES
+								ByteArrayOutputStream baos = new ByteArrayOutputStream(
+										1000);
+								byte[] resultImageAsRawBytes = null;
+								// W R I T E
+								try {
+									ImageIO.write(imgStamp, "jpeg", baos);
+									// C L O S E
+									baos.flush();
+									img.flush();
+									resultImageAsRawBytes = baos.toByteArray();
+
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+
+								String imgName = pp.getMediaFilename();
+
+								File ff = new File(filePath + "/" + FOLDER_NAME
+										+ "/" + imgName);
+
+								FileOutputStream fos;
+								try {
+
+									fos = new FileOutputStream(ff);
+									// fos.write(pp.getMediaData());
+									fos.write(resultImageAsRawBytes);
+									fos.close();
+
+								} catch (FileNotFoundException e) {
+									logger.log(Level.WARNING, "Image", e);
+								} catch (IOException e) {
+									logger.log(Level.WARNING, "Image", e);
+								}
+							}
 
 							sb.append(",image=\"");
-							sb.append(xmlRepo.getFolderName());
+							sb.append(FOLDER_NAME);
 							sb.append("/");
 							sb.append(pp.getMediaFilename());
 							sb.append("\"");
@@ -252,15 +338,10 @@ public class GraphvizReport extends CommonReport {
 				}
 				bos.write("}".getBytes("UTF-8"));
 				byte[] buffi = bos.toByteArray();
-
-				// ByteArrayInputStream bout = new ByteArrayInputStream(buffi);
-
 				FileOutputStream fos = new FileOutputStream(
-						xmlRepo.getReportPath());
-				// fos.write(bout.toByteArray());
+						Suku.kontroller.getFilePath());
 				fos.write(buffi);
 				fos.close();
-				// Suku.kontroller.saveFile("txt", bin);
 			} else {
 				JOptionPane.showMessageDialog(caller, "dblista");
 			}

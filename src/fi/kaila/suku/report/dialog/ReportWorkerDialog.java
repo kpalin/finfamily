@@ -3645,16 +3645,22 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 	class TaskGraphviz extends SwingWorker<Void, Void> {
 
-		XmlReport repo = null;
+		// XmlReport repo = null;
 
 		@Override
-		protected Void doInBackground() throws Exception {
-			repo = new XmlReport(runner, 3, Resurses.getString("REPORT.LISTAT"));
+		protected Void doInBackground() {
+			// repo = new XmlReport(runner, 3,
+			// Resurses.getString("REPORT.LISTAT"));
 			boolean descendant = reportTypePane.getSelectedIndex() == 0 ? true
 					: false;
-			dr = new GraphvizReport(self, typesTable, descendant, repo);
+			try {
+				dr = new GraphvizReport(self, typesTable, descendant);
+				dr.executeReport();
 
-			dr.executeReport();
+			} catch (SukuException e) {
+				JOptionPane.showMessageDialog(parent, e.getMessage());
+				logger.log(Level.WARNING, "Exception in background thread", e);
+			}
 
 			return null;
 		}
@@ -3662,7 +3668,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 		@Override
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
-			cancelRequested = true;
+
 			setVisible(false);
 
 		}
