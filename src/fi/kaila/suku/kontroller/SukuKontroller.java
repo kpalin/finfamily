@@ -39,6 +39,11 @@ public interface SukuKontroller {
 			String passwd) throws SukuException;
 
 	/**
+	 * Reset database connection
+	 */
+	public void resetConnection();
+
+	/**
 	 * Gets the suku data.
 	 * 
 	 * @param params
@@ -182,8 +187,33 @@ public interface SukuKontroller {
 
 	/**
 	 * 
-	 * @return true if webstart mode
+	 * @return true if remote mode
+	 */
+	public boolean isRemote();
+
+	/**
+	 * 
+	 * @return true if web start mode (running in sandbox)
 	 */
 	public boolean isWebStart();
+
+	/**
+	 * 
+	 * @return true if connected to db (PostgreSQL)
+	 */
+	public boolean isConnected();
+
+	/**
+	 * 
+	 * @return true if connected to valid family database
+	 */
+	public String getSchema();
+
+	/**
+	 * sets the valid family database schema
+	 * 
+	 * @param schema
+	 */
+	public void setSchema(String schema);
 
 }

@@ -37,7 +37,7 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	private JTextField userid = null;
 	private JTextField password = null;
 	private JCheckBox rememberPwd = null;
-	private boolean isRemote;
+	private final boolean isRemote;
 	private boolean okPressed = false;
 	private boolean rememberDatabase = false;
 	private SukuKontroller kontroller = null;
@@ -53,10 +53,9 @@ public class ConnectDialog extends JDialog implements ActionListener {
 	 *            the is remote
 	 */
 
-	public ConnectDialog(JFrame owner, SukuKontroller kontroller,
-			boolean isRemote) {
+	public ConnectDialog(JFrame owner, SukuKontroller kontroller) {
 		super(owner, Resurses.getString("LOGIN_CONNECT"), true);
-		this.isRemote = isRemote;
+		this.isRemote = kontroller.isRemote();
 		this.kontroller = kontroller;
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		JLabel lbl;

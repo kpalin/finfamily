@@ -479,8 +479,6 @@ public class SukuServerImpl implements SukuServer {
 			executeCmdInitdb(map);
 		} else if (cmd.equals("intelli")) {
 			fam = getIntelliSensData();
-		} else if (cmd.equals("logout")) {
-			executeCmdLogout();
 		} else if (cmd.equals("person")) {
 			fam = executeCmdPerson(map, fam);
 		} else if (cmd.equals("places")) {
@@ -864,16 +862,6 @@ public class SukuServerImpl implements SukuServer {
 			fam.resu = Resurses.getString("GETSUKU_BAD_PID");
 		}
 		return fam;
-	}
-
-	private void executeCmdLogout() {
-		try {
-			con.close();
-		} catch (SQLException e) {
-			logger.log(Level.WARNING, "logout", e);
-			con = null;
-		}
-		con = null;
 	}
 
 	private void executeCmdPlaces(SukuData request, SukuData fam)

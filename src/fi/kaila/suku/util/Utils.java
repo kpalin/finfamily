@@ -680,7 +680,7 @@ public class Utils {
 	 */
 	public static void openExternalFile(String url) {
 
-		if (Suku.kontroller.isWebStart()) {
+		if (Suku.kontroller.isRemote()) {
 
 			StringBuilder sb = new StringBuilder();
 			sb.append(Resurses.getString("WEBSTART_OPEN"));

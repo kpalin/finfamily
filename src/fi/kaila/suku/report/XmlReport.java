@@ -539,7 +539,7 @@ public class XmlReport implements ReportInterface {
 				// redirect stderr to get transformation error data to the
 				// logger
 				PrintStream stderr = new PrintStream(barray);
-				if (!Suku.kontroller.isWebStart()) {
+				if (!Suku.kontroller.isRemote()) {
 					System.setErr(stderr);
 				}
 				DOMSource docw = new DOMSource(doc);
@@ -578,7 +578,7 @@ public class XmlReport implements ReportInterface {
 				// in.close();
 
 			}
-			if (debugState && !Suku.kontroller.isWebStart()) {
+			if (debugState && !Suku.kontroller.isRemote()) {
 
 				DOMSource docw = new DOMSource(doc);
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -602,12 +602,12 @@ public class XmlReport implements ReportInterface {
 			logger.log(Level.WARNING, barray.toString());
 			logger.log(Level.WARNING, e.getMessage(), e);
 			String messu = e.getMessage();
-			if (!Suku.kontroller.isWebStart()) {
+			if (!Suku.kontroller.isRemote()) {
 				System.setErr(origErr);
 			}
 			throw new SukuException(messu);
 		}
-		if (!Suku.kontroller.isWebStart()) {
+		if (!Suku.kontroller.isRemote()) {
 			System.setErr(origErr);
 		}
 	}

@@ -11,7 +11,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.logging.Logger;
@@ -74,6 +73,8 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	private String codebase = null;
 	private String userno = null;
 	private boolean isWebStart = true;
+	private String schema = null;
+	private boolean isConnected = false;
 
 	// private String oldCode="FI";
 
@@ -87,7 +88,8 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	@Override
 	public void getConnection(String host, String dbname, String userid,
 			String passwd) throws SukuException {
-
+		schema = null;
+		isConnected = false;
 		String requri = this.codebase + "SukuServlet?userid=" + userid
 				+ "&passwd=" + passwd;
 
@@ -134,16 +136,22 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 				// System.out.println("oli se: " + pit + "='" + this.userno +
 				// "'");
 				in.close();
-
+				this.schema = userid;
+				isConnected = true;
+			} else {
+				throw new Exception();
 			}
 
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new SukuException(Resurses.getString("ERR_NOT_CONNECTED")
+					+ " [" + e.toString() + "]");
 		}
+
+	}
+
+	@Override
+	public void resetConnection() {
+		isConnected = false;
 
 	}
 
@@ -936,7 +944,7 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 	}
 
 	@Override
-	public boolean isWebStart() {
+	public boolean isRemote() {
 
 		return true;
 	}
@@ -965,6 +973,28 @@ public class SukuKontrollerWebstartImpl implements SukuKontroller {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	@Override
+	public boolean isWebStart() {
+
+		return true;
+	}
+
+	@Override
+	public boolean isConnected() {
+		return isConnected;
+	}
+
+	@Override
+	public String getSchema() {
+
+		return this.schema;
+	}
+
+	@Override
+	public void setSchema(String schema) {
+
 	}
 
 }

@@ -819,7 +819,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 		v.add(Resurses.getString("REPORT.FORMAT.JAVA"));
 
 		v.add(Resurses.getString("REPORT.FORMAT.WORD2003"));
-		if (!kontroller.isWebStart()) {
+		if (!kontroller.isRemote()) {
 			v.add(Resurses.getString("REPORT.FORMAT.HTML"));
 
 		}
@@ -1681,7 +1681,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 			} else {
 				boolean hideMeNow = true;
 				if (endSuccess && !isCancelRequested()) {
-					if (!Suku.kontroller.isWebStart()) {
+					if (!Suku.kontroller.isRemote()) {
 						if (getDebugState()) {
 							int answer = JOptionPane.showConfirmDialog(parent,
 									Resurses.getString("REPORT.INDEX.CREATE"),

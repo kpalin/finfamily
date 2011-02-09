@@ -33,9 +33,10 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 
 	private SukuServer server = null;
 	private static Logger logger = null;
-
+	private boolean isConnected = false;
 	private File file = null;
 	private Suku host = null;
+	private String schema = null;
 
 	/**
 	 * Instantiates a new suku kontroller local impl.
@@ -62,16 +63,15 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	@Override
 	public void getConnection(String host, String dbname, String userid,
 			String passwd) throws SukuException {
-
+		isConnected = false;
 		this.server.getConnection(host, dbname, userid, passwd);
-
+		isConnected = true;
 	}
 
-	/**
-	 * local method for Junit.
-	 */
+	@Override
 	public void resetConnection() {
 		this.server.resetConnection();
+		isConnected = false;
 	}
 
 	/**
@@ -344,7 +344,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	}
 
 	@Override
-	public boolean isWebStart() {
+	public boolean isRemote() {
 
 		return false;
 	}
@@ -372,6 +372,31 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean isWebStart() {
+
+		return false;
+	}
+
+	@Override
+	public boolean isConnected() {
+
+		return isConnected;
+	}
+
+	@Override
+	public String getSchema() {
+		if (isConnected) {
+			return schema;
+		}
+		return null;
+	}
+
+	@Override
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 
 }

@@ -4,6 +4,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -47,6 +52,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JTextField dbFontSize = null;
 	private final JButton graphVizSetup;
 	private final JTextField graphVizPath;
+	private final JTextField serverUrl;
+	private final JButton serverUrlSetup;
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
 	private final String[] lfNames;
@@ -70,14 +77,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		int x = 20;
 		int y = 20;
 		int scaleImageIndex = 0;
-		// SukuData exresp = Suku.kontroller.getSukuData("cmd=excel",
-		// "page=languages");
 
-		// ExcelBundle.getBundle("excel/FinFamily", "Report", new Locale("fi"));
 		String[] locatexts = ExcelBundle.getLangNames();
 		locas = ExcelBundle.getLangCodes();
-		// Resurses.getString("LOCALIZAT_TEXTS").split(";");
-		// locas = Resurses.getString("LOCALIZAT_CODES").split(";");
+
 		String[] dateFormats = Resurses.getString("LOCALIZAT_DATEFORMATS")
 				.split(";");
 		dateCodes = Resurses.getString("LOCALIZAT_DATECODES").split(";");
@@ -165,10 +168,20 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		selectedCc = Resurses.getDefaultCountry();
 
 		if (countdata.generalArray == null) {
-			JOptionPane.showMessageDialog(this,
-					Resurses.getString("COUNTRY_ERROR"),
-					Resurses.getString(Resurses.SUKU),
-					JOptionPane.ERROR_MESSAGE);
+			// JOptionPane.showMessageDialog(this,
+			// Resurses.getString("COUNTRY_ERROR"),
+			// Resurses.getString(Resurses.SUKU),
+			// JOptionPane.ERROR_MESSAGE);
+			ccodes = new String[1];
+			ccodes[0] = "FI";
+			String nulcountries[] = { "Finland" };
+
+			defaultCountryCode = new JComboBox(nulcountries);
+			getContentPane().add(defaultCountryCode);
+			defaultCountryCode.setBounds(x + 210, y, 200, 20);
+
+			defaultCountryCode.setSelectedIndex(0);
+
 		} else {
 			int seleId = -1;
 			ccodes = new String[countdata.generalArray.length];
@@ -191,25 +204,24 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			if (seleId >= 0) {
 				defaultCountryCode.setSelectedIndex(seleId);
 			}
-
-			lbl = new JLabel(Resurses.getString("IMAGE_SCALE_LABEL"));
-			getContentPane().add(lbl);
-			lbl.setBounds(x + 210, y + 60, 200, 20);
-
-			String scales[] = new String[5];
-			scales[0] = Resurses.getString("IMAGE_SCALE_NO");
-			scales[1] = Resurses.getString("IMAGE_SCALE_JAVA");
-			scales[2] = Resurses.getString("IMAGE_SCALE_GT") + " 2";
-			scales[3] = Resurses.getString("IMAGE_SCALE_GT") + " 3";
-			scales[4] = Resurses.getString("IMAGE_SCALE_GT") + " 4";
-			imageScaling = new JComboBox(scales);
-			getContentPane().add(imageScaling);
-			imageScaling.setBounds(x + 210, y + 84, 250, 20);
-			if (scaleImageIndex >= 0) {
-				imageScaling.setSelectedIndex(scaleImageIndex);
-			}
-
 		}
+		lbl = new JLabel(Resurses.getString("IMAGE_SCALE_LABEL"));
+		getContentPane().add(lbl);
+		lbl.setBounds(x + 210, y + 60, 200, 20);
+
+		String scales[] = new String[5];
+		scales[0] = Resurses.getString("IMAGE_SCALE_NO");
+		scales[1] = Resurses.getString("IMAGE_SCALE_JAVA");
+		scales[2] = Resurses.getString("IMAGE_SCALE_GT") + " 2";
+		scales[3] = Resurses.getString("IMAGE_SCALE_GT") + " 3";
+		scales[4] = Resurses.getString("IMAGE_SCALE_GT") + " 4";
+		imageScaling = new JComboBox(scales);
+		getContentPane().add(imageScaling);
+		imageScaling.setBounds(x + 210, y + 84, 250, 20);
+		if (scaleImageIndex >= 0) {
+			imageScaling.setSelectedIndex(scaleImageIndex);
+		}
+
 		y += 20;
 
 		lbl = new JLabel(Resurses.getString("SETTING_DATEFORMAT"));
@@ -285,6 +297,25 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			graphVizSetup.setEnabled(false);
 		}
 
+		y += 24;
+		lbl = new JLabel(Resurses.getString("SETTINGS_SERVERURL"));
+		getContentPane().add(lbl);
+		lbl.setBounds(x, y, 400, 20);
+		y += 20;
+		String url = Suku.kontroller.getPref(owner, "SERVERURL", "");
+		serverUrl = new JTextField(url);
+		serverUrl.setBounds(x, y, 440, 20);
+		serverUrl.setEditable(false);
+		getContentPane().add(serverUrl);
+		serverUrlSetup = new JButton("...");
+		serverUrlSetup.setBounds(x + 440, y, 20, 20);
+		serverUrlSetup.setActionCommand("SERVERURL");
+		serverUrlSetup.addActionListener(this);
+		getContentPane().add(serverUrlSetup);
+
+		if (Suku.kontroller.isWebStart()) {
+			graphVizSetup.setEnabled(false);
+		}
 		JButton ok = new JButton(Resurses.OK);
 		// this.ok.setDefaultCapable(true);
 		y += 36;
@@ -294,7 +325,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		ok.setBounds(330, y, 100, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 300, d.height / 2 - 170, 540, 340);
+		setBounds(d.width / 2 - 300, d.height / 2 - 190, 540, 380);
 		setResizable(false);
 		getRootPane().setDefaultButton(ok);
 
@@ -314,38 +345,90 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		if (cmd == null)
 			return;
 		if (cmd.equals("GRAPHVIZ")) {
-			if (!Suku.kontroller.openFile("exe")) {
+
+			JFileChooser chooser = new JFileChooser();
+
+			chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter("exe"));
+			chooser.setDialogTitle("Open exe file");
+
+			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+				return;
+			}
+			File f = chooser.getSelectedFile();
+			if (f == null) {
+				return;
+			}
+			String filename = f.getAbsolutePath();
+
+			if (filename == null || filename.isEmpty()) {
 				Suku.kontroller.putPref(owner, "GRAPHVIZ", "");
 				graphVizPath.setText("");
 				owner.mToolsAuxGraphviz.setEnabled(false);
 				return;
 			}
-			String gpath = Suku.kontroller.getFilePath();
-			Suku.kontroller.putPref(owner, "GRAPHVIZ", gpath);
-			graphVizPath.setText(gpath);
+
+			Suku.kontroller.putPref(owner, "GRAPHVIZ", filename);
+			graphVizPath.setText(filename);
 			owner.mToolsAuxGraphviz.setEnabled(true);
 
 		}
+		if (cmd.equals("SERVERURL")) {
+			String input = JOptionPane.showInputDialog(Resurses
+					.getString("GET_SERVERURL"));
+			if (input != null) {
+				if (input.isEmpty()) {
+					Suku.kontroller.putPref(owner, "SERVERURL", "");
+					serverUrl.setText("");
 
+					return;
+				}
+
+				URL url;
+				String resp = null;
+				try {
+					url = new URL(input + "SukuServlet");
+					HttpURLConnection uc = (HttpURLConnection) url
+							.openConnection();
+
+					int resu = uc.getResponseCode();
+
+					if (resu == 200) {
+						byte buff[] = new byte[1024];
+						InputStream in = uc.getInputStream();
+						int len = in.read(buff);
+						resp = new String(buff, 0, len);
+						uc.disconnect();
+
+					}
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				if (resp != null && resp.toLowerCase().startsWith("finfamily")) {
+					Suku.kontroller.putPref(owner, "SERVERURL", input);
+					serverUrl.setText(input);
+				} else {
+					JOptionPane.showMessageDialog(this,
+							Resurses.getString("SERVER_ERROR"),
+							Resurses.getString(Resurses.SUKU),
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
 		if (cmd.equals(Resurses.OK)) {
 
 			int newLoca = loca.getSelectedIndex();
 			Suku.kontroller.putPref(owner, Resurses.LOCALE, locas[newLoca]);
-
-			// Resurses.setLocale(locas[newLoca]);
-
 			int newLang = repolang.getSelectedIndex();
 			if (newLang >= 0) {
 				Suku.kontroller.putPref(owner, Resurses.REPOLANG,
 						Suku.getRepoLanguage(newLang, true));
-
 				Resurses.setLanguage(Suku.getRepoLanguage(newLang, true));
-
 			}
-
 			int imageScaler = imageScaling.getSelectedIndex();
 			Suku.kontroller.putPref(owner, "SCALE_IMAGE", "" + imageScaler);
 			owner.setImageScalerIndex(imageScaler);
+
 			int seleId = defaultCountryCode.getSelectedIndex();
 			if (seleId >= 0) {
 				selectedCc = ccodes[seleId];

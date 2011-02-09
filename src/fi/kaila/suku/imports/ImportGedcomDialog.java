@@ -246,7 +246,7 @@ public class ImportGedcomDialog extends JDialog implements ActionListener,
 				kontroller.getSukuData("cmd=initdb");
 
 				setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
-				if (!kontroller.isWebStart()) {
+				if (!kontroller.isRemote()) {
 					kontroller.getSukuData("cmd=excel", "page=coordinates");
 					setRunnerValue(Resurses.getString("IMPORT_TYPES"));
 					kontroller.getSukuData("cmd=excel", "page=types");
