@@ -364,6 +364,9 @@ public class SukuKontrollerHybridImpl implements SukuKontroller {
 		try {
 
 			String path = openDiskFile(filter);
+			if (path == null) {
+				return false;
+			}
 			iis = new FileInputStream(path);
 			// iis = openLocalFile(filter);
 			String uri = this.url;

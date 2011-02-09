@@ -784,6 +784,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					Resurses.getString("MENU_TOOLS_LIST_DATABASES"));
 			mTools.add(mListDatabases);
 			mListDatabases.setActionCommand("MENU_TOOLS_LIST_DATABASES");
+			if (kontroller.isRemote()) {
+				mListDatabases.setEnabled(false);
+			}
 			mListDatabases.addActionListener(this);
 		}
 
@@ -1347,7 +1350,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		if (Suku.kontroller.isRemote()) {
 			sb.append("-");
-			sb.append(Resurses.getString("WEBSTART_NAME"));
+			if (Suku.kontroller.isWebStart()) {
+				sb.append(Resurses.getString("WEBSTART_NAME"));
+			} else {
+				sb.append(url);
+			}
 		}
 
 		if (kontroller.isConnected()) {
@@ -1872,7 +1879,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				disconnectDb();
 			} else if (cmd.equals("SCHEMA_INITIALIZE")) {
 				String selectedSchema = null;
-				if (!kontroller.isWebStart()) {
+				if (!kontroller.isRemote()) {
 
 					try {
 						SelectSchema schema = null;
@@ -3514,20 +3521,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.scrollPane.updateUI();
 
 			isOpened = kontroller.openFile("xml;xml.gz;zip");
-
+			if (!isOpened) {
+				return;
+			}
 			logger.finest("Opened IMPORT FILE status " + isOpened);
 			String selectedSchema = null;
 			if (!kontroller.isRemote()) {
 				SelectSchema schema = new SelectSchema(this, databaseName);
 				schema.setVisible(true);
-
 				selectedSchema = schema.getSchema();
-				if (selectedSchema == null)
+				if (selectedSchema == null) {
 					return;
+				}
 				if (!schema.isExistingSchema()) {
 					kontroller.getSukuData("cmd=schema", "type=create", "name="
 							+ selectedSchema);
-
 				}
 				kontroller.getSukuData("cmd=schema", "type=set", "name="
 						+ selectedSchema);
@@ -3547,11 +3555,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			Utils.println(this, "import done");
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
 			kontroller.setSchema(selectedSchema);
-			if (!kontroller.isWebStart()) {
-				kontroller.getSukuData("cmd=excel", "page=coordinates");
-				dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
-				kontroller.getSukuData("cmd=excel", "page=types");
-			}
+			// if (!kontroller.isWebStart()) {
+			kontroller.getSukuData("cmd=excel", "page=coordinates");
+			dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
+			kontroller.getSukuData("cmd=excel", "page=types");
+			// }
 			setTitle(null);
 			String[] failedLines = dlg.getResult();
 			if (failedLines != null) {

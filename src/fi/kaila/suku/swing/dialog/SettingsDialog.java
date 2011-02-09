@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,8 +53,11 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JTextField dbFontSize = null;
 	private final JButton graphVizSetup;
 	private final JTextField graphVizPath;
-	private final JTextField serverUrl;
-	private final JButton serverUrlSetup;
+	private final JComboBox serverUrl;
+
+	private final String[] serverArray = null;
+	// private final JTextField serverUrl;
+	// private final JButton serverUrlSetup;
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
 	private final String[] lfNames;
@@ -61,6 +65,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private String[] locas = null;
 	private String[] dateCodes = null;
 	private Suku owner = null;
+	private static final String DEMO_URL = "http://www.sukuohjelmisto.fi/finfamily/";
+	private Vector<String> urlvec = null;
 
 	/**
 	 * Instantiates a new settings dialog.
@@ -302,16 +308,39 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		getContentPane().add(lbl);
 		lbl.setBounds(x, y, 400, 20);
 		y += 20;
-		String url = Suku.kontroller.getPref(owner, "SERVERURL", "");
-		serverUrl = new JTextField(url);
+
+		urlvec = new Vector<String>();
+		urlvec.add("");
+		urlvec.add(DEMO_URL);
+
+		String curre = Suku.kontroller.getPref(owner, "SERVERURL", "");
+		String old = Suku.kontroller.getPref(owner, "SERVEROLD", "");
+
+		int selectedUrl = 2;
+		if (!curre.isEmpty() && !curre.equals(DEMO_URL)) {
+			Suku.kontroller.putPref(owner, "SERVEROLD", curre);
+			urlvec.add(curre);
+
+		} else if (curre.isEmpty()) {
+			selectedUrl = 0;
+		} else if (curre.equals(DEMO_URL)) {
+			selectedUrl = 1;
+		}
+		if (!old.isEmpty() && !old.equals(DEMO_URL) && !old.equals(curre)) {
+			urlvec.add(old);
+		}
+
+		serverUrl = new JComboBox(urlvec);
+		// serverUrl = new JTextField(url);
 		serverUrl.setBounds(x, y, 440, 20);
-		serverUrl.setEditable(false);
+		serverUrl.setEditable(true);
+		serverUrl.setSelectedIndex(selectedUrl);
 		getContentPane().add(serverUrl);
-		serverUrlSetup = new JButton("...");
-		serverUrlSetup.setBounds(x + 440, y, 20, 20);
-		serverUrlSetup.setActionCommand("SERVERURL");
-		serverUrlSetup.addActionListener(this);
-		getContentPane().add(serverUrlSetup);
+		// serverUrlSetup = new JButton("...");
+		// serverUrlSetup.setBounds(x + 440, y, 20, 20);
+		// serverUrlSetup.setActionCommand("SERVERURL");
+		// serverUrlSetup.addActionListener(this);
+		// getContentPane().add(serverUrlSetup);
 
 		if (Suku.kontroller.isWebStart()) {
 			graphVizSetup.setEnabled(false);
@@ -372,16 +401,20 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			owner.mToolsAuxGraphviz.setEnabled(true);
 
 		}
-		if (cmd.equals("SERVERURL")) {
-			String input = JOptionPane.showInputDialog(Resurses
-					.getString("GET_SERVERURL"));
-			if (input != null) {
-				if (input.isEmpty()) {
-					Suku.kontroller.putPref(owner, "SERVERURL", "");
-					serverUrl.setText("");
+		if (cmd.equals(Resurses.OK)) {
 
-					return;
-				}
+			String input = (String) serverUrl.getSelectedItem();
+			if (input == null) {
+				input = "";
+			}
+			// String input = JOptionPane.showInputDialog(Resurses
+			// .getString("GET_SERVERURL"));
+
+			if (input.isEmpty()) {
+				Suku.kontroller.putPref(owner, "SERVERURL", "");
+				// serverUrl.setText("");
+
+			} else {
 
 				URL url;
 				String resp = null;
@@ -406,7 +439,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 				}
 				if (resp != null && resp.toLowerCase().startsWith("finfamily")) {
 					Suku.kontroller.putPref(owner, "SERVERURL", input);
-					serverUrl.setText(input);
+					// serverUrl.setText(input);
 				} else {
 					JOptionPane.showMessageDialog(this,
 							Resurses.getString("SERVER_ERROR"),
@@ -414,9 +447,6 @@ public class SettingsDialog extends JDialog implements ActionListener {
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
-		}
-		if (cmd.equals(Resurses.OK)) {
-
 			int newLoca = loca.getSelectedIndex();
 			Suku.kontroller.putPref(owner, Resurses.LOCALE, locas[newLoca]);
 			int newLang = repolang.getSelectedIndex();
