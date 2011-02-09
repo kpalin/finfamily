@@ -19,9 +19,6 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.zip.GZIPInputStream;
 
-import javax.jnlp.FileContents;
-import javax.jnlp.FileOpenService;
-import javax.jnlp.ServiceManager;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -41,7 +38,7 @@ public class SukuKontrollerHybridImpl implements SukuKontroller {
 	private String userno = null;
 	private static final String hexi = "0123456789ABCDEF";
 	private String schema = null;
-	private FileContents fc = null;
+
 	private boolean isConnected = false;
 
 	public SukuKontrollerHybridImpl(Suku host, String url) {
@@ -318,10 +315,44 @@ public class SukuKontrollerHybridImpl implements SukuKontroller {
 
 	}
 
+	private String openDiskFile(String filter) {
+		Preferences sr = Preferences.userRoot();
+
+		String[] filters = filter.split(";");
+
+		String koe = sr.get(filters[0], ".");
+		logger.fine("Hakemisto on: " + koe);
+
+		JFileChooser chooser = new JFileChooser();
+
+		chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter(filter));
+		chooser.setDialogTitle("Open " + filter + " file");
+		chooser.setSelectedFile(new File(koe + "/."));
+
+		if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			return null;
+		}
+
+		File f = chooser.getSelectedFile();
+		if (f == null) {
+			return null;
+		}
+		String filename = f.getAbsolutePath();
+		file = new File(filename);
+
+		logger.info("Valittiin: " + filename);
+
+		String tmp = f.getAbsolutePath().replace("\\", "/");
+		int i = tmp.lastIndexOf("/");
+
+		sr.put(filters[0], tmp.substring(0, i));
+
+		return tmp;
+	}
+
 	@Override
 	public boolean openFile(String filter) {
 
-		FileOpenService fos;
 		String lineEnd = "\r\n";
 		String twoHyphens = "--";
 		String boundary = "*****";
@@ -331,24 +362,13 @@ public class SukuKontrollerHybridImpl implements SukuKontroller {
 		int resu;
 
 		try {
-			fos = (FileOpenService) ServiceManager
-					.lookup("javax.jnlp.FileOpenService");
 
-			// ask user to select a file through this service
-			fc = fos.openFileDialog(null, null);
-			if (fc == null) {
-				return false;
-			}
-
-			iis = fc.getInputStream();
-			// ask user to select multiple files through this service
-			// FileContents[] fcs = fos.openMultiFileDialog(null, null);
-
+			String path = openDiskFile(filter);
+			iis = new FileInputStream(path);
+			// iis = openLocalFile(filter);
 			String uri = this.url;
 			String query;
-
 			uri += "SukuServlet";
-
 			query = "cmd=file";
 
 			byte[] bytes = query.getBytes();

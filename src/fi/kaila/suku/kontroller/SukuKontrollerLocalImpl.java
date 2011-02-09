@@ -126,7 +126,7 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 	 */
 	@Override
 	public boolean openFile(String filter) {
-		// TODO Auto-generated method stub
+
 		Preferences sr = Preferences.userRoot();
 
 		String[] filters = filter.split(";");

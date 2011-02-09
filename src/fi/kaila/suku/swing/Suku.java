@@ -317,7 +317,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	public static Object sukuObject = null;
 	private static SearchCriteria crit = null;
 	private int activePersonPid = 0;
-	private boolean isWebStart = false;
+	// private boolean isWebStart = false;
 	private String url = null;
 	private static JFrame myFrame = null;
 	private static final int needleSize = 4;
@@ -349,7 +349,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 
 		if ("web".equals(arg1)) {
-			this.isWebStart = true;
+
 			kontroller = new SukuKontrollerWebstartImpl();
 		} else {
 			Preferences sr = Preferences.userRoot();
@@ -466,7 +466,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mConnect.addActionListener(this);
 		this.mFile.addMenuListener(this);
 
-		if (!isWebStart) {
+		if (!kontroller.isRemote()) {
 
 			this.mAdmin = new JMenuItem(Resurses.getString(Resurses.ADMIN));
 			this.mFile.add(this.mAdmin);
@@ -481,7 +481,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mFile.add(this.mNewDatabase);
 		this.mNewDatabase.setActionCommand("SCHEMA_INITIALIZE");
 		this.mNewDatabase.addActionListener(this);
-		if (!isWebStart) {
+		if (!kontroller.isRemote()) {
 			this.mDropSchema = new JMenuItem(Resurses.getString("SCHEMA_DROP"));
 			this.mFile.add(this.mDropSchema);
 			this.mDropSchema.setActionCommand("SCHEMA_DROP");
@@ -503,7 +503,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mImport.add(this.mImportGedcom);
 		this.mImportGedcom.setActionCommand(Resurses.IMPORT_GEDCOM);
 		this.mImportGedcom.addActionListener(this);
-		if (!isWebStart) {
+		if (!kontroller.isRemote()) {
 			this.mImportOther = new JMenuItem(
 					Resurses.getString(Resurses.IMPORT_OTHER));
 			mImport.add(this.mImportOther);
@@ -766,7 +766,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				.setActionCommand("MENU_TOOLS_STORE_ALL_CONVERSIONS");
 		mStoreAllConversions.addActionListener(this);
 		mTools.addSeparator();
-		if (!isWebStart) {
+		if (!kontroller.isWebStart()) {
 			mToolsAuxProgram = new JMenu(
 					Resurses.getString("TOOLS_AUX_COMMANDS"));
 			mTools.add(mToolsAuxProgram);
@@ -1048,7 +1048,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		// if (!this.isWebApp){
 		calcSize();
 		connectDb();
-		if (!this.isWebStart) {
+		if (!kontroller.isWebStart()) {
 			File home = new File(".");
 			statusPanel.setText(home.getAbsolutePath());
 		}
@@ -1064,7 +1064,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 		});
-		if (!this.isWebStart) {
+		if (!kontroller.isRemote()) {
 			new VersionChecker(this);
 		}
 	}
@@ -1872,7 +1872,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				disconnectDb();
 			} else if (cmd.equals("SCHEMA_INITIALIZE")) {
 				String selectedSchema = null;
-				if (!this.isWebStart) {
+				if (!kontroller.isWebStart()) {
 
 					try {
 						SelectSchema schema = null;
@@ -2631,7 +2631,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.table.updateUI();
 			this.scrollPane.updateUI();
 			String selectedSchema = null;
-			if (!this.isWebStart) {
+			if (!kontroller.isWebStart()) {
 				SelectSchema schema;
 				try {
 					schema = new SelectSchema(this, databaseName);
@@ -3045,7 +3045,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 		if (this.suomi == null) {
 
-			if (!this.isWebStart
+			if (!kontroller.isWebStart()
 					&& kontroller.getPref(this, "USE_OPEN_STREETMAP", "false")
 							.equals("true")) {
 				this.suomi = new WorldMap(this);
@@ -3517,7 +3517,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			logger.finest("Opened IMPORT FILE status " + isOpened);
 			String selectedSchema = null;
-			if (!this.isWebStart) {
+			if (!kontroller.isRemote()) {
 				SelectSchema schema = new SelectSchema(this, databaseName);
 				schema.setVisible(true);
 
@@ -3547,7 +3547,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			Utils.println(this, "import done");
 			dlg.setRunnerValue(Resurses.getString("IMPORT_PAIKAT"));
 			kontroller.setSchema(selectedSchema);
-			if (!this.isWebStart) {
+			if (!kontroller.isWebStart()) {
 				kontroller.getSukuData("cmd=excel", "page=coordinates");
 				dlg.setRunnerValue(Resurses.getString("IMPORT_TYPES"));
 				kontroller.getSukuData("cmd=excel", "page=types");
@@ -3735,7 +3735,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mQuery.setEnabled(kontroller.getSchema() != null);
 		// mSettings.setEnabled(isConnected > 0);
 		mNewDatabase.setEnabled(kontroller.isConnected());
-		if (!this.isWebStart) {
+		if (!kontroller.isRemote()) {
 			mDropSchema.setEnabled(kontroller.isConnected());
 		}
 		mOpenPerson.setEnabled(kontroller.getSchema() != null);
@@ -3744,7 +3744,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mLista.setEnabled(kontroller.getSchema() != null);
 		// mDisconnect.setEnabled(isConnected != 0);
 		tQueryButton.setEnabled(kontroller.getSchema() != null);
-		if (this.isWebStart) {
+		if (kontroller.isWebStart()) {
 			mImportHiski.setEnabled(false);
 		} else {
 			mImportHiski.setEnabled(kontroller.getSchema() != null);
