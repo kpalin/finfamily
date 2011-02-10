@@ -65,7 +65,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private String[] locas = null;
 	private String[] dateCodes = null;
 	private Suku owner = null;
-	private static final String DEMO_URL = "http://www.sukuohjelmisto.fi/finfamily/";
+	// private static final String DEMO_URL =
+	// "http://www.sukuohjelmisto.fi/finfamily/";
 	private Vector<String> urlvec = null;
 
 	/**
@@ -311,22 +312,30 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 		urlvec = new Vector<String>();
 		urlvec.add("");
-		urlvec.add(DEMO_URL);
+		// urlvec.add(DEMO_URL);
 
 		String curre = Suku.kontroller.getPref(owner, "SERVERURL", "");
 		String old = Suku.kontroller.getPref(owner, "SERVEROLD", "");
+		String prev = Suku.kontroller.getPref(owner, "SERVERPREV", "");
 
-		int selectedUrl = 2;
-		if (!curre.isEmpty() && !curre.equals(DEMO_URL)) {
-			Suku.kontroller.putPref(owner, "SERVEROLD", curre);
-			urlvec.add(curre);
-
-		} else if (curre.isEmpty()) {
-			selectedUrl = 0;
-		} else if (curre.equals(DEMO_URL)) {
-			selectedUrl = 1;
+		if (curre.equals(old)) {
+			old = prev;
+			Suku.kontroller.putPref(owner, "SERVEROLD", old);
 		}
-		if (!old.isEmpty() && !old.equals(DEMO_URL) && !old.equals(curre)) {
+
+		int selectedUrl = 0;
+		if (!curre.isEmpty()) {
+			Suku.kontroller.putPref(owner, "SERVERURL", curre);
+			Suku.kontroller.putPref(owner, "SERVERPREV", curre);
+			urlvec.add(curre);
+			selectedUrl = urlvec.size() - 1;
+		}
+		if (!prev.isEmpty() && !prev.equals(curre)) {
+
+			urlvec.add(prev);
+		}
+
+		if (!old.isEmpty() && !old.equals(curre) && !old.equals(prev)) {
 			urlvec.add(old);
 		}
 
@@ -407,12 +416,9 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			if (input == null) {
 				input = "";
 			}
-			// String input = JOptionPane.showInputDialog(Resurses
-			// .getString("GET_SERVERURL"));
 
 			if (input.isEmpty()) {
 				Suku.kontroller.putPref(owner, "SERVERURL", "");
-				// serverUrl.setText("");
 
 			} else {
 

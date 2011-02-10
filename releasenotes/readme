@@ -2,6 +2,10 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+Release 1141 on 9 feb 2011
+
+* Added Hybrid kontroller 
+
 Release 1137 on 6 feb 2011
 
 * Image scaling implemented to Graphviz report
