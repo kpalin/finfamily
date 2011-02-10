@@ -1335,6 +1335,10 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return kontroller;
 	}
 
+	public void setStatus(String text) {
+		this.statusPanel.setText(text);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

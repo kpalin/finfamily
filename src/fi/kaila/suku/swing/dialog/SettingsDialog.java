@@ -55,9 +55,6 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private final JTextField graphVizPath;
 	private final JComboBox serverUrl;
 
-	private final String[] serverArray = null;
-	// private final JTextField serverUrl;
-	// private final JButton serverUrlSetup;
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
 	private final String[] lfNames;
@@ -65,8 +62,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private String[] locas = null;
 	private String[] dateCodes = null;
 	private Suku owner = null;
-	// private static final String DEMO_URL =
-	// "http://www.sukuohjelmisto.fi/finfamily/";
+
 	private Vector<String> urlvec = null;
 
 	/**
@@ -169,11 +165,14 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		if (locaIndex < repolang.getItemCount()) {
 			repolang.setSelectedIndex(locaIndex);
 		}
-
-		SukuData countdata = Suku.kontroller.getSukuData("cmd=get",
-				"type=countries");
-		selectedCc = Resurses.getDefaultCountry();
-
+		SukuData countdata = null;
+		try {
+			countdata = Suku.kontroller
+					.getSukuData("cmd=get", "type=countries");
+			selectedCc = Resurses.getDefaultCountry();
+		} catch (SukuException e) {
+			countdata = new SukuData();
+		}
 		if (countdata.generalArray == null) {
 			// JOptionPane.showMessageDialog(this,
 			// Resurses.getString("COUNTRY_ERROR"),
@@ -473,9 +472,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			try {
 				Resurses.setDefaultCountry(selectedCc);
 			} catch (SukuException e1) {
-				JOptionPane.showMessageDialog(this, e1.getMessage(),
-						Resurses.getString(Resurses.SUKU),
-						JOptionPane.ERROR_MESSAGE);
+				owner.setStatus(e1.getMessage());
+				// JOptionPane.showMessageDialog(this, e1.getMessage(),
+				// Resurses.getString(Resurses.SUKU),
+				// JOptionPane.ERROR_MESSAGE);
 			}
 
 			int newDateIndex = dateFormat.getSelectedIndex();
