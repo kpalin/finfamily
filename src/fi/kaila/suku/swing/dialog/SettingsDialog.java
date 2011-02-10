@@ -54,7 +54,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private final JButton graphVizSetup;
 	private final JTextField graphVizPath;
 	private final JComboBox serverUrl;
-
+	private final String originUrl;
+	private final String originLanguage;
 	private String ccodes[] = null;
 	private String selectedCc = "FI";
 	private final String[] lfNames;
@@ -112,6 +113,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		loca.setBounds(x, y, 200, 20);
 
 		String prevloca = Suku.kontroller.getPref(owner, Resurses.LOCALE, "fi");
+		originLanguage = prevloca;
 		int locaIndex = 0;
 		for (int i = 0; i < locas.length; i++) {
 			if (prevloca.equals(locas[i])) {
@@ -316,7 +318,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		String curre = Suku.kontroller.getPref(owner, "SERVERURL", "");
 		String old = Suku.kontroller.getPref(owner, "SERVEROLD", "");
 		String prev = Suku.kontroller.getPref(owner, "SERVERPREV", "");
-
+		originUrl = curre;
 		if (curre.equals(old)) {
 			old = prev;
 			Suku.kontroller.putPref(owner, "SERVEROLD", old);
@@ -378,7 +380,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		String cmd = e.getActionCommand();
-
+		boolean askRestart = false;
 		if (cmd == null)
 			return;
 		if (cmd.equals("GRAPHVIZ")) {
@@ -418,7 +420,9 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 			if (input.isEmpty()) {
 				Suku.kontroller.putPref(owner, "SERVERURL", "");
-
+				if (!originUrl.isEmpty()) {
+					askRestart = true;
+				}
 			} else {
 
 				URL url;
@@ -444,6 +448,9 @@ public class SettingsDialog extends JDialog implements ActionListener {
 				}
 				if (resp != null && resp.toLowerCase().startsWith("finfamily")) {
 					Suku.kontroller.putPref(owner, "SERVERURL", input);
+					if (!input.equals(originUrl)) {
+						askRestart = true;
+					}
 					// serverUrl.setText(input);
 				} else {
 					JOptionPane.showMessageDialog(this,
@@ -454,6 +461,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			}
 			int newLoca = loca.getSelectedIndex();
 			Suku.kontroller.putPref(owner, Resurses.LOCALE, locas[newLoca]);
+			if (!originLanguage.equals(locas[newLoca])) {
+				askRestart = true;
+			}
+
 			int newLang = repolang.getSelectedIndex();
 			if (newLang >= 0) {
 				Suku.kontroller.putPref(owner, Resurses.REPOLANG,
@@ -517,6 +528,12 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			}
 
 			setVisible(false);
+			if (askRestart) {
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("RESTART_FINFAMILY"),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 	}
 }
