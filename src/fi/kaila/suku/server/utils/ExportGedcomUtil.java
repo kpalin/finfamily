@@ -274,8 +274,8 @@ public class ExportGedcomUtil {
 				if (notices[i].getSurname() != null) {
 					nm.append(notices[i].getSurname());
 				}
+				nm.append("/");
 				if (notices[i].getPostfix() != null) {
-					nm.append("/");
 					nm.append(notices[i].getPostfix());
 				}
 
