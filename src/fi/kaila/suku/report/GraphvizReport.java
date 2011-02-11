@@ -38,11 +38,13 @@ public class GraphvizReport extends CommonReport {
 
 	private String filePath = null;
 	private static String FOLDER_NAME = "Graphviz_images";
+	private final String imageMagickPath;
 
 	public GraphvizReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
 			int reportType) throws SukuException {
 		super(caller, typesTable, null);
-
+		imageMagickPath = Suku.kontroller.getPref(caller.getSukuParent(),
+				"IMAGEMAGICK", "");
 		this.reportType = reportType;
 
 		if (!Suku.kontroller.createLocalFile("gv")) {
@@ -276,7 +278,8 @@ public class GraphvizReport extends CommonReport {
 							if (pp.getMediaFilename() != null) {
 
 								BufferedImage img = pp.getImage();
-								BufferedImage imgStamp = Utils.scaleImage(img,
+								BufferedImage imgStamp = Utils.scaleImage(
+										imageMagickPath, img,
 										maxPersonImageSize.width,
 										maxPersonImageSize.height,
 										lineCount * 25);
@@ -357,7 +360,7 @@ public class GraphvizReport extends CommonReport {
 				String exeTask = Suku.kontroller.getPref(
 						caller.getSukuParent(), "GRAPHVIZ", "");
 				if (!exeTask.equals("")) {
-					Utils.graphvixDo(exeTask, infile, jpgfile);
+					Utils.graphvizDo(exeTask, infile, jpgfile);
 				}
 			} else {
 				JOptionPane.showMessageDialog(caller, "dblista");

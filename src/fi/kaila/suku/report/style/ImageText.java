@@ -1,6 +1,6 @@
 package fi.kaila.suku.report.style;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import fi.kaila.suku.util.Utils;
 
@@ -44,7 +44,7 @@ public class ImageText extends BodyText {
 	 * @param tag
 	 *            the tag
 	 */
-	public void setImage(Image img, byte[] data, int width, int height,
+	public void setImage(BufferedImage img, byte[] data, int width, int height,
 			String name, String title, String tag) {
 		image = img;
 		this.data = data;

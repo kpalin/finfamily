@@ -53,6 +53,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private JTextField dbFontSize = null;
 	private final JButton graphVizSetup;
 	private final JTextField graphVizPath;
+	private final JButton imageMagickSetup;
+	private final JTextField imageMagickPath;
 	private final JComboBox serverUrl;
 	private final String originUrl;
 	private final String originLanguage;
@@ -301,8 +303,26 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		graphVizSetup.addActionListener(this);
 		getContentPane().add(graphVizSetup);
 
+		y += 24;
+		lbl = new JLabel(Resurses.getString("SETTINGS_IMAGEMAGICK"));
+		getContentPane().add(lbl);
+		lbl.setBounds(x, y, 400, 20);
+		y += 20;
+
+		String impath = Suku.kontroller.getPref(owner, "IMAGEMAGICK", "");
+		imageMagickPath = new JTextField(impath);
+		imageMagickPath.setBounds(x, y, 440, 20);
+		imageMagickPath.setEditable(false);
+		getContentPane().add(imageMagickPath);
+		imageMagickSetup = new JButton("...");
+		imageMagickSetup.setBounds(x + 440, y, 20, 20);
+		imageMagickSetup.setActionCommand("IMAGEMAGICK");
+		imageMagickSetup.addActionListener(this);
+		getContentPane().add(imageMagickSetup);
+
 		if (Suku.kontroller.isWebStart()) {
 			graphVizSetup.setEnabled(false);
+			imageMagickSetup.setEnabled(false);
 		}
 
 		y += 24;
@@ -364,7 +384,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		ok.setBounds(330, y, 100, 24);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 300, d.height / 2 - 190, 540, 380);
+		setBounds(d.width / 2 - 300, d.height / 2 - 200, 540, 400);
 		setResizable(false);
 		getRootPane().setDefaultButton(ok);
 
@@ -391,6 +411,9 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			chooser.setDialogTitle("Open exe file");
 
 			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+				Suku.kontroller.putPref(owner, "GRAPHVIZ", "");
+				graphVizPath.setText("");
+				owner.mToolsAuxGraphviz.setEnabled(false);
 				return;
 			}
 			File f = chooser.getSelectedFile();
@@ -409,6 +432,36 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			Suku.kontroller.putPref(owner, "GRAPHVIZ", filename);
 			graphVizPath.setText(filename);
 			owner.mToolsAuxGraphviz.setEnabled(true);
+
+		}
+		if (cmd.equals("IMAGEMAGICK")) {
+
+			JFileChooser chooser = new JFileChooser();
+
+			chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter("exe"));
+			chooser.setDialogTitle("Open exe file");
+
+			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+				Suku.kontroller.putPref(owner, "IMAGEMAGICK", "");
+				imageMagickPath.setText("");
+				return;
+			}
+			File f = chooser.getSelectedFile();
+			if (f == null) {
+
+				return;
+			}
+			String filename = f.getAbsolutePath();
+
+			if (filename == null || filename.isEmpty()) {
+				Suku.kontroller.putPref(owner, "IMAGEMAGICK", "");
+				imageMagickPath.setText("");
+
+				return;
+			}
+
+			Suku.kontroller.putPref(owner, "IMAGEMAGICK", filename);
+			imageMagickPath.setText(filename);
 
 		}
 		if (cmd.equals(Resurses.OK)) {

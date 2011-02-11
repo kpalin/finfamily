@@ -77,6 +77,7 @@ public class XmlReport implements ReportInterface {
 	private boolean reportClosed = false;
 	private boolean debugState = false;
 	private ReportWorkerDialog parent;
+	private String imageMagickPath = null;
 
 	/** The title. */
 	String title;
@@ -102,7 +103,8 @@ public class XmlReport implements ReportInterface {
 		maxPersonImageSize = parent.getPersonImageMaxSize();
 		debugState = parent.getDebugState();
 		imageScaleIndex = parent.getSukuParent().getImageScalerIndex();
-
+		imageMagickPath = Suku.kontroller.getPref(parent.getSukuParent(),
+				"IMAGEMAGICK", "");
 		switch (translatorIdx) {
 		case 1:
 			// translator = "resources/xml/docx.xsl";
@@ -709,7 +711,8 @@ public class XmlReport implements ReportInterface {
 			BufferedImage img = null;
 
 			try {
-				img = Utils.scaleImage(it.getImage(), outWidth, outHeight);
+				img = Utils.scaleImage(imageMagickPath, it.getImage(),
+						outWidth, outHeight);
 
 			} catch (Exception e) {
 				return e.toString();

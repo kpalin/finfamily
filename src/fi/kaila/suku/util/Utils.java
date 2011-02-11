@@ -2,12 +2,12 @@ package fi.kaila.suku.util;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -794,9 +794,9 @@ public class Utils {
 		return name;
 	}
 
-	public static BufferedImage scaleImage(Image image, int p_width,
-			int p_height) throws Exception {
-		return scaleImage(image, p_width, p_height, 0);
+	public static BufferedImage scaleImage(String immPath, BufferedImage image,
+			int p_width, int p_height) throws Exception {
+		return scaleImage(immPath, image, p_width, p_height, 0);
 	}
 
 	//
@@ -812,8 +812,8 @@ public class Utils {
 	 * @return the scaled image
 	 * @throws Exception
 	 */
-	public static BufferedImage scaleImage(Image image, int p_width,
-			int p_height, int trailer_height) throws Exception {
+	public static BufferedImage scaleImage(String immPath, BufferedImage image,
+			int p_width, int p_height, int trailer_height) throws Exception {
 
 		int thumbWidth = p_width;
 		int thumbHeight = p_height;
@@ -827,6 +827,11 @@ public class Utils {
 			thumbHeight = (int) (thumbWidth / imageRatio);
 		} else {
 			thumbWidth = (int) (thumbHeight * imageRatio);
+		}
+
+		if (immPath != null && !immPath.isEmpty()) {
+			return magickScaled(immPath, image, thumbWidth, thumbHeight,
+					trailer_height);
 		}
 
 		// Draw the scaled image
@@ -869,6 +874,76 @@ public class Utils {
 
 		return thumbImage;
 
+	}
+
+	private static BufferedImage magickScaled(String immPath,
+			BufferedImage image, int p_width, int p_height, int trailer_height)
+			throws IOException, InterruptedException {
+
+		File fin = File.createTempFile("Finfamily", ".jpg");
+
+		File fout = File.createTempFile("Finfamily", ".jpg");
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(1000);
+		byte[] resultImageAsRawBytes = null;
+		// W R I T E
+		ImageIO.write(image, "jpeg", baos);
+		// C L O S E
+		baos.flush();
+		resultImageAsRawBytes = baos.toByteArray();
+
+		FileOutputStream fos;
+
+		fos = new FileOutputStream(fin);
+		// fos.write(pp.getMediaData());
+		fos.write(resultImageAsRawBytes);
+		fos.close();
+
+		Runtime rt = Runtime.getRuntime();
+
+		StringBuilder stv = new StringBuilder();
+		stv.append("\"");
+		stv.append(immPath);
+		stv.append("\" ");
+		if (trailer_height == 0) {
+			stv.append("-resize " + p_width);
+		} else {
+			stv.append("-resize " + p_width);
+			stv.append("x" + (p_height));
+			stv.append(" -background white");
+			stv.append(" -extent " + p_width + "x"
+					+ (p_height + trailer_height));
+		}
+		stv.append(" ");
+		stv.append(fin.getAbsolutePath());
+		stv.append(" ");
+		stv.append(fout.getAbsolutePath());
+		Process pr = rt.exec(stv.toString());
+
+		// Vector<String> rtv = new Vector<String>();
+		// rtv.add(immPath);
+		// rtv.add("-resize ");
+		// rtv.add(fin.getAbsolutePath());
+		// rtv.add(fout.getAbsolutePath());
+		// Process pr = rt.exec(rtv.toArray(new String[0]), null, null);
+
+		BufferedReader input = new BufferedReader(new InputStreamReader(
+				pr.getErrorStream()));
+		String line = null;
+		while ((line = input.readLine()) != null) {
+			logger.info(line);
+		}
+		int exitVal = pr.waitFor();
+
+		logger.fine("conversion from " + fin.getAbsolutePath() + " to "
+				+ fout.getAbsolutePath() + " resulted in " + exitVal);
+
+		BufferedImage nxtImg = ImageIO.read(fout);
+
+		fin.delete();
+		fout.delete();
+
+		return nxtImg;
 	}
 
 	/**
@@ -932,7 +1007,7 @@ public class Utils {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static void graphvixDo(String exeTask, String infile, String endi)
+	public static void graphvizDo(String exeTask, String infile, String endi)
 			throws IOException, InterruptedException {
 
 		Runtime rt = Runtime.getRuntime();

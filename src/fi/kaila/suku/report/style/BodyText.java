@@ -1,7 +1,7 @@
 package fi.kaila.suku.report.style;
 
 import java.awt.Font;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 /**
@@ -47,7 +47,7 @@ public class BodyText {
 	protected float paraSpacingAfter = 6; // spacing after in pt
 
 	/** The image. */
-	protected Image image = null;
+	protected BufferedImage image = null;
 
 	/** The imagedata. */
 	protected byte[] imagedata = null;
@@ -90,7 +90,7 @@ public class BodyText {
 	 * 
 	 * @return the image
 	 */
-	public Image getImage() {
+	public BufferedImage getImage() {
 		return image;
 	}
 

@@ -1788,7 +1788,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					}
 					String endi = kontroller.getFilePath();
 
-					Utils.graphvixDo(exeTask, infile, endi);
+					Utils.graphvizDo(exeTask, infile, endi);
 
 				}
 			}
