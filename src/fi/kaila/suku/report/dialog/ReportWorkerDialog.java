@@ -176,6 +176,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 	boolean cancelRequested = false;
 	private TaskLista taskLista;
 	private TaskGraphviz taskGraphviz;
+	private TaskRelation taskRelation;
 	private TaskCards taskCards;
 	private TaskIndex taskIndex;
 	private TaskSureties taskSureties;
@@ -873,7 +874,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 			reportTypePane.setMnemonicAt(0, KeyEvent.VK_1);
 
-			ancestorPanel = new AncestorPane();
+			ancestorPanel = new AncestorPane(this);
 
 			reportTypePane.addTab(Resurses.getString("REPORT.ANCESTOR"), icon2,
 					ancestorPanel, Resurses.getString("REPORT.TIP.ANCESTOR"));
@@ -1360,6 +1361,9 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 					if (order.equals("REPORT.LISTA.GRAPHVIZ")) {
 						taskGraphviz = new TaskGraphviz();
 						taskGraphviz.execute();
+					} else if (order.equals("REPORT.RELATION.SHOW")) {
+						taskRelation = new TaskRelation();
+						taskRelation.execute();
 
 					} else {
 						// we create new instances as needed.
@@ -2805,12 +2809,18 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 			throw new SukuException(Resurses.getString("EXECUTION_CANCELLED"));
 		}
 		String[] kaksi = juttu.split(";");
+		int progress = -1;
 		if (kaksi.length >= 2) {
-			int progress = Integer.parseInt(kaksi[0]);
+			try {
+				progress = Integer.parseInt(kaksi[0]);
+			} catch (NumberFormatException ne) {
+				progress = -1;
+			}
+		}
+		if (progress >= 0) {
 			progressBar.setIndeterminate(false);
 			progressBar.setValue(progress);
 			textContent.setText(kaksi[1]);
-
 		} else {
 			textContent.setText(juttu);
 			progressBar.setIndeterminate(true);
@@ -3651,12 +3661,35 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 		protected Void doInBackground() {
 			// repo = new XmlReport(runner, 3,
 			// Resurses.getString("REPORT.LISTAT"));
-			boolean descendant = reportTypePane.getSelectedIndex() == 0 ? true
-					: false;
+			int descendant = reportTypePane.getSelectedIndex() == 0 ? 0 : 1;
 			try {
 				dr = new GraphvizReport(self, typesTable, descendant);
 				dr.executeReport();
 
+			} catch (SukuException e) {
+				JOptionPane.showMessageDialog(parent, e.getMessage());
+				logger.log(Level.WARNING, "Exception in background thread", e);
+			}
+
+			return null;
+		}
+
+		@Override
+		public void done() {
+			Toolkit.getDefaultToolkit().beep();
+
+			setVisible(false);
+
+		}
+	}
+
+	class TaskRelation extends SwingWorker<Void, Void> {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			try {
+				dr = new GraphvizReport(self, typesTable, 2);
+				dr.executeReport();
 			} catch (SukuException e) {
 				JOptionPane.showMessageDialog(parent, e.getMessage());
 				logger.log(Level.WARNING, "Exception in background thread", e);

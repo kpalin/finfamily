@@ -16,6 +16,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -77,6 +78,10 @@ public class PersonShortData implements Serializable, Transferable,
 	 */
 	private transient int parentPid = 0;
 	private transient String adopted = null;
+	/**
+	 * Used by Relation search report
+	 */
+	private transient Vector<Integer> relapath = null;
 	/**
 	 * used by FamilyTree
 	 */
@@ -568,9 +573,15 @@ public class PersonShortData implements Serializable, Transferable,
 		sql.append("where u.pid = ? ");
 		sql.append("order by n.noticerow ");
 
-		String ppsql = "select a.tag,b.pid "
+		// String ppsql = "select a.tag,b.pid "
+		// +
+		// "from relation as a inner join relation as b on a.rid=b.rid and a.pid <> b.pid "
+		// + "where a.pid=? ";
+
+		String ppsql = "select a.tag,b.pid,n.tag "
 				+ "from relation as a inner join relation as b on a.rid=b.rid and a.pid <> b.pid "
-				+ "where a.pid=? ";
+				+ "left join relationnotice as n on a.rid=n.rid "
+				+ "where a.pid=? and a.tag in ('FATH','MOTH') and n.tag is null";
 		PreparedStatement ppstm = null;
 
 		PreparedStatement pstm;
@@ -1296,6 +1307,69 @@ public class PersonShortData implements Serializable, Transferable,
 		return sb.toString();
 	}
 
+	/**
+	 * retrieve person name with givenname surname order
+	 * 
+	 * @param allNames
+	 *            is true if all names , else only preferred givenname
+	 * @param withPatronyme
+	 *            if allNames = true will get also patronyme
+	 * 
+	 * @return the name as requested
+	 */
+	public String getName(boolean allNames, boolean withPatronyme) {
+		StringBuilder sb = new StringBuilder();
+
+		if (getGivenname() != null) {
+			String name;
+			if (allNames) {
+				name = getGivenname();
+			} else {
+				String parts[] = getGivenname().split(" ");
+				name = parts[0];
+				for (int i = 0; i < parts.length; i++) {
+					if (parts[i].indexOf('*') > 0) {
+						name = parts[i];
+						break;
+					}
+				}
+			}
+			for (int i = 0; i < name.length(); i++) {
+				char c = name.charAt(i);
+				if (c != '*') {
+					sb.append(c);
+				}
+			}
+		}
+
+		if (withPatronyme && allNames) {
+			if (getPatronym() != null) {
+				if (sb.length() > 0)
+					sb.append(" ");
+				sb.append(getPatronym());
+			}
+		}
+
+		if (getPrefix() != null) {
+			if (sb.length() > 0)
+				sb.append(" ");
+			sb.append(getPrefix());
+		}
+
+		if (getSurname() != null) {
+			if (sb.length() > 0)
+				sb.append(" ");
+			sb.append(getSurname());
+		}
+
+		if (getPostfix() != null) {
+			if (sb.length() > 0)
+				sb.append(" ");
+			sb.append(getPostfix());
+		}
+		return sb.toString();
+	}
+
 	/** dataflavour for drag-and-drop. */
 	public static final DataFlavor[] df = { new DataFlavor(
 			PersonShortData.class, "PersonShortData") };
@@ -1460,6 +1534,27 @@ public class PersonShortData implements Serializable, Transferable,
 	 */
 	public String getPrivacy() {
 		return privacy;
+	}
+
+	/**
+	 * 
+	 * relapath is used (at least) by Relation search
+	 * 
+	 * @param relapath
+	 *            the relapath to set
+	 */
+	public void addToRelapath(int pid) {
+		if (this.relapath == null) {
+			this.relapath = new Vector<Integer>();
+		}
+		this.relapath.add(pid);
+	}
+
+	/**
+	 * @return the relapath
+	 */
+	public Vector<Integer> getRelapath() {
+		return relapath;
 	}
 
 	private class ShortName implements Serializable {

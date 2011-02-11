@@ -118,6 +118,7 @@ import fi.kaila.suku.util.SukuTypesModel;
 import fi.kaila.suku.util.Utils;
 import fi.kaila.suku.util.VersionChecker;
 import fi.kaila.suku.util.local.LocalAdminUtilities;
+import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.PlaceLocationData;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -1778,72 +1779,16 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (cmd.equals("GRAPHVIZ")) {
 				String exeTask = kontroller.getPref(this, "GRAPHVIZ", "");
 				if (!"".equals(exeTask)) {
-					Runtime rt = Runtime.getRuntime();
-					Vector<String> rtv = new Vector<String>();
-					rtv.add(exeTask);
-					rtv.add("-Tjpeg");
-					// rtv.add("-Tpdf");
-					if (!kontroller.openFile("txt")) {
+					if (!kontroller.openFile("txt;gv")) {
 						return;
 					}
 					String infile = kontroller.getFilePath();
-
-					String dirname = null;
-					File dir = null;
-					int dirIdx = infile.replace('\\', '/').lastIndexOf('/');
-					if (dirIdx > 0) {
-						dirname = infile.substring(0, dirIdx);
-						dir = new File(dirname);
-						infile = infile.substring(dirIdx + 1);
-					}
-
-					rtv.add(infile);
 					if (!kontroller.createLocalFile("jpg")) {
 						return;
 					}
 					String endi = kontroller.getFilePath();
-					rtv.add("-o");
-					rtv.add(endi);
 
-					Process pr = rt.exec(rtv.toArray(new String[0]), null, dir);
-					// boolean dont = false;
-					// if (dont) {
-					// int counter = 0;
-					// int exitVal = -1;
-					// while (counter >= 0) {
-					// //
-					// // this loop is here because dot seemed to hang up
-					// // sometimes. It happened with åäö in images path
-					// try {
-					// counter++;
-					// if (counter > 250) {
-					// counter = -1;
-					// pr.destroy();
-					// }
-					// Thread.sleep(40);
-					// exitVal = pr.exitValue();
-					// break;
-					//
-					// } catch (Exception ie) {
-					// if (counter > 240) {
-					// logger.info(ie.getMessage() + " for "
-					// + infile);
-					// }
-					// }
-					// }
-					// }
-					BufferedReader input = new BufferedReader(
-							new InputStreamReader(pr.getErrorStream()));
-					String line = null;
-					while ((line = input.readLine()) != null) {
-						logger.info(line);
-					}
-					int exitVal = pr.waitFor();
-
-					logger.info("conversion to " + endi + " resulted in "
-							+ exitVal);
-
-					Utils.openExternalFile(endi);
+					Utils.graphvixDo(exeTask, infile, endi);
 
 				}
 			}
@@ -2368,6 +2313,74 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			logger.log(Level.WARNING, "Suku action", ex);
 			JOptionPane.showMessageDialog(personView.getSuku(), ex.toString());
 		}
+	}
+
+	/**
+	 * @param infile
+	 * @param endi
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	private void graphvixDo(String infile, String endi) throws IOException,
+			InterruptedException {
+		String exeTask = kontroller.getPref(this, "GRAPHVIZ", "");
+		Runtime rt = Runtime.getRuntime();
+		Vector<String> rtv = new Vector<String>();
+		rtv.add(exeTask);
+		rtv.add("-Tjpeg");
+
+		String dirname = null;
+		File dir = null;
+		int dirIdx = infile.replace('\\', '/').lastIndexOf('/');
+		if (dirIdx > 0) {
+			dirname = infile.substring(0, dirIdx);
+			dir = new File(dirname);
+			infile = infile.substring(dirIdx + 1);
+		}
+
+		rtv.add(infile);
+
+		rtv.add("-o");
+		rtv.add(endi);
+
+		Process pr = rt.exec(rtv.toArray(new String[0]), null, dir);
+		// boolean dont = false;
+		// if (dont) {
+		// int counter = 0;
+		// int exitVal = -1;
+		// while (counter >= 0) {
+		// //
+		// // this loop is here because dot seemed to hang up
+		// // sometimes. It happened with åäö in images path
+		// try {
+		// counter++;
+		// if (counter > 250) {
+		// counter = -1;
+		// pr.destroy();
+		// }
+		// Thread.sleep(40);
+		// exitVal = pr.exitValue();
+		// break;
+		//
+		// } catch (Exception ie) {
+		// if (counter > 240) {
+		// logger.info(ie.getMessage() + " for "
+		// + infile);
+		// }
+		// }
+		// }
+		// }
+		BufferedReader input = new BufferedReader(new InputStreamReader(
+				pr.getErrorStream()));
+		String line = null;
+		while ((line = input.readLine()) != null) {
+			logger.info(line);
+		}
+		int exitVal = pr.waitFor();
+
+		logger.info("conversion to " + endi + " resulted in " + exitVal);
+
+		Utils.openExternalFile(endi);
 	}
 
 	private void executeOrderChildren() {
@@ -2920,6 +2933,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	private void showPerson(int pid, String sex) throws SukuException {
 		personView.displayNewPersonPane(pid, sex);
+	}
+
+	/**
+	 * 
+	 * Get's opened persons pid or 0 if none opened
+	 * 
+	 * @return pid of opened person
+	 */
+	public PersonLongData getSubject() {
+
+		return personView.getMainPerson();
+
 	}
 
 	/**
@@ -3490,7 +3515,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		try {
 			Suku.kontroller.getSukuData(request, "cmd=updatesettings",
 					"type=needle", "name=needle");
-
 		} catch (SukuException ee) {
 			if (kontroller.getSchema() != null) {
 				JOptionPane.showMessageDialog(this, ee.getMessage(),
@@ -3498,10 +3522,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						JOptionPane.ERROR_MESSAGE);
 				ee.printStackTrace();
 			}
-
 		}
 		needle.clear();
-		kontroller.resetConnection();
 
 		this.personView.reset();
 		this.tableModel.resetModel(); // clear contents of table first
@@ -3509,6 +3531,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.databaseWindowPersons = null;
 		this.table.updateUI();
 		this.scrollPane.updateUI();
+		kontroller.resetConnection();
 		sukuObject = null;
 		enableCommands();
 		setTitle(null);

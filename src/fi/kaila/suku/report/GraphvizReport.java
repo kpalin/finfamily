@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +25,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -32,23 +34,24 @@ public class GraphvizReport extends CommonReport {
 
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-	private boolean descendantReport = true;
+	private int reportType = 0;
 
 	private String filePath = null;
 	private static String FOLDER_NAME = "Graphviz_images";
 
 	public GraphvizReport(ReportWorkerDialog caller, SukuTypesTable typesTable,
-			boolean descendant) throws SukuException {
+			int reportType) throws SukuException {
 		super(caller, typesTable, null);
 
-		descendantReport = descendant;
+		this.reportType = reportType;
 
-		if (!Suku.kontroller.createLocalFile("txt")) {
+		if (!Suku.kontroller.createLocalFile("gv")) {
 			throw new SukuException(
 					Resurses.getString("WARN_REPORT_NOT_SELECTED"));
 		}
 
 		String path = Suku.kontroller.getFilePath();
+
 		int pIdx = path.lastIndexOf("/");
 		filePath = path.substring(0, pIdx);
 
@@ -83,22 +86,22 @@ public class GraphvizReport extends CommonReport {
 		if (pictShow) {
 			File d = new File(filePath + "/" + FOLDER_NAME);
 			if (d.exists()) {
+				// if (d.isDirectory()) {
+				// int resu = JOptionPane.showConfirmDialog(caller,
+				// Resurses.getString("CONFIRM_REPLACE_REPORTDIR"),
+				// Resurses.getString(Resurses.SUKU),
+				// JOptionPane.YES_NO_OPTION,
+				// JOptionPane.QUESTION_MESSAGE);
+				// if (resu == JOptionPane.YES_OPTION) {
 				if (d.isDirectory()) {
-					int resu = JOptionPane.showConfirmDialog(caller,
-							Resurses.getString("CONFIRM_REPLACE_REPORTDIR"),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
-					if (resu == JOptionPane.YES_OPTION) {
-						if (d.isDirectory()) {
-							String[] files = d.list();
-							for (int i = 0; i < files.length; i++) {
-								File df = new File(filePath + "/" + files[i]);
-								df.delete();
-							}
-						}
+					String[] files = d.list();
+					for (int i = 0; i < files.length; i++) {
+						File df = new File(filePath + "/" + files[i]);
+						df.delete();
 					}
 				}
+				// }
+				// }
 			}
 			d.mkdirs();
 		}
@@ -117,10 +120,14 @@ public class GraphvizReport extends CommonReport {
 				GraphData subj = new GraphData(pdata);
 
 				identMap.put("I" + subj.getPid(), subj);
-				if (descendantReport) {
+				if (reportType == 0) {
 					addDescendantRelatives(subj, descgen - 1, includeAdopted);
-				} else {
+				} else if (reportType == 1) {
 					addAncestorRelatives(subj, ancgen - 1, includeFamily);
+				} else if (reportType == 2) {
+					addRelations(subj);
+				} else {
+					throw new SukuException("BAD REPORT TYPE");
 				}
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -342,6 +349,16 @@ public class GraphvizReport extends CommonReport {
 						Suku.kontroller.getFilePath());
 				fos.write(buffi);
 				fos.close();
+				String infile = Suku.kontroller.getFilePath();
+				String jpgfile = null;
+				if (infile.toLowerCase().endsWith(".gv")) {
+					jpgfile = infile.substring(0, infile.length() - 2) + "jpg";
+				}
+				String exeTask = Suku.kontroller.getPref(
+						caller.getSukuParent(), "GRAPHVIZ", "");
+				if (!exeTask.equals("")) {
+					Utils.graphvixDo(exeTask, infile, jpgfile);
+				}
 			} else {
 				JOptionPane.showMessageDialog(caller, "dblista");
 			}
@@ -351,6 +368,99 @@ public class GraphvizReport extends CommonReport {
 		}
 	}
 
+	HashMap<Integer, PersonShortData> ancs = new HashMap<Integer, PersonShortData>();
+	Vector<PersonShortData> commons = new Vector<PersonShortData>();
+
+	private void addRelations(GraphData subj) throws SukuException {
+		PersonLongData pers = caller.getSukuParent().getSubject();
+
+		addParents(subj.getPid(), 0);
+		addParents(pers.getPid(), 0);
+
+		// if (commons.size() > 0) {
+		for (int i = 0; i < commons.size(); i++) {
+			PersonShortData cp = commons.get(i);
+			drawRelation(cp);
+		}
+	}
+
+	private void drawRelation(PersonShortData cp) throws SukuException {
+
+		identMap.put("I" + cp.getPid(), cp);
+		Vector<Integer> relas = cp.getRelapath();
+		if (relas != null) {
+			for (int i = 0; i < relas.size(); i++) {
+
+				PersonShortData p = ancs.get(relas.get(i));
+				if (p != null) {
+					// SukuData xdata =
+					// Suku.kontroller.getSukuData("cmd=person",
+					// "pid=" + relas.get(i), "mode=short");
+					// PersonShortData p = xdata.pers[0];
+					identMap.put("I" + p.getPid(), p);
+					String color = "blue";
+					if (!cp.getSex().equals("M")) {
+						color = "red";
+					}
+					StringBuilder sb = new StringBuilder();
+					sb.append(" ");
+					sb.append("I" + cp.getPid());
+					sb.append(" -- ");
+					sb.append("I" + p.getPid());
+
+					sb.append("  [style=bold,color=" + color + "]; ");
+
+					relaMap.put("I" + cp.getPid() + "I" + p.getPid(),
+							sb.toString());
+					drawRelation(p);
+				}
+			}
+		}
+	}
+
+	private void addParents(int pid, int fromPid) throws SukuException {
+
+		SukuData xdata = Suku.kontroller.getSukuData("cmd=person",
+				"pid=" + pid, "mode=short");
+		PersonShortData p = xdata.pers[0];
+
+		caller.setRunnerValue(p.getName(true, false));
+		p.addToRelapath(fromPid);
+		PersonShortData me = ancs.get(p.getPid());
+		if (me != null) {
+			me.addToRelapath(fromPid);
+			commons.add(me);
+			return;
+		}
+
+		if (p.getPid() > 0) {
+
+			ancs.put(pid, p);
+			if (p.getFatherPid() > 0) {
+				addParents(p.getFatherPid(), pid);
+			}
+			if (p.getMotherPid() > 0) {
+				addParents(p.getMotherPid(), pid);
+			}
+		}
+
+	}
+
+	// private void addParentsForX(int pid) throws SukuException {
+	// SukuData xdata = Suku.kontroller.getSukuData("cmd=person",
+	// "pid=" + pid, "mode=short");
+	// PersonShortData p = xdata.pers[0];
+	// if (p.getPid() > 0) {
+	// ancs.put(pid, p);
+	// if (p.getFatherPid()>0) {
+	// addParentsForX(p.getFatherPid());
+	// }
+	// if (p.getMotherPid()>0) {
+	// addParentsForX(p.getMotherPid());
+	// }
+	// }
+	// }
+
 	HashMap<Integer, Integer> remover = new HashMap<Integer, Integer>();
 
 	private void addAncestorRelatives(PersonShortData pers, int generation,
@@ -359,7 +469,7 @@ public class GraphvizReport extends CommonReport {
 				"pid=" + pers.getPid(), "lang=" + Resurses.getLanguage());
 		GraphData gdata = new GraphData(pdata);
 
-		caller.setRunnerValue(gdata.getAlfaName());
+		caller.setRunnerValue(gdata.getName(true, false));
 
 		int fatherPid = 0;
 		int motherPid = 0;
@@ -489,7 +599,7 @@ public class GraphvizReport extends CommonReport {
 				"pid=" + pers.getPid(), "lang=" + Resurses.getLanguage());
 		GraphData gdata = new GraphData(pdata);
 
-		caller.setRunnerValue(gdata.getAlfaName());
+		caller.setRunnerValue(gdata.getName(true, false));
 
 		for (int i = 0; i < gdata.relations.length; i++) {
 			Relation spo = gdata.relations[i];
@@ -702,6 +812,15 @@ public class GraphvizReport extends CommonReport {
 				rels.put(data.pers[i].getPid(), data.pers[i]);
 			}
 		}
+	}
+
+	class RelationData extends PersonShortData {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		Vector<Integer> relPath = new Vector<Integer>();
+
 	}
 
 }

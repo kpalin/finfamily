@@ -5,7 +5,11 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Vector;
@@ -920,6 +924,74 @@ public class Utils {
 
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * @param infile
+	 * @param endi
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public static void graphvixDo(String exeTask, String infile, String endi)
+			throws IOException, InterruptedException {
+
+		Runtime rt = Runtime.getRuntime();
+		Vector<String> rtv = new Vector<String>();
+		rtv.add(exeTask);
+		rtv.add("-Tjpeg");
+
+		String dirname = null;
+		File dir = null;
+		int dirIdx = infile.replace('\\', '/').lastIndexOf('/');
+		if (dirIdx > 0) {
+			dirname = infile.substring(0, dirIdx);
+			dir = new File(dirname);
+			infile = infile.substring(dirIdx + 1);
+		}
+
+		rtv.add(infile);
+
+		rtv.add("-o");
+		rtv.add(endi);
+
+		Process pr = rt.exec(rtv.toArray(new String[0]), null, dir);
+		// boolean dont = false;
+		// if (dont) {
+		// int counter = 0;
+		// int exitVal = -1;
+		// while (counter >= 0) {
+		// //
+		// // this loop is here because dot seemed to hang up
+		// // sometimes. It happened with åäö in images path
+		// try {
+		// counter++;
+		// if (counter > 250) {
+		// counter = -1;
+		// pr.destroy();
+		// }
+		// Thread.sleep(40);
+		// exitVal = pr.exitValue();
+		// break;
+		//
+		// } catch (Exception ie) {
+		// if (counter > 240) {
+		// logger.info(ie.getMessage() + " for "
+		// + infile);
+		// }
+		// }
+		// }
+		// }
+		BufferedReader input = new BufferedReader(new InputStreamReader(
+				pr.getErrorStream()));
+		String line = null;
+		while ((line = input.readLine()) != null) {
+			logger.info(line);
+		}
+		int exitVal = pr.waitFor();
+
+		logger.info("conversion to " + endi + " resulted in " + exitVal);
+
+		openExternalFile(endi);
 	}
 
 }

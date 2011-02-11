@@ -11,6 +11,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import fi.kaila.suku.util.Resurses;
+import fi.kaila.suku.util.pojo.PersonLongData;
+import fi.kaila.suku.util.pojo.PersonShortData;
 
 /**
  * <h1>Ancestor report settings pane</h1>.
@@ -33,8 +35,10 @@ public class AncestorPane extends JPanel {
 
 	/**
 	 * Constructor sets up ths fields.
+	 * 
+	 * @param parent
 	 */
-	public AncestorPane() {
+	public AncestorPane(ReportWorkerDialog parent) {
 
 		int rtypx = 10;
 		int rtypy = 10;
@@ -89,8 +93,23 @@ public class AncestorPane extends JPanel {
 		formd.setActionCommand("REPORT.LISTA.GRAPHVIZ");
 		ancestorNumberingFormatGroup.add(formd);
 		pane.add(formd);
+		PersonLongData psp = parent.getSukuParent().getSubject();
+		StringBuilder persRela = new StringBuilder();
+		persRela.append(Resurses.getString("REPORT.RELATION.SHOW"));
+		if (psp != null) {
+			persRela.append(" ");
+			PersonShortData pss = new PersonShortData(psp);
+			persRela.append(pss.getAlfaName());
+		}
+		formd = new JRadioButton(persRela.toString());
+		formd.setActionCommand("REPORT.RELATION.SHOW");
+		ancestorNumberingFormatGroup.add(formd);
+		pane.add(formd);
+		if (psp == null) {
+			formd.setEnabled(false);
+		}
 
-		rtypy += 140;
+		rtypy += 160;
 		ancestorShowFamily = new JCheckBox(
 				Resurses.getString("REPORT.ANC.SHOW.FAMILY"));
 		ancestorShowFamily.setBounds(rtypx, rtypy, 280, 20);

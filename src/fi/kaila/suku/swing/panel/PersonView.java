@@ -29,6 +29,7 @@ import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.PersonShortData;
 import fi.kaila.suku.util.pojo.RelationShortData;
 import fi.kaila.suku.util.pojo.SukuData;
@@ -445,6 +446,20 @@ public class PersonView extends JPanel implements ChangeListener {
 				paneTabs.remove(pnl);
 			}
 		}
+
+	}
+
+	/**
+	 * 
+	 * @return main person if open. null otherwise
+	 */
+	public PersonLongData getMainPerson() {
+		int midx = getMainPaneIndex();
+		if (midx < 0)
+			return null;
+		SukuTabPane pan = paneTabs.get(midx);
+		PersonMainPane main = (PersonMainPane) pan.pnl;
+		return main.persLong;
 
 	}
 
