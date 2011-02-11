@@ -2,6 +2,12 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+Release 1146 on 11 feb 2011
+
+* Added ImageMagick support
+* Added Show relationship command to ancestor reports
+* Automated use of Graphviz
+
 Release 1141 on 9 feb 2011
 
 * Added Hybrid kontroller 

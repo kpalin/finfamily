@@ -62,7 +62,7 @@ public class AncestorPane extends JPanel {
 		pane.setBorder(BorderFactory.createTitledBorder(Resurses
 				.getString("REPORT.ANC.NUMBERING")));
 		pane.setLayout(new GridLayout(0, 1));
-		pane.setBounds(rtypx, rtypy, 250, 134);
+		pane.setBounds(rtypx, rtypy, 250, 160);
 
 		ancestorNumberingFormatGroup = new ButtonGroup();
 		JRadioButton formd = new JRadioButton(
@@ -94,22 +94,21 @@ public class AncestorPane extends JPanel {
 		ancestorNumberingFormatGroup.add(formd);
 		pane.add(formd);
 		PersonLongData psp = parent.getSukuParent().getSubject();
-		StringBuilder persRela = new StringBuilder();
-		persRela.append(Resurses.getString("REPORT.RELATION.SHOW"));
-		if (psp != null) {
-			persRela.append(" ");
-			PersonShortData pss = new PersonShortData(psp);
-			persRela.append(pss.getAlfaName());
-		}
-		formd = new JRadioButton(persRela.toString());
+
+		formd = new JRadioButton(Resurses.getString("REPORT.RELATION.SHOW"));
 		formd.setActionCommand("REPORT.RELATION.SHOW");
 		ancestorNumberingFormatGroup.add(formd);
 		pane.add(formd);
+		if (psp != null) {
+			PersonShortData pss = new PersonShortData(psp);
+			lb = new JLabel("    " + pss.getName(false, false));
+			pane.add(lb);
+		}
 		if (psp == null) {
 			formd.setEnabled(false);
 		}
 
-		rtypy += 160;
+		rtypy += 180;
 		ancestorShowFamily = new JCheckBox(
 				Resurses.getString("REPORT.ANC.SHOW.FAMILY"));
 		ancestorShowFamily.setBounds(rtypx, rtypy, 280, 20);

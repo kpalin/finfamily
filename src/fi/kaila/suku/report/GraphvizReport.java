@@ -47,7 +47,7 @@ public class GraphvizReport extends CommonReport {
 				"IMAGEMAGICK", "");
 		this.reportType = reportType;
 
-		if (!Suku.kontroller.createLocalFile("gv")) {
+		if (!Suku.kontroller.createLocalFile("jpg")) {
 			throw new SukuException(
 					Resurses.getString("WARN_REPORT_NOT_SELECTED"));
 		}
@@ -88,13 +88,7 @@ public class GraphvizReport extends CommonReport {
 		if (pictShow) {
 			File d = new File(filePath + "/" + FOLDER_NAME);
 			if (d.exists()) {
-				// if (d.isDirectory()) {
-				// int resu = JOptionPane.showConfirmDialog(caller,
-				// Resurses.getString("CONFIRM_REPLACE_REPORTDIR"),
-				// Resurses.getString(Resurses.SUKU),
-				// JOptionPane.YES_NO_OPTION,
-				// JOptionPane.QUESTION_MESSAGE);
-				// if (resu == JOptionPane.YES_OPTION) {
+
 				if (d.isDirectory()) {
 					String[] files = d.list();
 					for (int i = 0; i < files.length; i++) {
@@ -102,8 +96,6 @@ public class GraphvizReport extends CommonReport {
 						df.delete();
 					}
 				}
-				// }
-				// }
 			}
 			d.mkdirs();
 		}
@@ -348,19 +340,20 @@ public class GraphvizReport extends CommonReport {
 				}
 				bos.write("}".getBytes("UTF-8"));
 				byte[] buffi = bos.toByteArray();
-				FileOutputStream fos = new FileOutputStream(
-						Suku.kontroller.getFilePath());
+				String pathjpg = Suku.kontroller.getFilePath();
+				String pathgv = null;
+				if (pathjpg != null && pathjpg.endsWith(".jpg")) {
+					pathgv = pathjpg.substring(0, pathjpg.length() - 3) + "gv";
+				}
+				FileOutputStream fos = new FileOutputStream(pathgv);
+
 				fos.write(buffi);
 				fos.close();
-				String infile = Suku.kontroller.getFilePath();
-				String jpgfile = null;
-				if (infile.toLowerCase().endsWith(".gv")) {
-					jpgfile = infile.substring(0, infile.length() - 2) + "jpg";
-				}
+
 				String exeTask = Suku.kontroller.getPref(
 						caller.getSukuParent(), "GRAPHVIZ", "");
 				if (!exeTask.equals("")) {
-					Utils.graphvizDo(exeTask, infile, jpgfile);
+					Utils.graphvizDo(exeTask, pathgv, pathjpg);
 				}
 			} else {
 				JOptionPane.showMessageDialog(caller, "dblista");
