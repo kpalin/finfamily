@@ -1362,9 +1362,13 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 						taskGraphviz = new TaskGraphviz();
 						taskGraphviz.execute();
 					} else if (order.equals("REPORT.RELATION.SHOW")) {
-						taskRelation = new TaskRelation();
-						taskRelation.execute();
-
+						if (getSukuParent().getSubject() != null) {
+							taskRelation = new TaskRelation();
+							taskRelation.execute();
+						} else {
+							JOptionPane.showMessageDialog(this,
+									Resurses.getString("REPORT.NOT.SELECTED"));
+						}
 					} else {
 						// we create new instances as needed.
 						task = new Task();

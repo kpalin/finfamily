@@ -703,7 +703,8 @@ public class XmlReport implements ReportInterface {
 			return "";
 		}
 
-		if (imageScaleIndex == 0) {
+		if (imageScaleIndex == 0 || (it.getImage().getHeight()) <= outHeight
+				&& it.getImage().getWidth() <= outWidth) {
 			outWidth = 0;
 		}
 
