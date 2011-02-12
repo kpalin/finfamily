@@ -902,9 +902,15 @@ public class Utils {
 		Runtime rt = Runtime.getRuntime();
 
 		StringBuilder stv = new StringBuilder();
-		stv.append("\"");
-		stv.append(immPath);
-		stv.append("\" ");
+		int spaceExist = immPath.indexOf(" ");
+		if (spaceExist >= 0) {
+			stv.append("\"");
+			stv.append(immPath);
+			stv.append("\" ");
+		} else {
+			stv.append(immPath);
+			stv.append(" ");
+		}
 		if (trailer_height == 0) {
 			stv.append("-resize " + p_width);
 		} else {
@@ -918,6 +924,9 @@ public class Utils {
 		stv.append(fin.getAbsolutePath());
 		stv.append(" ");
 		stv.append(fout.getAbsolutePath());
+
+		logger.fine(stv.toString());
+
 		Process pr = rt.exec(stv.toString());
 
 		// Vector<String> rtv = new Vector<String>();
