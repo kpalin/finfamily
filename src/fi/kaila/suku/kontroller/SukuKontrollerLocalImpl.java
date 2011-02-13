@@ -273,9 +273,13 @@ public class SukuKontrollerLocalImpl implements SukuKontroller {
 				return false;
 			}
 		}
-		if (filters.length == 1) {
-			if (!filename.toLowerCase().endsWith(filters[0].toLowerCase())) {
-				filename += "." + filters[0];
+		if (filters.length > 0) {
+			int typeIdx = filename.lastIndexOf(".");
+			if (typeIdx <= filename.length() - 10) {
+
+				if (!filename.toLowerCase().endsWith(filters[0].toLowerCase())) {
+					filename += "." + filters[0];
+				}
 			}
 		}
 

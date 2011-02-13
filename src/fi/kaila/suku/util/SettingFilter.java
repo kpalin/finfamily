@@ -15,7 +15,9 @@ public class SettingFilter extends FileFilter {
 
 	private String[] ftype = null;
 
-	private boolean showDirectories = true;
+	private final boolean showDirectories = true;
+
+	private String filetype = null;
 
 	/**
 	 * constructor.
@@ -24,6 +26,7 @@ public class SettingFilter extends FileFilter {
 	 *            or list of accepted file types separated by semicolon (;)
 	 */
 	public SettingFilter(String filetype) {
+		this.filetype = filetype;
 		if (filetype != null) {
 			this.ftype = filetype.split(";");
 		}
@@ -66,8 +69,10 @@ public class SettingFilter extends FileFilter {
 	 */
 	@Override
 	public String getDescription() {
-
-		return "FinFamily files";
+		if (filetype == null) {
+			return "FinFamily files";
+		}
+		return filetype;
 
 	}
 
