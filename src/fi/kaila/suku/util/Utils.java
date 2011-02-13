@@ -1018,11 +1018,19 @@ public class Utils {
 	 */
 	public static void graphvizDo(String exeTask, String infile, String endi)
 			throws IOException, InterruptedException {
+		String filetype = "jpeg";
+		int lastDot = endi.lastIndexOf(".");
+		if (lastDot > 0) {
+			filetype = endi.substring(lastDot + 1);
+			if (filetype.length() > 10) {
+				filetype = "jpeg";
+			}
+		}
 
 		Runtime rt = Runtime.getRuntime();
 		Vector<String> rtv = new Vector<String>();
 		rtv.add(exeTask);
-		rtv.add("-Tjpeg");
+		rtv.add("-T" + filetype);
 
 		String dirname = null;
 		File dir = null;

@@ -1783,7 +1783,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						return;
 					}
 					String infile = kontroller.getFilePath();
-					if (!kontroller.createLocalFile("jpg")) {
+					if (!kontroller.createLocalFile("jpg;svg")) {
 						return;
 					}
 					String endi = kontroller.getFilePath();
