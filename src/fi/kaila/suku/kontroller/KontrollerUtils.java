@@ -20,7 +20,7 @@ public class KontrollerUtils {
 
 	private static final String hexi = "0123456789ABCDEF";
 	private static Logger logger = Logger.getLogger(KontrollerUtils.class
-			.getName());;
+			.getName());
 
 	public static int openFile(String uri, String userno, String filename,
 			InputStream iis) throws IOException {
