@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 import fi.kaila.suku.ant.AntVersion;
 import fi.kaila.suku.swing.Suku;
@@ -27,7 +28,10 @@ public class VersionChecker {
 	public VersionChecker(Suku suku) {
 		logger = Logger.getLogger(this.getClass().getName());
 		this.suku = suku;
-		runMe();
+
+		VersionTask task = new VersionTask();
+		task.execute();
+
 	}
 
 	private void runMe() {
@@ -43,7 +47,7 @@ public class VersionChecker {
 
 		String country = Locale.getDefault().getCountry();
 		String langu = Locale.getDefault().getLanguage();
-
+		String os = System.getProperty("os.name");
 		String lastRevision = Suku.kontroller.getPref(this, "Revision", "0");
 		String lastTry = Suku.kontroller.getPref(this, "lastTime", "0");
 		String ant = AntVersion.antVersion;
@@ -54,8 +58,8 @@ public class VersionChecker {
 				+ "&fd=" + dateFormat // finfamily date format
 				+ "&fv=" + ant // finfamily version
 				+ "&jc=" + country // java country
-				+ "&jl=" + langu; // java language
-
+				+ "&jl=" + langu // java language
+				+ "&je=" + os; // os
 		long nowTime = System.currentTimeMillis();
 
 		long lastTime = 0;
@@ -154,4 +158,15 @@ public class VersionChecker {
 		}
 
 	}
+
+	class VersionTask extends SwingWorker<Void, Void> {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			runMe();
+			return null;
+		}
+
+	}
+
 }
