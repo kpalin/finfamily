@@ -47,7 +47,7 @@ public class GraphvizReport extends CommonReport {
 				"IMAGEMAGICK", "");
 		this.reportType = reportType;
 
-		if (!Suku.kontroller.createLocalFile("jpg")) {
+		if (!Suku.kontroller.createLocalFile("jpg;png;svg")) {
 			throw new SukuException(
 					Resurses.getString("WARN_REPORT_NOT_SELECTED"));
 		}
@@ -341,10 +341,15 @@ public class GraphvizReport extends CommonReport {
 				bos.write("}".getBytes("UTF-8"));
 				byte[] buffi = bos.toByteArray();
 				String pathjpg = Suku.kontroller.getFilePath();
-				String pathgv = null;
-				if (pathjpg != null && pathjpg.endsWith(".jpg")) {
-					pathgv = pathjpg.substring(0, pathjpg.length() - 3) + "gv";
+				int dotLoc = pathjpg.lastIndexOf(".");
+				String pathType = "jpg";
+				String pathMain = pathjpg;
+				if (dotLoc >= pathjpg.length() - 5) {
+					pathType = pathjpg.substring(dotLoc + 1);
+					pathMain = pathjpg.substring(0, dotLoc);
 				}
+
+				String pathgv = pathMain + "." + pathType;
 				FileOutputStream fos = new FileOutputStream(pathgv);
 
 				fos.write(buffi);
