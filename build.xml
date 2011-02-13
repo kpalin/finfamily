@@ -58,8 +58,8 @@
     <jar destfile="${dist.home}/suku.jar" basedir="${build.home}/classes">
 
  	<fileset dir="${basedir}/resources"   >	
-		<include name="/images/**"/>
- 		<include name="/sql/**"/>
+		<include name="images/**"/>
+ 		<include name="sql/**"/>
 	</fileset>
 
 	
