@@ -2,6 +2,11 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+Release 1158 on 14 feb 2011
+
+* Added possibility to show map with death places
+* Added Spanish texts for this version for verification.
+
 Release 1150 on 13 feb 2011
 
 * ImageMagick / non windows fix
