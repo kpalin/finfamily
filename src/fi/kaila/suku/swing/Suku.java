@@ -217,7 +217,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mLista;
 	// private JMenuItem mTestSave;
 	// private JMenuItem mTestOpen;
-	private JMenuItem mShowInMap;
+	private JMenu mShowInMap;
+	private JMenuItem mShowWithBirth;
+	private JMenuItem mShowWithDeath;
 	// private JMenuItem mReport;
 	private JMenuItem mExit;
 	private JMenuItem mAdmin;
@@ -604,10 +606,18 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 		this.mActions.addSeparator();
 
-		this.mShowInMap = new JMenuItem(Resurses.getString(Resurses.SHOWINMAP));
+		this.mShowInMap = new JMenu(Resurses.getString(Resurses.SHOWINMAP));
 		this.mActions.add(this.mShowInMap);
-		this.mShowInMap.setActionCommand(Resurses.SHOWINMAP);
-		this.mShowInMap.addActionListener(this);
+		this.mShowWithBirth = new JMenuItem(
+				Resurses.getString("SHOWINMAPBIRTH"));
+		this.mShowInMap.add(this.mShowWithBirth);
+		this.mShowWithDeath = new JMenuItem(
+				Resurses.getString("SHOWINMAPDEATH"));
+		this.mShowInMap.add(this.mShowWithDeath);
+		this.mShowWithBirth.setActionCommand("SHOWINMAPBIRTH");
+		this.mShowWithBirth.addActionListener(this);
+		this.mShowWithDeath.setActionCommand("SHOWINMAPDEATH");
+		this.mShowWithDeath.addActionListener(this);
 
 		this.mStatistics = new JMenuItem(Resurses.getString("MENU_TOOLS_STAT"));
 		this.mActions.add(this.mStatistics);
@@ -902,9 +912,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			this.toolbar.addSeparator(new Dimension(20, 30));
 
-			tMapButton = makeNavigationButton(Resurses.TOOLBAR_MAP_IMAGE,
+			tMapButton = makeNavigationButton(
+					Resurses.TOOLBAR_MAP_IMAGE,
 					Resurses.TOOLBAR_MAP_ACTION,
-					Resurses.getString("TOOLBAR.MAP.TOOLTIP"),
+					Resurses.getString("SHOWINMAP") + " "
+							+ Resurses.getString("SHOWINMAPBIRTH"),
 					Resurses.getString("TOOLBAR.MAP.ALTTEXT"));
 
 			this.toolbar.add(tMapButton);
@@ -2106,8 +2118,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					Utils.openExternalFile(repo);
 				}
 
-			} else if (cmd.equals(Resurses.SHOWINMAP)) {
-				displayMap();
+			} else if (cmd.startsWith("SHOWINMAP")) {
+				displayMap(cmd);
 			} else if (cmd.equals(Resurses.QUERY)) {
 				queryDb();
 			} else if (cmd.equals(Resurses.TOOLBAR_NEWPERSON_ACTION)) {
@@ -3062,7 +3074,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
-	private void displayMap() {
+	private void displayMap(String cmd) {
 		PersonShortData ppp[] = new PersonShortData[tableMap.size()];
 		Set<Map.Entry<Integer, PersonShortData>> entriesx = tableMap.entrySet();
 		Iterator<Map.Entry<Integer, PersonShortData>> eex = entriesx.iterator();
@@ -3119,28 +3131,54 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		PlaceLocationData place;
 
 		for (idx = 0; idx < ppp.length; idx++) {
-			paikka = ppp[idx].getBirtPlace();
-			if (paikka != null) {
+			if (cmd.equals("SHOWINMAPDEATH")) {
+				paikka = ppp[idx].getDeatPlace();
+				if (paikka != null) {
+					maa = ppp[idx].getDeatCountry();
+					if (maa != null)
+						maa = maa.toUpperCase();
 
-				maa = ppp[idx].getBirthCountry();
-				if (maa != null)
-					maa = maa.toUpperCase();
-
-				if (maa == null) {
-					ccode = defaultCountry;
-				} else {
-					ccode = ccodes.get(maa.toUpperCase());
-					if (ccode == null) {
+					if (maa == null) {
 						ccode = defaultCountry;
+					} else {
+						ccode = ccodes.get(maa.toUpperCase());
+						if (ccode == null) {
+							ccode = defaultCountry;
+						}
+					}
+					place = paikat.get(paikka.toUpperCase() + ";" + ccode);
+					if (place == null) {
+						place = new PlaceLocationData(paikka, ccode);
+
+						paikat.put(paikka.toUpperCase() + ";" + ccode, place);
+					} else {
+						place.increment();
 					}
 				}
-				place = paikat.get(paikka.toUpperCase() + ";" + ccode);
-				if (place == null) {
-					place = new PlaceLocationData(paikka, ccode);
+			} else {
+				paikka = ppp[idx].getBirtPlace();
+				if (paikka != null) {
 
-					paikat.put(paikka.toUpperCase() + ";" + ccode, place);
-				} else {
-					place.increment();
+					maa = ppp[idx].getBirthCountry();
+					if (maa != null)
+						maa = maa.toUpperCase();
+
+					if (maa == null) {
+						ccode = defaultCountry;
+					} else {
+						ccode = ccodes.get(maa.toUpperCase());
+						if (ccode == null) {
+							ccode = defaultCountry;
+						}
+					}
+					place = paikat.get(paikka.toUpperCase() + ";" + ccode);
+					if (place == null) {
+						place = new PlaceLocationData(paikka, ccode);
+
+						paikat.put(paikka.toUpperCase() + ";" + ccode, place);
+					} else {
+						place.increment();
+					}
 				}
 			}
 		}
@@ -3776,6 +3814,8 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mOpenPerson.setEnabled(kontroller.getSchema() != null);
 		mPrintPerson.setEnabled(kontroller.getSchema() != null);
 		mShowInMap.setEnabled(kontroller.getSchema() != null);
+		mShowWithBirth.setEnabled(kontroller.getSchema() != null);
+		mShowWithDeath.setEnabled(kontroller.getSchema() != null);
 		mLista.setEnabled(kontroller.getSchema() != null);
 		// mDisconnect.setEnabled(isConnected != 0);
 		tQueryButton.setEnabled(kontroller.getSchema() != null);
