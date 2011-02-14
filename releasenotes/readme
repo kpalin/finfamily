@@ -2,10 +2,11 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
-Release 1158 on 14 feb 2011
+Release 1159 on 14 feb 2011
 
 * Added possibility to show map with death places
 * Added Spanish texts for this version for verification.
+* Fix to Graphviz call (from 1158)
 
 Release 1150 on 13 feb 2011
 

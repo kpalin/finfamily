@@ -342,15 +342,15 @@ public class GraphvizReport extends CommonReport {
 				byte[] buffi = bos.toByteArray();
 				String pathjpg = Suku.kontroller.getFilePath();
 				int dotLoc = pathjpg.lastIndexOf(".");
-				String pathType = "jpg";
+
 				String pathMain = pathjpg;
 				if (dotLoc >= pathjpg.length() - 5) {
-					pathType = pathjpg.substring(dotLoc + 1);
+
 					pathMain = pathjpg.substring(0, dotLoc);
 				}
 
-				String pathgv = pathMain + "." + pathType;
-				FileOutputStream fos = new FileOutputStream(pathgv);
+				String pathgv = pathMain + ".gv";
+				FileOutputStream fos = new FileOutputStream(pathMain + ".gv");
 
 				fos.write(buffi);
 				fos.close();
@@ -358,7 +358,8 @@ public class GraphvizReport extends CommonReport {
 				String exeTask = Suku.kontroller.getPref(
 						caller.getSukuParent(), "GRAPHVIZ", "");
 				if (!exeTask.equals("")) {
-					Utils.graphvizDo(exeTask, pathgv, pathjpg);
+					Utils.graphvizDo(caller.getSukuParent(), exeTask, pathgv,
+							pathjpg);
 				}
 			} else {
 				JOptionPane.showMessageDialog(caller, "dblista");

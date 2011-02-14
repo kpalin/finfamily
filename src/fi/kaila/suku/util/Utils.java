@@ -22,11 +22,13 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.report.PersonInTables;
 import fi.kaila.suku.swing.Suku;
+import fi.kaila.suku.swing.dialog.SukuPad;
 import fi.kaila.suku.util.pojo.ReportTableMember;
 import fi.kaila.suku.util.pojo.ReportUnit;
 
@@ -1016,8 +1018,8 @@ public class Utils {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static void graphvizDo(String exeTask, String infile, String endi)
-			throws IOException, InterruptedException {
+	public static void graphvizDo(JFrame parent, String exeTask, String infile,
+			String endi) throws IOException, InterruptedException {
 		String filetype = "jpeg";
 		int lastDot = endi.lastIndexOf(".");
 		if (lastDot > 0) {
@@ -1076,14 +1078,24 @@ public class Utils {
 		BufferedReader input = new BufferedReader(new InputStreamReader(
 				pr.getErrorStream()));
 		String line = null;
+		StringBuilder respo = new StringBuilder();
 		while ((line = input.readLine()) != null) {
+			if (respo.length() > 0) {
+				respo.append("\n");
+			}
+			respo.append(line);
 			logger.info(line);
 		}
 		int exitVal = pr.waitFor();
 
 		logger.info("conversion to " + endi + " resulted in " + exitVal);
-
-		openExternalFile(endi);
+		if (exitVal != 0 || respo.length() > 0) {
+			SukuPad pad = new SukuPad(parent, "Graphviz response [" + exitVal
+					+ "]\n\n" + respo.toString());
+			pad.setVisible(true);
+		} else {
+			openExternalFile(endi);
+		}
 	}
 
 }
