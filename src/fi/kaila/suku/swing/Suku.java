@@ -1044,6 +1044,20 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.setTitle(null);
 		setVisible(true);
 
+		if (os.toLowerCase().indexOf("windows") < 0) {
+			//
+			// this fixes on non windows versions problem with layout
+			javax.swing.Timer t = new javax.swing.Timer(4,
+					new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							myFrame.setExtendedState(MAXIMIZED_BOTH);
+							myFrame.repaint();
+						}
+					});
+			t.setRepeats(false);
+			t.start();
+		}
+
 		InputStream in = this.getClass().getResourceAsStream(
 				"/images/sukuicon.gif");
 
@@ -1080,6 +1094,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			}
 
 		});
+
 		if (!kontroller.isRemote()) {
 			new VersionChecker(this);
 		}
