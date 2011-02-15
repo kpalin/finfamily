@@ -474,7 +474,8 @@ public class AncestorReport extends CommonReport {
 				if (!order.equals("ESPOLIN")) {
 					addParentReference(tab, bt);
 				}
-				printNotices(bt, notices, getTypeColumn(fid), ftab.getTableNo());
+				printNotices(bt, pappadata.persLong, getTypeColumn(fid),
+						ftab.getTableNo());
 			} else {
 				printNameNn(bt);
 			}
@@ -550,7 +551,7 @@ public class AncestorReport extends CommonReport {
 				if (!order.equals("ESPOLIN")) {
 					addParentReference(tab, bt);
 				}
-				printNotices(bt, notices,
+				printNotices(bt, mammadata.persLong,
 						getTypeColumn(mammadata.persLong.getPid()),
 						mtab.getTableNo());
 			} else {
@@ -626,7 +627,7 @@ public class AncestorReport extends CommonReport {
 					notices = sdata.persLong.getNotices();
 					if (sdata.persLong.getPrivacy() == null) {
 						printName(bt, sdata.persLong, typesColumn);
-						printNotices(bt, notices, typesColumn, tableNum);
+						printNotices(bt, sdata.persLong, typesColumn, tableNum);
 					} else {
 						printNameNn(bt);
 					}
@@ -672,7 +673,7 @@ public class AncestorReport extends CommonReport {
 						notices = sub.persLong.getNotices();
 						if (sub.persLong.getPrivacy() == null) {
 							printName(bt, sub.persLong, 4);
-							printNotices(bt, notices, 4, tableNum);
+							printNotices(bt, sub.persLong, 4, tableNum);
 						} else {
 							printNameNn(bt);
 						}
@@ -787,7 +788,7 @@ public class AncestorReport extends CommonReport {
 						addChildReference(ftab, mtab, cdata.persLong.getPid(),
 								typesTable.getTextValue("TABLE"), bt);
 
-						printNotices(bt, notices,
+						printNotices(bt, cdata.persLong,
 								getTypeColumn(cdata.persLong.getPid()),
 								tab.getTableNo());
 					} else {
@@ -871,7 +872,7 @@ public class AncestorReport extends CommonReport {
 										(toTable.isEmpty() ? 2 : 3));
 								addChildReference(ftab, mtab, tab.getPid(),
 										typesTable.getTextValue("TABLE"), bt);
-								printNotices(bt, notices, tab.getPid(),
+								printNotices(bt, cdata.persLong, tab.getPid(),
 										tab.getTableNo());
 							} else {
 								printNameNn(bt);
@@ -958,7 +959,7 @@ public class AncestorReport extends CommonReport {
 										(toTable.isEmpty() ? 2 : 3));
 								addChildReference(ftab, mtab, tab.getPid(),
 										typesTable.getTextValue("TABLE"), bt);
-								printNotices(bt, notices, tab.getPid(),
+								printNotices(bt, cdata.persLong, tab.getPid(),
 										tab.getTableNo());
 							} else {
 								printNameNn(bt);

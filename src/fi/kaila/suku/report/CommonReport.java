@@ -768,7 +768,7 @@ public abstract class CommonReport {
 			if (sdata.persLong.getPrivacy() == null) {
 
 				printName(bt, sdata.persLong, typesColumn);
-				printNotices(bt, notices, typesColumn, tabNo);
+				printNotices(bt, sdata.persLong, typesColumn, tabNo);
 			} else {
 				printNameNn(bt);
 			}
@@ -844,7 +844,7 @@ public abstract class CommonReport {
 				if (referenceFoundEarlier) {
 					noticeCol = 3;
 				}
-				printNotices(bt, notices, noticeCol, tabNo);
+				printNotices(bt, sub.persLong, noticeCol, tabNo);
 			} else {
 				printNameNn(bt);
 			}
@@ -1232,8 +1232,9 @@ public abstract class CommonReport {
 		return sb.toString();
 	}
 
-	protected void printNotices(BodyText bt, UnitNotice[] notices, int colType,
-			long tableNo) {
+	protected void printNotices(BodyText bt, PersonLongData persLong,
+			int colType, long tableNo) {
+		UnitNotice[] notices = persLong.getNotices();
 		boolean addSpace = false;
 		boolean addDot = false;
 		String tag;
@@ -1255,15 +1256,24 @@ public abstract class CommonReport {
 						Resurses.PRIVACY_TEXT))
 						&& nn.getSurety() >= minSurety) {
 					if ((typesTable.isType(tag, colType))) {
-
 						if (typesTable.isType(tag, 1)) {
-
 							String noType = nn.getNoticeType();
 							if (noType != null) {
 								bt.addText(noType);
 							} else {
-
-								bt.addText(typesTable.getTypeText(tag));
+								String tagText = typesTable.getTypeText(tag);
+								if (tagText != null && !tagText.isEmpty()) {
+									String parts[] = tagText.split(";");
+									if (parts.length == 1) {
+										bt.addText(tagText);
+									} else {
+										if (persLong.getSex().equals("F")) {
+											bt.addText(parts[1]);
+										} else {
+											bt.addText(parts[0]);
+										}
+									}
+								}
 							}
 							addSpace = true;
 							addDot = true;

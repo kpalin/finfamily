@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,6 +71,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private Suku owner = null;
 	private String exPath = null;
 	private Vector<String> urlvec = null;
+	private String missingKeys = null;
 
 	/**
 	 * Instantiates a new settings dialog.
@@ -241,7 +244,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		lbl.setBounds(x, y, 200, 20);
 		lbl = new JLabel(Resurses.getString("SETTING_FONTSIZE"));
 		getContentPane().add(lbl);
-		lbl.setBounds(x + 210, y, 200, 20);
+		lbl.setBounds(x + 210, y, 260, 20);
 
 		y += 20;
 		dateFormat = new JComboBox(dateFormats);
@@ -431,7 +434,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter("exe"));
 			chooser.setDialogTitle("Open exe file");
 
-			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			if (chooser.showOpenDialog(owner) != JFileChooser.APPROVE_OPTION) {
 				Suku.kontroller.putPref(owner, "GRAPHVIZ", "");
 				graphVizPath.setText("");
 				owner.mToolsAuxGraphviz.setEnabled(false);
@@ -462,7 +465,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter("exe"));
 			chooser.setDialogTitle("Open exe file");
 
-			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			if (chooser.showOpenDialog(owner) != JFileChooser.APPROVE_OPTION) {
 				Suku.kontroller.putPref(owner, "IMAGEMAGICK", "");
 				imageMagickPath.setText("");
 				return;
@@ -492,7 +495,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter("xls"));
 			chooser.setDialogTitle("Open xls file");
 
-			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			if (chooser.showOpenDialog(owner) != JFileChooser.APPROVE_OPTION) {
 				Suku.kontroller.putPref(owner, "FINFAMILY.XLS", "");
 				excelPath.setText("");
 				return;
@@ -513,6 +516,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 			Suku.kontroller.putPref(owner, "FINFAMILY.XLS", filename);
 			excelPath.setText(filename);
+
+			missingKeys = checkForMissingNames(filename);
 
 		}
 
@@ -636,16 +641,75 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 			} catch (Exception e1) {
 				logger.log(Level.WARNING, "look_and_feel", e1);
-
 			}
 
 			setVisible(false);
 			if (askRestart) {
+				if (missingKeys != null) {
+					SukuPad pad = new SukuPad(this, missingKeys);
+					pad.setVisible(true);
+				}
 				JOptionPane.showMessageDialog(this,
 						Resurses.getString("RESTART_FINFAMILY"),
 						Resurses.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
+	}
+
+	private String checkForMissingNames(String filename) {
+
+		ExcelBundle original = new ExcelBundle();
+		Locale testLocale = new Locale("en");
+		original.importBundle("excel/FinFamily", "Program", testLocale);
+		ExcelBundle newBundle = new ExcelBundle();
+		newBundle.importBundle(filename, "Program", testLocale);
+
+		StringBuilder missing = new StringBuilder();
+
+		Iterator<String> it = original.getBundleMap().keySet().iterator();
+
+		while (it.hasNext()) {
+			String nextKey = it.next();
+			String value = newBundle.getBundleMap().get(nextKey);
+			if (value == null) {
+
+				if (missing.length() == 0) {
+					missing.append(Resurses.getString("SETTINGS_MISSING_KEYS"));
+					missing.append("\n\nProgram:\n");
+				}
+
+				missing.append("\n");
+				missing.append(nextKey);
+			}
+		}
+
+		original = new ExcelBundle();
+
+		original.importBundle("excel/FinFamily", "Report", testLocale);
+
+		newBundle = new ExcelBundle();
+		newBundle.importBundle(filename, "Report", testLocale);
+		it = original.getBundleMap().keySet().iterator();
+		boolean wasFirstReport = true;
+		while (it.hasNext()) {
+			String nextKey = it.next();
+			String value = newBundle.getBundleMap().get(nextKey);
+			if (value == null) {
+				if (missing.length() == 0) {
+					missing.append(Resurses.getString("SETTINGS_MISSING_KEYS"));
+					missing.append("\n");
+				}
+				if (wasFirstReport) {
+					missing.append("\n\nReport:\n");
+					wasFirstReport = false;
+				}
+
+				missing.append("\n");
+				missing.append(nextKey);
+			}
+		}
+
+		return missing.toString();
 	}
 }

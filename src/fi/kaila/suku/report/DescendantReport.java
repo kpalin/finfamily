@@ -21,6 +21,7 @@ import fi.kaila.suku.util.Roman;
 import fi.kaila.suku.util.SukuException;
 import fi.kaila.suku.util.SukuTypesTable;
 import fi.kaila.suku.util.Utils;
+import fi.kaila.suku.util.pojo.PersonLongData;
 import fi.kaila.suku.util.pojo.Relation;
 import fi.kaila.suku.util.pojo.RelationNotice;
 import fi.kaila.suku.util.pojo.ReportTableMember;
@@ -223,6 +224,8 @@ public class DescendantReport extends CommonReport {
 		UnitNotice[] tableNotices = new UnitNotice[tableCount];
 		UnitNotice[] famtNotices = new UnitNotice[famtCount];
 
+		PersonLongData dummyPerson = new PersonLongData(0, "INDI", "M");
+
 		int xn = 0;
 		int xtable = 0;
 		int xfamt = 0;
@@ -260,7 +263,8 @@ public class DescendantReport extends CommonReport {
 			bt = new MainPersonText();
 			repoWriter.addText(bt);
 			bt = new MainPersonText();
-			printNotices(bt, tableNotices, 2, tab.getTableNo() + tableOffset);
+			dummyPerson.setNotices(tableNotices);
+			printNotices(bt, dummyPerson, 2, tab.getTableNo() + tableOffset);
 			repoWriter.addText(bt);
 			bt = new MainPersonText();
 			bt.addText("");
@@ -405,7 +409,7 @@ public class DescendantReport extends CommonReport {
 		}
 
 		if (pdata.persLong.getPrivacy() == null) {
-			printNotices(bt, notices, 2, tab.getTableNo() + tableOffset);
+			printNotices(bt, pdata.persLong, 2, tab.getTableNo() + tableOffset);
 		}
 		fromTable = "";
 		ref = personReferences.get(tab.getPid());
@@ -457,7 +461,8 @@ public class DescendantReport extends CommonReport {
 				notices = sub.persLong.getNotices();
 				if (sub.persLong.getPrivacy() == null) {
 					printName(bt, sub.persLong, 4);
-					printNotices(bt, notices, 4, tab.getTableNo() + tableOffset);
+					printNotices(bt, sub.persLong, 4, tab.getTableNo()
+							+ tableOffset);
 				} else {
 					printNameNn(bt);
 				}
@@ -683,7 +688,7 @@ public class DescendantReport extends CommonReport {
 				if (cdata.persLong.getPrivacy() == null) {
 
 					printName(bt, cdata.persLong, (hasOwnTable ? 3 : 2));
-					printNotices(bt, notices, (hasOwnTable ? 3 : 2),
+					printNotices(bt, cdata.persLong, (hasOwnTable ? 3 : 2),
 							tab.getTableNo() + tableOffset);
 				} else {
 					printNameNn(bt);
@@ -720,8 +725,8 @@ public class DescendantReport extends CommonReport {
 							if (sub.persLong.getPrivacy() == null) {
 
 								printName(bt, sub.persLong, 4);
-								printNotices(bt, notices, 4, tab.getTableNo()
-										+ tableOffset);
+								printNotices(bt, sub.persLong, 4,
+										tab.getTableNo() + tableOffset);
 							} else {
 								printNameNn(bt);
 							}
@@ -802,7 +807,8 @@ public class DescendantReport extends CommonReport {
 			bt.addText("\n");
 			repoWriter.addText(bt);
 			bt = new MainPersonText();
-			printNotices(bt, famtNotices, 2, tab.getTableNo());
+			dummyPerson.setNotices(famtNotices);
+			printNotices(bt, dummyPerson, 2, tab.getTableNo());
 			repoWriter.addText(bt);
 		}
 	}

@@ -169,7 +169,7 @@ public class DescendantPane extends JPanel {
 		radio = new JRadioButton(Resurses.getString("REPORT.LISTA.DESCLISTA"));
 		tableOrder.add(radio);
 		rtypy += 120;
-		radio.setBounds(rtypx, rtypy, 200, 20);
+		radio.setBounds(rtypx, rtypy, 300, 20);
 		radio.setActionCommand("REPORT.LISTA.DESCLISTA");
 		add(radio);
 		tableOrder.add(radio);

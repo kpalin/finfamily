@@ -25,17 +25,12 @@ public class ExcelBundle {
 	private static Logger logger = Logger
 			.getLogger(ExcelBundle.class.getName());
 
-	// /**
-	// * @param path
-	// * @param currentLocale
-	// * @return an instance of this;
-	// */
-	// public static ExcelBundle getBundle(String path, String page,
-	// Locale currentLocale) {
-	// ExcelBundle me = new ExcelBundle();
-	// me.importBundle(path, page, currentLocale);
-	// return me;
-	// }
+	/**
+	 * @return the map
+	 */
+	public HashMap<String, String> getBundleMap() {
+		return bundle;
+	}
 
 	/**
 	 * Gets the string.

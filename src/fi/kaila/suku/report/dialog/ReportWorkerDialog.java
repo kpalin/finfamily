@@ -659,7 +659,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 		lb = new JLabel(Resurses.getString("REPORT.IMAGE.HEIGHT"));
 		add(lb);
-		lb.setBounds(x4 + 64, y1 + 22, 100, 20);
+		lb.setBounds(x4 + 64, y1 + 22, 160, 20);
 
 		commonPersonImageSize = new JTextField();
 		commonPersonImageSize.setBounds(x4, y1 + 44, 60, 20);
@@ -667,7 +667,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 		lb = new JLabel(Resurses.getString("REPORT.PERSONIMAGE.HEIGHT"));
 		add(lb);
-		lb.setBounds(x4 + 64, y1 + 44, 100, 20);
+		lb.setBounds(x4 + 64, y1 + 44, 160, 20);
 
 		commonNumberImages = new JCheckBox(
 				Resurses.getString("REPORT.IMAGE.NUMBER"), true);
@@ -843,7 +843,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 				.getString("REPORT.INDEX")));
 		pane.setLayout(new GridLayout(0, 1));
 
-		pane.setBounds(x4, y3, 160, 100);
+		pane.setBounds(x4, y3, 240, 100);
 
 		add(pane);
 
@@ -859,7 +859,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 		commonIndexYears = new JCheckBox(
 				Resurses.getString("REPORT.INDEX.YEARS"));
-		commonIndexYears.setBounds(0, 44, 150, 0);
+		commonIndexYears.setBounds(0, 44, 200, 0);
 		pane.add(commonIndexYears);
 
 		reportTypePane = new JTabbedPane();
@@ -938,7 +938,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 
 		viewInsert = new JComboBox(insertViewList);
 		add(viewInsert);
-		viewInsert.setBounds(x4, footery + 25, 260, 20);
+		viewInsert.setBounds(x4, footery + 25, 340, 20);
 
 		viewResetInsert = new JCheckBox(Resurses.getString("REPORT.RESET.VIEW"));
 		viewResetInsert.setBounds(x4, footery + 50, 200, 20);

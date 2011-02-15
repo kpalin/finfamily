@@ -38,14 +38,32 @@ public class SukuPad extends JDialog implements ActionListener {
 	 * Instantiates a new suku pad.
 	 * 
 	 * @param owner
-	 *            the owner
+	 *            frame
+	 * 
 	 * @param text
-	 *            the text
+	 * 
 	 */
 	public SukuPad(JFrame owner, String text) {
-
 		super(owner, Resurses.getString("SUKUOHJELMISTO"));
+		initMe(text);
+	}
 
+	/**
+	 * Constructor from JDialog
+	 * 
+	 * @param owner
+	 *            dialog
+	 * @param text
+	 */
+	public SukuPad(JDialog owner, String text) {
+		super(owner, Resurses.getString("SUKUOHJELMISTO"));
+		initMe(text);
+	}
+
+	/**
+	 * @param text
+	 */
+	private void initMe(String text) {
 		JMenuBar menubar = new JMenuBar();
 
 		setJMenuBar(menubar);

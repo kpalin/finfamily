@@ -117,7 +117,7 @@ public class ImagesLista extends CommonReport {
 		printName(bt, pdata.persLong, 2);
 		repoWriter.addText(bt);
 
-		printNotices(bt, notices, 2, 0);
+		printNotices(bt, pdata.persLong, 2, 0);
 		// bt = new BodyText();
 		// bt.addText("");
 		repoWriter.addText(bt);
