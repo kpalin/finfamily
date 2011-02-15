@@ -474,7 +474,7 @@ public class Resurses {
 		if (resources == null) {
 			// Locale.setDefault(currentLocale);
 			resources = new ExcelBundle();
-			resources.importBundle("excel/FinFamily", "Program", currentLocale);
+			resources.importBundle(getBundle(), "Program", currentLocale);
 			// resources = ExcelBundle.getBundle("excel/FinFamily", "Program",
 			// currentLocale);
 		}
@@ -491,9 +491,15 @@ public class Resurses {
 		repoLangu = newLocale;
 		myself = null;
 		resources = new ExcelBundle();
+		resources.importBundle(getBundle(), "Program", currentLocale);
+	}
 
-		resources.importBundle("excel/FinFamily", "Program", currentLocale);
-
+	private static String getBundle() {
+		String location = Suku.getFinFamilyXls();
+		if (location == null) {
+			return "excel/FinFamily";
+		}
+		return location;
 	}
 
 	private static ExcelBundle repoTexts = null; // new
@@ -512,7 +518,7 @@ public class Resurses {
 		if (repoTexts == null) {
 			repoTexts = new ExcelBundle();
 			Locale locRepo = new Locale(getLanguage());
-			repoTexts.importBundle("excel/FinFamily", "Report", locRepo);
+			repoTexts.importBundle(getBundle(), "Report", locRepo);
 		}
 		if (repoTexts == null) {
 			return tag;

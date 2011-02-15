@@ -55,6 +55,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private final JTextField graphVizPath;
 	private final JButton imageMagickSetup;
 	private final JTextField imageMagickPath;
+	private final JButton excelSetup;
+	private final JTextField excelPath;
 	private final JComboBox serverUrl;
 	private final String originUrl;
 	private final String originLanguage;
@@ -65,7 +67,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 	private String[] locas = null;
 	private String[] dateCodes = null;
 	private Suku owner = null;
-
+	private String exPath = null;
 	private Vector<String> urlvec = null;
 
 	/**
@@ -320,6 +322,23 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		imageMagickSetup.addActionListener(this);
 		getContentPane().add(imageMagickSetup);
 
+		y += 24;
+		lbl = new JLabel(Resurses.getString("SETTINGS_FINFAMILY"));
+		getContentPane().add(lbl);
+		lbl.setBounds(x, y, 400, 20);
+		y += 20;
+
+		exPath = Suku.kontroller.getPref(owner, "FINFAMILY.XLS", "");
+		excelPath = new JTextField(exPath);
+		excelPath.setBounds(x, y, 440, 20);
+		excelPath.setEditable(false);
+		getContentPane().add(excelPath);
+		excelSetup = new JButton("...");
+		excelSetup.setBounds(x + 440, y, 20, 20);
+		excelSetup.setActionCommand("FINFAMILY.XLS");
+		excelSetup.addActionListener(this);
+		getContentPane().add(excelSetup);
+
 		if (Suku.kontroller.isWebStart()) {
 			graphVizSetup.setEnabled(false);
 			imageMagickSetup.setEnabled(false);
@@ -383,8 +402,10 @@ public class SettingsDialog extends JDialog implements ActionListener {
 		ok.addActionListener(this);
 		ok.setBounds(330, y, 100, 24);
 
+		int myheight = y + 80;
+
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(d.width / 2 - 300, d.height / 2 - 200, 540, 400);
+		setBounds(d.width / 2 - 300, d.height / 2 - myheight / 2, 540, myheight);
 		setResizable(false);
 		getRootPane().setDefaultButton(ok);
 
@@ -464,7 +485,45 @@ public class SettingsDialog extends JDialog implements ActionListener {
 			imageMagickPath.setText(filename);
 
 		}
+
+		if (cmd.equals("FINFAMILY.XLS")) {
+
+			JFileChooser chooser = new JFileChooser();
+			chooser.setFileFilter(new fi.kaila.suku.util.SettingFilter("xls"));
+			chooser.setDialogTitle("Open xls file");
+
+			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+				Suku.kontroller.putPref(owner, "FINFAMILY.XLS", "");
+				excelPath.setText("");
+				return;
+			}
+			File f = chooser.getSelectedFile();
+			if (f == null) {
+
+				return;
+			}
+			String filename = f.getAbsolutePath();
+
+			if (filename == null || filename.isEmpty()) {
+				Suku.kontroller.putPref(owner, "FINFAMILY.XLS", "");
+				excelPath.setText("");
+
+				return;
+			}
+
+			Suku.kontroller.putPref(owner, "FINFAMILY.XLS", filename);
+			excelPath.setText(filename);
+
+		}
+
 		if (cmd.equals(Resurses.OK)) {
+
+			String newPath = Suku.kontroller
+					.getPref(owner, "FINFAMILY.XLS", "");
+			if (!newPath.equals(exPath)) {
+				askRestart = true;
+				Suku.setFinFamilyXls(newPath);
+			}
 
 			String input = (String) serverUrl.getSelectedItem();
 			if (input == null) {

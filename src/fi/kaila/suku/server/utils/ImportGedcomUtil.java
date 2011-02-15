@@ -27,6 +27,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import fi.kaila.suku.imports.ImportGedcomDialog;
+import fi.kaila.suku.swing.Suku;
 import fi.kaila.suku.util.ExcelBundle;
 import fi.kaila.suku.util.Resurses;
 import fi.kaila.suku.util.SukuDateException;
@@ -129,15 +130,8 @@ public class ImportGedcomUtil {
 		}
 		repoTexts = new ExcelBundle();
 		Locale locRepo = new Locale(lang);
-		repoTexts.importBundle("excel/FinFamily", "Report", locRepo);
+		repoTexts.importBundle(Suku.getFinFamilyXls(), "Report", locRepo);
 		logger.fine("importGedcom repoTexts + con=" + con);
-		// texts = new HashMap<String, String>();
-		// if (vvTexts != null) {
-		// for (int i = 0; i < vvTexts.size(); i++) {
-		// String[] parts = vvTexts.get(i);
-		// texts.put(parts[0], parts[1]);
-		// }
-		// }
 
 		try {
 			int unitCount = 0;

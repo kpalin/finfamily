@@ -1,5 +1,6 @@
 package fi.kaila.suku.util;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
@@ -115,8 +116,13 @@ public class ExcelBundle {
 		InputStream in = null;
 
 		try {
-			// System.out.println("excelkbundle1: " + path);
-			in = this.getClass().getResourceAsStream("/" + path + ".xls");
+
+			if (path.startsWith("excel")) {
+				// System.out.println("excelkbundle1: " + path);
+				in = this.getClass().getResourceAsStream("/" + path + ".xls");
+			} else {
+				in = new FileInputStream(path);
+			}
 			// System.out.println("excelkbundle2: " + path);
 			Workbook workbook = Workbook.getWorkbook(in, ws);
 
@@ -178,16 +184,14 @@ public class ExcelBundle {
 
 								String ax = acx.getContents();
 								langNames[i - 1] = ax;
-
 							}
 						}
 					}
-
 				}
 			}
 
 			workbook.close();
-
+			in.close();
 		} catch (Throwable e) {
 
 			logger.log(Level.WARNING, "Excel bundle", e);

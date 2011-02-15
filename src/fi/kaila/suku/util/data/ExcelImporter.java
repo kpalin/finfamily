@@ -98,11 +98,10 @@ public class ExcelImporter {
 
 				String INSERT_TYPES = "insert into Types (TagType,Tag,Rule,LangCode,Name,ReportName) "
 						+ " values (?,?,?,?,?,?)";
-
 				String DELETE_TYPES = "delete from Types";
-
-				String UPDATE_SETTINGS = "update SukuSettings set settingvalue = substring(settingvalue for 5)  where settingtype = 'reporttypes' ";
-
+				String UPDATE_SETTINGS = "update SukuSettings "
+						+ "set settingvalue = substring(settingvalue for 5)  "
+						+ "where settingtype = 'reporttypes' ";
 				try {
 
 					pst = con.prepareStatement(DELETE_TYPES);
@@ -126,105 +125,41 @@ public class ExcelImporter {
 					String a1 = ac1.getContents();
 					String b1 = bc1.getContents();
 					String c1 = cc1.getContents();
-
-					for (col = 3; col < colCount; col++) {
-						Cell xc1 = sheet.getCell(col, rivi);
-						String x1 = null;
-						if (xc1 != null) {
-							x1 = xc1.getContents();
-							if (x1.length() == 0) {
-								x1 = null;
-							}
-						}
-						String y1 = null;
-						if (header[col].length() == 2) {
-
-							pst.setString(1, a1);
-							pst.setString(2, b1);
-							if (c1 != null && c1.length() == 0) {
-								c1 = null;
-							}
-							pst.setString(3, c1);
-							pst.setString(4, header[col]);
-							pst.setString(5, x1);
-							if (text_col[col] > 0) {
-								Cell yc1 = sheet.getCell(text_col[col], rivi);
-								if (yc1 != null) {
-									y1 = yc1.getContents();
-									if (y1.length() == 0) {
-										y1 = null;
-									}
+					if ("Notice".equalsIgnoreCase(a1)) {
+						for (col = 3; col < colCount; col++) {
+							Cell xc1 = sheet.getCell(col, rivi);
+							String x1 = null;
+							if (xc1 != null) {
+								x1 = xc1.getContents();
+								if (x1.length() == 0) {
+									x1 = null;
 								}
 							}
-							pst.setString(6, y1);
-							pst.executeUpdate();
-						}
-						// }
-					}
-				}
-			}
-			sheet = workbook.getSheet("Texts");
-			if (sheet != null) {
-				suk.resu = null;
-				colCount = sheet.getColumns();
-				rowCount = sheet.getRows();
+							String y1 = null;
+							if (header[col].length() == 2) {
 
-				header = new String[colCount];
-
-				for (col = 0; col < colCount; col++) {
-					Cell x0 = sheet.getCell(col, 0);
-					header[col] = null;
-					if (x0 != null) {
-						header[col] = x0.getContents();
-
-					}
-				}
-
-				String INSERT_TEXTS = "insert into Texts (TagType,Tag,LangCode,Name) "
-						+ " values (?,?,?,?)";
-
-				String DELETE_TEXTS = "delete from Texts";
-
-				try {
-
-					pst = con.prepareStatement(DELETE_TEXTS);
-					pst.executeUpdate();
-
-					pst = con.prepareStatement(INSERT_TEXTS);
-
-				} catch (SQLException e) {
-
-					e.printStackTrace();
-					throw new SukuException(e);
-				}
-
-				for (rivi = 1; rivi < rowCount; rivi++) {
-
-					Cell ac1 = sheet.getCell(0, rivi);
-					Cell bc1 = sheet.getCell(1, rivi);
-
-					String a1 = ac1.getContents();
-					String b1 = bc1.getContents();
-
-					for (col = 2; col < colCount; col++) {
-						Cell xc1 = sheet.getCell(col, rivi);
-						String x1 = null;
-						if (xc1 != null) {
-							x1 = xc1.getContents();
-							if (x1.length() == 0) {
-								x1 = null;
+								pst.setString(1, a1);
+								pst.setString(2, b1);
+								if (c1 != null && c1.length() == 0) {
+									c1 = null;
+								}
+								pst.setString(3, c1);
+								pst.setString(4, header[col]);
+								pst.setString(5, x1);
+								if (text_col[col] > 0) {
+									Cell yc1 = sheet.getCell(text_col[col],
+											rivi);
+									if (yc1 != null) {
+										y1 = yc1.getContents();
+										if (y1.length() == 0) {
+											y1 = null;
+										}
+									}
+								}
+								pst.setString(6, y1);
+								pst.executeUpdate();
 							}
 						}
-
-						if (header[col].length() == 2) {
-
-							pst.setString(1, a1);
-							pst.setString(2, b1);
-							pst.setString(3, header[col]);
-							pst.setString(4, x1);
-							pst.executeUpdate();
-						}
-						// }
 					}
 				}
 			}
@@ -266,13 +201,6 @@ public class ExcelImporter {
 								&& fromCol >= 0) {
 							suk.resu = null;
 
-							// create table Conversions (
-							// ConversionId serial primary key, -- serial
-							// primary key
-							// FromText varchar, -- text in data
-							// LangCode varchar, -- language_code
-							// Rule varchar, -- rule
-							// ToText varchar
 							//
 							String INSERT_CONVERSIONS = "insert into Conversions (FromText,LangCode,Rule,ToText) "
 									+ " values (?,?,?,?)";

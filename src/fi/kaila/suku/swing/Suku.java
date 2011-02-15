@@ -24,11 +24,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -36,7 +34,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -324,6 +321,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private String url = null;
 	private static JFrame myFrame = null;
 	private static final int needleSize = 4;
+	/**
+	 * location for textfile FinFamily.xls or null if located at
+	 * resources/excel/FinFamily.xls
+	 */
+	private static String finFamilyXls = null;
 
 	/**
 	 * FinFamily main program entry point when used as standard Swing
@@ -428,7 +430,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			logger.log(Level.INFO, "look-and-feel virhe", e);
 
 		}
-
+		Suku.setFinFamilyXls(kontroller.getPref(this, "FINFAMILY.XLS", ""));
 		String loca = kontroller.getPref(this, Resurses.LOCALE, "xx");
 		if (loca == null || loca.equals("xx")) {
 			logger.info("Locale " + loca + " encountered.");
@@ -1684,15 +1686,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					cdlg.rememberDatabase(false);
 					return;
 				}
-
 				kontroller.getSukuData("cmd=schema", "type=set", "name="
 						+ schema);
 			}
-			// copy report languages here to static
-			Locale reportLocale = new Locale("fi");
-
-			ExcelBundle resultla = new ExcelBundle();
-			resultla.importBundle("excel/FinFamily", "Program", reportLocale);
 
 			repoLangList = ExcelBundle.getLangList();
 
@@ -2342,83 +2338,13 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		}
 	}
 
-	/**
-	 * @param infile
-	 * @param endi
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	private void graphvixDo(String infile, String endi) throws IOException,
-			InterruptedException {
-		String exeTask = kontroller.getPref(this, "GRAPHVIZ", "");
-		Runtime rt = Runtime.getRuntime();
-		Vector<String> rtv = new Vector<String>();
-		rtv.add(exeTask);
-		rtv.add("-Tjpeg");
-
-		String dirname = null;
-		File dir = null;
-		int dirIdx = infile.replace('\\', '/').lastIndexOf('/');
-		if (dirIdx > 0) {
-			dirname = infile.substring(0, dirIdx);
-			dir = new File(dirname);
-			infile = infile.substring(dirIdx + 1);
-		}
-
-		rtv.add(infile);
-
-		rtv.add("-o");
-		rtv.add(endi);
-
-		Process pr = rt.exec(rtv.toArray(new String[0]), null, dir);
-		// boolean dont = false;
-		// if (dont) {
-		// int counter = 0;
-		// int exitVal = -1;
-		// while (counter >= 0) {
-		// //
-		// // this loop is here because dot seemed to hang up
-		// // sometimes. It happened with åäö in images path
-		// try {
-		// counter++;
-		// if (counter > 250) {
-		// counter = -1;
-		// pr.destroy();
-		// }
-		// Thread.sleep(40);
-		// exitVal = pr.exitValue();
-		// break;
-		//
-		// } catch (Exception ie) {
-		// if (counter > 240) {
-		// logger.info(ie.getMessage() + " for "
-		// + infile);
-		// }
-		// }
-		// }
-		// }
-		BufferedReader input = new BufferedReader(new InputStreamReader(
-				pr.getErrorStream()));
-		String line = null;
-		while ((line = input.readLine()) != null) {
-			logger.info(line);
-		}
-		int exitVal = pr.waitFor();
-
-		logger.info("conversion to " + endi + " resulted in " + exitVal);
-
-		Utils.openExternalFile(endi);
-	}
-
 	private void executeOrderChildren() {
 		OrderChildren dlg;
-
 		if (personView.getMainPaneIndex() > 1) {
 			JOptionPane.showMessageDialog(this,
 					Resurses.getString("STORE_CLOSE_PERSON"));
 			return;
 		}
-
 		try {
 			dlg = new OrderChildren(this);
 			dlg.setVisible(true);
@@ -4511,4 +4437,21 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	public int getImageScalerIndex() {
 		return imageScalingIndex;
 	}
+
+	/**
+	 * @return the finFamilyXls
+	 */
+	public static String getFinFamilyXls() {
+
+		return finFamilyXls;
+	}
+
+	public static void setFinFamilyXls(String path) {
+		if (path != null && path.isEmpty()) {
+			finFamilyXls = null;
+		} else {
+			finFamilyXls = path;
+		}
+	}
+
 }
