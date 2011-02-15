@@ -4442,8 +4442,16 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	 * @return the finFamilyXls
 	 */
 	public static String getFinFamilyXls() {
-
-		return finFamilyXls;
+		if (finFamilyXls != null) {
+			File f = new File(finFamilyXls);
+			if (f.exists()) {
+				return finFamilyXls;
+			} else {
+				logger.warning("FinFamily file does not exist at "
+						+ finFamilyXls);
+			}
+		}
+		return null;
 	}
 
 	public static void setFinFamilyXls(String path) {
