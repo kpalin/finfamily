@@ -922,7 +922,7 @@ public class ReportWorkerDialog extends JDialog implements ActionListener {
 			viewnames = new String[vlist.generalArray.length + 1];
 			insertViewList = new String[vlist.generalArray.length + 1];
 			viewids = new int[vlist.generalArray.length + 1];
-			viewnames[0] = "";
+			viewnames[0] = Resurses.getString("SELECT_VIEW");
 			insertViewList[0] = Resurses.getString("REPORT.SELECT_REPORTVIEW");
 			viewids[0] = 0;
 			for (int i = 0; i < vlist.generalArray.length; i++) {

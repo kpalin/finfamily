@@ -1017,8 +1017,9 @@ public class Utils {
 	 * @param endi
 	 * @throws IOException
 	 * @throws InterruptedException
+	 * @return success status from process
 	 */
-	public static void graphvizDo(JFrame parent, String exeTask, String infile,
+	public static int graphvizDo(JFrame parent, String exeTask, String infile,
 			String endi) throws IOException, InterruptedException {
 		String filetype = "jpeg";
 		int lastDot = endi.lastIndexOf(".");
@@ -1093,9 +1094,12 @@ public class Utils {
 			SukuPad pad = new SukuPad(parent, "Graphviz response [" + exitVal
 					+ "]\n\n" + respo.toString());
 			pad.setVisible(true);
+
 		} else {
 			openExternalFile(endi);
+
 		}
+		return exitVal;
 	}
 
 }

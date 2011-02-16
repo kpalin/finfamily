@@ -645,7 +645,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
 
 			setVisible(false);
 			if (askRestart) {
-				if (missingKeys != null) {
+				if (missingKeys != null && !missingKeys.isEmpty()) {
 					SukuPad pad = new SukuPad(this, missingKeys);
 					pad.setVisible(true);
 				}

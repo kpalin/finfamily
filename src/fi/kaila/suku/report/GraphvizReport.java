@@ -69,6 +69,7 @@ public class GraphvizReport extends CommonReport {
 		boolean includeFamily = caller.getAncestorPane().getShowfamily();
 		boolean includeAdopted = caller.getDescendantPane().getAdopted();
 		boolean underlineName = caller.showUnderlineNames();
+		boolean hasDebugState = caller.getDebugState();
 		Dimension maxPersonImageSize = caller.getPersonImageMaxSize();
 		if (maxPersonImageSize.width == 0) {
 			maxPersonImageSize = new Dimension(100, 150);
@@ -103,11 +104,8 @@ public class GraphvizReport extends CommonReport {
 		identMap = new LinkedHashMap<String, PersonShortData>();
 		relaMap = new LinkedHashMap<String, String>();
 
-		// repoWriter.createReport();
-
 		try {
 			if (caller.getPid() > 0) {
-				// caller.getDescendantPane().getGenerations();
 				SukuData pdata = caller.getKontroller().getSukuData(
 						"cmd=person", "pid=" + caller.getPid(),
 						"lang=" + Resurses.getLanguage());
@@ -156,7 +154,6 @@ public class GraphvizReport extends CommonReport {
 									}
 								}
 								sb.append(sbx.toString());
-
 							} else {
 								String parts[] = pp.getGivenname().split(" ");
 								String etunimi = parts[0];
@@ -180,11 +177,9 @@ public class GraphvizReport extends CommonReport {
 							sb.append(" ");
 							sb.append(pp.getPatronym());
 						}
-
 						if (pp.getPrefix() != null) {
 							sb.append(" ");
 							sb.append(pp.getPrefix());
-
 						}
 						if (pp.getSurname() != null) {
 							sb.append(" ");
@@ -233,7 +228,6 @@ public class GraphvizReport extends CommonReport {
 								sb.append(" ");
 								sb.append(pp.getBirthCountry());
 							}
-
 						}
 					}
 					if (deatShow) {
@@ -254,7 +248,6 @@ public class GraphvizReport extends CommonReport {
 								sb.append(" ");
 								sb.append(pp.getDeatCountry());
 							}
-
 						}
 					}
 					if (occuShow) {
@@ -358,8 +351,29 @@ public class GraphvizReport extends CommonReport {
 				String exeTask = Suku.kontroller.getPref(
 						caller.getSukuParent(), "GRAPHVIZ", "");
 				if (!exeTask.equals("")) {
-					Utils.graphvizDo(caller.getSukuParent(), exeTask, pathgv,
-							pathjpg);
+					int resu = Utils.graphvizDo(caller.getSukuParent(),
+							exeTask, pathgv, pathjpg);
+					if (resu == 0 && !hasDebugState) {
+						File f = new File(pathgv);
+						f.delete();
+						if (pictShow) {
+							File d = new File(filePath + "/" + FOLDER_NAME);
+							if (d.exists()) {
+								if (d.isDirectory()) {
+									if (!pathjpg.toLowerCase().endsWith(".svg")) {
+										String[] files = d.list();
+										for (int i = 0; i < files.length; i++) {
+											File df = new File(
+													d.getAbsoluteFile() + "/"
+															+ files[i]);
+											df.delete();
+										}
+									}
+								}
+								d.delete();
+							}
+						}
+					}
 				}
 			} else {
 				JOptionPane.showMessageDialog(caller, "dblista");
