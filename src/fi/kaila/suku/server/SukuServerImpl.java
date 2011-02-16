@@ -2052,7 +2052,9 @@ public class SukuServerImpl implements SukuServer {
 			}
 			rs.close();
 
-			sql = "select distinct tag from unitnotice where tag not in  (select tag from types)";
+			sql = "select distinct tag from unitnotice where tag not in  "
+					+ "(select tag from types where langCode = '" + langu
+					+ "')";
 			rs = stm.executeQuery(sql);
 
 			while (rs.next()) {
