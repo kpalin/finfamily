@@ -2,6 +2,13 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+Release 1167 on 16 feb 2011
+
+* Spanish included in main language file
+* All languages texts joined to FinFamily.xls (TypesExcel.xls removed from distribution)
+* Show tags it types for selected language does not exist
+* Delete of gv-file after successfull graphviz call (except .scg files)
+
 Release 1166 on 15 feb 2011
 
 * Alternative location for texts added to Settings dialog

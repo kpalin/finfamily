@@ -1109,13 +1109,7 @@ public class SukuServerImpl implements SukuServer {
 		if ("xls".equals(file)) {
 			file = this.openFile;
 		}
-		// if (path == null) {
-		// path = this.openFile;
-		// // if (path == null) {
-		// // path = "resources/excel/TypesExcel.xls";
-		// //
-		// // }
-		// }
+
 		if (type == null || type.equals("import")) {
 			fam = importExcelData(file, page);
 		} else if (type.equals("export")) {
@@ -2248,7 +2242,7 @@ public class SukuServerImpl implements SukuServer {
 							"/excel/PlaceLocations.xls");
 				} else {
 					fis = this.getClass().getResourceAsStream(
-							"/excel/TypesExcel.xls");
+							"/excel/FinFamily.xls");
 				}
 			} else {
 				fis = new FileInputStream(path);
