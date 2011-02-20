@@ -56,6 +56,11 @@
   <xsl:apply-templates/>
   </xsl:template>
   
+  
+  <xsl:template match="anchor">
+ <!--  dont print anchor in word -->
+  </xsl:template>
+  
   <xsl:template match="chapter">
 	
 	 <xsl:choose>
