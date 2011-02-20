@@ -680,7 +680,7 @@ public abstract class CommonReport {
 	protected void printSpouse(long tabNo, int memberPid, BodyText bt,
 			ReportTableMember spouseMember, int spouNum, int tableOffset)
 			throws SukuException {
-		UnitNotice[] notices;
+
 		String fromTable;
 		SukuData sdata;
 		PersonInTables refs;
@@ -764,7 +764,6 @@ public abstract class CommonReport {
 
 			}
 
-			notices = sdata.persLong.getNotices();
 			if (sdata.persLong.getPrivacy() == null) {
 
 				printName(bt, sdata.persLong, typesColumn);
@@ -809,7 +808,7 @@ public abstract class CommonReport {
 			bt.addText(subDad + " ");
 			SukuData sub = caller.getKontroller().getSukuData("cmd=person",
 					"pid=" + spouseMember.getSubPid(i));
-			notices = sub.persLong.getNotices();
+
 			StringBuilder fromsTable = new StringBuilder();
 			boolean referenceFoundEarlier = false;
 			refs = personReferences.get(spouseMember.getSubPid(i));

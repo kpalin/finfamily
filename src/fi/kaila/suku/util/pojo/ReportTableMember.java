@@ -155,7 +155,7 @@ public class ReportTableMember implements Serializable {
 	}
 
 	/**
-	 * Get stradoniz ancestior number of ancestor.
+	 * Get stradoniz ancestor number of ancestor.
 	 * 
 	 * @param idx
 	 *            index of ancestor
@@ -174,8 +174,8 @@ public class ReportTableMember implements Serializable {
 	 */
 	public String getSubDadMom(int idx) {
 		long strado = subs.get(idx).getStrado();
-		String far = Resurses.getString("REPORT_F");
-		String mor = Resurses.getString("REPORT_M");
+		String far = Resurses.getReportString("REPORT_F");
+		String mor = Resurses.getReportString("REPORT_M");
 
 		StringBuilder sb = new StringBuilder();
 

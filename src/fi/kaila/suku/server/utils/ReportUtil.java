@@ -752,10 +752,10 @@ public class ReportUtil {
 
 		for (int j = 0; j < regs.size(); j++) {
 			ReportUnit tab = regs.get(j);
-			if (j == 0) {
-				System.out.println("generation for " + tab.getPid() + "("
-						+ regs.size() + ") = " + tab.getGen());
-			}
+			// if (j == 0) {
+			// System.out.println("generation for " + tab.getPid() + "("
+			// + regs.size() + ") = " + tab.getGen());
+			// }
 
 			for (int i = 0; i < tab.getChild().size(); i++) {
 				ReportTableMember asChi = tab.getChild().get(i);
