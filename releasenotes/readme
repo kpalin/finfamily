@@ -2,6 +2,12 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
+Release 1174 on 22 feb 2011
+
+* Added missing German texts
+* Improved image management of gedcom
+* Enabled gender specific Tag names (e.g. né and nèe)
+
 Release 1167 on 16 feb 2011
 
 * Spanish included in main language file
