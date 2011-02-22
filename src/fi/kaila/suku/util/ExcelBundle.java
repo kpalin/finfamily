@@ -112,9 +112,10 @@ public class ExcelBundle {
 
 		try {
 
-			if (path.startsWith("excel")) {
+			if (path == null) {
 				// System.out.println("excelkbundle1: " + path);
-				in = this.getClass().getResourceAsStream("/" + path + ".xls");
+				in = this.getClass()
+						.getResourceAsStream("/excel/FinFamily.xls");
 			} else {
 				in = new FileInputStream(path);
 			}

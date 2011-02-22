@@ -412,39 +412,41 @@ public class ExportGedcomUtil {
 					if (notice.getCroft() != null) {
 						nm.append("2 _CROFT " + notice.getCroft() + "\r\n");
 					}
-
+					if (notice.getSource() != null) {
+						nm.append(getNoteStructure(2, "SOUR",
+								notice.getSource()));
+						if (notice.getSurety() < 100) {
+							nm.append("3 QUAY "
+									+ suretyToQuay(notice.getSurety()) + "\r\n");
+						}
+					} else if (notice.getSurety() < 100) {
+						nm.append("2 SOUR\r\n");
+						nm.append("3 QUAY " + suretyToQuay(notice.getSurety())
+								+ "\r\n");
+					}
 					if (includeImages) {
 						if (notice.getMediaFilename() != null
 								&& notice.getMediaData() != null) {
 							MinimumImage minimg = new MinimumImage(
 									notice.getMediaFilename(),
 									notice.getMediaData());
-							nm.append("2 OBJE\r\n");
+							nm.append("1 OBJE\r\n");
+							nm.append("2 FILE " + minimg.getPath() + "\r\n");
+
 							if (notice.getMediaFilename().toLowerCase()
 									.endsWith(".jpg")) {
 								nm.append("3 FORM jpeg\r\n");
 							}
 							if (notice.getMediaTitle() != null) {
-								nm.append("3 TITL " + notice.getMediaTitle()
+								nm.append("2 TITL " + notice.getMediaTitle()
 										+ "\r\n");
 							}
-							nm.append("3 FILE " + minimg.getPath() + "\r\n");
 
 							images.add(minimg);
 						}
 					}
 				}
-				if (notice.getSource() != null) {
-					nm.append(getNoteStructure(2, "SOUR", notice.getSource()));
-					if (notice.getSurety() < 100) {
-						nm.append("3 QUAY " + suretyToQuay(notice.getSurety())
-								+ "\r\n");
-					}
-				} else if (notice.getSurety() < 100) {
-					nm.append("2 SOUR\r\n");
-					nm.append("3 QUAY " + suretyToQuay(notice.getSurety())
-							+ "\r\n");
-				}
+
 				sb.append(nm.toString());
 
 			}
@@ -877,6 +879,8 @@ public class ExportGedcomUtil {
 			sb.append("1 CHAR ANSEL\r\n");
 			break;
 		case Set_Utf8:
+			sb.append("1 CHAR UTF-8\r\n");
+			break;
 		case Set_Utf16:
 			sb.append("1 CHAR UNICODE\r\n");
 			break;

@@ -159,7 +159,7 @@ public class ImportGedcomUtil {
 			BufferedInputStream bis;
 			File f = new File(fileName);
 			FileInputStream ff = new FileInputStream(f);
-
+			boolean foundGedcom = false;
 			if (fileName.toLowerCase().endsWith(".zip")) {
 				isZipFile = true;
 				// this is a zip-file. let's first find the gedcom file from
@@ -170,6 +170,7 @@ public class ImportGedcomUtil {
 				while ((zipEntry = zipIn.getNextEntry()) != null) {
 					entryName = zipEntry.getName();
 					if (entryName.toLowerCase().endsWith(".ged")) {
+						foundGedcom = true;
 						int li = entryName.replace('\\', '/').lastIndexOf('/');
 						if (li > 0) {
 							baseFolder = entryName.substring(0, li + 1);
@@ -180,14 +181,23 @@ public class ImportGedcomUtil {
 						copyImageToTempfile(zipIn, entryName);
 					}
 				}
-			} else {
+			} else if (fileName.toLowerCase().endsWith(".ged")) {
+				foundGedcom = true;
+				int li = fileName.replace('\\', '/').lastIndexOf('/');
+				if (li > 0) {
+					baseFolder = fileName.substring(0, li + 1);
+				}
 				bis = new BufferedInputStream(ff);
+			} else {
+				resp.resu = Resurses.getString("GEDCOM_BAD_FORMAT");
+				return resp;
 			}
+
 			long dataLen = f.length();
 			double dLen = dataLen;
 			int data = 0;
 			fileIndex = 4;
-			if (dataLen < 10) {
+			if (dataLen < 10 || !foundGedcom) {
 				resp.resu = Resurses.getString("GEDCOM_BAD_FORMAT");
 				return resp;
 			}
@@ -995,6 +1005,13 @@ public class ImportGedcomUtil {
 								notice.setDescription(notice.getDescription()
 										+ " " + detail.lineValue);
 							}
+						} else if (detail.tag.equals("SOUR")) {
+							if (notice.getSource() == null) {
+								notice.setSource(detail.lineValue);
+							} else {
+								notice.setSource(notice.getSource() + " "
+										+ detail.lineValue);
+							}
 						} else if (detail.tag.equals("TYPE")) {
 							notice.setNoticeType(detail.lineValue);
 						} else if (detail.tag.equals("CREA")) {
@@ -1029,9 +1046,18 @@ public class ImportGedcomUtil {
 				notices.add(notice);
 				extractAddressData(notice, noti);
 			} else if (noti.tag.equals("OBJE")) {
-				UnitNotice notice = new UnitNotice("PHOT");
-				notices.add(notice);
-				extractMultimedia(notice, noti);
+				int topIdx = notices.size() - 1;
+				UnitNotice top = notices.get(topIdx);
+				if (sourceSystem.equals("FinFamily")
+						&& top.getMediaData() == null
+						&& top.getMediaFilename() == null
+						&& top.getMediaTitle() == null) {
+					extractMultimedia(top, noti);
+				} else {
+					UnitNotice notice = new UnitNotice("PHOT");
+					notices.add(notice);
+					extractMultimedia(notice, noti);
+				}
 			} else if (noti.tag.equals("FAMC")) {
 				// TODO:
 			} else if (noti.tag.equals("FAMS")) {
@@ -1294,7 +1320,14 @@ public class ImportGedcomUtil {
 						}
 					}
 				} else {
-					File f1 = new File(item.lineValue);
+					String filePath;
+					if (baseFolder != null) {
+						filePath = baseFolder + item.lineValue;
+					} else {
+						filePath = item.lineValue;
+					}
+
+					File f1 = new File(filePath);
 					try {
 						ins = new FileInputStream(f1);
 					} catch (FileNotFoundException e) {
