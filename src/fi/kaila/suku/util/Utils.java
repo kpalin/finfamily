@@ -707,7 +707,18 @@ public class Utils {
 				String[] cmds = { "rundll32", "url.dll,FileProtocolHandler",
 						url };
 				Process p = Runtime.getRuntime().exec(cmds);
-				p.waitFor();
+				int result = p.waitFor();
+				if (result != 0) {
+					StringBuilder sb = new StringBuilder();
+					sb.append(Resurses.getString("FAILED_TO_OPEN"));
+					sb.append("\n");
+					sb.append(url);
+
+					JOptionPane.showMessageDialog(Suku.getFrame(),
+							sb.toString());
+					return;
+				}
+
 			} else if (os.toLowerCase().indexOf("mac") >= 0) {
 
 				// this should work on mac
