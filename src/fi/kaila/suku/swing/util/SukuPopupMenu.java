@@ -203,10 +203,11 @@ public class SukuPopupMenu {
 		pJoinPerson = new JMenuItem(Resurses.getString("JOIN_PERSON"));
 		pJoinPerson.setActionCommand("JOIN_PERSON");
 		pMenu.add(pJoinPerson);
+		// pJoinPerson.setVisible(false);
 		pJoinAddPerson = new JMenuItem(Resurses.getString("JOIN_ADD_PERSON"));
 		pJoinAddPerson.setActionCommand("JOIN_ADD_PERSON");
 		pMenu.add(pJoinAddPerson);
-
+		// pJoinAddPerson.setVisible(false);
 		pMenu.addSeparator();
 		pCopy = new JMenuItem(Resurses.getString(Resurses.MENU_COPY));
 		// pShowFamily.addActionListener(popupListener);

@@ -1076,7 +1076,7 @@ public class ImportGedcomUtil {
 						&& noti.lineValue.indexOf('@', 1) > 1) {
 					GedcomLine dets = gedMap.get(noti.lineValue);
 					if (dets == null) {
-						pers.setSource(noti.lineValue);
+						pers.setSource(extractSourceText(noti));
 					} else {
 						pers.setSource(extractSourceText(dets));
 					}
@@ -1298,7 +1298,7 @@ public class ImportGedcomUtil {
 
 				if (detl.lineValue != null) {
 					sb.append(detl.lineValue);
-					sb.append(", ");
+					sb.append(". ");
 				}
 			}
 			extractSourceChild(detl, sb);
