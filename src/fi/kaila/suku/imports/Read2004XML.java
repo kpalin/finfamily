@@ -2563,7 +2563,7 @@ public class Read2004XML extends DefaultHandler {
 			}
 			pst.close();
 
-			setRunnerValue("Pid = " + this.unitId);
+			// setRunnerValue("Pid = " + this.unitId);
 
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "update unit source failed", e);

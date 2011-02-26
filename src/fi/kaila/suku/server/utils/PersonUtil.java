@@ -586,7 +586,8 @@ public class PersonUtil {
 			} catch (SQLException e1) {
 				logger.log(Level.WARNING, "Person update rollback failed", e1);
 			}
-			logger.log(Level.WARNING, "person update", e);
+			logger.log(Level.WARNING, "person update rolled back for [" + pid
+					+ "]", e);
 			res.resu = e.getMessage();
 			return res;
 

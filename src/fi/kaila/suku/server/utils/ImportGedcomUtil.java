@@ -824,7 +824,7 @@ public class ImportGedcomUtil {
 
 	/** The record count. */
 	int recordCount = 0;
-
+	int errorCount = 0;
 	/** The owner info. */
 	String ownerInfo = null;
 
@@ -847,7 +847,16 @@ public class ImportGedcomUtil {
 		} else if (record.tag.equals("SUBM")) {
 			consumeGedcomSubmitter(record);
 		} else if (record.tag.equals("INDI")) {
-			consumeGedcomIndi(record);
+			try {
+				consumeGedcomIndi(record);
+			} catch (SukuException e) {
+				errorCount++;
+
+				unknownLine.add(record.toString());
+				if (errorCount > 64) {
+					throw new SukuException(e);
+				}
+			}
 		} else if (record.tag.equals("SOUR") || record.tag.equals("NOTE")) {
 			gedSource.put(record.id, record);
 		} else if (record.tag.equals("FAM")) {
@@ -1066,8 +1075,11 @@ public class ImportGedcomUtil {
 				if (noti.lineValue.startsWith("@")
 						&& noti.lineValue.indexOf('@', 1) > 1) {
 					GedcomLine dets = gedMap.get(noti.lineValue);
-
-					pers.setSource(extractSourceText(dets));
+					if (dets == null) {
+						pers.setSource(noti.lineValue);
+					} else {
+						pers.setSource(extractSourceText(dets));
+					}
 				} else {
 					String src = extractGedcomSource(noti);
 					pers.setSource(src);

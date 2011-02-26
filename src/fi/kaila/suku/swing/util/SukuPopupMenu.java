@@ -29,6 +29,8 @@ public class SukuPopupMenu {
 	private final JMenuItem pAddAsChild;
 	private final JMenuItem pAddAsSpouse;
 	private final JMenuItem pAddAsParent;
+	private final JMenuItem pJoinPerson;
+	private final JMenuItem pJoinAddPerson;
 
 	// private JMenuItem pPersonView;
 	private final JMenuItem pCopy;
@@ -93,6 +95,8 @@ public class SukuPopupMenu {
 		pAddAsChild.addActionListener(l);
 		pAddAsSpouse.addActionListener(l);
 		pAddAsParent.addActionListener(l);
+		pJoinPerson.addActionListener(l);
+		pJoinAddPerson.addActionListener(l);
 		// pPersonView.addActionListener(l);
 		pCopy.addActionListener(l);
 		pNeedle.addActionListener(l);
@@ -195,6 +199,13 @@ public class SukuPopupMenu {
 		// pShowFamily.addActionListener(popupListener);
 		pAddAsParent.setActionCommand("ADDPARENT");
 		pAddPerson.add(pAddAsParent);
+
+		pJoinPerson = new JMenuItem(Resurses.getString("JOIN_PERSON"));
+		pJoinPerson.setActionCommand("JOIN_PERSON");
+		pMenu.add(pJoinPerson);
+		pJoinAddPerson = new JMenuItem(Resurses.getString("JOIN_ADD_PERSON"));
+		pJoinAddPerson.setActionCommand("JOIN_ADD_PERSON");
+		pMenu.add(pJoinAddPerson);
 
 		pMenu.addSeparator();
 		pCopy = new JMenuItem(Resurses.getString(Resurses.MENU_COPY));
