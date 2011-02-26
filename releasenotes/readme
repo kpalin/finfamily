@@ -2,9 +2,10 @@ FinFamily Release notes
 
 Releases follow the Subversion revision numbers. 
 
-Release 1177 on 27 feb 2011
+Release 1177 on 28 feb 2011
 
 * Fix to gedcom with missing source record. recover after bad character encoding
+* Fixed language bug that prevented marriage info editing
 
 Release 1174 on 22 feb 2011
 

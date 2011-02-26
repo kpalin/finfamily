@@ -1138,6 +1138,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		if (repoLangList == null || idx >= repoLangList.length)
 			return null;
 		String[] tmp = repoLangList[idx].split(";");
+		if (tmp.length != 2) {
+			System.out.println("kiinni");
+		}
 		if (theCode)
 			return tmp[0];
 		return tmp[1];

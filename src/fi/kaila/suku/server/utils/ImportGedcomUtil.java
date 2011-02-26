@@ -853,6 +853,7 @@ public class ImportGedcomUtil {
 				errorCount++;
 
 				unknownLine.add(record.toString());
+				unknownLine.add(e.toString());
 				if (errorCount > 64) {
 					throw new SukuException(e);
 				}

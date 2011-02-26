@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,11 +80,14 @@ public class ExcelBundle {
 	public static String[] getLangList() {
 		if (langNames == null)
 			return null;
-		String tmp[] = new String[langNames.length];
-		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = langCodes[i] + ";" + langNames[i];
+		Vector<String> vv = new Vector<String>();
+		// String tmp[] = new String[langNames.length];
+		for (int i = 0; i < langNames.length; i++) {
+			if (!langCodes[i].isEmpty() && !langNames[i].isEmpty()) {
+				vv.add(langCodes[i] + ";" + langNames[i]);
+			}
 		}
-		return tmp;
+		return vv.toArray(new String[0]);
 	}
 
 	/**
