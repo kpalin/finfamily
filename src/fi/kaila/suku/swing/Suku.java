@@ -1811,6 +1811,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (cmd.equals(Resurses.SW_UPDATE)) {
 				String updateSite = "https://sourceforge.net/projects/finfamily/";
 				Utils.openExternalFile(updateSite);
+				setStatus(updateSite);
 				return;
 			}
 			if (cmd.equals(Resurses.LICENSE)) {
@@ -1821,6 +1822,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			if (cmd.equals(Resurses.WIKI)) {
 				String updateSite = Resurses.getString("WIKI_URL");
 				Utils.openExternalFile(updateSite);
+				setStatus(updateSite);
 				return;
 			}
 			if (cmd.equals("GRAPHVIZ")) {

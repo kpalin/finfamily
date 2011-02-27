@@ -682,12 +682,11 @@ public class Utils {
 	 * command to start the external application for the file.
 	 * 
 	 * @param url
-	 *            the url
+	 * 
 	 */
 	public static void openExternalFile(String url) {
 
 		if (Suku.kontroller.isRemote()) {
-
 			StringBuilder sb = new StringBuilder();
 			sb.append(Resurses.getString("WEBSTART_OPEN"));
 			sb.append("\n");
