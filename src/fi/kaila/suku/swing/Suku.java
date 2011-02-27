@@ -80,6 +80,7 @@ import fi.kaila.suku.kontroller.SukuKontroller;
 import fi.kaila.suku.kontroller.SukuKontrollerHybridImpl;
 import fi.kaila.suku.kontroller.SukuKontrollerLocalImpl;
 import fi.kaila.suku.kontroller.SukuKontrollerWebstartImpl;
+import fi.kaila.suku.report.dialog.JoinDialog;
 import fi.kaila.suku.report.dialog.ReportWorkerDialog;
 import fi.kaila.suku.swing.dialog.AboutDialog;
 import fi.kaila.suku.swing.dialog.ConnectDialog;
@@ -2894,6 +2895,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 	}
 
+	public void startJoin(PersonShortData sub) {
+		PersonShortData main;
+		try {
+			main = getJoinPerson();
+			JoinDialog join = new JoinDialog(this, main, sub);
+			join.setVisible(true);
+		} catch (SukuException e) {
+			JOptionPane.showMessageDialog(this, Resurses.getString("SUKU")
+					+ ":" + e.getMessage());
+		}
+
+	}
+
 	private void importFromHiski(boolean theButt) {
 		if (theButt) {
 			personView.displayHiskiPane();
@@ -4318,12 +4332,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 					if (messu.length() > 0) {
 						JOptionPane.showMessageDialog(parent, messu.toString());
 					} else {
-						JOptionPane.showMessageDialog(parent,
-								("Under construction\njoin ["
-										+ pop.getPerson().getPid() + "]: "
-										+ pop.getPerson().getName(false, true)
-										+ " to [" + joinPersonPid + "] "));
-
+						// JOptionPane.showMessageDialog(parent,
+						// ("Under construction\njoin ["
+						// + pop.getPerson().getPid() + "]: "
+						// + pop.getPerson().getName(false, true)
+						// + " to [" + joinPersonPid + "] "));
+						startJoin(pop.getPerson());
 					}
 				}
 			}
