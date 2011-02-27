@@ -29,9 +29,10 @@ public class SukuPopupMenu {
 	private final JMenuItem pAddAsChild;
 	private final JMenuItem pAddAsSpouse;
 	private final JMenuItem pAddAsParent;
+	private final JMenu pJoinMenu;
 	private final JMenuItem pJoinPerson;
 	private final JMenuItem pJoinAddPerson;
-
+	private PersonShortData persToJoinTo = null;
 	// private JMenuItem pPersonView;
 	private final JMenuItem pCopy;
 	private final JMenuItem pNeedle;
@@ -127,6 +128,19 @@ public class SukuPopupMenu {
 		return currentPerson;
 	}
 
+	public void enableJoinAdd(PersonShortData firstPers) {
+		if (firstPers == null) {
+			pJoinAddPerson.setVisible(false);
+			persToJoinTo = firstPers;
+			pJoinPerson.setText(Resurses.getString("JOIN_PERSON"));
+		} else {
+			pJoinAddPerson.setVisible(true);
+			persToJoinTo = firstPers;
+			pJoinPerson.setText(Resurses.getString("JOIN_PERSON") + " "
+					+ persToJoinTo.getName(true, true));
+		}
+	}
+
 	/**
 	 * show menu at location.
 	 * 
@@ -200,14 +214,18 @@ public class SukuPopupMenu {
 		pAddAsParent.setActionCommand("ADDPARENT");
 		pAddPerson.add(pAddAsParent);
 
+		pJoinMenu = new JMenu(Resurses.getString("JOIN_MENU"));
+
+		pMenu.add(pJoinMenu);
+
 		pJoinPerson = new JMenuItem(Resurses.getString("JOIN_PERSON"));
 		pJoinPerson.setActionCommand("JOIN_PERSON");
-		pMenu.add(pJoinPerson);
+		pJoinMenu.add(pJoinPerson);
 		// pJoinPerson.setVisible(false);
 		pJoinAddPerson = new JMenuItem(Resurses.getString("JOIN_ADD_PERSON"));
 		pJoinAddPerson.setActionCommand("JOIN_ADD_PERSON");
-		pMenu.add(pJoinAddPerson);
-		// pJoinAddPerson.setVisible(false);
+		pJoinMenu.add(pJoinAddPerson);
+		pJoinAddPerson.setVisible(false);
 		pMenu.addSeparator();
 		pCopy = new JMenuItem(Resurses.getString(Resurses.MENU_COPY));
 		// pShowFamily.addActionListener(popupListener);

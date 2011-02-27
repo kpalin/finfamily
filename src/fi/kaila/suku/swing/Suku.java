@@ -321,6 +321,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private String url = null;
 	private static JFrame myFrame = null;
 	private static final int needleSize = 4;
+	private int joinPersonPid = 0;
 	/**
 	 * location for textfile FinFamily.xls or null if located at
 	 * resources/excel/FinFamily.xls
@@ -1592,8 +1593,27 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		return button;
 	}
 
+	private PersonShortData getJoinPerson() throws SukuException {
+		if (joinPersonPid == 0) {
+			return null;
+		}
+
+		SukuData res = Suku.kontroller.getSukuData("cmd=person", "mode=short",
+				"pid=" + joinPersonPid);
+
+		if (res.pers != null && res.pers.length == 1) {
+			return res.pers[0];
+		}
+		return null;
+
+	}
+
 	private void connectDb() {
 		sukuObject = null;
+		joinPersonPid = 0;
+		SukuPopupMenu pop = SukuPopupMenu.getInstance();
+		pop.enableJoinAdd(null);
+
 		ConnectDialog cdlg = new ConnectDialog(this, kontroller);
 		boolean hasMemory = cdlg.hasDatabase();
 		if (kontroller.isConnected() && hasMemory) {
@@ -4200,8 +4220,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						personView.setSelectedIndex(midx + 1);
 					}
 
-				}
-				if (cmd.equals(Resurses.MENU_COPY)) {
+				} else if (cmd.equals(Resurses.MENU_COPY)) {
 					if (pop.getSource() == MenuSource.familyView) {
 						personView.copyFamilyToClipboardAsImage();
 					} else {
@@ -4239,14 +4258,12 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 						copyToClip(sb.toString());
 					}
-				}
-				if (cmd.equals(Resurses.MENU_NEEDLE)) {
+				} else if (cmd.equals(Resurses.MENU_NEEDLE)) {
 					PersonShortData pp = pop.getPerson();
 					if (pp != null) {
 						addToNeedle(pp);
 					}
-				}
-				if (cmd.startsWith("ADD")) {
+				} else if (cmd.startsWith("ADD")) {
 					PersonShortData pp = pop.getPerson();
 					if (pp != null) {
 
@@ -4273,6 +4290,40 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 							logger.log(Level.SEVERE,
 									"Failed to create person ", e);
 						}
+					}
+				} else if (cmd.equals("JOIN_PERSON")) {
+					joinPersonPid = pop.getPerson().getPid();
+					if (joinPersonPid > 0) {
+						pop.enableJoinAdd(pop.getPerson());
+					}
+				} else if (cmd.equals("JOIN_ADD_PERSON")) {
+					StringBuilder messu = new StringBuilder();
+					PersonShortData main = null;
+					try {
+						main = getJoinPerson();
+					} catch (SukuException e1) {
+						messu.append(e1.toString());
+					}
+					if (main != null) {
+						String sexm = main.getSex();
+						String sexp = pop.getPerson().getSex();
+						if (!sexm.equals("U") && !sexp.equals("U")) {
+							if (!sexm.equals(sexp)) {
+								messu.append(Resurses
+										.getString("JOIN_DIFF_SEX"));
+							}
+						}
+
+					}
+					if (messu.length() > 0) {
+						JOptionPane.showMessageDialog(parent, messu.toString());
+					} else {
+						JOptionPane.showMessageDialog(parent,
+								("Under construction\njoin ["
+										+ pop.getPerson().getPid() + "]: "
+										+ pop.getPerson().getName(false, true)
+										+ " to [" + joinPersonPid + "] "));
+
 					}
 				}
 			}
