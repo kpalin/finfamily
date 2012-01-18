@@ -58,6 +58,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.JFileChooser;
+
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
@@ -1612,6 +1614,19 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private void connectDb() {
 		sukuObject = null;
 		joinPersonPid = 0;
+		JFileChooser chooser = new JFileChooser();
+		int returnVal = chooser.showOpenDialog(this);
+	    if(returnVal == JFileChooser.APPROVE_OPTION) {
+	    	databaseName = chooser.getSelectedFile().getPath();
+	    	if( databaseName.endsWith(".h2.db") ) {
+	    		databaseName = databaseName.substring(0, databaseName.length() - 6);
+	    	}
+	    	
+	       logger.info("You chose to open this file: " +
+	    		   	databaseName );
+	    } else {
+	    	return;
+	    }
 		SukuPopupMenu pop = SukuPopupMenu.getInstance();
 		pop.enableJoinAdd(null);
 
@@ -1627,7 +1642,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.scrollPane.updateUI();
 			disconnectDb();
 		}
-
+/*
 		if (cdlg.getPassword() == null || !cdlg.hasDatabase()) {
 
 			cdlg.setVisible(true);
@@ -1639,19 +1654,15 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		databaseName = cdlg.getDbName();
 		String userid = cdlg.getUserId();
 		String password = cdlg.getPassword();
-
+*/
+		String userid = "";
+		String password = "";
+		String name = "";
 		try {
-			if (kontroller.isRemote()) {
-				if ("demo".equals(userid) && "demo".equals(password)) {
-					kontroller.getConnection(name, databaseName, userid,
-							password);
-				} else {
-					throw new SukuException("UNKNOWN USER/PASSWORD");
-				}
-			} else {
+
 				kontroller.getConnection(name, databaseName, userid, password);
-				cdlg.rememberDatabase(true);
-			}
+				//cdlg.rememberDatabase(true);
+			
 		} catch (SukuException e3) {
 			String e1 = e3.getMessage();
 			String[] e2 = { "Connection failed" };
@@ -1659,7 +1670,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				e2 = e1.split("\n");
 			}
 
-			cdlg.rememberDatabase(false);
+			//cdlg.rememberDatabase(false);
 
 			JOptionPane.showMessageDialog(this, e2[0],
 					Resurses.getString(Resurses.SUKU),
@@ -1671,48 +1682,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			return;
 		}
 		try {
-			String schema = null;
-			if (!kontroller.isRemote()) {
+			String schema;
 
-				SelectSchema schemas = new SelectSchema(this, databaseName,
-						false);
+			SelectSchema schemas = new SelectSchema(this, databaseName,
+					false);
 
-				schema = schemas.getSchema();
+			schema = schemas.getSchema();
 
-				if (schema == null || schema.isEmpty()) {
-					schemas.setVisible(true);
 
-				}
-				schema = schemas.getSchema();
-				if (schema == null) {
-					cdlg.rememberDatabase(false);
-					return;
-				}
-				SukuData dblist = kontroller.getSukuData("cmd=dblista");
-
-				if (dblist.generalArray != null) {
-					StringBuilder sb = new StringBuilder();
-					sb.append(databaseName);
-					for (int i = 0; i < dblist.generalArray.length; i++) {
-						if (!dblist.generalArray[i]
-								.equalsIgnoreCase(databaseName)) {
-							sb.append(";");
-							sb.append(dblist.generalArray[i]);
-						}
-					}
-
-					kontroller.putPref(cdlg, "DBNAMES", sb.toString());
-				}
-				schema = schemas.getSchema();
-				if (schema == null || schema.isEmpty()) {
-
-					enableCommands();
-					cdlg.rememberDatabase(false);
-					return;
-				}
-				kontroller.getSukuData("cmd=schema", "type=set", "name="
-						+ schema);
-			}
 
 			repoLangList = ExcelBundle.getLangList();
 
@@ -1877,34 +1854,11 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 				disconnectDb();
 			} else if (cmd.equals("SCHEMA_INITIALIZE")) {
 				String selectedSchema = null;
-				if (!kontroller.isRemote()) {
+				SelectSchema schema = null;
+				schema = new SelectSchema(this, databaseName);
 
-					try {
-						SelectSchema schema = null;
-						schema = new SelectSchema(this, databaseName);
-
-						schema.setVisible(true);
-
-						selectedSchema = schema.getSchema();
-						if (selectedSchema == null)
-							return;
-						if (!schema.isExistingSchema()) {
-							kontroller.getSukuData("cmd=schema", "type=create",
-									"name=" + selectedSchema);
-
-						}
-						kontroller.getSukuData("cmd=schema", "type=set",
-								"name=" + selectedSchema);
-						setTitle(null);
-					} catch (SukuException e1) {
-
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(this, e1.getMessage(),
-								Resurses.getString(Resurses.SUKU),
-								JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-				}
+				selectedSchema = schema.getSchema();
+				
 				SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
 				if (resp.resuCount > 0) {
 					// if (schema.isExistingSchema()) {
@@ -2635,32 +2589,14 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			this.scrollPane.updateUI();
 			String selectedSchema = null;
 			if (!kontroller.isWebStart()) {
-				SelectSchema schema;
+				SelectSchema schema ;
 				try {
-					schema = new SelectSchema(this, databaseName);
-
-					schema.setVisible(true);
-
-					selectedSchema = schema.getSchema();
-					if (selectedSchema == null)
-						return;
-					if (!schema.isExistingSchema()) {
-						kontroller.getSukuData("cmd=schema", "type=create",
-								"name=" + selectedSchema);
-
-					}
-					kontroller.getSukuData("cmd=schema", "type=set", "name="
-							+ selectedSchema);
-					setTitle(null);
-				} catch (SukuException e1) {
-
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, e1.getMessage(),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.ERROR_MESSAGE);
+					 schema = new SelectSchema(this, databaseName);
+				} catch (SukuException e) {
 					return;
 				}
-			}
+				selectedSchema = schema.getSchema();
+		}
 			ImportGedcomDialog dlg;
 			try {
 				dlg = new ImportGedcomDialog(this, dbname);

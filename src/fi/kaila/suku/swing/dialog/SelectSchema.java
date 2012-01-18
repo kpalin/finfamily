@@ -142,10 +142,8 @@ public class SelectSchema extends JDialog implements ActionListener,
 	 * @return schema selected
 	 */
 	public String getSchema() {
-		if (okSelected) {
-			return Utils.toUsAscii(schema.getText());
-		}
-		return null;
+		
+		return "finfamily";
 
 	}
 
