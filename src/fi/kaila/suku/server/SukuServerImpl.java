@@ -45,7 +45,9 @@ import fi.kaila.suku.util.pojo.SukuData;
  */
 public class SukuServerImpl implements SukuServer {
 
-	private final String dbDriver = "org.postgresql.Driver";
+	//private final String dbDriver = "org.postgresql.Driver";
+	private final String dbDriver = "org.h2.Driver";
+	
 	private Connection con = null;
 	private String schema = null;
 	private String userId = null;
@@ -57,16 +59,16 @@ public class SukuServerImpl implements SukuServer {
 	// *
 	// * @throws SukuException
 	// */
-	// public SukuServerImpl() throws SukuException {
-	// this.schema = "public";
-	//
-	// try {
-	// Class.forName(this.dbDriver);
-	// } catch (ClassNotFoundException e) {
-	// throw new SukuException(e);
-	// }
-	//
-	// }
+	public SukuServerImpl() throws SukuException {
+		this.schema = "public";
+	
+		try {
+			Class.forName(this.dbDriver);
+		} catch (ClassNotFoundException e) {
+			throw new SukuException(e);
+		}
+	
+	}
 
 	/**
 	 * used by tomcat from webstart idea is that database uses different schema
@@ -100,8 +102,17 @@ public class SukuServerImpl implements SukuServer {
 	@Override
 	public void getConnection(String host, String dbname, String userid,
 			String passwd) throws SukuException {
+		/*
 		String dbConne = "jdbc:postgresql://" + host + "/" + dbname + "?user="
 				+ userid;
+				*/
+		String dbConne;
+		if(host == null || host.isEmpty() ) {
+			dbConne = "jdbc:h2:" + dbname + ";AUTO_SERVER=TRUE;MODE=PostgreSQL;IGNORECASE=TRUE";
+		} else {
+			dbConne = "jdbc:h2:"+ host + "/" + dbname +";MODE=PostgreSQL;IGNORECASE=TRUE";
+		}
+		
 		if (this.userId == null) {
 			this.userId = userid;
 		}
@@ -111,11 +122,13 @@ public class SukuServerImpl implements SukuServer {
 		logger.info("Connection: " + dbConne + ";schema: " + this.schema);
 		if (passwd != null && !passwd.isEmpty()) {
 
-			dbConne += "&password=" + passwd;
+			//dbConne += "&password=" + passwd;
 		}
 		Statement stm = null;
 		try {
-			this.con = DriverManager.getConnection(dbConne);
+			//if (passwd != null && !passwd.isEmpty()) {
+				this.con = DriverManager.getConnection(dbConne,userid,passwd);
+			//}
 			stm = this.con.createStatement();
 			stm.executeUpdate("set search_path to " + this.schema);
 			stm.close();
@@ -1196,7 +1209,7 @@ public class SukuServerImpl implements SukuServer {
 					+ " from placelocations as a left join "
 					+ "placeothernames as b on a.placename=b.placename "
 					+ "and a.countrycode = b.countrycode "
-					+ "where location[0] = 0 and location[1] = 0";
+					+ "where location_X = 0 and location_Y = 0";
 
 			String prev = "";
 
@@ -1235,7 +1248,7 @@ public class SukuServerImpl implements SukuServer {
 					+ " from placelocations as a left join "
 					+ "placeothernames as b on a.placename=b.placename "
 					+ "and a.countrycode = b.countrycode "
-					+ "where location[0] = 0 and location[1] = 0";
+					+ "where location_X = 0 and location_Y = 0";
 
 			String prev = "";
 
@@ -1335,7 +1348,9 @@ public class SukuServerImpl implements SukuServer {
 	private SukuData getDbLista(String host, String user, String password)
 			throws SukuException {
 		SukuData response = new SukuData();
-		String sql = "select datname from pg_database where datname not in ('postgres','template1','template0') order by datname ";
+		//String sql = "select datname from pg_database where datname not in ('postgres','template1','template0') order by datname ";
+		String sql = "show schema";
+		sql = "select SCHEMA_NAME from INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME NOT IN ('INFORMATION_SCHEMA','PUBLIC')";
 
 		ArrayList<String> lista = new ArrayList<String>();
 		Statement stm = null;
@@ -1381,7 +1396,8 @@ public class SukuServerImpl implements SukuServer {
 			try {
 				mycon = DriverManager.getConnection(constring);
 				result.add("==========================");
-				String sqls = "select * from pg_namespace where nspname not like 'pg%' and nspname <> 'information_schema' ";
+				//String sqls = "select * from pg_namespace where nspname not like 'pg%' and nspname <> 'information_schema' ";
+				String sqls = "select SCHEMA_NAME from INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME NOT IN ('INFORMATION_SCHEMA','PUBLIC')";
 
 				stm = mycon.createStatement();
 				ResultSet rss = stm.executeQuery(sqls);
@@ -1589,28 +1605,18 @@ public class SukuServerImpl implements SukuServer {
 		try {
 
 			stm = con.createStatement();
-			boolean unitExists = false;
-			ResultSet rs = stm
-					.executeQuery("select tablename from pg_tables where tablename = 'unit' and schemaname = '"
-							+ this.schema + "'");
-
+			ResultSet rs = stm.executeQuery("select count(*) from unit");
 			if (rs.next()) {
-				unitExists = true;
+				resp.resuCount = rs.getInt(1);
 			} else {
 				resp.resuCount = -1;
 			}
 			rs.close();
-			if (unitExists) {
-				rs = stm.executeQuery("select count(*) from unit");
-				if (rs.next()) {
-					resp.resuCount = rs.getInt(1);
-				}
-				rs.close();
-			}
 			stm.close();
 
 		} catch (SQLException e) {
-			throw new SukuException(e);
+			resp.resuCount = -1;
+			//throw new SukuException(e);
 
 		}
 		return resp;
@@ -1645,9 +1651,10 @@ public class SukuServerImpl implements SukuServer {
 			// + "where givenname is not null group by givenname "
 			// + "order by 2 desc limit 256";
 
-			sql = "select split_part(givenname,' ',1),count(*) "
+			//sql = "select split_part(givenname,' ',1),count(*) "
+			sql = "select LEFT(givenname,LOCATE(' ',givenname)),count(*) "
 					+ "from unitnotice where givenname is not null "
-					+ "group by split_part(givenname,' ',1)"
+					+ "group by LEFT(givenname,LOCATE(' ',givenname))"
 					+ "order by 2 desc limit 256";
 
 			rs = stm.executeQuery(sql);

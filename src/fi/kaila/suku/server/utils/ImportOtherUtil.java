@@ -545,7 +545,7 @@ public class ImportOtherUtil {
 				sql.append("and ");
 			}
 			sql.append(sqlPrefix);
-			sql.append("( coalesce(a.surname,'') ilike coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')"
+			sql.append("( coalesce(a.surname,'') like coalesce(b.surname,'') and a.tag='NAME' and b.tag='NAME')"
 					+ sqlPostfix + ")  ");
 
 		}
@@ -555,7 +555,7 @@ public class ImportOtherUtil {
 				sql.append("and ");
 			}
 			sql.append(sqlPrefix);
-			sql.append("( coalesce(a.patronym,'') ilike coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')"
+			sql.append("( coalesce(a.patronym,'') like coalesce(b.patronym,'') and a.tag='NAME' and b.tag='NAME')"
 					+ sqlPostfix + ")  ");
 
 		}
@@ -568,14 +568,14 @@ public class ImportOtherUtil {
 		if (map.get("firstname") == null) {
 
 			sql.append(sqlPrefix);
-			sql.append("( coalesce(a.givenname,'') ilike coalesce(b.givenname,'') "
+			sql.append("( coalesce(a.givenname,'') like coalesce(b.givenname,'') "
 					+ " and a.tag='NAME' and b.tag='NAME') "
 					+ sqlPostfix
 					+ " )");
 		} else {
 			sql.append(sqlPrefix);
 			sql.append("( substring(coalesce(a.givenname,'') from '[\\\\w]+') "
-					+ " ilike substring(coalesce(b.givenname,'') from '[\\\\w]+') "
+					+ " like substring(coalesce(b.givenname,'') from '[\\\\w]+') "
 					+ "   and a.tag='NAME' and b.tag='NAME') " + sqlPostfix
 					+ ") ");
 		}

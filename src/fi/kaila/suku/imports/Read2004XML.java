@@ -635,9 +635,10 @@ public class Read2004XML extends DefaultHandler {
 			}
 			rs.close();
 			if (maxpid > 0) {
-				sql = "SELECT setval('unitseq'," + maxpid + ")";
-				rs = stm.executeQuery(sql);
-				rs.close();
+				//sql = "SELECT setval('unitseq'," + maxpid + ")";
+				sql = "ALTER SEQUENCE UnitSeq RESTART WITH " + maxpid;
+				stm.execute(sql);
+				
 			}
 			// initializize also vid sequence
 			sql = "select max(vid) from views";
@@ -649,8 +650,9 @@ public class Read2004XML extends DefaultHandler {
 			rs.close();
 			if (maxvid > 0) {
 				sql = "SELECT setval('viewseq'," + maxvid + ")";
-				rs = stm.executeQuery(sql);
-				rs.close();
+				sql = "ALTER SEQUENCE ViewSeq RESTART WITH " + maxvid;
+				stm.execute(sql);
+				
 			}
 			sql = "select u.pid from unit as u inner join relation as r on u.pid = r.pid "
 					+ "where r.rid in (select rid from relation group by rid having count(*) <> 2)";
@@ -674,8 +676,7 @@ public class Read2004XML extends DefaultHandler {
 			stm.executeUpdate(DROP_UNIT_SID);
 			stm.executeUpdate(DROP_UNITNOTICE_SID);
 			stm.executeUpdate(DROP_RELATIONNOTICE_SID);
-			setRunnerValue(Resurses.getString("VACUUM"));
-			stm.executeUpdate(VACUUM);
+			
 			long ended = System.currentTimeMillis();
 			logger.info("Backup " + filepath + " converted in "
 					+ (ended - started) + " ms");

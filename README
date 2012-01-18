@@ -1,0 +1,33 @@
+Sukuohjelmisto 11.1
+
+Tämä on uusi versio Kaarlo Kailan alkuperäisestä Sukuohjelmisto 11:sta.
+Tärkein muutos vanhaan on luopuminen postgresql tietokannasta ja siirtyminen
+helppokäyttöisempään, tiedostopohjaiseen, sukutietokantaan.
+
+
+
+Siirtyminen vanhasta Sukuohjelmisto 11:sta (tai Sukuohjelmisto 2004:stä) 
+tapahtuu varmuuskopion kautta: 
+1. Luo vanhalla ohjelmalla varmuuskopio tietokannastasi.
+2. Luo uudella ohjelmalla uusi tietokanta
+3. Lataa varmuuskopiosi luotuun tietokantaan
+
+Huomaa, että varmuuskopion luominen pitää tehdä vanhalla järjestelmällä.
+Uusi ohjelma ei pysty keskustelemaan vanhan postgresql tietokannan kanssa.
+
+
+
+Nörteille
+
+Uusi ohjelma käytää h2 nimistä tietokantaa, joka on sisällytetty Sukuohjelmisto 11.1:een.
+h2:n kyselykieli on myös SQL, mutta hieman eri murre kuin postgreqsl:llä, joten
+suurinta osaa ohjelman SQL komennoista piti muuttaa hieman.
+
+
+In English:
+
+This is a new version of the Finfamily 11 genealogy program by Kaarlo Kaila (Who passed 
+away in February 2011) The new software uses h2 database engine instead of postgresql
+hence there is no external software to install.
+
+Transfer from old software to the new version goes through backup system.

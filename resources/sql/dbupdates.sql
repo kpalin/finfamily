@@ -53,7 +53,8 @@ drop table if exists PlaceLocations;
 create table PlaceLocations (
 PlaceName varchar,
 CountryCode varchar,
-Location point,
+Location_X double,
+Location_Y double,
 primary key (PlaceName,CountryCode)
 );
 

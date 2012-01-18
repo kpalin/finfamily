@@ -99,7 +99,7 @@ public class ImportExcelData {
 		int latiIdx = -1;
 		int longIdx = -1;
 
-		String INSERT_PLACELOC = "insert into PlaceLocations (PlaceName,Location) values (?,point(?,?))";
+		String INSERT_PLACELOC = "insert into PlaceLocations (PlaceName,Location_X,Location_Y) values (?,?,?)";
 		String INSERT_PLACEOTHER = "insert into PlaceOtherNames (OtherName,PlaceName) values (?,?)";
 
 		String DELETE_PLACELOC = "delete from PlaceLocations";

@@ -59,7 +59,7 @@ public class Upload {
 					if (curPid > 0) {
 						respons.pidArray[i] = curPid;
 					} else if (curPid < 0) {
-						respons.pidArray[i] = nextSeq(con, "unitseq");
+						respons.pidArray[i] = nextSeq(con, "UnitSeq");
 					}
 
 					if (curPid < 0) {
@@ -83,7 +83,7 @@ public class Upload {
 				// TODO:
 			} else if (families.persons[i].getPid() <= 0
 					&& respons.pidArray[i] <= 0) {
-				respons.pidArray[i] = nextSeq(con, "unitseq");
+				respons.pidArray[i] = nextSeq(con, "UnitSeq");
 			} else if (families.persons[i].getPid() > 0) {
 				respons.pidArray[i] = families.persons[i].getPid();
 			}
@@ -439,6 +439,11 @@ public class Upload {
 	 *             the sQL exception
 	 */
 	public static String[] getServerVersion(Connection con) throws SQLException {
+		String vers[] = new String[2];
+		vers[0] = "h2";
+		vers[1]="Don't now the server version.";
+		return vers;
+		/*
 		Statement stm = con.createStatement();
 
 		ResultSet rs = stm.executeQuery("select version()");
@@ -453,7 +458,7 @@ public class Upload {
 		long endtime = System.currentTimeMillis();
 		vers[1] = "Vacuum in [" + (endtime - starttime) / 1000 + "] secs";
 
-		return vers;
+		return vers; */
 	}
 
 	/**

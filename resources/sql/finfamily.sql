@@ -72,8 +72,6 @@ drop table if exists SukuSettings;
 -- lets do a vacuum of old tables
 --
 
-vacuum;
-
 
 
 
@@ -94,7 +92,7 @@ owner_state varchar,
 owner_country varchar,
 owner_email varchar,
 owner_webaddress varchar,
-user_id varchar primary key default 'suku' ,    -- userid. network user only 
+user_id varchar  ,    -- userid. network user only 
 user_pwd varchar,    -- md5 encrypted password
 Modified timestamp,                           -- timestamp modified
 CreateDate timestamp not null default now()    --  timestamp created  
@@ -158,7 +156,7 @@ ModifiedBy varchar,	                          -- modifier by user id
 Modified timestamp,                           -- timestamp modified
 CreatedBy varchar,                            -- created by user id
 CreateDate timestamp not null default now()   -- timestamp created  
-) with oids;
+);
 
 create index RelationIndex on Relation (RID);
 create index RelationPidIndex on Relation (PID);
@@ -200,6 +198,8 @@ PostalCode varchar,              -- Postal Code
 State varchar,
 Country varchar,                 -- Country  
 --Location point,                  -- Geographical location of place
+Location_X double,
+Location_Y double,
 Email varchar,                   -- Email-address or web-page of person  
 NoteText varchar,                -- Note textfield  (L)
 MediaFilename varchar,           -- Filename of the multimedia file  
@@ -212,8 +212,8 @@ Surname varchar,                 -- Surname
 Givenname varchar,               --  Givenname
 Patronym varchar,                -- Patronyymi  NEW
 PostFix varchar,                 --  Name Postfix  
-RefNames varchar[],                -- List of names within notice for index
-RefPlaces varchar[],               -- List of places within notice for index
+RefNames ARRAY,                -- List of names within notice for index
+RefPlaces ARRAY,               -- List of places within notice for index
 --SID integer,               -- temp storage for sourcieid for now
 SourceText varchar ,       -- Source as text
 PrivateText varchar,             --  Private researcher information  
@@ -242,7 +242,7 @@ ModifiedBy varchar,	                          -- modifier by user id
 Modified timestamp,                           -- timestamp modified
 CreatedBy varchar,                            -- created by user id
 CreateDate timestamp not null default now()    --  timestamp created  
-) with oids;
+);
 
 
 create unique index UnitLanguageIdx on UnitLanguage (PNID,LangCode);
@@ -294,7 +294,7 @@ ModifiedBy varchar,	                          -- modifier by user id
 Modified timestamp,                           -- timestamp modified
 CreatedBy varchar,                            -- created by user id
 CreateDate timestamp not null default now()   -- Date/time when created  
-) with oids;
+);
 
 create unique index RelationLanguageIdx on RelationLanguage (RNID,LangCode);
 create index RelationLanguageRidIdx on RelationLanguage (RID);
@@ -319,7 +319,7 @@ SettingType varchar not null,
 SettingIndex integer not null,
 SettingName varchar not null,
 SettingValue varchar
-) with oids;
+);
 
 
 --
@@ -341,7 +341,8 @@ CreateDate timestamp not null default now()   -- timestamp created
 create table PlaceLocations (
 PlaceName varchar,
 CountryCode varchar,
-Location point,
+Location_X double,
+Location_Y double,
 primary key (PlaceName,CountryCode)
 );
 -- create unique index LocationsIdx on Locations (PlaceName,CountryCode);
@@ -360,6 +361,8 @@ FOREIGN KEY (PlaceName, CountryCode) REFERENCES PlaceLocations (PlaceName, Count
 --PlaceName varchar primary key,
 --Location point
 --);
+-- drop alias if exists split_part;
+-- create alias if not exists split_part as 'String split_part(String s,String sp, int i) { return s.split(sp)[i]; }';
 
 --create table PlaceOtherNames (
 --OtherName varchar primary key,

@@ -261,6 +261,7 @@ public class ImportGedcomUtil {
 						line.append(c);
 					}
 				}
+				
 				if ((c == '\n' || c == '\r') && line.length() > 0) {
 
 					// System.out.println(line.toString());
@@ -314,6 +315,9 @@ public class ImportGedcomUtil {
 						if (i2 > 0 && i2 < linex.length()) {
 							aux = linex.substring(i1 + 1, i2);
 							i3 = i2;
+							if(aux.length()==0) {
+								System.out.println(aux);
+							}
 							if (aux.charAt(0) == '@'
 									&& aux.charAt(aux.length() - 1) == '@') {
 								lineg.id = aux;
@@ -1633,7 +1637,7 @@ public class ImportGedcomUtil {
 
 		String sql = "insert into sukuvariables (owner_name,owner_info, "
 				+ "owner_address,owner_postalcode,owner_postoffice,"
-				+ "owner_country,owner_email,owner_webaddress,user_id) values (?,?,?,?,?,?,?,?,user) ";
+				+ "owner_country,owner_email,owner_webaddress) values (?,?,?,?,?,?,?,?) ";
 
 		PreparedStatement pst = null;
 		int lukuri;

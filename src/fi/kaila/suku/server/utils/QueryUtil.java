@@ -95,18 +95,18 @@ public class QueryUtil {
 						if (pari[0].equals(Resurses.CRITERIA_GIVENNAME)) {
 							if (sbn.length() > 0)
 								sbn.append("and ");
-							sbn.append("givenname ilike '" + toQuery(decod)
+							sbn.append("givenname like '" + toQuery(decod)
 									+ "%' ");
 						} else if (pari[0].equals(Resurses.CRITERIA_SURNAME)) {
 							if (sbn.length() > 0)
 								sbn.append("and ");
 
-							sbn.append("surname ilike '" + toQuery(decod)
+							sbn.append("surname like '" + toQuery(decod)
 									+ "%' ");
 						} else if (pari[0].equals(Resurses.CRITERIA_PATRONYME)) {
 							if (sbn.length() > 0)
 								sbn.append("and ");
-							sbn.append("patronym ilike '" + toQuery(decod)
+							sbn.append("patronym like '" + toQuery(decod)
 									+ "%' ");
 						} else if (pari[0].equals(Resurses.CRITERIA_PLACE)) {
 							searchPlace = decod;
@@ -162,7 +162,7 @@ public class QueryUtil {
 						fromSQL.append("and ");
 					}
 					isFirstCriteria = false;
-					fromSQL.append("u.groupid ilike '" + toQuery(group) + "%' ");
+					fromSQL.append("u.groupid like '" + toQuery(group) + "%' ");
 				}
 
 				for (idx = 1; idx < params.length; idx++) {
@@ -195,9 +195,9 @@ public class QueryUtil {
 								+ "' and '" + todate + "9999' ");
 					}
 					if (begdate == null && todate == null && place != null) {
-						fromSQL.append("place ilike '" + toQuery(place) + "%' ");
+						fromSQL.append("place like '" + toQuery(place) + "%' ");
 					} else if (place != null) {
-						fromSQL.append("and place ilike '" + toQuery(place)
+						fromSQL.append("and place like '" + toQuery(place)
 								+ "' ");
 					}
 					fromSQL.append("and tag='BIRT') ");
@@ -236,9 +236,9 @@ public class QueryUtil {
 								+ "' and '" + todate + "9999' ");
 					}
 					if (begdate == null && todate == null && place != null) {
-						fromSQL.append("place ilike '" + toQuery(place) + "' ");
+						fromSQL.append("place like '" + toQuery(place) + "' ");
 					} else if (place != null) {
-						fromSQL.append("and place ilike '" + place + "%' ");
+						fromSQL.append("and place like '" + place + "%' ");
 					}
 					fromSQL.append("and tag='DEAT') ");
 				}
@@ -303,11 +303,11 @@ public class QueryUtil {
 					isFirstCriteria = false;
 					if (searchPlace != null && searchNoticeTag == null) {
 
-						fromSQL.append("u.pid in (select pid from unitnotice where place ilike '"
+						fromSQL.append("u.pid in (select pid from unitnotice where place like '"
 								+ toQuery(searchPlace) + "%') ");
 
 					} else if (searchPlace != null && searchNoticeTag != null) {
-						fromSQL.append("u.pid in (select pid from unitnotice where place ilike '"
+						fromSQL.append("u.pid in (select pid from unitnotice where place like '"
 								+ toQuery(searchPlace)
 								+ "' and tag = '"
 								+ searchNoticeTag + "') ");
@@ -369,7 +369,7 @@ public class QueryUtil {
 						}
 						free.append("u.pid "
 								+ ((valueAndOrNot == 2) ? "not " : "")
-								+ "in (select pid from fullTextView where fulltext ilike '%"
+								+ "in (select pid from fullTextView where fulltext like '%"
 								+ toQuery(parts[i]) + "%') ");
 					}
 					free.append(")");

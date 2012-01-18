@@ -100,7 +100,7 @@ public class ExcelImporter {
 						+ " values (?,?,?,?,?,?)";
 				String DELETE_TYPES = "delete from Types";
 				String UPDATE_SETTINGS = "update SukuSettings "
-						+ "set settingvalue = substring(settingvalue for 5)  "
+						+ "set settingvalue = LEFT(settingvalue,5)  "
 						+ "where settingtype = 'reporttypes' ";
 				try {
 
@@ -300,7 +300,7 @@ public class ExcelImporter {
 
 		Vector<String> errvec = new Vector<String>();
 
-		String INSERT_PLACELOC = "insert into PlaceLocations (PlaceName,CountryCode,Location) values (?,?,point(?,?))";
+		String INSERT_PLACELOC = "insert into PlaceLocations (PlaceName,CountryCode,Location_X,Location_Y) values (?,?,?,?)";
 		String INSERT_PLACEOTHER = "insert into PlaceOtherNames (OtherName,CountryCode,PlaceName) values (?,?,?)";
 
 		String DELETE_PLACELOC = "delete from PlaceLocations";

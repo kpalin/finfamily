@@ -31,7 +31,9 @@ public class LocalDatabaseUtility {
 	public static String[] getListOfDatabases(Connection con)
 			throws SukuException {
 
-		String sql = "select datname from pg_database where datname not in ('postgres','template1','template0') order by datname ";
+		//String sql = "select datname from pg_database where datname not in ('postgres','template1','template0') order by datname ";
+		String sql = "show schemas";
+		sql = "select SCHEMA_NAME from INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME NOT IN ('INFORMATION_SCHEMA','PUBLIC')";
 		StringBuilder sb = new StringBuilder();
 		try {
 			Statement stm = con.createStatement();
@@ -39,10 +41,12 @@ public class LocalDatabaseUtility {
 			ResultSet rs = stm.executeQuery(sql);
 
 			while (rs.next()) {
-				if (sb.length() > 0) {
-					sb.append(";");
+				if(rs.getString(1) != "INFORMATION_SCHEMA" ) {
+					if (sb.length() > 0) {
+						sb.append(";");
+					}
+					sb.append(rs.getString(1));
 				}
-				sb.append(rs.getString(1));
 			}
 			rs.close();
 
@@ -50,8 +54,8 @@ public class LocalDatabaseUtility {
 
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "databasenames list", e);
-
-			throw new SukuException(e);
+			return "this".split(";");
+			//throw new SukuException(e);
 		}
 
 	}
@@ -69,7 +73,7 @@ public class LocalDatabaseUtility {
 	// "select rolname from pg_roles where rolname != 'postgres' ";
 	public static String[] getListOfUsers(Connection con) throws SukuException {
 
-		String sql = "select rolname from pg_roles where rolname != 'postgres' order by rolname ";
+		String sql  = "select NAME from INFORMATION_SCHEMA.USERS ORDER BY NAME";
 		StringBuilder sb = new StringBuilder();
 		try {
 			Statement stm = con.createStatement();
@@ -105,7 +109,9 @@ public class LocalDatabaseUtility {
 	 */
 	public static String[] getListOfSchemas(Connection con)
 			throws SukuException {
-		String sql = "select * from pg_namespace where nspname not like 'pg%' and nspname <> 'information_schema' ";
+		String sql = "show schemas";
+		sql = "select SCHEMA_NAME from INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME NOT IN ('INFORMATION_SCHEMA','PUBLIC')";
+
 		StringBuilder sb = new StringBuilder();
 		try {
 			Statement stm = con.createStatement();
@@ -144,7 +150,7 @@ public class LocalDatabaseUtility {
 		String resu = null;
 		try {
 			stm = con.createStatement();
-			stm.executeUpdate("set search_path to " + schema);
+			stm.executeUpdate("set schema_search_path to " + schema);
 			stm.close();
 		} catch (SQLException e) {
 			resu = e.getMessage();
