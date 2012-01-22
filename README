@@ -1,4 +1,4 @@
-Sukuohjelmisto 11.1
+Sukuohjelmisto 12
 
 Tämä on uusi versio Kaarlo Kailan alkuperäisestä Sukuohjelmisto 11:sta.
 Tärkein muutos vanhaan on luopuminen postgresql tietokannasta ja siirtyminen
@@ -26,7 +26,7 @@ suurinta osaa ohjelman SQL komennoista piti muuttaa hieman.
 
 In English:
 
-This is a new version of the Finfamily 11 genealogy program by Kaarlo Kaila (Who passed 
+This is a new version 12 of the Finfamily 11 genealogy program by Kaarlo Kaila (Who passed 
 away in February 2011) The new software uses h2 database engine instead of postgresql
 hence there is no external software to install.
 
