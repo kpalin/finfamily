@@ -1697,7 +1697,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			// sens.setPaikat(dat.generalArray);
 			// }
 
-			return;
 
 		} catch (SukuException e) {
 			String e1 = e.getMessage();
@@ -1714,7 +1713,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 			enableCommands();
 
 		}
-		// }
+		this.queryDb();
 
 	}
 
