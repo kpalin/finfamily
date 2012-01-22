@@ -207,8 +207,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mSubjectDown;
 	private JMenuItem mSubjectUp;
 	private JMenuItem mConnect;
-	private JMenuItem mNewDatabase;
-	private JMenuItem mDropSchema;
 	private JMenuItem mDisconnect;
 	private JMenuItem mPrintPerson;
 	private JMenuItem mNewPerson;
@@ -222,7 +220,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 	private JMenuItem mShowWithDeath;
 	// private JMenuItem mReport;
 	private JMenuItem mExit;
-	private JMenuItem mAdmin;
+	//private JMenuItem mAdmin;
 	// private JMenu mEdit;
 	// private JMenuItem mCopy;
 
@@ -475,28 +473,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		this.mConnect.addActionListener(this);
 		this.mFile.addMenuListener(this);
 
-		if (!kontroller.isRemote()) {
 
-			this.mAdmin = new JMenuItem(Resurses.getString(Resurses.ADMIN));
-			this.mFile.add(this.mAdmin);
-			this.mAdmin.setActionCommand(Resurses.ADMIN);
-			this.mAdmin.addActionListener(this);
-		}
-
-		this.mFile.addSeparator();
-
-		this.mNewDatabase = new JMenuItem(
-				Resurses.getString("SCHEMA_INITIALIZE"));
-		this.mFile.add(this.mNewDatabase);
-		this.mNewDatabase.setActionCommand("SCHEMA_INITIALIZE");
-		this.mNewDatabase.addActionListener(this);
-		if (!kontroller.isRemote()) {
-			this.mDropSchema = new JMenuItem(Resurses.getString("SCHEMA_DROP"));
-			this.mFile.add(this.mDropSchema);
-			this.mDropSchema.setActionCommand("SCHEMA_DROP");
-			this.mDropSchema.addActionListener(this);
-		}
-		this.mFile.addSeparator();
 
 		mImport = new JMenu(Resurses.getString("IMPORT"));
 		this.mFile.add(mImport);
@@ -1615,11 +1592,25 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		sukuObject = null;
 		joinPersonPid = 0;
 		JFileChooser chooser = new JFileChooser();
+		boolean needsInit = false;
+		String defaultName = kontroller.getPref(this, "DBNAME","");
+		if(!defaultName.equals("")) {
+			chooser.setSelectedFile(new File(defaultName));
+		}
+		
 		int returnVal = chooser.showOpenDialog(this);
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {
 	    	databaseName = chooser.getSelectedFile().getPath();
 	    	if( databaseName.endsWith(".h2.db") ) {
 	    		databaseName = databaseName.substring(0, databaseName.length() - 6);
+	    	}
+	    	if(!chooser.getSelectedFile().exists()) {
+	    		needsInit = true;
+	    		if (JOptionPane.showConfirmDialog(new JFrame(),
+	    				Resurses.getString("CREATE_DB_CONFIRM"), databaseName+".h2.db",
+	    				JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+	    			return;
+	    		}	    		
 	    	}
 	    	
 	       logger.info("You chose to open this file: " +
@@ -1630,31 +1621,6 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		SukuPopupMenu pop = SukuPopupMenu.getInstance();
 		pop.enableJoinAdd(null);
 
-		ConnectDialog cdlg = new ConnectDialog(this, kontroller);
-		boolean hasMemory = cdlg.hasDatabase();
-		if (kontroller.isConnected() && hasMemory) {
-			this.tableModel.resetModel(); // clear contents of table first
-			table.getRowSorter().modelStructureChanged();
-			this.table.clearSelection();
-			// this.personView.reset();
-			this.tableMap.clear();
-			this.table.updateUI();
-			this.scrollPane.updateUI();
-			disconnectDb();
-		}
-/*
-		if (cdlg.getPassword() == null || !cdlg.hasDatabase()) {
-
-			cdlg.setVisible(true);
-			if (!cdlg.wasOk())
-				return;
-		}
-		// if (cdlg.wasOk()) {
-		String name = cdlg.getHost();
-		databaseName = cdlg.getDbName();
-		String userid = cdlg.getUserId();
-		String password = cdlg.getPassword();
-*/
 		String userid = "";
 		String password = "";
 		String name = "";
@@ -1662,7 +1628,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 				kontroller.getConnection(name, databaseName, userid, password);
 				//cdlg.rememberDatabase(true);
-			
+				if(needsInit)
+					this.newDatabaseInit();
+				kontroller.putPref(this, "DBNAME", databaseName+".h2.db");
 		} catch (SukuException e3) {
 			String e1 = e3.getMessage();
 			String[] e2 = { "Connection failed" };
@@ -1852,59 +1820,9 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 						Resurses.getString(Resurses.SUKU),
 						JOptionPane.INFORMATION_MESSAGE);
 				disconnectDb();
-			} else if (cmd.equals("SCHEMA_INITIALIZE")) {
-				String selectedSchema = null;
-				SelectSchema schema = null;
-				schema = new SelectSchema(this, databaseName);
-
-				selectedSchema = schema.getSchema();
-				
-				SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
-				if (resp.resuCount > 0) {
-					// if (schema.isExistingSchema()) {
-
-					int resu = JOptionPane.showConfirmDialog(this,
-							Resurses.getString("CONFIRM_NEWDB"),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
-					if (resu != JOptionPane.YES_OPTION) {
-						return;
-					}
-				}
-				try {
-					this.tableModel.resetModel(); // clear contents of table
-					table.getRowSorter().modelStructureChanged();
-					// first
-					this.personView.reset();
-					this.table.updateUI();
-					this.scrollPane.updateUI();
-
-					kontroller.getSukuData("cmd=initdb");
-
-					kontroller.getSukuData("cmd=excel", "page=coordinates");
-					kontroller.getSukuData("cmd=excel", "page=types");
-
-					JOptionPane.showMessageDialog(this,
-							Resurses.getString("CREATED_NEWDB"),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.INFORMATION_MESSAGE);
-					resetIntellisens();
-					kontroller.setSchema(selectedSchema);
-
-					enableCommands();
-					setTitle(null);
-				} catch (SukuException e1) {
-					JOptionPane.showMessageDialog(this,
-							Resurses.getString(Resurses.NEWDB),
-							Resurses.getString(Resurses.SUKU),
-							JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.WARNING,
-							Resurses.getString(Resurses.NEWDB), e1);
-
-				}
-
-			} else if (cmd.equals("SCHEMA_DROP")) {
+			} else if (cmd.equals("SCHEMA_INITIALIZE"))
+				newDatabaseInit();
+			else if (cmd.equals("SCHEMA_DROP")) {
 				SukuData scm = kontroller.getSukuData("cmd=schema", "type=get");
 				if (scm.generalArray[0].equals("public")) {
 					JOptionPane.showMessageDialog(this,
@@ -2315,6 +2233,65 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 
 			logger.log(Level.WARNING, "Suku action", ex);
 			JOptionPane.showMessageDialog(personView.getSuku(), ex.toString());
+		}
+	}
+
+	/**
+	 * @throws SukuException
+	 */
+	private void newDatabaseInit() throws SukuException {
+		{
+			String selectedSchema = null;
+			SelectSchema schema = null;
+			schema = new SelectSchema(this, databaseName);
+
+			selectedSchema = schema.getSchema();
+			
+			SukuData resp = Suku.kontroller.getSukuData("cmd=unitCount");
+			if (resp.resuCount > 0) {
+				// if (schema.isExistingSchema()) {
+
+				int resu = JOptionPane.showConfirmDialog(this,
+						Resurses.getString("CONFIRM_NEWDB"),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (resu != JOptionPane.YES_OPTION) {
+					return;
+				}
+			}
+			try {
+				this.tableModel.resetModel(); // clear contents of table
+				table.getRowSorter().modelStructureChanged();
+				// first
+				this.personView.reset();
+				this.table.updateUI();
+				this.scrollPane.updateUI();
+
+				kontroller.getSukuData("cmd=initdb");
+
+				kontroller.getSukuData("cmd=excel", "page=coordinates");
+				kontroller.getSukuData("cmd=excel", "page=types");
+
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString("CREATED_NEWDB"),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.INFORMATION_MESSAGE);
+				resetIntellisens();
+				kontroller.setSchema(selectedSchema);
+
+				enableCommands();
+				setTitle(null);
+			} catch (SukuException e1) {
+				JOptionPane.showMessageDialog(this,
+						Resurses.getString(Resurses.NEWDB),
+						Resurses.getString(Resurses.SUKU),
+						JOptionPane.ERROR_MESSAGE);
+				logger.log(Level.WARNING,
+						Resurses.getString(Resurses.NEWDB), e1);
+
+			}
+
 		}
 	}
 
@@ -3723,10 +3700,7 @@ public class Suku extends JFrame implements ActionListener, ComponentListener,
 		mExportBackup.setEnabled(kontroller.getSchema() != null);
 		mQuery.setEnabled(kontroller.getSchema() != null);
 		// mSettings.setEnabled(isConnected > 0);
-		mNewDatabase.setEnabled(kontroller.isConnected());
-		if (!kontroller.isRemote()) {
-			mDropSchema.setEnabled(kontroller.isConnected());
-		}
+
 		mOpenPerson.setEnabled(kontroller.getSchema() != null);
 		mPrintPerson.setEnabled(kontroller.getSchema() != null);
 		mShowInMap.setEnabled(kontroller.getSchema() != null);
